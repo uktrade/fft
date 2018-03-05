@@ -3,13 +3,16 @@ from django.db import models
 
 # Remember all fields should be null = true
 
+
+
+
 # Cost Centre hierarchy
 class DepartmentalGroup(models.Model):
     GroupCode = models.CharField(primary_key=True, max_length=10)
     GroupName = models.CharField(max_length=300)
 
     def __str__(self):
-        return self.GroupCode
+        return self.GroupCode + ' - ' + self.GroupName
 
 
 class Directorate(models.Model):
@@ -18,12 +21,12 @@ class Directorate(models.Model):
     GroupCode = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.DirectorateCode
+        return self.DirectorateCode + ' - ' + self.DirectorateName
 
 
 class CostCentre(models.Model):
-    CCCode = models.CharField(primary_key=True, max_length=10)
-    CCName = models.CharField(max_length=300)
+    CCCode = models.CharField('cost centre', primary_key=True, max_length=10)
+    CCName = models.CharField('description', max_length=300)
     Directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -64,6 +67,7 @@ class NaturalCode(models.Model):
 
     def __str__(self):
         return self.NaturalAccountCode
+
 
 class Programme(models.Model):
     ProgrammeCode = models.CharField(primary_key=True, max_length=50)
@@ -138,7 +142,7 @@ class Grades(models.Model):
        return self.Grade
 
 
-# Precalculated salary averages, used for the forecast
+# Pre-calculated salary averages, used for the forecast
 class SalaryMonthlyAverage(models.Model):
     AVERAGETYPE_CHOICES = (('CC', 'CostCentre'),
                            ('DIR','Directorate'),
