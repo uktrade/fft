@@ -86,6 +86,7 @@ from django.http import StreamingHttpResponse
 
 class SmartExport:
     # return lists with the header name andthe objects from a queryset
+    # it only follows one level of foreign key, while I would like to follow at lower levels
     def __init__(self, mydata_qs):
         self.data = mydata_qs
         self.model = mydata_qs.model # get the model
