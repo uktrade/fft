@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.http import HttpResponse
+import csv
 
-
-from .models import DepartmentalGroup
-from .models import Directorate
+from .models import DepartmentalGroup, Directorate
 from .models import CostCentre
 from .models import Analysis1
 from .models import Analysis2
@@ -23,12 +22,14 @@ from .models import HotelAndTravel
 from .models import SubSegments
 from .models import SubSegmentUKTIMapping
 
+from django.utils.encoding import smart_str
+import openpyxl
+from openpyxl.utils import get_column_letter
 
 
 #  https://djangotricks.blogspot.co.uk/2013/12/how-to-export-data-as-excel.html
 def export_cc_csv(modeladmin, request, queryset):
-    import csv
-    from django.utils.encoding import smart_str
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=costCentre.csv'
     writer = csv.writer(response, csv.excel)
@@ -52,12 +53,128 @@ def export_cc_csv(modeladmin, request, queryset):
         ])
     return response
 
-export_cc_csv.short_description = u"Export CSV"
 
+def export_cc1_csv(modeladmin, request, queryset):
+
+    from django.utils.encoding import smart_str
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=costCentre.csv'
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+
+    scv = SmartExport(queryset)
+
+    for row in scv.stream():
+        writer.writerow(row)
+    return response
+
+
+export_cc1_csv.short_description = u"ShortExport CSV"
+
+# writer = csv.writer(pseudo_buffer)
+# response = StreamingHttpResponse(
+#     (writer.writerow(row) for row in stream(headers, mydata_qs)),
+#     content_type="text/csv")
+# response['Content-Disposition'] = 'attachment; filename="all_kittens.csv"'
+# return response
+
+# http://blog.aeguana.com/2015/12/12/csv-export-data-for-django-model/
+from django.db import models
+from django.http import StreamingHttpResponse
+
+
+
+class SmartExport:
+    # return lists with the header name andthe objects from a queryset
+    def __init__(self, mydata_qs):
+        self.data = mydata_qs
+        self.model = mydata_qs.model # get the model
+        self.model_fields = self.model._meta.fields + self.model._meta.many_to_many
+        self.headers = [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]  # Create CSV headers. Horrible way to get the verbose name
+
+    def get_row(self, obj):
+        row = []
+        for field in self.model_fields:
+            if type(field) == models.ForeignKey:
+                val = getattr(obj, field.name)
+                if val:
+                    val = smart_str(val)
+            elif type(field) == models.ManyToManyField:
+                # val = u', '.join([item.__unicode__() for item in getattr(obj, field.name).all()])
+                val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
+            elif field.choices:
+                val = getattr(obj, 'get_%s_display'%field.name)()
+            else:
+                val = smart_str(getattr(obj, field.name))
+            row.append(val.encode("utf-8"))
+        return row
+
+    def stream(self): # Helper function to inject headers
+        if self.headers:
+            yield self.headers
+        for obj in self.data:
+            yield self.get_row(obj)
+
+
+
+
+# EXPORT_ITERATOR_HEADERS=['Cost Centre','Cost Centre2']
+# def _export_iterator(queryset):
+#     for obj in queryset:
+#         yield(            obj.CCCode,
+#             obj.CCName,
+#             obj.Directorate.DirectorateCode,
+#             obj.Directorate.DirectorateName,
+#             obj.Directorate.GroupCode.GroupCode,
+#             obj.Directorate.GroupCode.GroupName)
+
+
+# def export_cc_xlsx(modeladmin, request, queryset):
+#     import openpyxl
+#     from openpyxl.utils import get_column_letter
+#     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#     response['Content-Disposition'] = 'attachment; filename=mymodel.xlsx'
+#     wb = openpyxl.Workbook()
+#     ws = wb.get_active_sheet()
+#     ws.title = "MyModel"
+#
+#     row_num = 0
+#
+#     columns = [
+#          (u'Cost Centre', 10),
+#          (u'Cost Centre Description', 50),
+#          (u'Directorate Code', 10),
+#          (u'Directorate Name', 50),
+#          (u'Departmental Group Code', 10),
+#          (u'Departmental Group Name', 50)
+#     ]
+#
+#     for col_num in range(len(columns)):
+#         c = ws.cell(row=row_num + 1, column=col_num + 1)
+#         c.value = columns[col_num][0]
+#         # c.style.font.bold = True
+#         # set column width
+#         ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
+#
+#     for obj in queryset:
+#         row_num += 1
+#         row = [
+#             obj.CCCode,
+#             obj.CCName,
+#             obj.Directorate.DirectorateCode,
+#             obj.Directorate.DirectorateName,
+#             obj.Directorate.GroupCode.GroupCode,
+#             obj.Directorate.GroupCode.GroupName
+#         ]
+#         for col_num in range(len(row)):
+#             c = ws.cell(row=row_num + 1, column=col_num + 1)
+#             c.value = row[col_num]
+#
+#     wb.save(response)
+#     return response
 
 def export_cc_xlsx(modeladmin, request, queryset):
-    import openpyxl
-    from openpyxl.utils import get_column_letter
+
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=mymodel.xlsx'
     wb = openpyxl.Workbook()
@@ -65,39 +182,17 @@ def export_cc_xlsx(modeladmin, request, queryset):
     ws.title = "MyModel"
 
     row_num = 0
+    scv = SmartExport(queryset)
 
-    columns = [
-         (u'Cost Centre', 10),
-         (u'Cost Centre Description', 50),
-         (u'Directorate Code', 10),
-         (u'Directorate Name', 50),
-         (u'Departmental Group Code', 10),
-         (u'Departmental Group Name', 50)
-    ]
-
-    for col_num in range(len(columns)):
-        c = ws.cell(row=row_num + 1, column=col_num + 1)
-        c.value = columns[col_num][0]
-        # c.style.font.bold = True
-        # set column width
-        ws.column_dimensions[get_column_letter(col_num+1)].width = columns[col_num][1]
-
-    for obj in queryset:
+    for row in scv.stream():
         row_num += 1
-        row = [
-            obj.CCCode,
-            obj.CCName,
-            obj.Directorate.DirectorateCode,
-            obj.Directorate.DirectorateName,
-            obj.Directorate.GroupCode.GroupCode,
-            obj.Directorate.GroupCode.GroupName
-        ]
         for col_num in range(len(row)):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
             c.value = row[col_num]
 
     wb.save(response)
     return response
+
 
 export_cc_xlsx.short_description = u"Export XLSX"
 
@@ -119,7 +214,7 @@ class CostCentreAdmin(admin.ModelAdmin):
     list_filter = ['Directorate__DirectorateName','Directorate__GroupCode__GroupName']
     readonly_fields = ['CCCode'] # don't allow to edit the code
     fields = ['CCCode', 'CCName', 'Directorate']  # required to display the read only field at the top
-    actions = [export_cc_csv, export_cc_xlsx] # new action to export to csv and xlsx
+    actions = [export_cc1_csv, export_cc_xlsx] # new action to export to csv and xlsx
 
 
 class DirectorateAdmin(admin.ModelAdmin):
