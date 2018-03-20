@@ -1,4 +1,4 @@
-from core.models import ADIReport as adi, CostCentre as cc
+from core.models import ADIReport, CostCentre
 
 import csv
 
@@ -24,11 +24,3 @@ __columnKey = {
             'January': 16,
             'February': 17}
 
-import datetime from datetime
-
-def financialyear():
-    currentMonth = datetime.now().month
-    currentYear = datetime.now().year
-    if currentMonth < 4 : # the new financial year  starts in April
-        currentYear = currentYear - 1 # before April, the financial year it is one year behin
-    return currentYear

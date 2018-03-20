@@ -28,30 +28,30 @@ from openpyxl.utils import get_column_letter
 
 
 #  https://djangotricks.blogspot.co.uk/2013/12/how-to-export-data-as-excel.html
-def export_cc_csv(modeladmin, request, queryset):
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=costCentre.csv'
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-    writer.writerow([
-        smart_str(u'Cost Centre'),
-        smart_str(u'Cost Centre Description'),
-        smart_str(u'Directorate Code'),
-        smart_str(u'Directorate Name'),
-        smart_str(u'Departmental Group Code'),
-        smart_str(u'Departmental Group Name')
-    ])
-    for obj in queryset:
-        writer.writerow([
-            smart_str(obj.CCCode),
-            smart_str(obj.CCName),
-            smart_str(obj.Directorate.DirectorateCode),
-            smart_str(obj.Directorate.DirectorateName),
-            smart_str(obj.Directorate.GroupCode.GroupCode),
-            smart_str(obj.Directorate.GroupCode.GroupName)
-        ])
-    return response
+# def export_cc_csv(modeladmin, request, queryset):
+#
+#     response = HttpResponse(content_type='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename=costCentre.csv'
+#     writer = csv.writer(response, csv.excel)
+#     response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+#     writer.writerow([
+#         smart_str(u'Cost Centre'),
+#         smart_str(u'Cost Centre Description'),
+#         smart_str(u'Directorate Code'),
+#         smart_str(u'Directorate Name'),
+#         smart_str(u'Departmental Group Code'),
+#         smart_str(u'Departmental Group Name')
+#     ])
+#     for obj in queryset:
+#         writer.writerow([
+#             smart_str(obj.CCCode),
+#             smart_str(obj.CCName),
+#             smart_str(obj.Directorate.DirectorateCode),
+#             smart_str(obj.Directorate.DirectorateName),
+#             smart_str(obj.Directorate.GroupCode.GroupCode),
+#             smart_str(obj.Directorate.GroupCode.GroupName)
+#         ])
+#     return response
 
 
 def export_cc1_csv(modeladmin, request, queryset):
