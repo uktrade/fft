@@ -1,1 +1,1 @@
-web: gunicorn fadmin2.wsgi
+web: cd fadmin2 && gunicorn fadmin2.wsgi
