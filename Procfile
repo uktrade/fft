@@ -1,1 +1,1 @@
-web: cd fadmin2 && gunicorn fadmin2.wsgi
+web: python fadmin2/mange.py runserver
