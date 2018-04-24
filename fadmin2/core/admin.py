@@ -2,15 +2,12 @@ from django.contrib import admin
 from django.http import HttpResponse
 import csv
 
-from .models import DepartmentalGroup, Directorate
-from .models import CostCentre
-from .models import Analysis1
-from .models import Analysis2
-from .models import NaturalCode
-from .models import Programme
+from .models import DepartmentalGroup, Directorate, CostCentre
+from .models import Analysis1, Analysis2, NaturalCode, Programme
+from .models import L1Account, L2Account, L3Account, L4Account, L5Account
 from .models import ADIReport
-from .models import Budgets
-from .models import Grades
+from .models import Budget
+from .models import Grade
 from .models import SalaryMonthlyAverage
 from .models import VacanciesHeadCount
 from .models import PayModelCosts
@@ -19,7 +16,7 @@ from .models import PayCostHeadCount
 from .models import AdminPayModel
 from .models import GiftsAndHospitality
 from .models import HotelAndTravel
-from .models import SubSegments
+from .models import SegmentGrandParent, SegmentParent, Segment, SubSegment, EstimateRow
 from .models import SubSegmentUKTIMapping
 
 from django.utils.encoding import smart_str
@@ -237,8 +234,8 @@ admin.site.register(Analysis2)
 admin.site.register(NaturalCode)
 admin.site.register(Programme)
 admin.site.register(ADIReport)
-admin.site.register(Budgets)
-admin.site.register(Grades)
+admin.site.register(Budget)
+admin.site.register(Grade)
 admin.site.register(SalaryMonthlyAverage)
 admin.site.register(VacanciesHeadCount)
 admin.site.register(PayModelCosts)
@@ -247,8 +244,15 @@ admin.site.register(PayCostHeadCount)
 admin.site.register(AdminPayModel)
 admin.site.register(GiftsAndHospitality)
 admin.site.register(HotelAndTravel)
-admin.site.register(SubSegments)
+admin.site.register(Segment)
+admin.site.register(SegmentGrandParent)
+admin.site.register(SegmentParent)
+admin.site.register(SubSegment)
+admin.site.register(EstimateRow)
+admin.site.register(L1Account)
+admin.site.register(L2Account)
+admin.site.register(L3Account)
+admin.site.register(L4Account)
+admin.site.register(L5Account)
 admin.site.register(SubSegmentUKTIMapping)
 
-
-#

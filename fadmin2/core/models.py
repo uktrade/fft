@@ -1,9 +1,7 @@
 from django.db import models
-
+from .utils import ChoiceEnum
 
 # Remember all fields should be null = true
-
-
 
 
 # Cost Centre hierarchy
@@ -50,31 +48,124 @@ class Analysis2(models.Model):
         return self.Analysis2Code
 
 
-class NaturalCode(models.Model):
-    NaturalAccountCode = models.IntegerField(primary_key=True)
-    NaturalAccountDescription = models.CharField(max_length=200)
-    ProgrammeL2 = models.CharField(max_length=200)
-    CashNonCash = models.CharField(max_length=100)
-    BudgetCategory = models.CharField(max_length=100)
-    L5Code = models.CharField(max_length=20)
-    L5Name = models.CharField(max_length=200)
-    BudgetReportLine = models.CharField(max_length=200)
-    L1Code = models.CharField(max_length=20)
-    L1Name = models.CharField(max_length=200)
-    Level1 = models.CharField(max_length=255)
-    Level2 = models.CharField(max_length=255)
-    Level3 = models.CharField(max_length=255)
+# Account codes from Treasury
+# the following table could be normalised more, but I don't think it matters
+class L1Account(models.Model):
+    AccountL1Code = models.BigIntegerField(primary_key=True, verbose_name='account l1 code')
+    AccountL1LongName = models.CharField(max_length=255, verbose_name='account l1 long name')
+    AccountsCode = models.CharField(max_length=255,  verbose_name='accounts code')
+    AccountL0Code = models.CharField(max_length=255, verbose_name='account l0 code')
+
+    class Meta:
+        verbose_name= 'Treasury Level 1 COA'
 
     def __str__(self):
-        return self.NaturalAccountCode
+        return str(self.AccountL1Code)
+
+
+class L2Account(models.Model):
+    AccountL2Code = models.BigIntegerField(primary_key=True, verbose_name='account l2 code')
+    AccountL2LongName = models.CharField(max_length=255, verbose_name='account l2 long name', blank=True, null=True)
+    AccountL1Code = models.ForeignKey(L1Account, verbose_name='account l1 code', on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name= 'Treasury Level 2 COA'
+
+    def __str__(self):
+        return str(self.AccountL2Code)
+
+
+class L3Account(models.Model):
+    AccountL3Code = models.BigIntegerField(verbose_name='account l3 code', primary_key=True)
+    AccountL3LongName = models.CharField(max_length=255, verbose_name='account l3 long name')
+    AccountL2Code = models.ForeignKey(L2Account, verbose_name='account l2 code', on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name= 'Treasury Level 3 COA'
+
+    def __str__(self):
+        return str(self.AccountL3Code)
+
+
+class L4Account(models.Model):
+    AccountL4Code = models.BigIntegerField(verbose_name='account l4 code', primary_key=True)
+    AccountL4LongName = models.CharField(max_length=255, verbose_name='account l4 long name')
+    AccountL3Code = models.ForeignKey(L3Account, verbose_name='account l3 code',on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name= 'Treasury Level 4 COA'
+
+    def __str__(self):
+        return str(self.AccountL4Code)
+
+
+class L5Account(models.Model):
+    BOTH = 'BOTH'
+    OUTTURN = 'OUTTURN'
+    PLANS = 'PLANS'
+    USAGECODE_CHOICES = (
+        (BOTH, 'BOTH'),
+        (OUTTURN, 'OUTTURN'),
+        (PLANS, 'PLANS'),
+    )
+    GROSS = 'GROSS'
+    INCOME = 'INCOME'
+    UNDEF = 'N/A'
+    ESTIMATECODE_CHOICES = (
+        (GROSS, 'GROSS'),
+        (INCOME, 'INCOME'),
+        (UNDEF, 'N/A'),
+    )
+    AccountL5Code = models.BigIntegerField(primary_key=True,verbose_name='account l5 code')
+    AccountL5LongName = models.CharField(max_length=255, verbose_name='account l5 long name')
+    AccountL5Description = models.CharField(max_length=2048, verbose_name='account l5 description')
+    AccountL4Code = models.ForeignKey(L4Account, verbose_name='account l4 code',on_delete=models.PROTECT)
+    EconomicBudgetCode = models.CharField(max_length=255, verbose_name='economic budget code')
+    SectorCode = models.CharField(max_length=255, verbose_name='sector code')
+    EstimatesColumnCode = models.CharField(max_length=25, choices=ESTIMATECODE_CHOICES, default=UNDEF, verbose_name='estimates column code')
+    UsageCode = models.CharField(max_length=25, choices=USAGECODE_CHOICES, default=BOTH, verbose_name='usage code')
+    CashIndicatorCode = models.CharField(max_length=5, verbose_name='cash indicator code')
+
+    class Meta:
+        verbose_name= 'Treasury Level 5 COA'
+
+    def __str__(self):
+        return str(self.AccountL5Code)
+
+
+class NACDashboardGrouping(models.Model):
+    GroupingDescription = models.CharField(max_length=255, verbose_name='Description')
+
+    def __str__(self):
+        return str(self.GroupingDescription)
+
+
+# define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
+class NaturalCode(models.Model):
+    CAPITAL = 'Capital'
+    STAFF = 'Staff'
+    NONSTAFF = 'NonStaff'
+    OTHER = 'Other'
+    CATEGORY_CHOICES = (
+        (CAPITAL, 'Capital'),
+        (STAFF, 'Staff Cost'),
+        (NONSTAFF, 'Non Staff Cost'),
+        (OTHER, 'Other'),
+    )
+    NaturalAccountCode = models.IntegerField(primary_key=True)
+    NaturalAccountDescription = models.CharField(max_length=200)
+    CategoryDIT = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default=OTHER, blank=True, null=True)
+    AccountL5Code = models.ForeignKey(L5Account,on_delete=models.PROTECT)
+    AccountGrouping = models.ForeignKey(NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.NaturalAccountCode)
 
 
 class Programme(models.Model):
-    ProgrammeCode = models.CharField(primary_key=True, max_length=50)
-    ProgrammeDescription = models.CharField(max_length=100)
-    Level1 = models.CharField(max_length=100)
-    Level2 = models.CharField(max_length=255)
-    Level3 = models.CharField(max_length=255)
+    ProgrammeCode = models.CharField('Programme Code', primary_key=True, max_length=50)
+    ProgrammeDescription = models.CharField('Description', max_length=100)
+    BudgetType = models.CharField('Budget Type', max_length=100)
 
     def __str__(self):
        return self.ProgrammeCode
@@ -83,6 +174,7 @@ class Programme(models.Model):
 # The ADIReport contains the forecast and the actuals
 # The current month defines what is Actual and what is Forecast
 class ADIReport(models.Model):
+
     Year = models.IntegerField()
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
     CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
@@ -111,11 +203,14 @@ class ADIReport(models.Model):
     DateUpdated = models.DateTimeField(blank=True)
     UpdateBy = models.CharField(max_length=100, blank=True)
 
+    class Meta:
+        unique_together=('Year', 'Programme', 'CCCode', 'NaturalAccountCode','Analysis1Code','Analysis2Code')
+
     def __str__(self):
         return self.CCCode
 
 
-class Budgets(models.Model):
+class Budget(models.Model):
     Year = models.IntegerField()
     CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
@@ -133,10 +228,7 @@ class Budgets(models.Model):
 
 
 # Treasury data
-
-
-
-class SegmentGrandParents(models.Model):
+class SegmentGrandParent(models.Model):
     SegmentGrandParentCode = models.CharField(max_length=8, primary_key=True, verbose_name='segment grand parent code')
     SegmentGrandParentLongName = models.CharField(max_length=255, verbose_name='segment grand parent long name')
 
@@ -144,25 +236,25 @@ class SegmentGrandParents(models.Model):
         return self.SegmentGrandParentCode
 
 
-class SegmentParents(models.Model):
+class SegmentParent(models.Model):
     SegmentParentCode = models.CharField(max_length=8, primary_key=True,  verbose_name='segment parent code')
     SegmentParentLongName = models.CharField(max_length=255, verbose_name='segment parent long name')
-    SegmentGrandParentCode = models.ForeignKey(SegmentGrandParents, on_delete=models.PROTECT)
+    SegmentGrandParentCode = models.ForeignKey(SegmentGrandParent, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.SegmentParentCode
 
 
-class Segments(models.Model):
+class Segment(models.Model):
     SegmentCode = models.CharField(max_length=8, primary_key=True, verbose_name='segment code')
     SegmentLongName = models.CharField(max_length=255, verbose_name='segment long name')
-    SegmentParentCode = models.ForeignKey(SegmentParents, on_delete=models.PROTECT)
+    SegmentParentCode = models.ForeignKey(SegmentParent, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.SegmentCode
 
 
-class EstimateRows(models.Model):
+class EstimateRow(models.Model):
     EstimatesRowCode = models.CharField(max_length=8, primary_key=True, verbose_name='estimates row code')
     EstimatesRowLongName = models.CharField(max_length=255, verbose_name='estimates row long name')
 
@@ -170,109 +262,77 @@ class EstimateRows(models.Model):
         return self.EstimatesRowCode
 
 
-class SubSegments(models.Model):
+class SubSegment(models.Model):
+    VOTED = 'VT'
+    NON_VOTED = 'NVT'
+    UNDEF = 'N/A'
+    CONTROL_ACCOUNTING_AUTH_CHOICES = (
+        (VOTED, 'VOTED'),
+        (NON_VOTED, (
+            ('NON - VOTED_DEPT','NON - VOTED_DEPT'),
+            ('NON-VOTED_CFER','NON-VOTED_CFER'),
+            ('NON-VOTED_CF','NON-VOTED_CF'),
+            ('NON-VOTED_PC','NON-VOTED_PC'),
+            ('NON-VOTED_NIF', 'NON-VOTED_NIF'),
+            ('NON-VOTED_NLF','NON-VOTED_NLF'),
+            ('NON-VOTED_CEX','NON-VOTED_CEX'),
+            ('NON-VOTED_SF','NON-VOTED_SF'),
+            ('NON-VOTED_LG','NON-VOTED_LG'),
+            ('NON-VOTED_DA','NON-VOTED_DA'),
+         )
+         ),
+        (UNDEF, UNDEF),
+    )
+
+    DEL = 'DEL'
+    AME = 'AME'
+    NB = 'NON-BUDGET'
+    DELADM = 'DEL ADMIN'
+    DELPROG= 'DEL PROG'
+    AMEDEPT = 'DEPT AME'
+    AMENODEPT = 'NON-DEPT AME'
+    CONTROL_BUDGET_CHOICES = {
+        (DEL, (
+                (DELADM, 'DEL ADMIN'),
+                (DELPROG, 'DEL PROG'),
+              )
+        ),
+        (AME, (
+                (AMEDEPT, 'DEPT AME'),
+                (AMENODEPT, 'NON-DEPT AME'),
+              )
+        ),
+        (NB, NB),
+
+    }
     SubSegmentCode = models.CharField(max_length=8, primary_key=True, verbose_name='sub segment code')
     SubSegmentLongName = models.CharField(max_length=255, verbose_name='sub segment long name')
-    SegmentCode = models.ForeignKey(Segments, on_delete=models.PROTECT)
-    ControlBudgetCode = models.CharField(max_length=50, verbose_name='control budget code')
-    ControlBudgetDetailCode = models.CharField(max_length=50, verbose_name='control budget detail code')
-    EstimatesRowCode = models.ForeignKey(EstimateRows,  on_delete=models.PROTECT)
+    SegmentCode = models.ForeignKey(Segment, on_delete=models.PROTECT)
+    ControlBudgetDetailCode = models.CharField(max_length=50, choices= CONTROL_BUDGET_CHOICES, default=NB, verbose_name='control budget detail code')
+    EstimatesRowCode = models.ForeignKey(EstimateRow,  on_delete=models.PROTECT)
     NetSubheadCode = models.CharField(max_length=255, verbose_name='net subhead code')
     PolicyRingfenceCode = models.CharField(max_length=255, verbose_name='policy ringfence code')
     AccountingAuthorityCode = models.CharField(max_length=255, verbose_name='accounting authority code')
-    AccountingAuthorityDetailCode = models.CharField(max_length=255, verbose_name='accounting authority detail code')
+    AccountingAuthorityDetailCode = models.CharField(max_length=255, choices = CONTROL_ACCOUNTING_AUTH_CHOICES, default=UNDEF, verbose_name='accounting authority detail code')
 
     def __str__(self):
-        return self.SubSegments
+        return self.SubSegmentCode
+
 
 # The sub segment is mapped to the combination of Programme and Cost Centre
 class SubSegmentUKTIMapping(models.Model):
-    SubSegCode = models.ForeignKey(SubSegments, on_delete=models.PROTECT)
+    SubSegCode = models.ForeignKey(SubSegment, on_delete=models.PROTECT)
     CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
 
-
-# Account codes from Treasury
-
-# the following table could be normalised more, but I don't think it matters
-class L1Account(models.Model):
-    AccountsCode = models.CharField(max_length=8, primary_key=True, verbose_name='accounts code')
-    AccountL0Code = models.CharField(max_length=8, verbose_name='account l0 code')
-    AccountL1Code = models.BigIntegerField(verbose_name='account l1 code')
-    AccountL1LongName = models.CharField(max_length=255, verbose_name='account l1 long name')
-
-    def __str__(self):
-        return self.AccountL1Code
-
-
-
-class L2Account(models.Model):
-    AccountL2Code = models.BigIntegerField(primary_key=True, verbose_name='account l2 code')
-    AccountL2LongName = models.CharField(max_length=255, verbose_name='account l2 long name')
-    AccountL1Code = models.ForeignKey(L1Account, verbose_name='account l1 code', on_delete=models.PROTECT)
-
-    def __str__(self):
-        return self.AccountL2Code
-
-
-class L3Accounts(models.Model):
-    AccountL3Code = models.BigIntegerField(verbose_name='account l3 code', primary_key=True)
-    AccountL3LongName = models.CharField(max_length=255, verbose_name='account l3 long name')
-    AccountL2Code = models.ForeignKey(L2Account, verbose_name='account l2 code')
-
-    def __str__(self):
-        return self.AccountL3Code
-
-
-class L4Accounts(models.Model):
-    AccountL4Code = models.BigIntegerField(verbose_name='account l4 code', primary_key=True)
-    AccountL4LongName = models.CharField(max_length=255, verbose_name='account l4 long name')
-    AccountL3Code = models.ForeignKey(L3Accounts, verbose_name='account l3 code')
-
-    def __str__(self):
-        return self.AccountL4Code
-
-
-class L5Accounts(models.Model):
-    AccountL5Code = models.BigIntegerField(verbose_name='account l5 code')
-    AccountL5LongName = models.CharField(max_length=255, verbose_name='account l5 long name')
-    AccountL4Code = models.ForeignKey(L4Accounts, verbose_name='account l4 code')
-    AccountL5Description = models.CharField(max_length=255, verbose_name='account l5 description')
-    EconomicCategoryCode = models.CharField(max_length=255, verbose_name='economic category code')
-    EconomicCategoryLongName = models.CharField(max_length=255, verbose_name='economic category long name')
-    EconomicGroupCode = models.CharField(max_length=255, verbose_name='economic group code')
-    EconomicGroupLongName = models.CharField(max_length=255, verbose_name='economic group long name')
-    EconomicRingfenceCode = models.CharField(max_length=255, verbose_name='economic ringfence code')
-    EconomicRingfenceLongName = models.CharField(max_length=255, verbose_name='economic ringfence long name')
-    EconomicBudgetCode = models.CharField(max_length=255, verbose_name='economic budget code')
-    PESAEconomicGroupCode = models.CharField(max_length=255, verbose_name='pesa economic group code')
-    SectorCode = models.CharField(max_length=255, verbose_name='sector code')
-    TESCode = models.CharField(max_length=255, verbose_name='tes code')
-    ESACode = models.CharField(max_length=255, verbose_name='esa code')
-    ESALongName = models.CharField(max_length=255, verbose_name='esa long name')
-    ESAGroupCode = models.CharField(max_length=255, verbose_name='esa group code')
-    ESAGroupLongName = models.CharField(max_length=255, verbose_name='esa group long name')
-    PSATCode = models.CharField(max_length=255, verbose_name='psat code')
-    PSATLongName = models.CharField(max_length=255, verbose_name='psat long name')
-    NationalAccountsCode = models.CharField(max_length=255, verbose_name='national accounts code')
-    NationalAccountsLongName = models.CharField(max_length=255, verbose_name='national accounts long name')
-    EstimatesSub_CategoryCode = models.CharField(max_length=255, verbose_name='estimates sub-category code')
-    EstimatesCategoryCode = models.CharField(max_length=255, verbose_name='estimates category code')
-    IncomeCategoryCode = models.CharField(max_length=255, verbose_name='income category code')
-    EstimatesColumnCode = models.CharField(max_length=255, verbose_name='estimates column code')
-    UsageCode = models.CharField(max_length=255, verbose_name='usage code')
-    CashIndicatorCode = models.CharField(max_length=255, verbose_name='cash indicator code')
-
-    def __str__(self):
-        return self.AccountL5Code
 
 
 # salaries data
 
 # define a choice field for this
-class Grades(models.Model):
+class Grade(models.Model):
     Grade = models.CharField(primary_key=True, max_length=50)
-
+    Order = models.IntegerField
     def __str__(self):
        return self.Grade
 
@@ -282,7 +342,7 @@ class SalaryMonthlyAverage(models.Model):
     AVERAGETYPE_CHOICES = (('CC', 'CostCentre'),
                            ('DIR','Directorate'),
                            ('DG','DepartmentalGroup'),)
-    Grade = models.ForeignKey(Grades, on_delete=models.PROTECT)
+    Grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     AverageType = models.CharField(max_length=50, choices=AVERAGETYPE_CHOICES)
     AverageBy = models.CharField(max_length=50)
     AverageValue = models.DecimalField(max_digits=18, decimal_places=2)
@@ -294,7 +354,7 @@ class SalaryMonthlyAverage(models.Model):
 # Vacancies
 class VacanciesHeadCount(models.Model):
     SlotCode = models.CharField(max_length=100, primary_key=True)
-    VacancyGrade = models.ForeignKey(Grades, on_delete=models.PROTECT)
+    VacancyGrade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     Year = models.IntegerField()
     CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
@@ -336,7 +396,7 @@ class PayModelCosts(models.Model):
 
 class PayModel(models.Model):
     GroupCode = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
-    Grade = models.ForeignKey(Grades, on_delete=models.PROTECT)
+    Grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     Year = models.IntegerField()
     April = models.DecimalField(max_digits=18, decimal_places=1)
     May = models.DecimalField(max_digits=18, decimal_places=1)
@@ -403,7 +463,7 @@ class GiftsAndHospitality(models.Model):
     SE_No = models.CharField(max_length=50)
     EnteredDateStamp = models.DateTimeField()
     Category = models.CharField(max_length=255)
-    Grade = models.ForeignKey(Grades, on_delete=models.PROTECT)
+    Grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
 
 
 class HotelAndTravel(models.Model):

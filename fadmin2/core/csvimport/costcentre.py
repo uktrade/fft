@@ -13,22 +13,21 @@ COLUMN_KEY = {
                 'CCName': 8}
 
 
-def importcostcentres(path):
-    csvfile = open(path, newline='', encoding='cp1252')  # Windows-1252 or CP-1252, used because of a back quote
+def importcostcentres(csvfile):
     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in csvreader:
         # Create DG Group, Directorate and Cost centre
-        objDG, created = DepartmentalGroup.objects.get_or_create(
+        objDG, created = DepartmentalGroup.objects.update_or_create(
             GroupCode=row[COLUMN_KEY['GroupCode']],
-            GroupName=row[COLUMN_KEY['GroupName']]
+            defaults={'GroupName': row[COLUMN_KEY['GroupName']]},
         )
-        objdir, created = Directorate.objects.get_or_create(
-            GroupCode=objDG,
+        objdir, created = Directorate.objects.update_or_create(
             DirectorateCode=row[COLUMN_KEY['DirectorateCode']],
-            DirectorateName=row[COLUMN_KEY['DirectorateName']]
+            defaults={'GroupCode': objDG,
+                       'DirectorateName':row[COLUMN_KEY['DirectorateName']]},
         )
-        obj, created = CostCentre.objects.get_or_create(
+        obj, created = CostCentre.objects.update_or_create(
             CCCode=row[COLUMN_KEY['CCCode']],
-            CCName=row[COLUMN_KEY['CCName']],
-            Directorate=objdir
+            defaults={CostCentre.CCName.field_name: row[COLUMN_KEY['CCName']],
+                      CostCentre.Directorate.field.name: objdir},
         )
