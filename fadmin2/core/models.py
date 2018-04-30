@@ -3,6 +3,13 @@ from .utils import ChoiceEnum
 
 # Remember all fields should be null = true
 
+class TimeStampedModel(models.Model):
+    """ An abstract base class model that provide self-updating 'created' and 'modified' field"""
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
 
 # Cost Centre hierarchy
 class DepartmentalGroup(models.Model):
@@ -157,6 +164,9 @@ class NaturalCode(models.Model):
     CategoryDIT = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default=OTHER, blank=True, null=True)
     AccountL5Code = models.ForeignKey(L5Account,on_delete=models.PROTECT)
     AccountGrouping = models.ForeignKey(NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True)
+    UsedForBudget = models.BooleanField(default=False)
+    UsedByDIT = models.BooleanField(default=False)
+    LinkedBudgetCode = models.ForeignKey('self', on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return str(self.NaturalAccountCode)
@@ -485,5 +495,8 @@ class HotelAndTravel(models.Model):
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
     NaturalAccountCode = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
 
+
+class EventLog(models.Model):
+    EventType = models.CharField(max_length=500)
 
 

@@ -2,6 +2,8 @@ from core.models import CostCentre, DepartmentalGroup, Directorate
 
 import csv
 
+from core.myutils import csvheadertodict, addposition, readcsvfromdict
+
 # define the column position in the csv file.
 
 COLUMN_KEY = {
@@ -31,3 +33,35 @@ def importcostcentres(csvfile):
             defaults={CostCentre.CCName.field_name: row[COLUMN_KEY['CCName']],
                       CostCentre.Directorate.field.name: objdir},
         )
+
+
+GROUP_KEY = {'model': DepartmentalGroup,
+             'PK': DepartmentalGroup.GroupCode,
+             DepartmentalGroup.GroupCode.field_name: 'GroupCode',
+             DepartmentalGroup.GroupName.field_name: 'GroupName'}
+
+
+DIR_KEY = {'model': Directorate,
+           'PK': Directorate.DirectorateCode,
+           Directorate.DirectorateCode.field_name: 'DirectorateCode',
+           Directorate.DirectorateName.field_name: 'DirectorateDescription',
+           Directorate.GroupCode.field.name: GROUP_KEY}
+
+CC_KEY = {'model': CostCentre,
+          'PK': CostCentre.CCCode,
+           CostCentre.CCCode.field_name: 'CCCode',
+           CostCentre.CCName.field_name: 'CCDescription',
+           CostCentre.Directorate.field.name: DIR_KEY}
+
+
+def import_cc(csvfile):
+    # has_header = csv.Sniffer().has_header(csvfile.read(1024))
+    # csvfile.seek(0)  # Rewind.
+    reader = csv.reader(csvfile)
+    line = 1
+    l = csvheadertodict(next(reader))
+#    print(l)
+    d = addposition(CC_KEY, l)
+
+    for row in reader:
+        readcsvfromdict(d, row)

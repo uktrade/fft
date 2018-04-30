@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from core.csvimport.costcentre import importcostcentres
+from core.csvimport.costcentre import importcostcentres, import_cc
 from core.csvimport.treasurysegment import import_treasury_segments
 from core.csvimport.programme import import_programme
 from core.csvimport.treasuryCOA import import_treasury_COA
@@ -13,6 +13,7 @@ IMPORT_TYPE = {
     'COAs': import_treasury_COA,
     'Programmes': import_programme,
     'NAC':import_NAC,
+    'CCH':import_cc
 }
 
 class Command(BaseCommand):

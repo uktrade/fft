@@ -11,3 +11,38 @@ def financialyear():
         currentyear = currentyear - 1 # before April, the financial year it is one year behind
     return currentyear
 
+
+def csvheadertodict(row):
+    d = {k: v for v, k in enumerate(row)}  # build the dict from the header row
+    return d
+
+
+def addposition(d, h):
+    c = {}
+    for k,v in d.items():
+        if type(v) is dict:
+            c[k] = addposition(v, h)
+        else:
+            if v in h:
+                c[k] = h[v]
+            else:
+                c[k] = v
+    return c
+
+
+def readcsvfromdict(d, row):
+    m= d['model']
+    pk1= d['PK']
+    pkname=pk1.field_name
+    exc = ['model', 'PK', pkname]
+    defaultList = {}
+    for k, v in d.items():
+        if k not in exc:
+            if type(v) is dict:
+                defaultList[k] = readcsvfromdict(v, row)
+            else:
+                defaultList[k] = row[v]
+    obj, created = m.objects.get_or_create(pk=row[d[pkname]],
+                                   defaults =defaultList)
+    return obj
+
