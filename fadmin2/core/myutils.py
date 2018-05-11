@@ -1,6 +1,7 @@
 # Collection of useful functions
 
 import datetime
+import csv
 
 # Return the financial year for the current date
 # The UK financial year starts in April, so Jan, Feb and Mar are part of the previous year
@@ -42,7 +43,19 @@ def readcsvfromdict(d, row):
                 defaultList[k] = readcsvfromdict(v, row)
             else:
                 defaultList[k] = row[v]
-    obj, created = m.objects.get_or_create(pk=row[d[pkname]],
+    obj, created = m.objects.update_or_create(pk=row[d[pkname]],
                                    defaults =defaultList)
     return obj
 
+
+def import_obj(csvfile, obj_key):
+    # has_header = csv.Sniffer().has_header(csvfile.read(1024))
+    # csvfile.seek(0)  # Rewind.
+    reader = csv.reader(csvfile)
+    line = 1
+    l = csvheadertodict(next(reader))
+#    print(l)
+    d = addposition(obj_key, l)
+
+    for row in reader:
+        readcsvfromdict(d, row)

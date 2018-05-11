@@ -1,39 +1,36 @@
 from core.models import CostCentre, DepartmentalGroup, Directorate
-
-import csv
-
-from core.myutils import csvheadertodict, addposition, readcsvfromdict
+from core.myutils import import_obj
 
 # define the column position in the csv file.
 
-COLUMN_KEY = {
-                'GroupCode': 3,
-                'GroupName': 4,
-                'DirectorateCode': 5,
-                'DirectorateName': 6,
-                'CCCode': 7,
-                'CCName': 8}
-
-
-def importcostcentres(csvfile):
-    csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-    for row in csvreader:
-        # Create DG Group, Directorate and Cost centre
-        objDG, created = DepartmentalGroup.objects.update_or_create(
-            GroupCode=row[COLUMN_KEY['GroupCode']],
-            defaults={'GroupName': row[COLUMN_KEY['GroupName']]},
-        )
-        objdir, created = Directorate.objects.update_or_create(
-            DirectorateCode=row[COLUMN_KEY['DirectorateCode']],
-            defaults={'GroupCode': objDG,
-                       'DirectorateName':row[COLUMN_KEY['DirectorateName']]},
-        )
-        obj, created = CostCentre.objects.update_or_create(
-            CCCode=row[COLUMN_KEY['CCCode']],
-            defaults={CostCentre.CCName.field_name: row[COLUMN_KEY['CCName']],
-                      CostCentre.Directorate.field.name: objdir},
-        )
-
+# COLUMN_KEY = {
+#                 'GroupCode': 3,
+#                 'GroupName': 4,
+#                 'DirectorateCode': 5,
+#                 'DirectorateName': 6,
+#                 'CCCode': 7,
+#                 'CCName': 8}
+#
+#
+# def importcostcentres(csvfile):
+#     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+#     for row in csvreader:
+#         # Create DG Group, Directorate and Cost centre
+#         objDG, created = DepartmentalGroup.objects.update_or_create(
+#             GroupCode=row[COLUMN_KEY['GroupCode']],
+#             defaults={'GroupName': row[COLUMN_KEY['GroupName']]},
+#         )
+#         objdir, created = Directorate.objects.update_or_create(
+#             DirectorateCode=row[COLUMN_KEY['DirectorateCode']],
+#             defaults={'GroupCode': objDG,
+#                        'DirectorateName':row[COLUMN_KEY['DirectorateName']]},
+#         )
+#         obj, created = CostCentre.objects.update_or_create(
+#             CCCode=row[COLUMN_KEY['CCCode']],
+#             defaults={CostCentre.CCName.field_name: row[COLUMN_KEY['CCName']],
+#                       CostCentre.Directorate.field.name: objdir},
+#         )
+#
 
 GROUP_KEY = {'model': DepartmentalGroup,
              'PK': DepartmentalGroup.GroupCode,
@@ -55,13 +52,4 @@ CC_KEY = {'model': CostCentre,
 
 
 def import_cc(csvfile):
-    # has_header = csv.Sniffer().has_header(csvfile.read(1024))
-    # csvfile.seek(0)  # Rewind.
-    reader = csv.reader(csvfile)
-    line = 1
-    l = csvheadertodict(next(reader))
-#    print(l)
-    d = addposition(CC_KEY, l)
-
-    for row in reader:
-        readcsvfromdict(d, row)
+    import_obj(csvfile, CC_KEY)

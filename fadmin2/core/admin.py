@@ -2,11 +2,10 @@ from django.contrib import admin
 from django.http import HttpResponse
 import csv
 
-from .models import DepartmentalGroup, Directorate, CostCentre
+from .models import TimeStampedModel, DepartmentalGroup, Directorate, CostCentre
 from .models import Analysis1, Analysis2, NaturalCode, Programme
 from .models import L1Account, L2Account, L3Account, L4Account, L5Account
 from .models import ADIReport
-from .models import Budget
 from .models import Grade
 from .models import SalaryMonthlyAverage
 from .models import VacanciesHeadCount
@@ -210,8 +209,8 @@ class CostCentreAdmin(admin.ModelAdmin):
 
     search_fields = ['CCCode']
     list_filter = ['Directorate__DirectorateName','Directorate__GroupCode__GroupName']
-    readonly_fields = ['CCCode'] # don't allow to edit the code
-    fields = ['CCCode', 'CCName', 'Directorate']  # required to display the read only field at the top
+    readonly_fields = ['CCCode', 'created', 'updated'] # don't allow to edit the code
+    fields = ['CCCode', 'CCName', 'Directorate', 'created', 'updated']  # required to display the read only field at the top
     actions = [export_cc1_csv, export_cc_xlsx] # new action to export to csv and xlsx
 
 
@@ -234,7 +233,6 @@ admin.site.register(Analysis2)
 admin.site.register(NaturalCode)
 admin.site.register(Programme)
 admin.site.register(ADIReport)
-admin.site.register(Budget)
 admin.site.register(Grade)
 admin.site.register(SalaryMonthlyAverage)
 admin.site.register(VacanciesHeadCount)

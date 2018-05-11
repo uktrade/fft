@@ -1,26 +1,26 @@
 from django.db import models
 from .utils import ChoiceEnum
+from django.utils import timezone
 
-# Remember all fields should be null = true
-
+# TODO some fields should be null = true
 class TimeStampedModel(models.Model):
     """ An abstract base class model that provide self-updating 'created' and 'modified' field"""
     created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
 
+
 # Cost Centre hierarchy
-class DepartmentalGroup(models.Model):
+class DepartmentalGroup(TimeStampedModel):
     GroupCode = models.CharField(primary_key=True, max_length=10)
     GroupName = models.CharField(max_length=300)
-
     def __str__(self):
         return self.GroupCode + ' - ' + self.GroupName
 
 
-class Directorate(models.Model):
+class Directorate(TimeStampedModel):
     DirectorateCode = models.CharField(primary_key=True, max_length=10)
     DirectorateName = models.CharField(max_length=300)
     GroupCode = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
@@ -29,22 +29,22 @@ class Directorate(models.Model):
         return self.DirectorateCode + ' - ' + self.DirectorateName
 
 
-class CostCentre(models.Model):
+class CostCentre(TimeStampedModel):
     CCCode = models.CharField('cost centre', primary_key=True, max_length=10)
     CCName = models.CharField('description', max_length=300)
     Directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.CCCode
+        return self.CCCode + ' - ' + self.CCName
 
 
 # Other members of Account Codes
-class Analysis1(models.Model):
+class Analysis1(TimeStampedModel):
     Analysis1Code = models.CharField(primary_key=True, max_length=50)
     Analysis1Description = models.CharField(max_length=300)
 
     def __str__(self):
-       return self.Analysis1Code
+       return self.Analysis1Code + ' - ' + self.Analysis1Description
 
 
 class Analysis2(models.Model):
@@ -52,7 +52,7 @@ class Analysis2(models.Model):
     Analysis2Description = models.CharField(max_length=300)
 
     def __str__(self):
-        return self.Analysis2Code
+        return self.Analysis2Code + ' - ' + self.Analysis2Description
 
 
 # Account codes from Treasury
@@ -183,58 +183,40 @@ class Programme(models.Model):
 
 # The ADIReport contains the forecast and the actuals
 # The current month defines what is Actual and what is Forecast
-class ADIReport(models.Model):
+class ADIReport(TimeStampedModel):
 
-    Year = models.IntegerField()
+    FinancialYear = models.IntegerField()
     Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
     CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     NaturalAccountCode = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
     Analysis1Code = models.ForeignKey(Analysis1, on_delete=models.PROTECT)
     Analysis2Code = models.ForeignKey(Analysis2, on_delete=models.PROTECT)
-    April = models.DecimalField(max_digits=18, decimal_places=2)
-    May = models.DecimalField(max_digits=18, decimal_places=2)
-    June = models.DecimalField(max_digits=18, decimal_places=2)
-    July = models.DecimalField(max_digits=18, decimal_places=2)
-    August = models.DecimalField(max_digits=18, decimal_places=2)
-    September = models.DecimalField(max_digits=18, decimal_places=2)
-    October = models.DecimalField(max_digits=18, decimal_places=2)
-    November = models.DecimalField(max_digits=18, decimal_places=2)
-    December = models.DecimalField(max_digits=18, decimal_places=2)
-    January = models.DecimalField(max_digits=18, decimal_places=2)
-    February = models.DecimalField(max_digits=18, decimal_places=2)
-    March = models.DecimalField(max_digits=18, decimal_places=2)
-    Adjustment1 = models.DecimalField(max_digits=18, decimal_places=2)
-    Adjustment2 = models.DecimalField(max_digits=18, decimal_places=2)
-    Adjustment3 = models.DecimalField(max_digits=18, decimal_places=2)
-    Narrative = models.CharField(max_length=2000)
-    ADI_Type_FK = models.IntegerField()
-    DateCreated = models.DateTimeField()
-    CreatedBy = models.CharField(max_length=100)
-    DateUpdated = models.DateTimeField(blank=True)
+    OriginalBudget = models.DecimalField(max_digits=18, decimal_places=0, default=0)
+    Budget = models.DecimalField(max_digits=18, decimal_places=0,default=0)
+    April = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    May = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    June = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    July = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    August = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    September = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    October = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    November = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    December = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    January = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    February = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    March = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    Adjustment1 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    Adjustment2 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    Adjustment3 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
+    Narrative = models.CharField(max_length=2000, blank=True)
+    CreatedBy = models.CharField(max_length=100, blank=True)
     UpdateBy = models.CharField(max_length=100, blank=True)
 
     class Meta:
-        unique_together=('Year', 'Programme', 'CCCode', 'NaturalAccountCode','Analysis1Code','Analysis2Code')
+        unique_together=('FinancialYear', 'Programme', 'CCCode', 'NaturalAccountCode','Analysis1Code','Analysis2Code')
 
     def __str__(self):
-        return self.CCCode
-
-
-class Budget(models.Model):
-    Year = models.IntegerField()
-    CCCode = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    Programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
-    NaturalAccountCode = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
-    Analysis1Code = models.ForeignKey(Analysis1, on_delete=models.PROTECT)
-    Analysis2Code = models.ForeignKey(Analysis2, on_delete=models.PROTECT)
-    Budget = models.DecimalField(max_digits=18, decimal_places=2)
-    DateCreated = models.DateTimeField()
-    CreatedBy = models.CharField(max_length=100)
-    DateUpdated = models.DateTimeField(blank=True)
-    UpdateBy = models.CharField(max_length=100, blank=True)
-
-    def __str__(self):
-        return self.CCCode
+        return str(self.FinancialYear)
 
 
 # Treasury data
