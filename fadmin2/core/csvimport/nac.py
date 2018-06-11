@@ -30,7 +30,7 @@ def import_NAC(csvfile):
             try:
                 obj = L5Account.objects.get(AccountL5Code=row[c['OSCAR L5 Mapping']])
                 objNac, created = NaturalCode.objects.update_or_create(
-                    NaturalAccountCode=row[c['L6']],
+                    natural_account_code=row[c['L6']],
                     defaults={'NaturalAccountDescription': row[c['L6_NAME']],
                     'AccountL5Code': obj}
                 )

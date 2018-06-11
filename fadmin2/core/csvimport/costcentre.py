@@ -1,4 +1,4 @@
-from core.models import CostCentre, DepartmentalGroup, Directorate
+from costcentre.models import CostCentre, DepartmentalGroup, Directorate
 from core.myutils import import_obj
 
 # define the column position in the csv file.
@@ -33,22 +33,22 @@ from core.myutils import import_obj
 #
 
 GROUP_KEY = {'model': DepartmentalGroup,
-             'PK': DepartmentalGroup.GroupCode,
-             DepartmentalGroup.GroupCode.field_name: 'GroupCode',
-             DepartmentalGroup.GroupName.field_name: 'GroupName'}
+             'PK': DepartmentalGroup.group_code,
+             DepartmentalGroup.group_code.field_name: 'GroupCode',
+             DepartmentalGroup.group_name.field_name: 'GroupName'}
 
 
 DIR_KEY = {'model': Directorate,
-           'PK': Directorate.DirectorateCode,
-           Directorate.DirectorateCode.field_name: 'DirectorateCode',
-           Directorate.DirectorateName.field_name: 'DirectorateDescription',
-           Directorate.GroupCode.field.name: GROUP_KEY}
+           'PK': Directorate.directorate_name,
+           Directorate.directorate_code.field_name: 'DirectorateCode',
+           Directorate.directorate_name.field_name: 'DirectorateDescription',
+           Directorate.group_code.field.name: GROUP_KEY}
 
 CC_KEY = {'model': CostCentre,
-          'PK': CostCentre.CCCode,
-           CostCentre.CCCode.field_name: 'CCCode',
-           CostCentre.CCName.field_name: 'CCDescription',
-           CostCentre.Directorate.field.name: DIR_KEY}
+          'PK': CostCentre.cost_centre_code,
+           CostCentre.cost_centre_code.field_name: 'CCCode',
+           CostCentre.cost_centre_name.field_name: 'CCDescription',
+           CostCentre.directorate.field.name: DIR_KEY}
 
 
 def import_cc(csvfile):

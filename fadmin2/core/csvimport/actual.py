@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import csv
 
 # define the column position in the csv file.
-# it reflects the position of columns in the Orcle report used to download the actuals
+# it reflects the position of columns in the Oracle report used to download the actuals
 
 COLUMN_KEY = {
             'Entity': 0,
