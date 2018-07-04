@@ -1,10 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Cost Centre List</h1>
+    <table>
+    {% if costcentre_list %}
+
+       <tr>
+           <th>Cost Centre Code</th>
+            <th>Description</th>
+            <th>Directorate</th>
+            <th>Description</th>
+            <th>Department</th>
+            <th>Description</th>
+       </tr>
+
+      {% for costcentre in costcentre_list %}
+       <tr>
+           <td>{{costcentre.cost_centre_code}}</td>
+            <td>{{costcentre.cost_centre_name}}</td>
+            <td>{{costcentre.directorate.directorate_code}}</td>
+            <td>{{costcentre.directorate.directorate_name}}</td>
+            <td>{{costcentre.directorate.group_code.group_code}}</td>
+            <td>{{costcentre.directorate.group_code.group_name}}</td>
+       </tr>
+      {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no Cost Centres defined.</p>
+    {% endif %}       
+{% endblock %}

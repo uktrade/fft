@@ -1,20 +1,23 @@
 from django.core.management.base import BaseCommand, CommandError
-from core.csvimport.costcentre import  import_cc
-from core.csvimport.treasurysegment import import_treasury_segments
-from core.csvimport.programme import import_programme
-from core.csvimport.treasuryCOA import import_treasury_COA
-from core.csvimport.nac import import_NAC
-from core.csvimport.actual import import_actual
-from core.csvimport.analysis import import_Analysis1, import_Analysis2
+
+from costcentre.importcsv import  import_cc
+#from core.csvimport.treasurysegment import import_treasury_segments
+from costcentre.importcsv import import_programme
+#from core.csvimport.treasuryCOA import import_treasury_COA
+#from chartofaccountDIT.importcsv import import_NAC
+#from core.csvimport.actual import import_actual
+from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2
+
+
 
 import csv
 
 IMPORT_TYPE = {
     'CostCentre': import_cc,
-    'Segments' : import_treasury_segments,
-    'COAs': import_treasury_COA,
-    'Programmes': import_programme,
-    'NAC':import_NAC,
+    # 'Segments' : import_treasury_segments,
+    # 'COAs': import_treasury_COA,
+    # 'Programmes': import_programme,
+    # 'NAC':import_NAC,
     'Analysis1': import_Analysis1,
     'Analysis2': import_Analysis2,
 }

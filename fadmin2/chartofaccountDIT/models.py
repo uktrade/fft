@@ -11,6 +11,9 @@ class Analysis1(TimeStampedModel):
     def __str__(self):
        return self.analysis1_code + ' - ' + self.analysis1_description
 
+    class Meta:
+        verbose_name_plural = "Analysis Codes 1"
+
 
 class Analysis2(TimeStampedModel):
     analysis2_code = models.CharField(primary_key=True, max_length=50)
@@ -19,6 +22,8 @@ class Analysis2(TimeStampedModel):
     def __str__(self):
        return self.analysis2_code + ' - ' + self.analysis2_description
 
+    class Meta:
+        verbose_name_plural = "Analysis Codes 2"
 
 
 class NACDashboardGrouping(TimeStampedModel):

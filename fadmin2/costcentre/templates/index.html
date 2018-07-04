@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Cost Centre Hierarchy Home</h1>
+
+
+  <p>The Cost Centre Hierarchy has the following record counts:</p>
+  <ul>
+    <li><strong>Groups:</strong> {{ num_group }}</li>
+    <li><strong>Directorates:</strong> {{ num_directorate }}</li>
+    <li><strong>Cost Centres:</strong> {{ num_costcentre }}</li>
+  </ul>
+
+{% endblock %}

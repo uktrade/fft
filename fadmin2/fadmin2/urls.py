@@ -22,3 +22,8 @@ urlpatterns = [
     path('costcentre/', include('costcentre.urls')),
     path('admin/', admin.site.urls),
 ]
+
+
+admin.site.site_header = "Finance Tool Admin"
+admin.site.site_title = "Finance Tool Admin Portal"
+admin.site.index_title = "Welcome to the Finance Tool Admin Portal"

@@ -1,11 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
 from django.db import models
 from django.http import HttpResponse
 import csv
 from django.http import StreamingHttpResponse
-#from core.utils import SmartExport
+from core.exportutils import SmartExport
 from .models import DepartmentalGroup, Directorate, CostCentre, Programme
 
 import openpyxl
@@ -124,42 +123,42 @@ from openpyxl.utils import get_column_letter
 #     wb.save(response)
 #     return response
 
-# def export_cc_xlsx(modeladmin, request, queryset):
-#
-#     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-#     response['Content-Disposition'] = 'attachment; filename=mymodel.xlsx'
-#     wb = openpyxl.Workbook()
-#     ws = wb.get_active_sheet()
-#     ws.title = "MyModel"
-#
-#     row_num = 0
-#     scv = SmartExport(queryset)
-#
-#     for row in scv.stream():
-#         row_num += 1
-#         for col_num in range(len(row)):
-#             c = ws.cell(row=row_num + 1, column=col_num + 1)
-#             c.value = row[col_num]
-#
-#     wb.save(response)
-#     return response
-#
-#
-# export_cc_xlsx.short_description = u"Export XLSX"
+def export_cc_xlsx(modeladmin, request, queryset):
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=mymodel.xlsx'
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    ws.title = "MyModel"
+
+    row_num = 0
+    scv = SmartExport(queryset)
+
+    for row in scv.stream():
+        row_num += 1
+        for col_num in range(len(row)):
+            c = ws.cell(row=row_num + 1, column=col_num + 1)
+            c.value = row[col_num]
+
+    wb.save(response)
+    return response
+
+
+export_cc_xlsx.short_description = u"Export XLSX"
 
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(admin.ModelAdmin):
-    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_name', 'dg_name')
+    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate', 'group')
 
-    def directorate_name(self, instance): # required to display the filed from a foreign key
-        return instance.directorate.directorate_name
+    def directorate(self, instance): # required to display the filed from a foreign key
+        return instance.directorate.directorate_code + ' - ' +instance.directorate.directorate_name
 
-    def dg_name(self, instance):
-        return instance.directorate.group_code.group_name
+    def group(self, instance):
+        return instance.directorate.group_code.group_code + ' - ' + instance.directorate.group_code.group_name
 
-    directorate_name.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
-    dg_name.admin_order_field = 'directorate__group_code__group_name'  # use __ to define a table field relationship
+    directorate.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
+    group.admin_order_field = 'directorate__group_code__group_name'  # use __ to define a table field relationship
 
     search_fields = ['cost_centre_code']
     list_filter = ['directorate__directorate_name','directorate__group_code__group_name']
@@ -169,10 +168,10 @@ class CostCentreAdmin(admin.ModelAdmin):
 
 
 class DirectorateAdmin(admin.ModelAdmin):
-    list_display = ('directorate_name','dgroup_name')
+    list_display = ('directorate_code','directorate_name', 'dgroup_name')
 
     def dgroup_name(self, instance):
-        return instance.group_code.group_name
+        return instance.group_code.group_code + ' - ' + instance.group_code.group_name
 
     dgroup_name.admin_order_field = 'group_code__group_name' # use __ to define a table field relationship
 
