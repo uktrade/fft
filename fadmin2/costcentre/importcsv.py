@@ -1,5 +1,6 @@
 from .models import CostCentre, DepartmentalGroup, Directorate, Programme
-from core.myutils import import_obj
+from core.myutils import import_obj, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY
+
 
 # define the column position in the csv file.
 
@@ -32,30 +33,31 @@ from core.myutils import import_obj
 #         )
 #
 
-GROUP_KEY = {'model': DepartmentalGroup,
-             DepartmentalGroup.group_code.field_name: 'GroupCode',
-             DepartmentalGroup.group_name.field_name: 'GroupName'}
+GROUP_KEY = {IMPORT_CSV_MODEL_KEY: DepartmentalGroup,
+             IMPORT_CSV_PK_KEY: 'GroupCode',
+             'fieldlist' : {DepartmentalGroup.group_name.field_name: 'GroupName'}}
 
 
-DIR_KEY = {'model': Directorate,
-           Directorate.directorate_code.field_name: 'DirectorateCode',
-           Directorate.directorate_name.field_name: 'DirectorateDescription',
-           Directorate.group_code.field.name: GROUP_KEY}
+DIR_KEY = {IMPORT_CSV_MODEL_KEY: Directorate,
+           IMPORT_CSV_PK_KEY: 'DirectorateCode',
+           IMPORT_CSV_FIELDLIST_KEY: {Directorate.directorate_name.field_name: 'DirectorateDescription',
+                                        Directorate.group_code.field.name: GROUP_KEY}}
 
-CC_KEY = {'model': CostCentre,
-           CostCentre.cost_centre_code.field_name: 'CCCode',
-           CostCentre.cost_centre_name.field_name: 'CCDescription',
-           CostCentre.directorate.field.name: DIR_KEY}
+CC_KEY = {IMPORT_CSV_MODEL_KEY: CostCentre,
+          IMPORT_CSV_PK_KEY: 'CCCode',
+          IMPORT_CSV_FIELDLIST_KEY: {CostCentre.cost_centre_name.field_name: 'CCDescription',
+                                        CostCentre.active.field_name: 'Active',
+                                        CostCentre.directorate.field.name: DIR_KEY}}
 
 
 def import_cc(csvfile):
     import_obj(csvfile, CC_KEY)
 
 
-PROG_KEY = {'model': Programme,
-            Programme.programme_code.field_name: 'Code',
-            Programme.programme_description.field_name: 'Description',
-            Programme.budget_type.field_name: 'Type'}
+PROG_KEY = {IMPORT_CSV_MODEL_KEY: Programme,
+            IMPORT_CSV_PK_KEY: 'Code',
+            IMPORT_CSV_FIELDLIST_KEY: {Programme.programme_description.field_name: 'Description',
+                                        Programme.budget_type.field_name: 'Type'}}
 
 
 def import_programme(csvfile):

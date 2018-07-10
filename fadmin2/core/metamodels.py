@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
-from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -31,30 +31,36 @@ class LogChangeModel(models.Model):
 
     def save(self, *args, **kwargs):
         # check what has changed
+        message = ''
         changed = False
-        for k, v in self._original_values.items():
-            newvalue = getattr(self, k)
-            if newvalue != v:
-                message = message + ' ' + self._meta.get_field(k).verbose_name + ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
-                self._original_values[k] = newvalue
-                changed = True
+        if self._state.adding is True:
+            changed = True
+            flag = ADDITION
+            message = 'Created'
+        else:
+            flag = CHANGE
+            for k, v in self._original_values.items():
+                newvalue = getattr(self, k)
+                if newvalue != v:
+                    message = message + ' ' + self._meta.get_field(k).verbose_name + ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
+                    self._original_values[k] = newvalue
+                    changed = True
         if changed:
             # write to the Admin history log the list of changes
-            message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>' + message
+            message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
             ct = ContentType.objects.get_for_model(self)
             LogEntry.objects.log_action(
                     user_id=1,
                     content_type_id=ct.pk,
                     object_id=self.pk,
                     object_repr=self.__str__(),
-                    action_flag=CHANGE,
+                    action_flag=flag,
                     change_message=message)
         # maybe it should not be saved if nothing has changed, but I need to think about it
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         pass
-
 
     class Meta:
         abstract = True

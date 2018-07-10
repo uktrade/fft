@@ -1,0 +1,24 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h2>Directorate List</h2>
+    <table>
+    {% if departmentalgroup_list %}
+
+       <tr>
+            <th>Group</th>
+            <th>Description</th>
+       </tr>
+
+      {% for group in departmentalgroup_list %}
+       <tr>
+            <td>{{group.group_code}}</td>
+            <td>{{group.group_name}}</td>
+       </tr>
+      {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no Groups defined.</p>
+    {% endif %}
+{% endblock %}

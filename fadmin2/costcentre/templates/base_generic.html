@@ -22,11 +22,13 @@
       <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'costcentres' %}">All Cost Centres</a></li>
-          <li><a href="">All authors</a></li>
+          <li><a href="{% url 'directorates' %}">All Directorates</a></li>
+          <li><a href="{% url 'groups' %}">All Groups</a></li>
       </ul>
      {% endblock %}
       </div>
       <div class="col-sm-10 ">
+          <h1>Admin Tool</h1>
       {% block content %}{% endblock %}
       </div>
     </div>

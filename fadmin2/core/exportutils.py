@@ -1,7 +1,9 @@
 from django.utils.encoding import smart_str
 
 from django.db import models
-
+from django.http import HttpResponse
+import csv
+import openpyxl
 
 class SmartExport:
     # return lists with the header name and the objects from a queryset
@@ -10,7 +12,7 @@ class SmartExport:
         self.data = mydata_qs
         self.model = mydata_qs.model # get the model
         self.model_fields = self.model._meta.fields + self.model._meta.many_to_many
-        # Create CSV headers. Use the verbose name
+        # Create  headers. Use the verbose name
         self.headers = [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]
 
     def get_row(self, obj):
@@ -21,7 +23,6 @@ class SmartExport:
                 if val:
                     val = smart_str(val)
             elif type(field) == models.ManyToManyField:
-                # val = u', '.join([item.__unicode__() for item in getattr(obj, field.name).all()])
                 val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
             elif field.choices:
                 val = getattr(obj, 'get_%s_display'%field.name)()
@@ -36,3 +37,32 @@ class SmartExport:
         for obj in self.data:
             yield self.get_row(obj)
 
+
+
+def export_to_csv(queryset, f):
+    title = queryset.model._meta.verbose_name_plural.title()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=' + title + '.csv'
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+    for row  in f(queryset):
+        writer.writerow(row)
+    return response
+
+
+def export_to_excel(queryset, f):
+    title = queryset.model._meta.verbose_name_plural.title()
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=' + title + '.xlsx'
+    wb = openpyxl.Workbook()
+    ws = wb.get_active_sheet()
+    ws.title = title
+    row_num = 0
+    for row in f(queryset):
+        row_num += 1
+        for col_num in range(len(row)):
+            c = ws.cell(row=row_num + 1, column=col_num + 1)
+            c.value = row[col_num]
+
+    wb.save(response)
+    return response

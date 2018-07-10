@@ -1,0 +1,26 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h2>Directorate List</h2>
+    <table>
+    {% if directorate_list %}
+
+       <tr>
+           <th colspan="2">Department</th>
+           <th colspan="2">Directorate</th>
+        </tr>
+
+      {% for directorate in directorate_list %}
+       <tr>
+            <td>{{directorate.group_code.group_code}}&nbsp-&nbsp</td>
+            <td>{{directorate.group_code.group_name}}</td>
+            <td>{{directorate.directorate_code}}&nbsp-&nbsp </td>
+            <td>{{directorate.directorate_name}}</td>
+       </tr>
+      {% endfor %}
+
+    </table>
+    {% else %}
+      <p>There are no Directorate defined.</p>
+    {% endif %}       
+{% endblock %}

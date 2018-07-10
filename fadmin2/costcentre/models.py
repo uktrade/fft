@@ -2,15 +2,16 @@ from django.db import models
 from core.metamodels import TimeStampedModel, LogChangeModel
 
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
-    group_code = models.CharField('Group', primary_key=True, max_length=10)
+    group_code = models.CharField('Group', primary_key=True, max_length=6)
     group_name = models.CharField('Description', max_length=300)
+
 
     def __str__(self):
         return str(self.group_code) + ' - ' + str(self.group_name)
 
 
 class Directorate(TimeStampedModel, LogChangeModel):
-    directorate_code = models.CharField('Directorate', primary_key=True, max_length=10)
+    directorate_code = models.CharField('Directorate', primary_key=True, max_length=6)
     directorate_name = models.CharField('Description', max_length=300)
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
 
@@ -19,10 +20,10 @@ class Directorate(TimeStampedModel, LogChangeModel):
 
 
 class CostCentre(TimeStampedModel, LogChangeModel):
-    cost_centre_code = models.CharField('Cost centre', primary_key=True, max_length=10)
+    cost_centre_code = models.CharField('Cost centre', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Description', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
-
+    active = models.BooleanField(default=True)
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)
 

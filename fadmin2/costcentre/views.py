@@ -24,3 +24,15 @@ def index(request):
 class CostcentreListView(generic.ListView):
     model = CostCentre
 
+
+class DirectorateListView(generic.ListView):
+    # see if there is an argument groupcode
+    # Directorate.objects.filter(group_code__group_code='1091HT')
+    model = Directorate
+    ordering = ['group_code']
+
+
+
+class DepartmentalGroupListView(generic.ListView):
+    model = DepartmentalGroup
+
