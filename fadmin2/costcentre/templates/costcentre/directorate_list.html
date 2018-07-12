@@ -2,6 +2,14 @@
 
 {% block content %}
     <h2>Directorate List</h2>
+
+    <p> request.path  = {{ request.path }}</p>
+    <p> request.get_full_path  = {{ request.get_full_path }}</p>
+    <p> request.build_absolute_uri  =  {{ request.build_absolute_uri }}   </p>
+    <p> template_name  =  {{ template_name }}   </p>
+    <p> group  =  {{ group }}   </p>
+
+
     <table>
     {% if directorate_list %}
 
@@ -12,8 +20,8 @@
 
       {% for directorate in directorate_list %}
        <tr>
-            <td>{{directorate.group_code.group_code}}&nbsp-&nbsp</td>
-            <td>{{directorate.group_code.group_name}}</td>
+            <td>{{directorate.group.group_code}}&nbsp-&nbsp</td>
+            <td>{{directorate.group.group_name}}</td>
             <td>{{directorate.directorate_code}}&nbsp-&nbsp </td>
             <td>{{directorate.directorate_name}}</td>
        </tr>

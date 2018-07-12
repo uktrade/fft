@@ -42,6 +42,8 @@ class ADIReport(TimeStampedModel):
         return str(self.FinancialYear)
 
 
+
+# table for
 # The sub segment is mapped to the combination of Programme and Cost Centre
 class SubSegmentUKTIMapping(models.Model):
     sub_segment_code = models.ForeignKey(SubSegment, on_delete=models.PROTECT)

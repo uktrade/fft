@@ -17,8 +17,8 @@ def _export_cc_iterator(queryset):
             obj.active,
             obj.directorate.directorate_code,
             obj.directorate.directorate_name,
-            obj.directorate.group_code.group_code,
-            obj.directorate.group_code.group_name]
+            obj.directorate.group.group_code,
+            obj.directorate.group.group_name]
 
 
 def export_cc_xlsx(modeladmin, request, queryset):
@@ -57,16 +57,6 @@ def make_cc_active(modeladmin, request, queryset):
     q.update(active=True) # should I do it before or after writing to ther log?
 
 
-# user_id = 1,
-# content_type_id = ct.pk,
-# object_id = self.pk,
-# object_repr = self.__str__(),
-# action_flag = flag,
-# change_message = message)
-
-
-
-
 export_cc_xlsx.short_description = u"Export to XLSX"
 export_cc_csv.short_description = u"Export to csv"
 make_cc_inactive.short_description = u"Lock the selected Cost Centres"
@@ -80,7 +70,7 @@ class CostCentreAdmin(admin.ModelAdmin):
         return instance.directorate.directorate_code + ' - ' +instance.directorate.directorate_name
 
     def group(self, instance):
-        return instance.directorate.group_code.group_code + ' - ' + instance.directorate.group_code.group_name
+        return instance.directorate.group.group_code + ' - ' + instance.directorate.group.group_name
 
     # different fields visible if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
@@ -97,10 +87,10 @@ class CostCentreAdmin(admin.ModelAdmin):
             return ['cost_centre_code', 'cost_centre_name', 'directorate', 'active']
 
     directorate.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
-    group.admin_order_field = 'directorate__group_code__group_name'  # use __ to define a table field relationship
+    group.admin_order_field = 'directorate__group__group_name'  # use __ to define a table field relationship
 
     search_fields = ['cost_centre_code']
-    list_filter = ['active','directorate__directorate_name','directorate__group_code__group_name']
+    list_filter = ['active','directorate__directorate_name','directorate__group__group_name']
     actions = [export_cc_csv, export_cc_xlsx, make_cc_inactive,make_cc_active] # new action to export to csv and xlsx
 
 
@@ -108,9 +98,9 @@ class DirectorateAdmin(admin.ModelAdmin):
     list_display = ('directorate_code','directorate_name', 'dgroup_name')
 
     def dgroup_name(self, instance):
-        return instance.group_code.group_code + ' - ' + instance.group_code.group_name
+        return instance.group.group_code + ' - ' + instance.group.group_name
 
-    dgroup_name.admin_order_field = 'group_code__group_name' # use __ to define a table field relationship
+    dgroup_name.admin_order_field = 'group__group_name' # use __ to define a table field relationship
 
 
 admin.site.register(CostCentre, CostCentreAdmin)

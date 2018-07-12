@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'treasuryCOA.apps.TreasuryCOAConfig',
     'treasurySS.apps.TreasurySSConfig',
     'core.apps.CoreConfig',
+    'django_tables2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

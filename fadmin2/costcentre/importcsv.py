@@ -41,7 +41,7 @@ GROUP_KEY = {IMPORT_CSV_MODEL_KEY: DepartmentalGroup,
 DIR_KEY = {IMPORT_CSV_MODEL_KEY: Directorate,
            IMPORT_CSV_PK_KEY: 'DirectorateCode',
            IMPORT_CSV_FIELDLIST_KEY: {Directorate.directorate_name.field_name: 'DirectorateDescription',
-                                        Directorate.group_code.field.name: GROUP_KEY}}
+                                        Directorate.group.field.name: GROUP_KEY}}
 
 CC_KEY = {IMPORT_CSV_MODEL_KEY: CostCentre,
           IMPORT_CSV_PK_KEY: 'CCCode',

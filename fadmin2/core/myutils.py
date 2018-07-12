@@ -1,4 +1,5 @@
-# Collection of useful functions
+# Collection of useful functions and classes
+from django.contrib import admin
 
 import datetime
 import csv
@@ -33,6 +34,7 @@ def csvheadertodict(row):
     return d
 
 #it substitute the header title with the column number in the dictionary passed to describe the imported model
+# TODO  gives error if something not found. It means we are reading the wrong file
 def addposition(d, h):
     c = {}
     for k,v in d.items():
@@ -72,10 +74,34 @@ def readcsvfromdict(d, row):
 def import_obj(csvfile, obj_key):
     reader = csv.reader(csvfile)
     l = csvheadertodict(next(reader))
+    row_number = 1
     d = addposition(obj_key, l)
     for row in reader:
+        row_number = row_number + 1
         readcsvfromdict(d, row)
 
 
+
+
+class AdminreadOnly(admin.ModelAdmin):
+
+    # different fields visible if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
+        return self.readonly_fields
+
+    # Don't allow delete
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 

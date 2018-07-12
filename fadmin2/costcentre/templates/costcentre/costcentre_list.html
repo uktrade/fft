@@ -20,13 +20,13 @@
             <td>{{costcentre.cost_centre_name}}</td>
             <td>{{costcentre.directorate.directorate_code}}</td>
             <td>{{costcentre.directorate.directorate_name}}</td>
-            <td>{{costcentre.directorate.group_code.group_code}}</td>
-            <td>{{costcentre.directorate.group_code.group_name}}</td>
+            <td>{{costcentre.directorate.group.group_code}}</td>
+            <td>{{costcentre.directorate.group.group_name}}</td>
        </tr>
       {% endfor %}
 
     </table>
     {% else %}
       <p>There are no Cost Centres defined.</p>
-    {% endif %}       
+    {% endif %}
 {% endblock %}

@@ -45,7 +45,7 @@ class NACCategory(TimeStampedModel):
 class NaturalCode(models.Model):
     natural_account_code = models.IntegerField(primary_key=True)
     natural_account_code_description = models.CharField(max_length=200)
-    NAC_category = models.ForeignKey(NACCategory,on_delete=models.PROTECT,blank=True, null=True)
+    NAC_category = models.ForeignKey(NACCategory,on_delete=models.PROTECT, blank=True, null=True)
     account_L5_code = models.ForeignKey(L5Account,on_delete=models.PROTECT)
     dashboard_grouping = models.ForeignKey(NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)

@@ -6,8 +6,8 @@ from costcentre.importcsv import import_programme
 #from core.csvimport.treasuryCOA import import_treasury_COA
 #from chartofaccountDIT.importcsv import import_NAC
 #from core.csvimport.actual import import_actual
-from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2
-
+from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC
+from treasuryCOA.importcsv  import import_treasury_COA
 
 
 import csv
@@ -15,7 +15,7 @@ import csv
 IMPORT_TYPE = {
     'CostCentre': import_cc,
     # 'Segments' : import_treasury_segments,
-    # 'COAs': import_treasury_COA,
+    'Treasury_COA': import_treasury_COA,
     # 'Programmes': import_programme,
     # 'NAC':import_NAC,
     'Analysis1': import_Analysis1,
@@ -42,7 +42,7 @@ class Command(BaseCommand):
             print (financialyear)
             monthtoimport = options.get('month')
             print(monthtoimport)
-            import_actual(csvfile, financialyear, monthtoimport)
+            # import_actual(csvfile, financialyear, monthtoimport)
         else:
             IMPORT_TYPE[importtype](csvfile)
         csvfile.close()
