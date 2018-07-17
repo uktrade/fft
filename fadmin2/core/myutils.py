@@ -18,6 +18,7 @@ def financialyear():
 IMPORT_CSV_MODEL_KEY = 'model'
 IMPORT_CSV_PK_KEY = 'pk'
 IMPORT_CSV_FIELDLIST_KEY = 'fieldlist'
+IMPORT_CSV_IS_FK = 'isforeignkey'
 
 # it the csv used for importing, a boolean field may have several different values. This routine converts them to True or False
 
@@ -52,8 +53,25 @@ def addposition(d, h):
 def readcsvfromdict(d, row):
     m = d[IMPORT_CSV_MODEL_KEY]
     pkname = d[IMPORT_CSV_PK_KEY]
-    defaultList = {}
     errormsg = ''
+    if IMPORT_CSV_IS_FK in d:
+        try:
+            obj = m.objects.get(pk=row[pkname].strip())
+        except m.DoesNotExist:
+            msg = row[pkname] +' does not exist'
+            obj = None
+            print (msg)
+        except ValueError:
+            msg = row[pkname] +' wrong type'
+            obj = None
+            print (msg)
+
+        #                 print('error at line %d: L5 code %s does exist' % (line, row[c['OSCAR L5 Mapping']]))
+        #             # except core.models.DoesNotExist:
+        #
+        return obj, errormsg
+
+    defaultList = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
         if type(v) is dict:
             defaultList[k], errormsg = readcsvfromdict(v, row)
@@ -63,12 +81,14 @@ def readcsvfromdict(d, row):
                 defaultList[k] = convert_to_bool_string(row[v].strip())
             else:
                 defaultList[k] = row[v].strip()
-    # todo add a new key 'don't create, to force to give an error if the record does not exist
-    # required for uploading actuals, and check the validity of Cost Centre, etc
-    # use new type of record 'getkey'
-    obj, created = m.objects.update_or_create(pk=row[pkname],
+    try:
+        obj, created = m.objects.update_or_create(pk=row[pkname].strip(),
                                    defaults=defaultList)
+    except ValueError:
+        obj = None
+        msg = 'Valuerror'
     return obj, errormsg
+
 
 
 def import_obj(csvfile, obj_key):
@@ -78,8 +98,18 @@ def import_obj(csvfile, obj_key):
     d = addposition(obj_key, l)
     for row in reader:
         row_number = row_number + 1
-        readcsvfromdict(d, row)
+        obj, msg = readcsvfromdict(d, row)
 
+
+
+
+# used for import of lists needed to populate tables
+def import_list_obj(csvfile, model, fieldname):
+    reader = csv.reader(csvfile)
+    print(fieldname)
+    next(reader) # skip the header
+    for row in reader:
+        obj, created = model.objects.update_or_create(**{fieldname:row[0].strip()})
 
 
 

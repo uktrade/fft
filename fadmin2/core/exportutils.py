@@ -39,6 +39,32 @@ class SmartExport:
 
 
 
+def _generic_table_iterator(queryset):
+    # Buidl the header
+    mymodel = queryset.model  # get the model
+    model_fields = mymodel._meta.fields + mymodel._meta.many_to_many
+    # Create  headers. Use the verbose name
+    headers = [mymodel._meta.get_field(field.name).verbose_name for field in model_fields]
+    yield headers
+
+    for obj in queryset:
+        row = []
+        for field in model_fields:
+            if type(field) == models.ForeignKey:
+                val = getattr(obj, field.name)
+                if val:
+                    val = smart_str(val)
+            elif type(field) == models.ManyToManyField:
+                val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
+            elif field.choices:
+                val = getattr(obj, 'get_%s_display' % field.name)()
+            else:
+                val = smart_str(getattr(obj, field.name))
+            row.append(val.encode("utf-8"))
+        yield row
+
+
+
 def export_to_csv(queryset, f):
     title = queryset.model._meta.verbose_name_plural.title()
     response = HttpResponse(content_type='text/csv')
@@ -49,6 +75,9 @@ def export_to_csv(queryset, f):
         writer.writerow(row)
     return response
 
+
+def generic_export_to_csv(queryset):
+    return(export_to_csv(queryset, _generic_table_iterator))
 
 def export_to_excel(queryset, f):
     title = queryset.model._meta.verbose_name_plural.title()
@@ -66,3 +95,7 @@ def export_to_excel(queryset, f):
 
     wb.save(response)
     return response
+
+
+def generic_export_to_excel(queryset):
+    return(export_to_excel(queryset, _generic_table_iterator))
