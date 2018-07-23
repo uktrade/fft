@@ -18,8 +18,8 @@ def _export_nac_iterator(queryset):
             obj.used_by_DIT,
             obj.account_L5_code,
             obj.account_L5_code.account_l5_long_name,
-            obj.NAC_category.NAC_category_description,
-            obj.dashboard_grouping.grouping_description,
+            obj.NAC_category,
+            obj.dashboard_grouping,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.usage_code]
@@ -42,7 +42,7 @@ class NaturalCodeAdmin(AdminreadOnly):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code'] # don't allow to edit the code
 
     search_fields = ['natural_account_code']
-    list_filter = ['used_by_DIT','NAC_category__NAC_category_description', 'dashboard_grouping__grouping_description']
+    list_filter = ['used_by_DIT','used_for_budget','NAC_category__NAC_category_description', 'dashboard_grouping__grouping_description']
     actions = [export_nac_csv, export_nac_xlsx] # new action to export to csv and xlsx
 
 
@@ -52,7 +52,6 @@ def export_analysis1_csv(modeladmin, request, queryset):
 
 def export_analysis1_xlsx(modeladmin, request, queryset):
     return(generic_export_to_excel(queryset))
-
 
 
 class Analysis1Admin(AdminreadOnly):

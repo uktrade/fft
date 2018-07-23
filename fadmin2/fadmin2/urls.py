@@ -20,6 +20,7 @@ urlpatterns = [
     path('', include('core.urls')), # default to core with no path
     path('core/', include('core.urls')),
     path('costcentre/', include('costcentre.urls')),
+    path('chartofaccountDIT/', include('chartofaccountDIT.urls')),
     path('admin/', admin.site.urls),
 ]
 

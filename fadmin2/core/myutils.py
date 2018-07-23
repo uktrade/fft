@@ -112,7 +112,6 @@ def import_list_obj(csvfile, model, fieldname):
         obj, created = model.objects.update_or_create(**{fieldname:row[0].strip()})
 
 
-
 class AdminreadOnly(admin.ModelAdmin):
 
     # different fields visible if updating or creating the object

@@ -60,6 +60,9 @@ def _generic_table_iterator(queryset):
                 val = getattr(obj, 'get_%s_display' % field.name)()
             else:
                 val = smart_str(getattr(obj, field.name))
+            if val is None:
+                val = ''
+
             row.append(val.encode("utf-8"))
         yield row
 
