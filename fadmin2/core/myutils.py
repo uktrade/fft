@@ -31,7 +31,7 @@ def convert_to_bool_string(s):
 
 # build the dict from the header row
 def csvheadertodict(row):
-    d = {k: v for v, k in enumerate(row)}   # swap key with value in the header row
+    d = {k.strip(): v for v, k in enumerate(row)}   # swap key with value in the header row
     return d
 
 #it substitute the header title with the column number in the dictionary passed to describe the imported model
@@ -54,6 +54,7 @@ def readcsvfromdict(d, row):
     m = d[IMPORT_CSV_MODEL_KEY]
     pkname = d[IMPORT_CSV_PK_KEY]
     errormsg = ''
+    # if we are only reading a foreign key (we don't want to create it!), get the value and return
     if IMPORT_CSV_IS_FK in d:
         try:
             obj = m.objects.get(pk=row[pkname].strip())
@@ -102,8 +103,7 @@ def import_obj(csvfile, obj_key):
 
 
 
-
-# used for import of lists needed to populate tables
+# used for import of lists needed to populate tables, when the primary key is created by the system
 def import_list_obj(csvfile, model, fieldname):
     reader = csv.reader(csvfile)
     print(fieldname)

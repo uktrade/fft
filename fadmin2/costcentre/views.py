@@ -4,7 +4,7 @@ from django.views import generic
 
 from .models import DepartmentalGroup, Directorate, CostCentre
 
-from .tables import CostCentreTable
+from .tables import CostCentreTable, DirectorateTable, DepartmentalGroupTable
 from django_tables2 import RequestConfig
 
 
@@ -31,6 +31,18 @@ def costcentre(request):
     table = CostCentreTable(CostCentre.objects.filter(active=True))
     RequestConfig(request).configure(table)
     return render(request, 'costcentre/costcentre.html', {'table': table})
+
+
+def directorate(request):
+    table = DirectorateTable(Directorate.objects.all())
+    RequestConfig(request).configure(table)
+    return render(request, 'costcentre/directorate.html', {'table': table})
+
+
+def departmentalgroup(request):
+    table = DepartmentalGroupTable(DepartmentalGroup.objects.all())
+    RequestConfig(request).configure(table)
+    return render(request, 'costcentre/departmentalgroup.html', {'table': table})
 
 
 class DirectorateListView(generic.ListView):

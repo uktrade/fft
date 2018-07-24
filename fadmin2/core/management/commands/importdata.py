@@ -1,11 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from costcentre.importcsv import  import_cc
+from costcentre.importcsv import  import_cc, import_programme
 #from core.csvimport.treasurysegment import import_treasury_segments
-from costcentre.importcsv import import_programme
-#from core.csvimport.treasuryCOA import import_treasury_COA
-#from chartofaccountDIT.importcsv import import_NAC
-#from core.csvimport.actual import import_actual
+from forecast.importcsv import import_actual
 from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, import_NAC_dashboard_group, \
                                 import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, import_NAC_dashboard_Budget
 from treasuryCOA.importcsv  import import_treasury_COA
@@ -17,7 +14,7 @@ IMPORT_TYPE = {
     'CostCentre': import_cc,
     # 'Segments' : import_treasury_segments,
     'Treasury_COA': import_treasury_COA,
-    # 'Programmes': import_programme,
+    'Programmes': import_programme,
     'NAC': import_NAC,
     'Analysis1': import_Analysis1,
     'Analysis2': import_Analysis2,
@@ -47,10 +44,8 @@ class Command(BaseCommand):
         csvfile = open(path, newline='', encoding='cp1252')  # Windows-1252 or CP-1252, used because of a back quote
         if importtype == 'Actuals':
             financialyear = options.get('year')
-            print (financialyear)
             monthtoimport = options.get('month')
-            print(monthtoimport)
-            # import_actual(csvfile, financialyear, monthtoimport)
+            import_actual(csvfile, financialyear, monthtoimport)
         else:
             IMPORT_TYPE[importtype](csvfile)
         csvfile.close()

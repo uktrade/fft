@@ -15,19 +15,19 @@ class ADIReport(TimeStampedModel):
     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT)
     analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT)
     original_budget = models.DecimalField(max_digits=18, decimal_places=0, default=0)
-    budget = models.DecimalField(max_digits=18, decimal_places=0,default=0)
-    apr = models.DecimalField(max_digits=18, decimal_places=1)
-    may = models.DecimalField(max_digits=18, decimal_places=1)
-    jun = models.DecimalField(max_digits=18, decimal_places=1)
-    jul = models.DecimalField(max_digits=18, decimal_places=1)
-    aug = models.DecimalField(max_digits=18, decimal_places=1)
-    sep = models.DecimalField(max_digits=18, decimal_places=1)
-    oct = models.DecimalField(max_digits=18, decimal_places=1)
-    nov = models.DecimalField(max_digits=18, decimal_places=1)
-    dec = models.DecimalField(max_digits=18, decimal_places=1)
-    jan = models.DecimalField(max_digits=18, decimal_places=1)
-    feb = models.DecimalField(max_digits=18, decimal_places=1)
-    mar = models.DecimalField(max_digits=18, decimal_places=1)
+    budget = models.DecimalField(max_digits=18, decimal_places=0, default=0)
+    apr = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    may = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    jun = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    jul = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    aug = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    sep = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    oct = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    nov = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    dec = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    jan = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    feb = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    mar = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     adj1 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
     adj2 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
     adj3 = models.DecimalField(max_digits=18, decimal_places=2,default=0)
@@ -35,11 +35,17 @@ class ADIReport(TimeStampedModel):
     created_by = models.CharField(max_length=100, blank=True)
     update_by = models.CharField(max_length=100, blank=True)
 
+    @property
+    def year_total(self):
+        "Returns the total for the year"
+        return self.apr + self.may + self.jun + self.jul + self.aug + self.sep + \
+               self.oct + self.nov + self.dec + self.jan + self.feb + self.mar
+
     class Meta:
         unique_together=('financial_year', 'programme', 'cost_centre', 'natural_account_code','analysis1_code','analysis2_code')
 
     def __str__(self):
-        return str(self.FinancialYear)
+        return str(self.cost_centre) + '--' + str(self.programme) + '--' + str(self.natural_account_code)
 
 
 
