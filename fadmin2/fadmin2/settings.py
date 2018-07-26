@@ -25,7 +25,7 @@ SECRET_KEY = (os.getenv('SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital']
+ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net','fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
 
 
 # Application definition
