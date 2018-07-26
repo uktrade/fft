@@ -31,7 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'forecast.apps.ForecastConfig',
+    'gifthospitality.apps.GifthospitalityConfig',
+    'payroll.apps.PayrollConfig',
+    'costcentre.apps.CostCentreConfig',
+    'chartofaccountDIT.apps.ChartAccountConfig',
+    'treasuryCOA.apps.TreasuryCOAConfig',
+    'treasurySS.apps.TreasurySSConfig',
     'core.apps.CoreConfig',
+    'django_tables2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
