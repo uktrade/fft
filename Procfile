@@ -1,1 +1,1 @@
-web: cd fadmin2 && gunicorn fadmin2.wsgi:application --bind 0.0.0.0:8000
+web: cd fadmin2 && gunicorn fadmin2.wsgi:application --bind 0.0.0.0:443 --log-file - 
