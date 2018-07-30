@@ -5,4 +5,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the core Admin tool index.")
+    return render (
+        request, 'core/index.html'
+     )
+

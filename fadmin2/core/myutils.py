@@ -48,6 +48,25 @@ def addposition(d, h):
                 c[k] = v
     return c
 
+def get_pk_name(m):
+    if m._meta.pk._verbose_name is None:
+        pkname = m._meta.pk.name
+    else:
+        pkname = m._meta.pk.name
+    return pkname
+
+def get_fk(m, pk_value):
+    """Read an object to be used as foreign key in another record. It return a formatted message if it finds an error"""
+    msg = ''
+    try:
+        obj = m.objects.get(pk=pk_value)
+    except m.DoesNotExist:
+        msg = get_pk_name(m) + ' "' + str(pk_value) + '" does not exist'
+        obj = None
+    except ValueError:
+        msg = get_pk_name(m) + ' "' + str(pk_value) + '" wrong type'
+        obj = None
+    return obj, msg
 
 
 def readcsvfromdict(d, row):
@@ -56,21 +75,7 @@ def readcsvfromdict(d, row):
     errormsg = ''
     # if we are only reading a foreign key (we don't want to create it!), get the value and return
     if IMPORT_CSV_IS_FK in d:
-        try:
-            obj = m.objects.get(pk=row[pkname].strip())
-        except m.DoesNotExist:
-            msg = row[pkname] +' does not exist'
-            obj = None
-            print (msg)
-        except ValueError:
-            msg = row[pkname] +' wrong type'
-            obj = None
-            print (msg)
-
-        #                 print('error at line %d: L5 code %s does exist' % (line, row[c['OSCAR L5 Mapping']]))
-        #             # except core.models.DoesNotExist:
-        #
-        return obj, errormsg
+        return get_fk(m, row[pkname])
 
     defaultList = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
@@ -85,11 +90,11 @@ def readcsvfromdict(d, row):
     try:
         obj, created = m.objects.update_or_create(pk=row[pkname].strip(),
                                    defaults=defaultList)
+        print(created)
     except ValueError:
         obj = None
         msg = 'Valuerror'
     return obj, errormsg
-
 
 
 def import_obj(csvfile, obj_key):
@@ -99,38 +104,40 @@ def import_obj(csvfile, obj_key):
     d = addposition(obj_key, l)
     for row in reader:
         row_number = row_number + 1
+        print (row)
         obj, msg = readcsvfromdict(d, row)
-
+        print (row_number, msg)
 
 
 # used for import of lists needed to populate tables, when the primary key is created by the system
 def import_list_obj(csvfile, model, fieldname):
     reader = csv.reader(csvfile)
-    print(fieldname)
     next(reader) # skip the header
     for row in reader:
         obj, created = model.objects.update_or_create(**{fieldname:row[0].strip()})
 
 
 class AdminreadOnly(admin.ModelAdmin):
-
+    """Admin class removing create/edit/delete on the model useful for structures created elsewhere and not changeable by DIT, like Treasury """
     # different fields visible if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
             self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
 
-    # Don't allow delete
+    # Remove delete from the list of action
     def get_actions(self, request):
         actions = super().get_actions(request)
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
 
+    # Don't allow add
     def has_add_permission(self, request):
         return False
 
+    # Don't allow delete
     def has_delete_permission(self, request, obj=None):
         return False
 
-
+    # unfortunately, I cannot find a way to remove the 'save' button.
