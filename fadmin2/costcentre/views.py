@@ -1,11 +1,21 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
+from django_tables2 import RequestConfig
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin, SingleTableView
 
 from .models import DepartmentalGroup, Directorate, CostCentre
 
 from .tables import CostCentreTable, DirectorateTable, DepartmentalGroupTable
-from django_tables2 import RequestConfig
+from .filters import CostCentreFilter
+
+
+class FilteredCostListView(SingleTableMixin, FilterView):
+    table_class = CostCentreTable
+    model = CostCentre
+    template_name = 'costcentre/costcentre_filter.html'
+    filterset_class = CostCentreFilter
 
 
 def index(request):
@@ -33,10 +43,16 @@ def costcentre(request):
     return render(request, 'costcentre/costcentre.html', {'table': table})
 
 
-def directorate(request):
-    table = DirectorateTable(Directorate.objects.all())
-    RequestConfig(request).configure(table)
-    return render(request, 'costcentre/directorate.html', {'table': table})
+# def directorate(request):
+#     table = DirectorateTable(Directorate.objects.all())
+#     RequestConfig(request).configure(table)
+#     return render(request, 'costcentre/directorate.html', {'table': table})
+
+
+class DirectorateList(SingleTableView):
+    model = Directorate
+    table_class = DirectorateTable
+    template_name = 'costcentre/directorate.html'
 
 
 def departmentalgroup(request):
