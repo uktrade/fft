@@ -92,3 +92,12 @@ db.sqlite3
 .vscode/
 
 .environ
+
+.direnv/
+.idea/
+bin/
+include/
+pip-selfcheck.json
+
+
+
