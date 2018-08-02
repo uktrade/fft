@@ -11,21 +11,34 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+ENV_FILE = os.path.join(BASE_DIR, '.environ')
+
+if os.path.exists(ENV_FILE):
+    environ.Env.read_env(ENV_FILE)
+
+env = environ.Env(
+    DEBUG=(bool, False),
+    RESTRICT_ADMIN=(bool, False)
+)
+
+DEBUG = env('DEBUG')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (os.getenv('SECRET_KEY'))
+SECRET_KEY = env('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net','fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
+#ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net','fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
 
 
 # Application definition
