@@ -4,6 +4,8 @@ from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 
 from core.exportutils import export_to_csv, export_to_excel
+from core.myutils import AdminreadOnly
+
 from .models import DepartmentalGroup, Directorate, CostCentre, Programme
 
 
@@ -89,7 +91,7 @@ class CostCentreAdmin(admin.ModelAdmin):
     directorate.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
     group.admin_order_field = 'directorate__group__group_name'  # use __ to define a table field relationship
 
-    search_fields = ['cost_centre_code']
+    search_fields = ['cost_centre_code','cost_centre_name']
     list_filter = ['active','directorate__directorate_name','directorate__group__group_name']
     actions = [export_cc_csv, export_cc_xlsx, make_cc_inactive,make_cc_active] # new action to export to csv and xlsx
 
@@ -101,10 +103,17 @@ class DirectorateAdmin(admin.ModelAdmin):
         return instance.group.group_code + ' - ' + instance.group.group_name
 
     dgroup_name.admin_order_field = 'group__group_name' # use __ to define a table field relationship
+    search_fields = ['directorate_code','directorate_name']
+
+
+class ProgrammeAdmin(AdminreadOnly):
+    list_display = ('programme_code','programme_description','budget_type')
+    search_fields = ['programme_code','programme_description']
+    list_filter = ['budget_type']
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup)
 admin.site.register(Directorate, DirectorateAdmin)
 
-admin.site.register(Programme)
+admin.site.register(Programme, ProgrammeAdmin)

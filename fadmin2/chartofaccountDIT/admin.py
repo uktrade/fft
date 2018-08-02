@@ -41,7 +41,7 @@ class NaturalCodeAdmin(AdminreadOnly):
     def get_readonly_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code'] # don't allow to edit the code
 
-    search_fields = ['natural_account_code']
+    search_fields = ['natural_account_code','natural_account_code_description']
     list_filter = ['used_by_DIT','used_for_budget','NAC_category__NAC_category_description', 'dashboard_grouping__grouping_description']
     actions = [export_nac_csv, export_nac_xlsx] # new action to export to csv and xlsx
 
@@ -55,7 +55,7 @@ def export_analysis1_xlsx(modeladmin, request, queryset):
 
 
 class Analysis1Admin(AdminreadOnly):
-    search_fields = ['analysis1_description']
+    search_fields = ['analysis1_description','analysis1_code']
     actions = [export_analysis1_csv, export_analysis1_xlsx] # new action to export to csv and xlsx
 
 
@@ -68,7 +68,7 @@ def export_analysis2_xlsx(modeladmin, request, queryset):
 
 
 class Analysis2Admin(AdminreadOnly):
-    search_fields = ['analysis2_description']
+    search_fields = ['analysis2_description','analysis2_code']
     actions = [export_analysis2_csv, export_analysis2_xlsx] # new action to export to csv and xlsx
 
 

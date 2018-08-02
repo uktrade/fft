@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import csv
 
 from .models import ADIReport, SubSegmentUKTIMapping
-from core.myutils import addposition,csvheadertodict
+from core.myutils import addposition, csvheadertodict, get_fk
 
 
 from costcentre.models import CostCentre, Programme
@@ -38,9 +38,8 @@ def findmonth(monthtofind):
             return k
 
 
-
 def import_actual(csvfile, financialyear, what):
-
+    """ it imports the actuals from a report created in Oracle"""
     reader = csv.reader(csvfile)
     col_key = csvheadertodict(next(reader))
     line = 2
@@ -54,18 +53,23 @@ def import_actual(csvfile, financialyear, what):
     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in csvreader:
         line += 1
-
-        try:
-            ccobj = CostCentre.objects.get(cost_centre_code=row[col_key['Cost Centre']])
-            an1obj = Analysis1.objects.get(analysis1_code=int(row[col_key['Analysis 1']]))
-            an2obj = Analysis2.objects.get(analysis2_code=int(row[col_key['Analysis 2']]))
-            nacobj = NaturalCode.objects.get(natural_account_code=row[col_key['Account']])
-            prog = row[col_key['Programme']]
-            if prog == 0:
-                prog = 310801
-            progobj = Programme.objects.get(programme_code=prog)
+        err = False
+        errmsg = ''
+        ccobj, msg = get_fk(CostCentre, row[col_key['Cost Centre']].strip())
+        errmsg += msg
+        an1obj, msg = get_fk(Analysis1, int(row[col_key['Analysis 1']]))
+        errmsg += msg
+        an2obj, msg = get_fk(Analysis2, int(row[col_key['Analysis 2']]))
+        errmsg += msg
+        nacobj, msg = get_fk(NaturalCode, row[col_key['Account']].strip())
+        errmsg += msg
+        prog = row[col_key['Programme']].strip()
+        if prog == 0:
+            prog = 310801
+        progobj, msg = get_fk(Programme, prog)
+        errmsg += msg
+        if errmsg == '':
             defaultList = {}
-            print(line)
             for k, v in actualtoimport.items():
                 defaultList[k] = row[v] or 0
             adiobj, created = ADIReport.objects.get_or_create(financial_year=financialyear,
@@ -75,8 +79,7 @@ def import_actual(csvfile, financialyear, what):
                                                               analysis1_code=an1obj,
                                                               analysis2_code=an2obj,
                                                               defaults=defaultList)
-
-        except ObjectDoesNotExist:
-            print('Cost centre ', row[col_key['Cost Centre']], ' does not exist')
-# todo handle error from missing codes, create the list from ALL based on file content
+        else:
+            print (line, errmsg)
+ # todo handle error from missing codes, create the list from ALL based on file content
 

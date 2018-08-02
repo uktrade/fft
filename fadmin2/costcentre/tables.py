@@ -10,8 +10,8 @@ class CostCentreTable(tables.Table):
         model = CostCentre
         template_name = 'django_tables2/bootstrap.html'
         exclude = ['created', 'updated','active']
-        sequence = ('cost_centre_code', '...',  'group',)
-        attrs = {"class": "table-striped table-bordered"}
+        sequence = ('group', 'directorate','cost_centre_code', 'cost_centre_name')
+        attrs = {"class": "table-striped table-bordered small-font"}
         empty_text = "There are no cost centres matching the search criteria..."
 
 
@@ -22,7 +22,7 @@ class DirectorateTable(tables.Table):
         template_name = 'django_tables2/bootstrap.html'
         exclude = ['created', 'updated']
         sequence = ('directorate_code', '...',  'group',)
-        attrs = {"class": "table-striped table-bordered"}
+        attrs = {"class": "table-striped table-bordered small-font"}
         empty_text = "There are no directorates matching the search criteria..."
 
 
@@ -33,6 +33,6 @@ class DepartmentalGroupTable(tables.Table):
         template_name = 'django_tables2/bootstrap.html'
         exclude = ['created', 'updated']
         sequence = ('group_code', 'group_name',)
-        attrs = {"class": "table-striped table-bordered"}
+        attrs = {"class": "table-striped table-bordered small-font"}
         empty_text = "There are no groups matching the search criteria..."
 
