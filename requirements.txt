@@ -25,3 +25,5 @@ gunicorn==19.9
 django-environ==0.4.5
 dj-database-url===0.5.0
 tablib==0.12.1
+psycopg2==2.7.4
+psycopg2-binary==2.7.4
