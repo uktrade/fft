@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 
+from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
+
+
 from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
 from core.myutils import AdminreadOnly
 
@@ -38,12 +41,24 @@ export_nac_csv.short_description = u"Export to csv"
 
     
 class NaturalCodeAdmin(AdminreadOnly):
+
     def get_readonly_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code'] # don't allow to edit the code
+        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
 
     search_fields = ['natural_account_code','natural_account_code_description']
-    list_filter = ['used_by_DIT','used_for_budget','NAC_category__NAC_category_description', 'dashboard_grouping__grouping_description']
+    list_filter = ('used_by_DIT',
+                   'used_for_budget',
+                   ('NAC_category', RelatedDropdownFilter),
+                   ('dashboard_grouping', RelatedDropdownFilter))
     actions = [export_nac_csv, export_nac_xlsx] # new action to export to csv and xlsx
+    # list_filter = (
+    #     # for ordinary fields
+    #     ('a_charfield', DropdownFilter),
+    #     # for related fields
+    #     ('a_foreignkey_field', RelatedDropdownFilter),
+    # )
+
+
 
 
 def export_analysis1_csv(modeladmin, request, queryset):
@@ -69,6 +84,7 @@ def export_analysis2_xlsx(modeladmin, request, queryset):
 
 class Analysis2Admin(AdminreadOnly):
     search_fields = ['analysis2_description','analysis2_code']
+
     actions = [export_analysis2_csv, export_analysis2_xlsx] # new action to export to csv and xlsx
 
 
@@ -82,8 +98,13 @@ def export_NACDashboardGrouping_xlsx(modeladmin, request, queryset):
 
 
 class NACDashboardGroupingAdmin(admin.ModelAdmin):
-    search_fields = ['grouping_description']
-    actions = [export_NACDashboardGrouping_csv, export_NACDashboardGrouping_xlsx] # new action to export to csv and xlsx
+    search_fields = ['grouping_description', 'linked_budget_code']
+    list_display = ['grouping_description', 'linked_budget_code']
+    actions = [export_NACDashboardGrouping_csv, export_NACDashboardGrouping_xlsx]
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "linked_budget_code":
+            kwargs["queryset"] = NaturalCode.objects.filter(used_for_budget=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 def export_NACCategory_csv(modeladmin, request, queryset):
@@ -95,7 +116,7 @@ def export_NACCategory_xlsx(modeladmin, request, queryset):
 
 
 class NACCategoryAdmin(admin.ModelAdmin):
-     actions = [export_NACCategory_csv, export_NACCategory_xlsx] # new action to export to csv and xlsx
+     actions = [export_NACCategory_csv, export_NACCategory_xlsx]
 
 
 admin.site.register(Analysis1,Analysis1Admin)

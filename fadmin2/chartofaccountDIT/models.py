@@ -28,7 +28,7 @@ class Analysis2(TimeStampedModel):
 
 class NACDashboardGrouping(TimeStampedModel):
     grouping_description = models.CharField(max_length=255, verbose_name='Description')
-    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT, blank=True, null=True)
+    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Code')
 
     def __str__(self):
         return str(self.grouping_description)
@@ -48,7 +48,7 @@ class NaturalCode(models.Model):
     natural_account_code_description = models.CharField(max_length=200)
     NAC_category = models.ForeignKey(NACCategory,on_delete=models.PROTECT, blank=True, null=True)
     account_L5_code = models.ForeignKey(L5Account,on_delete=models.PROTECT, blank=True, null=True)
-    dashboard_grouping = models.ForeignKey(NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True)
+    dashboard_grouping = models.ForeignKey( NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Category')
     used_for_budget = models.BooleanField(default=False)
     used_by_DIT = models.BooleanField(default=False)
 

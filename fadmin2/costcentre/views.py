@@ -14,8 +14,14 @@ from .filters import CostCentreFilter
 class FilteredCostListView(SingleTableMixin, FilterView):
     table_class = CostCentreTable
     model = CostCentre
-    template_name = 'costcentre/costcentre_filter.html'
+    paginate_by = 50
+    template_name = 'core/table_filter_generic.html'
     filterset_class = CostCentreFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Cost Centres'
+        return context
 
 
 def index(request):
@@ -53,6 +59,11 @@ class DirectorateList(SingleTableView):
     model = Directorate
     table_class = DirectorateTable
     template_name = 'costcentre/directorate.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'AAAA'
+        return context
 
 
 def departmentalgroup(request):

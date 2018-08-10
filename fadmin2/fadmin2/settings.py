@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'django_tables2',
     'django_filters',
+    'django_admin_listfilter_dropdown',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -13,7 +13,7 @@
 
 </head>
 
-<body>
+<body class="small-font">
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -35,16 +35,17 @@
     <div class="navbar-nav">
       <a class="nav-item nav-link active" href=""{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Organisation Hierarchy
+          Chart of Account
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="{% url 'departmentalgroup' %}">Departmental Groups</a>
-          <a class="dropdown-item" href="{% url 'directorate' %}">Directorates</a>
-          <a class="dropdown-item" href="{% url 'costcentre' %}">Cost Centres</a>
-          <a class="dropdown-item" href="{% url 'costcentrefilter' %}">Cost Centres filtered</a>
+          <a class="dropdown-item" href="{% url 'costcentrefilter' %}">Hierarchy (Cost Centres)</a>
+          <a class="dropdown-item" href="{% url 'naturalcode' %}">Natural Account Codes</a>
         </div>
-     <a class="nav-item nav-link" href="{% url 'naturalcode' %}">NAC</a>
-      <a class="nav-item nav-link" href="{% url 'forecast' %}">Financial Report</a>
+      <a class="nav-item nav-link active" href="{% url 'forecast' %}">Financial Report <span class="sr-only"></span></a>
+
+       <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Gift and Hospitality
+        </a>
 
 
     </div>
