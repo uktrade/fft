@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django_tables2.views import SingleTableMixin, SingleTableView
+from django_tables2.export.views import ExportMixin
 from django_filters.views import FilterView
 from django_tables2 import RequestConfig
 
@@ -12,8 +13,7 @@ from .tables import NaturalCodeTable
 from .filters import NACFilter
 
 
-
-class FilteredNACListView(SingleTableMixin, FilterView):
+class FilteredNACListView(ExportMixin, SingleTableMixin, FilterView):
     table_class = NaturalCodeTable
     model = NaturalCode
     paginate_by = 50

@@ -1,10 +1,12 @@
 import django_tables2 as tables
+
 from .models import CostCentre, Directorate, DepartmentalGroup
 from django_tables2.utils import A
 
 
 class CostCentreTable(tables.Table):
     group = tables.Column(accessor='directorate.group')
+    export_formats = ['csv', 'xls']
 
     class Meta:
         model = CostCentre

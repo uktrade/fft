@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django_tables2 import RequestConfig
+from django_tables2.export.views import ExportMixin
+
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin, SingleTableView
 
@@ -11,7 +13,7 @@ from .tables import CostCentreTable, DirectorateTable, DepartmentalGroupTable
 from .filters import CostCentreFilter
 
 
-class FilteredCostListView(SingleTableMixin, FilterView):
+class FilteredCostListView(ExportMixin, SingleTableMixin, FilterView):
     table_class = CostCentreTable
     model = CostCentre
     paginate_by = 50
