@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import dj_database_url
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -40,6 +41,9 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 #ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net','fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
 
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+}
 
 # Application definition
 
