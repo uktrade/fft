@@ -6,7 +6,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     group_name = models.CharField('Description', max_length=300)
 
     def __str__(self):
-        return str(self.group_code) + ' - ' + str(self.group_name)
+        return str(self.group_name)
 
 
 class Directorate(TimeStampedModel, LogChangeModel):
@@ -15,12 +15,12 @@ class Directorate(TimeStampedModel, LogChangeModel):
     group = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
 
     def __str__(self):
-        return str(self.directorate_code) + ' - ' + str(self.directorate_name)
+        return str(self.directorate_name)
 
 
 class CostCentre(TimeStampedModel, LogChangeModel):
-    cost_centre_code = models.CharField('Cost centre', primary_key=True, max_length=6)
-    cost_centre_name = models.CharField('Description', max_length=300)
+    cost_centre_code = models.CharField('Cost Centre Code', primary_key=True, max_length=6)
+    cost_centre_name = models.CharField('Cost Centre Description', max_length=300)
     # oracle_cost_centre_name = models.CharField('Oracle Description', max_length=300, null=True)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
     active = models.BooleanField(default=True)
