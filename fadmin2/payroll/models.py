@@ -15,14 +15,15 @@ class Grade(models.Model):
 
 
 class DITPeople(TimeStampedModel, LogChangeModel):
-    EmployeeNumber = models.CharField(primary_key=True, max_length=10)
+    employee_number = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50)
-    grade = models.ForeignKey(Grade, on_delete=models.PROTECT, blank=True)
-    email = models.CharField(max_length=50)
+    grade = models.ForeignKey(Grade, on_delete=models.PROTECT, null=True, blank=True)
+    email = models.CharField(max_length=50, blank=True)
+    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT, null=True, blank=True)
     active = models.BooleanField(default=True)
-    isdirector = models.BooleanField(default=False)
-    isbusinesspartner = models.BooleanField(default=False)
+    isdirector = models.BooleanField('General Director/Director/Deputy Director', default=False)
+    isbusinesspartner = models.BooleanField('Business Partner', default=False)
     active = models.BooleanField(default=True)
     def __str__(self):
         return self.surname + ' ' + self.name

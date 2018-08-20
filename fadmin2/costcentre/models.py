@@ -6,7 +6,7 @@ from core.metamodels import TimeStampedModel, LogChangeModel
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     group_code = models.CharField('Group', primary_key=True, max_length=6)
     group_name = models.CharField('Group Name', max_length=300)
-    director_general = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, null=True)
+    director_general = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, null=True, blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -28,8 +28,8 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     cost_centre_code = models.CharField('Cost Centre Code', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
-    deputy_director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, related_name='deputy_director', null=True)
-    business_partner = models.ForeignKey('payroll.DITPeople', verbose_name='Finance Business Partner', on_delete=models.PROTECT, related_name='business_partner', null=True)
+    deputy_director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, related_name='deputy_director', null=True, blank=True)
+    business_partner = models.ForeignKey('payroll.DITPeople', verbose_name='Finance Business Partner', on_delete=models.PROTECT, related_name='business_partner', null=True, blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):

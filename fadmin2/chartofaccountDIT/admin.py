@@ -6,7 +6,7 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 
 
 from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
-from core.myutils import AdminreadOnly
+from core.admin import AdminreadOnly
 
 from .models import Analysis1, Analysis2, NaturalCode, NACDashboardGrouping, NACCategory
 

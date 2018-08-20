@@ -6,7 +6,7 @@ from forecast.importcsv import import_actual
 from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, import_NAC_dashboard_group, \
                                 import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, import_NAC_dashboard_Budget
 from treasuryCOA.importcsv  import import_treasury_COA
-
+from payroll.importcsv import import_HR_Report
 
 import csv
 
@@ -22,7 +22,8 @@ IMPORT_TYPE = {
     'NAC_Dashboard_Budget': import_NAC_dashboard_Budget,
     'NAC_Category': import_NAC_category,
     'NAC_DIT_Setting': import_NAC_DIT_setting,
-    'NAC_Budget': import_NAC_DIT_budget
+    'NAC_Budget': import_NAC_DIT_budget,
+    'HR_Report': import_HR_Report
 }
 
 class Command(BaseCommand):
