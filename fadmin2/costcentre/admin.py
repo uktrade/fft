@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 
+from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
+
 from core.exportutils import export_to_csv, export_to_excel
 from core.myutils import AdminreadOnly
 
@@ -66,15 +68,18 @@ make_cc_active.short_description = u"Unlock the selected Cost Centres"
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(admin.ModelAdmin):
-    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate', 'group', 'active')
+    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_name', 'group_name', 'active')
 
-    def directorate(self, instance): # required to display the filed from a foreign key
-        return instance.directorate.directorate_code + ' - ' +instance.directorate.directorate_name
+    def directorate_name(self, instance): # required to display the field from a foreign key
+         return instance.directorate.directorate_name
 
-    def group(self, instance):
-        return instance.directorate.group.group_code + ' - ' + instance.directorate.group.group_name
+    def group_name(self, instance):
+        return instance.directorate.group.group_name
 
-    # different fields visible if updating or creating the object
+    directorate_name.admin_order_field = 'directorate__directorate_name'
+    group_name.admin_order_field = 'directorate__group__group_name'
+
+    # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['cost_centre_code', 'created', 'updated'] # don't allow to edit the code
@@ -84,15 +89,14 @@ class CostCentreAdmin(admin.ModelAdmin):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'active', 'created', 'updated']
+            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'deputy_director', 'active', 'created', 'updated']
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'active']
-
-    directorate.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
-    group.admin_order_field = 'directorate__group__group_name'  # use __ to define a table field relationship
+            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'deputy_director','active']
 
     search_fields = ['cost_centre_code','cost_centre_name']
-    list_filter = ['active','directorate__directorate_name','directorate__group__group_name']
+    list_filter = ('active',
+                   ('directorate', RelatedDropdownFilter),
+                   ('directorate__group', RelatedDropdownFilter))
     actions = [export_cc_csv, export_cc_xlsx, make_cc_inactive,make_cc_active] # new action to export to csv and xlsx
 
 

@@ -146,3 +146,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+def FILTERS_VERBOSE_LOOKUPS():
+    from django_filters.conf import DEFAULTS
+
+    verbose_lookups = DEFAULTS['VERBOSE_LOOKUPS'].copy()
+    verbose_lookups.update({
+        'icontains': '',
+        'contains': '',
+        'startswith': '',
+        'istartswith': '',
+    })
+    return verbose_lookups

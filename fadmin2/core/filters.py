@@ -4,6 +4,7 @@ from django.db import models
 # from django import forms
 
 
+
 class MyFilterSet(django_filters.FilterSet):
     """Used icontains as default for string when searching in a form"""
     class Meta:

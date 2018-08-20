@@ -1,15 +1,34 @@
 from django.db import models
-from core.metamodels import TimeStampedModel
+from core.metamodels import TimeStampedModel, LogChangeModel
 from costcentre.models  import  DepartmentalGroup, CostCentre, Programme
 from chartofaccountDIT.models import NaturalCode
 # salaries data
 
+
 # define a choice field for this
 class Grade(models.Model):
-    grade = models.CharField(primary_key=True, max_length=50)
+    grade = models.CharField(primary_key=True, max_length=10)
+    gradedescription = models.CharField(max_length=50)
     order = models.IntegerField
     def __str__(self):
        return self.grade
+
+
+class DITPeople(TimeStampedModel, LogChangeModel):
+    EmployeeNumber = models.CharField(primary_key=True, max_length=10)
+    name = models.CharField(max_length=50, blank=True)
+    surname = models.CharField(max_length=50)
+    grade = models.ForeignKey(Grade, on_delete=models.PROTECT, blank=True)
+    email = models.CharField(max_length=50)
+    active = models.BooleanField(default=True)
+    isdirector = models.BooleanField(default=False)
+    isbusinesspartner = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+    def __str__(self):
+        return self.surname + ' ' + self.name
+    class Meta:
+        verbose_name = 'DIT People'
+
 
 
 # Pre-calculated salary averages, used for the forecast

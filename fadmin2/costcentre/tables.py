@@ -1,19 +1,38 @@
 import django_tables2 as tables
 
-from .models import CostCentre
+from .models import CostCentre, Programme
 
 from core.tables import FadminTable
+
 
 class CostCentreTable(FadminTable):
 
     group_name = tables.Column(verbose_name='Group Name', accessor='directorate.group.group_name')
     directorate_name = tables.Column(verbose_name='Directorate Name', accessor='directorate.directorate_name')
+    director_general = tables.Column(verbose_name="Director General", accessor='directorate.group.director_general')
+    director = tables.Column(verbose_name="Director", accessor='directorate.director')
+
 
     class Meta(FadminTable.Meta):
         model = CostCentre
         fields = ('group_name',
                   'directorate_name',
                   'cost_centre_code',
-                  'cost_centre_name'
+                  'cost_centre_name',
+                  'deputy_director',
+                  'director',
+                  'director_general',
+                  'business_partner'
+        )
+
+
+class ProgrammeTable(FadminTable):
+
+    class Meta(FadminTable.Meta):
+        model = Programme
+        fields = (
+            'programme_code',
+            'programme_description',
+            'budget_type'
         )
 

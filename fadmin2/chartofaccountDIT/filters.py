@@ -8,7 +8,7 @@ class NACFilter(MyFilterSet):
 
     class Meta(MyFilterSet.Meta):
         model = NaturalCode
-        fields = ['NAC_category', 'dashboard_grouping', 'natural_account_code', 'natural_account_code_description' ]
+        fields = ['NAC_category', 'dashboard_grouping', 'natural_account_code', 'natural_account_code_description']
         exclude = ['used_by_DIT','account_L5_code']
 
     @property

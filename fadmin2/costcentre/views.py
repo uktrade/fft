@@ -1,25 +1,27 @@
-
-from django_tables2.export.views import ExportMixin
-
-from django_filters.views import FilterView
-from django_tables2.views import SingleTableMixin
-
-from .models import  CostCentre
-
-from .tables import CostCentreTable
-from .filters import CostCentreFilter
+from .tables import CostCentreTable, ProgrammeTable
+from .filters import CostCentreFilter, ProgrammeFilter
+from core.views import FAdminFilteredView
 
 
-class FilteredCostListView(ExportMixin, SingleTableMixin, FilterView):
+class FilteredCostListView(FAdminFilteredView):
     table_class = CostCentreTable
-    model = CostCentre
-    paginate_by = 50
-    template_name = 'core/table_filter_generic.html'
+    model = table_class.Meta.model
     filterset_class = CostCentreFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Cost Centres'
+        context['section_name'] = 'Cost Centre Hierarchy'
+        return context
+
+
+class FilteredProgrammeView(FAdminFilteredView):
+    table_class = ProgrammeTable
+    model = table_class.Meta.model
+    filterset_class = ProgrammeFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Programme Codes'
         return context
 
 
