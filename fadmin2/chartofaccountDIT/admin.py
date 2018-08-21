@@ -8,7 +8,7 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
 from core.admin import AdminreadOnly
 
-from .models import Analysis1, Analysis2, NaturalCode, NACDashboardGrouping, NACCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory
 
 
 EXPORT_NAC_ITERATOR_HEADERS=['Level 6','Level 6 Description', 'DIT Use', 'Level 5', 'Level 5 Description','Category','Dashboard Group']
@@ -21,8 +21,8 @@ def _export_nac_iterator(queryset):
             obj.used_by_DIT,
             obj.account_L5_code,
             obj.account_L5_code.account_l5_long_name,
-            obj.NAC_category,
-            obj.dashboard_grouping,
+            obj.expenditure_category.NAC_category,
+            obj.expenditure_category,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.usage_code]
@@ -45,20 +45,21 @@ class NaturalCodeAdmin(AdminreadOnly):
     def get_readonly_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
 
+    def get_fields(self, request, obj=None):
+        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code', 'expenditure_category', 'used_for_budget','used_by_DIT']
+
     search_fields = ['natural_account_code','natural_account_code_description']
     list_filter = ('used_by_DIT',
                    'used_for_budget',
-                   ('NAC_category', RelatedDropdownFilter),
-                   ('dashboard_grouping', RelatedDropdownFilter))
-    actions = [export_nac_csv, export_nac_xlsx] # new action to export to csv and xlsx
+                   ('expenditure_category__NAC_category', RelatedDropdownFilter),
+                   ('expenditure_category', RelatedDropdownFilter))
+    actions = [export_nac_xlsx] # new action to export to csv and xlsx
     # list_filter = (
     #     # for ordinary fields
     #     ('a_charfield', DropdownFilter),
     #     # for related fields
     #     ('a_foreignkey_field', RelatedDropdownFilter),
     # )
-
-
 
 
 def export_analysis1_csv(modeladmin, request, queryset):
@@ -71,7 +72,7 @@ def export_analysis1_xlsx(modeladmin, request, queryset):
 
 class Analysis1Admin(AdminreadOnly):
     search_fields = ['analysis1_description','analysis1_code']
-    actions = [export_analysis1_csv, export_analysis1_xlsx] # new action to export to csv and xlsx
+    actions = [export_analysis1_xlsx] # new action to export to csv and xlsx
 
 
 def export_analysis2_csv(modeladmin, request, queryset):
@@ -85,22 +86,22 @@ def export_analysis2_xlsx(modeladmin, request, queryset):
 class Analysis2Admin(AdminreadOnly):
     search_fields = ['analysis2_description','analysis2_code']
 
-    actions = [export_analysis2_csv, export_analysis2_xlsx] # new action to export to csv and xlsx
+    actions = [export_analysis2_xlsx] # new action to export to csv and xlsx
 
 
 
-def export_NACDashboardGrouping_csv(modeladmin, request, queryset):
+def export_ExpenditureCategory_csv(modeladmin, request, queryset):
     return(generic_export_to_csv(queryset))
 
 
-def export_NACDashboardGrouping_xlsx(modeladmin, request, queryset):
+def export_ExpenditureCategory_xlsx(modeladmin, request, queryset):
     return(generic_export_to_excel(queryset))
 
 
-class NACDashboardGroupingAdmin(admin.ModelAdmin):
+class ExpenditureCategoryAdmin(admin.ModelAdmin):
     search_fields = ['grouping_description', 'linked_budget_code']
     list_display = ['grouping_description', 'linked_budget_code']
-    actions = [export_NACDashboardGrouping_csv, export_NACDashboardGrouping_xlsx]
+    actions = [export_ExpenditureCategory_csv, export_ExpenditureCategory_xlsx]
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "linked_budget_code":
             kwargs["queryset"] = NaturalCode.objects.filter(used_for_budget=True)
@@ -122,5 +123,5 @@ class NACCategoryAdmin(admin.ModelAdmin):
 admin.site.register(Analysis1,Analysis1Admin)
 admin.site.register(Analysis2,Analysis2Admin)
 admin.site.register(NaturalCode,NaturalCodeAdmin)
-admin.site.register(NACDashboardGrouping, NACDashboardGroupingAdmin)
+admin.site.register(ExpenditureCategory, ExpenditureCategoryAdmin)
 admin.site.register(NACCategory,NACCategoryAdmin)

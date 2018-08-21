@@ -3,8 +3,9 @@ from django.core.management.base import BaseCommand, CommandError
 from costcentre.importcsv import  import_cc, import_programme
 #from core.csvimport.treasurysegment import import_treasury_segments
 from forecast.importcsv import import_actual
-from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, import_NAC_dashboard_group, \
-                                import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, import_NAC_dashboard_Budget
+from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, import_NAC_expenditure_category, \
+                                import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, \
+                                import_NAC_dashboard_Budget, import_expenditure_category
 from treasuryCOA.importcsv  import import_treasury_COA
 from payroll.importcsv import import_HR_Report
 
@@ -15,15 +16,17 @@ IMPORT_TYPE = {
     # 'Segments' : import_treasury_segments,
     'Treasury_COA': import_treasury_COA,
     'Programmes': import_programme,
-    'NAC': import_NAC,
+    'NAC': import_NAC,  # import from the BICC file
     'Analysis1': import_Analysis1,
     'Analysis2': import_Analysis2,
-    'NAC_Dashboard_Group': import_NAC_dashboard_group,
+    'NAC_Dashboard_Group': import_NAC_expenditure_category,
     'NAC_Dashboard_Budget': import_NAC_dashboard_Budget,
     'NAC_Category': import_NAC_category,
-    'NAC_DIT_Setting': import_NAC_DIT_setting,
+    'NAC_DIT_Setting': import_NAC_DIT_setting, # add extra fields defined by DIT
     'NAC_Budget': import_NAC_DIT_budget,
-    'HR_Report': import_HR_Report
+    'HR_Report': import_HR_Report,
+    'NAC_Dashboard_other': import_expenditure_category
+
 }
 
 class Command(BaseCommand):

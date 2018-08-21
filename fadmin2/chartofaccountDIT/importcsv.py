@@ -1,4 +1,4 @@
-from .models import Analysis1, Analysis2, NaturalCode, NACDashboardGrouping, NACCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory
 from treasuryCOA.models import L5Account
 from core.myutils import import_obj, import_list_obj, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK
 
@@ -42,15 +42,15 @@ def import_NAC(csvfile):
     import_obj(csvfile, NAC_KEY)
 
 
-def import_NAC_dashboard_group(csvfile):
-    import_list_obj(csvfile, NACDashboardGrouping, 'grouping_description')
+def import_NAC_expenditure_category(csvfile):
+    import_list_obj(csvfile, ExpenditureCategory, 'grouping_description')
 
 
 def import_NAC_dashboard_Budget(csvfile):
     reader = csv.reader(csvfile)
     next(reader) # skip the header
     for row in reader:
-        obj = NACDashboardGrouping.objects.get(grouping_description=row[0].strip())
+        obj = ExpenditureCategory.objects.get(grouping_description=row[0].strip())
         print(row[0].strip())
         nac_obj = NaturalCode.objects.get(pk=row[1].strip())
         nac_obj.used_by_DIT = True
@@ -58,6 +58,20 @@ def import_NAC_dashboard_Budget(csvfile):
         nac_obj.save()
         obj.linked_budget_code = nac_obj
         obj.save()
+
+
+def import_expenditure_category(csvfile):
+    reader = csv.reader(csvfile)
+    next(reader) # skip the header
+    for row in reader:
+        print(row[1].strip())
+        obj = ExpenditureCategory.objects.get(grouping_description=row[1].strip())
+        obj.description = row[2].strip()
+        obj.further_description = row[3].strip()
+        cat_obj = NACCategory.objects.get(NAC_category_description=row[0].strip())
+        obj.NAC_category = cat_obj
+        obj.save()
+
 
 
 def import_NAC_category(csvfile):
@@ -71,8 +85,7 @@ def import_NAC_DIT_setting(csvfile):
     for row in reader:
         linenum = linenum + 1
         nac_obj = NaturalCode.objects.get(pk=row[0].strip())
-        nac_obj.dashboard_grouping = NACDashboardGrouping.objects.get(grouping_description=row[2].strip())
-        nac_obj.NAC_category = NACCategory.objects.get(NAC_category_description=row[1].strip())
+        nac_obj.expenditure_category = ExpenditureCategory.objects.get(grouping_description=row[2].strip())
         nac_obj.used_by_DIT = True
         nac_obj.save()
 

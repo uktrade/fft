@@ -179,19 +179,11 @@ class ProgrammeAdmin(AdminEditOnly):
     search_fields = ['programme_code','programme_description']
     list_filter = ['budget_type','DIT_in_use']
 
-    # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
-        else:
-            return ['created', 'updated']
+        return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
 
-    # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
-        if obj:
-            return ['programme_code','programme_description','budget_type', 'DIT_in_use', 'created', 'updated']
-        else:
-            return ['programme_code','programme_description','budget_type', 'DIT_in_use']
+        return ['programme_code','programme_description','budget_type', 'DIT_in_use', 'created', 'updated']
 
 
 

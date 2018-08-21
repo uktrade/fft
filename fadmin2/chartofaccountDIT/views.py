@@ -2,8 +2,8 @@
 from core.views import FAdminFilteredView
 
 
-from .tables import NaturalCodeTable
-from .filters import NACFilter
+from .tables import NaturalCodeTable, ExpenditureCategoryTable
+from .filters import NACFilter, ExpenditureCategoryFilter
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -14,5 +14,16 @@ class FilteredNACListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Natural Account Codes (NAC)'
+        return context
+
+
+class FilteredExpenditureCategoryListView(FAdminFilteredView):
+    table_class = ExpenditureCategoryTable
+    model = table_class.Meta.model
+    filterset_class = ExpenditureCategoryFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Finance Categories'
         return context
 

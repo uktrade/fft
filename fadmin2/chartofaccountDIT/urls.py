@@ -3,6 +3,7 @@ from . import views
 
 
 urlpatterns = [
-    path('naturalcode/', views.FilteredNACListView.as_view(), name='naturalcode')
+    path('naturalcode/', views.FilteredNACListView.as_view(), name='naturalcode'),
+    path('financecategory/', views.FilteredExpenditureCategoryListView.as_view(), name='financecategory')
 ]
 
