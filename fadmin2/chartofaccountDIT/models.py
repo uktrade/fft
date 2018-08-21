@@ -44,8 +44,8 @@ class NACCategory(TimeStampedModel):
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCode(models.Model):
-    natural_account_code = models.IntegerField(primary_key=True)
-    natural_account_code_description = models.CharField(max_length=200)
+    natural_account_code = models.IntegerField(primary_key=True, verbose_name = 'NAC')
+    natural_account_code_description = models.CharField(max_length=200, verbose_name='NAC Description')
     NAC_category = models.ForeignKey(NACCategory,on_delete=models.PROTECT, blank=True, null=True)
     account_L5_code = models.ForeignKey(L5Account,on_delete=models.PROTECT, blank=True, null=True)
     dashboard_grouping = models.ForeignKey( NACDashboardGrouping,on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Category')

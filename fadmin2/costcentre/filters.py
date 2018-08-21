@@ -65,5 +65,5 @@ class ProgrammeFilter(MyFilterSet):
     @property
     def qs(self):
         prog = super(ProgrammeFilter, self).qs
-        return prog.filter(in_use=True)
+        return prog.filter(DIT_in_use=True)
 
