@@ -1,4 +1,4 @@
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory
 from treasuryCOA.models import L5Account
 from core.myutils import import_obj, import_list_obj, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK
 
@@ -100,4 +100,19 @@ def import_NAC_DIT_budget(csvfile):
         nac_obj.used_by_DIT = True
         nac_obj.save()
 
+
+
+def import_commercial_category(csvfile):
+    import_list_obj(csvfile, CommercialCategory, 'commercial_category')
+
+
+def import_commercial_category_responsible(csvfile):
+    reader = csv.reader(csvfile)
+    next(reader) # skip the header
+    linenum = 1
+    for row in reader:
+        linenum = linenum + 1
+        obj = CommercialCategory.objects.get(commercial_category=row[0].strip())
+        obj.approvers = row[2].strip()
+        obj.save()
 

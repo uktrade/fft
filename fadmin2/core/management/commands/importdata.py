@@ -5,7 +5,8 @@ from costcentre.importcsv import  import_cc, import_programme
 from forecast.importcsv import import_actual
 from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, import_NAC_expenditure_category, \
                                 import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, \
-                                import_NAC_dashboard_Budget, import_expenditure_category
+                                import_NAC_dashboard_Budget, import_expenditure_category, \
+                                import_commercial_category, import_commercial_category_responsible
 from treasuryCOA.importcsv  import import_treasury_COA
 from payroll.importcsv import import_HR_Report
 
@@ -25,8 +26,9 @@ IMPORT_TYPE = {
     'NAC_DIT_Setting': import_NAC_DIT_setting, # add extra fields defined by DIT
     'NAC_Budget': import_NAC_DIT_budget,
     'HR_Report': import_HR_Report,
-    'NAC_Dashboard_other': import_expenditure_category
-
+    'NAC_Dashboard_other': import_expenditure_category,
+    'Commercial_Cat_responsible': import_commercial_category_responsible,
+    'Commercial_Cat':import_commercial_category
 }
 
 class Command(BaseCommand):

@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import NaturalCode, ExpenditureCategory
+from .models import NaturalCode, ExpenditureCategory, CommercialCategory, Analysis2
 
 from core.tables import FadminTable
 
@@ -17,6 +17,7 @@ class NaturalCodeTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = NaturalCode
         fields = ('account_L5_code__economic_budget_code',
+                  'commercial_category',
                   'nac_category_description',
                   'budget_description',
                   'budget_NAC_code',
@@ -24,8 +25,6 @@ class NaturalCodeTable(FadminTable):
                   'natural_account_code',
                   'natural_account_code_description',
                   )
-
-
 
 
 class ExpenditureCategoryTable(FadminTable):
@@ -39,3 +38,22 @@ class ExpenditureCategoryTable(FadminTable):
                   'description',
                   'further_description'
                   )
+
+
+class CommercialCategoryTable(FadminTable):
+
+    class Meta(FadminTable.Meta):
+        model = CommercialCategory
+        fields = ('commercial_category',
+                  'description',
+                  'approvers'
+                  )
+
+
+class Analysis2Table(FadminTable):
+
+    class Meta(FadminTable.Meta):
+        model = Analysis2
+        fields = ('analysis2_code',
+                  'analysis2_description',
+                 )

@@ -17,13 +17,13 @@ class Analysis1(TimeStampedModel):
 
 class Analysis2(TimeStampedModel):
     analysis2_code = models.CharField(primary_key=True, max_length=50)
-    analysis2_description = models.CharField(max_length=300)
+    analysis2_description = models.CharField(max_length=300, verbose_name='Market')
 
     def __str__(self):
        return self.analysis2_code + ' - ' + self.analysis2_description
 
     class Meta:
-        verbose_name_plural = "Analysis Codes 2"
+        verbose_name_plural = "Analysis 2 (Markets)"
 
 
 # Category defined by DIT
@@ -32,6 +32,9 @@ class NACCategory(TimeStampedModel):
 
     def __str__(self):
         return str(self.NAC_category_description)
+
+    class Meta:
+        verbose_name_plural = "Budget Groupings"
 
 
 class ExpenditureCategory(TimeStampedModel):
@@ -42,7 +45,22 @@ class ExpenditureCategory(TimeStampedModel):
     further_description = models.CharField(max_length=5000, blank=True, null=True)
 
     def __str__(self):
-        return str(self.NAC_category) + ' - ' + str(self.grouping_description)
+        return  str(self.grouping_description)
+
+    class Meta:
+        verbose_name_plural = "Expenditure Categories"
+
+
+class CommercialCategory(TimeStampedModel):
+    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category')
+    description = models.CharField(max_length=5000, blank=True, null=True)
+    approvers = models.CharField(max_length=5000, blank=True, null=True)
+
+    def __str__(self):
+        return  str(self.commercial_category)
+
+    class Meta:
+        verbose_name_plural = "Commercial Categories"
 
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
@@ -50,7 +68,8 @@ class NaturalCode(models.Model):
     natural_account_code = models.IntegerField(primary_key=True, verbose_name = 'NAC')
     natural_account_code_description = models.CharField(max_length=200, verbose_name='NAC Description')
     account_L5_code = models.ForeignKey(L5Account,on_delete=models.PROTECT, blank=True, null=True)
-    expenditure_category = models.ForeignKey( ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Category')
+    expenditure_category = models.ForeignKey( ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True)
+    commercial_category = models.ForeignKey( CommercialCategory, on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
     used_by_DIT = models.BooleanField(default=False)
 

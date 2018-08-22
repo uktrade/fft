@@ -8,7 +8,7 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
 from core.admin import AdminreadOnly
 
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory
 
 
 EXPORT_NAC_ITERATOR_HEADERS=['Level 6','Level 6 Description', 'DIT Use', 'Level 5', 'Level 5 Description','Category','Dashboard Group']
@@ -21,8 +21,9 @@ def _export_nac_iterator(queryset):
             obj.used_by_DIT,
             obj.account_L5_code,
             obj.account_L5_code.account_l5_long_name,
-            obj.expenditure_category.NAC_category,
+#            obj.expenditure_category.NAC_category,
             obj.expenditure_category,
+            obj.commercial_category,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.economic_budget_code,
             obj.account_L5_code.usage_code]
@@ -46,7 +47,8 @@ class NaturalCodeAdmin(AdminreadOnly):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
 
     def get_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code', 'expenditure_category', 'used_for_budget','used_by_DIT']
+        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code', 'expenditure_category',
+                'commercial_category','used_for_budget','used_by_DIT']
 
     search_fields = ['natural_account_code','natural_account_code_description']
     list_filter = ('used_by_DIT',
@@ -125,3 +127,4 @@ admin.site.register(Analysis2,Analysis2Admin)
 admin.site.register(NaturalCode,NaturalCodeAdmin)
 admin.site.register(ExpenditureCategory, ExpenditureCategoryAdmin)
 admin.site.register(NACCategory,NACCategoryAdmin)
+admin.site.register(CommercialCategory)

@@ -1,5 +1,5 @@
 import django_filters
-from .models import NACCategory, NaturalCode, Analysis1, Analysis2, ExpenditureCategory
+from .models import  NaturalCode, Analysis1, Analysis2, ExpenditureCategory, CommercialCategory
 from core.filters import MyFilterSet
 
 
@@ -22,4 +22,15 @@ class ExpenditureCategoryFilter(MyFilterSet):
         model = ExpenditureCategory
         fields = ['NAC_category']
 
+
+class CommercialCategoryFilter(MyFilterSet):
+    class Meta(MyFilterSet.Meta):
+        model = CommercialCategory
+        fields = ['description']
+
+
+class Analysis2Filter(MyFilterSet):
+    class Meta(MyFilterSet.Meta):
+        model = Analysis2
+        fields = ['analysis2_description']
 
