@@ -16,7 +16,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
 class Directorate(TimeStampedModel, LogChangeModel):
     directorate_code = models.CharField('Directorate', primary_key=True, max_length=6)
     directorate_name = models.CharField('Directorate Name', max_length=300)
-    director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, null=True)
+    director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT, null=True, blank=True)
     group = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
     active = models.BooleanField(default=True)
 

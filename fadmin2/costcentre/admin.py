@@ -13,40 +13,19 @@ from payroll.models import DITPeople
 from .models import DepartmentalGroup, Directorate, CostCentre, Programme
 
 
-EXPORT_CC_ITERATOR_HEADERS=['Cost Centre','Cost Centre Description', 'Active', 'Directorate', 'Directorate Description','Group','Group Description']
-
-def _export_cc_iterator(queryset):
-    yield EXPORT_CC_ITERATOR_HEADERS
-    for obj in queryset:
-        yield[obj.cost_centre_code,
-            obj.cost_centre_name,
-            obj.active,
-            obj.directorate.directorate_code,
-            obj.directorate.directorate_name,
-            obj.directorate.group.group_code,
-            obj.directorate.group.group_name]
-
-
-def export_cc_xlsx(modeladmin, request, queryset):
-    return(export_to_excel(queryset, _export_cc_iterator))
-
-
-def export_cc_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_cc_iterator))
-
-
 def make_inactive(modeladmin, request, queryset):
     q = queryset.filter(active=True)
-    q.update(active=False)
     ct = ContentType.objects.get_for_model(queryset.model) # for_model --> get_for_model
     for obj in q:
         LogEntry.objects.log_action( # log_entry --> log_action
             user_id = request.user.id,
             content_type_id = ct.pk,
             object_id = obj.pk,
-            object_repr = obj.__str__,
+            object_repr = str(obj),
             action_flag = CHANGE, # actions_flag --> action_flag
-            change_message = 'Locked.')
+            change_message = str(obj) + ' Deactivated.')
+    q.update(active=False)
+
 
 
 def make_active(modeladmin, request, queryset):
@@ -57,15 +36,35 @@ def make_active(modeladmin, request, queryset):
             user_id = request.user.id,
             content_type_id = ct.pk,
             object_id = obj.pk,
-            object_repr = 'a', # obj_str gives an error
+            object_repr = str(obj),
             action_flag = CHANGE, # actions_flag --> action_flag
-            change_message = 'Unlocked.')
-    q.update(active=True) # should I do it before or after writing to ther log?
+            change_message = str(obj) + ' Activated.')
+    q.update(active=True)
+
+
+
+def _export_cc_iterator(queryset):
+    yield ['Cost Centre','Cost Centre Description', 'Active',
+           'Directorate', 'Directorate Description','Directorate Active',
+           'Group','Group Description', 'Group Active']
+    for obj in queryset:
+        yield[obj.cost_centre_code,
+              obj.cost_centre_name,
+              obj.active,
+              obj.directorate.directorate_code,
+              obj.directorate.directorate_name,
+              obj.directorate.active,
+              obj.directorate.group.group_code,
+              obj.directorate.group.group_name,
+              obj.directorate.group.active]
+
+
+def export_cc_xlsx(modeladmin, request, queryset):
+    return(export_to_excel(queryset, _export_cc_iterator))
 
 
 export_cc_xlsx.short_description = u"Export to XLSX"
-export_cc_csv.short_description = u"Export to csv"
-make_inactive.short_description = u"Disactivate the selected object(s)"
+make_inactive.short_description = u"Deactivate the selected object(s)"
 make_active.short_description = u"Activate the selected object(s)"
 
 # Displays extra fields in the list of cost centres
@@ -107,7 +106,26 @@ class CostCentreAdmin(admin.ModelAdmin):
     list_filter = ('active',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
-    actions = [export_cc_csv, export_cc_xlsx, make_inactive, make_active] # new action to export to csv and xlsx
+    actions = [export_cc_xlsx, make_inactive, make_active] # new action to export to csv and xlsx
+
+
+def _export_directorate_iterator(queryset):
+    yield ['Directorate', 'Directorate Description','Active',
+           'Group','Group Description', 'Group Active']
+    for obj in queryset:
+        yield[obj.directorate_code,
+              obj.directorate_name,
+              obj.active,
+              obj.group.group_code,
+              obj.group.group_name,
+              obj.group.active]
+
+
+def export_directorate_xlsx(modeladmin, request, queryset):
+    return(export_to_excel(queryset, _export_directorate_iterator))
+
+
+export_directorate_xlsx.short_description = u"Export to XLSX"
 
 
 class DirectorateAdmin(admin.ModelAdmin):
@@ -143,7 +161,22 @@ class DirectorateAdmin(admin.ModelAdmin):
         else:
             return ['directorate_code', 'directorate_name', 'group', 'director', 'active']
 
-    actions = [make_inactive, make_active]
+    actions = [export_directorate_xlsx, make_inactive, make_active]
+
+
+def _export_group_iterator(queryset):
+    yield ['Group','Group Description', 'Active']
+    for obj in queryset:
+        yield[ obj.group_code,
+              obj.group_name,
+              obj.active]
+
+
+def export_group_xlsx(modeladmin, request, queryset):
+    return(export_to_excel(queryset, _export_group_iterator))
+
+
+export_group_xlsx.short_description = u"Export to XLSX"
 
 
 class DepartmentalGroupAdmin(admin.ModelAdmin):
@@ -169,8 +202,23 @@ class DepartmentalGroupAdmin(admin.ModelAdmin):
         else:
             return ['group_code', 'group_name', 'director_general', 'active']
 
-    actions = [make_inactive, make_active] # new action to export to csv and xlsx
+    actions = [export_group_xlsx, make_inactive, make_active]
 
+
+def _export_programme_iterator(queryset):
+    yield ['Programme Code','Description','Budget Type', 'Active']
+    for obj in queryset:
+        yield[ obj.programme_code,
+               obj.programme_description,
+               obj.budget_type,
+               obj.active]
+
+
+def export_programme_xlsx(modeladmin, request, queryset):
+    return(_export_programme_iterator(queryset, _export_group_iterator))
+
+
+export_programme_xlsx.short_description = u"Export to XLSX"
 
 
 
@@ -185,6 +233,7 @@ class ProgrammeAdmin(AdminEditOnly):
     def get_fields(self, request, obj=None):
         return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
 
+    actions = [export_programme_xlsx, make_inactive, make_active]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)

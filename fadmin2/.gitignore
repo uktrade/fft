@@ -90,3 +90,5 @@ local_settings.py
 db.sqlite3
 
 .vscode/
+
+my_project_visualized.png
