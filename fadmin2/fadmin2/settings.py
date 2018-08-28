@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'treasuryCOA.apps.TreasuryCOAConfig',
     'treasurySS.apps.TreasurySSConfig',
     'core.apps.CoreConfig',
+    'django_extensions',
     'django_tables2',
     'django_filters',
     'django_admin_listfilter_dropdown',
