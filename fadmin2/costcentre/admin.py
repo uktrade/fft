@@ -175,15 +175,15 @@ class DepartmentalGroupAdmin(admin.ModelAdmin):
 
 
 class ProgrammeAdmin(AdminEditOnly):
-    list_display = ('programme_code','programme_description','budget_type', 'DIT_in_use')
+    list_display = ('programme_code','programme_description','budget_type', 'active')
     search_fields = ['programme_code','programme_description']
-    list_filter = ['budget_type','DIT_in_use']
+    list_filter = ['budget_type','active']
 
     def get_readonly_fields(self, request, obj=None):
         return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
 
     def get_fields(self, request, obj=None):
-        return ['programme_code','programme_description','budget_type', 'DIT_in_use', 'created', 'updated']
+        return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
 
 
 
