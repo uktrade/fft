@@ -42,6 +42,6 @@ class ADIReportTable(tables.Table):
         #           'jul__sum','aug__sum','sep__sum','oct__sum','nov__sum','dec__sum','jan__sum','feb__sum','mar__sum')
         template_name = 'django_tables2/bootstrap.html'
         attrs = {"class": "table-striped table-bordered table-condensed small-font"}
-        empty_text = "There are no NAC matching the search criteria..."
+        empty_text = ""
 
 

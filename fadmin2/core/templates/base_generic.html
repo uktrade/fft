@@ -31,8 +31,8 @@
 
 
   <div class="col-1">
-    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-     <a class="nav-item nav-link active" href=""{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+    <div class="nav flex-column " id="v-pills-tab" role="tablist" aria-orientation="vertical">
+     <a class="nav-item nav-link active" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Chart of Account
         </a>
@@ -49,9 +49,6 @@
         </div>
       <a class="nav-item nav-link active" href="{% url 'forecast' %}">Financial Report <span class="sr-only"></span></a>
 
-       <a class="nav-link nav-link" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Gift and Hospitality
-        </a>
     </div>
   </div>
   <div class="col-11">
