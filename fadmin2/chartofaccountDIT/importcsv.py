@@ -53,7 +53,7 @@ def import_NAC_dashboard_Budget(csvfile):
         obj = ExpenditureCategory.objects.get(grouping_description=row[0].strip())
         print(row[0].strip())
         nac_obj = NaturalCode.objects.get(pk=row[1].strip())
-        nac_obj.used_by_DIT = True
+        nac_obj.active = True
         nac_obj.used_for_budget = True
         nac_obj.save()
         obj.linked_budget_code = nac_obj
@@ -86,7 +86,7 @@ def import_NAC_DIT_setting(csvfile):
         linenum = linenum + 1
         nac_obj = NaturalCode.objects.get(pk=row[0].strip())
         nac_obj.expenditure_category = ExpenditureCategory.objects.get(grouping_description=row[2].strip())
-        nac_obj.used_by_DIT = True
+        nac_obj.active = True
         nac_obj.save()
 
 
@@ -97,7 +97,7 @@ def import_NAC_DIT_budget(csvfile):
     for row in reader:
         linenum = linenum + 1
         nac_obj = NaturalCode.objects.get(pk=row[1].strip())
-        nac_obj.used_by_DIT = True
+        nac_obj.active = True
         nac_obj.save()
 
 

@@ -18,7 +18,7 @@ def _export_nac_iterator(queryset):
     for obj in queryset:
         yield[obj.natural_account_code,
             obj.natural_account_code_description,
-            obj.used_by_DIT,
+            obj.active,
             obj.account_L5_code,
             obj.account_L5_code.account_l5_long_name,
 #            obj.expenditure_category.NAC_category,
@@ -48,10 +48,10 @@ class NaturalCodeAdmin(AdminreadOnly):
 
     def get_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code', 'expenditure_category',
-                'commercial_category','used_for_budget','used_by_DIT']
+                'commercial_category','used_for_budget','active']
 
     search_fields = ['natural_account_code','natural_account_code_description']
-    list_filter = ('used_by_DIT',
+    list_filter = ('active',
                    'used_for_budget',
                    ('expenditure_category__NAC_category', RelatedDropdownFilter),
                    ('expenditure_category', RelatedDropdownFilter))
