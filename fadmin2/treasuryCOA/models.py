@@ -4,7 +4,7 @@ from core.metamodels import TimeStampedModel
 
 # Account codes from Treasury
 # the following table could be normalised more, but I don't think it matters
-class L1Account(models.Model):
+class L1Account(TimeStampedModel):
     account_l1_code = models.BigIntegerField(primary_key=True, verbose_name='account l1 code')
     account_l1_long_name = models.CharField(max_length=255, verbose_name='account l1 long name', blank=True)
     account_code = models.CharField(max_length=255,  verbose_name='accounts code')
@@ -17,7 +17,7 @@ class L1Account(models.Model):
         return str(self.account_l1_code) + ' - ' + str(self.account_l1_long_name)
 
 
-class L2Account(models.Model):
+class L2Account(TimeStampedModel):
     account_l2_code = models.BigIntegerField(primary_key=True, verbose_name='account l2 code')
     account_l2_long_name = models.CharField(max_length=255, verbose_name='account l2 long name', blank=True)
     account_l1 = models.ForeignKey(L1Account, verbose_name='account l1 code', on_delete=models.PROTECT)
@@ -29,7 +29,7 @@ class L2Account(models.Model):
         return str(self.account_l2_code)  + ' - ' + str(self.account_l2_long_name)
 
 
-class L3Account(models.Model):
+class L3Account(TimeStampedModel):
     account_l3_code = models.BigIntegerField(verbose_name='account l3 code', primary_key=True)
     account_l3_long_name = models.CharField(max_length=255, verbose_name='account l3 long name', blank=True)
     account_l2 = models.ForeignKey(L2Account, verbose_name='account l2 code', on_delete=models.PROTECT)
@@ -41,7 +41,7 @@ class L3Account(models.Model):
         return str(self.account_l3_code) + ' - ' + str(self.account_l3_long_name)
 
 
-class L4Account(models.Model):
+class L4Account(TimeStampedModel):
     account_l4_code = models.BigIntegerField(verbose_name='account l4 code', primary_key=True)
     account_l4_long_name = models.CharField(max_length=255, verbose_name='account l4 long name', blank=True)
     account_l3 = models.ForeignKey(L3Account, verbose_name='account l3 code',on_delete=models.PROTECT)
@@ -53,7 +53,7 @@ class L4Account(models.Model):
         return str(self.account_l4_code) + ' - ' + str(self.account_l4_long_name)
 
 
-class L5Account(models.Model):
+class L5Account(TimeStampedModel):
     BOTH = 'BOTH'
     OUTTURN = 'OUTTURN'
     PLANS = 'PLANS'

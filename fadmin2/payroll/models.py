@@ -47,7 +47,7 @@ class SalaryMonthlyAverage(models.Model):
 
 
 # Vacancies
-class VacanciesHeadCount(models.Model):
+class VacanciesHeadCount(TimeStampedModel):
     slot_code = models.CharField(max_length=100, primary_key=True)
     vacancy_grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     year = models.IntegerField()
@@ -72,7 +72,7 @@ class VacanciesHeadCount(models.Model):
 
 
 
-class PayModel(models.Model):
+class PayModel(TimeStampedModel):
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     year = models.IntegerField()
@@ -90,7 +90,7 @@ class PayModel(models.Model):
     mar = models.DecimalField(max_digits=18, decimal_places=1)
 
 
-class PayCostHeadCount(models.Model):
+class PayCostHeadCount(TimeStampedModel):
     staff_number = models.IntegerField()
     year = models.IntegerField()
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
@@ -110,7 +110,7 @@ class PayCostHeadCount(models.Model):
     mar = models.BooleanField()
 
 
-class AdminPayModel(models.Model):
+class AdminPayModel(TimeStampedModel):
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
     year = models.IntegerField()
     pay_rise = models.DecimalField(max_digits=18, decimal_places=2)

@@ -51,7 +51,7 @@ class ADIReport(TimeStampedModel):
 
 # table for
 # The sub segment is mapped to the combination of Programme and Cost Centre
-class SubSegmentUKTIMapping(models.Model):
+class SubSegmentUKTIMapping(TimeStampedModel):
     sub_segment_code = models.ForeignKey(SubSegment, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     programme = models.ForeignKey(Programme, on_delete=models.PROTECT)

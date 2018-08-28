@@ -5,7 +5,7 @@ from chartofaccountDIT.models import NaturalCode
 from payroll.models import Grade
 
 # Gift and Hospitality
-class GiftsAndHospitality(models.Model):
+class GiftsAndHospitality(TimeStampedModel):
     classification = models.CharField(max_length=50)
     type = models.CharField(max_length=50)
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
@@ -27,7 +27,7 @@ class GiftsAndHospitality(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
 
 
-class HotelAndTravel(models.Model):
+class HotelAndTravel(TimeStampedModel):
     traveller_name = models.CharField(max_length=500)
     product_type = models.CharField(max_length=500)
     room_nights = models.IntegerField()
