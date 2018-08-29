@@ -7,7 +7,8 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class TimeStampedModel(models.Model):
-    """ An abstract base class model that provide self-updating 'created' and 'modified' field"""
+    """ An abstract base class model that provide self-updating 'created' and 'modified' field, and an active flag"""
+    active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

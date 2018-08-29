@@ -1,8 +1,6 @@
 from django.contrib import admin
 
-
 from .models import AdminInfo, EventLog
-
 
 from django.contrib.admin.models import LogEntry, DELETION
 from django.utils.html import escape
@@ -10,10 +8,10 @@ from django.urls import reverse
 
 
 class LogEntryAdmin(admin.ModelAdmin):
-
+    """ Display the Admin log in the Admin interface"""
     date_hierarchy = 'action_time'
 
-#    readonly_fields = LogEntry._meta.get_all_field_names()
+    # make everything readonly
     def get_readonly_fields(self, request, obj=None):
         if obj:
             self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
@@ -76,13 +74,9 @@ admin.site.register(LogEntry, LogEntryAdmin)
 
 
 
-
-
-
-
 class AdminreadOnly(admin.ModelAdmin):
     """Admin class removing create/edit/delete on the model useful for structures created elsewhere and not changeable by DIT, like Treasury """
-    # different fields visible if updating or creating the object
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
             self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
@@ -125,7 +119,6 @@ class AdminEditOnly(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    # unfortunately, I cannot find a way to remove the 'save' button.
 
 admin.site.register(AdminInfo)
 admin.site.register(EventLog)

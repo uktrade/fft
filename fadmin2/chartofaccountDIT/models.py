@@ -71,7 +71,6 @@ class NaturalCode(TimeStampedModel):
     expenditure_category = models.ForeignKey( ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True)
     commercial_category = models.ForeignKey( CommercialCategory, on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
-    active = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
