@@ -129,7 +129,7 @@ def export_programme_xlsx(modeladmin, request, queryset):
 export_programme_xlsx.short_description = u"Export to Excel"
 
 
-class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
+class ProgrammeAdmin(AdminActiveField):
     list_display = ('programme_code','programme_description','budget_type', 'active')
     search_fields = ['programme_code','programme_description']
     list_filter = ['budget_type','active']
