@@ -1,10 +1,11 @@
 from django.contrib import admin
-
-from .models import AdminInfo, EventLog
-
 from django.contrib.admin.models import LogEntry, DELETION
 from django.utils.html import escape
 from django.urls import reverse
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType
+
+from .models import AdminInfo, EventLog
 
 
 class LogEntryAdmin(admin.ModelAdmin):
@@ -73,6 +74,48 @@ class LogEntryAdmin(admin.ModelAdmin):
 admin.site.register(LogEntry, LogEntryAdmin)
 
 
+class AdminActiveField(admin.ModelAdmin):
+    """Admin class including the handling for the active flag """
+    def make_inactive(self, request, queryset):
+        q = queryset.filter(active=True)
+        ct = ContentType.objects.get_for_model(queryset.model) # for_model --> get_for_model
+        for obj in q:
+            LogEntry.objects.log_action(
+                user_id = request.user.id,
+                content_type_id = ct.pk,
+                object_id = obj.pk,
+                object_repr = str(obj),
+                action_flag = CHANGE,
+                change_message = str(obj) + ' Deactivated.')
+        rows_updated = q.update(active=False)
+        if rows_updated == 1:
+            message_bit = "1 {} was".format(queryset.model._meta.verbose_name)
+        else:
+            message_bit = "{} {} were ".format(rows_updated, queryset.model._meta.verbose_name_plural)
+        self.message_user(request, "{} successfully deactivated.".format(message_bit))
+
+    def make_active(self, request, queryset):
+        q = queryset.filter(active=False)
+        ct = ContentType.objects.get_for_model(queryset.model)
+        for obj in q:
+            LogEntry.objects.log_action( # log_entry --> log_action
+                user_id = request.user.id,
+                content_type_id = ct.pk,
+                object_id = obj.pk,
+                object_repr = str(obj),
+                action_flag = CHANGE, # actions_flag --> action_flag
+                change_message = str(obj) + ' Activated.')
+        rows_updated = q.update(active=True)
+        if rows_updated == 1:
+            message_bit = "1 {} was".format(queryset.model._meta.verbose_name)
+        else:
+            message_bit = "{} {} were ".format(rows_updated, queryset.model._meta.verbose_name_plural)
+        self.message_user(request, "{} successfully activated.".format(message_bit))
+
+    make_inactive.short_description = u"Deactivate the selected object(s)"
+    make_active.short_description = u"Activate the selected object(s)"
+    actions = [make_inactive, make_active]
+
 
 class AdminreadOnly(admin.ModelAdmin):
     """Admin class removing create/edit/delete on the model useful for structures created elsewhere and not changeable by DIT, like Treasury """
@@ -103,7 +146,6 @@ class AdminreadOnly(admin.ModelAdmin):
 
 class AdminEditOnly(admin.ModelAdmin):
     """Admin class removing edit on the model useful for structures created elsewhere, where DIT wants to add useful tags """
-    # different fields visible if updating or creating the object
      # Remove delete from the list of action
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -121,4 +163,3 @@ class AdminEditOnly(admin.ModelAdmin):
 
 
 admin.site.register(AdminInfo)
-admin.site.register(EventLog)

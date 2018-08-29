@@ -1,46 +1,14 @@
 from django.contrib import admin
 
-from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.contenttypes.models import ContentType
 
 from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
 
 from core.exportutils import export_to_csv, export_to_excel
-from core.admin import AdminEditOnly
+from core.admin import AdminEditOnly, AdminActiveField
 
 from payroll.models import DITPeople
 
 from .models import DepartmentalGroup, Directorate, CostCentre, Programme
-
-
-def make_inactive(modeladmin, request, queryset):
-    q = queryset.filter(active=True)
-    ct = ContentType.objects.get_for_model(queryset.model) # for_model --> get_for_model
-    for obj in q:
-        LogEntry.objects.log_action( # log_entry --> log_action
-            user_id = request.user.id,
-            content_type_id = ct.pk,
-            object_id = obj.pk,
-            object_repr = str(obj),
-            action_flag = CHANGE, # actions_flag --> action_flag
-            change_message = str(obj) + ' Deactivated.')
-    q.update(active=False)
-
-
-
-def make_active(modeladmin, request, queryset):
-    q = queryset.filter(active=False)
-    ct = ContentType.objects.get_for_model(queryset.model) # for_model --> get_for_model
-    for obj in q:
-        LogEntry.objects.log_action( # log_entry --> log_action
-            user_id = request.user.id,
-            content_type_id = ct.pk,
-            object_id = obj.pk,
-            object_repr = str(obj),
-            action_flag = CHANGE, # actions_flag --> action_flag
-            change_message = str(obj) + ' Activated.')
-    q.update(active=True)
-
 
 
 def _export_cc_iterator(queryset):
@@ -64,11 +32,9 @@ def export_cc_xlsx(modeladmin, request, queryset):
 
 
 export_cc_xlsx.short_description = u"Export to XLSX"
-make_inactive.short_description = u"Deactivate the selected object(s)"
-make_active.short_description = u"Activate the selected object(s)"
 
 # Displays extra fields in the list of cost centres
-class CostCentreAdmin(admin.ModelAdmin):
+class CostCentreAdmin(AdminActiveField):
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_name', 'group_name', 'active')
 
     def directorate_name(self, instance): # required to display the field from a foreign key
@@ -106,7 +72,7 @@ class CostCentreAdmin(admin.ModelAdmin):
     list_filter = ('active',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
-    actions = [export_cc_xlsx, make_inactive, make_active] # new action to export to csv and xlsx
+    actions = [export_cc_xlsx]
 
 
 def _export_directorate_iterator(queryset):
@@ -128,7 +94,7 @@ def export_directorate_xlsx(modeladmin, request, queryset):
 export_directorate_xlsx.short_description = u"Export to XLSX"
 
 
-class DirectorateAdmin(admin.ModelAdmin):
+class DirectorateAdmin(AdminActiveField):
     list_display = ('directorate_code','directorate_name', 'dgroup_name', 'director', 'active')
     search_fields = ['directorate_code','directorate_name']
     list_filter = ('active',
@@ -161,7 +127,7 @@ class DirectorateAdmin(admin.ModelAdmin):
         else:
             return ['directorate_code', 'directorate_name', 'group', 'director', 'active']
 
-    actions = [export_directorate_xlsx, make_inactive, make_active]
+    actions = [export_directorate_xlsx]
 
 
 def _export_group_iterator(queryset):
@@ -179,7 +145,7 @@ def export_group_xlsx(modeladmin, request, queryset):
 export_group_xlsx.short_description = u"Export to XLSX"
 
 
-class DepartmentalGroupAdmin(admin.ModelAdmin):
+class DepartmentalGroupAdmin(AdminActiveField):
     list_display = ('group_code', 'group_name', 'director_general', 'active')
     search_fields = ['group_code','group_name']
 
@@ -202,7 +168,7 @@ class DepartmentalGroupAdmin(admin.ModelAdmin):
         else:
             return ['group_code', 'group_name', 'director_general', 'active']
 
-    actions = [export_group_xlsx, make_inactive, make_active]
+    actions = [export_group_xlsx]
 
 
 def _export_programme_iterator(queryset):
@@ -222,7 +188,7 @@ export_programme_xlsx.short_description = u"Export to XLSX"
 
 
 
-class ProgrammeAdmin(AdminEditOnly):
+class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
     list_display = ('programme_code','programme_description','budget_type', 'active')
     search_fields = ['programme_code','programme_description']
     list_filter = ['budget_type','active']
@@ -233,11 +199,10 @@ class ProgrammeAdmin(AdminEditOnly):
     def get_fields(self, request, obj=None):
         return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
 
-    actions = [export_programme_xlsx, make_inactive, make_active]
+    actions = [export_programme_xlsx]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
-
 admin.site.register(Programme, ProgrammeAdmin)

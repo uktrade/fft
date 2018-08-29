@@ -10,6 +10,10 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     def __str__(self):
         return str(self.group_name)
 
+    class Meta:
+       verbose_name = "Departmental Group"
+       verbose_name_plural = "Departmental Groups"
+
 
 class Directorate(TimeStampedModel, LogChangeModel):
     directorate_code = models.CharField('Directorate', primary_key=True, max_length=6)
@@ -19,6 +23,10 @@ class Directorate(TimeStampedModel, LogChangeModel):
 
     def __str__(self):
         return str(self.directorate_name)
+
+    class Meta:
+       verbose_name = "Directorate"
+       verbose_name_plural = "Directorates"
 
 
 class CostCentre(TimeStampedModel, LogChangeModel):
@@ -31,6 +39,10 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)
 
+    class Meta:
+       verbose_name = "Cost Centre"
+       verbose_name_plural = "Cost Centres"
+
 
 class Programme(TimeStampedModel, LogChangeModel):
     programme_code = models.CharField('Programme Code', primary_key=True, max_length=50)
@@ -39,4 +51,9 @@ class Programme(TimeStampedModel, LogChangeModel):
 
     def __str__(self):
        return self.programme_code + ' - ' + self.programme_description
+
+    class Meta:
+       verbose_name = "Programme Code"
+       verbose_name_plural = "Programme Codes"
+
 
