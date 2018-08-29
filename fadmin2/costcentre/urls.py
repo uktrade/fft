@@ -4,6 +4,5 @@ from . import views
 
 urlpatterns = [
     path('costcentrefilter/', views.FilteredCostListView.as_view(), name='costcentrefilter'),
-    path('programmefilter/', views.FilteredProgrammeView.as_view(), name='programmefilter'),
 ]
 

@@ -6,9 +6,9 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 
 
 from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
-from core.admin import AdminreadOnly
+from core.admin import AdminreadOnly, AdminActiveField, AdminEditOnly
 
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory, ProgrammeCode
 
 
 def _export_nac_iterator(queryset):
@@ -113,9 +113,41 @@ class NACCategoryAdmin(admin.ModelAdmin):
      actions = [export_NACCategory_csv, export_NACCategory_xlsx]
 
 
+def _export_programme_iterator(queryset):
+    yield ['Programme Code','Description','Budget Type', 'Active']
+    for obj in queryset:
+        yield[ obj.programme_code,
+               obj.programme_description,
+               obj.budget_type,
+               obj.active]
+
+
+def export_programme_xlsx(modeladmin, request, queryset):
+    return(export_to_excel(queryset, _export_programme_iterator))
+
+
+export_programme_xlsx.short_description = u"Export to Excel"
+
+
+class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
+    list_display = ('programme_code','programme_description','budget_type', 'active')
+    search_fields = ['programme_code','programme_description']
+    list_filter = ['budget_type','active']
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
+
+    def get_fields(self, request, obj=None):
+        return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
+
+    actions = [export_programme_xlsx]
+
+
+
 admin.site.register(Analysis1,Analysis1Admin)
 admin.site.register(Analysis2,Analysis2Admin)
 admin.site.register(NaturalCode,NaturalCodeAdmin)
 admin.site.register(ExpenditureCategory, ExpenditureCategoryAdmin)
 admin.site.register(NACCategory,NACCategoryAdmin)
 admin.site.register(CommercialCategory)
+admin.site.register(ProgrammeCode, ProgrammeAdmin)

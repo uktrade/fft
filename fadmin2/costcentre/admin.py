@@ -8,7 +8,7 @@ from core.admin import AdminEditOnly, AdminActiveField
 
 from payroll.models import DITPeople
 
-from .models import DepartmentalGroup, Directorate, CostCentre, Programme
+from .models import DepartmentalGroup, Directorate, CostCentre
 
 
 def _export_cc_iterator(queryset):
@@ -171,37 +171,37 @@ class DepartmentalGroupAdmin(AdminActiveField):
     actions = [export_group_xlsx]
 
 
-def _export_programme_iterator(queryset):
-    yield ['Programme Code','Description','Budget Type', 'Active']
-    for obj in queryset:
-        yield[ obj.programme_code,
-               obj.programme_description,
-               obj.budget_type,
-               obj.active]
-
-
-def export_programme_xlsx(modeladmin, request, queryset):
-    return(export_to_excel(queryset, _export_programme_iterator))
-
-
-export_programme_xlsx.short_description = u"Export to Excel"
-
-
-class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
-    list_display = ('programme_code','programme_description','budget_type', 'active')
-    search_fields = ['programme_code','programme_description']
-    list_filter = ['budget_type','active']
-
-    def get_readonly_fields(self, request, obj=None):
-        return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
-
-    def get_fields(self, request, obj=None):
-        return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
-
-    actions = [export_programme_xlsx]
+# def _export_programme_iterator(queryset):
+#     yield ['Programme Code','Description','Budget Type', 'Active']
+#     for obj in queryset:
+#         yield[ obj.programme_code,
+#                obj.programme_description,
+#                obj.budget_type,
+#                obj.active]
+#
+#
+# def export_programme_xlsx(modeladmin, request, queryset):
+#     return(export_to_excel(queryset, _export_programme_iterator))
+#
+#
+# export_programme_xlsx.short_description = u"Export to Excel"
+#
+#
+# class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
+#     list_display = ('programme_code','programme_description','budget_type', 'active')
+#     search_fields = ['programme_code','programme_description']
+#     list_filter = ['budget_type','active']
+#
+#     def get_readonly_fields(self, request, obj=None):
+#         return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
+#
+#     def get_fields(self, request, obj=None):
+#         return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
+#
+#     actions = [export_programme_xlsx]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
-admin.site.register(Programme, ProgrammeAdmin)
+# admin.site.register(Programme, ProgrammeAdmin)

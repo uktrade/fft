@@ -1,6 +1,6 @@
 import django_tables2 as tables
 
-from .models import CostCentre, Programme
+from .models import CostCentre
 
 from core.tables import FadminTable
 
@@ -25,14 +25,4 @@ class CostCentreTable(FadminTable):
                   'business_partner'
         )
 
-
-class ProgrammeTable(FadminTable):
-
-    class Meta(FadminTable.Meta):
-        model = Programme
-        fields = (
-            'programme_code',
-            'programme_description',
-            'budget_type'
-        )
 

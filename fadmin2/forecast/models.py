@@ -1,7 +1,7 @@
 from django.db import models
 from core.metamodels import TimeStampedModel
-from costcentre.models  import  DepartmentalGroup, CostCentre, Programme
-from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2
+from costcentre.models  import  DepartmentalGroup, CostCentre
+from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2, ProgrammeCode
 from treasurySS.models import SubSegment
 
 # The ADIReport contains the forecast and the actuals
@@ -9,7 +9,7 @@ from treasurySS.models import SubSegment
 class ADIReport(TimeStampedModel):
 
     financial_year = models.IntegerField()
-    programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
+    programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT)
@@ -54,5 +54,5 @@ class ADIReport(TimeStampedModel):
 class SubSegmentUKTIMapping(TimeStampedModel):
     sub_segment_code = models.ForeignKey(SubSegment, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
+    programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
 

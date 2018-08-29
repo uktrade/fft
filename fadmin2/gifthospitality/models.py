@@ -1,7 +1,7 @@
 from django.db import models
 from core.metamodels import TimeStampedModel
-from costcentre.models  import  DepartmentalGroup, CostCentre, Programme
-from chartofaccountDIT.models import NaturalCode
+from costcentre.models  import  DepartmentalGroup, CostCentre
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from payroll.models import Grade
 
 # Gift and Hospitality
@@ -27,21 +27,21 @@ class GiftsAndHospitality(TimeStampedModel):
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
 
 
-class HotelAndTravel(TimeStampedModel):
-    traveller_name = models.CharField(max_length=500)
-    product_type = models.CharField(max_length=500)
-    room_nights = models.IntegerField()
-    travel_date = models.CharField(max_length=10)
-    routing = models.CharField(max_length=500)
-    geog_indicator = models.CharField(max_length=500)
-    hotel_city = models.CharField(max_length=500)
-    class_of_service = models.CharField(max_length=500)
-    rail_journey_type = models.CharField(max_length=500)
-    hotel_name = models.CharField(max_length=500)
-    supplier_name = models.CharField(max_length=500)
-    fee_paid = models.DecimalField(max_digits=18, decimal_places=2)
-    int_dom = models.CharField(max_length=500)
-    reason_code_desc = models.CharField(max_length=500)
-    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
-    natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
+# class HotelAndTravel(TimeStampedModel):
+#     traveller_name = models.CharField(max_length=500)
+#     product_type = models.CharField(max_length=500)
+#     room_nights = models.IntegerField()
+#     travel_date = models.CharField(max_length=10)
+#     routing = models.CharField(max_length=500)
+#     geog_indicator = models.CharField(max_length=500)
+#     hotel_city = models.CharField(max_length=500)
+#     class_of_service = models.CharField(max_length=500)
+#     rail_journey_type = models.CharField(max_length=500)
+#     hotel_name = models.CharField(max_length=500)
+#     supplier_name = models.CharField(max_length=500)
+#     fee_paid = models.DecimalField(max_digits=18, decimal_places=2)
+#     int_dom = models.CharField(max_length=500)
+#     reason_code_desc = models.CharField(max_length=500)
+#     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
+#     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
+#     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)

@@ -1,4 +1,4 @@
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory, ProgrammeCode
 from treasuryCOA.models import L5Account
 from core.myutils import import_obj, import_list_obj, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK
 
@@ -116,3 +116,12 @@ def import_commercial_category_responsible(csvfile):
         obj.approvers = row[2].strip()
         obj.save()
 
+
+PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,
+            IMPORT_CSV_PK_KEY: 'Code',
+            IMPORT_CSV_FIELDLIST_KEY: {ProgrammeCode.programme_description.field_name: 'Description',
+                                       ProgrammeCode.budget_type.field_name: 'Type'}}
+
+
+def import_programme(csvfile):
+    import_obj(csvfile, PROG_KEY)

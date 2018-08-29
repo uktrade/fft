@@ -91,7 +91,7 @@ class AdminActiveField(admin.ModelAdmin):
                 object_id = obj.pk,
                 object_repr = str(obj),
                 action_flag = CHANGE,
-                change_message = str(obj) + msg)
+                change_message = str(obj) + ' ' + msg)
         rows_updated = q.update(active=new_active_value)
         if rows_updated == 1:
             message_bit = "1 {} was".format(queryset.model._meta.verbose_name)

@@ -54,11 +54,3 @@ def import_cc(csvfile):
     import_obj(csvfile, CC_KEY)
 
 
-PROG_KEY = {IMPORT_CSV_MODEL_KEY: Programme,
-            IMPORT_CSV_PK_KEY: 'Code',
-            IMPORT_CSV_FIELDLIST_KEY: {Programme.programme_description.field_name: 'Description',
-                                        Programme.budget_type.field_name: 'Type'}}
-
-
-def import_programme(csvfile):
-    import_obj(csvfile, PROG_KEY)

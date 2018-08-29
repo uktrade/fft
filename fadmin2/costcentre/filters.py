@@ -2,7 +2,7 @@ import django_filters
 
 from django.db.models import Q
 from core.filters import MyFilterSet
-from .models import Programme, CostCentre
+from .models import CostCentre
 
 
 class OldCostCentreFilter(MyFilterSet):
@@ -52,18 +52,4 @@ class CostCentreFilter(MyFilterSet):
         return cc.filter(active=True)
 
 
-class ProgrammeFilter(MyFilterSet):
-
-    class Meta(MyFilterSet.Meta):
-        model = Programme
-        fields = [
-                  'programme_code',
-                  'programme_description',
-                  'budget_type'
-                  ]
-
-    @property
-    def qs(self):
-        prog = super(ProgrammeFilter, self).qs
-        return prog.filter(active=True)
 

@@ -44,16 +44,5 @@ class CostCentre(TimeStampedModel, LogChangeModel):
        verbose_name_plural = "Cost Centres"
 
 
-class Programme(TimeStampedModel, LogChangeModel):
-    programme_code = models.CharField('Programme Code', primary_key=True, max_length=50)
-    programme_description = models.CharField('Programme Name', max_length=100)
-    budget_type = models.CharField('Budget Type', max_length=100)
-
-    def __str__(self):
-       return self.programme_code + ' - ' + self.programme_description
-
-    class Meta:
-       verbose_name = "Programme Code"
-       verbose_name_plural = "Programme Codes"
 
 

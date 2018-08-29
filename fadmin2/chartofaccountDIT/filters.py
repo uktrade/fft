@@ -1,5 +1,5 @@
 import django_filters
-from .models import  NaturalCode, Analysis1, Analysis2, ExpenditureCategory, CommercialCategory
+from .models import  NaturalCode, Analysis1, Analysis2, ExpenditureCategory, CommercialCategory, ProgrammeCode
 from core.filters import MyFilterSet
 
 
@@ -38,3 +38,18 @@ class Analysis2Filter(MyFilterSet):
         model = Analysis2
         fields = ['analysis2_description']
 
+
+class ProgrammeFilter(MyFilterSet):
+
+    class Meta(MyFilterSet.Meta):
+        model = ProgrammeCode
+        fields = [
+                  'programme_code',
+                  'programme_description',
+                  'budget_type'
+                  ]
+
+    @property
+    def qs(self):
+        prog = super(ProgrammeFilter, self).qs
+        return prog.filter(active=True)

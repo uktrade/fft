@@ -8,7 +8,7 @@ from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDrop
 from core.exportutils import export_to_csv, export_to_excel
 
 
-from .models import Grade, SalaryMonthlyAverage, VacanciesHeadCount, PayModel, PayCostHeadCount, AdminPayModel, DITPeople
+from .models import Grade, SalaryMonthlyAverage, PayModel, AdminPayModel, DITPeople
 
 class DIT_PeopleAdmin(admin.ModelAdmin):
     list_display = ('surname', 'name', 'grade', 'isdirector', 'isbusinesspartner', 'active')
@@ -44,7 +44,5 @@ class DIT_PeopleAdmin(admin.ModelAdmin):
 admin.site.register(Grade)
 admin.site.register(DITPeople, DIT_PeopleAdmin)
 admin.site.register(SalaryMonthlyAverage)
-admin.site.register(VacanciesHeadCount)
 admin.site.register(PayModel)
-admin.site.register(PayCostHeadCount)
 admin.site.register(AdminPayModel)

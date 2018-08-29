@@ -2,8 +2,8 @@
 from core.views import FAdminFilteredView
 
 
-from .tables import NaturalCodeTable, ExpenditureCategoryTable, CommercialCategoryTable, Analysis2Table
-from .filters import NACFilter, ExpenditureCategoryFilter, CommercialCategoryFilter, Analysis2Filter
+from .tables import NaturalCodeTable, ExpenditureCategoryTable, CommercialCategoryTable, Analysis2Table, ProgrammeTable
+from .filters import NACFilter, ExpenditureCategoryFilter, CommercialCategoryFilter, Analysis2Filter, ProgrammeFilter
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -47,5 +47,16 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Markets (Analysis 2)'
+        return context
+
+
+class FilteredProgrammeView(FAdminFilteredView):
+    table_class = ProgrammeTable
+    model = table_class.Meta.model
+    filterset_class = ProgrammeFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Programme Codes'
         return context
 

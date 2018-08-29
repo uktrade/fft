@@ -1,7 +1,7 @@
 from django.db import models
 from core.metamodels import TimeStampedModel, LogChangeModel
-from costcentre.models  import  DepartmentalGroup, CostCentre, Programme
-from chartofaccountDIT.models import NaturalCode
+from costcentre.models  import  DepartmentalGroup, CostCentre
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 # salaries data
 
 
@@ -45,28 +45,28 @@ class SalaryMonthlyAverage(models.Model):
 
 
 # Vacancies
-class VacanciesHeadCount(TimeStampedModel):
-    slot_code = models.CharField(max_length=100, primary_key=True)
-    vacancy_grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
-    year = models.IntegerField()
-    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
-    apr = models.BooleanField()
-    may = models.BooleanField()
-    jun = models.BooleanField()
-    jul = models.BooleanField()
-    aug = models.BooleanField()
-    sep = models.BooleanField()
-    oct = models.BooleanField()
-    nov = models.BooleanField()
-    dec = models.BooleanField()
-    jan = models.BooleanField()
-    feb = models.BooleanField()
-    mar = models.BooleanField()
-    HR_reason = models.CharField(max_length=50)  # only two values are valid
-
-    def __str__(self):
-       return self.slot_code
+# class VacanciesHeadCount(TimeStampedModel):
+#     slot_code = models.CharField(max_length=100, primary_key=True)
+#     vacancy_grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
+#     year = models.IntegerField()
+#     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
+#     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
+#     apr = models.BooleanField()
+#     may = models.BooleanField()
+#     jun = models.BooleanField()
+#     jul = models.BooleanField()
+#     aug = models.BooleanField()
+#     sep = models.BooleanField()
+#     oct = models.BooleanField()
+#     nov = models.BooleanField()
+#     dec = models.BooleanField()
+#     jan = models.BooleanField()
+#     feb = models.BooleanField()
+#     mar = models.BooleanField()
+#     HR_reason = models.CharField(max_length=50)  # only two values are valid
+#
+#     def __str__(self):
+#        return self.slot_code
 
 
 
@@ -88,25 +88,25 @@ class PayModel(TimeStampedModel):
     mar = models.DecimalField(max_digits=18, decimal_places=1)
 
 
-class PayCostHeadCount(TimeStampedModel):
-    staff_number = models.IntegerField()
-    year = models.IntegerField()
-    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    programme = models.ForeignKey(Programme, on_delete=models.PROTECT)
-    natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
-    apr = models.BooleanField()
-    may = models.BooleanField()
-    jun = models.BooleanField()
-    jul = models.BooleanField()
-    aug = models.BooleanField()
-    sep = models.BooleanField()
-    oct = models.BooleanField()
-    nov = models.BooleanField()
-    dec = models.BooleanField()
-    jan = models.BooleanField()
-    feb = models.BooleanField()
-    mar = models.BooleanField()
-
+# class PayCostHeadCount(TimeStampedModel):
+#     staff_number = models.IntegerField()
+#     year = models.IntegerField()
+#     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
+#     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
+#     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
+#     apr = models.BooleanField()
+#     may = models.BooleanField()
+#     jun = models.BooleanField()
+#     jul = models.BooleanField()
+#     aug = models.BooleanField()
+#     sep = models.BooleanField()
+#     oct = models.BooleanField()
+#     nov = models.BooleanField()
+#     dec = models.BooleanField()
+#     jan = models.BooleanField()
+#     feb = models.BooleanField()
+#     mar = models.BooleanField()
+#
 
 class AdminPayModel(TimeStampedModel):
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
