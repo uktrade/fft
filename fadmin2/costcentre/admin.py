@@ -31,7 +31,7 @@ def export_cc_xlsx(modeladmin, request, queryset):
     return(export_to_excel(queryset, _export_cc_iterator))
 
 
-export_cc_xlsx.short_description = u"Export to XLSX"
+export_cc_xlsx.short_description = u"Export to Excel"
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField):
@@ -91,7 +91,7 @@ def export_directorate_xlsx(modeladmin, request, queryset):
     return(export_to_excel(queryset, _export_directorate_iterator))
 
 
-export_directorate_xlsx.short_description = u"Export to XLSX"
+export_directorate_xlsx.short_description = u"Export to Excel"
 
 
 class DirectorateAdmin(AdminActiveField):
@@ -142,7 +142,7 @@ def export_group_xlsx(modeladmin, request, queryset):
     return(export_to_excel(queryset, _export_group_iterator))
 
 
-export_group_xlsx.short_description = u"Export to XLSX"
+export_group_xlsx.short_description = u"Export to Excel"
 
 
 class DepartmentalGroupAdmin(AdminActiveField):
@@ -181,11 +181,10 @@ def _export_programme_iterator(queryset):
 
 
 def export_programme_xlsx(modeladmin, request, queryset):
-    return(_export_programme_iterator(queryset, _export_group_iterator))
+    return(export_to_excel(queryset, _export_programme_iterator))
 
 
-export_programme_xlsx.short_description = u"Export to XLSX"
-
+export_programme_xlsx.short_description = u"Export to Excel"
 
 
 class ProgrammeAdmin(AdminActiveField, AdminEditOnly):

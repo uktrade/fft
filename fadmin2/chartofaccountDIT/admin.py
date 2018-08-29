@@ -11,22 +11,17 @@ from core.admin import AdminreadOnly
 from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory
 
 
-EXPORT_NAC_ITERATOR_HEADERS=['Level 6','Level 6 Description', 'DIT Use', 'Level 5', 'Level 5 Description','Category','Dashboard Group']
-
 def _export_nac_iterator(queryset):
-    yield EXPORT_NAC_ITERATOR_HEADERS
+    yield ['Level 6', 'Level 6 Description',
+           'Active', 'Level 5', 'Level 5 Description',
+           'Category','Dashboard Group']
+
     for obj in queryset:
         yield[obj.natural_account_code,
             obj.natural_account_code_description,
             obj.active,
-            obj.account_L5_code,
-            obj.account_L5_code.account_l5_long_name,
-#            obj.expenditure_category.NAC_category,
-            obj.expenditure_category,
-            obj.commercial_category,
-            obj.account_L5_code.economic_budget_code,
-            obj.account_L5_code.economic_budget_code,
-            obj.account_L5_code.usage_code]
+            obj.account_L5_code.account_l5_code,
+            obj.account_L5_code.account_l5_long_name]
 
 
 def export_nac_xlsx(modeladmin, request, queryset):
@@ -37,11 +32,13 @@ def export_nac_csv(modeladmin, request, queryset):
     return (export_to_csv(queryset, _export_nac_iterator))
 
 
-export_nac_xlsx.short_description = u"Export to XLSX"
+export_nac_xlsx.short_description = u"Export to Excel"
 export_nac_csv.short_description = u"Export to csv"
 
     
 class NaturalCodeAdmin(AdminreadOnly):
+
+    list_display = ('natural_account_code', 'natural_account_code_description', 'active')
 
     def get_readonly_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
@@ -55,13 +52,7 @@ class NaturalCodeAdmin(AdminreadOnly):
                    'used_for_budget',
                    ('expenditure_category__NAC_category', RelatedDropdownFilter),
                    ('expenditure_category', RelatedDropdownFilter))
-    actions = [export_nac_xlsx] # new action to export to csv and xlsx
-    # list_filter = (
-    #     # for ordinary fields
-    #     ('a_charfield', DropdownFilter),
-    #     # for related fields
-    #     ('a_foreignkey_field', RelatedDropdownFilter),
-    # )
+    actions = [export_nac_xlsx]
 
 
 def export_analysis1_csv(modeladmin, request, queryset):

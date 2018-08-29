@@ -12,7 +12,8 @@ class Analysis1(TimeStampedModel):
        return self.analysis1_code + ' - ' + self.analysis1_description
 
     class Meta:
-        verbose_name_plural = "Analysis Codes 1"
+        verbose_name_plural = "Contract Reconciliations (Analysis 1)"
+        verbose_name = "Contract Reconciliation (Analysis 1)"
 
 
 class Analysis2(TimeStampedModel):
@@ -23,7 +24,8 @@ class Analysis2(TimeStampedModel):
        return self.analysis2_code + ' - ' + self.analysis2_description
 
     class Meta:
-        verbose_name_plural = "Analysis 2 (Markets)"
+        verbose_name = "Market (Analysis 2)"
+        verbose_name_plural = "Markets (Analysis 2)"
 
 
 # Category defined by DIT
@@ -34,6 +36,7 @@ class NACCategory(TimeStampedModel):
         return str(self.NAC_category_description)
 
     class Meta:
+        verbose_name = "Budget Grouping"
         verbose_name_plural = "Budget Groupings"
 
 
@@ -48,6 +51,7 @@ class ExpenditureCategory(TimeStampedModel):
         return  str(self.grouping_description)
 
     class Meta:
+        verbose_name = "Expenditure Category"
         verbose_name_plural = "Expenditure Categories"
 
 
@@ -60,6 +64,7 @@ class CommercialCategory(TimeStampedModel):
         return  str(self.commercial_category)
 
     class Meta:
+        verbose_name = "Commercial Category"
         verbose_name_plural = "Commercial Categories"
 
 
@@ -75,3 +80,6 @@ class NaturalCode(TimeStampedModel):
     def __str__(self):
         return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
 
+    class Meta:
+        verbose_name = "Natural Account Code (NAC)"
+        verbose_name_plural = "Natural Account Codes (NAC)"
