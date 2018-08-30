@@ -12,6 +12,3 @@ class FilteredCostListView(FAdminFilteredView):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Cost Centre Hierarchy'
         return context
-
-
-

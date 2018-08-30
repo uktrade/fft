@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('costcentre', '0005_auto_20180829_0936'),
         ('chartofaccountDIT', '0007_programmecode'),
@@ -21,9 +20,12 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
-                ('sub_segment_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='treasurySS.SubSegment')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('programme',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
+                ('sub_segment_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='treasurySS.SubSegment')),
             ],
             options={
                 'abstract': False,

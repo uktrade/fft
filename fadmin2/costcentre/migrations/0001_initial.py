@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,7 +15,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('cost_centre_code', models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Cost Centre Code')),
+                ('cost_centre_code',
+                 models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Cost Centre Code')),
                 ('cost_centre_name', models.CharField(max_length=300, verbose_name='Cost Centre Name')),
                 ('active', models.BooleanField(default=True)),
             ],
@@ -42,7 +42,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('directorate_code', models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Directorate')),
+                ('directorate_code',
+                 models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Directorate')),
                 ('directorate_name', models.CharField(max_length=300, verbose_name='Directorate Name')),
                 ('active', models.BooleanField(default=True)),
             ],
@@ -55,7 +56,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('programme_code', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Programme Code')),
+                ('programme_code',
+                 models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Programme Code')),
                 ('programme_description', models.CharField(max_length=100, verbose_name='Programme Name')),
                 ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
                 ('DIT_in_use', models.BooleanField(default=True, verbose_name='Used by DIT')),

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -25,7 +24,8 @@ class Migration(migrations.Migration):
                 ('SCS_percent', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('SCS_number', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('indicative_budget', models.IntegerField()),
-                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
+                ('group_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
             ],
         ),
         migrations.CreateModel(
@@ -37,10 +37,12 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(blank=True, max_length=50)),
                 ('surname', models.CharField(max_length=50)),
                 ('email', models.CharField(blank=True, max_length=50)),
-                ('isdirector', models.BooleanField(default=False, verbose_name='General Director/Director/Deputy Director')),
+                ('isdirector',
+                 models.BooleanField(default=False, verbose_name='General Director/Director/Deputy Director')),
                 ('isbusinesspartner', models.BooleanField(default=False, verbose_name='Business Partner')),
                 ('active', models.BooleanField(default=True)),
-                ('cost_centre', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('cost_centre', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                                  to='costcentre.CostCentre')),
             ],
             options={
                 'verbose_name': 'DIT People',
@@ -71,9 +73,12 @@ class Migration(migrations.Migration):
                 ('jan', models.BooleanField()),
                 ('feb', models.BooleanField()),
                 ('mar', models.BooleanField()),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('natural_account_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('natural_account_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
+                (
+                'programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
             ],
         ),
         migrations.CreateModel(
@@ -94,14 +99,17 @@ class Migration(migrations.Migration):
                 ('feb', models.DecimalField(decimal_places=1, max_digits=18)),
                 ('mar', models.DecimalField(decimal_places=1, max_digits=18)),
                 ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
-                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
+                ('group_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
             ],
         ),
         migrations.CreateModel(
             name='SalaryMonthlyAverage',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('average_type', models.CharField(choices=[('CC', 'CostCentre'), ('DIR', 'Directorate'), ('DG', 'DepartmentalGroup')], max_length=50)),
+                ('average_type',
+                 models.CharField(choices=[('CC', 'CostCentre'), ('DIR', 'Directorate'), ('DG', 'DepartmentalGroup')],
+                                  max_length=50)),
                 ('average_by', models.CharField(max_length=50)),
                 ('average_value', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
@@ -125,14 +133,17 @@ class Migration(migrations.Migration):
                 ('feb', models.BooleanField()),
                 ('mar', models.BooleanField()),
                 ('HR_reason', models.CharField(max_length=50)),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                (
+                'programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
                 ('vacancy_grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
             ],
         ),
         migrations.AddField(
             model_name='ditpeople',
             name='grade',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='payroll.Grade'),
         ),
     ]

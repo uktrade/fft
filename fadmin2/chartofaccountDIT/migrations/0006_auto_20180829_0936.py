@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0005_auto_20180829_0723'),
     ]
@@ -12,7 +11,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='analysis1',
-            options={'verbose_name': 'Contract Reconciliation (Analysis 1)', 'verbose_name_plural': 'Contract Reconciliations (Analysis 1)'},
+            options={'verbose_name': 'Contract Reconciliation (Analysis 1)',
+                     'verbose_name_plural': 'Contract Reconciliations (Analysis 1)'},
         ),
         migrations.AlterModelOptions(
             name='analysis2',
@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterModelOptions(
             name='naturalcode',
-            options={'verbose_name': 'Natural Account Code (NAC)', 'verbose_name_plural': 'Natural Account Codes (NAC)'},
+            options={'verbose_name': 'Natural Account Code (NAC)',
+                     'verbose_name_plural': 'Natural Account Codes (NAC)'},
         ),
     ]

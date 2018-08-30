@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -42,24 +41,33 @@ class Migration(migrations.Migration):
                 ('narrative', models.CharField(blank=True, max_length=2000)),
                 ('created_by', models.CharField(blank=True, max_length=100)),
                 ('update_by', models.CharField(blank=True, max_length=100)),
-                ('analysis1_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis1')),
-                ('analysis2_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis2')),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('natural_account_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
+                ('analysis1_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis1')),
+                ('analysis2_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis2')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('natural_account_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
+                (
+                'programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
             ],
         ),
         migrations.CreateModel(
             name='SubSegmentUKTIMapping',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
-                ('sub_segment_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='treasurySS.SubSegment')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                (
+                'programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
+                ('sub_segment_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='treasurySS.SubSegment')),
             ],
         ),
         migrations.AlterUniqueTogether(
             name='adireport',
-            unique_together={('financial_year', 'programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code')},
+            unique_together={
+            ('financial_year', 'programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code')},
         ),
     ]

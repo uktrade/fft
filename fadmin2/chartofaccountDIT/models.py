@@ -9,7 +9,7 @@ class Analysis1(TimeStampedModel):
     analysis1_description = models.CharField(max_length=300)
 
     def __str__(self):
-       return self.analysis1_code + ' - ' + self.analysis1_description
+        return self.analysis1_code + ' - ' + self.analysis1_description
 
     class Meta:
         verbose_name_plural = "Contract Reconciliations (Analysis 1)"
@@ -21,7 +21,7 @@ class Analysis2(TimeStampedModel):
     analysis2_description = models.CharField(max_length=300, verbose_name='Market')
 
     def __str__(self):
-       return self.analysis2_code + ' - ' + self.analysis2_description
+        return self.analysis2_code + ' - ' + self.analysis2_description
 
     class Meta:
         verbose_name = "Market (Analysis 2)"
@@ -42,13 +42,15 @@ class NACCategory(TimeStampedModel):
 
 class ExpenditureCategory(TimeStampedModel):
     grouping_description = models.CharField(max_length=255, verbose_name='Expenditure Category')
-    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Code')
-    NAC_category = models.ForeignKey(NACCategory,on_delete=models.PROTECT, blank=True, null=True, verbose_name='Budget Grouping')
+    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT, blank=True, null=True,
+                                           verbose_name='Budget Code')
+    NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT, blank=True, null=True,
+                                     verbose_name='Budget Grouping')
     description = models.CharField(max_length=5000, blank=True, null=True)
     further_description = models.CharField(max_length=5000, blank=True, null=True)
 
     def __str__(self):
-        return  str(self.grouping_description)
+        return str(self.grouping_description)
 
     class Meta:
         verbose_name = "Expenditure Category"
@@ -61,7 +63,7 @@ class CommercialCategory(TimeStampedModel):
     approvers = models.CharField(max_length=5000, blank=True, null=True)
 
     def __str__(self):
-        return  str(self.commercial_category)
+        return str(self.commercial_category)
 
     class Meta:
         verbose_name = "Commercial Category"
@@ -70,11 +72,11 @@ class CommercialCategory(TimeStampedModel):
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCode(TimeStampedModel):
-    natural_account_code = models.IntegerField(primary_key=True, verbose_name = 'NAC')
+    natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
     natural_account_code_description = models.CharField(max_length=200, verbose_name='NAC Description')
-    account_L5_code = models.ForeignKey(L5Account,on_delete=models.PROTECT, blank=True, null=True)
-    expenditure_category = models.ForeignKey( ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True)
-    commercial_category = models.ForeignKey( CommercialCategory, on_delete=models.PROTECT, blank=True, null=True)
+    account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
+    expenditure_category = models.ForeignKey(ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True)
+    commercial_category = models.ForeignKey(CommercialCategory, on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
 
     def __str__(self):
@@ -85,15 +87,14 @@ class NaturalCode(TimeStampedModel):
         verbose_name_plural = "Natural Account Codes (NAC)"
 
 
-
 class ProgrammeCode(TimeStampedModel, LogChangeModel):
     programme_code = models.CharField('Programme Code', primary_key=True, max_length=50)
     programme_description = models.CharField('Programme Name', max_length=100)
     budget_type = models.CharField('Budget Type', max_length=100)
 
     def __str__(self):
-       return self.programme_code + ' - ' + self.programme_description
+        return self.programme_code + ' - ' + self.programme_description
 
     class Meta:
-       verbose_name = "Programme Code"
-       verbose_name_plural = "Programme Codes"
+        verbose_name = "Programme Code"
+        verbose_name_plural = "Programme Codes"

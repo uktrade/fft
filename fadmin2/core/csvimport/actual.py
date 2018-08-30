@@ -7,45 +7,47 @@ import csv
 # it reflects the position of columns in the Oracle report used to download the actuals
 
 COLUMN_KEY = {
-            'Entity': 0,
-            'Cost Centre': 1,
-            'Account': 2,
-            'Programme': 3,
-            'Analysis 1': 4,
-            'Analysis 2': 5,
-            'Apr': 6,
-            'May': 7,
-            'Jun': 8,
-            'Jul': 9,
-            'Aug': 10,
-            'Sep': 11,
-            'Oct': 12,
-            'Nov': 13,
-            'Dec': 14,
-            'Jan': 15,
-            'Feb': 16,
-            'Mar': 17,
-            'Adj_1': 18,
-            'Adj_2': 19,
-            'Adj_3': 20}
+    'Entity': 0,
+    'Cost Centre': 1,
+    'Account': 2,
+    'Programme': 3,
+    'Analysis 1': 4,
+    'Analysis 2': 5,
+    'Apr': 6,
+    'May': 7,
+    'Jun': 8,
+    'Jul': 9,
+    'Aug': 10,
+    'Sep': 11,
+    'Oct': 12,
+    'Nov': 13,
+    'Dec': 14,
+    'Jan': 15,
+    'Feb': 16,
+    'Mar': 17,
+    'Adj_1': 18,
+    'Adj_2': 19,
+    'Adj_3': 20}
 
-MONTH_KEY= {
-            ADIReport.April.field_name : 'Apr',
-            ADIReport.May.field_name : 'May',
-            ADIReport.June.field_name : 'Jun',
-            ADIReport.July.field_name : 'Jul',
-            ADIReport.August.field_name : 'Aug',
-            ADIReport.September.field_name : 'Sep',
-            ADIReport.October.field_name : 'Oct',
-            ADIReport.November.field_name : 'Nov',
-            ADIReport.December.field_name: 'Dec',
-            ADIReport.January.field_name: 'Jan',
-            ADIReport.February.field_name: 'Feb',
-            ADIReport.March.field_name: 'Mar',
-            ADIReport.Adjustment1.field_name: 'Adj_1'}
-            # ADIReport.Adjustment1.field_name: 'Adj_1',
-            # ADIReport.Adjustment2.field_name: 'Adj_2',
-            # ADIReport.Adjustment3.field_name: 'Adj_3'}
+MONTH_KEY = {
+    ADIReport.April.field_name: 'Apr',
+    ADIReport.May.field_name: 'May',
+    ADIReport.June.field_name: 'Jun',
+    ADIReport.July.field_name: 'Jul',
+    ADIReport.August.field_name: 'Aug',
+    ADIReport.September.field_name: 'Sep',
+    ADIReport.October.field_name: 'Oct',
+    ADIReport.November.field_name: 'Nov',
+    ADIReport.December.field_name: 'Dec',
+    ADIReport.January.field_name: 'Jan',
+    ADIReport.February.field_name: 'Feb',
+    ADIReport.March.field_name: 'Mar',
+    ADIReport.Adjustment1.field_name: 'Adj_1'}
+
+
+# ADIReport.Adjustment1.field_name: 'Adj_1',
+# ADIReport.Adjustment2.field_name: 'Adj_2',
+# ADIReport.Adjustment3.field_name: 'Adj_3'}
 
 
 # return the name of thefield associated with the required month
@@ -55,16 +57,14 @@ def findmonth(monthtofind):
             return k
 
 
-
 def import_actual(csvfile, financialyear, what):
-
     has_header = csv.Sniffer().has_header(csvfile.read())
     csvfile.seek(0)  # Rewind.
     reader = csv.reader(csvfile)
     line = 1
     if has_header:
         next(reader)  # Skip header row.
-    actualtoimport={}
+    actualtoimport = {}
     if what == 'ALL':
         actualtoimport = MONTH_KEY
     else:
@@ -99,4 +99,3 @@ def import_actual(csvfile, financialyear, what):
         except ObjectDoesNotExist:
             print('Cost centre ', row[COLUMN_KEY['Cost Centre']], ' does not exist')
 # todo handle error from missing codes, create the list from ALL based on file content
-

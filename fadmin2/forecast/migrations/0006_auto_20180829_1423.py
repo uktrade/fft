@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('forecast', '0005_subsegmentuktimapping'),
     ]

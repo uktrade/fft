@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -70,18 +69,24 @@ class Migration(migrations.Migration):
                 ('natural_account_code_description', models.CharField(max_length=200, verbose_name='NAC Description')),
                 ('used_for_budget', models.BooleanField(default=False)),
                 ('used_by_DIT', models.BooleanField(default=False)),
-                ('account_L5_code', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='treasuryCOA.L5Account')),
-                ('expenditure_category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ExpenditureCategory', verbose_name='Budget Category')),
+                ('account_L5_code',
+                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                   to='treasuryCOA.L5Account')),
+                ('expenditure_category',
+                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                   to='chartofaccountDIT.ExpenditureCategory', verbose_name='Budget Category')),
             ],
         ),
         migrations.AddField(
             model_name='expenditurecategory',
             name='NAC_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NACCategory'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.NACCategory'),
         ),
         migrations.AddField(
             model_name='expenditurecategory',
             name='linked_budget_code',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode', verbose_name='Budget Code'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.NaturalCode', verbose_name='Budget Code'),
         ),
     ]

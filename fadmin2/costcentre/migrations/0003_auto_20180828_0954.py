@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('costcentre', '0002_auto_20180821_1231'),
     ]

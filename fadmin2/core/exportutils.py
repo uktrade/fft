@@ -5,12 +5,13 @@ from django.http import HttpResponse
 import csv
 import openpyxl
 
+
 class SmartExport:
     # return lists with the header name and the objects from a queryset
     # it only follows one level of foreign key, while I would like to follow at lower levels
     def __init__(self, mydata_qs):
         self.data = mydata_qs
-        self.model = mydata_qs.model # get the model
+        self.model = mydata_qs.model  # get the model
         self.model_fields = self.model._meta.fields + self.model._meta.many_to_many
         # Create  headers. Use the verbose name
         self.headers = [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]
@@ -25,18 +26,17 @@ class SmartExport:
             elif type(field) == models.ManyToManyField:
                 val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
             elif field.choices:
-                val = getattr(obj, 'get_%s_display'%field.name)()
+                val = getattr(obj, 'get_%s_display' % field.name)()
             else:
                 val = smart_str(getattr(obj, field.name))
             row.append(val.encode("utf-8"))
         return row
 
-    def stream(self): # Helper function to inject headers
+    def stream(self):  # Helper function to inject headers
         if self.headers:
             yield self.headers
         for obj in self.data:
             yield self.get_row(obj)
-
 
 
 def _generic_table_iterator(queryset):
@@ -67,20 +67,20 @@ def _generic_table_iterator(queryset):
         yield row
 
 
-
 def export_to_csv(queryset, f):
     title = queryset.model._meta.verbose_name_plural.title()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=' + title + '.csv'
     writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
-    for row  in f(queryset):
+    response.write(u'\ufeff'.encode('utf8'))  # BOM (optional...Excel needs it to open UTF-8 file properly)
+    for row in f(queryset):
         writer.writerow(row)
     return response
 
 
 def generic_export_to_csv(queryset):
-    return(export_to_csv(queryset, _generic_table_iterator))
+    return (export_to_csv(queryset, _generic_table_iterator))
+
 
 def export_to_excel(queryset, f):
     title = queryset.model._meta.verbose_name_plural.title()
@@ -101,4 +101,4 @@ def export_to_excel(queryset, f):
 
 
 def generic_export_to_excel(queryset):
-    return(export_to_excel(queryset, _generic_table_iterator))
+    return (export_to_excel(queryset, _generic_table_iterator))

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.contrib.admin.models import LogEntry, DELETION
+from django.contrib.admin.models import DELETION
 from django.utils.html import escape
 from django.urls import reverse
 from django.contrib.admin.models import LogEntry, CHANGE
@@ -28,7 +28,6 @@ class LogEntryAdmin(admin.ModelAdmin):
         'object_repr',
         'change_message'
     ]
-
 
     list_display = [
         'action_time',
@@ -66,6 +65,7 @@ class LogEntryAdmin(admin.ModelAdmin):
                 escape(obj.object_repr),
             )
         return link
+
     object_link.allow_tags = True
     object_link.admin_order_field = 'object_repr'
     object_link.short_description = u'object'
@@ -78,20 +78,20 @@ class AdminActiveField(admin.ModelAdmin):
     """Admin class including the handling for the active flag """
 
     def change_active_flag(self, request, queryset, new_active_value):
-        if new_active_value == True:
+        if new_active_value is True:
             msg = 'activated'
         else:
             msg = 'deactivated'
         q = queryset.filter(active=not new_active_value)
-        ct = ContentType.objects.get_for_model(queryset.model) # for_model --> get_for_model
+        ct = ContentType.objects.get_for_model(queryset.model)  # for_model --> get_for_model
         for obj in q:
             LogEntry.objects.log_action(
-                user_id = request.user.id,
-                content_type_id = ct.pk,
-                object_id = obj.pk,
-                object_repr = str(obj),
-                action_flag = CHANGE,
-                change_message = str(obj) + ' ' + msg)
+                user_id=request.user.id,
+                content_type_id=ct.pk,
+                object_id=obj.pk,
+                object_repr=str(obj),
+                action_flag=CHANGE,
+                change_message=str(obj) + ' ' + msg)
         rows_updated = q.update(active=new_active_value)
         if rows_updated == 1:
             message_bit = "1 {} was".format(queryset.model._meta.verbose_name)
@@ -111,33 +111,31 @@ class AdminActiveField(admin.ModelAdmin):
 
 
 class AdminEditOnly(admin.ModelAdmin):
-     """Admin class removing edit on the model useful for structures created elsewhere, where DIT wants to add useful tags """
-     # Remove delete from the list of action
-     def get_actions(self, request):
+    """Admin class removing edit on the model useful for structures created elsewhere, where DIT wants to add useful tags """
+
+    # Remove delete from the list of action
+    def get_actions(self, request):
         actions = super().get_actions(request)
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
 
-     # Don't allow add
-     def has_add_permission(self, request):
+    # Don't allow add
+    def has_add_permission(self, request):
         return False
 
-     # Don't allow delete
-     def has_delete_permission(self, request, obj=None):
+    # Don't allow delete
+    def has_delete_permission(self, request, obj=None):
         return False
 
 
 class AdminreadOnly(AdminEditOnly):
     """Admin class removing create/edit/delete on the model useful for structures created elsewhere and not changeable by DIT, like Treasury """
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
             self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
-
-
-
-
 
 
 admin.site.register(AdminInfo)

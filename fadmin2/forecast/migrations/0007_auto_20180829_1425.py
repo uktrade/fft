@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0007_programmecode'),
         ('costcentre', '0005_auto_20180829_0936'),
@@ -41,15 +40,21 @@ class Migration(migrations.Migration):
                 ('narrative', models.CharField(blank=True, max_length=2000)),
                 ('created_by', models.CharField(blank=True, max_length=100)),
                 ('update_by', models.CharField(blank=True, max_length=100)),
-                ('analysis1_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis1')),
-                ('analysis2_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis2')),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('natural_account_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
+                ('analysis1_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis1')),
+                ('analysis2_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis2')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('natural_account_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
+                ('programme',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
             ],
         ),
         migrations.AlterUniqueTogether(
             name='adireport',
-            unique_together={('financial_year', 'programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code')},
+            unique_together={
+            ('financial_year', 'programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code')},
         ),
     ]

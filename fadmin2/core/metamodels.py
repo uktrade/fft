@@ -5,7 +5,6 @@ from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 
 
-
 class TimeStampedModel(models.Model):
     """ An abstract base class model that provide self-updating 'created' and 'modified' field, and an active flag"""
     active = models.BooleanField(default=False)
@@ -24,7 +23,8 @@ class LogChangeModel(models.Model):
     @classmethod
     def from_db(cls, db, field_names, values):
         # https://docs.djangoproject.com/en/2.0/ref/models/instances/
-        instance = super(LogChangeModel, cls).from_db(db, field_names, values) # https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
+        instance = super(LogChangeModel, cls).from_db(db, field_names,
+                                                      values)  # https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
         # customization to store the original field values on the instance
         d = dict(zip(field_names, values))
         instance._original_values = {f: v for f, v in d.items() if f not in instance.excludelist}
@@ -43,7 +43,8 @@ class LogChangeModel(models.Model):
             for k, v in self._original_values.items():
                 newvalue = getattr(self, k)
                 if newvalue != v:
-                    message = message + ' ' + self._meta.get_field(k).verbose_name + ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
+                    message = message + ' ' + self._meta.get_field(k).verbose_name + ' changed from "' + str(
+                        v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
                     changed = True
         if changed:
@@ -51,12 +52,12 @@ class LogChangeModel(models.Model):
             message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
             ct = ContentType.objects.get_for_model(self)
             LogEntry.objects.log_action(
-                    user_id=1,
-                    content_type_id=ct.pk,
-                    object_id=self.pk,
-                    object_repr=self.__str__(),
-                    action_flag=flag,
-                    change_message=message)
+                user_id=1,
+                content_type_id=ct.pk,
+                object_id=self.pk,
+                object_repr=self.__str__(),
+                action_flag=flag,
+                change_message=message)
         # maybe it should not be saved if nothing has changed, but I need to think about it
         super().save(*args, **kwargs)
 
@@ -65,4 +66,3 @@ class LogChangeModel(models.Model):
 
     class Meta:
         abstract = True
-

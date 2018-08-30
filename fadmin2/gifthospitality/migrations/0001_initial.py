@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -37,7 +36,8 @@ class Migration(migrations.Migration):
                 ('entered_date_stamp', models.DateTimeField()),
                 ('category', models.CharField(max_length=255)),
                 ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
-                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
+                ('group_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
             ],
         ),
         migrations.CreateModel(
@@ -58,9 +58,12 @@ class Migration(migrations.Migration):
                 ('fee_paid', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('int_dom', models.CharField(max_length=500)),
                 ('reason_code_desc', models.CharField(max_length=500)),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('natural_account_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
+                ('cost_centre',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('natural_account_code',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
+                (
+                'programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Programme')),
             ],
         ),
     ]

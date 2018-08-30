@@ -1,4 +1,4 @@
-from core.models import SubSegment, Segment, SegmentParent, SegmentGrandParent, EstimateRow, SegmentGrandParent
+from core.models import SubSegment, Segment, SegmentParent, SegmentGrandParent, EstimateRow
 
 import csv
 
@@ -52,36 +52,34 @@ def import_treasury_segments(csvfile):
         next(reader)  # Skip header row.
     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in csvreader:
-        if row[COLUMN_KEY['Segment Department Code']]=='UKT013.GROUP':
+        if row[COLUMN_KEY['Segment Department Code']] == 'UKT013.GROUP':
             # Create Segment Hierarchy
             obj_segment_gp, created = SegmentGrandParent.objects.get_or_update(
                 SegmentGrandParentCode=row[COLUMN_KEY['Segment Grand Parent Code']],
-                defaults={'SegmentGrandParentLongName':row[COLUMN_KEY['Segment Grand Parent Long Name']]},
+                defaults={'SegmentGrandParentLongName': row[COLUMN_KEY['Segment Grand Parent Long Name']]},
             )
             obj_segment_parent, created = SegmentParent.objects.get_or_update(
                 SegmentParentCode=row[COLUMN_KEY['Segment Parent Code']],
-                defaults={'SegmentGrandParentCode':obj_segment_gp,
-                          'SegmentParentLongName':row[COLUMN_KEY['Segment Parent Long Name']]},
+                defaults={'SegmentGrandParentCode': obj_segment_gp,
+                          'SegmentParentLongName': row[COLUMN_KEY['Segment Parent Long Name']]},
             )
             obj_segment, created = Segment.objects.get_or_update(
                 SegmentCode=row[COLUMN_KEY['Segment Code']],
-                defaults={'SegmentParentCode':obj_segment_parent,
-                          'SegmentLongName':row[COLUMN_KEY['Segment Long Name']]},
+                defaults={'SegmentParentCode': obj_segment_parent,
+                          'SegmentLongName': row[COLUMN_KEY['Segment Long Name']]},
             )
             obj_er, created = EstimateRow.objects.get_or_update(
                 EstimatesRowCode=row[COLUMN_KEY['Estimates Row Code']],
-                defaults={'EstimatesRowLongName':row[COLUMN_KEY['Estimates Row Long Name']]},
+                defaults={'EstimatesRowLongName': row[COLUMN_KEY['Estimates Row Long Name']]},
             )
             obj_subsegment, created = SubSegment.objects.get_or_update(
                 SubSegmentCode=row[COLUMN_KEY['Sub Segment Code']],
-                defaults={'SegmentCode':obj_segment,
+                defaults={'SegmentCode': obj_segment,
                           'SubSegmentLongName': row[COLUMN_KEY['Sub Segment Long Name']],
                           'ControlBudgetDetailCode': row[COLUMN_KEY['Control Budget Code']],
                           'EstimatesRowCode': obj_er,
                           'NetSubheadCode': row[COLUMN_KEY['Net Subhead Code']],
-                          'PolicyRingfenceCode':row[COLUMN_KEY['Accounting Authority Code']],
-                          'AccountingAuthorityCode':row[COLUMN_KEY['Policy Ringfence Code']],
-                          'AccountingAuthorityDetailCode':row[COLUMN_KEY['Accounting Authority Detail Code']]},
+                          'PolicyRingfenceCode': row[COLUMN_KEY['Accounting Authority Code']],
+                          'AccountingAuthorityCode': row[COLUMN_KEY['Policy Ringfence Code']],
+                          'AccountingAuthorityDetailCode': row[COLUMN_KEY['Accounting Authority Detail Code']]},
             )
-
-

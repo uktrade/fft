@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('costcentre', '0003_auto_20180828_0954'),
     ]
@@ -29,7 +28,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='directorate',
             name='director',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payroll.DITPeople'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='payroll.DITPeople'),
         ),
         migrations.AlterField(
             model_name='programme',

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0004_auto_20180828_0954'),
     ]

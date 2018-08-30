@@ -1,8 +1,9 @@
 from django.db import models
 from core.metamodels import TimeStampedModel
-from costcentre.models  import  DepartmentalGroup, CostCentre
+from costcentre.models import DepartmentalGroup, CostCentre
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from payroll.models import Grade
+
 
 # Gift and Hospitality
 class GiftsAndHospitality(TimeStampedModel):
@@ -25,7 +26,6 @@ class GiftsAndHospitality(TimeStampedModel):
     entered_date_stamp = models.DateTimeField()
     category = models.CharField(max_length=255)
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
-
 
 # class HotelAndTravel(TimeStampedModel):
 #     traveller_name = models.CharField(max_length=500)

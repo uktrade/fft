@@ -5,8 +5,9 @@ from .models import ADIReport
 
 from django.contrib.humanize.templatetags.humanize import intcomma
 
+
 class ColumnWithThousandsSeparator(tables.Column):
-    def render(self,value):
+    def render(self, value):
         return intcomma(value)
 
     attrs = {'td': {'class': 'text-right'},
@@ -20,7 +21,7 @@ class SummingColumn(ColumnWithThousandsSeparator):
 
 
 class ADIReportTable(tables.Table):
-    cost_centre__directorate__group__group_name =tables.Column('Departmental Group')
+    cost_centre__directorate__group__group_name = tables.Column('Departmental Group')
 
     apr__sum = SummingColumn('April')
     may__sum = SummingColumn('May')
@@ -34,6 +35,7 @@ class ADIReportTable(tables.Table):
     jan__sum = SummingColumn('January')
     feb__sum = SummingColumn('February')
     mar__sum = SummingColumn('March')
+
     # may__sum.attrs = {'td': {'class': 'text-left'},
     #          'th': {'class': 'text-left'}}
 
@@ -43,5 +45,3 @@ class ADIReportTable(tables.Table):
         template_name = 'django_tables2/bootstrap.html'
         attrs = {"class": "table-striped table-bordered table-condensed small-font"}
         empty_text = ""
-
-

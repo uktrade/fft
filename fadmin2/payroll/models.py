@@ -1,7 +1,9 @@
 from django.db import models
 from core.metamodels import TimeStampedModel, LogChangeModel
-from costcentre.models  import  DepartmentalGroup, CostCentre
+from costcentre.models import DepartmentalGroup, CostCentre
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
+
+
 # salaries data
 
 
@@ -10,8 +12,9 @@ class Grade(models.Model):
     grade = models.CharField(primary_key=True, max_length=10)
     gradedescription = models.CharField(max_length=50)
     order = models.IntegerField
+
     def __str__(self):
-       return self.grade
+        return self.grade
 
 
 class DITPeople(TimeStampedModel, LogChangeModel):
@@ -23,18 +26,19 @@ class DITPeople(TimeStampedModel, LogChangeModel):
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT, null=True, blank=True)
     isdirector = models.BooleanField('General Director/Director/Deputy Director', default=False)
     isbusinesspartner = models.BooleanField('Business Partner', default=False)
+
     def __str__(self):
         return self.surname + ' ' + self.name
+
     class Meta:
         verbose_name = 'DIT People'
-
 
 
 # Pre-calculated salary averages, used for the forecast
 class SalaryMonthlyAverage(models.Model):
     AVERAGETYPE_CHOICES = (('CC', 'CostCentre'),
-                           ('DIR','Directorate'),
-                           ('DG','DepartmentalGroup'),)
+                           ('DIR', 'Directorate'),
+                           ('DG', 'DepartmentalGroup'),)
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     average_type = models.CharField(max_length=50, choices=AVERAGETYPE_CHOICES)
     average_by = models.CharField(max_length=50)
@@ -67,7 +71,6 @@ class SalaryMonthlyAverage(models.Model):
 #
 #     def __str__(self):
 #        return self.slot_code
-
 
 
 class PayModel(TimeStampedModel):
@@ -117,5 +120,3 @@ class AdminPayModel(TimeStampedModel):
     SCS_percent = models.DecimalField(max_digits=18, decimal_places=2)
     SCS_number = models.DecimalField(max_digits=18, decimal_places=2)
     indicative_budget = models.IntegerField()
-
-

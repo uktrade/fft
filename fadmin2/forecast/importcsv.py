@@ -4,7 +4,6 @@ import csv
 from .models import ADIReport, SubSegmentUKTIMapping
 from core.myutils import addposition, csvheadertodict, get_fk
 
-
 from costcentre.models import CostCentre, Programme
 from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2
 
@@ -12,23 +11,25 @@ from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2
 # it reflects the position of columns in the Oracle report used to download the actuals
 
 
-MONTH_KEY= {
-            ADIReport.apr.field_name : 'Apr',
-            ADIReport.may.field_name : 'May',
-            ADIReport.jun.field_name : 'Jun',
-            ADIReport.jul.field_name : 'Jul',
-            ADIReport.aug.field_name : 'Aug',
-            ADIReport.sep.field_name : 'Sep',
-            ADIReport.oct.field_name : 'Oct',
-            ADIReport.nov.field_name : 'Nov',
-            ADIReport.dec.field_name: 'Dec',
-            ADIReport.jan.field_name: 'Jan',
-            ADIReport.feb.field_name: 'Feb',
-            ADIReport.mar.field_name: 'Mar',
-            ADIReport.adj1.field_name: 'Adj_1'}
-            # ADIReport.Adjustment1.field_name: 'Adj_1',
-            # ADIReport.Adjustment2.field_name: 'Adj_2',
-            # ADIReport.Adjustment3.field_name: 'Adj_3'}
+MONTH_KEY = {
+    ADIReport.apr.field_name: 'Apr',
+    ADIReport.may.field_name: 'May',
+    ADIReport.jun.field_name: 'Jun',
+    ADIReport.jul.field_name: 'Jul',
+    ADIReport.aug.field_name: 'Aug',
+    ADIReport.sep.field_name: 'Sep',
+    ADIReport.oct.field_name: 'Oct',
+    ADIReport.nov.field_name: 'Nov',
+    ADIReport.dec.field_name: 'Dec',
+    ADIReport.jan.field_name: 'Jan',
+    ADIReport.feb.field_name: 'Feb',
+    ADIReport.mar.field_name: 'Mar',
+    ADIReport.adj1.field_name: 'Adj_1'}
+
+
+# ADIReport.Adjustment1.field_name: 'Adj_1',
+# ADIReport.Adjustment2.field_name: 'Adj_2',
+# ADIReport.Adjustment3.field_name: 'Adj_3'}
 
 
 # return the name of thefield associated with the required month
@@ -43,7 +44,7 @@ def import_actual(csvfile, financialyear, what):
     reader = csv.reader(csvfile)
     col_key = csvheadertodict(next(reader))
     line = 2
-    actualtoimport={}
+    actualtoimport = {}
     if what == 'ALL':
         actualtoimport = MONTH_KEY
     else:
@@ -80,6 +81,5 @@ def import_actual(csvfile, financialyear, what):
                                                               analysis2_code=an2obj,
                                                               defaults=defaultList)
         else:
-            print (line, errmsg)
- # todo handle error from missing codes, create the list from ALL based on file content
-
+            print(line, errmsg)
+# todo handle error from missing codes, create the list from ALL based on file content

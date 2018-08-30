@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0006_auto_20180829_0936'),
     ]
@@ -16,7 +15,8 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('programme_code', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Programme Code')),
+                ('programme_code',
+                 models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Programme Code')),
                 ('programme_description', models.CharField(max_length=100, verbose_name='Programme Name')),
                 ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
             ],

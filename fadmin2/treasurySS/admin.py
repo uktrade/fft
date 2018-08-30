@@ -6,4 +6,3 @@ admin.site.register(SegmentGrandParent)
 admin.site.register(SegmentParent)
 admin.site.register(SubSegment)
 admin.site.register(EstimateRow)
-

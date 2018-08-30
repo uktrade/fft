@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0001_initial'),
     ]
@@ -28,7 +27,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='expenditurecategory',
             name='NAC_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NACCategory', verbose_name='Budget Grouping'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.NACCategory', verbose_name='Budget Grouping'),
         ),
         migrations.AlterField(
             model_name='expenditurecategory',
@@ -38,11 +38,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='naturalcode',
             name='expenditure_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ExpenditureCategory'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.ExpenditureCategory'),
         ),
         migrations.AddField(
             model_name='naturalcode',
             name='commercial_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.CommercialCategory'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.CommercialCategory'),
         ),
     ]
