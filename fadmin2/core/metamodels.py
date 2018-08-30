@@ -1,12 +1,11 @@
 from django.db import models
-from django.utils import timezone
-
 from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
 from django.contrib.contenttypes.models import ContentType
 
 
 class TimeStampedModel(models.Model):
-    """ An abstract base class model that provide self-updating 'created' and 'modified' field, and an active flag"""
+    """ An abstract base class model that provide self-updating
+    'created' and 'modified' field, and an active flag"""
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -16,7 +15,9 @@ class TimeStampedModel(models.Model):
 
 
 class LogChangeModel(models.Model):
-    """An abstract base class that saves the changes to a log table"""
+    """An abstract base class that saves the changes to a log table.
+    https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
+    """
     excludelist = ['created', 'updated']
     _original_values = {}
 
@@ -24,7 +25,7 @@ class LogChangeModel(models.Model):
     def from_db(cls, db, field_names, values):
         # https://docs.djangoproject.com/en/2.0/ref/models/instances/
         instance = super(LogChangeModel, cls).from_db(db, field_names,
-                                                      values)  # https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
+                                                      values)  #
         # customization to store the original field values on the instance
         d = dict(zip(field_names, values))
         instance._original_values = {f: v for f, v in d.items() if f not in instance.excludelist}
@@ -43,8 +44,8 @@ class LogChangeModel(models.Model):
             for k, v in self._original_values.items():
                 newvalue = getattr(self, k)
                 if newvalue != v:
-                    message = message + ' ' + self._meta.get_field(k).verbose_name + ' changed from "' + str(
-                        v) + '" to "' + str(newvalue) + '";'
+                    message = message + ' ' + self._meta.get_field(k).verbose_name + \
+                        ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
                     changed = True
         if changed:

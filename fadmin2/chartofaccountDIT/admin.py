@@ -2,11 +2,12 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.exportutils import export_to_csv, export_to_excel, generic_export_to_csv, generic_export_to_excel
+from core.exportutils import export_to_csv, export_to_excel, \
+    generic_export_to_csv, generic_export_to_excel
 from core.admin import AdminreadOnly, AdminActiveField
 
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory, \
-    ProgrammeCode
+from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, \
+    NACCategory, CommercialCategory, ProgrammeCode
 
 
 def _export_nac_iterator(queryset):
@@ -41,7 +42,8 @@ class NaturalCodeAdmin(AdminreadOnly):
         return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
 
     def get_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code', 'expenditure_category',
+        return ['natural_account_code', 'natural_account_code_description',
+                'account_L5_code', 'expenditure_category',
                 'commercial_category', 'used_for_budget', 'active']
 
     search_fields = ['natural_account_code', 'natural_account_code_description']
@@ -136,7 +138,8 @@ class ProgrammeAdmin(AdminActiveField):
                 'updated']  # don't allow to edit the code
 
     def get_fields(self, request, obj=None):
-        return ['programme_code', 'programme_description', 'budget_type', 'active', 'created', 'updated']
+        return ['programme_code', 'programme_description',
+                'budget_type', 'active', 'created', 'updated']
 
     actions = [export_programme_xlsx]
 

@@ -1,7 +1,9 @@
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, NACCategory, CommercialCategory, \
+from .models import Analysis1, Analysis2, NaturalCode, \
+    ExpenditureCategory, NACCategory, CommercialCategory, \
     ProgrammeCode
 from treasuryCOA.models import L5Account
-from core.myutils import import_obj, import_list_obj, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, \
+from core.myutils import import_obj, import_list_obj, \
+    IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, \
     IMPORT_CSV_IS_FK
 
 import csv
@@ -10,11 +12,11 @@ import csv
 
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
                  IMPORT_CSV_PK_KEY: 'Code',
-                 IMPORT_CSV_FIELDLIST_KEY: {Analysis1.analysis1_description.field_name: 'Description'}}
+                 IMPORT_CSV_FIELDLIST_KEY: {Analysis1.analysis1_description.field_name: 'Description'}}  # noqa: E501
 
 ANALYSIS2_KEY = {IMPORT_CSV_MODEL_KEY: Analysis2,
                  IMPORT_CSV_PK_KEY: 'Code',
-                 IMPORT_CSV_FIELDLIST_KEY: {Analysis2.analysis2_description.field_name: 'Description'}}
+                 IMPORT_CSV_FIELDLIST_KEY: {Analysis2.analysis2_description.field_name: 'Description'}}  # noqa: E501
 
 
 def import_Analysis1(csvfile):
@@ -32,7 +34,7 @@ L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
 
 NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
            IMPORT_CSV_PK_KEY: 'L6',
-           IMPORT_CSV_FIELDLIST_KEY: {NaturalCode.natural_account_code_description.field_name: 'L6_NAME',
+           IMPORT_CSV_FIELDLIST_KEY: {NaturalCode.natural_account_code_description.field_name: 'L6_NAME',  # noqa: E501
                                       NaturalCode.account_L5_code.field.name: L5_FK_KEY}}
 
 
@@ -85,7 +87,8 @@ def import_NAC_DIT_setting(csvfile):
     for row in reader:
         linenum = linenum + 1
         nac_obj = NaturalCode.objects.get(pk=row[0].strip())
-        nac_obj.expenditure_category = ExpenditureCategory.objects.get(grouping_description=row[2].strip())
+        nac_obj.expenditure_category = \
+            ExpenditureCategory.objects.get(grouping_description=row[2].strip())
         nac_obj.active = True
         nac_obj.save()
 
@@ -118,7 +121,7 @@ def import_commercial_category_responsible(csvfile):
 
 PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,
             IMPORT_CSV_PK_KEY: 'Code',
-            IMPORT_CSV_FIELDLIST_KEY: {ProgrammeCode.programme_description.field_name: 'Description',
+            IMPORT_CSV_FIELDLIST_KEY: {ProgrammeCode.programme_description.field_name: 'Description',  # noqa: E501
                                        ProgrammeCode.budget_type.field_name: 'Type'}}
 
 

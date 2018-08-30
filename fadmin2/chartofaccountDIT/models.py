@@ -42,10 +42,10 @@ class NACCategory(TimeStampedModel):
 
 class ExpenditureCategory(TimeStampedModel):
     grouping_description = models.CharField(max_length=255, verbose_name='Expenditure Category')
-    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT, blank=True, null=True,
-                                           verbose_name='Budget Code')
-    NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT, blank=True, null=True,
-                                     verbose_name='Budget Grouping')
+    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT,
+                                           blank=True, null=True, verbose_name='Budget Code')
+    NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT,
+                                     blank=True, null=True, verbose_name='Budget Grouping')
     description = models.CharField(max_length=5000, blank=True, null=True)
     further_description = models.CharField(max_length=5000, blank=True, null=True)
 
@@ -73,10 +73,13 @@ class CommercialCategory(TimeStampedModel):
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCode(TimeStampedModel):
     natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
-    natural_account_code_description = models.CharField(max_length=200, verbose_name='NAC Description')
+    natural_account_code_description = models.CharField(max_length=200,
+                                                        verbose_name='NAC Description')
     account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
-    expenditure_category = models.ForeignKey(ExpenditureCategory, on_delete=models.PROTECT, blank=True, null=True)
-    commercial_category = models.ForeignKey(CommercialCategory, on_delete=models.PROTECT, blank=True, null=True)
+    expenditure_category = models.ForeignKey(ExpenditureCategory,
+                                             on_delete=models.PROTECT, blank=True, null=True)
+    commercial_category = models.ForeignKey(CommercialCategory,
+                                            on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
 
     def __str__(self):

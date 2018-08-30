@@ -1,15 +1,18 @@
 import django_filters
-from .models import NaturalCode, Analysis1, Analysis2, ExpenditureCategory, CommercialCategory, ProgrammeCode
+from .models import NaturalCode, Analysis2, \
+    ExpenditureCategory, CommercialCategory, ProgrammeCode
 from core.filters import MyFilterSet
 
 
 class NACFilter(MyFilterSet):
     natural_account_code = django_filters.CharFilter(lookup_expr='istartswith')
-    account_L5_code__economic_budget_code = django_filters.CharFilter(label='Expenditure Type', lookup_expr='icontains')
+    account_L5_code__economic_budget_code = \
+        django_filters.CharFilter(label='Expenditure Type', lookup_expr='icontains')
 
     class Meta(MyFilterSet.Meta):
         model = NaturalCode
-        fields = ['account_L5_code__economic_budget_code', 'expenditure_category__NAC_category', 'expenditure_category',
+        fields = ['account_L5_code__economic_budget_code',
+                  'expenditure_category__NAC_category', 'expenditure_category',
                   'natural_account_code', 'natural_account_code_description']
         exclude = ['active', 'account_L5_code']
 

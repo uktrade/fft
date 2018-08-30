@@ -1,13 +1,12 @@
 # Collection of useful functions and classes
-from django.contrib import admin
-
 import datetime
 import csv
 
 
-# Return the financial year for the current date
-# The UK financial year starts in April, so Jan, Feb and Mar are part of the previous year
 def financialyear():
+    """ # Return the financial year for the current date
+         The UK financial year starts in April, so Jan, Feb and Mar are part of the previous year
+    """
     currentmonth = datetime.now().month
     currentyear = datetime.now().year
     if currentmonth < 4:  # the new financial year  starts in April
@@ -21,9 +20,10 @@ IMPORT_CSV_FIELDLIST_KEY = 'fieldlist'
 IMPORT_CSV_IS_FK = 'isforeignkey'
 
 
-# it the csv used for importing, a boolean field may have several different values. This routine converts them to True or False
-
 def convert_to_bool_string(s):
+    """The csv used for importing,  may have several different values for a boolean field.
+    This routine converts them to True or False
+    """
     truelist = ['y', 'yes', 'true', '1']
     if s.lower() in truelist:
         return ('True')
@@ -37,9 +37,12 @@ def csvheadertodict(row):
     return d
 
 
-# it substitute the header title with the column number in the dictionary passed to describe the imported model
+#
 # TODO  gives error if something not found. It means we are reading the wrong file
 def addposition(d, h):
+    """It substitute the header title with the column number in the dictionary
+    passed to describe the imported model.
+    Used recursion, because d can have a dictionary inside"""
     c = {}
     for k, v in d.items():
         if type(v) is dict:
@@ -53,6 +56,7 @@ def addposition(d, h):
 
 
 def get_pk_name(m):
+    """Returns the name of the primary key of the model passed as argument."""
     if m._meta.pk._verbose_name is None:
         pkname = m._meta.pk.name
     else:
@@ -61,7 +65,9 @@ def get_pk_name(m):
 
 
 def get_fk(m, pk_value):
-    """Read an object to be used as foreign key in another record. It return a formatted message if it finds an error"""
+    """Read an object to be used as foreign key in another record.
+    It return a formatted message if it finds an error
+    """
     msg = ''
     try:
         obj = m.objects.get(pk=pk_value)

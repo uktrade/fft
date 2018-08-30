@@ -7,8 +7,10 @@ from core.tables import FadminTable
 
 class CostCentreTable(FadminTable):
     group_name = tables.Column(verbose_name='Group Name', accessor='directorate.group.group_name')
-    directorate_name = tables.Column(verbose_name='Directorate Name', accessor='directorate.directorate_name')
-    director_general = tables.Column(verbose_name="Director General", accessor='directorate.group.director_general')
+    directorate_name = tables.Column(verbose_name='Directorate Name',
+                                     accessor='directorate.directorate_name')
+    director_general = tables.Column(verbose_name="Director General",
+                                     accessor='directorate.group.director_general')
     director = tables.Column(verbose_name="Director", accessor='directorate.director')
 
     class Meta(FadminTable.Meta):

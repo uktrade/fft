@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from django.contrib.admin.models import LogEntry, CHANGE
-from django.contrib.contenttypes.models import ContentType
-
-from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
-
-from core.exportutils import export_to_csv, export_to_excel
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from .models import Grade, SalaryMonthlyAverage, PayModel, AdminPayModel, DITPeople
 
@@ -23,9 +18,11 @@ class DIT_PeopleAdmin(admin.ModelAdmin):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['name', 'surname', 'grade', 'isdirector', 'isbusinesspartner', 'active', 'created', 'updated']
+            return ['name', 'surname', 'grade', 'isdirector', 'isbusinesspartner',
+                    'active', 'created', 'updated']
         else:
-            return ['name', 'surname', 'employee_number', 'grade', 'isdirector', 'isbusinesspartner', 'active']
+            return ['name', 'surname', 'employee_number', 'grade',
+                    'isdirector', 'isbusinesspartner', 'active']
 
     search_fields = ['name', 'surname']
     list_filter = ('active',
@@ -33,8 +30,6 @@ class DIT_PeopleAdmin(admin.ModelAdmin):
                    'isbusinesspartner',
                    ('grade', RelatedDropdownFilter),
                    )
-
-    # actions = [export_cc_csv, export_cc_xlsx, ]
 
 
 admin.site.register(Grade)

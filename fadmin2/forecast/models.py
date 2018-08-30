@@ -1,6 +1,6 @@
 from django.db import models
 from core.metamodels import TimeStampedModel
-from costcentre.models import DepartmentalGroup, CostCentre
+from costcentre.models import CostCentre
 from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2, ProgrammeCode
 from treasurySS.models import SubSegment
 
@@ -50,7 +50,8 @@ class ADIReport(TimeStampedModel):
                            'analysis2_code')
 
     def __str__(self):
-        return str(self.cost_centre) + '--' + str(self.programme) + '--' + str(self.natural_account_code)
+        return str(self.cost_centre) + '--' \
+            + str(self.programme) + '--' + str(self.natural_account_code)
 
 
 # table for

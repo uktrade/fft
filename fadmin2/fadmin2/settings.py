@@ -37,7 +37,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-# ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net','fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
+# ALLOWED_HOSTS = ['financeadmin-dev.cloudapps.digital','d3sy7fs6o4dizv.cloudfront.net',
+# 'fadmin2.uat.uktrade.io','fna.uat.uktrade.io']
 
 # Application definition
 

@@ -1,7 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
 import csv
 
-from .models import ADIReport, SubSegmentUKTIMapping
+from .models import ADIReport
 from core.myutils import addposition, csvheadertodict, get_fk
 
 from costcentre.models import CostCentre, Programme
@@ -9,8 +8,6 @@ from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2
 
 # define the column position in the csv file.
 # it reflects the position of columns in the Oracle report used to download the actuals
-
-
 MONTH_KEY = {
     ADIReport.apr.field_name: 'Apr',
     ADIReport.may.field_name: 'May',
@@ -54,7 +51,6 @@ def import_actual(csvfile, financialyear, what):
     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in csvreader:
         line += 1
-        err = False
         errmsg = ''
         ccobj, msg = get_fk(CostCentre, row[col_key['Cost Centre']].strip())
         errmsg += msg

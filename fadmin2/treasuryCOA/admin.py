@@ -54,15 +54,10 @@ export_L5_csv.short_description = u"Export to csv"
 
 # Displays extra fields in the list of cost centres
 class L5AccountAdmin(AdminreadOnly):
-    list_display = ('account_l5_code', 'account_l5_long_name', 'economic_budget_code', 'usage_code')
+    list_display = ('account_l5_code', 'account_l5_long_name',
+                    'economic_budget_code', 'usage_code')
     list_filter = ('economic_budget_code', 'usage_code')
-
-    # directorate.admin_order_field = 'directorate__directorate_name'  # use __ to define a table field relationship
-    # group.admin_order_field = 'directorate__group__group_name'  # use __ to define a table field relationship
-    #
-    # search_fields = ['cost_centre_code']
-    # list_filter = ['active','directorate__directorate_name','directorate__group__group_name']
-    actions = [export_L5_csv, export_L5_xlsx]  # new action to export to csv and xlsx
+    actions = [export_L5_csv, export_L5_xlsx]
 
 
 # L4 Account

@@ -1,12 +1,9 @@
 from django.contrib import admin
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from django_admin_listfilter_dropdown.filters import DropdownFilter, RelatedDropdownFilter
-
-from core.exportutils import export_to_csv, export_to_excel
-from core.admin import AdminEditOnly, AdminActiveField
-
+from core.exportutils import export_to_excel
+from core.admin import AdminActiveField
 from payroll.models import DITPeople
-
 from .models import DepartmentalGroup, Directorate, CostCentre
 
 
@@ -35,7 +32,8 @@ export_cc_xlsx.short_description = u"Export to Excel"
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField):
-    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_name', 'group_name', 'active')
+    list_display = ('cost_centre_code', 'cost_centre_name',
+                    'directorate_name', 'group_name', 'active')
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name
@@ -63,11 +61,12 @@ class CostCentreAdmin(AdminActiveField):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'deputy_director', 'business_partner',
+            return ['cost_centre_code', 'cost_centre_name',
+                    'directorate', 'deputy_director', 'business_partner',
                     'active', 'created', 'updated']
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'deputy_director', 'business_partner',
-                    'active']
+            return ['cost_centre_code', 'cost_centre_name', 'directorate',
+                    'deputy_director', 'business_partner', 'active']
 
     search_fields = ['cost_centre_code', 'cost_centre_name']
     list_filter = ('active',
@@ -124,7 +123,8 @@ class DirectorateAdmin(AdminActiveField):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['directorate_code', 'directorate_name', 'group', 'director', 'active', 'created', 'updated']
+            return ['directorate_code', 'directorate_name', 'group',
+                    'director', 'active', 'created', 'updated']
         else:
             return ['directorate_code', 'directorate_name', 'group', 'director', 'active']
 
@@ -170,36 +170,6 @@ class DepartmentalGroupAdmin(AdminActiveField):
             return ['group_code', 'group_name', 'director_general', 'active']
 
     actions = [export_group_xlsx]
-
-
-# def _export_programme_iterator(queryset):
-#     yield ['Programme Code','Description','Budget Type', 'Active']
-#     for obj in queryset:
-#         yield[ obj.programme_code,
-#                obj.programme_description,
-#                obj.budget_type,
-#                obj.active]
-#
-#
-# def export_programme_xlsx(modeladmin, request, queryset):
-#     return(export_to_excel(queryset, _export_programme_iterator))
-#
-#
-# export_programme_xlsx.short_description = u"Export to Excel"
-#
-#
-# class ProgrammeAdmin(AdminActiveField, AdminEditOnly):
-#     list_display = ('programme_code','programme_description','budget_type', 'active')
-#     search_fields = ['programme_code','programme_description']
-#     list_filter = ['budget_type','active']
-#
-#     def get_readonly_fields(self, request, obj=None):
-#         return ['programme_code','programme_description','budget_type', 'created', 'updated'] # don't allow to edit the code
-#
-#     def get_fields(self, request, obj=None):
-#         return ['programme_code','programme_description','budget_type', 'active', 'created', 'updated']
-#
-#     actions = [export_programme_xlsx]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)

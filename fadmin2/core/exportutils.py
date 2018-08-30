@@ -7,14 +7,16 @@ import openpyxl
 
 
 class SmartExport:
-    # return lists with the header name and the objects from a queryset
-    # it only follows one level of foreign key, while I would like to follow at lower levels
+    """ return lists with the header name and the objects from a queryset
+        it only follows one level of foreign key, while I would like to follow at lower levels
+    """
     def __init__(self, mydata_qs):
         self.data = mydata_qs
         self.model = mydata_qs.model  # get the model
         self.model_fields = self.model._meta.fields + self.model._meta.many_to_many
         # Create  headers. Use the verbose name
-        self.headers = [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]
+        self.headers = \
+            [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]
 
     def get_row(self, obj):
         row = []
@@ -72,7 +74,7 @@ def export_to_csv(queryset, f):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=' + title + '.csv'
     writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))  # BOM (optional...Excel needs it to open UTF-8 file properly)
+    response.write(u'\ufeff'.encode('utf8'))  # Excel needs UTF-8 to open the file
     for row in f(queryset):
         writer.writerow(row)
     return response
@@ -82,10 +84,13 @@ def generic_export_to_csv(queryset):
     return (export_to_csv(queryset, _generic_table_iterator))
 
 
+EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+
 def export_to_excel(queryset, f):
     title = queryset.model._meta.verbose_name_plural.title()
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=' + title + '.xlsx'
+    resp = HttpResponse(content_type=EXCEL_TYPE)
+    resp['Content-Disposition'] = 'attachment; filename=' + title + '.xlsx'
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
     ws.title = title
@@ -96,8 +101,8 @@ def export_to_excel(queryset, f):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
             c.value = row[col_num]
 
-    wb.save(response)
-    return response
+    wb.save(resp)
+    return resp
 
 
 def generic_export_to_excel(queryset):

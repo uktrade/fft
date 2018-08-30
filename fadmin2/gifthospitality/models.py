@@ -1,7 +1,7 @@
 from django.db import models
 from core.metamodels import TimeStampedModel
-from costcentre.models import DepartmentalGroup, CostCentre
-from chartofaccountDIT.models import NaturalCode, ProgrammeCode
+from costcentre.models import DepartmentalGroup
+# from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from payroll.models import Grade
 
 

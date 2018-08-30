@@ -56,7 +56,8 @@ def import_treasury_segments(csvfile):
             # Create Segment Hierarchy
             obj_segment_gp, created = SegmentGrandParent.objects.get_or_update(
                 SegmentGrandParentCode=row[COLUMN_KEY['Segment Grand Parent Code']],
-                defaults={'SegmentGrandParentLongName': row[COLUMN_KEY['Segment Grand Parent Long Name']]},
+                defaults={'SegmentGrandParentLongName':
+                          row[COLUMN_KEY['Segment Grand Parent Long Name']]},
             )
             obj_segment_parent, created = SegmentParent.objects.get_or_update(
                 SegmentParentCode=row[COLUMN_KEY['Segment Parent Code']],
@@ -81,5 +82,6 @@ def import_treasury_segments(csvfile):
                           'NetSubheadCode': row[COLUMN_KEY['Net Subhead Code']],
                           'PolicyRingfenceCode': row[COLUMN_KEY['Accounting Authority Code']],
                           'AccountingAuthorityCode': row[COLUMN_KEY['Policy Ringfence Code']],
-                          'AccountingAuthorityDetailCode': row[COLUMN_KEY['Accounting Authority Detail Code']]},
+                          'AccountingAuthorityDetailCode':
+                              row[COLUMN_KEY['Accounting Authority Detail Code']]},
             )

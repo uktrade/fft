@@ -1,8 +1,4 @@
 import django_tables2 as tables
-from django_tables2.utils import A
-
-from .models import ADIReport
-
 from django.contrib.humanize.templatetags.humanize import intcomma
 
 
@@ -36,12 +32,7 @@ class ADIReportTable(tables.Table):
     feb__sum = SummingColumn('February')
     mar__sum = SummingColumn('March')
 
-    # may__sum.attrs = {'td': {'class': 'text-left'},
-    #          'th': {'class': 'text-left'}}
-
     class Meta:
-        # fields = ('cost_centre__directorate__group__group_name', 'apr__sum','may__sum', 'jun__sum',
-        #           'jul__sum','aug__sum','sep__sum','oct__sum','nov__sum','dec__sum','jan__sum','feb__sum','mar__sum')
         template_name = 'django_tables2/bootstrap.html'
         attrs = {"class": "table-striped table-bordered table-condensed small-font"}
         empty_text = ""

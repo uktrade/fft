@@ -1,7 +1,6 @@
 from django.db import models
 from core.metamodels import TimeStampedModel, LogChangeModel
 from costcentre.models import DepartmentalGroup, CostCentre
-from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 
 
 # salaries data

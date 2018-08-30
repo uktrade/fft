@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType
 
-from .models import AdminInfo, EventLog
+from .models import AdminInfo
 
 
 class LogEntryAdmin(admin.ModelAdmin):
@@ -96,7 +96,8 @@ class AdminActiveField(admin.ModelAdmin):
         if rows_updated == 1:
             message_bit = "1 {} was".format(queryset.model._meta.verbose_name)
         else:
-            message_bit = "{} {} were ".format(rows_updated, queryset.model._meta.verbose_name_plural)
+            message_bit = \
+                "{} {} were ".format(rows_updated, queryset.model._meta.verbose_name_plural)
         self.message_user(request, "{} successfully {}.".format(message_bit, msg))
 
     def make_inactive(self, request, queryset):
@@ -111,7 +112,8 @@ class AdminActiveField(admin.ModelAdmin):
 
 
 class AdminEditOnly(admin.ModelAdmin):
-    """Admin class removing edit on the model useful for structures created elsewhere, where DIT wants to add useful tags """
+    """Admin class removing edit on the model useful for structures created elsewhere,
+    where DIT wants to add useful tags """
 
     # Remove delete from the list of action
     def get_actions(self, request):
@@ -130,7 +132,8 @@ class AdminEditOnly(admin.ModelAdmin):
 
 
 class AdminreadOnly(AdminEditOnly):
-    """Admin class removing create/edit/delete on the model useful for structures created elsewhere and not changeable by DIT, like Treasury """
+    """Admin class removing create/edit/delete on the model useful for structures created elsewhere
+    and not changeable by DIT, like Treasury """
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
