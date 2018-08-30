@@ -1,10 +1,13 @@
 from django.contrib import admin
+
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from core.admin import AdminActiveField  # noqa I100
 from core.exportutils import export_to_excel
-from core.admin import AdminActiveField
+
 from payroll.models import DITPeople
-from .models import DepartmentalGroup, Directorate, CostCentre
+
+from .models import CostCentre, DepartmentalGroup, Directorate
 
 
 def _export_cc_iterator(queryset):

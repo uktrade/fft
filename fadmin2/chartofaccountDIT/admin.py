@@ -2,12 +2,13 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from core.admin import AdminActiveField, AdminreadOnly
 from core.exportutils import export_to_csv, export_to_excel, \
     generic_export_to_csv, generic_export_to_excel
-from core.admin import AdminreadOnly, AdminActiveField
 
-from .models import Analysis1, Analysis2, NaturalCode, ExpenditureCategory, \
-    NACCategory, CommercialCategory, ProgrammeCode
+
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
+    NACCategory, NaturalCode, ProgrammeCode
 
 
 def _export_nac_iterator(queryset):

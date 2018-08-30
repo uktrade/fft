@@ -1,8 +1,8 @@
 import django_tables2 as tables
 
-from .models import CostCentre
-
 from core.tables import FadminTable
+
+from .models import CostCentre
 
 
 class CostCentreTable(FadminTable):

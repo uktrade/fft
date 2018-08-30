@@ -1,9 +1,9 @@
 from core.views import FAdminFilteredView
 
-from .tables import NaturalCodeTable, ExpenditureCategoryTable, \
-    CommercialCategoryTable, Analysis2Table, ProgrammeTable
-from .filters import NACFilter, ExpenditureCategoryFilter, \
-    CommercialCategoryFilter, Analysis2Filter, ProgrammeFilter
+from .filters import Analysis2Filter, CommercialCategoryFilter, ExpenditureCategoryFilter, \
+    NACFilter, ProgrammeFilter
+from .tables import Analysis2Table, CommercialCategoryTable, ExpenditureCategoryTable, \
+    NaturalCodeTable, ProgrammeTable
 
 
 class FilteredNACListView(FAdminFilteredView):

@@ -1,6 +1,7 @@
-from .tables import CostCentreTable
-from .filters import CostCentreFilter
 from core.views import FAdminFilteredView
+
+from .filters import CostCentreFilter
+from .tables import CostCentreTable
 
 
 class FilteredCostListView(FAdminFilteredView):

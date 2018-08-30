@@ -1,7 +1,8 @@
 import django_filters
-from .models import NaturalCode, Analysis2, \
-    ExpenditureCategory, CommercialCategory, ProgrammeCode
+
 from core.filters import MyFilterSet
+
+from .models import Analysis2, CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
 
 
 class NACFilter(MyFilterSet):

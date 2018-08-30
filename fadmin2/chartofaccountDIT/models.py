@@ -1,5 +1,7 @@
 from django.db import models
-from core.metamodels import TimeStampedModel, LogChangeModel
+
+from core.metamodels import LogChangeModel, TimeStampedModel
+
 from treasuryCOA.models import L5Account
 
 

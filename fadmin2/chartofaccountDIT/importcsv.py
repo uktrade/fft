@@ -1,12 +1,13 @@
-from .models import Analysis1, Analysis2, NaturalCode, \
-    ExpenditureCategory, NACCategory, CommercialCategory, \
-    ProgrammeCode
-from treasuryCOA.models import L5Account
-from core.myutils import import_obj, import_list_obj, \
-    IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY, \
-    IMPORT_CSV_IS_FK
-
 import csv
+
+from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
+    IMPORT_CSV_PK_KEY, import_list_obj, import_obj
+
+from treasuryCOA.models import L5Account
+
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
+    NACCategory, NaturalCode, ProgrammeCode
+
 
 # define the column position in the csv file.
 

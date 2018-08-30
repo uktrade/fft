@@ -1,7 +1,8 @@
 import django_tables2 as tables
-from .models import NaturalCode, ExpenditureCategory, CommercialCategory, Analysis2, ProgrammeCode
 
 from core.tables import FadminTable
+
+from .models import Analysis2, CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
 
 
 class ProgrammeTable(FadminTable):

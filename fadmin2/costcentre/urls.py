@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+
+from .views import FilteredCostListView
 
 urlpatterns = [
-    path('costcentrefilter/', views.FilteredCostListView.as_view(), name='costcentrefilter'),
+    path('costcentrefilter/', FilteredCostListView.as_view(), name='costcentrefilter'),
 ]

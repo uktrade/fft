@@ -1,6 +1,7 @@
+from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
+    IMPORT_CSV_PK_KEY, import_obj
+
 from .models import CostCentre, DepartmentalGroup, Directorate
-from core.myutils import import_obj, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY
 
 # define the column position in the csv file.
 

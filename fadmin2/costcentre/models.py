@@ -1,5 +1,6 @@
 from django.db import models
-from core.metamodels import TimeStampedModel, LogChangeModel
+
+from core.metamodels import LogChangeModel, TimeStampedModel  # noqa I100
 
 
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
