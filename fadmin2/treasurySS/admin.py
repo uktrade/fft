@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import SegmentGrandParent, SegmentParent, Segment, SubSegment, EstimateRow
+
+from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
 admin.site.register(Segment)
 admin.site.register(SegmentGrandParent)

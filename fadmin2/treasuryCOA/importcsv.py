@@ -1,6 +1,7 @@
+from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
+    import_obj
+
 from .models import L1Account, L2Account, L3Account, L4Account, L5Account
-from core.myutils import import_obj, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY
 
 # define the column position in the csv file.
 # The following is the list of headers in the structure report downloaded Treasury
