@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django_tables2 import RequestConfig
 from django.db.models import Sum
+from django.shortcuts import render
+
+from django_tables2 import RequestConfig
 
 from .models import ADIReport
-
 from .tables import ADIReportTable
 
 

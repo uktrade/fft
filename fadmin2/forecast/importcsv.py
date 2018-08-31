@@ -1,10 +1,13 @@
 import csv
 
-from .models import ADIReport
+from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode
+
 from core.myutils import addposition, csvheadertodict, get_fk
 
 from costcentre.models import CostCentre, Programme
-from chartofaccountDIT.models import NaturalCode, Analysis1, Analysis2
+
+from .models import ADIReport
+
 
 # define the column position in the csv file.
 # it reflects the position of columns in the Oracle report used to download the actuals

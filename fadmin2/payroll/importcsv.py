@@ -1,5 +1,6 @@
-from core.myutils import import_obj, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, IMPORT_CSV_FIELDLIST_KEY
+from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
+    import_obj
+
 from .models import DITPeople
 
 PEOPLE_KEY = {IMPORT_CSV_MODEL_KEY: DITPeople,

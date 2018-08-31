@@ -1,6 +1,8 @@
 from django.db import models
-from core.metamodels import TimeStampedModel, LogChangeModel
-from costcentre.models import DepartmentalGroup, CostCentre
+
+from core.metamodels import LogChangeModel, TimeStampedModel
+
+from costcentre.models import CostCentre, DepartmentalGroup
 
 
 # salaries data

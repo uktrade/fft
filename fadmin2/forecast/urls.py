@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+
+from .views import adireport
 
 urlpatterns = [
-    path('forecast/', views.adireport, name='forecast')
+    path('forecast/', adireport, name='forecast')
 ]

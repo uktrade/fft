@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .models import Grade, SalaryMonthlyAverage, PayModel, AdminPayModel, DITPeople
+from .models import AdminPayModel, DITPeople, Grade, PayModel, SalaryMonthlyAverage
 
 
 class DIT_PeopleAdmin(admin.ModelAdmin):
