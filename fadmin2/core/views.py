@@ -1,8 +1,8 @@
 from django.shortcuts import render
 
-from django_tables2.export.views import ExportMixin
-
 from django_filters.views import FilterView
+
+from django_tables2.export.views import ExportMixin
 from django_tables2.views import SingleTableMixin
 
 

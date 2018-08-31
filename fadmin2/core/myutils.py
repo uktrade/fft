@@ -1,6 +1,6 @@
 # Collection of useful functions and classes
-import datetime
 import csv
+import datetime
 
 
 def financialyear():

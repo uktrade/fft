@@ -1,15 +1,18 @@
 from django.core.management.base import BaseCommand
 
 from costcentre.importcsv import import_cc
-# from core.csvimport.treasurysegment import import_treasury_segments
+
+from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, \
+    import_NAC_DIT_budget, import_NAC_DIT_setting, import_NAC_category, \
+    import_NAC_dashboard_Budget, import_NAC_expenditure_category, \
+    import_commercial_category, import_commercial_category_responsible, \
+    import_expenditure_category, import_programme
+
 from forecast.importcsv import import_actual
-from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, \
-    import_NAC, import_NAC_expenditure_category, \
-    import_NAC_category, import_NAC_DIT_setting, import_NAC_DIT_budget, \
-    import_NAC_dashboard_Budget, import_expenditure_category, \
-    import_commercial_category, import_commercial_category_responsible, import_programme
-from treasuryCOA.importcsv import import_treasury_COA
+
 from payroll.importcsv import import_HR_Report
+
+from treasuryCOA.importcsv import import_treasury_COA
 
 
 IMPORT_TYPE = {

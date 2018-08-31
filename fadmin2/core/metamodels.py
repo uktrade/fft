@@ -1,6 +1,6 @@
-from django.db import models
-from django.contrib.admin.models import LogEntry, CHANGE, ADDITION
+from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
 
 
 class TimeStampedModel(models.Model):

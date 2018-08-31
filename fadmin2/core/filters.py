@@ -1,9 +1,6 @@
-import django_filters
-
 from django.db import models
 
-
-# from django import forms
+import django_filters
 
 
 class MyFilterSet(django_filters.FilterSet):

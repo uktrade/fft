@@ -1,4 +1,5 @@
 from django.db import models
+
 from .metamodels import TimeStampedModel
 
 

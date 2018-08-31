@@ -1,9 +1,9 @@
-from core.models import SubSegment, Segment, SegmentParent, SegmentGrandParent, EstimateRow
-
 import csv
 
-# define the column position in the csv file.
+from core.models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
+
+# define the column position in the csv file.
 COLUMN_KEY = {
     'Segment Department Code': 0,
     'Segment Department Long Name': 1,

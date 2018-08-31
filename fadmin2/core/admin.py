@@ -1,9 +1,8 @@
 from django.contrib import admin
-from django.contrib.admin.models import DELETION
-from django.utils.html import escape
-from django.urls import reverse
-from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.admin.models import CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
+from django.utils.html import escape
 
 from .models import AdminInfo
 
