@@ -29,6 +29,9 @@ Temporary Items
 __pycache__/
 *.py[cod]
 
+# pytest
+.pytest_cache
+
 # C extensions
 *.so
 
