@@ -158,3 +158,10 @@ def FILTERS_VERBOSE_LOOKUPS():
         'istartswith': '',
     })
     return verbose_lookups
+
+
+AUTHBROKER_URL = env('AUTHBROKER_URL')
+AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
+AUTHBROKER_CLIENT_SECRET = env('AUTHBROKER_CLIENT_SECRET')
+AUTHBROKER_SCOPES = 'read write'
+
