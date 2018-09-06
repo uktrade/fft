@@ -29,9 +29,6 @@ Temporary Items
 __pycache__/
 *.py[cod]
 
-# pytest
-.pytest_cache
-
 # C extensions
 *.so
 
@@ -53,7 +50,6 @@ var/
 *.egg
 .env
 .envrc
-venv/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -93,16 +89,8 @@ local_settings.py
 
 db.sqlite3
 
-
 .vscode/
 
-.environ
-
-.direnv/
-.idea/
-bin/
-include/
-pip-selfcheck.json
-
+my_project_visualized.png
 
 
