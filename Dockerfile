@@ -1,12 +1,11 @@
 FROM python:3
 
-WORKDIR /root/
-ADD fadmin2 fadmin2
-ADD requirements.txt fadmin2/requirements.txt
-
 WORKDIR /root/fadmin2
-RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt \
-    && python manage.py migrate
+ADD . /root/fadmin2/
 
-ENTRYPOINT ["gunicorn","fadmin2.wsgi:application","--bind","0.0.0.0"]
+RUN rm -f .environ \
+    && rm -rf .git/ \
+    && pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+CMD python manage.py migrate && gunicorn fadmin2.wsgi:application --bind 0.0.0.0
