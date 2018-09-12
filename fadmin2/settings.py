@@ -166,3 +166,8 @@ AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
 AUTHBROKER_CLIENT_SECRET = env('AUTHBROKER_CLIENT_SECRET')
 AUTHBROKER_SCOPES = 'read write'
 
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'authbroker_client.backends.AuthbrokerBackend',
+]

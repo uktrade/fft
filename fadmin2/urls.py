@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('auth/', include('authbroker_client.urls')),
+    path('auth/', include('authbroker_client.urls', namespace='authbroker')),
     path('', include('core.urls')),  # default to core with no path
     path('core/', include('core.urls')),
     path('costcentre/', include('costcentre.urls')),

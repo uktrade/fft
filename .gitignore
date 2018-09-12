@@ -94,3 +94,12 @@ db.sqlite3
 my_project_visualized.png
 
 
+.direnv/
+.idea/
+.pytest_cache/
+bin/
+fadmin2/.environ
+
+include/
+pip-selfcheck.json
+venv/
