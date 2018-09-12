@@ -47,7 +47,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     'forecast.apps.ForecastConfig',
-    'gifthospitality.apps.GifthospitalityConfig',
+    # 'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
     'chartofaccountDIT.apps.ChartAccountConfig',
