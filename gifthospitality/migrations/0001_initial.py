@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('payroll', '0001_initial'),
-        ('costcentre', '0002_auto_20180906_1320'),
     ]
 
     operations = [
