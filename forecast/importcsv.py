@@ -1,10 +1,10 @@
 import csv
 
-from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode
+from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, ProgrammeCode
 
 from core.myutils import addposition, csvheadertodict, get_fk
 
-from costcentre.models import CostCentre, Programme
+from costcentre.models import CostCentre
 
 from .models import ADIReport
 
