@@ -68,6 +68,7 @@ class CostCentreAdmin(AdminActiveField):
     directorate_name.admin_order_field = 'directorate__directorate_name'
     group_name.admin_order_field = 'directorate__group__group_name'
 
+    # limit the entries for specific foreign fields
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "business_partner":
             kwargs["queryset"] = DITPeople.objects.filter(isbusinesspartner=True, active=True)
@@ -100,10 +101,6 @@ class CostCentreAdmin(AdminActiveField):
         ]
         return my_urls + urls
 
-    # def import_csv(self, request):
-    #     self.message_user(request, "Import called")
-    #     return HttpResponseRedirect("../")
-
     def export_all_xls(self, request):
         self.message_user(request, "Export called")
         return export_to_excel(self.model.objects.all(), _export_cc_iterator)
@@ -125,7 +122,6 @@ class CostCentreAdmin(AdminActiveField):
         return render(
             request, "admin/csv_form.html", payload
         )
-
 
     search_fields = ['cost_centre_code', 'cost_centre_name']
     list_filter = ('active',
