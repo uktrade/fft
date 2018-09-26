@@ -1,20 +1,17 @@
-from django import forms
 
 from django.contrib import admin
 
 from django.http import HttpResponseRedirect
 
-from django.urls import path
 
-from django.shortcuts import render, redirect
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 import csv
 
-import io
 
-from core.admin import AdminActiveField  # noqa I100
+
+from core.admin import AdminActiveField, AdminImportExport  # noqa I100
 from core.exportutils import export_to_excel
 
 from payroll.models import DITPeople
@@ -40,21 +37,17 @@ def _export_cc_iterator(queryset):
                obj.directorate.group.active]
 
 
+
 def export_cc_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_cc_iterator))
+    return export_to_excel(queryset, _export_cc_iterator)
 
 
 export_cc_xlsx.short_description = u"Export to Excel"
 
 
-class CsvImportForm(forms.Form):
-    csv_file = forms.FileField()
-
 
 # Displays extra fields in the list of cost centres
-class CostCentreAdmin(AdminActiveField):
-
-    change_list_template = "admin/import_changelist.html"
+class CostCentreAdmin(AdminActiveField, AdminImportExport):
 
     list_display = ('cost_centre_code', 'cost_centre_name',
                     'directorate_name', 'group_name', 'active')
@@ -93,35 +86,33 @@ class CostCentreAdmin(AdminActiveField):
             return ['cost_centre_code', 'cost_centre_name', 'directorate',
                     'deputy_director', 'business_partner', 'active']
 
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [
-            path('import-csv/', self.import_csv),
-            path('export-xls/', self.export_all_xls),
-        ]
-        return my_urls + urls
+    # the export and import function must be defined as properties, to stop getting 'self' as first
+    # parameter
+    @property
+    def export_func(self):
+        return _export_cc_iterator
 
-    def export_all_xls(self, request):
-        self.message_user(request, "Export called")
-        return export_to_excel(self.model.objects.all(), _export_cc_iterator)
+    @property
+    def import_func(self):
+        return import_cc
 
-    def import_csv(self, request):
-        if request.method == "POST":
-            form = CsvImportForm(request.POST, request.FILES)
-            if form.is_valid():
-                csv_file = request.FILES["csv_file"]
-                #read() gives you the file contents as a bytes object, on which you can call decode().
-                #decode('cp1252') turns your bytes into a string, with known encoding.
-                # cp1252 is used to handle single quotes in the strings
-                t = io.StringIO(csv_file.read().decode('cp1252'))
-                import_cc(t)
-                return redirect("..")
-        else:
-            form = CsvImportForm()
-        payload = {"form": form}
-        return render(
-            request, "admin/csv_form.html", payload
-        )
+    # def import_csv(self, request):
+    #     if request.method == "POST":
+    #         form = CsvImportForm(request.POST, request.FILES)
+    #         if form.is_valid():
+    #             csv_file = request.FILES["csv_file"]
+    #             #read() gives you the file contents as a bytes object, on which you can call decode().
+    #             #decode('cp1252') turns your bytes into a string, with known encoding.
+    #             # cp1252 is used to handle single quotes in the strings
+    #             t = io.StringIO(csv_file.read().decode('cp1252'))
+    #             import_cc(t)
+    #             return redirect("..")
+    #     else:
+    #         form = CsvImportForm()
+    #     payload = {"form": form}
+    #     return render(
+    #         request, "admin/csv_form.html", payload
+    #     )
 
     search_fields = ['cost_centre_code', 'cost_centre_name']
     list_filter = ('active',
