@@ -1,10 +1,17 @@
+from django import forms
+
 from django.contrib import admin
 from django.contrib.admin.models import CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
+from django.shortcuts import render, redirect
+from django.urls import path, reverse
 from django.utils.html import escape
 
+import io
+
+from .exportutils import export_to_excel
 from .models import AdminInfo
+
 
 
 class LogEntryAdmin(admin.ModelAdmin):
@@ -140,4 +147,44 @@ class AdminreadOnly(AdminEditOnly):
         return self.readonly_fields
 
 
+class CsvImportForm(forms.Form):
+    csv_file = forms.FileField()
+
+class AdminImportExport(admin.ModelAdmin):
+    change_list_template = "admin/import_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('import-csv/', self.import_csv),
+            path('export-xls/', self.export_all_xls),
+        ]
+        return my_urls + urls
+
+
+    def export_all_xls(self, request):
+        self.message_user(request, "Export called")
+        return export_to_excel(self.model.objects.all(), self.export_func)
+
+    def import_csv(self, request):
+        self.message_user(request, "Import called")
+        if request.method == "POST":
+            form = CsvImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                csv_file = request.FILES["csv_file"]
+                #read() gives you the file contents as a bytes object, on which you can call decode().
+                #decode('cp1252') turns your bytes into a string, with known encoding.
+                # cp1252 is used to handle single quotes in the strings
+                t = io.StringIO(csv_file.read().decode('cp1252'))
+                self.import_func(t)
+                return redirect("..")
+        else:
+            form = CsvImportForm()
+        payload = {"form": form}
+        return render(
+            request, "admin/csv_form.html", payload
+        )
+
+
 admin.site.register(AdminInfo)
+
