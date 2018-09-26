@@ -115,6 +115,7 @@ class AdminActiveField(admin.ModelAdmin):
     make_inactive.short_description = u"Deactivate the selected object(s)"
     make_active.short_description = u"Activate the selected object(s)"
     actions = [make_inactive, make_active]
+    list_filter = ('active',)
 
 
 class AdminEditOnly(admin.ModelAdmin):

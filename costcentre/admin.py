@@ -3,8 +3,7 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminExport, AdminImportExport  # noqa I100
-from core.exportutils import export_to_excel
+from core.admin import AdminActiveField, AdminExport, AdminImportExport
 
 from payroll.models import DITPeople
 
@@ -29,14 +28,11 @@ def _export_cc_iterator(queryset):
                obj.directorate.group.active]
 
 
-
-
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField, AdminImportExport):
 
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
                     'directorate_name', 'group_code', 'group_name', 'active')
-
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name
@@ -93,7 +89,6 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     list_filter = ('active',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
-
 
 
 def _export_directorate_iterator(queryset):
