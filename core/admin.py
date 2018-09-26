@@ -147,24 +147,34 @@ class AdminreadOnly(AdminEditOnly):
         return self.readonly_fields
 
 
+class AdminExport(admin.ModelAdmin):
+    change_list_template = "admin/export_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+           path('export-xls/', self.export_all_xls),
+        ]
+        return my_urls + urls
+
+    def export_all_xls(self, request):
+        self.message_user(request, "Export called")
+        return export_to_excel(self.model.objects.all(), self.export_func)
+
+
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
 
-class AdminImportExport(admin.ModelAdmin):
+
+class AdminImportExport(AdminExport):
     change_list_template = "admin/import_changelist.html"
 
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
             path('import-csv/', self.import_csv),
-            path('export-xls/', self.export_all_xls),
         ]
         return my_urls + urls
-
-
-    def export_all_xls(self, request):
-        self.message_user(request, "Export called")
-        return export_to_excel(self.model.objects.all(), self.export_func)
 
     def import_csv(self, request):
         self.message_user(request, "Import called")

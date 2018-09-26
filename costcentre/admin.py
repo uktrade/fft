@@ -1,17 +1,9 @@
 
 from django.contrib import admin
 
-from django.http import HttpResponseRedirect
-
-
-
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-import csv
-
-
-
-from core.admin import AdminActiveField, AdminImportExport  # noqa I100
+from core.admin import AdminActiveField, AdminExport, AdminImportExport  # noqa I100
 from core.exportutils import export_to_excel
 
 from payroll.models import DITPeople
@@ -37,29 +29,35 @@ def _export_cc_iterator(queryset):
                obj.directorate.group.active]
 
 
-
 def export_cc_xlsx(modeladmin, request, queryset):
     return export_to_excel(queryset, _export_cc_iterator)
 
 
-export_cc_xlsx.short_description = u"Export to Excel"
-
+export_cc_xlsx.short_description = u"Export selected objects to Excel"
 
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField, AdminImportExport):
 
-    list_display = ('cost_centre_code', 'cost_centre_name',
-                    'directorate_name', 'group_name', 'active')
+    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
+                    'directorate_name', 'group_code', 'group_name', 'active')
+
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name
 
+    def directorate_code(self, instance):  # required to display the field from a foreign key
+        return instance.directorate.directorate_code
+
     def group_name(self, instance):
-        return instance.directorate.group.group_name
+            return instance.directorate.group.group_name
+    def group_code(self, instance):
+            return instance.directorate.group.group_code
 
     directorate_name.admin_order_field = 'directorate__directorate_name'
+    directorate_code.admin_order_field = 'directorate__directorate_code'
     group_name.admin_order_field = 'directorate__group__group_name'
+    group_code.admin_order_field = 'directorate__group__group_code'
 
     # limit the entries for specific foreign fields
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -96,24 +94,6 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     def import_func(self):
         return import_cc
 
-    # def import_csv(self, request):
-    #     if request.method == "POST":
-    #         form = CsvImportForm(request.POST, request.FILES)
-    #         if form.is_valid():
-    #             csv_file = request.FILES["csv_file"]
-    #             #read() gives you the file contents as a bytes object, on which you can call decode().
-    #             #decode('cp1252') turns your bytes into a string, with known encoding.
-    #             # cp1252 is used to handle single quotes in the strings
-    #             t = io.StringIO(csv_file.read().decode('cp1252'))
-    #             import_cc(t)
-    #             return redirect("..")
-    #     else:
-    #         form = CsvImportForm()
-    #     payload = {"form": form}
-    #     return render(
-    #         request, "admin/csv_form.html", payload
-    #     )
-
     search_fields = ['cost_centre_code', 'cost_centre_name']
     list_filter = ('active',
                    ('directorate', RelatedDropdownFilter),
@@ -137,19 +117,24 @@ def export_directorate_xlsx(modeladmin, request, queryset):
     return (export_to_excel(queryset, _export_directorate_iterator))
 
 
-export_directorate_xlsx.short_description = u"Export to Excel"
+export_directorate_xlsx.short_description = u"Export selected objects to Excel"
 
 
-class DirectorateAdmin(AdminActiveField):
-    list_display = ('directorate_code', 'directorate_name', 'dgroup_name', 'director', 'active')
+class DirectorateAdmin(AdminActiveField, AdminExport):
+    list_display = ('directorate_code', 'directorate_name',
+                    'group_code', 'group_name', 'director', 'active')
     search_fields = ['directorate_code', 'directorate_name']
     list_filter = ('active',
                    ('group', RelatedDropdownFilter))
 
-    def dgroup_name(self, instance):
-        return instance.group.group_code + ' - ' + instance.group.group_name
+    def group_name(self, instance):
+        return instance.group.group_name
 
-    dgroup_name.admin_order_field = 'group__group_name'
+    def group_code(self, instance):
+        return instance.group.group_code
+
+    group_name.admin_order_field = 'group__group_name'
+    group_code.admin_order_field = 'group__group_code'
 
     # limit the list available in the drop downs
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -174,6 +159,10 @@ class DirectorateAdmin(AdminActiveField):
         else:
             return ['directorate_code', 'directorate_name', 'group', 'director', 'active']
 
+    @property
+    def export_func(self):
+        return _export_directorate_iterator
+
     actions = [export_directorate_xlsx]
 
 
@@ -192,7 +181,7 @@ def export_group_xlsx(modeladmin, request, queryset):
 export_group_xlsx.short_description = u"Export to Excel"
 
 
-class DepartmentalGroupAdmin(AdminActiveField):
+class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
     list_display = ('group_code', 'group_name', 'director_general', 'active')
     search_fields = ['group_code', 'group_name']
 
@@ -215,10 +204,14 @@ class DepartmentalGroupAdmin(AdminActiveField):
         else:
             return ['group_code', 'group_name', 'director_general', 'active']
 
+    @property
+    def export_func(self):
+        return _export_group_iterator
+
     actions = [export_group_xlsx]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
-# admin.site.register(Programme, ProgrammeAdmin)
+
