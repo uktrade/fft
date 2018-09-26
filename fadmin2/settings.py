@@ -45,7 +45,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 # Application definition
 
 INSTALLED_APPS = [
-    #'authbroker_client',
+    'authbroker_client',
     'forecast.apps.ForecastConfig',
     # 'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
@@ -173,10 +173,14 @@ AUTHENTICATION_BACKENDS = [
     'authbroker_client.backends.AuthbrokerBackend',
 ]
 
+LOGIN_URL='/auth/login'
+LOGIN_REDIRECT_URL='index'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Extra places for collectstatic to find static files.
 # STATICFILES_DIRS = (
