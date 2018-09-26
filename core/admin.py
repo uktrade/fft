@@ -161,6 +161,13 @@ class AdminExport(admin.ModelAdmin):
         self.message_user(request, "Export called")
         return export_to_excel(self.model.objects.all(), self.export_func)
 
+    def export_selection_xlsx(self, request, queryset):
+        return export_to_excel(queryset, self.export_func)
+
+    export_selection_xlsx.short_description = u'Export selected object(s) to Excel'
+
+    actions = [export_selection_xlsx]
+
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()

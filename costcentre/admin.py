@@ -29,11 +29,6 @@ def _export_cc_iterator(queryset):
                obj.directorate.group.active]
 
 
-def export_cc_xlsx(modeladmin, request, queryset):
-    return export_to_excel(queryset, _export_cc_iterator)
-
-
-export_cc_xlsx.short_description = u"Export selected objects to Excel"
 
 
 # Displays extra fields in the list of cost centres
@@ -98,7 +93,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     list_filter = ('active',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
-    actions = [export_cc_xlsx]
+
 
 
 def _export_directorate_iterator(queryset):
@@ -111,13 +106,6 @@ def _export_directorate_iterator(queryset):
                obj.group.group_code,
                obj.group.group_name,
                obj.group.active]
-
-
-def export_directorate_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_directorate_iterator))
-
-
-export_directorate_xlsx.short_description = u"Export selected objects to Excel"
 
 
 class DirectorateAdmin(AdminActiveField, AdminExport):
@@ -163,8 +151,6 @@ class DirectorateAdmin(AdminActiveField, AdminExport):
     def export_func(self):
         return _export_directorate_iterator
 
-    actions = [export_directorate_xlsx]
-
 
 def _export_group_iterator(queryset):
     yield ['Group', 'Group Description', 'Active']
@@ -172,13 +158,6 @@ def _export_group_iterator(queryset):
         yield [obj.group_code,
                obj.group_name,
                obj.active]
-
-
-def export_group_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_group_iterator))
-
-
-export_group_xlsx.short_description = u"Export to Excel"
 
 
 class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
@@ -207,8 +186,6 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
     @property
     def export_func(self):
         return _export_group_iterator
-
-    actions = [export_group_xlsx]
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
