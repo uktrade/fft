@@ -42,7 +42,7 @@ class SmartExport:
             yield self.get_row(obj)
 
 
-def _generic_table_iterator(queryset):
+def generic_table_iterator(queryset):
     # Buidl the header
     mymodel = queryset.model  # get the model
     model_fields = mymodel._meta.fields + mymodel._meta.many_to_many
@@ -82,7 +82,7 @@ def export_to_csv(queryset, f):
 
 
 def generic_export_to_csv(queryset):
-    return (export_to_csv(queryset, _generic_table_iterator))
+    return (export_to_csv(queryset, generic_table_iterator))
 
 
 EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -107,4 +107,4 @@ def export_to_excel(queryset, f):
 
 
 def generic_export_to_excel(queryset):
-    return (export_to_excel(queryset, _generic_table_iterator))
+    return (export_to_excel(queryset, generic_table_iterator))
