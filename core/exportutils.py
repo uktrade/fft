@@ -7,6 +7,14 @@ from django.utils.encoding import smart_str
 import openpyxl
 
 
+def get_fk_value(obj, field):
+    if obj is not None:
+        return getattr(obj, field)
+    else:
+        return '-'
+
+
+# NOT USED
 class SmartExport:
     """ return lists with the header name and the objects from a queryset
         it only follows one level of foreign key, while I would like to follow at lower levels
@@ -43,7 +51,7 @@ class SmartExport:
 
 
 def generic_table_iterator(queryset):
-    # Buidl the header
+    # Build the header
     mymodel = queryset.model  # get the model
     model_fields = mymodel._meta.fields + mymodel._meta.many_to_many
     # Create  headers. Use the verbose name

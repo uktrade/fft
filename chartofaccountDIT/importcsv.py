@@ -50,7 +50,7 @@ def import_NAC_expenditure_category(csvfile):
     import_list_obj(csvfile, ExpenditureCategory, 'grouping_description')
 
 
-def import_NAC_dashboard_Budget(csvfile):
+def import_expenditure_category(csvfile):
     reader = csv.reader(csvfile)
     next(reader)  # skip the header
     for row in reader:
