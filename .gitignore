@@ -98,7 +98,7 @@ my_project_visualized.png
 .idea/
 .pytest_cache/
 bin/
-fadmin2/.environ
+.environ
 
 include/
 pip-selfcheck.json
