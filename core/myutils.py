@@ -61,7 +61,7 @@ def get_pk_name(m):
     if m._meta.pk._verbose_name is None:
         pkname = m._meta.pk.name
     else:
-        pkname = m._meta.pk.name
+        pkname = m._meta.pk._verbose_name
     return pkname
 
 
@@ -118,6 +118,23 @@ def import_obj(csvfile, obj_key):
         row_number = row_number + 1
         obj, msg = readcsvfromdict(d, row)
         print(row_number, msg)
+
+
+def get_col_from_obj_key(obj_key):
+    """Takes the dictionary used to define the import, and
+    return the list of the expected headers"""
+    header_list = []
+    if IMPORT_CSV_PK_KEY in obj_key:
+        header_list.append(obj_key[IMPORT_CSV_PK_KEY])
+    if IMPORT_CSV_IS_FK in obj_key:
+        header_list.append(obj_key[IMPORT_CSV_IS_FK])
+    if IMPORT_CSV_FIELDLIST_KEY in obj_key:
+        for k, v in obj_key[IMPORT_CSV_FIELDLIST_KEY].items():
+            if type(v) is dict:
+                header_list = header_list + get_col_from_obj_key(v)
+            else:
+                header_list.append(v)
+    return header_list
 
 
 # used for import of lists needed to populate tables, when the primary key is created by the system

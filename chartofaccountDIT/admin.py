@@ -2,12 +2,11 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly
-from core.exportutils import generic_table_iterator, export_to_excel, \
-    generic_export_to_csv, generic_export_to_excel
+from core.admin import AdminActiveField, AdminImportExport, AdminreadOnly
+from core.exportutils import generic_table_iterator, get_fk_value
 
 from .importcsv import import_Analysis1, import_Analysis2, import_commercial_category, import_NAC, \
-    import_NAC_dashboard_Budget, import_NAC_category, import_programme
+    import_expenditure_category, import_NAC_category, import_programme
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     NACCategory, NaturalCode, ProgrammeCode
@@ -22,11 +21,11 @@ def _export_nac_iterator(queryset):
         yield [obj.natural_account_code,
                obj.natural_account_code_description,
                obj.active,
-               obj.account_L5_code.account_l5_code,
-               obj.account_L5_code.account_l5_long_name]
+               get_fk_value(obj.account_L5_code, 'account_l5_code'),
+               get_fk_value(obj.account_L5_code, 'account_l5_long_name')]
 
 
-class NaturalCodeAdmin(AdminreadOnly, AdminImportExport):
+class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
     list_display = ('natural_account_code', 'natural_account_code_description', 'active')
 
     def get_readonly_fields(self, request, obj=None):
@@ -42,6 +41,7 @@ class NaturalCodeAdmin(AdminreadOnly, AdminImportExport):
                    'used_for_budget',
                    ('expenditure_category__NAC_category', RelatedDropdownFilter),
                    ('expenditure_category', RelatedDropdownFilter))
+
     @property
     def export_func(self):
         return _export_nac_iterator
@@ -77,6 +77,18 @@ class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
         return import_Analysis2
 
 
+def _export_exp_cat_iterator(queryset):
+    yield ['Budget Grouping', 'Expenditure Category',
+           'Description', 'Further Description', 'Budget NAC', 'Budget NAC Description'
+           ]
+    for obj in queryset:
+        yield [obj.NAC_category.NAC_category_description,
+               obj.grouping_description,
+               obj.description,
+               obj.further_description,
+               obj.linked_budget_code.natural_account_code,
+               obj.linked_budget_code.natural_account_code_description]
+
 
 class ExpenditureCategoryAdmin(AdminImportExport):
     search_fields = ['grouping_description', 'description']
@@ -90,23 +102,31 @@ class ExpenditureCategoryAdmin(AdminImportExport):
 
     @property
     def export_func(self):
-        return generic_table_iterator
+        return _export_exp_cat_iterator
+
+    @property
+    def import_func(self):
+        return import_expenditure_category
+
+
+def _export_nac_cat_iterator(queryset):
+    yield ['Budget Grouping']
+
+    for obj in queryset:
+        yield [obj.NAC_category_description, ]
+
+
+class NACCategoryAdmin(AdminImportExport):
+    search_fields = ['NAC_category_description']
+    list_display = ['NAC_category_description']
+
+    @property
+    def export_func(self):
+        return _export_nac_cat_iterator
 
     @property
     def import_func(self):
         return import_NAC_category
-
-
-def export_NACCategory_csv(modeladmin, request, queryset):
-    return (generic_export_to_csv(queryset))
-
-
-def export_NACCategory_xlsx(modeladmin, request, queryset):
-    return (generic_export_to_excel(queryset))
-
-
-class NACCategoryAdmin(admin.ModelAdmin):
-    actions = [export_NACCategory_csv, export_NACCategory_xlsx]
 
 
 def _export_programme_iterator(queryset):
