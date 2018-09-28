@@ -11,9 +11,7 @@ import io
 
 from .exportutils import export_to_excel
 from .models import AdminInfo
-
-
-
+    
 class LogEntryAdmin(admin.ModelAdmin):
     """ Display the Admin log in the Admin interface"""
     date_hierarchy = 'action_time'
@@ -159,7 +157,7 @@ class AdminExport(admin.ModelAdmin):
         return my_urls + urls
 
     def export_all_xls(self, request):
-        self.message_user(request, "Export called")
+        # self.message_user(request, "Export called")
         return export_to_excel(self.model.objects.all(), self.export_func)
 
     def export_selection_xlsx(self, request, queryset):
@@ -171,10 +169,19 @@ class AdminExport(admin.ModelAdmin):
 
 
 class CsvImportForm(forms.Form):
+    '''Form used to get the file to upload for importing data'''
+
+    def __init__(self, header_list, form_title, *args, **kwargs):
+        self.header_list = header_list
+        self.form_title = form_title
+        super(CsvImportForm, self).__init__(*args, **kwargs)  # call base class
+
     csv_file = forms.FileField()
 
 
 class AdminImportExport(AdminExport):
+    '''Used to create an import button on the page. Import_dict is a property describing the
+    import file'''
     change_list_template = "admin/import_changelist.html"
 
     def get_urls(self):
@@ -185,19 +192,21 @@ class AdminImportExport(AdminExport):
         return my_urls + urls
 
     def import_csv(self, request):
-        self.message_user(request, "Import called")
+        header_list = self.import_info.header_list
+        import_func = self.import_info.my_import_func
+        form_title = self.import_info.form_title
         if request.method == "POST":
-            form = CsvImportForm(request.POST, request.FILES)
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
                 #read() gives you the file contents as a bytes object, on which you can call decode().
                 #decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
-                self.import_func(t)
+                import_func(t)
                 return redirect("..")
         else:
-            form = CsvImportForm()
+            form = CsvImportForm(header_list, form_title)
         payload = {"form": form}
         return render(
             request, "admin/csv_form.html", payload

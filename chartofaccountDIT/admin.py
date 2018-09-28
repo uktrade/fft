@@ -2,11 +2,12 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminImportExport, AdminreadOnly
+from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly
 from core.exportutils import generic_table_iterator, get_fk_value
 
-from .importcsv import import_Analysis1, import_Analysis2, import_commercial_category, import_NAC, \
-    import_expenditure_category, import_NAC_category, import_programme
+from .importcsv import import_a1_class, import_a2_class, import_NAC_expenditure_cat_class, \
+    import_NAC_class, \
+    import_prog_class
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     NACCategory, NaturalCode, ProgrammeCode
@@ -47,8 +48,8 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
         return _export_nac_iterator
 
     @property
-    def import_func(self):
-        return import_NAC
+    def import_info(self):
+        return import_NAC_class
 
 
 class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
@@ -60,8 +61,8 @@ class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
         return generic_table_iterator
 
     @property
-    def import_func(self):
-        return import_Analysis1
+    def import_info(self):
+        return import_a1_class
 
 
 class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
@@ -73,8 +74,8 @@ class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
         return generic_table_iterator
 
     @property
-    def import_func(self):
-        return import_Analysis2
+    def import_info(self):
+        return import_a2_class
 
 
 def _export_exp_cat_iterator(queryset):
@@ -90,7 +91,7 @@ def _export_exp_cat_iterator(queryset):
                obj.linked_budget_code.natural_account_code_description]
 
 
-class ExpenditureCategoryAdmin(AdminImportExport):
+class ExpenditureCategoryAdmin(AdminExport):
     search_fields = ['grouping_description', 'description']
     list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
     list_filter = ('NAC_category',)
@@ -104,9 +105,9 @@ class ExpenditureCategoryAdmin(AdminImportExport):
     def export_func(self):
         return _export_exp_cat_iterator
 
-    @property
-    def import_func(self):
-        return import_expenditure_category
+    # @property
+    # def import_func(self):
+    #     return import_expenditure_category
 
 
 def _export_nac_cat_iterator(queryset):
@@ -125,8 +126,8 @@ class NACCategoryAdmin(AdminImportExport):
         return _export_nac_cat_iterator
 
     @property
-    def import_func(self):
-        return import_NAC_category
+    def import_info(self):
+        return import_NAC_expenditure_cat_class
 
 
 def _export_programme_iterator(queryset):
@@ -156,8 +157,8 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return _export_programme_iterator
 
     @property
-    def import_func(self):
-        return import_programme
+    def import_info(self):
+        return import_prog_class
 
 
 admin.site.register(Analysis1, Analysis1Admin)
