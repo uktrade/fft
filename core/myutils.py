@@ -3,7 +3,6 @@ import csv
 import datetime
 
 
-
 def financialyear():
     """ # Return the financial year for the current date
          The UK financial year starts in April, so Jan, Feb and Mar are part of the previous year
@@ -16,6 +15,7 @@ def financialyear():
 
 
 IMPORT_CSV_MODEL_KEY = 'model'
+IMPORT_CSV_PK_NAME_KEY = 'pk_name'
 IMPORT_CSV_PK_KEY = 'pk'
 IMPORT_CSV_FIELDLIST_KEY = 'fieldlist'
 IMPORT_CSV_IS_FK = 'isforeignkey'
@@ -81,13 +81,35 @@ def get_fk(m, pk_value):
     return obj, msg
 
 
+def get_fk_from_field(m, f_name, f_value):
+    """Read an object to be used as foreign key in another record.
+    It return a formatted message if it finds an error
+    """
+    msg = ''
+    try:
+        obj = m.objects.get(f_name=f_value)
+    except m.DoesNotExist:
+        msg = str(f_name) + ' "' + str(f_value) + '" does not exist'
+        obj = None
+    except ValueError:
+        msg = str(f_name) + ' "' + str(f_value) + + '" wrong type'
+        obj = None
+    return obj, msg
+
+
 def readcsvfromdict(d, row):
     m = d[IMPORT_CSV_MODEL_KEY]
-    pkname = d[IMPORT_CSV_PK_KEY]
+    if IMPORT_CSV_PK_NAME_KEY in d:
+        unique_name = d[IMPORT_CSV_PK_NAME_KEY]
+    else:
+        unique_name = m._meta.pk.name
+
+    pk_header_name = d[IMPORT_CSV_PK_KEY]
+
     errormsg = ''
     # if we are only reading a foreign key (we don't want to create it!), get the value and return
     if IMPORT_CSV_IS_FK in d:
-        return get_fk(m, row[pkname])
+        return get_fk(m, row[pk_header_name])
 
     defaultList = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
@@ -100,9 +122,12 @@ def readcsvfromdict(d, row):
             else:
                 defaultList[k] = row[v].strip()
     try:
-        obj, created = m.objects.update_or_create(pk=row[pkname].strip(),
-                                                  defaults=defaultList)
-        print(created)
+        # import pdb;
+        # pdb.set_trace()
+         obj, created = m.objects.update_or_create(** {unique_name: row[pk_header_name].strip()},
+                                                   defaults=defaultList)
+        # obj, created = m.objects.update_or_create(field=row[pk_header_name].strip(),
+        #                                           defaults=defaultList)
     except ValueError:
         obj = None
         errormsg = 'Valuerror'
@@ -143,3 +168,28 @@ def import_list_obj(csvfile, model, fieldname):
     next(reader)  # skip the header
     for row in reader:
         obj, created = model.objects.update_or_create(**{fieldname: row[0].strip()})
+
+
+class ImportInfo():
+    """Use to define the function used to import from the Admin view list"""
+    def __init__(self, key = {}, title = '', hlist = [],  my_import_func = None):
+        self.key = key
+        self.special_func = my_import_func
+        if bool(key):
+            self.header_list = get_col_from_obj_key(key)
+        else:
+            self.header_list = hlist
+
+        if title == '':
+            self.form_title = key[IMPORT_CSV_MODEL_KEY]._meta.verbose_name.title()
+        else:
+            self.form_title = title
+
+    def my_import_func(self, c):
+        if bool(self.key):
+            return import_obj(c, self.key)
+        else:
+            return self.special_func(c)
+
+
+

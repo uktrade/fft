@@ -1,7 +1,7 @@
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
+from core.middleware import get_current_user
 
 class TimeStampedModel(models.Model):
     """ An abstract base class model that provide self-updating
@@ -51,9 +51,11 @@ class LogChangeModel(models.Model):
         if changed:
             # write to the Admin history log the list of changes
             message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
+            userid = get_current_user()
+            #userid = 1
             ct = ContentType.objects.get_for_model(self)
             LogEntry.objects.log_action(
-                user_id=1,
+                user_id=userid,
                 content_type_id=ct.pk,
                 object_id=self.pk,
                 object_repr=self.__str__(),

@@ -16,6 +16,8 @@ import dj_database_url
 import environ
 
 
+AUTH_USER_MODEL = 'core.User'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -47,6 +49,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     'forecast.apps.ForecastConfig',
+    'dit_user_management',
     # 'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
@@ -75,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'core.middleware.ThreadLocalMiddleware'
 ]
 
 ROOT_URLCONF = 'fadmin2.urls'
@@ -161,6 +165,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     })
     return verbose_lookups
 
+AUTH_USER_MODEL = 'dit_user_management.User'
 
 AUTHBROKER_URL = env('AUTHBROKER_URL')
 AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')

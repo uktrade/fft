@@ -1,8 +1,5 @@
-from django.db import models
-
 from .metamodels import TimeStampedModel
-
-
+from django.db import models
 class AdminInfo(models.Model):
     """Used for general information for the application.
        The current month is the calendar month, 1 for jan, etc, calendar month, not financial

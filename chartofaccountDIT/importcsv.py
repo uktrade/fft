@@ -1,7 +1,7 @@
 import csv
 
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, import_list_obj, import_obj
+    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, import_list_obj, import_obj, ImportInfo
 
 from treasuryCOA.models import L5Account
 
@@ -28,6 +28,10 @@ def import_Analysis2(csvfile):
     import_obj(csvfile, ANALYSIS2_KEY)
 
 
+import_a1_class = ImportInfo(ANALYSIS1_KEY)
+import_a2_class = ImportInfo(ANALYSIS2_KEY)
+
+
 L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
              IMPORT_CSV_IS_FK: '',
              IMPORT_CSV_PK_KEY: 'OSCAR L5 Mapping'
@@ -45,9 +49,20 @@ NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
 def import_NAC(csvfile):
     import_obj(csvfile, NAC_KEY)
 
+import_NAC_class = ImportInfo(NAC_KEY)
+
+
+NAC_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: NACCategory,
+                    IMPORT_CSV_PK_KEY: 'Budget Grouping',
+                    IMPORT_CSV_PK_NAME_KEY: NACCategory.NAC_category_description.field_name,
+                    IMPORT_CSV_FIELDLIST_KEY: {}}
+
 
 def import_NAC_expenditure_category(csvfile):
-    import_list_obj(csvfile, ExpenditureCategory, 'grouping_description')
+    import_obj(csvfile, NAC_CATEGORY_KEY)
+
+
+import_NAC_expenditure_cat_class = ImportInfo(NAC_CATEGORY_KEY)
 
 
 def import_expenditure_category(csvfile):
@@ -128,3 +143,6 @@ PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,
 
 def import_programme(csvfile):
     import_obj(csvfile, PROG_KEY)
+
+
+import_prog_class = ImportInfo(PROG_KEY)
