@@ -159,7 +159,7 @@ class AdminExport(admin.ModelAdmin):
         return my_urls + urls
 
     def export_all_xls(self, request):
-        self.message_user(request, "Export called")
+        # self.message_user(request, "Export called")
         return export_to_excel(self.model.objects.all(), self.export_func)
 
     def export_selection_xlsx(self, request, queryset):
@@ -171,6 +171,8 @@ class AdminExport(admin.ModelAdmin):
 
 
 class CsvImportForm(forms.Form):
+    '''Form used to get the file to upload for importing data'''
+    # your_name = forms.(label='Your name', max_length=100)
     csv_file = forms.FileField()
 
 
@@ -185,7 +187,7 @@ class AdminImportExport(AdminExport):
         return my_urls + urls
 
     def import_csv(self, request):
-        self.message_user(request, "Import called")
+        # self.message_user(request, "Import called")
         if request.method == "POST":
             form = CsvImportForm(request.POST, request.FILES)
             if form.is_valid():

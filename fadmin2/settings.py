@@ -161,6 +161,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     })
     return verbose_lookups
 
+#AUTH_USER_MODEL = 'core.User'
 
 AUTHBROKER_URL = env('AUTHBROKER_URL')
 AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
