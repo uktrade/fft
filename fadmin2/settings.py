@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'core.middleware.ThreadLocalMiddleware'
 ]
 
 ROOT_URLCONF = 'fadmin2.urls'
