@@ -11,8 +11,13 @@ import io
 
 from .exportutils import export_to_excel
 from .models import AdminInfo
+from .models import User
 
-
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    fields = ('email', 'first_name', 'last_name','staff','superuser')
+    list_display = ('email', 'first_name','last_name', 'last_login','staff','superuser' )
+    
 
 class LogEntryAdmin(admin.ModelAdmin):
     """ Display the Admin log in the Admin interface"""
