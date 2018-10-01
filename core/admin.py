@@ -15,8 +15,9 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    fields = ('email', 'first_name', 'last_name','staff','superuser')
-    list_display = ('email', 'first_name','last_name', 'last_login','staff','superuser' )
+    fields = ('email', 'first_name', 'last_name','active','staff','superuser','groups','user_permissions','date_joined','last_login')
+    readonly_fields = ['date_joined']
+    list_display = ('email', 'first_name','last_name','date_joined','last_login','staff','superuser' )
     
 
 class LogEntryAdmin(admin.ModelAdmin):
