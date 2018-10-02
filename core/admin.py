@@ -13,6 +13,8 @@ from .exportutils import export_to_excel
 from .models import AdminInfo
 from .models import User
 
+from .myutils import import_obj, get_col_from_obj_key
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     fields = ('email', 'first_name', 'last_name','active','staff','superuser','groups','user_permissions','date_joined','last_login')
@@ -178,11 +180,17 @@ class AdminExport(admin.ModelAdmin):
 
 class CsvImportForm(forms.Form):
     '''Form used to get the file to upload for importing data'''
-    # your_name = forms.(label='Your name', max_length=100)
+
+    def __init__(self, header_list, *args, **kwargs):
+        self.header_list = header_list
+        super(CsvImportForm, self).__init__(*args, **kwargs)  # call base class
+
     csv_file = forms.FileField()
 
 
 class AdminImportExport(AdminExport):
+    '''Used to create an import button on the page. Import_dict is a property describing the
+    import file'''
     change_list_template = "admin/import_changelist.html"
 
     def get_urls(self):
@@ -193,19 +201,19 @@ class AdminImportExport(AdminExport):
         return my_urls + urls
 
     def import_csv(self, request):
-        # self.message_user(request, "Import called")
+        title = "'" + "'-'".join(get_col_from_obj_key(self.import_dict)) + "'"
         if request.method == "POST":
-            form = CsvImportForm(request.POST, request.FILES)
+            form = CsvImportForm(title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
                 #read() gives you the file contents as a bytes object, on which you can call decode().
                 #decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
-                self.import_func(t)
+                import_obj(t, self.import_dict)
                 return redirect("..")
         else:
-            form = CsvImportForm()
+            form = CsvImportForm(title)
         payload = {"form": form}
         return render(
             request, "admin/csv_form.html", payload
