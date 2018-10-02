@@ -5,8 +5,9 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from core.admin import AdminActiveField, AdminImportExport, AdminreadOnly
 from core.exportutils import generic_table_iterator, get_fk_value
 
-from .importcsv import import_Analysis1, import_Analysis2, import_commercial_category, import_NAC, \
-    import_expenditure_category, import_NAC_category, import_programme
+from .importcsv import ANALYSIS1_KEY, ANALYSIS2_KEY, import_commercial_category, \
+    NAC_KEY, \
+    import_expenditure_category, import_NAC_category, PROG_KEY
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     NACCategory, NaturalCode, ProgrammeCode
@@ -47,8 +48,8 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
         return _export_nac_iterator
 
     @property
-    def import_func(self):
-        return import_NAC
+    def import_dict(self):
+        return NAC_KEY
 
 
 class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
@@ -60,8 +61,8 @@ class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
         return generic_table_iterator
 
     @property
-    def import_func(self):
-        return import_Analysis1
+    def import_dict(self):
+        return ANALYSIS1_KEY
 
 
 class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
@@ -73,8 +74,8 @@ class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
         return generic_table_iterator
 
     @property
-    def import_func(self):
-        return import_Analysis2
+    def import_dict(self):
+        return ANALYSIS2_KEY
 
 
 def _export_exp_cat_iterator(queryset):
@@ -156,8 +157,8 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return _export_programme_iterator
 
     @property
-    def import_func(self):
-        return import_programme
+    def import_dict(self):
+        return PROG_KEY
 
 
 admin.site.register(Analysis1, Analysis1Admin)

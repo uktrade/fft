@@ -53,3 +53,4 @@ CC_KEY = {IMPORT_CSV_MODEL_KEY: CostCentre,
 
 def import_cc(csvfile):
     import_obj(csvfile, CC_KEY)
+
