@@ -2,12 +2,12 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminImportExport, AdminreadOnly
+from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly
 from core.exportutils import generic_table_iterator, get_fk_value
 
 from .importcsv import ANALYSIS1_KEY, ANALYSIS2_KEY, import_commercial_category, \
     NAC_KEY, \
-    import_expenditure_category, import_NAC_category, PROG_KEY
+    import_expenditure_category, NAC_CATEGORY_KEY, PROG_KEY
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     NACCategory, NaturalCode, ProgrammeCode
@@ -91,7 +91,7 @@ def _export_exp_cat_iterator(queryset):
                obj.linked_budget_code.natural_account_code_description]
 
 
-class ExpenditureCategoryAdmin(AdminImportExport):
+class ExpenditureCategoryAdmin(AdminExport):
     search_fields = ['grouping_description', 'description']
     list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
     list_filter = ('NAC_category',)
@@ -126,8 +126,8 @@ class NACCategoryAdmin(AdminImportExport):
         return _export_nac_cat_iterator
 
     @property
-    def import_func(self):
-        return import_NAC_category
+    def import_dict(self):
+        return NAC_CATEGORY_KEY
 
 
 def _export_programme_iterator(queryset):

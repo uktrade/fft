@@ -1,7 +1,7 @@
 import csv
 
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, import_list_obj, import_obj
+    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, import_list_obj, import_obj
 
 from treasuryCOA.models import L5Account
 
@@ -46,8 +46,14 @@ def import_NAC(csvfile):
     import_obj(csvfile, NAC_KEY)
 
 
+NAC_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: NACCategory,
+                    IMPORT_CSV_PK_KEY: 'Budget Grouping',
+                    IMPORT_CSV_PK_NAME_KEY: NACCategory.NAC_category_description.field_name,
+                    IMPORT_CSV_FIELDLIST_KEY: {}}
+
+
 def import_NAC_expenditure_category(csvfile):
-    import_list_obj(csvfile, ExpenditureCategory, 'grouping_description')
+    import_obj(csvfile, NAC_CATEGORY_KEY)
 
 
 def import_expenditure_category(csvfile):
