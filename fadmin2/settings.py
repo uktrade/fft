@@ -49,6 +49,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     'forecast.apps.ForecastConfig',
+    'dit_user_management',
     # 'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
@@ -164,7 +165,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     })
     return verbose_lookups
 
-#AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = 'dit_user_management.User'
 
 AUTHBROKER_URL = env('AUTHBROKER_URL')
 AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
