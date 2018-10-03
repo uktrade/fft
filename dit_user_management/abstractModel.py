@@ -57,6 +57,10 @@ class EmailAuthMixin(models.Model):
 class AbstractUser(DjangoIntegrationMixin, FirstNameMixin, LastNameMixin, EmailAuthMixin, PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
     REQUIRED_FIELDS = ['first_name','last_name']
+
+    def has_usable_password(self,request):
+        return False
+
     class Meta:
         abstract = True
         verbose_name = _('user')
