@@ -168,3 +168,28 @@ def import_list_obj(csvfile, model, fieldname):
     next(reader)  # skip the header
     for row in reader:
         obj, created = model.objects.update_or_create(**{fieldname: row[0].strip()})
+
+
+class ImportInfo():
+    """Use to define the function used to import from the Admin view list"""
+    def __init__(self, key = {}, title = '', hlist = [],  my_import_func = None):
+        self.key = key
+        self.special_func = my_import_func
+        if bool(key):
+            self.header_list = get_col_from_obj_key(key)
+        else:
+            self.header_list = hlist
+
+        if title == '':
+            self.form_title = key[IMPORT_CSV_MODEL_KEY]._meta.verbose_name.title()
+        else:
+            self.form_title = title
+
+    def my_import_func(self, c):
+        if bool(self.key):
+            return import_obj(c, self.key)
+        else:
+            return self.special_func(c)
+
+
+

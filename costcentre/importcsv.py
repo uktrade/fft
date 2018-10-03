@@ -1,5 +1,5 @@
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, import_obj
+    IMPORT_CSV_PK_KEY, import_obj, ImportInfo
 
 from .models import CostCentre, DepartmentalGroup, Directorate
 
@@ -54,3 +54,5 @@ CC_KEY = {IMPORT_CSV_MODEL_KEY: CostCentre,
 def import_cc(csvfile):
     import_obj(csvfile, CC_KEY)
 
+
+import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres' )

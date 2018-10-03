@@ -7,7 +7,7 @@ from core.admin import AdminActiveField, AdminExport, AdminImportExport
 
 from payroll.models import DITPeople
 
-from .importcsv import import_cc, CC_KEY
+from .importcsv import import_cc_class
 
 from .models import CostCentre, DepartmentalGroup, Directorate
 
@@ -82,8 +82,8 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         return _export_cc_iterator
 
     @property
-    def import_dict(self):
-        return CC_KEY
+    def import_info(self):
+        return import_cc_class
 
     search_fields = ['cost_centre_code', 'cost_centre_name']
     list_filter = ('active',

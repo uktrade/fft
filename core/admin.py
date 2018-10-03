@@ -171,8 +171,9 @@ class AdminExport(admin.ModelAdmin):
 class CsvImportForm(forms.Form):
     '''Form used to get the file to upload for importing data'''
 
-    def __init__(self, header_list, *args, **kwargs):
+    def __init__(self, header_list, form_title, *args, **kwargs):
         self.header_list = header_list
+        self.form_title = form_title
         super(CsvImportForm, self).__init__(*args, **kwargs)  # call base class
 
     csv_file = forms.FileField()
@@ -191,19 +192,21 @@ class AdminImportExport(AdminExport):
         return my_urls + urls
 
     def import_csv(self, request):
-        title = "'" + "'-'".join(get_col_from_obj_key(self.import_dict)) + "'"
+        header_list = self.import_info.header_list
+        import_func = self.import_info.my_import_func
+        form_title = self.import_info.form_title
         if request.method == "POST":
-            form = CsvImportForm(title, request.POST, request.FILES)
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
                 #read() gives you the file contents as a bytes object, on which you can call decode().
                 #decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
-                import_obj(t, self.import_dict)
+                import_func(t)
                 return redirect("..")
         else:
-            form = CsvImportForm(title)
+            form = CsvImportForm(header_list, form_title)
         payload = {"form": form}
         return render(
             request, "admin/csv_form.html", payload

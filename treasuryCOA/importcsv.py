@@ -1,5 +1,6 @@
+
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
-    import_obj
+    import_obj, ImportInfo
 
 from .models import L1Account, L2Account, L3Account, L4Account, L5Account
 
@@ -83,3 +84,6 @@ L5_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
 
 def import_treasury_COA(csvfile):
     import_obj(csvfile, L5_KEY)
+
+
+import_L5_class = ImportInfo(L5_KEY, 'Treasury Chart of Account' )
