@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from core.admin import AdminreadOnly
-from core.exportutils import export_to_csv, export_to_excel
+from core.admin import AdminExport, AdminreadOnly, AdminImportExport
 
+from .importcsv import import_L5_class
 
 from .models import L1Account, L2Account, L3Account, L4Account, L5Account
 
@@ -42,24 +42,20 @@ def _export_L5_iterator(queryset):
         ]
 
 
-def export_L5_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_L5_iterator))
-
-
-def export_L5_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_L5_iterator))
-
-
-export_L5_xlsx.short_description = u"Export to xslx"
-export_L5_csv.short_description = u"Export to csv"
-
-
 # Displays extra fields in the list of cost centres
-class L5AccountAdmin(AdminreadOnly):
+class L5AccountAdmin(AdminreadOnly, AdminImportExport):
     list_display = ('account_l5_code', 'account_l5_long_name',
                     'economic_budget_code', 'usage_code')
     list_filter = ('economic_budget_code', 'usage_code')
-    actions = [export_L5_csv, export_L5_xlsx]
+
+    @property
+    def export_func(self):
+        return _export_L5_iterator
+
+    @property
+    def import_info(self):
+        return import_L5_class
+
 
 
 # L4 Account
@@ -88,22 +84,14 @@ def _export_L4_iterator(queryset):
         ]
 
 
-def export_L4_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_L4_iterator))
-
-
-def export_L4_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_L4_iterator))
-
-
-export_L4_xlsx.short_description = u"Export to xslx"
-export_L4_csv.short_description = u"Export to csv"
-
-
 # Displays extra fields in the list of cost centres
-class L4AccountAdmin(AdminreadOnly):
+class L4AccountAdmin(AdminreadOnly, AdminExport):
     list_display = ('account_l4_code', 'account_l4_long_name', 'account_l3')
-    actions = [export_L4_csv, export_L4_xlsx]  # new action to export to csv and xlsx
+    @property
+    def export_func(self):
+        return _export_L4_iterator
+
+
 
 
 #  L3 Account
@@ -129,21 +117,13 @@ def _export_L3_iterator(queryset):
         ]
 
 
-def export_L3_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_L3_iterator))
 
-
-def export_L3_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_L3_iterator))
-
-
-export_L3_xlsx.short_description = u"Export to xslx"
-export_L3_csv.short_description = u"Export to csv"
-
-
-class L3AccountAdmin(AdminreadOnly):
+class L3AccountAdmin(AdminreadOnly, AdminExport):
     list_display = ('account_l3_code', 'account_l3_long_name', 'account_l2')
-    actions = [export_L3_csv, export_L3_xlsx]  # new action to export to csv and xlsx
+
+    @property
+    def export_func(self):
+        return _export_L3_iterator
 
 
 #  L2 Account
@@ -166,21 +146,12 @@ def _export_L2_iterator(queryset):
         ]
 
 
-def export_L2_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_L2_iterator))
-
-
-def export_L2_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_L2_iterator))
-
-
-export_L2_xlsx.short_description = u"Export to xslx"
-export_L2_csv.short_description = u"Export to csv"
-
-
-class L2AccountAdmin(AdminreadOnly):
+class L2AccountAdmin(AdminreadOnly, AdminExport):
     list_display = ('account_l2_code', 'account_l2_long_name', 'account_l1')
-    actions = [export_L2_csv, export_L2_xlsx]  # new action to export to csv and xlsx
+
+    @property
+    def export_func(self):
+        return _export_L2_iterator
 
 
 # L1 Account
@@ -200,21 +171,11 @@ def _export_L1_iterator(queryset):
         ]
 
 
-def export_L1_xlsx(modeladmin, request, queryset):
-    return (export_to_excel(queryset, _export_L1_iterator))
-
-
-def export_L1_csv(modeladmin, request, queryset):
-    return (export_to_csv(queryset, _export_L1_iterator))
-
-
-export_L1_xlsx.short_description = u"Export to xslx"
-export_L1_csv.short_description = u"Export to csv"
-
-
-class L1AccountAdmin(AdminreadOnly):
+class L1AccountAdmin(AdminreadOnly, AdminExport):
     list_display = ('account_l1_code', 'account_l1_long_name')
-    actions = [export_L1_csv, export_L1_xlsx]  # new action to export to csv and xlsx
+    @property
+    def export_func(self):
+        return _export_L1_iterator
 
 
 # Register your models here.
