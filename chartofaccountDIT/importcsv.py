@@ -1,7 +1,8 @@
 import csv
 
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, import_list_obj, import_obj, ImportInfo
+    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, csvheadertodict, import_list_obj, \
+    import_obj, ImportInfo
 
 from treasuryCOA.models import L5Account
 
@@ -10,7 +11,6 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
 
 
 # define the column position in the csv file.
-
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
                  IMPORT_CSV_PK_KEY: 'Code',
                  IMPORT_CSV_FIELDLIST_KEY: {Analysis1.analysis1_description.field_name: 'Description'}}  # noqa: E501
@@ -43,11 +43,9 @@ NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
                                       NaturalCode.account_L5_code.field.name: L5_FK_KEY}}
 
 
-# /Users/stronal/Downloads/dbfiles/4.Account Codes.csv
-# csvfile = open(path, newline='', encoding='cp1252')
-
 def import_NAC(csvfile):
     import_obj(csvfile, NAC_KEY)
+
 
 import_NAC_class = ImportInfo(NAC_KEY)
 
@@ -62,34 +60,32 @@ def import_NAC_expenditure_category(csvfile):
     import_obj(csvfile, NAC_CATEGORY_KEY)
 
 
-import_NAC_expenditure_cat_class = ImportInfo(NAC_CATEGORY_KEY)
+import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
 
 
 def import_expenditure_category(csvfile):
     reader = csv.reader(csvfile)
-    next(reader)  # skip the header
+    # Convert the first row to a dictionary of positions
+    header = csvheadertodict(next(reader))
+    row_number = 1
     for row in reader:
-        obj = ExpenditureCategory.objects.get(grouping_description=row[0].strip())
-        print(row[0].strip())
-        nac_obj = NaturalCode.objects.get(pk=row[1].strip())
+        import pdb;
+        pdb.set_trace()
+        obj, created = ExpenditureCategory.objects.get_or_create(grouping_description=row[header['Expenditure Category']].strip())
+        nac_obj = NaturalCode.objects.get(pk=row[header['Budget NAC']].strip())
         nac_obj.active = True
         nac_obj.used_for_budget = True
         nac_obj.save()
         obj.linked_budget_code = nac_obj
-        obj.save()
-
-
-def import_expenditure_category(csvfile):
-    reader = csv.reader(csvfile)
-    next(reader)  # skip the header
-    for row in reader:
-        print(row[1].strip())
-        obj = ExpenditureCategory.objects.get(grouping_description=row[1].strip())
-        obj.description = row[2].strip()
-        obj.further_description = row[3].strip()
-        cat_obj = NACCategory.objects.get(NAC_category_description=row[0].strip())
+        obj.description = row[header['Description']].strip()
+        obj.further_description = row[header['Further Information']].strip()
+        cat_obj = NACCategory.objects.get(NAC_category_description=row[header['Budget Grouping']].strip())
         obj.NAC_category = cat_obj
         obj.save()
+
+
+import_expenditure_category_class = ImportInfo({},'Expenditure Categories',
+                                               ['Budget Grouping','Expenditure Category','Description','Further Information','Budget NAC'], import_expenditure_category)
 
 
 def import_NAC_category(csvfile):

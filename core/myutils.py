@@ -124,7 +124,7 @@ def readcsvfromdict(d, row):
     try:
         # import pdb;
         # pdb.set_trace()
-         obj, created = m.objects.update_or_create(** {unique_name: row[pk_header_name].strip()},
+        obj, created = m.objects.update_or_create(** {unique_name: row[pk_header_name].strip()},
                                                    defaults=defaultList)
         # obj, created = m.objects.update_or_create(field=row[pk_header_name].strip(),
         #                                           defaults=defaultList)
@@ -137,6 +137,8 @@ def readcsvfromdict(d, row):
 def import_obj(csvfile, obj_key):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
+    import pdb;
+    pdb.set_trace()
     row_number = 1
     d = addposition(obj_key, header)
     for row in reader:
