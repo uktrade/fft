@@ -5,8 +5,8 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly
 from core.exportutils import generic_table_iterator, get_fk_value
 
-from .importcsv import import_a1_class, import_a2_class, import_NAC_expenditure_cat_class, \
-    import_NAC_class, \
+from .importcsv import import_a1_class, import_a2_class, import_NAC_category_class, \
+    import_expenditure_category_class, import_NAC_class, \
     import_prog_class
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
@@ -91,7 +91,7 @@ def _export_exp_cat_iterator(queryset):
                obj.linked_budget_code.natural_account_code_description]
 
 
-class ExpenditureCategoryAdmin(AdminExport):
+class ExpenditureCategoryAdmin(AdminImportExport):
     search_fields = ['grouping_description', 'description']
     list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
     list_filter = ('NAC_category',)
@@ -105,9 +105,9 @@ class ExpenditureCategoryAdmin(AdminExport):
     def export_func(self):
         return _export_exp_cat_iterator
 
-    # @property
-    # def import_func(self):
-    #     return import_expenditure_category
+    @property
+    def import_info(self):
+        return import_expenditure_category_class
 
 
 def _export_nac_cat_iterator(queryset):
@@ -127,7 +127,7 @@ class NACCategoryAdmin(AdminImportExport):
 
     @property
     def import_info(self):
-        return import_NAC_expenditure_cat_class
+        return import_NAC_category_class
 
 
 def _export_programme_iterator(queryset):

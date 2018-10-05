@@ -11,11 +11,16 @@ from costcentre.models import CostCentre, DepartmentalGroup
 # define a choice field for this
 class Grade(models.Model):
     grade = models.CharField(primary_key=True, max_length=10)
-    gradedescription = models.CharField(max_length=50)
+    gradedescription = models.CharField('Grade Description', max_length=50)
     order = models.IntegerField
 
     def __str__(self):
         return self.grade
+
+    class Meta:
+        verbose_name = "Grade"
+        verbose_name_plural = "Grades"
+
 
 
 class DITPeople(TimeStampedModel, LogChangeModel):
@@ -33,6 +38,7 @@ class DITPeople(TimeStampedModel, LogChangeModel):
 
     class Meta:
         verbose_name = 'DIT People'
+        verbose_name_plural = 'DIT People'
 
 
 # Pre-calculated salary averages, used for the forecast
