@@ -2,10 +2,17 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly
+from django.shortcuts import render, redirect
+from django.urls import path
+
+from core.admin import AdminActiveField, \
+    AdminImportExport, AdminreadOnly, CsvImportForm
 from core.exportutils import generic_table_iterator, get_fk_value
 
-from .importcsv import import_a1_class, import_a2_class, import_NAC_category_class, \
+import io
+
+from .importcsv import import_a1_class, import_a2_class, import_comm_cat_class, \
+    import_NAC_category_class, import_NAC_DIT_class, \
     import_expenditure_category_class, import_NAC_class, \
     import_prog_class
 
@@ -27,6 +34,9 @@ def _export_nac_iterator(queryset):
 
 
 class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+    """Define an extra import button, for the DIT specific fields"""
+    change_list_template = "admin/m_import_changelist.html"
+
     list_display = ('natural_account_code', 'natural_account_code_description', 'active')
 
     def get_readonly_fields(self, request, obj=None):
@@ -50,6 +60,34 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_NAC_class
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('import1-csv/', self.import1_csv),
+        ]
+        return my_urls + urls
+
+    def import1_csv(self, request):
+        header_list = import_NAC_DIT_class.header_list
+        import_func = import_NAC_DIT_class.my_import_func
+        form_title = import_NAC_DIT_class.form_title
+        if request.method == "POST":
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
+            if form.is_valid():
+                csv_file = request.FILES["csv_file"]
+                #read() gives you the file contents as a bytes object, on which you can call decode().
+                #decode('cp1252') turns your bytes into a string, with known encoding.
+                # cp1252 is used to handle single quotes in the strings
+                t = io.StringIO(csv_file.read().decode('cp1252'))
+                import_func(t)
+                return redirect("..")
+        else:
+            form = CsvImportForm(header_list, form_title)
+        payload = {"form": form}
+        return render(
+            request, "admin/csv_form.html", payload
+        )
 
 
 class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
@@ -101,6 +139,21 @@ class ExpenditureCategoryAdmin(AdminImportExport):
             kwargs["queryset"] = NaturalCode.objects.filter(used_for_budget=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    def get_readonly_fields(self, request, obj=None):
+             return ['created', 'updated']
+
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['grouping_description', 'description',
+                    'further_description', 'linked_budget_code',
+                    'NAC_category',
+                    'created', 'updated']
+        else:
+            return ['grouping_description', 'description',
+                    'further_description', 'linked_budget_code',
+                    'NAC_category']
+
+
     @property
     def export_func(self):
         return _export_exp_cat_iterator
@@ -108,6 +161,29 @@ class ExpenditureCategoryAdmin(AdminImportExport):
     @property
     def import_info(self):
         return import_expenditure_category_class
+
+
+def _export_comm_cat_iterator(queryset):
+    yield ['Commercial Category',
+           'Description', 'Approvers'
+           ]
+    for obj in queryset:
+        yield [obj.commercial_category,
+               obj.description,
+               obj.approvers]
+
+
+class CommercialCategoryAdmin(AdminImportExport):
+    search_fields = ['commercial_category', 'description']
+    list_display = ['commercial_category', 'description', 'commercial_category']
+
+    @property
+    def export_func(self):
+        return _export_comm_cat_iterator
+
+    @property
+    def import_info(self):
+        return import_comm_cat_class
 
 
 def _export_nac_cat_iterator(queryset):
@@ -166,5 +242,5 @@ admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
 admin.site.register(ExpenditureCategory, ExpenditureCategoryAdmin)
 admin.site.register(NACCategory, NACCategoryAdmin)
-admin.site.register(CommercialCategory)
+admin.site.register(CommercialCategory, CommercialCategoryAdmin)
 admin.site.register(ProgrammeCode, ProgrammeAdmin)

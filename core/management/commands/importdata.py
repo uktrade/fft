@@ -3,9 +3,9 @@ from django.core.management.base import BaseCommand
 from costcentre.importcsv import import_cc
 
 from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, \
-    import_NAC_DIT_budget, import_NAC_DIT_setting, import_NAC_category, \
-    import_expenditure_category, import_NAC_expenditure_category, \
-    import_commercial_category, import_commercial_category_responsible, \
+    import_NAC_category, import_NAC_DIT, \
+    import_NAC_expenditure_category, \
+    import_commercial_category, \
     import_expenditure_category, import_programme
 
 from forecast.importcsv import import_actual
@@ -26,11 +26,9 @@ IMPORT_TYPE = {
     'NAC_Dashboard_Group': import_NAC_expenditure_category,
     'NAC_Dashboard_Budget': import_expenditure_category,
     'NAC_Category': import_NAC_category,
-    'NAC_DIT_Setting': import_NAC_DIT_setting,  # add extra fields defined by DIT
-    'NAC_Budget': import_NAC_DIT_budget,
+    'NAC_DIT_Setting': import_NAC_DIT,  # add extra fields defined by DIT
     'HR_Report': import_HR_Report,
     'NAC_Dashboard_other': import_expenditure_category,
-    'Commercial_Cat_responsible': import_commercial_category_responsible,
     'Commercial_Cat': import_commercial_category
 }
 
