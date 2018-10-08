@@ -50,6 +50,34 @@ def import_NAC(csvfile):
 import_NAC_class = ImportInfo(NAC_KEY)
 
 
+COMM_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
+             IMPORT_CSV_IS_FK: '',
+             IMPORT_CSV_PK_NAME_KEY:CommercialCategory.commercial_category.field_name,
+             IMPORT_CSV_PK_KEY: 'Commercial Category'
+             }
+
+
+EXP_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: ExpenditureCategory,
+             IMPORT_CSV_IS_FK: '',
+             IMPORT_CSV_PK_NAME_KEY:ExpenditureCategory.grouping_description.field_name,
+             IMPORT_CSV_PK_KEY: 'Expenditure Category'
+             }
+
+
+NAC_DIT_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
+           IMPORT_CSV_PK_KEY: 'NAC',
+           IMPORT_CSV_FIELDLIST_KEY: {NaturalCode.active.field_name: 'Active',
+               NaturalCode.commercial_category.field.name: COMM_CAT_FK_KEY,
+                                      NaturalCode.expenditure_category.field.name: EXP_CAT_FK_KEY}}
+
+
+def import_NAC_DIT(csvfile):
+    import_obj(csvfile, NAC_DIT_KEY)
+
+
+import_NAC_DIT_class = ImportInfo(NAC_DIT_KEY)
+
+
 NAC_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: NACCategory,
                     IMPORT_CSV_PK_KEY: 'Budget Grouping',
                     IMPORT_CSV_PK_NAME_KEY: NACCategory.NAC_category_description.field_name,
@@ -64,13 +92,13 @@ import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
 
 
 def import_expenditure_category(csvfile):
+    """Special function to import Expenditure category, because I need to change the NAC code
+    during the import"""
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csvheadertodict(next(reader))
     row_number = 1
     for row in reader:
-        import pdb;
-        pdb.set_trace()
         obj, created = ExpenditureCategory.objects.get_or_create(grouping_description=row[header['Expenditure Category']].strip())
         nac_obj = NaturalCode.objects.get(pk=row[header['Budget NAC']].strip())
         nac_obj.active = True
@@ -85,50 +113,28 @@ def import_expenditure_category(csvfile):
 
 
 import_expenditure_category_class = ImportInfo({},'Expenditure Categories',
-                                               ['Budget Grouping','Expenditure Category','Description','Further Information','Budget NAC'], import_expenditure_category)
+                                               ['Budget Grouping','Expenditure Category',
+                                                'Description','Further Information','Budget NAC'],
+                                               import_expenditure_category)
 
 
 def import_NAC_category(csvfile):
     import_list_obj(csvfile, NACCategory, 'NAC_category_description')
 
 
-def import_NAC_DIT_setting(csvfile):
-    reader = csv.reader(csvfile)
-    next(reader)  # skip the header
-    linenum = 1
-    for row in reader:
-        linenum = linenum + 1
-        nac_obj = NaturalCode.objects.get(pk=row[0].strip())
-        nac_obj.expenditure_category = \
-            ExpenditureCategory.objects.get(grouping_description=row[2].strip())
-        nac_obj.active = True
-        nac_obj.save()
-
-
-def import_NAC_DIT_budget(csvfile):
-    reader = csv.reader(csvfile)
-    next(reader)  # skip the header
-    linenum = 1
-    for row in reader:
-        linenum = linenum + 1
-        nac_obj = NaturalCode.objects.get(pk=row[1].strip())
-        nac_obj.active = True
-        nac_obj.save()
+COMMERCIAL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
+                           IMPORT_CSV_PK_KEY: 'Commercial Category',
+                           IMPORT_CSV_PK_NAME_KEY: CommercialCategory.commercial_category.field_name,
+                           IMPORT_CSV_FIELDLIST_KEY:
+                               {CommercialCategory.description.field_name: 'Description',  # noqa: E501
+                                       CommercialCategory.approvers.field_name: 'Approvers'}}
 
 
 def import_commercial_category(csvfile):
-    import_list_obj(csvfile, CommercialCategory, 'commercial_category')
+    import_obj(csvfile, COMMERCIAL_CATEGORY_KEY)
 
 
-def import_commercial_category_responsible(csvfile):
-    reader = csv.reader(csvfile)
-    next(reader)  # skip the header
-    linenum = 1
-    for row in reader:
-        linenum = linenum + 1
-        obj = CommercialCategory.objects.get(commercial_category=row[0].strip())
-        obj.approvers = row[2].strip()
-        obj.save()
+import_comm_cat_class = ImportInfo(COMMERCIAL_CATEGORY_KEY)
 
 
 PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,

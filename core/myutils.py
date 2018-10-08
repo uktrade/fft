@@ -56,7 +56,7 @@ def addposition(d, h):
     return c
 
 
-def get_pk_name(m):
+def get_pk_verbose_name(m):
     """Returns the name of the primary key of the model passed as argument."""
     if m._meta.pk._verbose_name is None:
         pkname = m._meta.pk.name
@@ -73,10 +73,10 @@ def get_fk(m, pk_value):
     try:
         obj = m.objects.get(pk=pk_value)
     except m.DoesNotExist:
-        msg = get_pk_name(m) + ' "' + str(pk_value) + '" does not exist'
+        msg = get_pk_verbose_name(m) + ' "' + str(pk_value) + '" does not exist'
         obj = None
     except ValueError:
-        msg = get_pk_name(m) + ' "' + str(pk_value) + '" wrong type'
+        msg = get_pk_verbose_name(m) + ' "' + str(pk_value) + '" wrong type'
         obj = None
     return obj, msg
 
@@ -85,14 +85,20 @@ def get_fk_from_field(m, f_name, f_value):
     """Read an object to be used as foreign key in another record.
     It return a formatted message if it finds an error
     """
+    # import pdb;
+    # pdb.set_trace()
+
     msg = ''
     try:
-        obj = m.objects.get(f_name=f_value)
+        # obj = m.objects.get(f_name=f_value)
+        #** {unique_name: row[pk_header_name].strip()}
+        obj = m.objects.get(** {f_name: f_value})
+
     except m.DoesNotExist:
         msg = str(f_name) + ' "' + str(f_value) + '" does not exist'
         obj = None
     except ValueError:
-        msg = str(f_name) + ' "' + str(f_value) + + '" wrong type'
+        msg = str(f_name) + ' "' + str(f_value) +  '" wrong type'
         obj = None
     return obj, msg
 
@@ -109,7 +115,7 @@ def readcsvfromdict(d, row):
     errormsg = ''
     # if we are only reading a foreign key (we don't want to create it!), get the value and return
     if IMPORT_CSV_IS_FK in d:
-        return get_fk(m, row[pk_header_name])
+        return get_fk_from_field(m, unique_name, row[pk_header_name])
 
     defaultList = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
@@ -126,8 +132,6 @@ def readcsvfromdict(d, row):
         # pdb.set_trace()
         obj, created = m.objects.update_or_create(** {unique_name: row[pk_header_name].strip()},
                                                    defaults=defaultList)
-        # obj, created = m.objects.update_or_create(field=row[pk_header_name].strip(),
-        #                                           defaults=defaultList)
     except ValueError:
         obj = None
         errormsg = 'Valuerror'
@@ -137,8 +141,8 @@ def readcsvfromdict(d, row):
 def import_obj(csvfile, obj_key):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
-    import pdb;
-    pdb.set_trace()
+    # import pdb;
+    # pdb.set_trace()
     row_number = 1
     d = addposition(obj_key, header)
     for row in reader:
