@@ -55,4 +55,4 @@ def import_cc(csvfile):
     import_obj(csvfile, CC_KEY)
 
 
-import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres' )
+import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres')

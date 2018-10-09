@@ -66,7 +66,7 @@ def import_actual(csvfile, financialyear, what):
         prog = row[col_key['Programme']].strip()
         if prog == 0:
             prog = 310801
-        progobj, msg = get_fk(Programme, prog)
+        progobj, msg = get_fk(ProgrammeCode, prog)
         errmsg += msg
         if errmsg == '':
             defaultList = {}

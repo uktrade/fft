@@ -1,6 +1,6 @@
 from core.views import FAdminFilteredView
 
-from .filters import Analysis1Filter,Analysis2Filter,\
+from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, \
     NACFilter, ProgrammeFilter
 from .tables import Analysis1Table, Analysis2Table, \

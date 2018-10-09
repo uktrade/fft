@@ -5,7 +5,8 @@ from core.views import FAdminFilteredView
 from .filters import CostCentreFilter
 from .tables import CostCentreTable
 
-class FilteredCostListView(LoginRequiredMixin,FAdminFilteredView):
+
+class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
     table_class = CostCentreTable
     model = table_class.Meta.model
     filterset_class = CostCentreFilter

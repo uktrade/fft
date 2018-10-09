@@ -26,8 +26,10 @@ class NACFilter(MyFilterSet):
     def qs(self):
         nac = super(NACFilter, self).qs
         return nac.filter(active=True).order_by('account_L5_code__economic_budget_code',
-                  'expenditure_category__NAC_category', 'expenditure_category',
-                  'natural_account_code', 'natural_account_code_description')
+                                                'expenditure_category__NAC_category',
+                                                'expenditure_category',
+                                                'natural_account_code',
+                                                'natural_account_code_description')
 
 
 class ExpenditureCategoryFilter(MyFilterSet):
@@ -67,5 +69,5 @@ class ProgrammeFilter(MyFilterSet):
     def qs(self):
         prog = super(ProgrammeFilter, self).qs
         return prog.filter(active=True).order_by('programme_code',
-            'programme_description',
-            'budget_type')
+                                                 'programme_description',
+                                                 'budget_type')

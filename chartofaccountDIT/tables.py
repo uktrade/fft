@@ -2,7 +2,7 @@ import django_tables2 as tables
 
 from core.tables import FadminTable
 
-from .models import Analysis1, Analysis2,\
+from .models import Analysis1, Analysis2, \
     CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
 
 

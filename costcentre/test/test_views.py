@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from django.test import Client
 
+
 @pytest.mark.django_db
 class SimpleTest(unittest.TestCase):
     def setUp(self):
@@ -15,8 +16,6 @@ class SimpleTest(unittest.TestCase):
         response = self.client.get(reverse('costcentrefilter'))
         # if redirecting, check that we are sending to a login page
         if response.status_code == 302:
-            self.assertIn ('login', response.url)
+            self.assertIn('login', response.url)
         else:
             self.assertEqual(response.status_code, 200)
-
-

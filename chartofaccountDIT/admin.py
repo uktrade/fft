@@ -76,8 +76,8 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
-                #read() gives you the file contents as a bytes object, on which you can call decode().
-                #decode('cp1252') turns your bytes into a string, with known encoding.
+                # read() gives you the file contents as a bytes object, on which you can call decode().
+                # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
                 import_func(t)
@@ -90,7 +90,7 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
         )
 
 
-class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
+class Analysis1Admin(AdminreadOnly, AdminActiveField, AdminImportExport):
     search_fields = ['analysis1_description', 'analysis1_code']
     list_display = ('analysis1_code', 'analysis1_description', 'active')
 
@@ -103,7 +103,7 @@ class Analysis1Admin(AdminreadOnly, AdminActiveField,  AdminImportExport):
         return import_a1_class
 
 
-class Analysis2Admin(AdminreadOnly,  AdminActiveField, AdminImportExport):
+class Analysis2Admin(AdminreadOnly, AdminActiveField, AdminImportExport):
     search_fields = ['analysis2_description', 'analysis2_code']
     list_display = ('analysis2_code', 'analysis2_description', 'active')
 
@@ -140,7 +140,7 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
-             return ['created', 'updated']
+        return ['created', 'updated']
 
     def get_fields(self, request, obj=None):
         if obj:
@@ -152,7 +152,6 @@ class ExpenditureCategoryAdmin(AdminImportExport):
             return ['grouping_description', 'description',
                     'further_description', 'linked_budget_code',
                     'NAC_category']
-
 
     @property
     def export_func(self):
