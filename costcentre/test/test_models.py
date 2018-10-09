@@ -1,5 +1,6 @@
 import pytest
-from .factories import CostcentreFactory, DepartmentalGroup, DirectorateFactory
+
+from .factories import CostcentreFactory
 
 
 # https://medium.com/@dwernychukjosh/testing-models-with-django-using-pytest-and-factory-boy-a2985adce7b3

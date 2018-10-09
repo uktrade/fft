@@ -1,6 +1,6 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-
 from core.views import FAdminFilteredView
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .filters import CostCentreFilter
 from .tables import CostCentreTable

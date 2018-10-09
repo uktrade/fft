@@ -165,6 +165,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     })
     return verbose_lookups
 
+
 AUTH_USER_MODEL = 'dit_user_management.User'
 
 AUTHBROKER_URL = env('AUTHBROKER_URL')
@@ -178,8 +179,8 @@ AUTHENTICATION_BACKENDS = [
     'authbroker_client.backends.AuthbrokerBackend',
 ]
 
-LOGIN_URL='/auth/login'
-LOGIN_REDIRECT_URL='index'
+LOGIN_URL = '/auth/login'
+LOGIN_REDIRECT_URL = 'index'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'

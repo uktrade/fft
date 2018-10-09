@@ -1,13 +1,11 @@
-from django.db import models
-
 from core.metamodels import LogChangeModel, TimeStampedModel
 
 from costcentre.models import CostCentre, DepartmentalGroup
 
+from django.db import models
+
 
 # salaries data
-
-
 # define a choice field for this
 class Grade(models.Model):
     grade = models.CharField(primary_key=True, max_length=10)

@@ -1,6 +1,6 @@
-from django.db import models
-
 from core.metamodels import TimeStampedModel
+
+from django.db import models
 
 
 # Account codes from Treasury
