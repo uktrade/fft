@@ -7,8 +7,8 @@ from treasuryCOA.models import L5Account
 
 # Other members of Account Codes
 class Analysis1(TimeStampedModel):
-    analysis1_code = models.CharField(primary_key=True, max_length=50)
-    analysis1_description = models.CharField(max_length=300)
+    analysis1_code = models.CharField('Analysis 1 Code', primary_key=True, max_length=50)
+    analysis1_description = models.CharField('Contract Reconciliation', max_length=300)
 
     def __str__(self):
         return self.analysis1_code + ' - ' + self.analysis1_description
@@ -19,7 +19,7 @@ class Analysis1(TimeStampedModel):
 
 
 class Analysis2(TimeStampedModel):
-    analysis2_code = models.CharField(primary_key=True, max_length=50)
+    analysis2_code = models.CharField('Analysis 2 Code', primary_key=True, max_length=50)
     analysis2_description = models.CharField(max_length=300, verbose_name='Market')
 
     def __str__(self):
@@ -90,6 +90,7 @@ class NaturalCode(TimeStampedModel):
     class Meta:
         verbose_name = "Natural Account Code (NAC)"
         verbose_name_plural = "Natural Account Codes (NAC)"
+        ordering = ['natural_account_code']
 
 
 class ProgrammeCode(TimeStampedModel, LogChangeModel):

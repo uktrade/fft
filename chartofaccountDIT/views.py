@@ -1,8 +1,10 @@
 from core.views import FAdminFilteredView
 
-from .filters import Analysis2Filter, CommercialCategoryFilter, ExpenditureCategoryFilter, \
+from .filters import Analysis1Filter,Analysis2Filter,\
+    CommercialCategoryFilter, ExpenditureCategoryFilter, \
     NACFilter, ProgrammeFilter
-from .tables import Analysis2Table, CommercialCategoryTable, ExpenditureCategoryTable, \
+from .tables import Analysis1Table, Analysis2Table, \
+    CommercialCategoryTable, ExpenditureCategoryTable, \
     NaturalCodeTable, ProgrammeTable
 
 
@@ -36,6 +38,17 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Commercial Categories'
+        return context
+
+
+class FilteredAnalysis1ListView(FAdminFilteredView):
+    table_class = Analysis1Table
+    model = table_class.Meta.model
+    filterset_class = Analysis1Filter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Contract Reconciliation (Analysis 1)'
         return context
 
 
