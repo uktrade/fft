@@ -25,4 +25,3 @@ class ThreadLocalMiddleware:
         # Save the user into the local thread, so it can be used when saving/modifing a model
         setattr(_thread_locals, "userid", request.user.id)
         return self.get_response(request)
-

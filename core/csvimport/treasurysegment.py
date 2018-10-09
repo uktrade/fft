@@ -1,7 +1,6 @@
 import csv
 
-from core.models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
-
+from treasurySS.models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
 # define the column position in the csv file.
 COLUMN_KEY = {

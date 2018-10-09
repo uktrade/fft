@@ -91,14 +91,14 @@ def get_fk_from_field(m, f_name, f_value):
     msg = ''
     try:
         # obj = m.objects.get(f_name=f_value)
-        #** {unique_name: row[pk_header_name].strip()}
-        obj = m.objects.get(** {f_name: f_value})
+        # ** {unique_name: row[pk_header_name].strip()}
+        obj = m.objects.get(**{f_name: f_value})
 
     except m.DoesNotExist:
         msg = str(f_name) + ' "' + str(f_value) + '" does not exist'
         obj = None
     except ValueError:
-        msg = str(f_name) + ' "' + str(f_value) +  '" wrong type'
+        msg = str(f_name) + ' "' + str(f_value) + '" wrong type'
         obj = None
     return obj, msg
 
@@ -130,8 +130,8 @@ def readcsvfromdict(d, row):
     try:
         # import pdb;
         # pdb.set_trace()
-        obj, created = m.objects.update_or_create(** {unique_name: row[pk_header_name].strip()},
-                                                   defaults=defaultList)
+        obj, created = m.objects.update_or_create(**{unique_name: row[pk_header_name].strip()},
+                                                  defaults=defaultList)
     except ValueError:
         obj = None
         errormsg = 'Valuerror'
@@ -178,7 +178,8 @@ def import_list_obj(csvfile, model, fieldname):
 
 class ImportInfo():
     """Use to define the function used to import from the Admin view list"""
-    def __init__(self, key = {}, title = '', hlist = [],  my_import_func = None):
+
+    def __init__(self, key={}, title='', hlist=[], my_import_func=None):
         self.key = key
         self.special_func = my_import_func
         if bool(key):
@@ -196,6 +197,3 @@ class ImportInfo():
             return import_obj(c, self.key)
         else:
             return self.special_func(c)
-
-
-
