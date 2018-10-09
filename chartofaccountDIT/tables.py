@@ -2,7 +2,8 @@ import django_tables2 as tables
 
 from core.tables import FadminTable
 
-from .models import Analysis2, CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
+from .models import Analysis1, Analysis2,\
+    CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
 
 
 class ProgrammeTable(FadminTable):
@@ -72,4 +73,12 @@ class Analysis2Table(FadminTable):
         model = Analysis2
         fields = ('analysis2_code',
                   'analysis2_description',
+                  )
+
+
+class Analysis1Table(FadminTable):
+    class Meta(FadminTable.Meta):
+        model = Analysis1
+        fields = ('analysis1_code',
+                  'analysis1_description',
                   )

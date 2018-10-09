@@ -7,21 +7,6 @@ from core.filters import MyFilterSet
 from .models import CostCentre
 
 
-class OldCostCentreFilter(MyFilterSet):
-    class Meta(MyFilterSet.Meta):
-        model = CostCentre
-        fields = [
-            'directorate__group',
-            'directorate',
-            'cost_centre_code',
-            'cost_centre_name']
-
-    @property
-    def qs(self):
-        cc = super(CostCentreFilter, self).qs
-        return cc.filter(active=True)
-
-
 class CostCentreFilter(MyFilterSet):
     """Use a single text box to enter an object name.
     It will search into group, directorate and cost centre name
@@ -57,4 +42,6 @@ class CostCentreFilter(MyFilterSet):
     @property
     def qs(self):
         cc = super(CostCentreFilter, self).qs
-        return cc.filter(active=True)
+        return cc.filter(active=True).order_by('directorate__group__group_name',
+                                               'directorate__directorate_name',
+                                               'cost_centre_code')
