@@ -1,5 +1,6 @@
-import factory
 from costcentre.models import CostCentre, DepartmentalGroup, Directorate
+
+import factory
 
 
 class DepartmentalGroupFactory(factory.DjangoModelFactory):

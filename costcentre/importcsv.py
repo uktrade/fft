@@ -1,5 +1,6 @@
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, import_obj, ImportInfo
+    IMPORT_CSV_PK_KEY, ImportInfo, import_obj
+
 
 from .models import CostCentre, DepartmentalGroup, Directorate
 

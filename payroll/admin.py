@@ -1,14 +1,12 @@
-from django.contrib import admin
+from core.admin import AdminActiveField, AdminImportExport
 
-from django.contrib.admin.models import CHANGE, DELETION, LogEntry
+from django.contrib import admin
+from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from core.admin import AdminActiveField, AdminImportExport
-
-from .importcsv import import_grade_class, import_HR_class
-
+from .importcsv import import_HR_class, import_grade_class
 from .models import DITPeople, Grade
 
 
