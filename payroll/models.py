@@ -22,7 +22,6 @@ class Grade(models.Model):
         verbose_name_plural = "Grades"
 
 
-
 class DITPeople(TimeStampedModel, LogChangeModel):
     employee_number = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=50, blank=True)
