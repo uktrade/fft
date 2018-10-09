@@ -1,21 +1,18 @@
-from django.contrib import admin
-
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
-
-from django.shortcuts import render, redirect
-from django.urls import path
+import io
 
 from core.admin import AdminActiveField, \
     AdminImportExport, AdminreadOnly, CsvImportForm
 from core.exportutils import generic_table_iterator, get_fk_value
 
-import io
+from django.contrib import admin
+from django.shortcuts import redirect, render
+from django.urls import path
 
-from .importcsv import import_a1_class, import_a2_class, import_comm_cat_class, \
-    import_NAC_category_class, import_NAC_DIT_class, \
-    import_expenditure_category_class, import_NAC_class, \
-    import_prog_class
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
+    import_a1_class, import_a2_class, \
+    import_comm_cat_class, import_expenditure_category_class, import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     NACCategory, NaturalCode, ProgrammeCode
 
@@ -76,7 +73,8 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
-                # read() gives you the file contents as a bytes object, on which you can call decode().
+                # read() gives you the file contents as a bytes object,
+                # on which you can call decode().
                 # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))

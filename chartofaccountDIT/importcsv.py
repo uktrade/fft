@@ -1,8 +1,8 @@
 import csv
 
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, csvheadertodict, import_list_obj, \
-    import_obj, ImportInfo
+    IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, ImportInfo, csvheadertodict, \
+    import_list_obj, import_obj
 
 from treasuryCOA.models import L5Account
 
@@ -94,7 +94,6 @@ def import_expenditure_category(csvfile):
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csvheadertodict(next(reader))
-    row_number = 1
     for row in reader:
         obj, created = ExpenditureCategory.objects.get_or_create(
             grouping_description=row[header['Expenditure Category']].strip())

@@ -6,27 +6,23 @@ from costcentre.models import CostCentre
 
 from .models import DITPeople, Grade
 
-
-GRADE_KEY = { IMPORT_CSV_MODEL_KEY: Grade,
-              IMPORT_CSV_PK_KEY: 'Grade',
-              IMPORT_CSV_FIELDLIST_KEY: {Grade.gradedescription.field_name: 'Grade Description',
+GRADE_KEY = {IMPORT_CSV_MODEL_KEY: Grade,
+             IMPORT_CSV_PK_KEY: 'Grade',
+             IMPORT_CSV_FIELDLIST_KEY: {Grade.gradedescription.field_name: 'Grade Description',
                                         }
-            }
-
+             }
 
 import_grade_class = ImportInfo(GRADE_KEY)
 
-
 GRADE_FK_KEY = {IMPORT_CSV_MODEL_KEY: Grade,
-             IMPORT_CSV_IS_FK: '',
-             IMPORT_CSV_PK_KEY: 'Grade'
-             }
+                IMPORT_CSV_IS_FK: '',
+                IMPORT_CSV_PK_KEY: 'Grade'
+                }
 
 CC_FK_KEY = {IMPORT_CSV_MODEL_KEY: CostCentre,
              IMPORT_CSV_IS_FK: '',
              IMPORT_CSV_PK_KEY: 'CC'
              }
-
 
 PEOPLE_KEY = {IMPORT_CSV_MODEL_KEY: DITPeople,
               IMPORT_CSV_PK_KEY: 'SE-No',
@@ -38,5 +34,6 @@ PEOPLE_KEY = {IMPORT_CSV_MODEL_KEY: DITPeople,
 
 def import_HR_Report(csvfile):
     import_obj(csvfile, PEOPLE_KEY)
+
 
 import_HR_class = ImportInfo(PEOPLE_KEY)
