@@ -9,7 +9,8 @@ from core.admin import AdminActiveField, AdminImportExport
 
 from .importcsv import import_grade_class, import_HR_class
 
-from .models import  DITPeople, Grade
+from .models import DITPeople, Grade
+
 
 def _export_people_iterator(queryset):
     yield ['Name', 'Surname',
@@ -116,7 +117,6 @@ class GradeAdmin(AdminImportExport):
     @property
     def import_info(self):
         return import_grade_class
-
 
 
 admin.site.register(DITPeople, DIT_PeopleAdmin)

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='AdminPayModel',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
@@ -27,7 +27,8 @@ class Migration(migrations.Migration):
                 ('SCS_percent', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('SCS_number', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('indicative_budget', models.IntegerField()),
-                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
+                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                                 to='costcentre.DepartmentalGroup')),
             ],
             options={
                 'abstract': False,
@@ -39,13 +40,18 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('employee_number', models.CharField(max_length=10, primary_key=True, serialize=False)),
+                ('employee_number',
+                 models.CharField(max_length=10, primary_key=True, serialize=False)),
                 ('name', models.CharField(blank=True, max_length=50)),
                 ('surname', models.CharField(max_length=50)),
                 ('email', models.CharField(blank=True, max_length=50)),
-                ('isdirector', models.BooleanField(default=False, verbose_name='General Director/Director/Deputy Director')),
-                ('isbusinesspartner', models.BooleanField(default=False, verbose_name='Business Partner')),
-                ('cost_centre', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
+                ('isdirector', models.BooleanField(default=False,
+                                                   verbose_name='General Director/Director/Deputy Director')),
+                ('isbusinesspartner',
+                 models.BooleanField(default=False, verbose_name='Business Partner')),
+                ('cost_centre', models.ForeignKey(blank=True, null=True,
+                                                  on_delete=django.db.models.deletion.PROTECT,
+                                                  to='costcentre.CostCentre')),
             ],
             options={
                 'verbose_name': 'DIT People',
@@ -61,7 +67,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PayModel',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
@@ -78,8 +85,10 @@ class Migration(migrations.Migration):
                 ('jan', models.DecimalField(decimal_places=1, max_digits=18)),
                 ('feb', models.DecimalField(decimal_places=1, max_digits=18)),
                 ('mar', models.DecimalField(decimal_places=1, max_digits=18)),
-                ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
-                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup')),
+                ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                            to='payroll.Grade')),
+                ('group_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                                 to='costcentre.DepartmentalGroup')),
             ],
             options={
                 'abstract': False,
@@ -88,16 +97,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SalaryMonthlyAverage',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('average_type', models.CharField(choices=[('CC', 'CostCentre'), ('DIR', 'Directorate'), ('DG', 'DepartmentalGroup')], max_length=50)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
+                ('average_type', models.CharField(
+                    choices=[('CC', 'CostCentre'), ('DIR', 'Directorate'),
+                             ('DG', 'DepartmentalGroup')], max_length=50)),
                 ('average_by', models.CharField(max_length=50)),
                 ('average_value', models.DecimalField(decimal_places=2, max_digits=18)),
-                ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade')),
+                ('grade', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                            to='payroll.Grade')),
             ],
         ),
         migrations.AddField(
             model_name='ditpeople',
             name='grade',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    to='payroll.Grade'),
         ),
     ]

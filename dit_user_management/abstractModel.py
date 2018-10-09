@@ -7,7 +7,6 @@ from .managers import UserManager
 
 
 class DjangoIntegrationMixin(models.Model):
-
     is_active = models.BooleanField(
         _('active'),
         default=True,
@@ -17,33 +16,37 @@ class DjangoIntegrationMixin(models.Model):
     is_staff = models.BooleanField(
         _('staff'),
         default=False,
-        help_text = ('minimum permission required to login to admin site')
+        help_text=('minimum permission required to login to admin site')
     )
 
-    date_joined = models.DateTimeField(_('date joined'),default=timezone.now)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     class Meta:
         abstract = True
+
+
 class FirstNameMixin(models.Model):
-    first_name = models.CharField(_('first name'),max_length=254,blank=True)
+    first_name = models.CharField(_('first name'), max_length=254, blank=True)
 
     def get_first_name(self):
         return self.first_name
-    
+
     class Meta:
         abstract = True
 
+
 class LastNameMixin(models.Model):
-    last_name = models.CharField(_('last name'),max_length=254,blank=True)
+    last_name = models.CharField(_('last name'), max_length=254, blank=True)
 
     def get_last_name(self):
         return self.last_name
-    
+
     class Meta:
         abstract = True
-    
+
+
 class EmailAuthMixin(models.Model):
-    email = models.EmailField(_('email address'),max_length=254,unique=True)
+    email = models.EmailField(_('email address'), max_length=254, unique=True)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
 
@@ -53,16 +56,17 @@ class EmailAuthMixin(models.Model):
 
     class Meta:
         abstract = True
-    
-class AbstractUser(DjangoIntegrationMixin, FirstNameMixin, LastNameMixin, EmailAuthMixin, PermissionsMixin, AbstractBaseUser):
-    objects = UserManager()
-    REQUIRED_FIELDS = ['first_name','last_name']
 
-    def has_usable_password(self,request):
+
+class AbstractUser(DjangoIntegrationMixin, FirstNameMixin, LastNameMixin, EmailAuthMixin,
+                   PermissionsMixin, AbstractBaseUser):
+    objects = UserManager()
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
+    def has_usable_password(self, request):
         return False
 
     class Meta:
         abstract = True
         verbose_name = _('user')
         verbose_name_plural = _('users')
-

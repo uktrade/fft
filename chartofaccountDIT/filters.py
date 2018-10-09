@@ -1,6 +1,6 @@
-import django_filters
-
 from core.filters import MyFilterSet
+
+import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
     ExpenditureCategory, NaturalCode, ProgrammeCode
