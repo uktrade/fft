@@ -6,8 +6,10 @@
     {% block title %}<title>DIT Chart of Account</title>{% endblock %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
-          integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
+          integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+          crossorigin="anonymous">
     <!-- Add additional CSS in static file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
@@ -37,19 +39,27 @@
 
 
         <div class="col-1">
-            <div class="nav flex-column " id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-item nav-link active" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+            <div class="nav flex-column " id="v-pills-tab" role="tablist"
+                 aria-orientation="vertical">
+                <a class="nav-item nav-link active" href="{% url 'index' %}">Home <span
+                        class="sr-only">(current)</span></a>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                   data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     Chart of Account
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="{% url 'costcentrefilter' %}">Cost Centre Hierarchy</a>
+                    <a class="dropdown-item" href="{% url 'costcentrefilter' %}">Cost Centre
+                        Hierarchy</a>
                     <a class="dropdown-item" href="{% url 'programmefilter' %}">Programme Codes</a>
-                    <a class="dropdown-item" href="{% url 'naturalcode' %}">Natural Account Codes</a>
-                    <a class="dropdown-item" href="{% url 'financecategory' %}">Finance Categories</a>
-                    <a class="dropdown-item" href="{% url 'commercialcategory' %}">Commercial Categories</a>
-                    <a class="dropdown-item" href="{% url 'analysis1' %}">Contract Reconciliation (Analysis 1)</a>
+                    <a class="dropdown-item" href="{% url 'naturalcode' %}">Natural Account
+                        Codes</a>
+                    <a class="dropdown-item" href="{% url 'financecategory' %}">Finance
+                        Categories</a>
+                    <a class="dropdown-item" href="{% url 'commercialcategory' %}">Commercial
+                        Categories</a>
+                    <a class="dropdown-item" href="{% url 'analysis1' %}">Contract Reconciliation
+                        (Analysis 1)</a>
                     <a class="dropdown-item" href="{% url 'analysis2' %}">Markets (Analysis 2)</a>
                     <a class="dropdown-item" href="">Projects (Spare 1)</a>
                     <a class="dropdown-item" href="">Entity-Inter Entity</a>

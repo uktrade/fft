@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from django_filters.views import FilterView
@@ -5,7 +6,6 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin
 from django_tables2.views import SingleTableMixin
 
-from django.contrib.auth.decorators import login_required
 
 @login_required()
 def index(request):

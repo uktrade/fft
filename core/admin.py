@@ -1,17 +1,18 @@
-from django import forms
+import io
 
+from django import forms
 from django.contrib import admin
 from django.contrib.admin.models import CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import escape
 
-import io
 
 from .exportutils import export_to_excel
 from .models import AdminInfo
-    
+
+
 class LogEntryAdmin(admin.ModelAdmin):
     """ Display the Admin log in the Admin interface"""
     date_hierarchy = 'action_time'
@@ -152,7 +153,7 @@ class AdminExport(admin.ModelAdmin):
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-           path('export-xls/', self.export_all_xls),
+            path('export-xls/', self.export_all_xls),
         ]
         return my_urls + urls
 
@@ -199,8 +200,9 @@ class AdminImportExport(AdminExport):
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
-                #read() gives you the file contents as a bytes object, on which you can call decode().
-                #decode('cp1252') turns your bytes into a string, with known encoding.
+                # read() gives you the file contents as a bytes object,
+                # on which you can call decode().
+                # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
                 import_func(t)
@@ -214,4 +216,3 @@ class AdminImportExport(AdminExport):
 
 
 admin.site.register(AdminInfo)
-

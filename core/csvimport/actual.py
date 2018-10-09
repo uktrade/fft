@@ -1,10 +1,12 @@
 import csv
 
-from django.core.exceptions import ObjectDoesNotExist
+from chartofaccountDIT.models import ADIReport, Analysis1, Analysis2, NaturalCode, ProgrammeCode
 
-from core.models import ADIReport, Analysis1, Analysis2, CostCentre, NaturalCode, Programme
 from core.myutils import addposition
 
+from costcentre.models import CostCentre
+
+from django.core.exceptions import ObjectDoesNotExist
 
 # define the column position in the csv file.
 # it reflects the position of columns in the Oracle report used to download the actuals
@@ -86,7 +88,7 @@ def import_actual(csvfile, financialyear, what):
             prog = row[COLUMN_KEY['Programme']]
             if prog == 0:
                 prog = 310801
-            progobj = Programme.objects.get(ProgrammeCode=prog)
+            progobj = ProgrammeCode.objects.get(ProgrammeCode=prog)
             defaultList = {}
             print(line)
             for k, v in actualtoimport.items():
