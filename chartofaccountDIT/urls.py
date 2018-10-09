@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView,\
+from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredCommercialCategoryListView, \
     FilteredExpenditureCategoryListView, FilteredNACListView, FilteredProgrammeView
 

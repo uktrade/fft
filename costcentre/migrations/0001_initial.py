@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,8 +16,11 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('cost_centre_code', models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Cost Centre Code')),
-                ('cost_centre_name', models.CharField(max_length=300, verbose_name='Cost Centre Name')),
+                ('cost_centre_code',
+                 models.CharField(max_length=6, primary_key=True, serialize=False,
+                                  verbose_name='Cost Centre Code')),
+                ('cost_centre_name',
+                 models.CharField(max_length=300, verbose_name='Cost Centre Name')),
             ],
             options={
                 'verbose_name': 'Cost Centre',
@@ -31,7 +33,8 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('group_code', models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Group')),
+                ('group_code', models.CharField(max_length=6, primary_key=True, serialize=False,
+                                                verbose_name='Group')),
                 ('group_name', models.CharField(max_length=300, verbose_name='Group Name')),
             ],
             options={
@@ -45,8 +48,11 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('directorate_code', models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Directorate')),
-                ('directorate_name', models.CharField(max_length=300, verbose_name='Directorate Name')),
+                ('directorate_code',
+                 models.CharField(max_length=6, primary_key=True, serialize=False,
+                                  verbose_name='Directorate')),
+                ('directorate_name',
+                 models.CharField(max_length=300, verbose_name='Directorate Name')),
             ],
             options={
                 'verbose_name': 'Directorate',

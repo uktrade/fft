@@ -32,7 +32,8 @@ class Analysis2(TimeStampedModel):
 
 # Category defined by DIT
 class NACCategory(TimeStampedModel):
-    NAC_category_description = models.CharField(max_length=255, verbose_name='Budget Grouping',unique=True)
+    NAC_category_description = models.CharField(max_length=255, verbose_name='Budget Grouping',
+                                                unique=True)
 
     def __str__(self):
         return str(self.NAC_category_description)
@@ -43,7 +44,8 @@ class NACCategory(TimeStampedModel):
 
 
 class ExpenditureCategory(TimeStampedModel):
-    grouping_description = models.CharField(max_length=255, verbose_name='Expenditure Category', unique=True)
+    grouping_description = models.CharField(max_length=255, verbose_name='Expenditure Category',
+                                            unique=True)
     linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT,
                                            blank=True, null=True, verbose_name='Budget Code')
     NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT,
@@ -60,7 +62,8 @@ class ExpenditureCategory(TimeStampedModel):
 
 
 class CommercialCategory(TimeStampedModel):
-    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category', unique=True)
+    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',
+                                           unique=True)
     description = models.CharField(max_length=5000, blank=True, null=True)
     approvers = models.CharField(max_length=5000, blank=True, null=True)
 

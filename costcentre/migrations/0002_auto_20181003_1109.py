@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -17,31 +16,42 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='directorate',
             name='director',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payroll.DITPeople'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    to='payroll.DITPeople'),
         ),
         migrations.AddField(
             model_name='directorate',
             name='group',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.DepartmentalGroup'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='costcentre.DepartmentalGroup'),
         ),
         migrations.AddField(
             model_name='departmentalgroup',
             name='director_general',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='payroll.DITPeople'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    to='payroll.DITPeople'),
         ),
         migrations.AddField(
             model_name='costcentre',
             name='business_partner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='business_partner', to='payroll.DITPeople', verbose_name='Finance Business Partner'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    related_name='business_partner', to='payroll.DITPeople',
+                                    verbose_name='Finance Business Partner'),
         ),
         migrations.AddField(
             model_name='costcentre',
             name='deputy_director',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='deputy_director', to='payroll.DITPeople'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    related_name='deputy_director', to='payroll.DITPeople'),
         ),
         migrations.AddField(
             model_name='costcentre',
             name='directorate',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.Directorate'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='costcentre.Directorate'),
         ),
     ]

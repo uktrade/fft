@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -19,7 +18,8 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('analysis1_code', models.CharField(max_length=50, primary_key=True, serialize=False)),
+                ('analysis1_code',
+                 models.CharField(max_length=50, primary_key=True, serialize=False)),
                 ('analysis1_description', models.CharField(max_length=300)),
             ],
             options={
@@ -33,7 +33,8 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('analysis2_code', models.CharField(max_length=50, primary_key=True, serialize=False)),
+                ('analysis2_code',
+                 models.CharField(max_length=50, primary_key=True, serialize=False)),
                 ('analysis2_description', models.CharField(max_length=300, verbose_name='Market')),
             ],
             options={
@@ -44,11 +45,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CommercialCategory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('commercial_category', models.CharField(max_length=255, verbose_name='Commercial Category')),
+                ('commercial_category',
+                 models.CharField(max_length=255, verbose_name='Commercial Category')),
                 ('description', models.CharField(blank=True, max_length=5000, null=True)),
                 ('approvers', models.CharField(blank=True, max_length=5000, null=True)),
             ],
@@ -60,11 +63,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ExpenditureCategory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('grouping_description', models.CharField(max_length=255, verbose_name='Expenditure Category')),
+                ('grouping_description',
+                 models.CharField(max_length=255, verbose_name='Expenditure Category')),
                 ('description', models.CharField(blank=True, max_length=5000, null=True)),
                 ('further_description', models.CharField(blank=True, max_length=5000, null=True)),
             ],
@@ -76,11 +81,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='NACCategory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('NAC_category_description', models.CharField(max_length=255, verbose_name='Nac Category')),
+                ('NAC_category_description',
+                 models.CharField(max_length=255, verbose_name='Nac Category')),
             ],
             options={
                 'verbose_name': 'Budget Grouping',
@@ -93,12 +100,20 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('natural_account_code', models.IntegerField(primary_key=True, serialize=False, verbose_name='NAC')),
-                ('natural_account_code_description', models.CharField(max_length=200, verbose_name='NAC Description')),
+                ('natural_account_code',
+                 models.IntegerField(primary_key=True, serialize=False, verbose_name='NAC')),
+                ('natural_account_code_description',
+                 models.CharField(max_length=200, verbose_name='NAC Description')),
                 ('used_for_budget', models.BooleanField(default=False)),
-                ('account_L5_code', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='treasuryCOA.L5Account')),
-                ('commercial_category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.CommercialCategory')),
-                ('expenditure_category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ExpenditureCategory')),
+                ('account_L5_code', models.ForeignKey(blank=True, null=True,
+                                                      on_delete=django.db.models.deletion.PROTECT,
+                                                      to='treasuryCOA.L5Account')),
+                ('commercial_category', models.ForeignKey(blank=True, null=True,
+                                                          on_delete=django.db.models.deletion.PROTECT,
+                                                          to='chartofaccountDIT.CommercialCategory')),
+                ('expenditure_category', models.ForeignKey(blank=True, null=True,
+                                                           on_delete=django.db.models.deletion.PROTECT,
+                                                           to='chartofaccountDIT.ExpenditureCategory')),
             ],
             options={
                 'verbose_name': 'Natural Account Code (NAC)',
@@ -111,8 +126,11 @@ class Migration(migrations.Migration):
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('programme_code', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Programme Code')),
-                ('programme_description', models.CharField(max_length=100, verbose_name='Programme Name')),
+                ('programme_code',
+                 models.CharField(max_length=50, primary_key=True, serialize=False,
+                                  verbose_name='Programme Code')),
+                ('programme_description',
+                 models.CharField(max_length=100, verbose_name='Programme Name')),
                 ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
             ],
             options={
@@ -123,11 +141,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expenditurecategory',
             name='NAC_category',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NACCategory', verbose_name='Budget Grouping'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.NACCategory',
+                                    verbose_name='Budget Grouping'),
         ),
         migrations.AddField(
             model_name='expenditurecategory',
             name='linked_budget_code',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode', verbose_name='Budget Code'),
+            field=models.ForeignKey(blank=True, null=True,
+                                    on_delete=django.db.models.deletion.PROTECT,
+                                    to='chartofaccountDIT.NaturalCode',
+                                    verbose_name='Budget Code'),
         ),
     ]

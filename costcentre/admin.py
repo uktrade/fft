@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
@@ -30,7 +29,6 @@ def _export_cc_iterator(queryset):
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField, AdminImportExport):
-
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
                     'directorate_name', 'group_code', 'group_name', 'active')
 
@@ -41,9 +39,10 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         return instance.directorate.directorate_code
 
     def group_name(self, instance):
-            return instance.directorate.group.group_name
+        return instance.directorate.group.group_name
+
     def group_code(self, instance):
-            return instance.directorate.group.group_code
+        return instance.directorate.group.group_code
 
     directorate_name.admin_order_field = 'directorate__directorate_name'
     directorate_code.admin_order_field = 'directorate__directorate_code'
@@ -186,4 +185,3 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
-

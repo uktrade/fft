@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0001_initial'),
     ]
@@ -13,12 +12,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='commercialcategory',
             name='commercial_category',
-            field=models.CharField(max_length=255, unique=True, verbose_name='Commercial Category'),
+            field=models.CharField(max_length=255, unique=True,
+                                   verbose_name='Commercial Category'),
         ),
         migrations.AlterField(
             model_name='expenditurecategory',
             name='grouping_description',
-            field=models.CharField(max_length=255, unique=True, verbose_name='Expenditure Category'),
+            field=models.CharField(max_length=255, unique=True,
+                                   verbose_name='Expenditure Category'),
         ),
         migrations.AlterField(
             model_name='naccategory',

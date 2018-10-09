@@ -1,10 +1,10 @@
-from django.db import models
-
 from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, ProgrammeCode
 
 from core.metamodels import TimeStampedModel
 
 from costcentre.models import CostCentre
+
+from django.db import models
 
 from treasurySS.models import SubSegment
 
