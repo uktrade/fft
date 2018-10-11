@@ -78,7 +78,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'core.middleware.ThreadLocalMiddleware'
+    'core.middleware.ThreadLocalMiddleware',
+    'authbroker_client.middleware.ProtectAllViewsMiddleware'
 ]
 
 ROOT_URLCONF = 'fadmin2.urls'
