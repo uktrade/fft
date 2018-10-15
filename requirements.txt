@@ -63,3 +63,4 @@ xlrd==1.1.0
 xlwt==1.3.0
 whitenoise==4.1
 -e git+https://github.com/uktrade/django-staff-sso-client.git#egg=authbroker_client
+-e git+https://github.com/uktrade/django-staff-sso-usermodel.git#egg=custom_usermodel
