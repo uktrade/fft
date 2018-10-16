@@ -48,8 +48,9 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'authbroker_client',
+    'custom_usermodel',
     'forecast.apps.ForecastConfig',
-    'dit_user_management',
+    #'dit_user_management',
     # 'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
@@ -78,7 +79,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'core.middleware.ThreadLocalMiddleware'
+    'core.middleware.ThreadLocalMiddleware',
+    'authbroker_client.middleware.ProtectAllViewsMiddleware'
 ]
 
 ROOT_URLCONF = 'fadmin2.urls'
@@ -166,7 +168,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     return verbose_lookups
 
 
-AUTH_USER_MODEL = 'dit_user_management.User'
+AUTH_USER_MODEL = 'custom_usermodel.User'
 
 AUTHBROKER_URL = env('AUTHBROKER_URL')
 AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
