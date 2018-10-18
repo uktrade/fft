@@ -26,6 +26,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-admin.site.site_header = "Finance Tool Admin"
-admin.site.site_title = "Finance Tool Admin Portal"
-admin.site.index_title = "Welcome to the Finance Tool Admin Portal"
+admin.site.site_header = "FIDO Admin"
+admin.site.site_title = "FIDO Admin Portal"
+admin.site.index_title = "Welcome to FIDO Admin Portal"

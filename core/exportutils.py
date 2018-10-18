@@ -106,11 +106,10 @@ def export_to_excel(queryset, f):
     ws.title = title
     row_num = 0
     for row in f(queryset):
-        row_num += 1
         for col_num in range(len(row)):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
             c.value = row[col_num]
-
+        row_num += 1
     wb.save(resp)
     return resp
 

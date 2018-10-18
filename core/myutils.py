@@ -183,7 +183,7 @@ class ImportInfo():
         self.key = key
         self.special_func = my_import_func
         if bool(key):
-            self.header_list = get_col_from_obj_key(key)
+            self.header_list = list(filter(None, get_col_from_obj_key(key)))
         else:
             self.header_list = hlist
 
