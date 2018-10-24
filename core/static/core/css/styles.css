@@ -13,11 +13,17 @@ h1, h2, h3 {
      background-color: firebrick;
 }
 
-.table-bordered thead a:link, a:visited, a:active {
+.table-bordered thead a:link  {
      color: white;
 }
 
+.table-bordered a:visited  {
+     color: white;
+}
 
+.table-bordered  a:active  {
+     color: white;
+}
 button {
     background-color: firebrick;
     color: white;
