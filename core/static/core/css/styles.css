@@ -1,3 +1,24 @@
 .small-font {
     font-size: 14px;
 }
+
+
+h1, h2, h3 {
+    color: firebrick;
+    /*text-shadow: 6px 3px 4px black;*/
+}
+
+
+.table-bordered thead th {
+     background-color: firebrick;
+}
+
+.table-bordered thead a:link, a:visited, a:active {
+     color: white;
+}
+
+
+button {
+    background-color: firebrick;
+    color: white;
+}
