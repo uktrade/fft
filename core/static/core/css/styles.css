@@ -8,6 +8,9 @@ h1, h2, h3 {
     /*text-shadow: 6px 3px 4px black;*/
 }
 
+a:link, a:active, a:visited  {
+     color: firebrick;
+}
 
 .table-bordered thead th {
      background-color: firebrick;
@@ -24,7 +27,9 @@ h1, h2, h3 {
 .table-bordered  a:active  {
      color: white;
 }
+
 button {
     background-color: firebrick;
     color: white;
 }
+
