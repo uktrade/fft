@@ -44,11 +44,14 @@
 
 
         <div class="col-1">
+                        <img src="{% static "core/images/logofidosmall.png" %}" alt="A dog with a calculator">
+
             <div class="nav flex-column " id="v-pills-tab" role="tablist"
                  aria-orientation="vertical">
                 <a class="nav-item nav-link active" href="{% url 'index' %}">
-                    <i class='fas fa-dog' style='font-size:36px'></i>
-                    <i class="fas fa-pound-sign" style='font-size:24px'></i>
+                    Home
+{#                    <i class='fas fa-dog' style='font-size:36px'></i>#}
+{#                    <i class="fas fa-pound-sign" style='font-size:24px'></i>#}
                 </a>
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                    data-toggle="dropdown"
@@ -77,7 +80,7 @@
             {% block content %}{% endblock %}
         </div>
         <div class="col-1">
-            <img src="{% static "core/images/logo.png" %}" alt="My image">
+            <img src="{% static "core/images/logo.png" %}" alt="DIT Logo">
         </div>
 
 
