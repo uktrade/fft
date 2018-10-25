@@ -5,7 +5,10 @@
 
 h1, h2, h3 {
     color: firebrick;
-    /*text-shadow: 6px 3px 4px black;*/
+}
+
+h1, h2 {
+    text-align: center;
 }
 
 
@@ -34,4 +37,12 @@ button {
     background-color: firebrick;
     color: white;
 }
+
+
+/*ul { padding-left:20px; list-style:none; }*/
+/*li { margin-bottom:10px; }*/
+/*li:before {*/
+    /*font-family: 'FontAwesome';*/
+    /*content: '\f6d3';*/
+/*}*/
 
