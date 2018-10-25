@@ -7,7 +7,7 @@ from .models import Analysis1, Analysis2, CommercialCategory, \
 
 
 class NACFilter(MyFilterSet):
-    natural_account_code = django_filters.CharFilter(lookup_expr='istartswith')
+    # natural_account_code = django_filters.CharFilter(lookup_expr='istartswith')
     account_L5_code__economic_budget_code = \
         django_filters.CharFilter(label='Expenditure Type', lookup_expr='icontains')
 
@@ -15,7 +15,7 @@ class NACFilter(MyFilterSet):
         model = NaturalCode
         fields = ['account_L5_code__economic_budget_code',
                   'expenditure_category__NAC_category', 'expenditure_category',
-                  'natural_account_code', 'natural_account_code_description']
+                   'natural_account_code_description']
         exclude = ['active', 'account_L5_code']
 
     def __init__(self, *args, **kwargs):
