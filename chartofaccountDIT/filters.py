@@ -27,7 +27,7 @@ class NACFilter(MyFilterSet):
     @property
     def qs(self):
         nac = super(NACFilter, self).qs
-        return nac.filter(active=True).order_by('account_L5_code__economic_budget_code',
+        return nac.filter(active=True).order_by('-account_L5_code__economic_budget_code',
                                                 'expenditure_category__NAC_category',
                                                 'expenditure_category',
                                                 'natural_account_code',
@@ -35,9 +35,27 @@ class NACFilter(MyFilterSet):
 
 
 class ExpenditureCategoryFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(NAC_category__NAC_category_description__icontains=value) |
+                               Q(grouping_description__icontains=value) |
+                               Q(description__icontains=value) |
+                               Q(further_description__icontains=value)
+                               )
+
     class Meta(MyFilterSet.Meta):
         model = ExpenditureCategory
-        fields = ['NAC_category']
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        cat_filter = super(ExpenditureCategoryFilter, self).qs
+        return cat_filter.order_by('NAC_category',
+                                          'grouping_description',
+                                          'description',
+                                          'further_description')
 
 
 class CommercialCategoryFilter(MyFilterSet):
