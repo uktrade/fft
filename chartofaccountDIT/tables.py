@@ -20,7 +20,7 @@ class NaturalCodeTable(FadminTable):
     nac_category_description = \
         tables.Column(verbose_name='Budget Grouping',
                       accessor='expenditure_category.NAC_category.NAC_category_description')
-    budget_description = tables.Column(verbose_name='Expenditure Category',
+    budget_description = tables.Column(verbose_name='Budgeting Category',
                                        accessor='expenditure_category.grouping_description')
     budget_NAC_code = tables.Column(verbose_name='NAC for Budget/Forecast',
                                     accessor='expenditure_category.linked_budget_code.natural_account_code')  # noqa: E501
@@ -63,8 +63,7 @@ class CommercialCategoryTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = CommercialCategory
         fields = ('commercial_category',
-                  'description',
-                  'approvers'
+                  'description'
                   )
 
 
