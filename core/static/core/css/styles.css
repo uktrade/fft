@@ -2,6 +2,10 @@
     font-size: 14px;
 }
 
+fido {
+    font-size: 60px;
+    font-weight: bold;
+}
 
 h1, h2, h3 {
     color: firebrick;
