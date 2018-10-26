@@ -2,6 +2,8 @@ from core.filters import MyFilterSet
 
 import django_filters
 
+from django.db.models import Q
+
 from .models import Analysis1, Analysis2, CommercialCategory, \
     ExpenditureCategory, NaturalCode, ProgrammeCode
 
@@ -57,12 +59,19 @@ class Analysis1Filter(MyFilterSet):
 
 
 class ProgrammeFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(programme_code__icontains=value) |
+                               Q(programme_description__icontains=value) |
+                               Q(budget_type__icontains=value)
+        )
+
     class Meta(MyFilterSet.Meta):
         model = ProgrammeCode
         fields = [
-            'programme_code',
-            'programme_description',
-            'budget_type'
+            'search_all',
         ]
 
     @property
