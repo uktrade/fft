@@ -15,6 +15,6 @@ def index(request):
 
 
 class FAdminFilteredView(ExportMixin, SingleTableMixin, FilterView):
-    paginate_by = 50
+    paginate_by = 200
     template_name = 'core/table_filter_generic.html'
     strict = False
