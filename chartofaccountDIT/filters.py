@@ -83,16 +83,44 @@ class CommercialCategoryFilter(MyFilterSet):
                                           )
 
 
-class Analysis2Filter(MyFilterSet):
-    class Meta(MyFilterSet.Meta):
-        model = Analysis2
-        fields = ['analysis2_description']
-
-
 class Analysis1Filter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(analysis1_code__icontains=value) |
+                               Q(analysis1_description__icontains=value))
+
     class Meta(MyFilterSet.Meta):
         model = Analysis1
-        fields = ['analysis1_description']
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        an1_filter = super(Analysis1Filter, self).qs
+        return an1_filter.order_by('analysis1_code',
+                                          'analysis1_description'
+                                          )
+
+
+class Analysis2Filter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(analysis2_code__icontains=value) |
+                               Q(analysis2_description__icontains=value))
+
+    class Meta(MyFilterSet.Meta):
+        model = Analysis2
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        an2_filter = super(Analysis2Filter, self).qs
+        return an2_filter.order_by('analysis2_code',
+                                          'analysis2_description'
+                                          )
 
 
 class ProgrammeFilter(MyFilterSet):

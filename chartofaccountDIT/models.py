@@ -19,7 +19,7 @@ class Analysis1(TimeStampedModel):
 
 
 class Analysis2(TimeStampedModel):
-    analysis2_code = models.CharField('Analysis 2 Code', primary_key=True, max_length=50)
+    analysis2_code = models.CharField('Market Code', primary_key=True, max_length=50)
     analysis2_description = models.CharField(max_length=300, verbose_name='Market')
 
     def __str__(self):
