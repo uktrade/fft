@@ -9,27 +9,32 @@ from .models import Analysis1, Analysis2, CommercialCategory, \
 
 
 class NACFilter(MyFilterSet):
-    # natural_account_code = django_filters.CharFilter(lookup_expr='istartswith')
-    account_L5_code__economic_budget_code = \
-        django_filters.CharFilter(label='Expenditure Type', lookup_expr='icontains')
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(account_L5_code__economic_budget_code__icontains=value) |
+                               Q(expenditure_category__NAC_category__NAC_category_description__icontains=value) |
+                               Q(expenditure_category__linked_budget_code__natural_account_code_description__icontains=value) |
+                               Q(expenditure_category__linked_budget_code__natural_account_code__icontains=value) |
+                               Q(expenditure_category__grouping_description__icontains=value) |
+                               Q(commercial_category__commercial_category__icontains=value) |
+                               Q(natural_account_code__icontains=value) |
+                               Q(natural_account_code_description__icontains=value)
+                               )
 
     class Meta(MyFilterSet.Meta):
         model = NaturalCode
-        fields = ['account_L5_code__economic_budget_code',
-                  'expenditure_category__NAC_category', 'expenditure_category',
-                   'natural_account_code_description']
-        exclude = ['active', 'account_L5_code']
-
-    def __init__(self, *args, **kwargs):
-        super(NACFilter, self).__init__(*args, **kwargs)
-        self.filters['expenditure_category__NAC_category'].label = 'Budget Category'
+        fields = ['search_all']
 
     @property
     def qs(self):
         nac = super(NACFilter, self).qs
         return nac.filter(active=True).order_by('-account_L5_code__economic_budget_code',
+                                                'commercial_category',
                                                 'expenditure_category__NAC_category',
                                                 'expenditure_category',
+                                                'expenditure_category__linked_budget_code',
                                                 'natural_account_code',
                                                 'natural_account_code_description')
 
