@@ -64,9 +64,23 @@ class ExpenditureCategoryFilter(MyFilterSet):
 
 
 class CommercialCategoryFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(commercial_category__icontains=value) |
+                               Q(description__icontains=value))
+
     class Meta(MyFilterSet.Meta):
         model = CommercialCategory
-        fields = ['description']
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        cat_filter = super(CommercialCategoryFilter, self).qs
+        return cat_filter.order_by('commercial_category',
+                                          'description'
+                                          )
 
 
 class Analysis2Filter(MyFilterSet):
