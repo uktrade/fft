@@ -1,3 +1,5 @@
+from core.utils import today_string
+
 from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
@@ -12,6 +14,7 @@ class FilteredNACListView(FAdminFilteredView):
     table_class = NaturalCodeTable
     model = table_class.Meta.model
     filterset_class = NACFilter
+    export_name = 'Natural Account Codes' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,6 +30,7 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
     table_class = ExpenditureCategoryTable
     model = table_class.Meta.model
     filterset_class = ExpenditureCategoryFilter
+    export_name = 'Budget Categories' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,6 +45,7 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
     table_class = CommercialCategoryTable
     model = table_class.Meta.model
     filterset_class = CommercialCategoryFilter
+    export_name = 'Commercial Categories' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,6 +60,7 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
     table_class = Analysis1Table
     model = table_class.Meta.model
     filterset_class = Analysis1Filter
+    export_name = 'Contract Reconciliation (Analysis 1)' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -70,6 +76,7 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
     table_class = Analysis2Table
     model = table_class.Meta.model
     filterset_class = Analysis2Filter
+    export_name = 'Markets (Analysis 2)' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,6 +92,7 @@ class FilteredProgrammeView(FAdminFilteredView):
     table_class = ProgrammeTable
     model = table_class.Meta.model
     filterset_class = ProgrammeFilter
+    export_name = 'Programme Codes' + today_string()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
