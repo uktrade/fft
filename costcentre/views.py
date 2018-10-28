@@ -10,6 +10,7 @@ class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
     table_class = CostCentreTable
     model = table_class.Meta.model
     filterset_class = CostCentreFilter
+    export_name = 'CostCentreHierarchy'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -44,7 +44,7 @@ class NACCategory(TimeStampedModel):
 
 
 class ExpenditureCategory(TimeStampedModel):
-    grouping_description = models.CharField(max_length=255, verbose_name='Budgeting Category',
+    grouping_description = models.CharField(max_length=255, verbose_name='Budget Category',
                                             unique=True)
     linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT,
                                            blank=True, null=True, verbose_name='Budget Code')
@@ -57,8 +57,8 @@ class ExpenditureCategory(TimeStampedModel):
         return str(self.grouping_description)
 
     class Meta:
-        verbose_name = "Budgeting Category"
-        verbose_name_plural = "Budgeting Categories"
+        verbose_name = "Budget Category"
+        verbose_name_plural = "Budget Categories"
 
 
 class CommercialCategory(TimeStampedModel):
@@ -81,7 +81,7 @@ class NaturalCode(TimeStampedModel):
     natural_account_code_description = models.CharField(max_length=200,
                                                         verbose_name='NAC Description')
     account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
-    expenditure_category = models.ForeignKey(ExpenditureCategory, verbose_name='Budgeting Category',
+    expenditure_category = models.ForeignKey(ExpenditureCategory, verbose_name='Budget Category',
                                              on_delete=models.PROTECT, blank=True, null=True)
     commercial_category = models.ForeignKey(CommercialCategory,
                                             on_delete=models.PROTECT, blank=True, null=True)

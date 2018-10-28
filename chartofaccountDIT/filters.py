@@ -57,7 +57,7 @@ class ExpenditureCategoryFilter(MyFilterSet):
     @property
     def qs(self):
         cat_filter = super(ExpenditureCategoryFilter, self).qs
-        return cat_filter.order_by('NAC_category',
+        return cat_filter.order_by('-NAC_category__NAC_category_description',
                                           'grouping_description',
                                           'description',
                                           'further_description')
@@ -87,7 +87,7 @@ class Analysis1Filter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',
                                                 method='search_all_filter')
 
-    def search_all_filter(selfself, queryset, name, value):
+    def search_all_filter(self, queryset, name, value):
         return queryset.filter(Q(analysis1_code__icontains=value) |
                                Q(analysis1_description__icontains=value))
 
@@ -107,7 +107,7 @@ class Analysis2Filter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',
                                                 method='search_all_filter')
 
-    def search_all_filter(selfself, queryset, name, value):
+    def search_all_filter(self, queryset, name, value):
         return queryset.filter(Q(analysis2_code__icontains=value) |
                                Q(analysis2_description__icontains=value))
 
@@ -127,7 +127,7 @@ class ProgrammeFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',
                                                 method='search_all_filter')
 
-    def search_all_filter(selfself, queryset, name, value):
+    def search_all_filter(self, queryset, name, value):
         return queryset.filter(Q(programme_code__icontains=value) |
                                Q(programme_description__icontains=value) |
                                Q(budget_type__icontains=value)

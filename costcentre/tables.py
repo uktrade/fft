@@ -15,7 +15,6 @@ class CostCentreTable(FadminTable):
     director_general = tables.Column(verbose_name="Director General",
                                      accessor='directorate.group.director_general')
     director = tables.Column(verbose_name="Director", accessor='directorate.director')
-
     class Meta(FadminTable.Meta):
         model = CostCentre
         fields = ( 'group_code',
