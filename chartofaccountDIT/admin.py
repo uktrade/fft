@@ -14,7 +14,7 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
-    NACCategory, NaturalCode, ProgrammeCode
+    InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode
 
 
 def _export_nac_iterator(queryset):
@@ -234,6 +234,14 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return import_prog_class
 
 
+
+class InterEntityL1Admin(AdminActiveField, AdminImportExport):
+    pass
+
+class InterEntityAdmin(AdminActiveField, AdminImportExport):
+    pass
+
+
 admin.site.register(Analysis1, Analysis1Admin)
 admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
@@ -241,3 +249,5 @@ admin.site.register(ExpenditureCategory, ExpenditureCategoryAdmin)
 admin.site.register(NACCategory, NACCategoryAdmin)
 admin.site.register(CommercialCategory, CommercialCategoryAdmin)
 admin.site.register(ProgrammeCode, ProgrammeAdmin)
+admin.site.register(InterEntityL1, InterEntityL1Admin)
+admin.site.register(InterEntity, InterEntityAdmin)

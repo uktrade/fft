@@ -107,3 +107,30 @@ class ProgrammeCode(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Programme Code"
         verbose_name_plural = "Programme Codes"
+
+
+class InterEntityL1(TimeStampedModel, LogChangeModel):
+    l1_value = models.CharField('L1 Value', primary_key=True, max_length=10)
+    l1_description = models.CharField('L1 Description', max_length=100)
+
+    def __str__(self):
+        return self.l1_value + ' - ' + self.l1_description
+
+    class Meta:
+        verbose_name = "L1 Inter-Entity"
+        verbose_name_plural = "L1 Inter-Entities"
+
+
+class InterEntity(TimeStampedModel, LogChangeModel):
+    l2_value = models.CharField('L2 Value', primary_key=True, max_length=10)
+    l2_description = models.CharField('L2 Description', max_length=100)
+    l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.l2_value + ' - ' + self.l2_description
+
+    class Meta:
+        verbose_name = "Inter-Entity"
+        verbose_name_plural = "Inter-Entities"
+
+
