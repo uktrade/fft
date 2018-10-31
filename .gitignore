@@ -50,6 +50,9 @@ var/
 *.egg
 .env
 .envrc
+.environ
+.environ_backup
+
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
