@@ -80,9 +80,9 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
     deputy_director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT,
                                         related_name='deputy_director', null=True, blank=True)
-    business_partner = models.ForeignKey('payroll.DITPeople',
+    business_partner = models.ForeignKey('BusinessPartner',
                                          verbose_name='Finance Business Partner',
-                                         on_delete=models.PROTECT, related_name='business_partner',
+                                         on_delete=models.PROTECT,
                                          null=True, blank=True)
     bsce_email = models.ForeignKey(BSCEEmail, verbose_name='BSCE Email',
                                          on_delete=models.PROTECT, null=True, blank=True)

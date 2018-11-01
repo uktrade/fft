@@ -54,7 +54,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     # limit the entries for specific foreign fields
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "business_partner":
-            kwargs["queryset"] = DITPeople.objects.filter(isbusinesspartner=True, active=True)
+            kwargs["queryset"] = BusinessPartner.objects.filter(active=True)
         if db_field.name == 'deputy_director':
             kwargs["queryset"] = DITPeople.objects.filter(isdirector=True, active=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
