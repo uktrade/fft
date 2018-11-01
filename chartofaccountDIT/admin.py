@@ -1,6 +1,6 @@
 import io
 
-from core.admin import AdminActiveField, \
+from core.admin import AdminActiveField, AdminExport, \
     AdminImportExport, AdminreadOnly, CsvImportForm
 from core.exportutils import generic_table_iterator, get_fk_value
 
@@ -12,7 +12,8 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
-    import_comm_cat_class, import_expenditure_category_class, import_prog_class
+    import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class,\
+    import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode
 
@@ -234,12 +235,44 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return import_prog_class
 
 
+def _export_inter_entity_l1_iterator(queryset):
+    yield ['L1 Value', 'L1 Description'
+           ]
+    for obj in queryset:
+        yield [obj.l1value,
+               obj.l1_description
+]
 
-class InterEntityL1Admin(AdminActiveField, AdminImportExport):
-    pass
 
-class InterEntityAdmin(AdminActiveField, AdminImportExport):
-    pass
+class InterEntityL1Admin(AdminreadOnly, AdminExport):
+    @property
+    def export_func(self):
+        return _export_inter_entity_l1_iterator
+
+
+def _export_inter_entity_iterator(queryset):
+    yield ['L1 Value', 'L1 Description', 'L2 Value', 'L2 Description',
+           'CPID', 'Active'
+           ]
+    for obj in queryset:
+        yield [obj.l1_value.l1value,
+               obj.l1_value.l1_description,
+               obj.l2_value,
+               obj.l2_description,
+               obj.cpid,
+               obj.active]
+
+
+class InterEntityAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+    @property
+    def export_func(self):
+        return _export_inter_entity_iterator
+
+    @property
+    def import_info(self):
+        return import_inter_entity_class
+
+
 
 
 admin.site.register(Analysis1, Analysis1Admin)

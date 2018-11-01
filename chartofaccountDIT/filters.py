@@ -5,7 +5,7 @@ import django_filters
 from django.db.models import Q
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, NaturalCode, ProgrammeCode
+    ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode
 
 
 class NACFilter(MyFilterSet):
@@ -29,8 +29,8 @@ class NACFilter(MyFilterSet):
 
     @property
     def qs(self):
-        nac = super(NACFilter, self).qs
-        return nac.filter(active=True).order_by('-account_L5_code__economic_budget_code',
+        myfilter = super(NACFilter, self).qs
+        return myfilter.filter(active=True).order_by('-account_L5_code__economic_budget_code',
                                                 '-expenditure_category__NAC_category__NAC_category_description',
                                                 'commercial_category',
                                                 'expenditure_category',
@@ -56,8 +56,8 @@ class ExpenditureCategoryFilter(MyFilterSet):
 
     @property
     def qs(self):
-        cat_filter = super(ExpenditureCategoryFilter, self).qs
-        return cat_filter.order_by('-NAC_category__NAC_category_description',
+        myfilter = super(ExpenditureCategoryFilter, self).qs
+        return myfilter.order_by('-NAC_category__NAC_category_description',
                                           'grouping_description',
                                           'description',
                                           'further_description')
@@ -77,8 +77,8 @@ class CommercialCategoryFilter(MyFilterSet):
 
     @property
     def qs(self):
-        cat_filter = super(CommercialCategoryFilter, self).qs
-        return cat_filter.order_by('commercial_category',
+        myfilter = super(CommercialCategoryFilter, self).qs
+        return myfilter.order_by('commercial_category',
                                           'description'
                                           )
 
@@ -97,8 +97,8 @@ class Analysis1Filter(MyFilterSet):
 
     @property
     def qs(self):
-        an1_filter = super(Analysis1Filter, self).qs
-        return an1_filter.order_by('analysis1_code',
+        myfilter = super(Analysis1Filter, self).qs
+        return myfilter.order_by('analysis1_code',
                                           'analysis1_description'
                                           )
 
@@ -117,8 +117,8 @@ class Analysis2Filter(MyFilterSet):
 
     @property
     def qs(self):
-        an2_filter = super(Analysis2Filter, self).qs
-        return an2_filter.order_by('analysis2_code',
+        myfilter = super(Analysis2Filter, self).qs
+        return myfilter.order_by('analysis2_code',
                                           'analysis2_description'
                                           )
 
@@ -141,7 +141,35 @@ class ProgrammeFilter(MyFilterSet):
 
     @property
     def qs(self):
-        prog = super(ProgrammeFilter, self).qs
-        return prog.filter(active=True).order_by('programme_code',
+        myfilter = super(ProgrammeFilter, self).qs
+        return myfilter.filter(active=True).order_by('programme_code',
                                                  'programme_description',
                                                  'budget_type')
+
+
+class InterEntityFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(l1_value__l1_description__icontains=value) |
+                               Q(l1_value__l1_value__icontains=value) |
+                               Q(l2_value__icontains=value) |
+                               Q(l2_description__icontains=value) |
+                               Q(cpid__icontains=value)
+        )
+
+    class Meta(MyFilterSet.Meta):
+        model = InterEntity
+        fields = [
+            'search_all',
+        ]
+
+    @property
+    def qs(self):
+        myfilter = super(InterEntityFilter, self).qs
+        return myfilter.filter(active=True).order_by('l1_value__l1_value',
+                                                 'l1_value__l1_description',
+                                                 'l2_value',
+                                                 'l2_description',
+                                                 'cpid')

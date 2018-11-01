@@ -7,7 +7,7 @@ from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_
 from treasuryCOA.models import L5Account
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
-    NACCategory, NaturalCode, ProgrammeCode
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode
 
 # define the column position in the csv file.
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
@@ -148,3 +148,29 @@ def import_programme(csvfile):
 
 
 import_prog_class = ImportInfo(PROG_KEY)
+
+
+INTER_ENTITY_L1_KEY = {IMPORT_CSV_MODEL_KEY: InterEntityL1,
+            IMPORT_CSV_PK_KEY: 'L1 Value',
+            IMPORT_CSV_FIELDLIST_KEY: {
+                InterEntityL1.l1_description.field_name: 'L1 Description'}}
+
+
+INTER_ENTITY_KEY = {IMPORT_CSV_MODEL_KEY: InterEntity,
+            IMPORT_CSV_PK_KEY: 'L2 Value',
+            IMPORT_CSV_FIELDLIST_KEY: {
+                InterEntity.l2_description.field_name: 'L2 Description',
+                InterEntity.cpid.field_name: 'CPID',
+                InterEntity.active.field_name: 'Enable',
+                InterEntity.l1_value.field.name: INTER_ENTITY_L1_KEY
+            }}
+
+
+def import_inter_entity(csvfile):
+    import_obj(csvfile, INTER_ENTITY_KEY)
+
+
+import_inter_entity_class = ImportInfo(INTER_ENTITY_KEY)
+
+
+

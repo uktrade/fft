@@ -125,6 +125,7 @@ class InterEntity(TimeStampedModel, LogChangeModel):
     l2_value = models.CharField('L2 Value', primary_key=True, max_length=10)
     l2_description = models.CharField('L2 Description', max_length=100)
     l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
+    cpid = models.CharField('CPID', max_length=10)
 
     def __str__(self):
         return self.l2_value + ' - ' + self.l2_description

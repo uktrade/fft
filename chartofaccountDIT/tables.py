@@ -3,7 +3,7 @@ from core.tables import FadminTable
 import django_tables2 as tables
 
 from .models import Analysis1, Analysis2, \
-    CommercialCategory, ExpenditureCategory, NaturalCode, ProgrammeCode
+    CommercialCategory, ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode
 
 
 class ProgrammeTable(FadminTable):
@@ -76,4 +76,22 @@ class Analysis1Table(FadminTable):
         model = Analysis1
         fields = ('analysis1_code',
                   'analysis1_description',
+                  )
+
+
+class InterEntityTable(FadminTable):
+    l1_value__l1_value = \
+        tables.Column(verbose_name='L1 Value',
+                      accessor='l1_value.l1_value')
+    l1_value__l1_description = \
+        tables.Column(verbose_name='L1 Description',
+                      accessor='l1_value.l1_description')
+
+    class Meta(FadminTable.Meta):
+        model = InterEntity
+        fields = ('l1_value__l1_value',
+                  'l1_value__l1_description',
+                  'l2_value',
+                  'l2_description',
+                  'cpid'
                   )
