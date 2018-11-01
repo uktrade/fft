@@ -239,12 +239,13 @@ def _export_inter_entity_l1_iterator(queryset):
     yield ['L1 Value', 'L1 Description'
            ]
     for obj in queryset:
-        yield [obj.l1value,
+        yield [obj.l1_value,
                obj.l1_description
 ]
 
 
 class InterEntityL1Admin(AdminreadOnly, AdminExport):
+    search_fields = ['l1_value', 'l1_description']
     @property
     def export_func(self):
         return _export_inter_entity_l1_iterator
@@ -255,7 +256,7 @@ def _export_inter_entity_iterator(queryset):
            'CPID', 'Active'
            ]
     for obj in queryset:
-        yield [obj.l1_value.l1value,
+        yield [obj.l1_value.l1_value,
                obj.l1_value.l1_description,
                obj.l2_value,
                obj.l2_description,
@@ -264,6 +265,11 @@ def _export_inter_entity_iterator(queryset):
 
 
 class InterEntityAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+    list_display = ('l2_value', 'l2_description', 'l1_value', 'active')
+    search_fields = ['l2_value', 'l2_description']
+    list_filter = ('active', 'l1_value'
+                   )
+
     @property
     def export_func(self):
         return _export_inter_entity_iterator
