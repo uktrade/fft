@@ -36,7 +36,7 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
     bsce_email = models.EmailField('BSCE email')
 
     def __str__(self):
-        return str(self.directorate_name)
+        return str(self.bsce_email)
 
     class Meta:
         verbose_name = "BSCE Email"
@@ -53,6 +53,8 @@ class CostCentre(TimeStampedModel, LogChangeModel):
                                          verbose_name='Finance Business Partner',
                                          on_delete=models.PROTECT, related_name='business_partner',
                                          null=True, blank=True)
+    bsce_email = models.ForeignKey(BSCEEmail, verbose_name='BSCE Email',
+                                         on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)

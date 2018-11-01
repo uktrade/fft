@@ -13,7 +13,8 @@ from .models import BSCEEmail, CostCentre, DepartmentalGroup, Directorate
 def _export_cc_iterator(queryset):
     yield ['Cost Centre', 'Cost Centre Description', 'Active',
            'Directorate', 'Directorate Description', 'Directorate Active',
-           'Group', 'Group Description', 'Group Active']
+           'Group', 'Group Description', 'Group Active',
+           'BSCE Email']
     for obj in queryset:
         yield [obj.cost_centre_code,
                obj.cost_centre_name,
@@ -23,7 +24,8 @@ def _export_cc_iterator(queryset):
                obj.directorate.active,
                obj.directorate.group.group_code,
                obj.directorate.group.group_name,
-               obj.directorate.group.active]
+               obj.directorate.group.active,
+               obj.bsce_email]
 
 
 # Displays extra fields in the list of cost centres
@@ -67,10 +69,10 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     def get_fields(self, request, obj=None):
         if obj:
             return ['cost_centre_code', 'cost_centre_name',
-                    'directorate', 'deputy_director', 'business_partner',
+                    'directorate', 'deputy_director', 'business_partner', 'bsce_email',
                     'active', 'created', 'updated']
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate',
+            return ['cost_centre_code', 'cost_centre_name', 'directorate','bsce_email',
                     'deputy_director', 'business_partner', 'active']
 
     # the export and import function must be defined as properties, to stop getting 'self' as first
