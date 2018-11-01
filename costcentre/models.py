@@ -32,6 +32,17 @@ class Directorate(TimeStampedModel, LogChangeModel):
         verbose_name_plural = "Directorates"
 
 
+class BSCEEmail(TimeStampedModel, LogChangeModel):
+    bsce_email = models.EmailField('BSCE email')
+
+    def __str__(self):
+        return str(self.directorate_name)
+
+    class Meta:
+        verbose_name = "BSCE Email"
+        verbose_name_plural = "BSCE Emails"
+
+
 class CostCentre(TimeStampedModel, LogChangeModel):
     cost_centre_code = models.CharField('Cost Centre No.', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
@@ -49,3 +60,5 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Cost Centre"
         verbose_name_plural = "Cost Centres"
+
+

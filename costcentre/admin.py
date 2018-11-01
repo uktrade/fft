@@ -7,7 +7,7 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from payroll.models import DITPeople
 
 from .importcsv import import_cc_class
-from .models import CostCentre, DepartmentalGroup, Directorate
+from .models import BSCEEmail, CostCentre, DepartmentalGroup, Directorate
 
 
 def _export_cc_iterator(queryset):
@@ -181,6 +181,27 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
         return _export_group_iterator
 
 
+def _export_bsce_iterator(queryset):
+    yield ['BSCE Email', 'Active']
+    for obj in queryset:
+        yield [obj.bsce_email,
+               obj.active]
+
+
+
+class BSCEEmailAdmin(AdminActiveField, AdminExport):
+    list_display = ('bsce_email', 'active')
+    search_fields = ['bsce_email']
+
+    def get_readonly_fields(self, request, obj=None):
+        return [ 'created', 'updated']
+
+    @property
+    def export_func(self):
+        return _export_group_iterator
+
+
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
+admin.site.register(BSCEEmail, BSCEEmailAdmin)
