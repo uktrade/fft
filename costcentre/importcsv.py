@@ -1,8 +1,11 @@
+import csv
+
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, ImportInfo, import_obj
+    IMPORT_CSV_PK_KEY, ImportInfo, csvheadertodict, import_obj
 
 
-from .models import CostCentre, DepartmentalGroup, Directorate
+from .models import BSCEEmail, BusinessPartner, \
+    CostCentre, CostCentrePerson, DepartmentalGroup, Directorate
 
 # define the column position in the csv file.
 
@@ -57,3 +60,68 @@ def import_cc(csvfile):
 
 
 import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres')
+
+
+def import_cc_responsibles(csvfile):
+    """Special function to import the Deputy Director,  Business partner and BSCE email"""
+    reader = csv.reader(csvfile)
+    # Convert the first row to a dictionary of positions
+    header = csvheadertodict(next(reader))
+    for row in reader:
+        obj  = CostCentre.objects.get(
+            pk=row[header['CC Code']].strip())
+        deputy_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Deputy Name']].strip(),
+                                              surname=row[header['Deputy Surname']].strip())
+        deputy_obj.email = row[header['Deputy email']].strip()
+        deputy_obj.active = True
+        deputy_obj.save()
+        obj.deputy_director = deputy_obj
+        bp_obj, created = BusinessPartner.objects.get_or_create(name=row[header['BP Name']].strip(),
+                                              surname=row[header['BP Surname']].strip())
+        bp_obj.bp_email = row[header['BP email']].strip()
+        bp_obj.active = True
+        bp_obj.save()
+        obj.business_partner = bp_obj
+        bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email = row[header['BSCE email']].strip())
+        obj.bsce_email = bsce_obj
+        obj.save()
+
+
+import_cc_people_class = ImportInfo({}, 'Cost Centre People',
+                                               ['CC Code',
+                                                'BP Name', 'BP Surname', 'BP email',
+                                                'Deputy Name', 'Deputy Surname', 'Deputy email',
+                                                'BSCE email'],
+                                            import_cc_responsibles)
+
+
+
+
+
+def import_group_with_dg(csvfile):
+    """Special function to import Groups with the DG, because I need to change the people
+    during the import"""
+    reader = csv.reader(csvfile)
+    # Convert the first row to a dictionary of positions
+    header = csvheadertodict(next(reader))
+    for row in reader:
+        obj, created = DepartmentalGroup.objects.get_or_create(
+            pk=row[header['Group Code']].strip())
+        dg_obj = CostCentrePerson.objects.get(name=row[header['DG Name']].strip(),
+                                              surname=row[header['DG Surname']].strip())
+        dg_obj.email = row[header['DG Email']].strip()
+        dg_obj.active = True
+        dg_obj.is_dg = True
+        dg_obj.save()
+        obj.group_name = row[header['Group Description']].strip()
+        obj.director_general = dg_obj
+        obj.save()
+
+
+import_departmental_group_class = ImportInfo({}, 'Departmental Group',
+                                               ['Group Code', 'Group Description',
+                                                'DG Name', 'DG Surname',
+                                                'DG Email'],
+                                               import_group_with_dg)
+
+

@@ -1,12 +1,15 @@
-from core.admin import AdminActiveField, AdminExport, AdminImportExport
+import io
+
+from core.admin import AdminActiveField, AdminExport, AdminImportExport, CsvImportForm
 
 from django.contrib import admin
+from django.shortcuts import redirect, render
+from django.urls import path
+
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from payroll.models import DITPeople
-
-from .importcsv import import_cc_class
+from .importcsv import import_cc_class, import_cc_people_class, import_departmental_group_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
     DepartmentalGroup, Directorate
 
@@ -31,6 +34,9 @@ def _export_cc_iterator(queryset):
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(AdminActiveField, AdminImportExport):
+    """Define an extra import button, for the DIT specific fields"""
+    change_list_template = "admin/m_import_changelist.html"
+
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
                     'directorate_name', 'group_code', 'group_name', 'active')
 
@@ -56,7 +62,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         if db_field.name == "business_partner":
             kwargs["queryset"] = BusinessPartner.objects.filter(active=True)
         if db_field.name == 'deputy_director':
-            kwargs["queryset"] = DITPeople.objects.filter(isdirector=True, active=True)
+            kwargs["queryset"] = CostCentrePerson.objects.filter(active=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     # different fields editable if updating or creating the object
@@ -91,6 +97,35 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
 
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('import1-csv/', self.import1_csv),
+        ]
+        return my_urls + urls
+
+    def import1_csv(self, request):
+        header_list = import_cc_people_class.header_list
+        import_func = import_cc_people_class.my_import_func
+        form_title = import_cc_people_class.form_title
+        if request.method == "POST":
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
+            if form.is_valid():
+                csv_file = request.FILES["csv_file"]
+                # read() gives you the file contents as a bytes object,
+                # on which you can call decode().
+                # decode('cp1252') turns your bytes into a string, with known encoding.
+                # cp1252 is used to handle single quotes in the strings
+                t = io.StringIO(csv_file.read().decode('cp1252'))
+                import_func(t)
+                return redirect("..")
+        else:
+            form = CsvImportForm(header_list, form_title)
+        payload = {"form": form}
+        return render(
+            request, "admin/csv_form.html", payload
+        )
+
 
 def _export_directorate_iterator(queryset):
     yield ['Directorate', 'Directorate Description', 'Active',
@@ -123,7 +158,7 @@ class DirectorateAdmin(AdminActiveField, AdminExport):
     # limit the list available in the drop downs
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director':
-            kwargs["queryset"] = DITPeople.objects.filter(isdirector=True, active=True)
+            kwargs["queryset"] = CostCentrePerson.objects.filter(is_director=True, active=True)
         if db_field.name == 'group':
             kwargs["queryset"] = DepartmentalGroup.objects.filter(active=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
@@ -156,13 +191,13 @@ def _export_group_iterator(queryset):
                obj.active]
 
 
-class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
+class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
     list_display = ('group_code', 'group_name', 'director_general', 'active')
     search_fields = ['group_code', 'group_name']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director_general':
-            kwargs["queryset"] = DITPeople.objects.filter(isdirector=True, active=True)
+            kwargs["queryset"] = CostCentrePerson.objects.filter(is_dg=True, active=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     # different fields editable if updating or creating the object
@@ -182,6 +217,11 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminExport):
     @property
     def export_func(self):
         return _export_group_iterator
+
+    @property
+    def import_info(self):
+        return import_departmental_group_class
+
 
 
 def _export_bsce_iterator(queryset):

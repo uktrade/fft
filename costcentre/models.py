@@ -3,10 +3,28 @@ from django.db import models
 from core.metamodels import LogChangeModel, TimeStampedModel  # noqa I100
 
 
+class CostCentrePerson(TimeStampedModel, LogChangeModel):
+    """Model used for storing the name of Deputy Directors, Directors and DG.
+    It would be better to use the  HR data, but they are not always up-to-date,
+    so it is easier to have a different table."""
+    name = models.CharField(max_length=100, blank=True)
+    surname = models.CharField(max_length=100)
+    email = models.EmailField('Email', null=True, blank=True)
+    is_director = models.BooleanField('Director', default=False)
+    is_dg = models.BooleanField('General Director', default=False)
+
+    def __str__(self):
+        return str(self.name) + ' ' + str(self.surname)
+
+    class Meta:
+        verbose_name = "Cost Centre Person"
+        verbose_name_plural = "Cost Centre People"
+
+
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     group_code = models.CharField('Group No.', primary_key=True, max_length=6)
     group_name = models.CharField('Group Name', max_length=300)
-    director_general = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT,
+    director_general = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
                                          null=True, blank=True)
 
     def __str__(self):
@@ -20,7 +38,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
 class Directorate(TimeStampedModel, LogChangeModel):
     directorate_code = models.CharField('Directorate', primary_key=True, max_length=6)
     directorate_name = models.CharField('Directorate No.', max_length=300)
-    director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT,
+    director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
                                  null=True, blank=True)
     group = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
 
@@ -56,30 +74,13 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
         verbose_name_plural = "BSCE Emails"
 
 
-class CostCentrePerson(TimeStampedModel, LogChangeModel):
-    """Model used for storing the name of Deputy Directors, Directors and DG.
-    It would be better to use the  HR data, but they are not always up-to-date,
-    so it is easier to have a different table."""
-    name = models.CharField(max_length=100, blank=True)
-    surname = models.CharField(max_length=100)
-    email = models.EmailField('Email', null=True, blank=True)
-    is_director = models.BooleanField('Director', default=False)
-    is_dg = models.BooleanField('General Director', default=False)
-
-    def __str__(self):
-        return str(self.name) + ' ' + str(self.surname)
-
-    class Meta:
-        verbose_name = "Cost Centre Person"
-        verbose_name_plural = "Cost Centre People"
-
-
 class CostCentre(TimeStampedModel, LogChangeModel):
     cost_centre_code = models.CharField('Cost Centre No.', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
-    deputy_director = models.ForeignKey('payroll.DITPeople', on_delete=models.PROTECT,
-                                        related_name='deputy_director', null=True, blank=True)
+    deputy_director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
+                                         verbose_name='Deputy Director',
+                                         null=True, blank=True)
     business_partner = models.ForeignKey('BusinessPartner',
                                          verbose_name='Finance Business Partner',
                                          on_delete=models.PROTECT,
