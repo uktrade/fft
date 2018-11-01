@@ -32,6 +32,18 @@ class Directorate(TimeStampedModel, LogChangeModel):
         verbose_name_plural = "Directorates"
 
 
+class BusinessPartner(TimeStampedModel, LogChangeModel):
+    full_name = models.CharField(max_length=300)
+    bp_email = models.EmailField('Business Partner email', null=True, blank=True)
+
+    def __str__(self):
+        return str(self.full_name)
+
+    class Meta:
+        verbose_name = "Business Partner"
+        verbose_name_plural = "Business Partners"
+
+
 class BSCEEmail(TimeStampedModel, LogChangeModel):
     bsce_email = models.EmailField('BSCE email')
 
