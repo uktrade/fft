@@ -9,7 +9,8 @@ from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .importcsv import import_cc_class, import_cc_people_class, import_departmental_group_class
+from .importcsv import import_cc_class, import_cc_people_class, \
+    import_departmental_group_class, import_director_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
     DepartmentalGroup, Directorate
 
@@ -139,7 +140,7 @@ def _export_directorate_iterator(queryset):
                obj.group.active]
 
 
-class DirectorateAdmin(AdminActiveField, AdminExport):
+class DirectorateAdmin(AdminActiveField, AdminImportExport):
     list_display = ('directorate_code', 'directorate_name',
                     'group_code', 'group_name', 'director', 'active')
     search_fields = ['directorate_code', 'directorate_name']
@@ -181,6 +182,10 @@ class DirectorateAdmin(AdminActiveField, AdminExport):
     @property
     def export_func(self):
         return _export_directorate_iterator
+
+    @property
+    def import_info(self):
+        return import_director_class
 
 
 def _export_group_iterator(queryset):

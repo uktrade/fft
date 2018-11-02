@@ -95,7 +95,30 @@ import_cc_people_class = ImportInfo({}, 'Cost Centre People',
                                             import_cc_responsibles)
 
 
+def import_director(csvfile):
+    """Special function to import Groups with the DG, because I need to change the people
+    during the import"""
+    reader = csv.reader(csvfile)
+    # Convert the first row to a dictionary of positions
+    header = csvheadertodict(next(reader))
+    for row in reader:
+        obj = Directorate.objects.get(
+            pk=row[header['Directorate Code']].strip())
+        director_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Director Name']].strip(),
+                                              surname=row[header['Director Surname']].strip())
+        director_obj.email = row[header['Director email']].strip()
+        director_obj.active = True
+        director_obj.is_dg = True
+        director_obj.save()
+        obj.director = director_obj
+        obj.save()
 
+
+import_director_class = ImportInfo({}, 'Directors',
+                                             ['Directorate Code',
+                                              'Directorate Name', 'Directorate Surname',
+                                              'Directorate Email'],
+                                             import_director)
 
 
 def import_group_with_dg(csvfile):
@@ -105,15 +128,14 @@ def import_group_with_dg(csvfile):
     # Convert the first row to a dictionary of positions
     header = csvheadertodict(next(reader))
     for row in reader:
-        obj, created = DepartmentalGroup.objects.get_or_create(
+        obj = DepartmentalGroup.objects.get(
             pk=row[header['Group Code']].strip())
-        dg_obj = CostCentrePerson.objects.get(name=row[header['DG Name']].strip(),
+        dg_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['DG Name']].strip(),
                                               surname=row[header['DG Surname']].strip())
         dg_obj.email = row[header['DG Email']].strip()
         dg_obj.active = True
         dg_obj.is_dg = True
         dg_obj.save()
-        obj.group_name = row[header['Group Description']].strip()
         obj.director_general = dg_obj
         obj.save()
 
