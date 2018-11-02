@@ -108,7 +108,7 @@ def import_director(csvfile):
                                               surname=row[header['Director Surname']].strip())
         director_obj.email = row[header['Director email']].strip()
         director_obj.active = True
-        director_obj.is_dg = True
+        director_obj.is_director = True
         director_obj.save()
         obj.director = director_obj
         obj.save()
@@ -132,7 +132,7 @@ def import_group_with_dg(csvfile):
             pk=row[header['Group Code']].strip())
         dg_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['DG Name']].strip(),
                                               surname=row[header['DG Surname']].strip())
-        dg_obj.email = row[header['DG Email']].strip()
+        dg_obj.email = row[header['DG email']].strip()
         dg_obj.active = True
         dg_obj.is_dg = True
         dg_obj.save()
@@ -140,10 +140,10 @@ def import_group_with_dg(csvfile):
         obj.save()
 
 
-import_departmental_group_class = ImportInfo({}, 'Departmental Group',
-                                               ['Group Code', 'Group Description',
+import_departmental_group_class = ImportInfo({}, 'Director Generals',
+                                               ['Group Code',
                                                 'DG Name', 'DG Surname',
-                                                'DG Email'],
+                                                'DG email'],
                                                import_group_with_dg)
 
 
