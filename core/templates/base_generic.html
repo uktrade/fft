@@ -42,7 +42,13 @@
 
 
         <div class="col-1">
-                        <img src="{% static "core/images/logofidosmall.png" %}" alt="A dog with a calculator">
+            <img src="{% static "core/images/logo_small.png" %}" alt="DIT Logo">
+             <br>
+
+            <img src="{% static "core/images/logofidosmall.png" %}" alt="A dog with a calculator">
+            <br>
+
+
 
             <div class="nav flex-column " id="v-pills-tab" role="tablist"
                  aria-orientation="vertical">
@@ -74,12 +80,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-10">
+        <div class="col-11">
             {% block content %}{% endblock %}
         </div>
-        <div class="col-1">
-            <img src="{% static "core/images/logo.png" %}" alt="DIT Logo">
-        </div>
+{#        <div class="col-1">#}
+{#            <img src="{% static "core/images/logo.png" %}" alt="DIT Logo">#}
+{#        </div>#}
 
 
     </div>
