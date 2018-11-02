@@ -27,7 +27,7 @@ class NaturalCodeTable(FadminTable):
     account_L5_code__economic_budget_code = \
         tables.Column(verbose_name='Expenditure Type',
                       accessor='account_L5_code.economic_budget_code')
-    natural_account_code = tables.Column(verbose_name='PO/Actual NAC')
+    natural_account_code = tables.Column(verbose_name='PO/Actuals NAC')
     natural_account_code_description = tables.Column(verbose_name='NAC Description')
 
     class Meta(FadminTable.Meta):
