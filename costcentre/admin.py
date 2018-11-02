@@ -39,7 +39,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     change_list_template = "admin/m_import_changelist.html"
 
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
-                    'directorate_name', 'group_code', 'group_name', 'active')
+                    'directorate_name', 'group_code', 'group_name', 'deputy_director', 'active')
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name

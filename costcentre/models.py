@@ -17,8 +17,8 @@ class CostCentrePerson(TimeStampedModel, LogChangeModel):
         return str(self.name) + ' ' + str(self.surname)
 
     class Meta:
-        verbose_name = "Cost Centre Person"
-        verbose_name_plural = "Cost Centre People"
+        verbose_name = "Hierarchy Responsibility"
+        verbose_name_plural = "Hierarchy Responsibilities"
 
 
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):

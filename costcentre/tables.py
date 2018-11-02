@@ -25,6 +25,7 @@ class CostCentreTable(FadminTable):
                   'cost_centre_name',
                   'director',
                   'director_general',
+                  'deputy_director',
                   'business_partner',
                   'bsce_email'
                   )

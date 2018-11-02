@@ -31,9 +31,9 @@ class NACFilter(MyFilterSet):
         myfilter = super(NACFilter, self).qs
         return myfilter.filter(active=True).order_by('-account_L5_code__economic_budget_code',
                                                 '-expenditure_category__NAC_category__NAC_category_description',
-                                                'commercial_category__commercial_category',
                                                 '-expenditure_category__grouping_description',
-                                                 'natural_account_code'
+                                                'commercial_category__commercial_category',
+                                                'natural_account_code'
                                                 )
 
 

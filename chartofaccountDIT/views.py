@@ -35,7 +35,7 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Budget Categories'
-        context['section_description'] = 'The field helps you in acquiring the correct ' \
+        context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a financial perspective.'
         return context
@@ -50,7 +50,7 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Commercial Categories'
-        context['section_description'] = 'The field helps you in acquiring the correct ' \
+        context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a procurement perspective.'
         return context
@@ -116,7 +116,7 @@ class FilteredInterEntityView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Entity-Inter Entity'
-        context['section_description'] = 'The Inter Entity code is used to identify any ' \
+        context['section_description'] = 'This field is used to identify any ' \
                                          'transactions that the department may have with Other ' \
                                          'Government Departments/ Bodies. DIT colleagues should ' \
                                          'use the Inter Entity code when/if they are completing ' \
