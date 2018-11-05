@@ -102,7 +102,7 @@ def import_expenditure_category(csvfile):
     header = csvheadertodict(next(reader))
     for row in reader:
         obj, created = ExpenditureCategory.objects.get_or_create(
-            grouping_description=row[header['Expenditure Category']].strip())
+            grouping_description=row[header['Budget Category']].strip())
         nac_obj = NaturalCode.objects.get(pk=row[header['Budget NAC']].strip())
         nac_obj.active = True
         nac_obj.used_for_budget = True
@@ -117,7 +117,7 @@ def import_expenditure_category(csvfile):
 
 
 import_expenditure_category_class = ImportInfo({}, 'Expenditure Categories',
-                                               ['Budget Grouping', 'Expenditure Category',
+                                               ['Budget Grouping', 'Budget Category',
                                                 'Description', 'Further Information',
                                                 'Budget NAC'],
                                                import_expenditure_category)
