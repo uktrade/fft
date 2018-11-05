@@ -63,10 +63,10 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         if obj:
             return ['cost_centre_code', 'cost_centre_name',
                     'directorate', 'deputy_director', 'business_partner', 'bsce_email',
-                    'active', 'created', 'updated']
+                    'disabled_with_actual','active', 'created', 'updated']
         else:
             return ['cost_centre_code', 'cost_centre_name', 'directorate','bsce_email',
-                    'deputy_director', 'business_partner', 'active']
+                    'deputy_director', 'business_partner', 'disabled_with_actual', 'active']
 
     # the export and import function must be defined as properties, to stop getting 'self' as first
     # parameter
@@ -79,7 +79,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         return import_cc_class
 
     search_fields = ['cost_centre_code', 'cost_centre_name']
-    list_filter = ('active',
+    list_filter = ('active', 'disabled_with_actual',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
 

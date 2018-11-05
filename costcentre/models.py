@@ -87,6 +87,7 @@ class CostCentre(TimeStampedModel, LogChangeModel):
                                          null=True, blank=True)
     bsce_email = models.ForeignKey(BSCEEmail, verbose_name='BSCE Email',
                                          on_delete=models.PROTECT, null=True, blank=True)
+    disabled_with_actual = models.BooleanField( 'Disabled (Actuals to be cleared)', default='False')
 
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)

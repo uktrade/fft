@@ -1,7 +1,7 @@
 import csv
 
 from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, ImportInfo, csvheadertodict, import_obj
+    IMPORT_CSV_PK_KEY, convert_to_bool_string, ImportInfo, csvheadertodict, import_obj
 
 
 from .models import BSCEEmail, BusinessPartner, \
@@ -84,14 +84,17 @@ def import_cc_responsibles(csvfile):
         obj.business_partner = bp_obj
         bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email = row[header['BSCE email']].strip())
         obj.bsce_email = bsce_obj
+        obj.disabled_with_actual = convert_to_bool_string(row[header['Disabled (Actuals to be cleared)']].strip())
+        obj.active = convert_to_bool_string(row[header['Active']].strip())
         obj.save()
 
 
-import_cc_people_class = ImportInfo({}, 'Cost Centre People',
+import_cc_people_class = ImportInfo({}, 'Hierarchy Responsibility',
                                                ['CC Code',
                                                 'BP Name', 'BP Surname', 'BP email',
                                                 'Deputy Name', 'Deputy Surname', 'Deputy email',
-                                                'BSCE email'],
+                                                'BSCE email', 'Active',
+                                                'Disabled (Actuals to be cleared)'],
                                             import_cc_responsibles)
 
 

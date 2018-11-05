@@ -14,20 +14,19 @@ def export_bp_iterator(queryset):
 
 
 def export_cc_iterator(queryset):
-    yield ['Cost Centre', 'Cost Centre Description', 'Active',
-           'Directorate', 'Directorate Description', 'Directorate Active',
-           'Group', 'Group Description', 'Group Active',
+    yield ['Cost Centre', 'Cost Centre Description', 'Active', 'Disabled (Actuals to be cleared)',
+           'Directorate', 'Directorate Description',
+           'Group', 'Group Description',
            'BSCE Email']
     for obj in queryset:
         yield [obj.cost_centre_code,
                obj.cost_centre_name,
                obj.active,
+               obj.disabled_with_actual,
                obj.directorate.directorate_code,
                obj.directorate.directorate_name,
-               obj.directorate.active,
                obj.directorate.group.group_code,
                obj.directorate.group.group_name,
-               obj.directorate.group.active,
                get_fk_value(obj.bsce_email, 'bsce_email')
                ]
 
