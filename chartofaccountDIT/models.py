@@ -124,8 +124,8 @@ class InterEntityL1(TimeStampedModel, LogChangeModel):
 
 
 class InterEntity(TimeStampedModel, LogChangeModel):
-    l2_value = models.CharField('L2 Value', primary_key=True, max_length=10)
-    l2_description = models.CharField('L2 Description', max_length=100)
+    l2_value = models.CharField('InterEntity Code', primary_key=True, max_length=10)
+    l2_description = models.CharField('InterEntity Description', max_length=100)
     l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
     cpid = models.CharField('CPID (Departmental Code No.)', max_length=10)
 

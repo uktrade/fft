@@ -116,13 +116,9 @@ class FilteredInterEntityView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Entity-Inter Entity'
-        context['section_description'] = 'This field is used to identify any ' \
-                                         'transactions that the department may have with Other ' \
-                                         'Government Departments/ Bodies. DIT colleagues should ' \
-                                         'use the Inter Entity code when/if they are completing ' \
-                                         'journals, setting up new PO’s etc. ' \
-                                         'which relate to other departments. ' \
-                                         'It is vital we use the inter entity code as it helps ' \
-                                         'when we are agreeing balances for WGA and also for ' \
-                                         'the Accounts as we have to identify balances with OGDs.'
+        context['section_description'] = 'This field is used to identify transactions with ' \
+                                         'Other Government Departments (OGDs) / Bodies which ' \
+                                         'is needed for the year-end accounts. To be used ' \
+                                         'when setting up Purchase Orders and / or ' \
+                                         'journals with OGDs.'
         return context
