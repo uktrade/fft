@@ -11,14 +11,19 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
 
 # define the column position in the csv file.
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
-                 IMPORT_CSV_PK_KEY: 'Code',
+                 IMPORT_CSV_PK_KEY: 'Analysis 1 Code',
                  IMPORT_CSV_FIELDLIST_KEY: {
-                     Analysis1.analysis1_description.field_name: 'Description'}}  # noqa: E501
+                     Analysis1.analysis1_description.field_name: 'Contract Name',
+                     Analysis1.supplier.field_name: 'Supplier',
+                     Analysis1.pc_reference.field_name: 'PC Reference',
+                 }}  # noqa: E501
+
 
 ANALYSIS2_KEY = {IMPORT_CSV_MODEL_KEY: Analysis2,
                  IMPORT_CSV_PK_KEY: 'Code',
                  IMPORT_CSV_FIELDLIST_KEY: {
-                     Analysis2.analysis2_description.field_name: 'Description'}}  # noqa: E501
+                        Analysis2.analysis2_description.field_name: 'Description',
+                 }}
 
 
 def import_Analysis1(csvfile):
@@ -31,6 +36,7 @@ def import_Analysis2(csvfile):
 
 import_a1_class = ImportInfo(ANALYSIS1_KEY)
 import_a2_class = ImportInfo(ANALYSIS2_KEY)
+
 
 L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
              IMPORT_CSV_IS_FK: '',

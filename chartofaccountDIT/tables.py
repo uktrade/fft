@@ -76,6 +76,8 @@ class Analysis1Table(FadminTable):
         model = Analysis1
         fields = ('analysis1_code',
                   'analysis1_description',
+                  'supplier',
+                  'pc_reference'
                   )
 
 

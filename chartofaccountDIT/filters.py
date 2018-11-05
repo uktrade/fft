@@ -87,7 +87,10 @@ class Analysis1Filter(MyFilterSet):
 
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(Q(analysis1_code__icontains=value) |
-                               Q(analysis1_description__icontains=value))
+                               Q(analysis1_description__icontains=value) |
+                               Q(supplier__icontains=value) |
+                               Q(pc_reference__icontains=value)
+                               )
 
     class Meta(MyFilterSet.Meta):
         model = Analysis1
