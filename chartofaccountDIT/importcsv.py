@@ -65,7 +65,7 @@ COMM_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
 EXP_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: ExpenditureCategory,
                   IMPORT_CSV_IS_FK: '',
                   IMPORT_CSV_PK_NAME_KEY: ExpenditureCategory.grouping_description.field_name,
-                  IMPORT_CSV_PK_KEY: 'Expenditure Category'
+                  IMPORT_CSV_PK_KEY: 'Budget Category'
                   }
 
 NAC_DIT_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
@@ -116,7 +116,7 @@ def import_expenditure_category(csvfile):
         obj.save()
 
 
-import_expenditure_category_class = ImportInfo({}, 'Expenditure Categories',
+import_expenditure_category_class = ImportInfo({}, 'Budget Categories',
                                                ['Budget Grouping', 'Budget Category',
                                                 'Description', 'Further Information',
                                                 'Budget NAC'],
