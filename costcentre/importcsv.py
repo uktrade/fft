@@ -70,20 +70,32 @@ def import_cc_responsibles(csvfile):
     for row in reader:
         obj  = CostCentre.objects.get(
             pk=row[header['CC Code']].strip())
-        deputy_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Deputy Name']].strip(),
-                                              surname=row[header['Deputy Surname']].strip())
-        deputy_obj.email = row[header['Deputy email']].strip()
-        deputy_obj.active = True
-        deputy_obj.save()
-        obj.deputy_director = deputy_obj
-        bp_obj, created = BusinessPartner.objects.get_or_create(name=row[header['BP Name']].strip(),
-                                              surname=row[header['BP Surname']].strip())
-        bp_obj.bp_email = row[header['BP email']].strip()
-        bp_obj.active = True
-        bp_obj.save()
-        obj.business_partner = bp_obj
-        bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email = row[header['BSCE email']].strip())
-        obj.bsce_email = bsce_obj
+        temp = row[header['Deputy Name']].strip()
+        if temp != '':
+            deputy_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Deputy Name']].strip(),
+                                                  surname=row[header['Deputy Surname']].strip())
+            deputy_obj.email = row[header['Deputy Email']].strip()
+            deputy_obj.active = True
+            deputy_obj.save()
+            obj.deputy_director = deputy_obj
+        else:
+            obj.deputy_director = None
+        temp = row[header['BP Name']].strip()
+        if temp != '':
+            bp_obj, created = BusinessPartner.objects.get_or_create(name=row[header['BP Name']].strip(),
+                                                  surname=row[header['BP Surname']].strip())
+            bp_obj.bp_email = row[header['BP Email']].strip()
+            bp_obj.active = True
+            bp_obj.save()
+            obj.business_partner = bp_obj
+        else:
+            obj.business_partner = None
+        temp = row[header['BSCE Email']].strip()
+        if temp != '':
+            bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email = row[header['BSCE Email']].strip())
+            obj.bsce_email = bsce_obj
+        else:
+            obj.bsce_email = None
         obj.disabled_with_actual = convert_to_bool_string(row[header['Disabled (Actuals to be cleared)']].strip())
         obj.active = convert_to_bool_string(row[header['Active']].strip())
         obj.save()
@@ -91,9 +103,9 @@ def import_cc_responsibles(csvfile):
 
 import_cc_people_class = ImportInfo({}, 'Hierarchy Responsibility',
                                                ['CC Code',
-                                                'BP Name', 'BP Surname', 'BP email',
-                                                'Deputy Name', 'Deputy Surname', 'Deputy email',
-                                                'BSCE email', 'Active',
+                                                'BP Name', 'BP Surname', 'BP Email',
+                                                'Deputy Name', 'Deputy Surname', 'Deputy Email',
+                                                'BSCE Email', 'Active',
                                                 'Disabled (Actuals to be cleared)'],
                                             import_cc_responsibles)
 
