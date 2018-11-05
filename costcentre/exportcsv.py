@@ -1,0 +1,76 @@
+from core.exportutils import get_fk_value
+
+
+def export_bp_iterator(queryset):
+    yield ['Surname',
+           'Name',
+           'Email',
+           'Active']
+    for obj in queryset:
+        yield [obj.surname,
+               obj.name,
+               obj.bp_email,
+               obj.active]
+
+
+def export_cc_iterator(queryset):
+    yield ['Cost Centre', 'Cost Centre Description', 'Active',
+           'Directorate', 'Directorate Description', 'Directorate Active',
+           'Group', 'Group Description', 'Group Active',
+           'BSCE Email']
+    for obj in queryset:
+        yield [obj.cost_centre_code,
+               obj.cost_centre_name,
+               obj.active,
+               obj.directorate.directorate_code,
+               obj.directorate.directorate_name,
+               obj.directorate.active,
+               obj.directorate.group.group_code,
+               obj.directorate.group.group_name,
+               obj.directorate.group.active,
+               get_fk_value(obj.bsce_email, 'bsce_email')
+               ]
+
+
+def export_directorate_iterator(queryset):
+    yield ['Directorate', 'Directorate Description', 'Active',
+           'Group', 'Group Description', 'Group Active']
+    for obj in queryset:
+        yield [obj.directorate_code,
+               obj.directorate_name,
+               obj.active,
+               obj.group.group_code,
+               obj.group.group_name,
+               obj.group.active]
+        
+
+def export_group_iterator(queryset):
+    yield ['Group', 'Group Description', 'Active']
+    for obj in queryset:
+        yield [obj.group_code,
+               obj.group_name,
+               obj.active]
+
+
+def export_bsce_iterator(queryset):
+    yield ['BSCE Email', 'Active']
+    for obj in queryset:
+        yield [obj.bsce_email,
+               obj.active]
+
+
+def export_person_iterator(queryset):
+    yield ['Surname',
+           'Name',
+           'Director General',
+           'Director',
+           'Active']
+    for obj in queryset:
+        yield [obj.surname,
+               obj.name,
+               obj.is_dg,
+               obj.is_director,
+               obj.active]
+
+
+

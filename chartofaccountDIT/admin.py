@@ -2,7 +2,7 @@ import io
 
 from core.admin import AdminActiveField, AdminExport, \
     AdminImportExport, AdminreadOnly, CsvImportForm
-from core.exportutils import generic_table_iterator, get_fk_value
+from core.exportutils import generic_table_iterator
 
 from django.contrib import admin
 from django.shortcuts import redirect, render
@@ -16,19 +16,10 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
     import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode
+from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
+    _export_inter_entity_l1_iterator, _export_nac_cat_iterator, _export_nac_iterator, \
+    _export_programme_iterator
 
-
-def _export_nac_iterator(queryset):
-    yield ['Level 6', 'Level 6 Description',
-           'Active', 'Level 5', 'Level 5 Description',
-           'Category', 'Dashboard Group']
-
-    for obj in queryset:
-        yield [obj.natural_account_code,
-               obj.natural_account_code_description,
-               obj.active,
-               get_fk_value(obj.account_L5_code, 'account_l5_code'),
-               get_fk_value(obj.account_L5_code, 'account_l5_long_name')]
 
 
 class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
@@ -93,6 +84,23 @@ class Analysis1Admin(AdminActiveField, AdminImportExport):
     search_fields = ['analysis1_description', 'analysis1_code']
     list_display = ('analysis1_code', 'analysis1_description', 'active')
 
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['analysis1_code', 'created', 'updated']  # don't allow to edit the code
+        else:
+            return ['created', 'updated']
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['analysis1_code', 'analysis1_description',
+                    'supplier', 'pc_reference',
+                    'active', 'created', 'updated']
+        else:
+            return ['analysis1_code', 'analysis1_description',
+                    'supplier', 'pc_reference', 'active']
+
     @property
     def export_func(self):
         return generic_table_iterator
@@ -106,6 +114,21 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
     search_fields = ['analysis2_description', 'analysis2_code']
     list_display = ('analysis2_code', 'analysis2_description', 'active')
 
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['analysis2_code', 'created', 'updated']  # don't allow to edit the code
+        else:
+            return ['created', 'updated']
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['analysis2_code', 'analysis2_description',
+                    'active', 'created', 'updated']
+        else:
+            return ['analysis2_code', 'analysis2_description','active']
+
     @property
     def export_func(self):
         return generic_table_iterator
@@ -113,19 +136,6 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_a2_class
-
-
-def _export_exp_cat_iterator(queryset):
-    yield ['Budget Grouping', 'Expenditure Category',
-           'Description', 'Further Description', 'Budget NAC', 'Budget NAC Description'
-           ]
-    for obj in queryset:
-        yield [obj.NAC_category.NAC_category_description,
-               obj.grouping_description,
-               obj.description,
-               obj.further_description,
-               obj.linked_budget_code.natural_account_code,
-               obj.linked_budget_code.natural_account_code_description]
 
 
 class ExpenditureCategoryAdmin(AdminImportExport):
@@ -161,16 +171,6 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         return import_expenditure_category_class
 
 
-def _export_comm_cat_iterator(queryset):
-    yield ['Commercial Category',
-           'Description', 'Approvers'
-           ]
-    for obj in queryset:
-        yield [obj.commercial_category,
-               obj.description,
-               obj.approvers]
-
-
 class CommercialCategoryAdmin(AdminImportExport):
     search_fields = ['commercial_category', 'description']
     list_display = ['commercial_category', 'description', 'commercial_category']
@@ -184,13 +184,6 @@ class CommercialCategoryAdmin(AdminImportExport):
         return import_comm_cat_class
 
 
-def _export_nac_cat_iterator(queryset):
-    yield ['Budget Grouping']
-
-    for obj in queryset:
-        yield [obj.NAC_category_description, ]
-
-
 class NACCategoryAdmin(AdminImportExport):
     search_fields = ['NAC_category_description']
     list_display = ['NAC_category_description']
@@ -202,15 +195,6 @@ class NACCategoryAdmin(AdminImportExport):
     @property
     def import_info(self):
         return import_NAC_category_class
-
-
-def _export_programme_iterator(queryset):
-    yield ['Programme Code', 'Description', 'Budget Type', 'Active']
-    for obj in queryset:
-        yield [obj.programme_code,
-               obj.programme_description,
-               obj.budget_type,
-               obj.active]
 
 
 class ProgrammeAdmin(AdminActiveField, AdminImportExport):
@@ -233,15 +217,6 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_prog_class
-
-
-def _export_inter_entity_l1_iterator(queryset):
-    yield ['L1 Value', 'L1 Description'
-           ]
-    for obj in queryset:
-        yield [obj.l1_value,
-               obj.l1_description
-]
 
 
 class InterEntityL1Admin(AdminreadOnly, AdminExport):

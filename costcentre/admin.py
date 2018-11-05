@@ -9,28 +9,13 @@ from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from .exportcsv import export_cc_iterator, export_person_iterator, export_bsce_iterator, \
+    export_group_iterator, export_directorate_iterator, export_bp_iterator
+
 from .importcsv import import_cc_class, import_cc_people_class, \
     import_departmental_group_class, import_director_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
     DepartmentalGroup, Directorate
-
-
-def _export_cc_iterator(queryset):
-    yield ['Cost Centre', 'Cost Centre Description', 'Active',
-           'Directorate', 'Directorate Description', 'Directorate Active',
-           'Group', 'Group Description', 'Group Active',
-           'BSCE Email']
-    for obj in queryset:
-        yield [obj.cost_centre_code,
-               obj.cost_centre_name,
-               obj.active,
-               obj.directorate.directorate_code,
-               obj.directorate.directorate_name,
-               obj.directorate.active,
-               obj.directorate.group.group_code,
-               obj.directorate.group.group_name,
-               obj.directorate.group.active,
-               obj.bsce_email]
 
 
 # Displays extra fields in the list of cost centres
@@ -87,7 +72,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     # parameter
     @property
     def export_func(self):
-        return _export_cc_iterator
+        return export_cc_iterator
 
     @property
     def import_info(self):
@@ -126,18 +111,6 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         return render(
             request, "admin/csv_form.html", payload
         )
-
-
-def _export_directorate_iterator(queryset):
-    yield ['Directorate', 'Directorate Description', 'Active',
-           'Group', 'Group Description', 'Group Active']
-    for obj in queryset:
-        yield [obj.directorate_code,
-               obj.directorate_name,
-               obj.active,
-               obj.group.group_code,
-               obj.group.group_name,
-               obj.group.active]
 
 
 class DirectorateAdmin(AdminActiveField, AdminImportExport):
@@ -181,19 +154,11 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
 
     @property
     def export_func(self):
-        return _export_directorate_iterator
+        return export_directorate_iterator
 
     @property
     def import_info(self):
         return import_director_class
-
-
-def _export_group_iterator(queryset):
-    yield ['Group', 'Group Description', 'Active']
-    for obj in queryset:
-        yield [obj.group_code,
-               obj.group_name,
-               obj.active]
 
 
 class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
@@ -221,19 +186,12 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
 
     @property
     def export_func(self):
-        return _export_group_iterator
+        return export_group_iterator
 
     @property
     def import_info(self):
         return import_departmental_group_class
 
-
-
-def _export_bsce_iterator(queryset):
-    yield ['BSCE Email', 'Active']
-    for obj in queryset:
-        yield [obj.bsce_email,
-               obj.active]
 
 
 class BSCEEmailAdmin(AdminActiveField, AdminExport):
@@ -245,14 +203,7 @@ class BSCEEmailAdmin(AdminActiveField, AdminExport):
 
     @property
     def export_func(self):
-        return _export_bsce_iterator
-
-
-def _export_bp_iterator(queryset):
-    yield ['BSCE Email', 'Active']
-    for obj in queryset:
-        yield [obj.bsce_email,
-               obj.active]
+        return export_bsce_iterator
 
 
 class BusinessPartnerAdmin(AdminActiveField, AdminExport):
@@ -264,14 +215,7 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
 
     @property
     def export_func(self):
-        return _export_bp_iterator
-
-
-def _export_person_iterator(queryset):
-    yield ['BSCE Email', 'Active']
-    for obj in queryset:
-        yield [obj.bsce_email,
-               obj.active]
+        return export_bp_iterator
 
 
 class CostCentrePersonAdmin(AdminActiveField, AdminExport):
@@ -288,7 +232,7 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
 
     @property
     def export_func(self):
-        return _export_bp_iterator
+        return export_person_iterator
 
 
 admin.site.register(CostCentre, CostCentreAdmin)
