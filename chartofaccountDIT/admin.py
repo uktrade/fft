@@ -89,7 +89,7 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
         )
 
 
-class Analysis1Admin(AdminreadOnly, AdminActiveField, AdminImportExport):
+class Analysis1Admin(AdminActiveField, AdminImportExport):
     search_fields = ['analysis1_description', 'analysis1_code']
     list_display = ('analysis1_code', 'analysis1_description', 'active')
 
@@ -102,7 +102,7 @@ class Analysis1Admin(AdminreadOnly, AdminActiveField, AdminImportExport):
         return import_a1_class
 
 
-class Analysis2Admin(AdminreadOnly, AdminActiveField, AdminImportExport):
+class Analysis2Admin(AdminActiveField, AdminImportExport):
     search_fields = ['analysis2_description', 'analysis2_code']
     list_display = ('analysis2_code', 'analysis2_description', 'active')
 

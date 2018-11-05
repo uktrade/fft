@@ -215,4 +215,4 @@ class AdminImportExport(AdminExport):
         )
 
 
-admin.site.register(AdminInfo)
+

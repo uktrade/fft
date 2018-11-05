@@ -96,7 +96,7 @@ class Analysis1Filter(MyFilterSet):
     @property
     def qs(self):
         myfilter = super(Analysis1Filter, self).qs
-        return myfilter.order_by('analysis1_code',
+        return myfilter.filter(active=True).order_by('analysis1_code',
                                           'analysis1_description'
                                           )
 
@@ -116,7 +116,7 @@ class Analysis2Filter(MyFilterSet):
     @property
     def qs(self):
         myfilter = super(Analysis2Filter, self).qs
-        return myfilter.order_by('analysis2_code',
+        return myfilter.filter(active=True).order_by('analysis2_code',
                                           'analysis2_description'
                                           )
 
