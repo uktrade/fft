@@ -7,8 +7,10 @@ from treasuryCOA.models import L5Account
 
 # Other members of Account Codes
 class Analysis1(TimeStampedModel):
-    analysis1_code = models.CharField('Analysis 1 Code', primary_key=True, max_length=50)
-    analysis1_description = models.CharField('Contract Reconciliation', max_length=300)
+    analysis1_code = models.CharField('Contract Code', primary_key=True, max_length=50)
+    analysis1_description = models.CharField('Contract Name', max_length=300)
+    supplier = models.CharField('Supplier', max_length=300, default='')
+    pc_reference = models.CharField('PC Reference', max_length=300, default='')
 
     def __str__(self):
         return self.analysis1_code + ' - ' + self.analysis1_description
