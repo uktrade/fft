@@ -62,6 +62,7 @@ def import_cc(csvfile):
 import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres')
 
 
+
 def import_cc_responsibles(csvfile):
     """Special function to import the Deputy Director,  Business partner and BSCE email"""
     reader = csv.reader(csvfile)

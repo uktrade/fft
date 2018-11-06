@@ -112,22 +112,22 @@ class ProgrammeCode(TimeStampedModel, LogChangeModel):
 
 
 class InterEntityL1(TimeStampedModel, LogChangeModel):
-    l1_value = models.CharField('L1 Value', primary_key=True, max_length=10)
-    l1_description = models.CharField('L1 Description', max_length=100)
+    l1_value = models.CharField('Government Body', primary_key=True, max_length=10)
+    l1_description = models.CharField('Government Body Description', max_length=100)
 
     def __str__(self):
         return self.l1_value + ' - ' + self.l1_description
 
     class Meta:
-        verbose_name = "L1 Inter-Entity"
-        verbose_name_plural = "L1 Inter-Entities"
+        verbose_name = "Government Body"
+        verbose_name_plural = "Government Bodies"
 
 
 class InterEntity(TimeStampedModel, LogChangeModel):
-    l2_value = models.CharField('InterEntity Code', primary_key=True, max_length=10)
-    l2_description = models.CharField('InterEntity Description', max_length=100)
+    l2_value = models.CharField('ORACLE - Inter Entity Code', primary_key=True, max_length=10)
+    l2_description = models.CharField('ORACLE - Inter Entity Description', max_length=100)
     l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
-    cpid = models.CharField('CPID (Departmental Code No.)', max_length=10)
+    cpid = models.CharField('Treasury - CPID (Departmental Code No.)', max_length=10)
 
     def __str__(self):
         return self.l2_value + ' - ' + self.l2_description
