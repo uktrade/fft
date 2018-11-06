@@ -13,12 +13,18 @@ class CostCentrePerson(TimeStampedModel, LogChangeModel):
     is_director = models.BooleanField('Director', default=False)
     is_dg = models.BooleanField('General Director', default=False)
 
+    def _get_full_name(self):
+        "Returns the person's full name."
+        return '%s %s' % (self.surname, self.name)
+    full_name = property(_get_full_name)
+
     def __str__(self):
         return str(self.name) + ' ' + str(self.surname)
 
     class Meta:
         verbose_name = "Hierarchy Responsibility"
         verbose_name_plural = "Hierarchy Responsibilities"
+        ordering = ['surname', 'name']
 
 
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):

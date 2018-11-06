@@ -24,7 +24,8 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     change_list_template = "admin/m_import_changelist.html"
 
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
-                    'directorate_name', 'group_code', 'group_name', 'deputy_director', 'active')
+                    'directorate_name', 'group_code', 'group_name', 'deputy_director',
+                    'business_partner', 'active')
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name
@@ -78,7 +79,10 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     def import_info(self):
         return import_cc_class
 
-    search_fields = ['cost_centre_code', 'cost_centre_name']
+    search_fields = ['cost_centre_code', 'cost_centre_name',
+                     'directorate__directorate_code', 'directorate__directorate_name',
+                     'directorate__group__group_code', 'directorate__group__group_name',
+                     'deputy_director__name', 'deputy_director__surname']
     list_filter = ('active', 'disabled_with_actual',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
@@ -116,7 +120,9 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
 class DirectorateAdmin(AdminActiveField, AdminImportExport):
     list_display = ('directorate_code', 'directorate_name',
                     'group_code', 'group_name', 'director', 'active')
-    search_fields = ['directorate_code', 'directorate_name']
+    search_fields = ['directorate_code', 'directorate_name',
+                     'group__group_name','group__group_code',
+                     'director__name', 'director__surname']
     list_filter = ('active',
                    ('group', RelatedDropdownFilter))
 
@@ -163,7 +169,8 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
 
 class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
     list_display = ('group_code', 'group_name', 'director_general', 'active')
-    search_fields = ['group_code', 'group_name']
+    search_fields = ['group_code', 'group_name',
+                     'director_general__name', 'director_general__surname']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director_general':
@@ -219,7 +226,7 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
 
 
 class CostCentrePersonAdmin(AdminActiveField, AdminExport):
-    list_display = ('surname', 'name','is_dg', 'is_director', 'active')
+    list_display = ('full_name','is_dg', 'is_director', 'active')
     search_fields = ['name', 'surname', 'email']
 
     list_filter = ('active',
