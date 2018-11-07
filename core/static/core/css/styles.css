@@ -21,6 +21,7 @@ h3 {
 }
 
 
+/*use firebrick as DIT red */
 a:link, a:active, a:visited  {
      color: firebrick;
 }
@@ -42,19 +43,59 @@ a:link, a:active, a:visited  {
      color: white;
 }
 
+
+.table-bordered th, td {
+    padding: 3px;
+}
+
+
 button {
     background-color: firebrick;
     color: white;
 }
 
 
-/*.analysis1_description {*/
-    /*width: 50%;*/
-/*}*/
+/*The following styles are declared to fix the witdth of columns in tables */
+#tenpercent #tenpercent1, #tenpercent2, #tenpercent3, #tenpercent4, #tenpercent5,
+#tenpercent6, #tenpercent7, #tenpercent8, #tenpercent9 {
+    width: 10%;
+}
 
+#twentypercent, #twentypercent1, #twentypercent2, #twentypercent3, #twentypercent4 {
+    width: 20%;
+}
 
-#fiftypercent {
-    width: 50%;
+#thirtypercent, #thirtypercent1, #thirtypercent2 {
+    width: 30%;
+}
+
+#fortypercent, #fortypercent1 {
+    width: 40%;
+}
+
+#sixtypercent {
+    width: 60%;
+}
+
+#seventypercent {
+    width: 70%;
+}
+
+#eightypercent {
+    width: 80%;
+}
+
+#nintypercent {
+    width: 90%;
+}
+
+#twentyfivepercent, #twentyfivepercent1, #twentyfivepercent2, #twentyfivepercent3 {
+    width: 25%;
+}
+
+#fifteenpercent, #fifteenpercent1, #fifteenpercent2, #fifteenpercent3, #fifteenpercent4,
+#fifteenpercent5 {
+    width: 15%;
 }
 
 
