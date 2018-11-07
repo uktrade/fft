@@ -72,6 +72,8 @@ class Analysis2Table(FadminTable):
 
 
 class Analysis1Table(FadminTable):
+    analysis1_description = tables.Column(
+                        attrs = {'th': {'id': 'fiftypercent'}})
     class Meta(FadminTable.Meta):
         model = Analysis1
         fields = ('analysis1_code',
