@@ -219,7 +219,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return import_prog_class
 
 
-class InterEntityL1Admin(AdminreadOnly, AdminExport):
+class InterEntityL1Admin(AdminActiveField, AdminExport):
     search_fields = ['l1_value', 'l1_description']
     @property
     def export_func(self):
@@ -239,7 +239,7 @@ def _export_inter_entity_iterator(queryset):
                obj.active]
 
 
-class InterEntityAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+class InterEntityAdmin(AdminActiveField, AdminImportExport):
     list_display = ('l2_value', 'l2_description', 'l1_value', 'active')
     search_fields = ['l2_value', 'l2_description']
     list_filter = ('active', 'l1_value'
