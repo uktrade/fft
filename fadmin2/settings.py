@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'custom_usermodel',
     'forecast.apps.ForecastConfig',
     #'dit_user_management',
-    # 'gifthospitality.apps.GifthospitalityConfig',
+    'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
     'chartofaccountDIT.apps.ChartAccountConfig',

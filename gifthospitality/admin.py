@@ -1,6 +1,9 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# from .models import GiftsAndHospitality, HotelAndTravel
+from .models import  GiftsAndHospitalityCompany, \
+    GiftsAndHospitalityCategory, GiftsAndHospitalityClassification
 
-# admin.site.register(GiftsAndHospitality)
-# admin.site.register(HotelAndTravel)
+admin.site.register(GiftsAndHospitalityCompany)
+admin.site.register(GiftsAndHospitalityCategory)
+admin.site.register(GiftsAndHospitalityClassification)
+

@@ -2,11 +2,6 @@ from django.db import models
 
 from core.metamodels import TimeStampedModel
 
-from costcentre.models import DepartmentalGroup
-
-from payroll.models import Grade
-
-
 class GiftsAndHospitalityClassification(TimeStampedModel):
     GIFT = 'GIFT'
     HOSPITALITY = 'HOSPITALITY'
@@ -45,20 +40,19 @@ class GiftsAndHospitality(models.Model):
     the group, after a restructuring the name will change, while we need the name of the group 
     at time the gift was received"""
     group_name = models.CharField(max_length=200)
-    date_offered = models.DateTimeField()
+    date_offered = models.DateField()
     venue = models.CharField(max_length=1000)
     reason = models.CharField(max_length=1000)
     value = models.DecimalField(max_digits=18, decimal_places=2)
     band = models.CharField(max_length=50)
     rep = models.CharField(max_length=255)
     OFFER_CHOICE =(
-        'Received', 'Received',
-        'Offered', 'Offered'
+        ('Received', 'Received'),
+        ('Offered', 'Offered')
     )
     offer = models.CharField(max_length=50, choices=OFFER_CHOICE)
     company_rep = models.CharField(max_length=50)
     company = models.ForeignKey(GiftsAndHospitalityCompany, on_delete=models.PROTECT)
-
     ACTION_TYPE = (
         ('Action1', 'Accepted'),
         ('Action2', 'Accepted (difference paid to Department)'),
@@ -74,3 +68,7 @@ class GiftsAndHospitality(models.Model):
     category = models.ForeignKey(GiftsAndHospitalityCategory, on_delete=models.PROTECT)
     # Copy the grade, in case grades changes in future, even if unlikely
     grade = models.CharField(max_length=50)
+    class Meta:
+        verbose_name = "Gifts and Hospitality"
+        verbose_name_plural = "Gifts and Hospitality"
+
