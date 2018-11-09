@@ -78,7 +78,7 @@ class CommercialCategory(TimeStampedModel):
 
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
-class NaturalCode(TimeStampedModel):
+class NaturalCode(TimeStampedModel, LogChangeModel):
     natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
     natural_account_code_description = models.CharField(max_length=200,
                                                         verbose_name='NAC Description')
