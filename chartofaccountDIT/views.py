@@ -133,5 +133,9 @@ class FilteredProjectView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Project (Spare 1)'
-        context['section_description'] = 'This field is used ......'
+        context['section_description'] = 'This field helps to identify DITs project / portfolio ' \
+                                         'and report against them regardless where in the ' \
+                                         'organisation expenditure is taking place i.e. ' \
+                                         'Trade Remedies Authority (project) expenditure in TPG, ' \
+                                         'Digital and Estates.'
         return context
