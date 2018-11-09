@@ -15,7 +15,7 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
     import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class,\
     import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
-    InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode
+    InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
     _export_inter_entity_l1_iterator, _export_nac_cat_iterator, _export_nac_iterator, \
     _export_programme_iterator
@@ -254,6 +254,33 @@ class InterEntityAdmin(AdminActiveField, AdminImportExport):
         return import_inter_entity_class
 
 
+class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
+    search_fields = ['project_description', 'project_code']
+    list_display = ('project_code', 'project_description', 'active')
+
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['project_code', 'created', 'updated']  # don't allow to edit the code
+        else:
+            return ['created', 'updated']
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['project_code', 'project_description',
+                    'active', 'created', 'updated']
+        else:
+            return ['project_code', 'project_description','active']
+
+    @property
+    def export_func(self):
+        return generic_table_iterator
+
+    @property
+    def import_info(self):
+        return import_a2_class
+
 
 
 admin.site.register(Analysis1, Analysis1Admin)
@@ -265,3 +292,4 @@ admin.site.register(CommercialCategory, CommercialCategoryAdmin)
 admin.site.register(ProgrammeCode, ProgrammeAdmin)
 admin.site.register(InterEntityL1, InterEntityL1Admin)
 admin.site.register(InterEntity, InterEntityAdmin)
+admin.site.register(ProjectCode, ProjectCodeAdmin)

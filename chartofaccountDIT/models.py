@@ -6,7 +6,7 @@ from treasuryCOA.models import L5Account
 
 
 # Other members of Account Codes
-class Analysis1(TimeStampedModel):
+class Analysis1(TimeStampedModel, LogChangeModel):
     analysis1_code = models.CharField('Contract Code', primary_key=True, max_length=50)
     analysis1_description = models.CharField('Contract Name', max_length=300)
     supplier = models.CharField('Supplier', max_length=300, default='')
@@ -33,7 +33,7 @@ class Analysis2(TimeStampedModel):
 
 
 # Category defined by DIT
-class NACCategory(TimeStampedModel):
+class NACCategory(TimeStampedModel, LogChangeModel):
     NAC_category_description = models.CharField(max_length=255, verbose_name='Budget Grouping',
                                                 unique=True)
 
@@ -63,7 +63,7 @@ class ExpenditureCategory(TimeStampedModel):
         verbose_name_plural = "Budget Categories"
 
 
-class CommercialCategory(TimeStampedModel):
+class CommercialCategory(TimeStampedModel, LogChangeModel):
     commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',
                                            unique=True)
     description = models.CharField(max_length=5000, blank=True, null=True)
@@ -135,5 +135,18 @@ class InterEntity(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Inter-Entity"
         verbose_name_plural = "Inter-Entities"
+
+
+class ProjectCode(TimeStampedModel, LogChangeModel):
+    project_code = models.CharField('Project Code', primary_key=True, max_length=50)
+    project_description = models.CharField(max_length=300, verbose_name='Project Description')
+
+    def __str__(self):
+        return self.project_code + ' - ' + self.project_description
+
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+
 
 
