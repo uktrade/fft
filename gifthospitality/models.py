@@ -35,10 +35,10 @@ class GiftsAndHospitalityCompany(TimeStampedModel):
 
     # Gift and Hospitality
 class GiftsAndHospitality(models.Model):
-    classification = models.ForeignKey(GiftsAndHospitalityClassification, on_delete=models.PROTECT)
-    """I am copying the group name in the following field on purpose. If I used a foreign key to 
-    the group, after a restructuring the name will change, while we need the name of the group 
-    at time the gift was received"""
+    """Model used to keep information of gifts/hospitality received/offered by DIT people.
+    On purpose, I am not using foreign key anywhere, because we need to have a record of details
+    when the gift was registered, not later on."""
+    classification = models.CharField(max_length=100)
     group_name = models.CharField(max_length=200)
     date_offered = models.DateField()
     venue = models.CharField(max_length=1000)
@@ -52,7 +52,7 @@ class GiftsAndHospitality(models.Model):
     )
     offer = models.CharField(max_length=50, choices=OFFER_CHOICE)
     company_rep = models.CharField(max_length=50)
-    company = models.ForeignKey(GiftsAndHospitalityCompany, on_delete=models.PROTECT)
+    company = models.CharField(max_length=100)
     ACTION_TYPE = (
         ('Action1', 'Accepted'),
         ('Action2', 'Accepted (difference paid to Department)'),
@@ -65,7 +65,7 @@ class GiftsAndHospitality(models.Model):
     entered_by = models.CharField(max_length=50)
     staff_no = models.CharField(max_length=50)
     entered_date_stamp = models.DateTimeField(auto_now=True)
-    category = models.ForeignKey(GiftsAndHospitalityCategory, on_delete=models.PROTECT)
+    category = models.CharField(max_length=100)
     # Copy the grade, in case grades changes in future, even if unlikely
     grade = models.CharField(max_length=50)
     class Meta:
