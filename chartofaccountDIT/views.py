@@ -4,10 +4,10 @@ from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter
+    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, \
-    InterEntityTable, NaturalCodeTable, ProgrammeTable
+    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -121,4 +121,17 @@ class FilteredInterEntityView(FAdminFilteredView):
                                          'is needed for the year-end accounts. To be used ' \
                                          'when setting up Purchase Orders and / or ' \
                                          'journals with OGDs.'
+        return context
+
+
+class FilteredProjectView(FAdminFilteredView):
+    table_class = ProjectTable
+    model = table_class.Meta.model
+    filterset_class = ProjectFilter
+    export_name = 'ProjectCode' + today_string()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Project (Spare 1)'
+        context['section_description'] = 'This field is used ......'
         return context

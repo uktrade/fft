@@ -5,7 +5,7 @@ import django_filters
 from django.db.models import Q
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode
+    ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class NACFilter(MyFilterSet):
@@ -173,3 +173,22 @@ class InterEntityFilter(MyFilterSet):
                                                  'l1_value__l1_description',
                                                  'l2_value'
                                                  )
+
+
+class ProjectFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                                method='search_all_filter')
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(project_code__icontains=value) |
+                               Q(project_description__icontains=value))
+
+    class Meta(MyFilterSet.Meta):
+        model = ProjectCode
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(ProjectFilter, self).qs
+        return myfilter.filter(active=True).order_by('project_code')
+
