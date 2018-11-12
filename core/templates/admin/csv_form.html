@@ -1,0 +1,21 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            <h1>Import {{ form.form_title }}</h1>
+            {{ form.as_p }}
+            {% csrf_token %}
+
+            <button type="submit">Upload CSV</button>
+            <h2>The first row of csv file must have headers. The headers are case sensitive.</h2>
+            <p>The order of the columns is not important, but the following headers must exist:</p>
+            <ul>
+                {{ form.header_list }}
+            </ul>
+
+        </form>
+    </div>
+    <br/>
+
+{% endblock %}
