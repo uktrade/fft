@@ -13,6 +13,7 @@ class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
     model = table_class.Meta.model
     filterset_class = CostCentreFilter
     export_name = 'Cost Centre Hierarchy' + today_string()
+    sheet_name = 'Cost Centre Hierarchy'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
