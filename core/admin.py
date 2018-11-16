@@ -1,7 +1,7 @@
 import io
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.models import CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect, render
@@ -205,8 +205,11 @@ class AdminImportExport(AdminExport):
                 # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
-                import_func(t)
-                return redirect("..")
+                success, message = import_func(t)
+                if success:
+                    return redirect("..")
+                else:
+                    messages.error(request, 'Error: ' + message)
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}

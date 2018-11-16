@@ -1,6 +1,6 @@
 import csv
 
-from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, ImportInfo, csvheadertodict, \
     import_list_obj, import_obj
 
@@ -55,6 +55,11 @@ import_project_class = ImportInfo(PROJECT_KEY)
 
 L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
              IMPORT_CSV_IS_FK: '',
+             IMPORT_CSV_PK_KEY: 'L5'
+             }
+
+OSCAR_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
+             IMPORT_CSV_IS_FK: '',
              IMPORT_CSV_PK_KEY: 'OSCAR L5 Mapping'
              }
 
@@ -62,7 +67,9 @@ NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
            IMPORT_CSV_PK_KEY: 'L6',
            IMPORT_CSV_FIELDLIST_KEY: {
                NaturalCode.natural_account_code_description.field_name: 'L6_NAME',  # noqa: E501
-               NaturalCode.account_L5_code.field.name: L5_FK_KEY}}
+               NaturalCode.account_L5_code.field.name: L5_FK_KEY,
+               NaturalCode.account_L5_code_upload.field.name: OSCAR_FK_KEY,
+           }}
 
 
 def import_NAC(csvfile):
