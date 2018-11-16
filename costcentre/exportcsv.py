@@ -31,6 +31,22 @@ def export_cc_iterator(queryset):
                ]
 
 
+def export_admin_cc_iterator(queryset):
+    for obj in queryset:
+        yield [ 1,
+                '109TTT',
+                'DIT',
+                obj.directorate.group.group_code,
+                obj.directorate.group.group_name,
+                obj.directorate.directorate_code,
+                obj.directorate.directorate_name,
+                obj.cost_centre_code,
+                obj.cost_centre_name,
+                'Mentor Map',
+                obj.active
+               ]
+
+
 def export_directorate_iterator(queryset):
     yield ['Directorate', 'Directorate Description', 'Active',
            'Group', 'Group Description', 'Group Active']

@@ -29,11 +29,12 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
     list_display = ('natural_account_code', 'natural_account_code_description', 'active')
 
     def get_readonly_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description', 'account_L5_code']
+        return ['natural_account_code', 'natural_account_code_description',
+                'account_L5_code']
 
     def get_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description',
-                'account_L5_code', 'expenditure_category',
+                'account_L5_code', 'expenditure_category', 'account_L5_code_upload',
                 'commercial_category', 'used_for_budget', 'active']
 
     search_fields = ['natural_account_code', 'natural_account_code_description']
