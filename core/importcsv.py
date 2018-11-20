@@ -83,8 +83,6 @@ def get_fk_from_field(m, f_name, f_value):
 
     msg = ''
     try:
-        # obj = m.objects.get(f_name=f_value)
-        # ** {unique_name: row[pk_header_name].strip()}
         obj = m.objects.get(**{f_name: f_value})
 
     except m.DoesNotExist:
@@ -153,8 +151,8 @@ def import_obj(csvfile, obj_key):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
     l = get_col_from_obj_key(obj_key)
-    import pdb;
-    pdb.set_trace()
+    # import pdb;
+    # pdb.set_trace()
 
     # Before starting to read, check that all the expected columns exists
     if not all(elem in header for elem in l):
@@ -200,3 +198,23 @@ class ImportInfo():
             return import_obj(c, self.key)
         else:
             return self.special_func(c)
+
+
+def get_field_name(obj_key, prefix):
+    """Takes the dictionary used to define the import, and
+    return the list of fields to be used for exporting"""
+    field_list = []
+    model = obj_key[IMPORT_CSV_MODEL_KEY]
+    if IMPORT_CSV_PK_KEY in obj_key:
+        field_list.append(prefix + model._meta.pk.name)
+    if IMPORT_CSV_FIELDLIST_KEY in obj_key:
+        for k, v in obj_key[IMPORT_CSV_FIELDLIST_KEY].items():
+            if type(v) is dict:
+                field_list = field_list + get_field_name(v, prefix + k + '__')
+            else:
+                field_list.append(prefix + k)
+    return field_list
+
+
+
+
