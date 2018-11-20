@@ -27,8 +27,7 @@ class CostCentreFilter(MyFilterSet):
             Q(directorate__director__name__icontains=value) |
             Q(directorate__director__surname__icontains=value) |
             Q(business_partner__name__icontains=value) |
-            Q(business_partner__surname__icontains=value) |
-            Q(bsce_email__bsce_email__icontains=value)
+            Q(business_partner__surname__icontains=value)
         )
 
     class Meta(MyFilterSet.Meta):
