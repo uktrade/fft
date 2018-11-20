@@ -1,16 +1,15 @@
 import io
+from core.exportutils import export_to_csv
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin.models import CHANGE, DELETION, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import escape
 
-
-from .exportutils import export_to_excel
-from .models import AdminInfo
+from .exportutils import export_csv_from_import, export_to_excel
 
 
 class LogEntryAdmin(admin.ModelAdmin):
@@ -189,8 +188,14 @@ class AdminImportExport(AdminExport):
         urls = super().get_urls()
         my_urls = [
             path('import-csv/', self.import_csv),
+            path('export-csv/', self.export_csv),
         ]
         return my_urls + urls
+
+    def export_csv(self, request):
+        e = export_csv_from_import(self.import_info.key)
+        return export_to_csv(e.queryset, e.yield_data)
+
 
     def import_csv(self, request):
         header_list = self.import_info.header_list
@@ -205,8 +210,11 @@ class AdminImportExport(AdminExport):
                 # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
-                import_func(t)
-                return redirect("..")
+                success, message = import_func(t)
+                if success:
+                    return redirect("..")
+                else:
+                    messages.error(request, 'Error: ' + message)
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}

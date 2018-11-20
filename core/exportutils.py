@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
 import openpyxl
-
+from .importcsv import IMPORT_CSV_MODEL_KEY, \
+    get_col_from_obj_key, get_field_name
 
 def get_fk_value(obj, field):
     if obj is not None:
@@ -116,3 +117,17 @@ def export_to_excel(queryset, f):
 
 def generic_export_to_excel(queryset):
     return (export_to_excel(queryset, generic_table_iterator))
+
+
+class export_csv_from_import():
+    def __init__(self, obj_key):
+        model = obj_key[IMPORT_CSV_MODEL_KEY]
+        field_list = get_field_name(obj_key, '')
+        self.header_list = get_col_from_obj_key(obj_key)
+        self.queryset = model.objects.all().values(*field_list)
+
+    def yield_data(self, q):
+        yield self.header_list
+        for obj in q:
+            yield list(obj.values())
+

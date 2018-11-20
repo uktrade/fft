@@ -39,6 +39,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Departmental Group"
         verbose_name_plural = "Departmental Groups"
+        ordering = ['group_code']
 
 
 class Directorate(TimeStampedModel, LogChangeModel):
@@ -54,6 +55,7 @@ class Directorate(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Directorate"
         verbose_name_plural = "Directorates"
+        ordering = ['directorate_code']
 
 
 class BusinessPartner(TimeStampedModel, LogChangeModel):
@@ -67,6 +69,7 @@ class BusinessPartner(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Business Partner"
         verbose_name_plural = "Business Partners"
+        ordering = ['surname', 'name']
 
 
 class BSCEEmail(TimeStampedModel, LogChangeModel):
@@ -78,6 +81,7 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "BSCE Email"
         verbose_name_plural = "BSCE Emails"
+        ordering = ['bsce_email']
 
 
 class CostCentre(TimeStampedModel, LogChangeModel):
@@ -101,5 +105,6 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Cost Centre"
         verbose_name_plural = "Cost Centres"
+        ordering = ['cost_centre_code']
 
 

@@ -18,6 +18,7 @@ class Analysis1(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name_plural = "Contract Reconciliations (Analysis 1)"
         verbose_name = "Contract Reconciliation (Analysis 1)"
+        ordering = ['analysis1_code']
 
 
 class Analysis2(TimeStampedModel):
@@ -30,6 +31,7 @@ class Analysis2(TimeStampedModel):
     class Meta:
         verbose_name = "Market (Analysis 2)"
         verbose_name_plural = "Markets (Analysis 2)"
+        ordering = ['analysis2_code']
 
 
 # Category defined by DIT
@@ -43,6 +45,7 @@ class NACCategory(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Budget Grouping"
         verbose_name_plural = "Budget Groupings"
+        ordering = ['NAC_category_description']
 
 
 class ExpenditureCategory(TimeStampedModel):
@@ -61,6 +64,7 @@ class ExpenditureCategory(TimeStampedModel):
     class Meta:
         verbose_name = "Budget Category"
         verbose_name_plural = "Budget Categories"
+        ordering = ['grouping_description']
 
 
 class CommercialCategory(TimeStampedModel, LogChangeModel):
@@ -75,6 +79,7 @@ class CommercialCategory(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Commercial Category"
         verbose_name_plural = "Commercial Categories"
+        ordering = ['commercial_category']
 
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
@@ -88,6 +93,11 @@ class NaturalCode(TimeStampedModel, LogChangeModel):
     commercial_category = models.ForeignKey(CommercialCategory,
                                             on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
+    account_L5_code_upload = models.ForeignKey(L5Account,
+                                            on_delete=models.PROTECT,
+                                               verbose_name= 'L5 for OSCAR upload',
+                                               related_name='L5_OSCAR_Upload',
+                                               blank=True, null=True)
 
     def __str__(self):
         return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
@@ -109,6 +119,7 @@ class ProgrammeCode(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Programme Code"
         verbose_name_plural = "Programme Codes"
+        ordering = ['programme_code']
 
 
 class InterEntityL1(TimeStampedModel, LogChangeModel):
@@ -121,6 +132,7 @@ class InterEntityL1(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Government Body"
         verbose_name_plural = "Government Bodies"
+        ordering = ['l1_value']
 
 
 class InterEntity(TimeStampedModel, LogChangeModel):
@@ -135,7 +147,7 @@ class InterEntity(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Inter-Entity"
         verbose_name_plural = "Inter-Entities"
-
+        ordering = ['l2_value']
 
 class ProjectCode(TimeStampedModel, LogChangeModel):
     project_code = models.CharField('Project Code', primary_key=True, max_length=50)
@@ -147,6 +159,7 @@ class ProjectCode(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Project"
         verbose_name_plural = "Projects"
+        ordering = ['project_code']
 
 
 

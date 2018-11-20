@@ -1,5 +1,5 @@
 
-from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, ImportInfo, import_obj
 
 from .models import L1Account, L2Account, L3Account, L4Account, L5Account

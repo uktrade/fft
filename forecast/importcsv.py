@@ -2,7 +2,7 @@ import csv
 
 from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, ProgrammeCode
 
-from core.myutils import addposition, csvheadertodict, get_fk
+from core.importcsv import addposition, csvheadertodict, get_fk
 
 from costcentre.models import CostCentre
 

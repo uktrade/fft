@@ -1,13 +1,13 @@
 import csv
 
-from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, ImportInfo, csvheadertodict, \
     import_list_obj, import_obj
 
 from treasuryCOA.models import L5Account
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
-    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 # define the column position in the csv file.
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
@@ -38,7 +38,27 @@ import_a1_class = ImportInfo(ANALYSIS1_KEY)
 import_a2_class = ImportInfo(ANALYSIS2_KEY)
 
 
+
+PROJECT_KEY = {IMPORT_CSV_MODEL_KEY: ProjectCode,
+                 IMPORT_CSV_PK_KEY: 'Code',
+                 IMPORT_CSV_FIELDLIST_KEY: {
+                     ProjectCode.project_description.field_name: 'Description',
+                 }}
+
+
+def import_Project(csvfile):
+    import_obj(csvfile, PROJECT_KEY)
+
+
+import_project_class = ImportInfo(PROJECT_KEY)
+
+
 L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
+             IMPORT_CSV_IS_FK: '',
+             IMPORT_CSV_PK_KEY: 'L5'
+             }
+
+OSCAR_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
              IMPORT_CSV_IS_FK: '',
              IMPORT_CSV_PK_KEY: 'OSCAR L5 Mapping'
              }
@@ -47,7 +67,9 @@ NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
            IMPORT_CSV_PK_KEY: 'L6',
            IMPORT_CSV_FIELDLIST_KEY: {
                NaturalCode.natural_account_code_description.field_name: 'L6_NAME',  # noqa: E501
-               NaturalCode.account_L5_code.field.name: L5_FK_KEY}}
+               NaturalCode.account_L5_code.field.name: L5_FK_KEY,
+               NaturalCode.account_L5_code_upload.field.name: OSCAR_FK_KEY,
+           }}
 
 
 def import_NAC(csvfile):

@@ -15,6 +15,7 @@ class FilteredNACListView(FAdminFilteredView):
     model = table_class.Meta.model
     filterset_class = NACFilter
     export_name = 'Natural Account Codes' + today_string()
+    sheet_name = 'Natural Account Codes'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -30,7 +31,8 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
     table_class = ExpenditureCategoryTable
     model = table_class.Meta.model
     filterset_class = ExpenditureCategoryFilter
-    export_name = 'Budget Categories' + today_string()
+    export_name = 'Budget Categories ' + today_string()
+    sheet_name = 'Budget Categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -45,7 +47,8 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
     table_class = CommercialCategoryTable
     model = table_class.Meta.model
     filterset_class = CommercialCategoryFilter
-    export_name = 'Commercial Categories' + today_string()
+    export_name = 'Commercial Categories ' + today_string()
+    sheet_name = 'Commercial Categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,7 +63,8 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
     table_class = Analysis1Table
     model = table_class.Meta.model
     filterset_class = Analysis1Filter
-    export_name = 'Contract Reconciliation (Analysis 1)' + today_string()
+    export_name = 'Contract Reconciliation (Analysis 1) ' + today_string()
+    sheet_name = 'Contract Reconciliation'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,7 +80,8 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
     table_class = Analysis2Table
     model = table_class.Meta.model
     filterset_class = Analysis2Filter
-    export_name = 'Markets (Analysis 2)' + today_string()
+    export_name = 'Markets (Analysis 2) ' + today_string()
+    sheet_name = 'Markets'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -92,7 +97,8 @@ class FilteredProgrammeView(FAdminFilteredView):
     table_class = ProgrammeTable
     model = table_class.Meta.model
     filterset_class = ProgrammeFilter
-    export_name = 'Programme Codes' + today_string()
+    export_name = 'Programme Codes ' + today_string()
+    sheet_name = 'Programme Codes'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,7 +117,8 @@ class FilteredInterEntityView(FAdminFilteredView):
     table_class = InterEntityTable
     model = table_class.Meta.model
     filterset_class = InterEntityFilter
-    export_name = 'EntityInterEntity' + today_string()
+    export_name = 'EntityInterEntity ' + today_string()
+    sheet_name = 'EntityInterEntity'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -128,8 +135,8 @@ class FilteredProjectView(FAdminFilteredView):
     table_class = ProjectTable
     model = table_class.Meta.model
     filterset_class = ProjectFilter
-    export_name = 'ProjectCode' + today_string()
-
+    export_name = 'Project Codes ' + today_string()
+    sheet_name = 'Project Codes'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Project (Spare 1)'
