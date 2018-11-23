@@ -1,6 +1,6 @@
 import csv
 
-from core.myutils import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, convert_to_bool_string, ImportInfo, csvheadertodict, import_obj
 
 

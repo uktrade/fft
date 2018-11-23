@@ -6,7 +6,7 @@ from treasuryCOA.models import L5Account
 
 
 # Other members of Account Codes
-class Analysis1(TimeStampedModel):
+class Analysis1(TimeStampedModel, LogChangeModel):
     analysis1_code = models.CharField('Contract Code', primary_key=True, max_length=50)
     analysis1_description = models.CharField('Contract Name', max_length=300)
     supplier = models.CharField('Supplier', max_length=300, default='')
@@ -18,6 +18,7 @@ class Analysis1(TimeStampedModel):
     class Meta:
         verbose_name_plural = "Contract Reconciliations (Analysis 1)"
         verbose_name = "Contract Reconciliation (Analysis 1)"
+        ordering = ['analysis1_code']
 
 
 class Analysis2(TimeStampedModel):
@@ -30,10 +31,11 @@ class Analysis2(TimeStampedModel):
     class Meta:
         verbose_name = "Market (Analysis 2)"
         verbose_name_plural = "Markets (Analysis 2)"
+        ordering = ['analysis2_code']
 
 
 # Category defined by DIT
-class NACCategory(TimeStampedModel):
+class NACCategory(TimeStampedModel, LogChangeModel):
     NAC_category_description = models.CharField(max_length=255, verbose_name='Budget Grouping',
                                                 unique=True)
 
@@ -43,6 +45,7 @@ class NACCategory(TimeStampedModel):
     class Meta:
         verbose_name = "Budget Grouping"
         verbose_name_plural = "Budget Groupings"
+        ordering = ['NAC_category_description']
 
 
 class ExpenditureCategory(TimeStampedModel):
@@ -61,9 +64,10 @@ class ExpenditureCategory(TimeStampedModel):
     class Meta:
         verbose_name = "Budget Category"
         verbose_name_plural = "Budget Categories"
+        ordering = ['grouping_description']
 
 
-class CommercialCategory(TimeStampedModel):
+class CommercialCategory(TimeStampedModel, LogChangeModel):
     commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',
                                            unique=True)
     description = models.CharField(max_length=5000, blank=True, null=True)
@@ -75,10 +79,11 @@ class CommercialCategory(TimeStampedModel):
     class Meta:
         verbose_name = "Commercial Category"
         verbose_name_plural = "Commercial Categories"
+        ordering = ['commercial_category']
 
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
-class NaturalCode(TimeStampedModel):
+class NaturalCode(TimeStampedModel, LogChangeModel):
     natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
     natural_account_code_description = models.CharField(max_length=200,
                                                         verbose_name='NAC Description')
@@ -88,6 +93,11 @@ class NaturalCode(TimeStampedModel):
     commercial_category = models.ForeignKey(CommercialCategory,
                                             on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
+    account_L5_code_upload = models.ForeignKey(L5Account,
+                                            on_delete=models.PROTECT,
+                                               verbose_name= 'L5 for OSCAR upload',
+                                               related_name='L5_OSCAR_Upload',
+                                               blank=True, null=True)
 
     def __str__(self):
         return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
@@ -109,6 +119,7 @@ class ProgrammeCode(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Programme Code"
         verbose_name_plural = "Programme Codes"
+        ordering = ['programme_code']
 
 
 class InterEntityL1(TimeStampedModel, LogChangeModel):
@@ -121,6 +132,7 @@ class InterEntityL1(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Government Body"
         verbose_name_plural = "Government Bodies"
+        ordering = ['l1_value']
 
 
 class InterEntity(TimeStampedModel, LogChangeModel):
@@ -135,5 +147,19 @@ class InterEntity(TimeStampedModel, LogChangeModel):
     class Meta:
         verbose_name = "Inter-Entity"
         verbose_name_plural = "Inter-Entities"
+        ordering = ['l2_value']
+
+class ProjectCode(TimeStampedModel, LogChangeModel):
+    project_code = models.CharField('Project Code', primary_key=True, max_length=50)
+    project_description = models.CharField(max_length=300, verbose_name='Project Description')
+
+    def __str__(self):
+        return self.project_code + ' - ' + self.project_description
+
+    class Meta:
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+        ordering = ['project_code']
+
 
 

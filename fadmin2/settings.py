@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'core.middleware.ThreadLocalMiddleware',
-    'authbroker_client.middleware.ProtectAllViewsMiddleware'
+    'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'fadmin2.urls'
@@ -189,8 +191,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# for debug_toolbar, to activate it only on localhost
+INTERNAL_IPS = ['127.0.0.1']
 
-# Extra places for collectstatic to find static files.
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'static'),
-# )
