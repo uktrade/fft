@@ -1,12 +1,24 @@
 {% extends "base_generic.html" %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery='full' %}
 
 {% block content %}
     <h1>Gift and Hospitality</h1>
+  <div class="container">
+    <div class="col-md-4">
 
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-</form>
+    {% bootstrap_form form %}
+    {{ form.media }}            {# Adds date-picker required JS and CSS #}
+{#    {{ form.as_p }}#}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Save</button>
+    {% endbuttons %}
 
+{#    <input type="submit" value="Submit">#}
+</form>
+    </div>
+  </div>
 {% endblock %}

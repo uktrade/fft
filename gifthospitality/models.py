@@ -3,6 +3,20 @@ from django.db import models
 from core.metamodels import TimeStampedModel
 
 
+
+# HOSPITALITY, Breakfast
+# HOSPITALITY, Lunch
+# HOSPITALITY, Dinner (Private)
+# HOSPITALITY, Dinner (Public)
+# HOSPITALITY, Reception
+# GIFT, Gifts
+# HOSPITALITY, Sporting/Cultural Event
+# HOSPITALITY, Hotel
+# HOSPITALITY, Transport
+# HOSPITALITY, Air Miles
+# HOSPITALITY, Drinks
+# HOSPITALITY, Other Hospitality
+
 class GiftAndHospitalityClassification(TimeStampedModel):
     GIFT = 'GIFT'
     HOSPITALITY = 'HOSPITALITY'
@@ -19,6 +33,12 @@ class GiftAndHospitalityClassification(TimeStampedModel):
         verbose_name_plural = "Gift and Hospitality Classifications"
 
 
+
+# Meeting company to discuss Trade and/or Investment opportunities
+# Attended company event (reception/conference) whom we assisted
+# Attended event for networking purpose (getting to know companies/industry)
+# Attended to give a speech
+# Other
 class GiftAndHospitalityCategory(TimeStampedModel):
     category = models.CharField(max_length=100)
     class Meta:
@@ -26,6 +46,26 @@ class GiftAndHospitalityCategory(TimeStampedModel):
         verbose_name_plural = "Gift and Hospitality Categories"
 
 
+# ADS
+# Aegis
+# Augusta Westland
+# BAES
+# Beta Technology Ltd
+# Blenheim Capital Services
+# CH2M Hill
+# COBCOE
+# Ernst & Young
+# GD
+# L3 - Communication ASA Ltd.
+# Lockheed Martin
+# MBDA
+# PA Consulting
+# PWC
+# Raytheon
+# Rolls Royce
+# Selex Galileo
+# Thales UK
+# TheCityUK
 class GiftAndHospitalityCompany(TimeStampedModel):
     company = models.CharField(max_length=100)
     class Meta:

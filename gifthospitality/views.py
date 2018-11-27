@@ -1,3 +1,5 @@
+from bootstrap_datepicker_plus import DatePickerInput
+
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from .models import GiftAndHospitality, GiftAndHospitalityCompany, \
@@ -48,7 +50,14 @@ def gifthospitalitycreate(request):
 
 class GiftHospitalityCreate(CreateView):
     model = GiftAndHospitality
-    fields = ['classification','group_name', 'date_offered', 'venue', 'reason']
+
+    def get_form(self):
+        form = super().get_form()
+        form.fields['date_offered'].widget = DatePickerInput()
+        return form
+    # fields = ['classification','group_name', 'date_offered', 'venue', 'reason']
+    fields = '__all__'
+
 
 class GiftHospitalityUpdate(UpdateView):
     model = GiftAndHospitality

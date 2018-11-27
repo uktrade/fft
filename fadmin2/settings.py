@@ -68,7 +68,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'debug_toolbar'
+    'debug_toolbar',
+    'bootstrap4',
+    'bootstrap_datepicker_plus' #https://pypi.org/project/django-bootstrap-datepicker-plus/
 ]
 
 MIDDLEWARE = [
