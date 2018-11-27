@@ -62,7 +62,6 @@ class GiftAndHospitality(models.Model):
     action_taken = models.CharField(max_length=20,
                                     choices=ACTION_TYPE,
                                     verbose_name='Action taken')
-    date_stamp = models.DateTimeField()
     entered_by = models.CharField(max_length=50)
     staff_no = models.CharField(max_length=50)
     entered_date_stamp = models.DateTimeField(auto_now=True)
