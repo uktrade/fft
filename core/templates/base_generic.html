@@ -50,18 +50,20 @@
 
 
 
-            <div class="nav flex-column " id="v-pills-tab" role="tablist"
+            <nav class="nav flex-column navbar-fixed-top " id="v-pills-tab" role="tablist"
                  aria-orientation="vertical">
+                <li class="nav-item">
                 <a class="nav-item nav-link active" href="{% url 'index' %}">
                     Home
-{#                    <i class='fas fa-dog' style='font-size:36px'></i>#}
-{#                    <i class="fas fa-pound-sign" style='font-size:24px'></i>#}
                 </a>
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
+                </li>
+                <li class="nav-item dropdown">
+               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
                    data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
                     Chart of Account
                 </a>
+
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="{% url 'costcentrefilter' %}">Cost Centre
                         Hierarchy</a>
@@ -78,7 +80,20 @@
                     <a class="dropdown-item" href="{% url 'projectfilter' %}">Projects (Spare 1)</a>
                     <a class="dropdown-item" href="{% url 'interentityfilter' %}">Entity-Inter Entity</a>
                 </div>
-            </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink1"
+                   data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="true">
+                    Gifts & Hospitality
+                </a>
+               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" id="dropdown1">
+                    <a class="dropdown-item" href="{% url 'gift-add' %}">Add New Record</a>
+                    <a class="dropdown-item" href="{% url 'gift-search' %}">Search Records</a>
+                </div>
+                </li>
+            </nav>
         </div>
         <div class="col-11">
             {% block content %}{% endblock %}

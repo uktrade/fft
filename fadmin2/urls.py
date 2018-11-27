@@ -25,6 +25,7 @@ urlpatterns = [
     path('costcentre/', include('costcentre.urls')),
     path('chartofaccountDIT/', include('chartofaccountDIT.urls')),
     path('forecast/', include('forecast.urls')),
+    path('gifthospitality/', include('gifthospitality.urls')),
     path('admin/', admin.site.urls),
 ]
 

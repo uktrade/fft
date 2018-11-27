@@ -2,7 +2,8 @@ from django.db import models
 
 from core.metamodels import TimeStampedModel
 
-class GiftsAndHospitalityClassification(TimeStampedModel):
+
+class GiftAndHospitalityClassification(TimeStampedModel):
     GIFT = 'GIFT'
     HOSPITALITY = 'HOSPITALITY'
     GF_TYPE = (
@@ -15,29 +16,29 @@ class GiftsAndHospitalityClassification(TimeStampedModel):
     classification = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Classification"
-        verbose_name_plural = "Gifts and Hospitality Classifications"
+        verbose_name_plural = "Gift and Hospitality Classifications"
 
 
-class GiftsAndHospitalityCategory(TimeStampedModel):
+class GiftAndHospitalityCategory(TimeStampedModel):
     category = models.CharField(max_length=100)
     class Meta:
-        verbose_name = "Gifts and Hospitality Category"
-        verbose_name_plural = "Gifts and Hospitality Categories"
+        verbose_name = "Gift and Hospitality Category"
+        verbose_name_plural = "Gift and Hospitality Categories"
 
 
-
-class GiftsAndHospitalityCompany(TimeStampedModel):
+class GiftAndHospitalityCompany(TimeStampedModel):
     company = models.CharField(max_length=100)
     class Meta:
-        verbose_name = "Gifts and Hospitality Company"
-        verbose_name_plural = "Gifts and Hospitality Companies"
+        verbose_name = "Gift and Hospitality Company"
+        verbose_name_plural = "Gift and Hospitality Companies"
 
 
     # Gift and Hospitality
-class GiftsAndHospitality(models.Model):
+class GiftAndHospitality(models.Model):
     """Model used to keep information of gifts/hospitality received/offered by DIT people.
     On purpose, I am not using foreign key anywhere, because we need to have a record of details
     when the gift was registered, not later on."""
+    id = models.AutoField('Record ID', primary_key=True)
     classification = models.CharField(max_length=100)
     group_name = models.CharField(max_length=200)
     date_offered = models.DateField()
@@ -69,6 +70,6 @@ class GiftsAndHospitality(models.Model):
     # Copy the grade, in case grades changes in future, even if unlikely
     grade = models.CharField(max_length=50)
     class Meta:
-        verbose_name = "Gifts and Hospitality"
-        verbose_name_plural = "Gifts and Hospitality"
+        verbose_name = "Gift and Hospitality"
+        verbose_name_plural = "Gift and Hospitality"
 
