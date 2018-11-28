@@ -1,6 +1,6 @@
 from django.db import models
 
-from core.metamodels import TimeStampedModel
+from core.metamodels import LogChangeModel, TimeStampedModel
 
 
 
@@ -17,7 +17,7 @@ from core.metamodels import TimeStampedModel
 # HOSPITALITY, Drinks
 # HOSPITALITY, Other Hospitality
 
-class GiftAndHospitalityClassification(TimeStampedModel):
+class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
     GIFT = 'GIFT'
     HOSPITALITY = 'HOSPITALITY'
     GF_TYPE = (
@@ -39,7 +39,7 @@ class GiftAndHospitalityClassification(TimeStampedModel):
 # Attended event for networking purpose (getting to know companies/industry)
 # Attended to give a speech
 # Other
-class GiftAndHospitalityCategory(TimeStampedModel):
+class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
     category = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Category"
@@ -66,7 +66,7 @@ class GiftAndHospitalityCategory(TimeStampedModel):
 # Selex Galileo
 # Thales UK
 # TheCityUK
-class GiftAndHospitalityCompany(TimeStampedModel):
+class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
     company = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Company"
@@ -74,7 +74,7 @@ class GiftAndHospitalityCompany(TimeStampedModel):
 
 
     # Gift and Hospitality
-class GiftAndHospitality(models.Model):
+class GiftAndHospitality(LogChangeModel):
     """Model used to keep information of gifts/hospitality received/offered by DIT people.
     On purpose, I am not using foreign key anywhere, because we need to have a record of details
     when the gift was registered, not later on."""

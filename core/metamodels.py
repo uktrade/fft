@@ -4,13 +4,20 @@ from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+class SimpleTimeStampedModel(models.Model):
+    """ An abstract base class model that provide self-updating
+    'created' and 'modified' field """
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
-class TimeStampedModel(models.Model):
+    class Meta:
+        abstract = True
+
+
+class TimeStampedModel(SimpleTimeStampedModel):
     """ An abstract base class model that provide self-updating
     'created' and 'modified' field, and an active flag"""
     active = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
