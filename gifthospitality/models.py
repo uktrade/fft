@@ -27,7 +27,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
     gift_type = models.CharField(max_length=20,
                                     choices=GF_TYPE, default=HOSPITALITY,
                                     verbose_name='Type')
-    classification = models.CharField(max_length=100)
+    gif_hospitality_classification = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Classification"
         verbose_name_plural = "Gift and Hospitality Classifications"
@@ -40,7 +40,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
 # Attended to give a speech
 # Other
 class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
-    category = models.CharField(max_length=100)
+    gif_hospitality_category = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Category"
         verbose_name_plural = "Gift and Hospitality Categories"
@@ -66,8 +66,10 @@ class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
 # Selex Galileo
 # Thales UK
 # TheCityUK
+
+
 class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
-    company = models.CharField(max_length=100)
+    gif_hospitality_company = models.CharField(max_length=100)
     class Meta:
         verbose_name = "Gift and Hospitality Company"
         verbose_name_plural = "Gift and Hospitality Companies"
