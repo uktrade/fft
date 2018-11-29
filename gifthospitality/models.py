@@ -30,13 +30,12 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
     gif_hospitality_classification = models.CharField(max_length=100)
 
     def __str__(self):
-        return str(self.gift_type) + ' - ' + str(self.gif_hospitality_classification)
+        return str(self.gif_hospitality_classification)
 
     class Meta:
         verbose_name = "Gift and Hospitality Classification"
         verbose_name_plural = "Gift and Hospitality Classifications"
         ordering = ['gif_hospitality_classification']
-
 
 
 class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
@@ -70,7 +69,7 @@ class GiftAndHospitality(LogChangeModel):
     id = models.AutoField('Record ID', primary_key=True)
     classification_fk = models.ForeignKey('GiftAndHospitalityClassification',
                                           on_delete= models.SET_NULL,
-                                          null=True, blank=True)
+                                          null=True, blank=True, verbose_name='classification')
     classification = models.CharField(max_length=100)
     group_name = models.CharField(max_length=200)
     date_offered = models.DateField()
@@ -87,7 +86,7 @@ class GiftAndHospitality(LogChangeModel):
     company_rep = models.CharField(max_length=50)
     company_fk = models.ForeignKey('GiftAndHospitalityCompany',
                                           on_delete= models.SET_NULL,
-                                          null=True, blank=True)
+                                          null=True, blank=True, verbose_name='company')
     company = models.CharField(max_length=100)
     ACTION_TYPE = (
         ('Action1', 'Accepted'),
@@ -102,7 +101,7 @@ class GiftAndHospitality(LogChangeModel):
     entered_date_stamp = models.DateTimeField(auto_now=True)
     category_fk = models.ForeignKey('GiftAndHospitalityCategory',
                                           on_delete= models.SET_NULL,
-                                          null=True, blank=True)
+                                          null=True, blank=True, verbose_name='category')
     category = models.CharField(max_length=100)
     # Copy the grade, in case grades changes in future, even if unlikely
 

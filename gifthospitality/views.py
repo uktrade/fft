@@ -40,6 +40,11 @@ class GiftHospitalityView(FormView):
     success_url = '/thanks/'
 
     def form_valid(self, form):
+        form.instance.entered_by = self.request.user.first_name + ' ' + self.request.user.last_name
+        form.instance.company = form.instance.company_fk
+        form.instance.category = form.instance.category_fk
+
+        form.save()
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         return super().form_valid(form)
@@ -67,10 +72,35 @@ class GiftHospitalityCreate(CreateView):
 
     def get_form(self):
         form = super().get_form()
-        form.fields['date_offered'].widget = DatePickerInput()
+        form.fields['date_offered'].widget = DatePickerInput(
+            options={
+                "format": "DD/MM/YYYY",  # moment date-time format
+                "showClose": True,
+                "showClear": True,
+                "showTodayButton": True,
+            }
+        )
         return form
     # fields = ['classification','group_name', 'date_offered', 'venue', 'reason']
-    fields = '__all__'
+    fields = [
+        'classification_fk',
+        'group_name',
+        'date_offered',
+        'venue',
+        'reason',
+        'value',
+        'rep',
+        'offer',
+        'company_rep',
+        'company_fk',
+        'action_taken',
+        'entered_by',
+        'staff_no',
+        # 'entered_date_stamp',
+        'category_fk',
+        # 'category',
+        'grade'
+    ]
 
 
 class GiftHospitalityUpdate(UpdateView):

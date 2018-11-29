@@ -20,7 +20,7 @@ class GiftAndHospitalityForm(forms.ModelForm):
             'company_fk',
             #'company',
             'action_taken',
-            'entered_by',
+            # 'entered_by',
             'staff_no',
             #'entered_date_stamp',
             'category_fk',
@@ -39,3 +39,8 @@ class GiftAndHospitalityForm(forms.ModelForm):
             ), # default date-format %m/%d/%Y will be used
             # 'end_date': DatePickerInput(format='%Y-%m-%d'), # specify date-frmat
         }
+
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        self.object = form.save()
+        return super().form_valid(form)
