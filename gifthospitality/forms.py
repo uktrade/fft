@@ -5,7 +5,28 @@ from .models import GiftAndHospitality
 class GiftAndHospitalityForm(forms.ModelForm):
     class Meta:
         model = GiftAndHospitality
-        fields = '__all__'
+        fields = [
+            'classification_fk',
+            #'classification',
+            'group_name',
+            'date_offered',
+            'venue',
+            'reason',
+            'value',
+            #'band',
+            'rep',
+            'offer',
+            'company_rep',
+            'company_fk',
+            #'company',
+            'action_taken',
+            'entered_by',
+            'staff_no',
+            #'entered_date_stamp',
+            'category_fk',
+            #'category',
+            'grade'
+        ]
         # fields =['classification','group_name', 'date_offered', 'venue', 'reason']
         widgets = {
             'date_offered': DatePickerInput(

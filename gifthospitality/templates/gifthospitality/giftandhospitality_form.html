@@ -5,12 +5,13 @@
 
 {% block content %}
     <h1>Gift and Hospitality</h1>
+    <h2>Add New Record</h2>
   <div class="container">
-    <div class="col-md-4">
+    <div class="col-md-6">
 
 <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
+    {% bootstrap_form form layout='horizontal' %}
     {{ form.media }}            {# Adds date-picker required JS and CSS #}
 {#    {{ form.as_p }}#}
     {% buttons %}

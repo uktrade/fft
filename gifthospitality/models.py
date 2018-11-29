@@ -28,52 +28,39 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
                                     choices=GF_TYPE, default=HOSPITALITY,
                                     verbose_name='Type')
     gif_hospitality_classification = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.gift_type) + ' - ' + str(self.gif_hospitality_classification)
+
     class Meta:
         verbose_name = "Gift and Hospitality Classification"
         verbose_name_plural = "Gift and Hospitality Classifications"
+        ordering = ['gif_hospitality_classification']
 
 
 
-# Meeting company to discuss Trade and/or Investment opportunities
-# Attended company event (reception/conference) whom we assisted
-# Attended event for networking purpose (getting to know companies/industry)
-# Attended to give a speech
-# Other
 class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
     gif_hospitality_category = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.gif_hospitality_category)
+
     class Meta:
         verbose_name = "Gift and Hospitality Category"
         verbose_name_plural = "Gift and Hospitality Categories"
-
-
-# ADS
-# Aegis
-# Augusta Westland
-# BAES
-# Beta Technology Ltd
-# Blenheim Capital Services
-# CH2M Hill
-# COBCOE
-# Ernst & Young
-# GD
-# L3 - Communication ASA Ltd.
-# Lockheed Martin
-# MBDA
-# PA Consulting
-# PWC
-# Raytheon
-# Rolls Royce
-# Selex Galileo
-# Thales UK
-# TheCityUK
+        ordering = ['gif_hospitality_category']
 
 
 class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
     gif_hospitality_company = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.gif_hospitality_company)
+
     class Meta:
         verbose_name = "Gift and Hospitality Company"
         verbose_name_plural = "Gift and Hospitality Companies"
-
+        ordering = ['gif_hospitality_company']
 
     # Gift and Hospitality
 class GiftAndHospitality(LogChangeModel):
@@ -81,6 +68,9 @@ class GiftAndHospitality(LogChangeModel):
     On purpose, I am not using foreign key anywhere, because we need to have a record of details
     when the gift was registered, not later on."""
     id = models.AutoField('Record ID', primary_key=True)
+    classification_fk = models.ForeignKey('GiftAndHospitalityClassification',
+                                          on_delete= models.SET_NULL,
+                                          null=True, blank=True)
     classification = models.CharField(max_length=100)
     group_name = models.CharField(max_length=200)
     date_offered = models.DateField()
@@ -95,6 +85,9 @@ class GiftAndHospitality(LogChangeModel):
     )
     offer = models.CharField(max_length=50, choices=OFFER_CHOICE)
     company_rep = models.CharField(max_length=50)
+    company_fk = models.ForeignKey('GiftAndHospitalityCompany',
+                                          on_delete= models.SET_NULL,
+                                          null=True, blank=True)
     company = models.CharField(max_length=100)
     ACTION_TYPE = (
         ('Action1', 'Accepted'),
@@ -107,8 +100,12 @@ class GiftAndHospitality(LogChangeModel):
     entered_by = models.CharField(max_length=50)
     staff_no = models.CharField(max_length=50)
     entered_date_stamp = models.DateTimeField(auto_now=True)
+    category_fk = models.ForeignKey('GiftAndHospitalityCategory',
+                                          on_delete= models.SET_NULL,
+                                          null=True, blank=True)
     category = models.CharField(max_length=100)
     # Copy the grade, in case grades changes in future, even if unlikely
+
     grade = models.CharField(max_length=50)
     class Meta:
         verbose_name = "Gift and Hospitality"

@@ -32,19 +32,33 @@ class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
 
 from django.shortcuts import render
 from .forms import GiftAndHospitalityForm
+from django.views.generic.edit import FormView
 
-def gifthospitalitycreate(request):
-    form = GiftAndHospitalityForm()
+class GiftHospitalityView(FormView):
+    template_name = 'gifthospitality/giftandhospitality_form.html'
+    form_class = GiftAndHospitalityForm
+    success_url = '/thanks/'
 
-    if request.method == "POST":
-        form = GiftAndHospitalityForm(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-            return gifthospitalitycreate(request)
-        else:
-            print('ERROR FORM INVALID')
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed.
+        # It should return an HttpResponse.
+        return super().form_valid(form)
 
-    return render(request,'gifthospitality/giftandhospitality_form.html',{'form':form})
+
+# def gifthospitalitycreate(request):
+#     form = GiftAndHospitalityForm()
+#
+#     if request.method == "POST":
+#         form = GiftAndHospitalityForm(request.POST)
+#         if form.is_valid():
+#             form.save(commit=True)
+#             return gifthospitalitycreate(request)
+#         else:
+#             print('ERROR FORM INVALID')
+#
+#     return render(request,'gifthospitality/giftandhospitality_form.html',{'form':form})
+
+
 
 
 
