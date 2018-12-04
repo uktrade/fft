@@ -38,6 +38,13 @@ class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
         ordering = ['sequence_no']
 
 
+GIFT_RECEIVED = 'Received'
+GIFT_OFFERED = 'Offered'
+OFFER_CHOICE =(
+        (GIFT_RECEIVED, 'Received by DIT Staff'),
+        (GIFT_OFFERED, 'Given by DIT Staff')
+    )
+
 class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
     gif_hospitality_company = models.CharField(max_length=100)
     sequence_no = models.IntegerField(null = True)
@@ -74,19 +81,16 @@ class GiftAndHospitality(LogChangeModel):
                                           null=True, blank=True, verbose_name='DIT Representative')
 
     rep = models.CharField('DIT Representative', max_length=255)
-    OFFER_CHOICE =(
-        ('Received', 'Received by DIT Staff'),
-        ('Offered', 'Given by DIT Staff')
-    )
     offer = models.CharField('Hospitality/Gift was', max_length=50, choices=OFFER_CHOICE)
-    company_rep = models.CharField('Company Representative received from', max_length=50)
+    company_rep = models.CharField('Company Representative', max_length=50)
     company_fk = models.ForeignKey('GiftAndHospitalityCompany',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='company')
-    company = models.CharField('Company received from', max_length=100)
+    company = models.CharField( max_length=100)
     ACTION_TYPE = (
-        ('Action1', 'Accepted'),
+        ('Action0', 'Accepted'),
+        ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
         ('Action3', 'Accepted (surrendered to Department)'),
     )
@@ -105,20 +109,24 @@ class GiftAndHospitality(LogChangeModel):
 
     def save(self, *args, **kwargs):
         # Calculate the band from the value of the gift
-        if self.value < 10:
-            self.band = 0
-        elif 10 <= self.value <= 20:
-            self.band = 1
-        elif 21 <= self.value <= 30:
-            self.band = 2
-        elif 31 <= self.value <= 50:
-            self.band = 3
-        elif 51 <= self.value <= 100:
-            self.band = 4
-        elif 101 <= self.value <= 250:
-            self.band = 5
+        # but only if the gift was offered
+        if self.offer == GIFT_OFFERED:
+            if self.value < 10:
+                self.band = 0
+            elif 10 <= self.value <= 20:
+                self.band = 1
+            elif 21 <= self.value <= 30:
+                self.band = 2
+            elif 31 <= self.value <= 50:
+                self.band = 3
+            elif 51 <= self.value <= 100:
+                self.band = 4
+            elif 101 <= self.value <= 250:
+                self.band = 5
+            else:
+                self.band = 6
         else:
-            self.band = 6
+            self.band = 99
         super().save(*args, **kwargs)
 
     class Meta:
