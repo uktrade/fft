@@ -43,8 +43,15 @@ class GiftHospitalityView(FormView):
         form.instance.entered_by = self.request.user.first_name + ' ' + self.request.user.last_name
         form.instance.company = form.instance.company_fk
         form.instance.category = form.instance.category_fk
-
-        form.save()
+        form.instance.classification = form.instance.classification_fk
+        obj = form.save(commit=False)
+        obj.type = obj.classification_fk.gift_type
+        if obj.rep_fk:
+            obj.rep = obj.rep_fk
+            obj.staff_no = obj.rep_fk.employee_number
+            obj.grade = obj.rep_fk.grade
+            obj.grade = obj.rep_fk.cost_centre.directorate.group.group_name
+        obj.save()
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
         return super().form_valid(form)

@@ -9,7 +9,7 @@ class GiftHospitalityTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = GiftAndHospitality
         fields = (
-            # 'classification_fk',
+            'id',
             'classification',
             'group_name',
             'date_offered',

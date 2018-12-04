@@ -16,7 +16,8 @@ from .models import  GiftAndHospitalityCompany, \
 
 
 class GiftAndHospitalityCompanyAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('gif_hospitality_company', 'active')
+    list_display = ('gif_hospitality_company', 'sequence_no', 'active')
+    list_editable = ('sequence_no',)
     search_fields = ['gif_hospitality_company']
 
     def get_readonly_fields(self, request, obj=None):
@@ -33,7 +34,8 @@ class GiftAndHospitalityCompanyAdmin(AdminActiveField, AdminImportExport):
 
 
 class GiftAndHospitalityCategoryAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('gif_hospitality_category', 'active')
+    list_display = ('gif_hospitality_category', 'sequence_no', 'active')
+    list_editable = ('sequence_no',)
     search_fields = ['gif_hospitality_category']
 
     def get_readonly_fields(self, request, obj=None):
@@ -49,7 +51,8 @@ class GiftAndHospitalityCategoryAdmin(AdminActiveField, AdminImportExport):
 
 
 class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('gift_type', 'gif_hospitality_classification', 'active')
+    list_display = ('gift_type', 'gif_hospitality_classification', 'sequence_no', 'active')
+    list_editable = ('sequence_no',)
     search_fields = ['gift_type', 'gif_hospitality_classification']
 
     def get_readonly_fields(self, request, obj=None):

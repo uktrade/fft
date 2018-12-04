@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from bootstrap_datepicker_plus import DatePickerInput
 from .models import GiftAndHospitality
 
@@ -7,26 +8,18 @@ class GiftAndHospitalityForm(forms.ModelForm):
         model = GiftAndHospitality
         fields = [
             'classification_fk',
-            #'classification',
-            'group_name',
+            'category_fk',
             'date_offered',
+            'offer',
+            'action_taken',
             'venue',
             'reason',
             'value',
-            #'band',
-            'rep',
-            'offer',
+            'rep_fk',
             'company_rep',
-            'company_fk',
-            #'company',
-            'action_taken',
-            # 'entered_by',
-            'staff_no',
-            #'entered_date_stamp',
-            'category_fk',
-            #'category',
-            'grade'
+            'company_fk'
         ]
+        # labels = {'classification_fk': _('AAAA')}
         # fields =['classification','group_name', 'date_offered', 'venue', 'reason']
         widgets = {
             'date_offered': DatePickerInput(
@@ -39,8 +32,3 @@ class GiftAndHospitalityForm(forms.ModelForm):
             ), # default date-format %m/%d/%Y will be used
             # 'end_date': DatePickerInput(format='%Y-%m-%d'), # specify date-frmat
         }
-
-    def form_valid(self, form):
-        """If the form is valid, save the associated model."""
-        self.object = form.save()
-        return super().form_valid(form)
