@@ -89,10 +89,10 @@ class GiftAndHospitality(LogChangeModel):
                                           null=True, blank=True, verbose_name='company')
     company = models.CharField( max_length=100)
     ACTION_TYPE = (
-        ('Action0', 'Accepted'),
         ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
         ('Action3', 'Accepted (surrendered to Department)'),
+        ('Action0', 'Accepted'),
     )
     action_taken = models.CharField(max_length=20,
                                     choices=ACTION_TYPE,
@@ -132,5 +132,5 @@ class GiftAndHospitality(LogChangeModel):
     class Meta:
         verbose_name = "Gift and Hospitality"
         verbose_name_plural = "Gift and Hospitality"
-        ordering = ['-id']
+        ordering = ['id']
 

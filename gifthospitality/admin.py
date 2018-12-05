@@ -1,6 +1,4 @@
-import io
-
-from core.admin import AdminActiveField, AdminExport, AdminImportExport, CsvImportForm
+from core.admin import AdminActiveField, AdminImportExport
 
 from core.exportutils import generic_table_iterator
 
@@ -8,8 +6,6 @@ from django.contrib import admin
 
 from .importcsv import import_gh_company_class, \
     import_gh_classification_class, import_gh_category_class
-from django.shortcuts import redirect, render
-from django.urls import path
 
 from .models import  GiftAndHospitalityCompany, \
     GiftAndHospitalityCategory, GiftAndHospitalityClassification

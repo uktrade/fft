@@ -4,10 +4,12 @@ from bootstrap_datepicker_plus import DatePickerInput
 from .models import GiftAndHospitality, GIFT_RECEIVED, GIFT_OFFERED
 
 
-class GiftAndHospitalityForm(forms.ModelForm):
+class GiftAndHospitalityReceivedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.offer = GIFT_RECEIVED
-        super(GiftAndHospitalityForm, self).__init__(*args, **kwargs)
+        super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
+        for f in self.fields:
+            self.fields[f].required = True
 
     def save(self, *args, **kwargs):
         self.instance.company = self.instance.company_fk
@@ -20,7 +22,7 @@ class GiftAndHospitalityForm(forms.ModelForm):
             self.instance.staff_no = self.instance.rep_fk.employee_number
             self.instance.grade = self.instance.rep_fk.grade
             self.instance.grade = self.instance.rep_fk.cost_centre.directorate.group.group_name
-        super(GiftAndHospitalityForm, self).save(*args, **kwargs)
+        return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
     class Meta:
         model = GiftAndHospitality
@@ -28,7 +30,7 @@ class GiftAndHospitalityForm(forms.ModelForm):
             'classification_fk',
             'category_fk',
             'date_offered',
-            'offer',
+            'action_taken',
             'venue',
             'reason',
             'value',
@@ -52,13 +54,12 @@ class GiftAndHospitalityForm(forms.ModelForm):
         }
 
 
-class GiftAndHospitalityReceivedForm(GiftAndHospitalityForm):
+class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
     def __init__(self, *args, **kwargs):
         self.offer = GIFT_OFFERED
-        super(GiftAndHospitalityForm, self).__init__(*args, **kwargs)
+        super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
 
-    class Meta(GiftAndHospitalityForm.Meta):
-        exclude  = ['offer']
+    class Meta(GiftAndHospitalityReceivedForm.Meta):
         labels = {'company_fk': _('Company offered to'),
                   'company_rep': _('Company Representative offered to'),
                   'rep_fk': _('DIT Representative received from')

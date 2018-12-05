@@ -1,22 +1,21 @@
-from bootstrap_datepicker_plus import DatePickerInput
-
-from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from .models import GiftAndHospitality, GiftAndHospitalityCompany, \
-    GiftAndHospitalityClassification, GiftAndHospitalityCategory
+#gifthospitality/views.py
 
 from core.utils import today_string
 
 from core.views import FAdminFilteredView
 
+from django.urls import reverse_lazy
+from django.urls import path
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .filters import GiftHospitalityFilter
 from .tables import GiftHospitalityTable
 
-from .forms import GiftAndHospitalityForm, GiftAndHospitalityReceivedForm
+from .forms import GiftAndHospitalityReceivedForm, \
+    GiftAndHospitalityOfferedForm
 from django.views.generic.edit import FormView
 
+from django.views.generic.base import TemplateView
 
 class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
     table_class = GiftHospitalityTable
@@ -31,79 +30,44 @@ class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
         return context
 
 
-
-class GiftHospitalityView(FormView):
+class GiftHospitalityReceivedView(FormView):
     template_name = 'gifthospitality/giftandhospitality_form.html'
-    form_class = GiftAndHospitalityForm
-    success_url = '/thanks/'
+    form_class = GiftAndHospitalityReceivedForm
+
+    def get_success_url(self):
+        # success_url = reverse_lazy('gifthospitality:gifthospitality_done', {'id': self.new_id})
+        success_url = reverse_lazy('gifthospitality:gifthospitality_done')
+        return success_url
 
     def form_valid(self, form):
         form.instance.entered_by = self.request.user.first_name + ' ' + self.request.user.last_name
         obj = form.save()
+        self.new_id = obj.pk
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Add Gift/Hospitality Received'
+        return context
 
-class GiftHospitalityReceivedView(GiftHospitalityView):
-    form_class = GiftAndHospitalityReceivedForm
 
+class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
+    form_class = GiftAndHospitalityOfferedForm
 
-# def gifthospitalitycreate(request):
-#     form = GiftAndHospitalityForm()
-#
-#     if request.method == "POST":
-#         form = GiftAndHospitalityForm(request.POST)
-#         if form.is_valid():
-#             form.save(commit=True)
-#             return gifthospitalitycreate(request)
-#         else:
-#             print('ERROR FORM INVALID')
-#
-#     return render(request,'gifthospitality/giftandhospitality_form.html',{'form':form})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Add Gift/Hospitality Offered'
+        return context
 
 
 
+class GiftHospitalityDoneView(TemplateView):
+    template_name = 'gifthospitality/giftandhospitality_added.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Add Gift/Hospitality Offered'
+        return context
 
 
-class GiftHospitalityCreate(CreateView):
-    model = GiftAndHospitality
 
-    def get_form(self):
-        form = super().get_form()
-        form.fields['date_offered'].widget = DatePickerInput(
-            options={
-                "format": "DD/MM/YYYY",  # moment date-time format
-                "showClose": True,
-                "showClear": True,
-                "showTodayButton": True,
-            }
-        )
-        return form
-    # fields = ['classification','group_name', 'date_offered', 'venue', 'reason']
-    fields = [
-        'classification_fk',
-        'group_name',
-        'date_offered',
-        'venue',
-        'reason',
-        'value',
-        'rep',
-        'offer',
-        'company_rep',
-        'company_fk',
-        'action_taken',
-        'entered_by',
-        'staff_no',
-        # 'entered_date_stamp',
-        'category_fk',
-        # 'category',
-        'grade'
-    ]
-
-
-class GiftHospitalityUpdate(UpdateView):
-    model = GiftAndHospitality
-    fields = ['classification']
-
-class GiftHospitalityDelete(DeleteView):
-    model = GiftAndHospitality
-    success_url = reverse_lazy('author-list')
