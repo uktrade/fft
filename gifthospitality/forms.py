@@ -10,6 +10,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].required = True
+        self.fields['company'].visible = False
 
     def save(self, *args, **kwargs):
         self.instance.company = self.instance.company_fk
@@ -36,7 +37,8 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             'value',
             'rep_fk',
             'company_rep',
-            'company_fk'
+            'company_fk',
+            'company'
         ]
         labels = {'company_fk': _('Company received from'),
                   'company_rep': _('Company Representative received from'),

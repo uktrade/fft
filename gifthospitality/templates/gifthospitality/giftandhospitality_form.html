@@ -3,9 +3,41 @@
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
 
+{% block scripts %}
+<script type="text/javascript" language="JavaScript">
+
+
+{#Show/hide the company text input, according to the value selected in the company dropdown.#}
+{#When other is selected, show the field.constructor. Copy the value selected #}
+{#when the company field is hidden, to avoid problems with the 'required' attribute.#}
+$("#id_company_fk").change(function(){
+    var txt = $(this).find("option:selected").text();
+    if ( txt == "Other")
+    {
+        jQuery('#id_company').show();
+        $('label[for=id_company]').show();
+        $("#id_company").val("");
+    }
+    else {
+        jQuery('#id_company').hide();
+        $('label[for=id_company]').hide();
+        $("#id_company").val(txt);
+    }
+    });
+
+$(document).ready(function(){
+    jQuery('#id_company').hide();
+    $('label[for=id_company]').hide();
+});
+
+
+</script>
+{% endblock %}
+
 {% block content %}
     <h1>Gift and Hospitality</h1>
     <h3>{{ section_name }}</h3>
+
   <div class="container">
     <div class="col-md-12">
 
