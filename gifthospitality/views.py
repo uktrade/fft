@@ -33,10 +33,9 @@ class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
 class GiftHospitalityReceivedView(FormView):
     template_name = 'gifthospitality/giftandhospitality_form.html'
     form_class = GiftAndHospitalityReceivedForm
-
+    success_name = 'gifthospitality:received-done'
     def get_success_url(self):
-        # success_url = reverse_lazy('gifthospitality:gifthospitality_done', {'id': self.new_id})
-        success_url = reverse_lazy('gifthospitality:gifthospitality_done')
+        success_url = reverse_lazy(self.success_name, kwargs={'gift_id': self.new_id})
         return success_url
 
     def form_valid(self, form):
@@ -53,6 +52,7 @@ class GiftHospitalityReceivedView(FormView):
 
 class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
     form_class = GiftAndHospitalityOfferedForm
+    success_name = 'gifthospitality:offered-done'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -61,12 +61,21 @@ class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
 
 
 
-class GiftHospitalityDoneView(TemplateView):
+class GiftHospitalityOfferedDoneView(TemplateView):
     template_name = 'gifthospitality/giftandhospitality_added.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Add Gift/Hospitality Offered'
+        context['section_name'] = 'Completed Gift/Hospitality Offered'
+        return context
+
+
+class GiftHospitalityReceivedDoneView(TemplateView):
+    template_name = 'gifthospitality/giftandhospitality_added.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'Completed Gift/Hospitality Received'
         return context
 
 
