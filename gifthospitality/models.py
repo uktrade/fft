@@ -68,26 +68,26 @@ class GiftAndHospitality(LogChangeModel):
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='Type')
 
-    gift_type = models.CharField(max_length=20, null=True, blank=True)
+    gift_type = models.CharField('Classification', max_length=20, null=True, blank=True)
     classification = models.CharField('Type', max_length=100)
-    group_name = models.CharField(max_length=200)
-    date_offered = models.DateField('Date of event / Date gift offered')
+    group_name = models.CharField('Group', max_length=200)
+    date_offered = models.DateField('Date of event /  gift offered')
     venue = models.CharField(max_length=1000)
-    reason = models.CharField('Reason for hospitality', max_length=1000)
+    reason = models.CharField('Description of offer and reason', max_length=1000)
     value = models.DecimalField('Estimated value of offer (£)', max_digits=18, decimal_places=2)
     band = models.CharField(max_length=50)
     rep_fk = models.ForeignKey('payroll.DITPeople',
                                           on_delete= models.SET_NULL,
                                           null=True, blank=True, verbose_name='DIT Representative')
 
-    rep = models.CharField('DIT Representative', max_length=255)
-    offer = models.CharField('Hospitality/Gift was', max_length=50, choices=OFFER_CHOICE)
-    company_rep = models.CharField('Company Representative', max_length=50)
+    rep = models.CharField('DIT representative offered to/from', max_length=255)
+    offer = models.CharField(max_length=50, choices=OFFER_CHOICE)
+    company_rep = models.CharField('Company representative offered to/from', max_length=50)
     company_fk = models.ForeignKey('GiftAndHospitalityCompany',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='company')
-    company = models.CharField( max_length=100)
+    company = models.CharField( 'Company offered to/from',max_length=100)
     ACTION_TYPE = (
         ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
@@ -99,7 +99,7 @@ class GiftAndHospitality(LogChangeModel):
                                     verbose_name='Action taken', blank=True)
     entered_by = models.CharField(max_length=50)
     staff_no = models.CharField(max_length=50)
-    entered_date_stamp = models.DateTimeField(auto_now=True)
+    entered_date_stamp = models.DateTimeField('Date entered', auto_now=True)
     category_fk = models.ForeignKey('GiftAndHospitalityCategory',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},

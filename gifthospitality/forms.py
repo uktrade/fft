@@ -13,16 +13,17 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         self.fields['company'].visible = False
 
     def save(self, *args, **kwargs):
-        self.instance.company = self.instance.company_fk
         self.instance.category = self.instance.category_fk
         self.instance.classification = self.instance.classification_fk.gif_hospitality_classification
-        self.instance.type = self.instance.classification_fk.gift_type
+        self.instance.gift_type = self.instance.classification_fk.gift_type
         self.instance.offer = self.offer
         if self.instance.rep_fk:
             self.instance.rep = self.instance.rep_fk
             self.instance.staff_no = self.instance.rep_fk.employee_number
             self.instance.grade = self.instance.rep_fk.grade
-            self.instance.grade = self.instance.rep_fk.cost_centre.directorate.group.group_name
+            self.instance.group_name = \
+                self.instance.rep_fk.cost_centre.directorate.group.group_name
+        temp = self.instance
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
     class Meta:
