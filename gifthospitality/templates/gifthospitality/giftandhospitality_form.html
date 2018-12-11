@@ -25,10 +25,50 @@ $("#id_company_fk").change(function(){
     }
     });
 
+var gift_type_list = {{ gift_type | safe }}
+
+
+function isgift(value) {
+  for (i=0; i<gift_type_list.length; i++) {
+            if (gift_type_list[i][0] == value) {
+                console.log("Found")
+                if (gift_type_list[i][1] == "GIFT")
+                    return (true)
+                else
+                    return (false)
+            }
+  }
+  return (false)
+}
+
+$("#id_classification_fk").change(function(){
+    if(isgift($(this).val())){
+        {#show the options specific for gift received#}
+        $("#id_action_taken").children('[value="Action2"]').show();
+        $("#id_action_taken").children('[value="Action3"]').show();
+    }
+    else {
+        {#Hide the options specific for gift received#}
+        $("#id_action_taken").children('[value="Action2"]').hide();
+        $("#id_action_taken").children('[value="Action3"]').hide();
+        if ($("#id_action_taken").val() == "Action2" ||
+            $("#id_action_taken").val() == "Action3") {
+            $("#id_action_taken").value = ""
+        }
+    }
+});
+
+
 $(document).ready(function(){
     jQuery('#id_company').hide();
     $('label[for=id_company]').hide();
+
+    {#Hide the options specific for gift received#}
+    $("#id_action_taken").children('[value="Action2"]').hide();
+    $("#id_action_taken").children('[value="Action3"]').hide();
 });
+
+
 
 
 </script>

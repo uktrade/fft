@@ -1,4 +1,5 @@
 #gifthospitality/views.py
+from json import dumps
 
 from core.utils import today_string
 
@@ -9,6 +10,7 @@ from django.urls import path
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .filters import GiftHospitalityFilter
+from .models import GiftAndHospitalityClassification
 from .tables import GiftHospitalityTable
 
 from .forms import GiftAndHospitalityReceivedForm, \
@@ -47,6 +49,12 @@ class GiftHospitalityReceivedView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Add Gift/Hospitality Received'
+        qs = GiftAndHospitalityClassification.objects.values('pk', 'gift_type')
+        list_vals = []
+        for item in qs:
+            list_vals.append([str(item['pk']), item['gift_type']])
+        l = dumps(list_vals)
+        context['gift_type'] = l
         return context
 
 
@@ -57,6 +65,7 @@ class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Add Gift/Hospitality Offered'
+        context['gift_type'] = '[]'
         return context
 
 
