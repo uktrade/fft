@@ -64,12 +64,57 @@ class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport)
 
 
 class GiftAndHospitalityAdmin(AdminImportExport):
-    list_display = ('id', 'offer', 'gift_type', 'classification', 'action_taken')
-    # list_editable = ('sequence_no',)
-    # search_fields = ['gift_type', 'gif_hospitality_classification']
 
-    # def get_readonly_fields(self, request, obj=None):
-    #     return [ 'id']
+    list_display = ('id',
+            'gift_type',
+            'category',
+            'classification',
+            'group_name',
+            'date_offered',
+            'venue',
+            'reason',
+            'value',
+            'band',
+            'rep',
+            'grade',
+            'offer',
+            'company_rep',
+            'company',
+            'action_taken',
+            'entered_date_stamp',
+            'entered_by')
+    search_fields = ['id', 'rep', 'entered_by']
+
+    list_filter = ('offer',
+                   'gift_type',
+                   'category',
+                   'classification',
+                   'company',)
+
+    def get_fields(self, request, obj=None):
+        return  ['gift_type',
+            'category',
+            'classification',
+            'group_name',
+            'date_offered',
+            'venue',
+            'reason',
+            'value',
+            'band',
+            'rep',
+            'grade',
+            'offer',
+            'company_rep',
+            'company',
+            'action_taken',
+            'entered_by', 'entered_date_stamp']
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['band', 'entered_by', 'entered_date_stamp']
+
+    # Don't allow add
+    def has_add_permission(self, request):
+        return False
 
     @property
     def export_func(self):

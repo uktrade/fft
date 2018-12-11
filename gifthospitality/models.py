@@ -4,8 +4,8 @@ from core.metamodels import LogChangeModel, TimeStampedModel
 
 
 class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
-    GIFT = 'GIFT'
-    HOSPITALITY = 'HOSPITALITY'
+    GIFT = 'Gift'
+    HOSPITALITY = 'Hospitality'
     GF_TYPE = (
         (GIFT, 'Gift'),
         (HOSPITALITY, 'Hospitality'))
