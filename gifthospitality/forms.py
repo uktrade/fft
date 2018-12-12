@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from bootstrap_datepicker_plus import DatePickerInput
 from .models import GiftAndHospitality, GIFT_RECEIVED, GIFT_OFFERED
-
+import datetime
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -17,9 +17,9 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         self.instance.classification = self.instance.classification_fk.gif_hospitality_classification
         self.instance.gift_type = self.instance.classification_fk.gift_type
         self.instance.offer = self.offer
+        self.instance.entered_date_stamp = datetime.datetime.now()
         if self.instance.rep_fk:
             self.instance.rep = self.instance.rep_fk
-            self.instance.staff_no = self.instance.rep_fk.employee_number
             self.instance.grade = self.instance.rep_fk.grade
             self.instance.group_name = \
                 self.instance.rep_fk.cost_centre.directorate.group.group_name

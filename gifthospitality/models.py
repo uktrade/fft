@@ -63,12 +63,13 @@ class GiftAndHospitality(LogChangeModel):
     On purpose, I am not using foreign key anywhere, because we need to have a record of details
     when the gift was registered, not later on."""
     id = models.AutoField('Record ID', primary_key=True)
+    old_id = models.IntegerField(null=True, blank=True)
     classification_fk = models.ForeignKey('GiftAndHospitalityClassification',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='Type')
 
-    gift_type = models.CharField('Classification', max_length=20, null=True, blank=True)
+    gift_type = models.CharField('Classification', max_length=200, null=True, blank=True)
     classification = models.CharField('Type', max_length=100)
     group_name = models.CharField('Group', max_length=200)
     date_offered = models.DateField('Date of event /  gift offered')
@@ -81,25 +82,24 @@ class GiftAndHospitality(LogChangeModel):
                                           null=True, blank=True, verbose_name='DIT Representative')
 
     rep = models.CharField('DIT representative offered to/from', max_length=255)
-    offer = models.CharField(max_length=50, choices=OFFER_CHOICE)
-    company_rep = models.CharField('Company representative offered to/from', max_length=50)
+    offer = models.CharField(max_length=200, choices=OFFER_CHOICE)
+    company_rep = models.CharField('Company representative offered to/from', max_length=200)
     company_fk = models.ForeignKey('GiftAndHospitalityCompany',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='company')
-    company = models.CharField( 'Company offered to/from',max_length=100)
+    company = models.CharField( 'Company offered to/from',max_length=200)
     ACTION_TYPE = (
         ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
         ('Action3', 'Accepted (surrendered to Department)'),
         ('Action0', 'Accepted'),
     )
-    action_taken = models.CharField(max_length=20,
+    action_taken = models.CharField(max_length=200,
                                     choices=ACTION_TYPE,
                                     verbose_name='Action taken', blank=True)
-    entered_by = models.CharField(max_length=50)
-    staff_no = models.CharField(max_length=50)
-    entered_date_stamp = models.DateTimeField('Date entered', auto_now=True)
+    entered_by = models.CharField(max_length=100)
+    entered_date_stamp = models.DateTimeField('Date entered')
     category_fk = models.ForeignKey('GiftAndHospitalityCategory',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},

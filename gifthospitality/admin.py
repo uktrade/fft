@@ -4,7 +4,7 @@ from core.exportutils import generic_table_iterator
 
 from django.contrib import admin
 
-from .importcsv import import_gh_company_class, \
+from .importcsv import import_gh_class, import_gh_company_class, \
     import_gh_classification_class, import_gh_category_class
 
 from .models import  GiftAndHospitality, GiftAndHospitalityCompany, \
@@ -120,9 +120,9 @@ class GiftAndHospitalityAdmin(AdminImportExport):
     def export_func(self):
         return generic_table_iterator
 
-    # @property
-    # def import_info(self):
-    #     return import_gh_classification_class
+    @property
+    def import_info(self):
+        return import_gh_class
 
 
 

@@ -101,7 +101,9 @@ def readcsvfromdict(d, row):
     else:
         unique_name = m._meta.pk.name
 
-    pk_header_name = d[IMPORT_CSV_PK_KEY]
+    pk_header_name = ''
+    if IMPORT_CSV_PK_KEY in d:
+        pk_header_name = d[IMPORT_CSV_PK_KEY]
 
     errormsg = ''
     # if we are only reading a foreign key (we don't want to create it!), get the value and return
@@ -121,7 +123,10 @@ def readcsvfromdict(d, row):
     try:
         # import pdb;
         # pdb.set_trace()
-        obj, created = m.objects.update_or_create(**{unique_name: row[pk_header_name].strip()},
+        if pk_header_name == '':
+            obj = m.objects.create(**defaultList)
+        else:
+            obj, created = m.objects.update_or_create(**{unique_name: row[pk_header_name].strip()},
                                                   defaults=defaultList)
     except ValueError:
         obj = None
