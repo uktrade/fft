@@ -14,7 +14,8 @@ GH_CLASSIF_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
                     IMPORT_CSV_PK_KEY: 'Classification',
                     IMPORT_CSV_FIELDLIST_KEY: {
                         GiftAndHospitalityClassification.gift_type.field_name: 'Type',
-                 }}
+                        GiftAndHospitalityClassification.sequence_no.field_name: 'sequence_no',
+                    }}
 
 import_gh_classification_class = ImportInfo(GH_CLASSIF_KEY)
 
@@ -23,7 +24,7 @@ GH_COMPANY_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCompany,
                     IMPORT_CSV_PK_KEY: 'Company',
                     IMPORT_CSV_PK_NAME_KEY:
                             GiftAndHospitalityCompany.gif_hospitality_company.field_name,
-                    IMPORT_CSV_FIELDLIST_KEY: {}}
+                    IMPORT_CSV_FIELDLIST_KEY: {GiftAndHospitalityCompany.gif_hospitality_company.sequence_no:'sequence_no'}}
 
 import_gh_company_class = ImportInfo(GH_COMPANY_KEY)
 
@@ -32,7 +33,7 @@ GH_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCategory,
                     IMPORT_CSV_PK_KEY: 'Category',
                     IMPORT_CSV_PK_NAME_KEY:
                        GiftAndHospitalityCategory.gif_hospitality_category.field_name,
-                    IMPORT_CSV_FIELDLIST_KEY: {}}
+                    IMPORT_CSV_FIELDLIST_KEY: {GiftAndHospitalityCategory.sequence_no.field_name: 'sequence_no'}}
 
 import_gh_category_class = ImportInfo(GH_CATEGORY_KEY)
 
