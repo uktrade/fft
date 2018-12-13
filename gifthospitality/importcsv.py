@@ -24,7 +24,7 @@ GH_COMPANY_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCompany,
                     IMPORT_CSV_PK_KEY: 'Company',
                     IMPORT_CSV_PK_NAME_KEY:
                             GiftAndHospitalityCompany.gif_hospitality_company.field_name,
-                    IMPORT_CSV_FIELDLIST_KEY: {GiftAndHospitalityCompany.gif_hospitality_company.sequence_no:'sequence_no'}}
+                    IMPORT_CSV_FIELDLIST_KEY: {GiftAndHospitalityCompany.sequence_no.field_name: 'sequence_no'}}
 
 import_gh_company_class = ImportInfo(GH_COMPANY_KEY)
 
