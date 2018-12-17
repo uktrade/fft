@@ -90,7 +90,7 @@ class GiftAndHospitality(LogChangeModel):
                                           null=True, blank=True, verbose_name='company')
     company = models.CharField( 'Company offered to/from',max_length=200)
     ACTION_TYPE = (
-        ('Action1', 'Rejected'),
+        ('Action1', 'Refused'),
         ('Action2', 'Accepted (difference paid to Department)'),
         ('Action3', 'Accepted (surrendered to Department)'),
         ('Action0', 'Accepted'),
@@ -99,7 +99,7 @@ class GiftAndHospitality(LogChangeModel):
                                     choices=ACTION_TYPE,
                                     verbose_name='Action taken', blank=True)
     entered_by = models.CharField(max_length=100)
-    entered_date_stamp = models.DateTimeField('Date entered')
+    entered_date_stamp = models.DateField('Date entered')
     category_fk = models.ForeignKey('GiftAndHospitalityCategory',
                                           on_delete= models.SET_NULL,
                                           limit_choices_to={'active': True},
@@ -132,5 +132,5 @@ class GiftAndHospitality(LogChangeModel):
     class Meta:
         verbose_name = "Gift and Hospitality"
         verbose_name_plural = "Gift and Hospitality"
-        ordering = ['id']
+        ordering = ['-id']
 
