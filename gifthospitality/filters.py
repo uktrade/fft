@@ -1,22 +1,13 @@
-from django.db.models import Q
-
-from  django_filters import DateFromToRangeFilter, FilterSet
-from bootstrap_datepicker_plus import DatePickerInput
+from  django_filters import DateFromToRangeFilter, FilterSet, NumberFilter
 
 from .models import GiftAndHospitality
 
+from core.filters import MyFilterSet
 
 
-class GiftHospitalityFilter(FilterSet):
+class GiftHospitalityFilter(MyFilterSet):
     entered_date_stamp = DateFromToRangeFilter()
-    widgets = {
-        'entered_date_stamp': DatePickerInput(
-            options={
-                "format": "DD/MM/YYYY",  # moment date-time format
-                "showClose": True,
-                "showClear": True,
-                "showTodayButton": True,
-            })}
+    value = NumberFilter(lookup_expr='lte', label='Max value of offer (£)' )
 
     class Meta:
             model = GiftAndHospitality
