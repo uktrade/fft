@@ -161,6 +161,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+# Remove extra details in the label for the filter fields, it does not says 'contains' or similar
 def FILTERS_VERBOSE_LOOKUPS():
     from django_filters.conf import DEFAULTS
 

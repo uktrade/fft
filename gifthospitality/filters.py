@@ -1,4 +1,4 @@
-from  django_filters import DateFromToRangeFilter, FilterSet, NumberFilter
+from  django_filters import DateFromToRangeFilter, NumberFilter, CharFilter
 
 from .models import GiftAndHospitality
 
@@ -8,8 +8,8 @@ from core.filters import MyFilterSet
 class GiftHospitalityFilter(MyFilterSet):
     entered_date_stamp = DateFromToRangeFilter()
     value = NumberFilter(lookup_expr='lte', label='Max value of offer (£)' )
-
-    class Meta:
+    # rep =  CharFilter(lookup_expr='icontains')
+    class Meta(MyFilterSet.Meta):
             model = GiftAndHospitality
             fields = [ 'id',
             'category',
