@@ -90,7 +90,7 @@ class GiftAndHospitality(LogChangeModel):
                                           null=True, blank=True, verbose_name='company')
     company = models.CharField( 'Company offered to/from',max_length=200)
     ACTION_TYPE = (
-        ('Action1', 'Refused'),
+        ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
         ('Action3', 'Accepted (surrendered to Department)'),
         ('Action0', 'Accepted'),
