@@ -23,6 +23,7 @@ class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
     table_class = GiftHospitalityTable
     model = table_class.Meta.model
     filterset_class = GiftHospitalityFilter
+    template_name = 'gifthospitality/gifthospitality_filter.html'
     export_name = 'Gifts and Hospitality' + today_string()
     sheet_name = 'Gifts and Hospitality'
 
