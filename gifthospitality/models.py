@@ -107,27 +107,27 @@ class GiftAndHospitality(LogChangeModel):
     category = models.CharField(max_length=100)
     grade = models.CharField(max_length=50)
 
-    def save(self, *args, **kwargs):
-        # Calculate the band from the value of the gift
-        # but only if the gift was offered
-        if self.offer == GIFT_OFFERED:
-            if self.value < 10:
-                self.band = 0
-            elif 10 <= self.value <= 20:
-                self.band = 1
-            elif 21 <= self.value <= 30:
-                self.band = 2
-            elif 31 <= self.value <= 50:
-                self.band = 3
-            elif 51 <= self.value <= 100:
-                self.band = 4
-            elif 101 <= self.value <= 250:
-                self.band = 5
-            else:
-                self.band = 6
-        else:
-            self.band = 99
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Calculate the band from the value of the gift
+    #     # but only if the gift was offered
+    #     if self.offer == GIFT_OFFERED:
+    #         if self.value < 10:
+    #             self.band = 0
+    #         elif 10 <= self.value <= 20:
+    #             self.band = 1
+    #         elif 21 <= self.value <= 30:
+    #             self.band = 2
+    #         elif 31 <= self.value <= 50:
+    #             self.band = 3
+    #         elif 51 <= self.value <= 100:
+    #             self.band = 4
+    #         elif 101 <= self.value <= 250:
+    #             self.band = 5
+    #         else:
+    #             self.band = 6
+    #     else:
+    #         self.band = 99
+    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Gift and Hospitality"
