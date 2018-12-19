@@ -14,7 +14,7 @@
     {% if filter %}
         <div id="search-div">
         {% csrf_token %}
-            <form action="" method="get" class="form form-inline">
+            <form action="" method="get" class="form-group">
             <table>
                {{ filter.form.media }}            {# Adds date-picker required JS and CSS #}
             {{ filter.form.as_table }}
