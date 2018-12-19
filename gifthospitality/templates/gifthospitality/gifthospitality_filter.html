@@ -18,13 +18,9 @@
         <table>
                {{ filter.form.media }}            {# Adds date-picker required JS and CSS #}
             {{ filter.form.as_table }}
-
-                    <tr>
-                        <td><button type="reset">Clear</button></td>
-                        <td><button type="submit">Search</button></td>
-                    </tr>
-              </table>
-
+               </table>
+                      <td><button type="submit">Search</button></td>
+ 
         </form>
 
     {% endif %}
