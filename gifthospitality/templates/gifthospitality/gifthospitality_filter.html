@@ -12,17 +12,17 @@
     <h3>{{ section_name }}</h3>
     <p>{{ section_description }}</p>
     {% if filter %}
-
+        <div id="search-div">
         {% csrf_token %}
-                <form action="" method="get" class="form form-inline">
-        <table>
+            <form action="" method="get" class="form form-inline">
+            <table>
                {{ filter.form.media }}            {# Adds date-picker required JS and CSS #}
             {{ filter.form.as_table }}
-               </table>
-                      <td><button type="submit">Search</button></td>
 
+                <tr><td></td><td><button type="submit">Search</button></td></tr>
+                     </table>
         </form>
-
+        </div>
     {% endif %}
     <br>
     <h5>Record returned: {{ table.rows|length }}</h5>

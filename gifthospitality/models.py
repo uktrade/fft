@@ -13,7 +13,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
     gift_type = models.CharField(max_length=20,
                                     choices=GF_TYPE, default=HOSPITALITY,
                                     verbose_name='Type')
-    gif_hospitality_classification = models.CharField(max_length=100)
+    gif_hospitality_classification = models.CharField('Classification', max_length=100)
     sequence_no = models.IntegerField(null = True)
 
     def __str__(self):
@@ -26,7 +26,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
 
 
 class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
-    gif_hospitality_category = models.CharField(max_length=100)
+    gif_hospitality_category = models.CharField('Category', max_length=100)
     sequence_no = models.IntegerField(null = True)
 
     def __str__(self):
@@ -46,7 +46,7 @@ OFFER_CHOICE =(
     )
 
 class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
-    gif_hospitality_company = models.CharField(max_length=100)
+    gif_hospitality_company = models.CharField('Company', max_length=100)
     sequence_no = models.IntegerField(null = True)
 
     def __str__(self):
