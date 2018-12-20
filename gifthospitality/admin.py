@@ -74,7 +74,6 @@ class GiftAndHospitalityAdmin(AdminImportExport):
             'venue',
             'reason',
             'value',
-            'band',
             'rep',
             'grade',
             'offer',
@@ -100,7 +99,6 @@ class GiftAndHospitalityAdmin(AdminImportExport):
             'venue',
             'reason',
             'value',
-            'band',
             'rep',
             'grade',
             'offer',
@@ -110,7 +108,7 @@ class GiftAndHospitalityAdmin(AdminImportExport):
             'entered_by', 'entered_date_stamp']
 
     def get_readonly_fields(self, request, obj=None):
-        return ['band', 'entered_by', 'entered_date_stamp']
+        return ['type', 'entered_by', 'entered_date_stamp']
 
     # Don't allow add
     def has_add_permission(self, request):
