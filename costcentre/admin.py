@@ -88,6 +88,8 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
 
+    autocomplete_fields = ['directorate']
+
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [

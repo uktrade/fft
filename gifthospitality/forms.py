@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from bootstrap_datepicker_plus import DatePickerInput
 from .models import GiftAndHospitality, GIFT_RECEIVED, GIFT_OFFERED
 import datetime
+from core.forms import FormAutocompleteSelect
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -26,7 +27,11 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         temp = self.instance
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
+
     class Meta:
+        def __init__(self, *args, **kwargs):
+            super(GiftAndHospitalityReceivedForm.Meta, self).__init__(*args, **kwargs)
+
         model = GiftAndHospitality
         fields = [
             'classification_fk',
@@ -45,7 +50,9 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
                   'company_rep': _('Company Representative received from'),
                   'rep_fk': _('DIT Representative offered to')
                   }
+
         widgets = {
+            'rep_fk': FormAutocompleteSelect(GiftAndHospitality.rep_fk.field.related_model),
             'date_offered': DatePickerInput(
                 options={
                     "format": "DD/MM/YYYY",  # moment date-time format
