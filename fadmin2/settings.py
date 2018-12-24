@@ -15,7 +15,6 @@ import dj_database_url
 
 import environ
 
-
 AUTH_USER_MODEL = 'core.User'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     'authbroker_client',
     'custom_usermodel',
     'forecast.apps.ForecastConfig',
-    #'dit_user_management',
+    # 'dit_user_management',
     'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
@@ -72,7 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'bootstrap4',
-    'bootstrap_datepicker_plus' #https://pypi.org/project/django-bootstrap-datepicker-plus/
+    'bootstrap_datepicker_plus'  # https://pypi.org/project/django-bootstrap-datepicker-plus/
 ]
 
 MIDDLEWARE = [
@@ -155,8 +154,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
@@ -184,7 +181,6 @@ AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
 AUTHBROKER_CLIENT_SECRET = env('AUTHBROKER_CLIENT_SECRET')
 AUTHBROKER_SCOPES = 'read write'
 
-
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'authbroker_client.backends.AuthbrokerBackend',
@@ -200,4 +196,3 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # for debug_toolbar, to activate it only on localhost
 INTERNAL_IPS = ['127.0.0.1']
-
