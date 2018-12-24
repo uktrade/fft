@@ -1,4 +1,5 @@
 import io
+
 from core.exportutils import export_to_csv
 
 from django import forms
@@ -196,7 +197,6 @@ class AdminImportExport(AdminExport):
         e = export_csv_from_import(self.import_info.key)
         return export_to_csv(e.queryset, e.yield_data)
 
-
     def import_csv(self, request):
         header_list = self.import_info.header_list
         import_func = self.import_info.my_import_func
@@ -221,6 +221,3 @@ class AdminImportExport(AdminExport):
         return render(
             request, "admin/csv_form.html", payload
         )
-
-
-

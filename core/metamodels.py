@@ -4,6 +4,7 @@ from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+
 class SimpleTimeStampedModel(models.Model):
     """ An abstract base class model that provide self-updating
     'created' and 'modified' field """
@@ -54,7 +55,7 @@ class LogChangeModel(models.Model):
                 newvalue = getattr(self, k)
                 if newvalue != v:
                     message = message + ' ' + self._meta.get_field(k).verbose_name + \
-                              ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
+                        ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
                     changed = True
         if changed:

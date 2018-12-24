@@ -8,8 +8,10 @@ class FormAutocompleteSelect(AutocompleteSelect):
     Unfortunately, it only works for people with Admin access'''
     class admin_site:
         pass
+
     class rel:
         pass
+
     def __init__(self, model, **kwargs):
         self.admin_site.name = 'admin'
         self.rel.model = model

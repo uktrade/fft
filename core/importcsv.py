@@ -127,12 +127,11 @@ def readcsvfromdict(d, row):
             obj = m.objects.create(**defaultList)
         else:
             obj, created = m.objects.update_or_create(**{unique_name: row[pk_header_name].strip()},
-                                                  defaults=defaultList)
+                                                      defaults=defaultList)
     except ValueError:
         obj = None
         errormsg = 'Valuerror'
     return obj, errormsg
-
 
 
 def get_col_from_obj_key(obj_key):
@@ -155,13 +154,13 @@ def get_col_from_obj_key(obj_key):
 def import_obj(csvfile, obj_key):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
-    l = get_col_from_obj_key(obj_key)
+    l1 = get_col_from_obj_key(obj_key)
     # import pdb;
     # pdb.set_trace()
 
     # Before starting to read, check that all the expected columns exists
-    if not all(elem in header for elem in l):
-        msg = 'Missing/wrong headers: expected ' + ', '.join(l) +'. The file has: ' \
+    if not all(elem in header for elem in l1):
+        msg = 'Missing/wrong headers: expected ' + ', '.join(l1) + '. The file has: ' \
               + ', '.join(header.keys()) + '.'
         return False, msg
     # import pdb;
@@ -173,6 +172,7 @@ def import_obj(csvfile, obj_key):
         obj, msg = readcsvfromdict(d, row)
         print(row_number, msg)
     return True, msg
+
 
 # used for import of lists needed to populate tables, when the primary key is created by the system
 def import_list_obj(csvfile, model, fieldname):
@@ -219,7 +219,3 @@ def get_field_name(obj_key, prefix):
             else:
                 field_list.append(prefix + k)
     return field_list
-
-
-
-

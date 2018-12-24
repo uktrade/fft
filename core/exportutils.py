@@ -5,8 +5,10 @@ from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
 import openpyxl
+
 from .importcsv import IMPORT_CSV_MODEL_KEY, \
     get_col_from_obj_key, get_field_name
+
 
 def get_fk_value(obj, field):
     if obj is not None:
@@ -130,4 +132,3 @@ class export_csv_from_import():
         yield self.header_list
         for obj in q:
             yield list(obj.values())
-
