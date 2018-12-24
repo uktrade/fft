@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'django_admin_listfilter_dropdown',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

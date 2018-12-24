@@ -1,3 +1,5 @@
+from dal import autocomplete
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from bootstrap_datepicker_plus import DatePickerInput
@@ -52,6 +54,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
                   }
 
         widgets = {
+            'rep_fk' : autocomplete.ModelSelect2(url='people-autocomplete'),
             'date_offered': DatePickerInput(
                 options={
                     "format": "DD/MM/YYYY",  # moment date-time format
