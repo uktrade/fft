@@ -6,7 +6,7 @@ from core.utils import today_string
 from core.views import FAdminFilteredView
 
 from django.urls import reverse_lazy
-from django.urls import path
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .filters import GiftHospitalityFilter

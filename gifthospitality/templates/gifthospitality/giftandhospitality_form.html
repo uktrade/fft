@@ -69,7 +69,9 @@ $(document).ready(function(){
 });
 
 
-
+$(document).one('autocompleteLightInitialize', '[data-autocomplete-light-function=select2]', function() {
+    $.fn.select2.defaults.set( "theme", "bootstrap4" );
+});
 
 </script>
 {% endblock %}
