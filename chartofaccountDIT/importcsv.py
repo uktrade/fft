@@ -89,8 +89,8 @@ EXP_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: ExpenditureCategory,
 NAC_DIT_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
                IMPORT_CSV_PK_KEY: 'NAC',
                IMPORT_CSV_FIELDLIST_KEY: {NaturalCode.active.field_name: 'Active',
-                                          NaturalCode.commercial_category.field.name: COMM_CAT_FK_KEY,
-                                          NaturalCode.expenditure_category.field.name: EXP_CAT_FK_KEY}}
+                                          NaturalCode.commercial_category.field.name: COMM_CAT_FK_KEY,  # noqa: E501
+                                          NaturalCode.expenditure_category.field.name: EXP_CAT_FK_KEY}}  # noqa: E501
 
 
 def import_NAC_DIT(csvfile):
@@ -147,10 +147,9 @@ def import_NAC_category(csvfile):
 
 COMMERCIAL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
                            IMPORT_CSV_PK_KEY: 'Commercial Category',
-                           IMPORT_CSV_PK_NAME_KEY: CommercialCategory.commercial_category.field_name,
+                           IMPORT_CSV_PK_NAME_KEY: CommercialCategory.commercial_category.field_name,  # noqa: E501
                            IMPORT_CSV_FIELDLIST_KEY:
                                {CommercialCategory.description.field_name: 'Description',
-                                # noqa: E501
                                 CommercialCategory.approvers.field_name: 'Approvers'}}
 
 

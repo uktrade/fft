@@ -1,8 +1,8 @@
 from core.filters import MyFilterSet
 
-import django_filters
-
 from django.db.models import Q
+
+import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
     ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
@@ -14,10 +14,8 @@ class NACFilter(MyFilterSet):
 
     def search_all_filter(selfself, queryset, name, value):
         return queryset.filter(Q(account_L5_code__economic_budget_code__icontains=value) |
-                               Q(
-                                   expenditure_category__NAC_category__NAC_category_description__icontains=value) |
-                               Q(
-                                   expenditure_category__linked_budget_code__natural_account_code__icontains=value) |
+                               Q(expenditure_category__NAC_category__NAC_category_description__icontains=value) |    # noqa: E501
+                               Q(expenditure_category__linked_budget_code__natural_account_code__icontains=value) |    # noqa: E501
                                Q(expenditure_category__grouping_description__icontains=value) |
                                Q(commercial_category__commercial_category__icontains=value) |
                                Q(natural_account_code__icontains=value) |
@@ -32,7 +30,7 @@ class NACFilter(MyFilterSet):
     def qs(self):
         myfilter = super(NACFilter, self).qs
         return myfilter.filter(active=True).order_by('-account_L5_code__economic_budget_code',
-                                                     '-expenditure_category__NAC_category__NAC_category_description',
+                                                     '-expenditure_category__NAC_category__NAC_category_description',    # noqa: E501
                                                      '-expenditure_category__grouping_description',
                                                      'commercial_category__commercial_category',
                                                      'natural_account_code'
