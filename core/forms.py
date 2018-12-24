@@ -4,7 +4,8 @@ from django.contrib.admin.widgets import AutocompleteSelect
 class FormAutocompleteSelect(AutocompleteSelect):
     '''Use the admin autocomplete class in a form,
     by passing the name of the model to use in
-    the auto complete dropdown'''
+    the auto complete dropdown.
+    Unfortunately, it only works for people with Admin access'''
     class admin_site:
         pass
     class rel:
