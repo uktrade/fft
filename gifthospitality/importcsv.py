@@ -1,4 +1,4 @@
-from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, ImportInfo
 
 from .models import GiftAndHospitality, GiftAndHospitalityCategory, \
@@ -33,11 +33,20 @@ GH_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCategory,
 
 import_gh_category_class = ImportInfo(GH_CATEGORY_KEY)
 
+GH_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCategory,
+                 IMPORT_CSV_IS_FK: '',
+                 IMPORT_CSV_PK_KEY: 'Category'
+                 }
+
+GH_CLASS_FK_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
+                   IMPORT_CSV_IS_FK: '',
+                   IMPORT_CSV_PK_KEY: 'Classification'
+                   }
+
 GH_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
           IMPORT_CSV_FIELDLIST_KEY: {
-
               GiftAndHospitality.old_id.field_name: 'HospID',
-              GiftAndHospitality.classification.field_name: 'Classification',
+              GiftAndHospitality.classification_fk.field.name: GH_CLASS_FK_KEY,
               GiftAndHospitality.group_name.field_name: 'Group',
               GiftAndHospitality.date_offered.field_name: 'Date of event/gift offered',
               GiftAndHospitality.venue.field_name: 'Venue',
@@ -49,9 +58,8 @@ GH_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
               GiftAndHospitality.company.field_name: 'Company offered to/from',
               GiftAndHospitality.action_taken.field_name: 'Action taken',
               GiftAndHospitality.entered_by.field_name: 'Entered By',
-              GiftAndHospitality.gift_type.field_name: 'Type',
               GiftAndHospitality.entered_date_stamp.field_name: 'Date Entered',
-              GiftAndHospitality.category.field_name: 'Category',
+              GiftAndHospitality.category_fk.field.name: GH_CAT_FK_KEY,
               GiftAndHospitality.grade.field_name: 'Grade',
           }
           }

@@ -19,15 +19,11 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         self.fields['company'].visible = False
 
     def save(self, *args, **kwargs):
-        self.instance.category = self.instance.category_fk
-        self.instance.classification = \
-            self.instance.classification_fk.gif_hospitality_classification
-        self.instance.gift_type = self.instance.classification_fk.gift_type
         self.instance.offer = self.offer
         self.instance.entered_date_stamp = datetime.datetime.now()
         if self.instance.rep_fk:
             self.instance.rep = self.instance.rep_fk
-            self.instance.grade = self.instance.rep_fk.grade
+            self.instance.grade_fk = self.instance.rep_fk.grade
             self.instance.group_name = \
                 self.instance.rep_fk.cost_centre.directorate.group.group_name
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)

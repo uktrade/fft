@@ -61,17 +61,22 @@ class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport)
 
 
 class GiftAndHospitalityAdmin(AdminImportExport):
+    def gift_or_hospitality(self, instance):  # required to display the field from a foreign key
+        return instance.classification_fk.gift_type
+
+    gift_or_hospitality.admin_order_field = 'classification_fk__gift_type'
+
     list_display = ('id',
-                    'gift_type',
-                    'category',
-                    'classification',
+                    'gift_or_hospitality',
+                    'category_fk',
+                    'classification_fk',
                     'group_name',
                     'date_offered',
                     'venue',
                     'reason',
                     'value',
                     'rep',
-                    'grade',
+                    'grade_fk',
                     'offer',
                     'company_rep',
                     'company',
@@ -81,22 +86,21 @@ class GiftAndHospitalityAdmin(AdminImportExport):
     search_fields = ['id', 'rep', 'entered_by']
 
     list_filter = ('offer',
-                   'gift_type',
-                   'category',
-                   'classification',
+                   'category_fk',
+                   'classification_fk',
                    'company',)
 
     def get_fields(self, request, obj=None):
-        return ['gift_type',
-                'category',
-                'classification',
+        return ['gift_or_hospitality',
+                'category_fk',
+                'classification_fk',
                 'group_name',
                 'date_offered',
                 'venue',
                 'reason',
                 'value',
                 'rep',
-                'grade',
+                'grade_fk',
                 'offer',
                 'company_rep',
                 'company',
@@ -104,7 +108,7 @@ class GiftAndHospitalityAdmin(AdminImportExport):
                 'entered_by', 'entered_date_stamp']
 
     def get_readonly_fields(self, request, obj=None):
-        return ['type', 'entered_by', 'entered_date_stamp']
+        return ['gift_or_hospitality', 'entered_by', 'entered_date_stamp']
 
     # Don't allow add
     def has_add_permission(self, request):

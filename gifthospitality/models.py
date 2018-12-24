@@ -2,6 +2,8 @@ from core.metamodels import LogChangeModel, TimeStampedModel
 
 from django.db import models
 
+from payroll.models import DITPeople, Grade
+
 
 class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
     GIFT = 'Gift'
@@ -63,30 +65,29 @@ class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
 
 class GiftAndHospitality(LogChangeModel):
     """Model used to keep information of gifts/hospitality received/offered by DIT people.
-    On purpose, I am not using foreign key anywhere, because we need to have a record of details
+    On purpose, I am not using foreign key for people and group,
+    because we need to have a record of details
     when the gift was registered, not later on."""
     id = models.AutoField('Record ID', primary_key=True)
     old_id = models.IntegerField(null=True, blank=True)
-    classification_fk = models.ForeignKey('GiftAndHospitalityClassification',
-                                          on_delete=models.SET_NULL,
+    classification_fk = models.ForeignKey(GiftAndHospitalityClassification,
+                                          on_delete=models.PROTECT,
                                           limit_choices_to={'active': True},
-                                          null=True, blank=True, verbose_name='Type')
+                                          verbose_name='Type')
 
-    gift_type = models.CharField('Classification', max_length=200, null=True, blank=True)
-    classification = models.CharField('Type', max_length=100)
     group_name = models.CharField('Group', max_length=200)
     date_offered = models.DateField('Date of event /  gift offered')
     venue = models.CharField(max_length=1000)
     reason = models.CharField('Description of offer and reason', max_length=1000)
-    value = models.DecimalField('Estimated value of offer (£)', max_digits=18, decimal_places=2)
-    rep_fk = models.ForeignKey('payroll.DITPeople',
+    value = models.IntegerField('Estimated value of offer (£)')
+    rep_fk = models.ForeignKey(DITPeople,
                                on_delete=models.SET_NULL,
                                null=True, blank=True, verbose_name='DIT Representative')
 
     rep = models.CharField('DIT representative offered to/from', max_length=255)
     offer = models.CharField(max_length=200, choices=OFFER_CHOICE)
     company_rep = models.CharField('Company representative offered to/from', max_length=200)
-    company_fk = models.ForeignKey('GiftAndHospitalityCompany',
+    company_fk = models.ForeignKey(GiftAndHospitalityCompany,
                                    on_delete=models.SET_NULL,
                                    limit_choices_to={'active': True},
                                    null=True, blank=True, verbose_name='company')
@@ -102,11 +103,13 @@ class GiftAndHospitality(LogChangeModel):
                                     verbose_name='Action taken', blank=True)
     entered_by = models.CharField(max_length=100)
     entered_date_stamp = models.DateField('Date entered')
-    category_fk = models.ForeignKey('GiftAndHospitalityCategory',
-                                    on_delete=models.SET_NULL,
+    category_fk = models.ForeignKey(GiftAndHospitalityCategory,
+                                    on_delete=models.PROTECT,
                                     limit_choices_to={'active': True},
-                                    null=True, blank=True, verbose_name='category')
-    category = models.CharField(max_length=100)
+                                    verbose_name='category')
+    grade_fk = models.ForeignKey(Grade,
+                                 on_delete=models.PROTECT,
+                                 verbose_name='grade')
     grade = models.CharField(max_length=50)
 
     class Meta:

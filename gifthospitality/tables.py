@@ -8,7 +8,6 @@ class GiftHospitalityTable(FadminTable):
         model = GiftAndHospitality
         fields = (
             'id',
-            'gift_type',
             'category',
             'classification',
             'group_name',
