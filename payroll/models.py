@@ -35,6 +35,7 @@ class DITPeople(TimeStampedModel, LogChangeModel):
         verbose_name_plural = 'DIT People'
         ordering = ['surname']
 
+
 # Pre-calculated salary averages, used for the forecast
 class SalaryMonthlyAverage(models.Model):
     AVERAGETYPE_CHOICES = (('CC', 'CostCentre'),

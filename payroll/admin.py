@@ -1,8 +1,6 @@
 from core.admin import AdminActiveField, AdminImportExport
 
 from django.contrib import admin
-from django.contrib.admin.models import CHANGE, LogEntry
-from django.contrib.contenttypes.models import ContentType
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
@@ -50,6 +48,7 @@ class DIT_PeopleAdmin(AdminActiveField, AdminImportExport):
     list_filter = ('active',
                    ('grade', RelatedDropdownFilter),
                    )
+
     @property
     def export_func(self):
         return _export_people_iterator

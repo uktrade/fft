@@ -1,5 +1,7 @@
-from .views import DITPeopleAutocomplete
 from django.conf.urls import url
+
+from .views import DITPeopleAutocomplete
+
 
 urlpatterns = [
     url(
