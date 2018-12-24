@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,7 +14,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GiftsAndHospitality',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('group_name', models.CharField(max_length=200)),
                 ('date_offered', models.DateTimeField()),
                 ('venue', models.CharField(max_length=1000)),
@@ -23,9 +23,14 @@ class Migration(migrations.Migration):
                 ('value', models.DecimalField(decimal_places=2, max_digits=18)),
                 ('band', models.CharField(max_length=50)),
                 ('rep', models.CharField(max_length=255)),
-                ('offer', models.CharField(choices=[('Received', 'Received'), ('Offered', 'Offered')], max_length=50)),
+                ('offer',
+                 models.CharField(choices=[('Received', 'Received'), ('Offered', 'Offered')],
+                                  max_length=50)),
                 ('company_rep', models.CharField(max_length=50)),
-                ('action_taken', models.CharField(choices=[('Action1', 'Accepted'), ('Action2', 'Accepted (difference paid to Department)'), ('Action3', 'Accepted (surrendered to Department)')], max_length=20, verbose_name='Action taken')),
+                ('action_taken', models.CharField(choices=[('Action1', 'Accepted'), (
+                'Action2', 'Accepted (difference paid to Department)'), ('Action3',
+                                                                         'Accepted (surrendered to Department)')],
+                                                  max_length=20, verbose_name='Action taken')),
                 ('date_stamp', models.DateTimeField()),
                 ('entered_by', models.CharField(max_length=50)),
                 ('staff_no', models.CharField(max_length=50)),
@@ -36,7 +41,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GiftsAndHospitalityCategory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
@@ -50,11 +56,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GiftsAndHospitalityClassification',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
-                ('gift_type', models.CharField(choices=[('GIFT', 'Gift'), ('HOSPITALITY', 'Hospitality')], default='HOSPITALITY', max_length=20, verbose_name='Type')),
+                ('gift_type',
+                 models.CharField(choices=[('GIFT', 'Gift'), ('HOSPITALITY', 'Hospitality')],
+                                  default='HOSPITALITY', max_length=20, verbose_name='Type')),
                 ('classification', models.CharField(max_length=100)),
             ],
             options={
@@ -65,7 +74,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GiftsAndHospitalityCompany',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
@@ -79,16 +89,19 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='giftsandhospitality',
             name='category',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='gifthospitality.GiftsAndHospitalityCategory'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='gifthospitality.GiftsAndHospitalityCategory'),
         ),
         migrations.AddField(
             model_name='giftsandhospitality',
             name='classification',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='gifthospitality.GiftsAndHospitalityClassification'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='gifthospitality.GiftsAndHospitalityClassification'),
         ),
         migrations.AddField(
             model_name='giftsandhospitality',
             name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='gifthospitality.GiftsAndHospitalityCompany'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                    to='gifthospitality.GiftsAndHospitalityCompany'),
         ),
     ]

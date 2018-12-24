@@ -33,17 +33,17 @@ def export_cc_iterator(queryset):
 
 def export_admin_cc_iterator(queryset):
     for obj in queryset:
-        yield [ 1,
-                '109TTT',
-                'DIT',
-                obj.directorate.group.group_code,
-                obj.directorate.group.group_name,
-                obj.directorate.directorate_code,
-                obj.directorate.directorate_name,
-                obj.cost_centre_code,
-                obj.cost_centre_name,
-                'Mentor Map',
-                obj.active
+        yield [1,
+               '109TTT',
+               'DIT',
+               obj.directorate.group.group_code,
+               obj.directorate.group.group_name,
+               obj.directorate.directorate_code,
+               obj.directorate.directorate_name,
+               obj.cost_centre_code,
+               obj.cost_centre_name,
+               'Mentor Map',
+               obj.active
                ]
 
 
@@ -57,7 +57,7 @@ def export_directorate_iterator(queryset):
                obj.group.group_code,
                obj.group.group_name,
                obj.group.active]
-        
+
 
 def export_group_iterator(queryset):
     yield ['Group', 'Group Description', 'Active']
@@ -86,6 +86,3 @@ def export_person_iterator(queryset):
                obj.is_dg,
                obj.is_director,
                obj.active]
-
-
-

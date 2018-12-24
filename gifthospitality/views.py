@@ -1,23 +1,19 @@
-#gifthospitality/views.py
+# gifthospitality/views.py
 from json import dumps
 
 from core.utils import today_string
-
 from core.views import FAdminFilteredView
 
-from django.urls import reverse_lazy
-
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 
 from .filters import GiftHospitalityFilter
+from .forms import GiftAndHospitalityOfferedForm, GiftAndHospitalityReceivedForm
 from .models import GiftAndHospitalityClassification
 from .tables import GiftHospitalityTable
 
-from .forms import GiftAndHospitalityReceivedForm, \
-    GiftAndHospitalityOfferedForm
-from django.views.generic.edit import FormView
-
-from django.views.generic.base import TemplateView
 
 class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
     table_class = GiftHospitalityTable
@@ -37,6 +33,7 @@ class GiftHospitalityReceivedView(FormView):
     template_name = 'gifthospitality/giftandhospitality_form.html'
     form_class = GiftAndHospitalityReceivedForm
     success_name = 'gifthospitality:received-done'
+
     def get_success_url(self):
         success_url = reverse_lazy(self.success_name, kwargs={'gift_id': self.new_id})
         return success_url
@@ -54,8 +51,8 @@ class GiftHospitalityReceivedView(FormView):
         list_vals = []
         for item in qs:
             list_vals.append([str(item['pk']), item['gift_type']])
-        l = dumps(list_vals)
-        context['gift_type'] = l
+        l1 = dumps(list_vals)
+        context['gift_type'] = l1
         return context
 
 
@@ -68,7 +65,6 @@ class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
         context['section_name'] = 'Add Gift/Hospitality Offered'
         context['gift_type'] = '[]'
         return context
-
 
 
 class GiftHospitalityOfferedDoneView(TemplateView):
@@ -87,6 +83,3 @@ class GiftHospitalityReceivedDoneView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Completed Gift/Hospitality Received'
         return context
-
-
-

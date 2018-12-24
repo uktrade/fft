@@ -1,9 +1,13 @@
+import datetime
+
+from bootstrap_datepicker_plus import DatePickerInput
+
 from dal import autocomplete
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from bootstrap_datepicker_plus import DatePickerInput
-from .models import GiftAndHospitality, GIFT_RECEIVED, GIFT_OFFERED
-import datetime
+
+from .models import GIFT_OFFERED, GIFT_RECEIVED, GiftAndHospitality
 
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
@@ -16,7 +20,8 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
 
     def save(self, *args, **kwargs):
         self.instance.category = self.instance.category_fk
-        self.instance.classification = self.instance.classification_fk.gif_hospitality_classification
+        self.instance.classification = \
+            self.instance.classification_fk.gif_hospitality_classification
         self.instance.gift_type = self.instance.classification_fk.gift_type
         self.instance.offer = self.offer
         self.instance.entered_date_stamp = datetime.datetime.now()
@@ -25,9 +30,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             self.instance.grade = self.instance.rep_fk.grade
             self.instance.group_name = \
                 self.instance.rep_fk.cost_centre.directorate.group.group_name
-        temp = self.instance
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
-
 
     class Meta:
         def __init__(self, *args, **kwargs):
@@ -54,7 +57,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
 
         widgets = {
             # 'rep_fk' : ModelSelect2Bootstrap(url='people-autocomplete'),
-            'rep_fk' : autocomplete.ModelSelect2(url='people-autocomplete'),
+            'rep_fk': autocomplete.ModelSelect2(url='people-autocomplete'),
             'date_offered': DatePickerInput(
                 options={
                     "format": "DD/MM/YYYY",  # moment date-time format

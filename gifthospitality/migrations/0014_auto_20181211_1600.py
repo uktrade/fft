@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('gifthospitality', '0013_auto_20181203_1823'),
     ]
@@ -12,12 +11,17 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='giftandhospitality',
-            options={'ordering': ['id'], 'verbose_name': 'Gift and Hospitality', 'verbose_name_plural': 'Gift and Hospitality'},
+            options={'ordering': ['id'], 'verbose_name': 'Gift and Hospitality',
+                     'verbose_name_plural': 'Gift and Hospitality'},
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
             name='action_taken',
-            field=models.CharField(blank=True, choices=[('Action1', 'Rejected'), ('Action2', 'Accepted (difference paid to Department)'), ('Action3', 'Accepted (surrendered to Department)'), ('Action0', 'Accepted')], max_length=20, verbose_name='Action taken'),
+            field=models.CharField(blank=True, choices=[('Action1', 'Rejected'), (
+            'Action2', 'Accepted (difference paid to Department)'), ('Action3',
+                                                                     'Accepted (surrendered to Department)'),
+                                                        ('Action0', 'Accepted')], max_length=20,
+                                   verbose_name='Action taken'),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
@@ -27,7 +31,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='giftandhospitality',
             name='company_rep',
-            field=models.CharField(max_length=50, verbose_name='Company representative offered to/from'),
+            field=models.CharField(max_length=50,
+                                   verbose_name='Company representative offered to/from'),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
@@ -42,7 +47,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='giftandhospitality',
             name='gift_type',
-            field=models.CharField(blank=True, max_length=20, null=True, verbose_name='Classification'),
+            field=models.CharField(blank=True, max_length=20, null=True,
+                                   verbose_name='Classification'),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
@@ -52,21 +58,26 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='giftandhospitality',
             name='offer',
-            field=models.CharField(choices=[('Received', 'Received by DIT Staff'), ('Offered', 'Given by DIT Staff')], max_length=50),
+            field=models.CharField(
+                choices=[('Received', 'Received by DIT Staff'), ('Offered', 'Given by DIT Staff')],
+                max_length=50),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
             name='reason',
-            field=models.CharField(max_length=1000, verbose_name='Description of offer and reason'),
+            field=models.CharField(max_length=1000,
+                                   verbose_name='Description of offer and reason'),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
             name='rep',
-            field=models.CharField(max_length=255, verbose_name='DIT representative offered to/from'),
+            field=models.CharField(max_length=255,
+                                   verbose_name='DIT representative offered to/from'),
         ),
         migrations.AlterField(
             model_name='giftandhospitalityclassification',
             name='gift_type',
-            field=models.CharField(choices=[('Gifts', 'Gift'), ('Hospitality', 'Hospitality')], default='Hospitality', max_length=20, verbose_name='Type'),
+            field=models.CharField(choices=[('Gifts', 'Gift'), ('Hospitality', 'Hospitality')],
+                                   default='Hospitality', max_length=20, verbose_name='Type'),
         ),
     ]

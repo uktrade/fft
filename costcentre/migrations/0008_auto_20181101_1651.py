@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('costcentre', '0007_businesspartner'),
     ]
@@ -13,13 +12,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CostCentrePerson',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(blank=True, max_length=100)),
                 ('surname', models.CharField(max_length=100)),
-                ('email', models.EmailField(blank=True, max_length=254, null=True, verbose_name='Email')),
+                ('email',
+                 models.EmailField(blank=True, max_length=254, null=True, verbose_name='Email')),
                 ('is_director', models.BooleanField(default=False, verbose_name='Director')),
                 ('is_dg', models.BooleanField(default=False, verbose_name='General Director')),
             ],

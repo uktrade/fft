@@ -1,7 +1,5 @@
 from core.tables import FadminTable
 
-import django_tables2 as tables
-
 from .models import GiftAndHospitality
 
 
@@ -18,7 +16,7 @@ class GiftHospitalityTable(FadminTable):
             'venue',
             'reason',
             'value',
-             'rep',
+            'rep',
             'grade',
             'offer',
             'company_rep',
@@ -27,4 +25,3 @@ class GiftHospitalityTable(FadminTable):
             'entered_date_stamp',
             'entered_by',
         )
-

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('gifthospitality', '0001_initial'),
     ]
@@ -12,7 +11,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='giftsandhospitality',
-            options={'verbose_name': 'Gifts and Hospitality', 'verbose_name_plural': 'Gifts and Hospitality'},
+            options={'verbose_name': 'Gifts and Hospitality',
+                     'verbose_name_plural': 'Gifts and Hospitality'},
         ),
         migrations.AlterField(
             model_name='giftsandhospitality',

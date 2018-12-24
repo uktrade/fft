@@ -12,14 +12,13 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
-    import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class,\
+    import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class, \
     import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
     InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
     _export_inter_entity_l1_iterator, _export_nac_cat_iterator, _export_nac_iterator, \
     _export_programme_iterator
-
 
 
 class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
@@ -128,7 +127,7 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
             return ['analysis2_code', 'analysis2_description',
                     'active', 'created', 'updated']
         else:
-            return ['analysis2_code', 'analysis2_description','active']
+            return ['analysis2_code', 'analysis2_description', 'active']
 
     @property
     def export_func(self):
@@ -222,6 +221,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
 
 class InterEntityL1Admin(AdminActiveField, AdminExport):
     search_fields = ['l1_value', 'l1_description']
+
     @property
     def export_func(self):
         return _export_inter_entity_l1_iterator
@@ -272,7 +272,7 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
             return ['project_code', 'project_description',
                     'active', 'created', 'updated']
         else:
-            return ['project_code', 'project_description','active']
+            return ['project_code', 'project_description', 'active']
 
     @property
     def export_func(self):
@@ -281,7 +281,6 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_a2_class
-
 
 
 admin.site.register(Analysis1, Analysis1Admin)

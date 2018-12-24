@@ -1,7 +1,7 @@
+import factory
+
 from gifthospitality.models import GiftsAndHospitality, GiftsAndHospitalityCategory, \
     GiftsAndHospitalityClassification, GiftsAndHospitalityCompany
-
-import factory
 
 
 class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
@@ -22,7 +22,6 @@ class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
         model = GiftsAndHospitalityCategory
 
 
-
 class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
     """
         Define CostCentre Factory
@@ -39,4 +38,3 @@ class GiftsAndHospitalityCompanyFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = GiftsAndHospitalityCompany
-

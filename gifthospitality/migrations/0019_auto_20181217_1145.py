@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('gifthospitality', '0018_auto_20181212_1114'),
     ]
@@ -12,12 +11,17 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='giftandhospitality',
-            options={'ordering': ['-id'], 'verbose_name': 'Gift and Hospitality', 'verbose_name_plural': 'Gift and Hospitality'},
+            options={'ordering': ['-id'], 'verbose_name': 'Gift and Hospitality',
+                     'verbose_name_plural': 'Gift and Hospitality'},
         ),
         migrations.AlterField(
             model_name='giftandhospitality',
             name='action_taken',
-            field=models.CharField(blank=True, choices=[('Action1', 'Refused'), ('Action2', 'Accepted (difference paid to Department)'), ('Action3', 'Accepted (surrendered to Department)'), ('Action0', 'Accepted')], max_length=200, verbose_name='Action taken'),
+            field=models.CharField(blank=True, choices=[('Action1', 'Refused'), (
+            'Action2', 'Accepted (difference paid to Department)'), ('Action3',
+                                                                     'Accepted (surrendered to Department)'),
+                                                        ('Action0', 'Accepted')], max_length=200,
+                                   verbose_name='Action taken'),
         ),
         migrations.AlterField(
             model_name='giftandhospitality',

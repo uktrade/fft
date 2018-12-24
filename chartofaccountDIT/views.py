@@ -137,6 +137,7 @@ class FilteredProjectView(FAdminFilteredView):
     filterset_class = ProjectFilter
     export_name = 'Project Codes ' + today_string()
     sheet_name = 'Project Codes'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Project (Spare 1)'

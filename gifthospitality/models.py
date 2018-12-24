@@ -1,6 +1,6 @@
-from django.db import models
-
 from core.metamodels import LogChangeModel, TimeStampedModel
+
+from django.db import models
 
 
 class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
@@ -11,10 +11,10 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
         (HOSPITALITY, 'Hospitality'))
 
     gift_type = models.CharField(max_length=20,
-                                    choices=GF_TYPE, default=HOSPITALITY,
-                                    verbose_name='Type')
+                                 choices=GF_TYPE, default=HOSPITALITY,
+                                 verbose_name='Type')
     gif_hospitality_classification = models.CharField('Classification', max_length=100)
-    sequence_no = models.IntegerField(null = True)
+    sequence_no = models.IntegerField(null=True)
 
     def __str__(self):
         return str(self.gif_hospitality_classification)
@@ -27,7 +27,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
 
 class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
     gif_hospitality_category = models.CharField('Category', max_length=100)
-    sequence_no = models.IntegerField(null = True)
+    sequence_no = models.IntegerField(null=True)
 
     def __str__(self):
         return str(self.gif_hospitality_category)
@@ -40,14 +40,15 @@ class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
 
 GIFT_RECEIVED = 'Received'
 GIFT_OFFERED = 'Offered'
-OFFER_CHOICE =(
-        (GIFT_RECEIVED, 'Received by DIT Staff'),
-        (GIFT_OFFERED, 'Given by DIT Staff')
-    )
+OFFER_CHOICE = (
+    (GIFT_RECEIVED, 'Received by DIT Staff'),
+    (GIFT_OFFERED, 'Given by DIT Staff')
+)
+
 
 class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
     gif_hospitality_company = models.CharField('Company', max_length=100)
-    sequence_no = models.IntegerField(null = True)
+    sequence_no = models.IntegerField(null=True)
 
     def __str__(self):
         return str(self.gif_hospitality_company)
@@ -58,6 +59,8 @@ class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
         ordering = ['sequence_no']
 
     # Gift and Hospitality
+
+
 class GiftAndHospitality(LogChangeModel):
     """Model used to keep information of gifts/hospitality received/offered by DIT people.
     On purpose, I am not using foreign key anywhere, because we need to have a record of details
@@ -65,7 +68,7 @@ class GiftAndHospitality(LogChangeModel):
     id = models.AutoField('Record ID', primary_key=True)
     old_id = models.IntegerField(null=True, blank=True)
     classification_fk = models.ForeignKey('GiftAndHospitalityClassification',
-                                          on_delete= models.SET_NULL,
+                                          on_delete=models.SET_NULL,
                                           limit_choices_to={'active': True},
                                           null=True, blank=True, verbose_name='Type')
 
@@ -77,17 +80,17 @@ class GiftAndHospitality(LogChangeModel):
     reason = models.CharField('Description of offer and reason', max_length=1000)
     value = models.DecimalField('Estimated value of offer (£)', max_digits=18, decimal_places=2)
     rep_fk = models.ForeignKey('payroll.DITPeople',
-                                          on_delete= models.SET_NULL,
-                                          null=True, blank=True, verbose_name='DIT Representative')
+                               on_delete=models.SET_NULL,
+                               null=True, blank=True, verbose_name='DIT Representative')
 
     rep = models.CharField('DIT representative offered to/from', max_length=255)
     offer = models.CharField(max_length=200, choices=OFFER_CHOICE)
     company_rep = models.CharField('Company representative offered to/from', max_length=200)
     company_fk = models.ForeignKey('GiftAndHospitalityCompany',
-                                          on_delete= models.SET_NULL,
-                                          limit_choices_to={'active': True},
-                                          null=True, blank=True, verbose_name='company')
-    company = models.CharField( 'Company offered to/from',max_length=200)
+                                   on_delete=models.SET_NULL,
+                                   limit_choices_to={'active': True},
+                                   null=True, blank=True, verbose_name='company')
+    company = models.CharField('Company offered to/from', max_length=200)
     ACTION_TYPE = (
         ('Action1', 'Rejected'),
         ('Action2', 'Accepted (difference paid to Department)'),
@@ -100,15 +103,13 @@ class GiftAndHospitality(LogChangeModel):
     entered_by = models.CharField(max_length=100)
     entered_date_stamp = models.DateField('Date entered')
     category_fk = models.ForeignKey('GiftAndHospitalityCategory',
-                                          on_delete= models.SET_NULL,
-                                          limit_choices_to={'active': True},
-                                          null=True, blank=True, verbose_name='category')
+                                    on_delete=models.SET_NULL,
+                                    limit_choices_to={'active': True},
+                                    null=True, blank=True, verbose_name='category')
     category = models.CharField(max_length=100)
     grade = models.CharField(max_length=50)
-
 
     class Meta:
         verbose_name = "Gift and Hospitality"
         verbose_name_plural = "Gift and Hospitality"
         ordering = ['-id']
-
