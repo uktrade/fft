@@ -1,6 +1,8 @@
 from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, IMPORT_CSV_PK_NAME_KEY, ImportInfo
 
+from payroll.models import Grade
+
 from .models import GiftAndHospitality, GiftAndHospitalityCategory, \
     GiftAndHospitalityClassification, GiftAndHospitalityCompany
 
@@ -43,6 +45,12 @@ GH_CLASS_FK_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
                    IMPORT_CSV_PK_KEY: 'Classification'
                    }
 
+GH_GRADE_FK_KEY = {IMPORT_CSV_MODEL_KEY: Grade,
+                   IMPORT_CSV_IS_FK: '',
+                   IMPORT_CSV_PK_KEY: 'Grade'
+                   }
+
+
 GH_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
           IMPORT_CSV_FIELDLIST_KEY: {
               GiftAndHospitality.old_id.field_name: 'HospID',
@@ -60,7 +68,7 @@ GH_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
               GiftAndHospitality.entered_by.field_name: 'Entered By',
               GiftAndHospitality.entered_date_stamp.field_name: 'Date Entered',
               GiftAndHospitality.category_fk.field.name: GH_CAT_FK_KEY,
-              GiftAndHospitality.grade.field_name: 'Grade',
+              GiftAndHospitality.grade_fk.field.name: GH_GRADE_FK_KEY,
           }
           }
 

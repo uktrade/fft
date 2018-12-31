@@ -110,7 +110,6 @@ class GiftAndHospitality(LogChangeModel):
     grade_fk = models.ForeignKey(Grade,
                                  on_delete=models.PROTECT,
                                  verbose_name='grade')
-    grade = models.CharField(max_length=50)
 
     class Meta:
         verbose_name = "Gift and Hospitality"

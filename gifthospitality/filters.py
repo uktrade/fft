@@ -34,19 +34,16 @@ class GiftHospitalityFilter(MyFilterSet):
     value = NumberFilter(lookup_expr='lte', label='Max value of offer (£)')
 
     # use a dropdown to search the following fields
-    category = ModelChoiceFilter(queryset=GiftAndHospitalityCategory.objects.all())
-    gift_type = ModelChoiceFilter(queryset=GiftAndHospitalityClassification.objects.all())
     company = ModelChoiceFilter(queryset=GiftAndHospitalityCompany.objects.all())
-    grade = ModelChoiceFilter(queryset=Grade.objects.all())
 
     class Meta(MyFilterSet.Meta):
         model = GiftAndHospitality
         fields = ['id',
-                  'category',
-                  'gift_type',
+                  'category_fk',
+                  'classification_fk',
                   'value',
                   'rep',
-                  'grade',
+                  'grade_fk',
                   'offer',
                   'company',
                   'action_taken',
