@@ -17,7 +17,7 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class, \
     import_prog_class
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 
@@ -283,6 +283,27 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
         return import_a2_class
 
 
+class FCOMappingAdmin(AdminActiveField, AdminImportExport):
+    search_fields = ['fco_code', 'fco_description']
+    list_display = ('fco_code', 'fco_description', 'active')
+
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['fco_code', 'fco_description', 'created', 'updated']  # don't allow to edit the code
+        else:
+            return ['created', 'updated']
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['fco_code', 'fco_description', 'account_L6_code_fk',
+                    'active', 'created', 'updated']
+        else:
+            return ['fco_code', 'fco_description', 'account_L6_code_fk', 'active']
+
+
+
 admin.site.register(Analysis1, Analysis1Admin)
 admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
@@ -293,3 +314,4 @@ admin.site.register(ProgrammeCode, ProgrammeAdmin)
 admin.site.register(InterEntityL1, InterEntityL1Admin)
 admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
+admin.site.register(FCOMapping, FCOMappingAdmin)

@@ -161,3 +161,18 @@ class ProjectCode(TimeStampedModel, LogChangeModel):
         verbose_name = "Project"
         verbose_name_plural = "Projects"
         ordering = ['project_code']
+
+
+class FCOMapping(TimeStampedModel, LogChangeModel):
+    fco_code = models.IntegerField(primary_key=True, verbose_name='FCO Code')
+    fco_description = models.CharField(max_length=300, verbose_name='FCO Description')
+    account_L6_code_fk = models.ForeignKey(NaturalCode, on_delete=models.PROTECT, blank=True, null=True)
+    def __str__(self):
+        return self.project_code + ' - ' + self.project_description
+
+    class Meta:
+        verbose_name = "FCO Mapping"
+        verbose_name_plural = "FCO Mappings"
+        ordering = ['fco_code']
+
+
