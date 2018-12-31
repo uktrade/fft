@@ -115,3 +115,6 @@ class GiftAndHospitality(LogChangeModel):
         verbose_name = "Gift and Hospitality"
         verbose_name_plural = "Gift and Hospitality"
         ordering = ['-id']
+
+    def __str__(self):
+        return str(self.date_offered)

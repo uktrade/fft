@@ -37,12 +37,16 @@ import_gh_category_class = ImportInfo(GH_CATEGORY_KEY)
 
 GH_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityCategory,
                  IMPORT_CSV_IS_FK: '',
-                 IMPORT_CSV_PK_KEY: 'Category'
+                 IMPORT_CSV_PK_KEY: 'Category',
+                 IMPORT_CSV_PK_NAME_KEY:
+                     GiftAndHospitalityCategory.gif_hospitality_category.field_name,
                  }
 
 GH_CLASS_FK_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
                    IMPORT_CSV_IS_FK: '',
-                   IMPORT_CSV_PK_KEY: 'Classification'
+                   IMPORT_CSV_PK_KEY: 'Type',
+                   IMPORT_CSV_PK_NAME_KEY:
+                       GiftAndHospitalityClassification.gif_hospitality_classification.field_name,
                    }
 
 GH_GRADE_FK_KEY = {IMPORT_CSV_MODEL_KEY: Grade,
