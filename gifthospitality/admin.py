@@ -85,10 +85,10 @@ class GiftAndHospitalityAdmin(AdminImportExport):
                     'entered_by')
     search_fields = ['id', 'rep', 'entered_by']
 
-    list_filter = ('offer',
-                   'category_fk',
-                   'classification_fk',
-                   'company',)
+    list_filter = ('classification_fk__gift_type',
+                   'offer',
+                   'action_taken'
+                   )
 
     def get_fields(self, request, obj=None):
         return ['gift_or_hospitality',
