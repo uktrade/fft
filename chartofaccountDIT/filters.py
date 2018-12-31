@@ -5,7 +5,7 @@ from django.db.models import Q
 import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
+    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class NACFilter(MyFilterSet):
@@ -191,3 +191,26 @@ class ProjectFilter(MyFilterSet):
     def qs(self):
         myfilter = super(ProjectFilter, self).qs
         return myfilter.filter(active=True).order_by('project_code')
+
+
+class FCOMappingtFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(fco_code__icontains=value) |
+                               Q(fco_description__icontains=value) |
+                               Q(account_L6_code_fk__natural_account_code__icontains=value) |
+                               Q(account_L6_code_fk__natural_account_code_description__icontains=value)
+                               )
+
+    class Meta(MyFilterSet.Meta):
+        model = FCOMapping
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(FCOMappingtFilter, self).qs
+        return myfilter.filter(active=True).order_by('fco_code')
+
+

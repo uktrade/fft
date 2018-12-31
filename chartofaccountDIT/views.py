@@ -2,10 +2,10 @@ from core.utils import today_string
 from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
-    CommercialCategoryFilter, ExpenditureCategoryFilter, \
+    CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
 from .tables import Analysis1Table, Analysis2Table, \
-    CommercialCategoryTable, ExpenditureCategoryTable, \
+    CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable
 
 
@@ -148,4 +148,19 @@ class FilteredProjectView(FAdminFilteredView):
                                          'Trade Remedies Authority (project) ' \
                                          'expenditure in TPG, ' \
                                          'Digital and Estates.'
+        return context
+
+
+
+class FilteredFCOMappingView(FAdminFilteredView):
+    table_class = FCOMappingTable
+    model = table_class.Meta.model
+    filterset_class = FCOMappingtFilter
+    export_name = 'FCO Mappings ' + today_string()
+    sheet_name = 'FCO Mappings'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'FCO Mapping'
+        context['section_description'] = 'AAAA AAAA.'
         return context

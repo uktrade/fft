@@ -60,3 +60,16 @@ def _export_inter_entity_l1_iterator(queryset):
         yield [obj.l1_value,
                obj.l1_description
                ]
+
+
+def _export_fco_mapping_iterator(queryset):
+    yield ['FCO Code', 'FCO Description', 'Oracle L6 Code',
+           'Oracle L6 Code', 'Oracle L6 Description','Active']
+    for obj in queryset:
+        yield [obj.fco_code,
+               obj.fco_description,
+               obj.account_L6_code_fk.natural_account_code,
+               obj.account_L6_code_fk.natural_account_code_description,
+               obj.active]
+
+

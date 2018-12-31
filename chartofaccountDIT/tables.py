@@ -3,7 +3,8 @@ from core.tables import FadminTable
 import django_tables2 as tables
 
 from .models import Analysis1, Analysis2, \
-    CommercialCategory, ExpenditureCategory, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
+    CommercialCategory, ExpenditureCategory, FCOMapping, \
+    InterEntity, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class ProgrammeTable(FadminTable):
@@ -107,4 +108,21 @@ class ProjectTable(FadminTable):
         model = ProjectCode
         fields = ('project_code',
                   'project_description',
+                  )
+
+
+class FCOMappingTable(FadminTable):
+    oracle_code = \
+        tables.Column(verbose_name='Oracle Code',
+                      accessor='account_L6_code_fk.natural_account_code')
+    oracle_description = \
+        tables.Column(verbose_name='Oracle Description',
+                      accessor='account_L6_code_fk.natural_account_code_description')
+
+    class Meta(FadminTable.Meta):
+        model = FCOMapping
+        fields = ('fco_code',
+                  'fco_description',
+                  'oracle_code',
+                  'oracle_description'
                   )

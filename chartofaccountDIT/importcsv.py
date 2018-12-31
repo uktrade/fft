@@ -6,7 +6,7 @@ from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CS
 
 from treasuryCOA.models import L5Account
 
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 # define the column position in the csv file.
@@ -192,3 +192,20 @@ def import_inter_entity(csvfile):
 
 
 import_inter_entity_class = ImportInfo(INTER_ENTITY_KEY)
+
+
+L6_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
+                  IMPORT_CSV_IS_FK: '',
+                  IMPORT_CSV_PK_KEY: 'ORACLE Code'
+                  }
+
+
+FCO_MAPPING_KEY = {IMPORT_CSV_MODEL_KEY: FCOMapping,
+                    IMPORT_CSV_PK_KEY: 'FCO Code',
+                    IMPORT_CSV_FIELDLIST_KEY: {
+                        FCOMapping.fco_description.field_name: 'FCO Description',
+                        FCOMapping.account_L6_code_fk.field.name: L6_KEY
+                    }
+                 }
+
+import_fco_mapping_class = ImportInfo(FCO_MAPPING_KEY)
