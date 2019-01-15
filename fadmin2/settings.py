@@ -48,6 +48,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     'custom_usermodel',
+    'admintool_support.apps.AdmintoolSupportConfig',
     'forecast.apps.ForecastConfig',
     # 'dit_user_management',
     'gifthospitality.apps.GifthospitalityConfig',
