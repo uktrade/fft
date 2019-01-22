@@ -47,6 +47,9 @@ class GiftHospitalityReceivedView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Add Gift/Hospitality Received'
+        context['section_description'] = 'If you have accepted or declined any gift or hospitality ' \
+                                         'over £10 you must record it in the Register below.  ' \
+                                         'The DIT Gifts & Hospitality Policy is '
         qs = GiftAndHospitalityClassification.objects.values('pk', 'gift_type')
         list_vals = []
         for item in qs:
@@ -63,6 +66,9 @@ class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Add Gift/Hospitality Offered'
+        context['section_description'] = 'If you have offered gifts or hospitality ' \
+                                         'you must record it in the Register below.  ' \
+                                         'The DIT Gifts & Hospitality Policy is '
         context['gift_type'] = '[]'
         return context
 
