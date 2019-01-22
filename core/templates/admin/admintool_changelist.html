@@ -5,12 +5,12 @@
 {% endblock %}
 
 
-{% block object-tools-items %}
-    <li>
+
+
+  {% block search %}
+
         <a href="export-cc/" class="btn btn-high btn-success">Export Cost Centre Hierarchy</a>
-    </li>
-    <li>
-        <a href="export-nac/" class="btn btn-high btn-success">Export NAC Hierarchy</a>
-    </li>
-    {{ block.super }}
-{% endblock %}
+        <br>
+      <a href="export-nac/" class="btn btn-high btn-success">Export NAC Hierarchy</a>
+        <br>
+  {% endblock %}

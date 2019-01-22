@@ -12,7 +12,6 @@ from .models import DownloadLog
 class AdminToolExport(AdminreadOnly):
     change_list_template = "admin/admintool_changelist.html"
     list_display = ('download_type', 'downloader', 'download_time')
-    # fields = ('download_type', 'downloader', 'download_time')
     list_display_links = None
 
     def get_urls(self):
