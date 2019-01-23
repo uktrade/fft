@@ -29,7 +29,7 @@ def _export_gh_iterator(queryset):
                obj.value,
                obj.rep,
                get_fk_value(obj.grade_fk,'gradedescription'),
-               obj.offer,
+               obj.get_offer_display(),
                obj.company_rep,
                obj.company,
                obj.action_taken,
