@@ -32,7 +32,7 @@ def _export_gh_iterator(queryset):
                obj.get_offer_display(),
                obj.company_rep,
                obj.company,
-               obj.action_taken,
+               obj.get_action_taken_display(),
                obj.entered_date_stamp,
                obj.entered_by]
 
