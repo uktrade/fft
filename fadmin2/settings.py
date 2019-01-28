@@ -188,6 +188,8 @@ AUTHENTICATION_BACKENDS = [
     'authbroker_client.backends.AuthbrokerBackend',
 ]
 
+
+GIT_COMMIT = env('GIT_COMMIT')
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = 'index'
 

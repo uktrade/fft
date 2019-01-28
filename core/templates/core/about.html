@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h3>{{ INFO }}</h3>
+    <p>Django Version: {{ django_version }}</p>
+    <p>User: {{ request.user }}</p>
+    <p>Debug:{{ debug }}</p>
+    <p>Git Commit:{{ git_commit }}</p>
+
+{% endblock %}

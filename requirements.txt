@@ -9,7 +9,7 @@ chardet==3.0.4
 decorator==4.2.1
 diff-match-patch==20121119
 dj-database-url==0.5.0
-Django==2.1.2
+Django==2.1.5
 django-admin-list-filter-dropdown==1.0.1
 django-autocomplete-light==3.3.2
 django-bootstrap-datepicker-plus==3.0.5
