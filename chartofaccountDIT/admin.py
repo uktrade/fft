@@ -10,16 +10,16 @@ from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
+    _export_fco_mapping_iterator, _export_inter_entity_l1_iterator, \
+    _export_nac_cat_iterator, _export_nac_iterator, \
+    _export_programme_iterator
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
-    import_comm_cat_class, import_expenditure_category_class, import_inter_entity_class,\
-    import_prog_class
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
-    InterEntityL1, InterEntity, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
-from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
-    _export_inter_entity_l1_iterator, _export_nac_cat_iterator, _export_nac_iterator, \
-    _export_programme_iterator
-
+    import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
+    import_inter_entity_class, import_prog_class
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
@@ -128,7 +128,7 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
             return ['analysis2_code', 'analysis2_description',
                     'active', 'created', 'updated']
         else:
-            return ['analysis2_code', 'analysis2_description','active']
+            return ['analysis2_code', 'analysis2_description', 'active']
 
     @property
     def export_func(self):
@@ -222,6 +222,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
 
 class InterEntityL1Admin(AdminActiveField, AdminExport):
     search_fields = ['l1_value', 'l1_description']
+
     @property
     def export_func(self):
         return _export_inter_entity_l1_iterator
@@ -272,7 +273,7 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
             return ['project_code', 'project_description',
                     'active', 'created', 'updated']
         else:
-            return ['project_code', 'project_description','active']
+            return ['project_code', 'project_description', 'active']
 
     @property
     def export_func(self):
@@ -282,6 +283,33 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
     def import_info(self):
         return import_a2_class
 
+
+class FCOMappingAdmin(AdminActiveField, AdminImportExport):
+    search_fields = ['fco_code', 'fco_description']
+    list_display = ('fco_code', 'fco_description', 'active')
+
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ['fco_code', 'fco_description', 'created', 'updated']  # don't allow to edit the code
+        else:
+            return ['created', 'updated']
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return ['fco_code', 'fco_description', 'account_L6_code_fk',
+                    'active', 'created', 'updated']
+        else:
+            return ['fco_code', 'fco_description', 'account_L6_code_fk', 'active']
+
+    @property
+    def export_func(self):
+        return _export_fco_mapping_iterator
+
+    @property
+    def import_info(self):
+        return import_fco_mapping_class
 
 
 admin.site.register(Analysis1, Analysis1Admin)
@@ -294,3 +322,4 @@ admin.site.register(ProgrammeCode, ProgrammeAdmin)
 admin.site.register(InterEntityL1, InterEntityL1Admin)
 admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
+admin.site.register(FCOMapping, FCOMappingAdmin)

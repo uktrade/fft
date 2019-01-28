@@ -1,8 +1,7 @@
 import csv
 
-from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
-    IMPORT_CSV_PK_KEY, convert_to_bool_string, ImportInfo, csvheadertodict, import_obj
-
+from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
+    ImportInfo, convert_to_bool_string, csvheadertodict, import_obj
 
 from .models import BSCEEmail, BusinessPartner, \
     CostCentre, CostCentrePerson, DepartmentalGroup, Directorate
@@ -62,19 +61,19 @@ def import_cc(csvfile):
 import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres')
 
 
-
 def import_cc_responsibles(csvfile):
     """Special function to import the Deputy Director,  Business partner and BSCE email"""
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csvheadertodict(next(reader))
     for row in reader:
-        obj  = CostCentre.objects.get(
+        obj = CostCentre.objects.get(
             pk=row[header['CC Code']].strip())
         temp = row[header['Deputy Name']].strip()
         if temp != '':
-            deputy_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Deputy Name']].strip(),
-                                                  surname=row[header['Deputy Surname']].strip())
+            deputy_obj, created = CostCentrePerson.objects.get_or_create(
+                name=row[header['Deputy Name']].strip(),
+                surname=row[header['Deputy Surname']].strip())
             deputy_obj.email = row[header['Deputy Email']].strip()
             deputy_obj.active = True
             deputy_obj.save()
@@ -83,8 +82,9 @@ def import_cc_responsibles(csvfile):
             obj.deputy_director = None
         temp = row[header['BP Name']].strip()
         if temp != '':
-            bp_obj, created = BusinessPartner.objects.get_or_create(name=row[header['BP Name']].strip(),
-                                                  surname=row[header['BP Surname']].strip())
+            bp_obj, created = BusinessPartner.objects.get_or_create(
+                name=row[header['BP Name']].strip(),
+                surname=row[header['BP Surname']].strip())
             bp_obj.bp_email = row[header['BP Email']].strip()
             bp_obj.active = True
             bp_obj.save()
@@ -93,22 +93,24 @@ def import_cc_responsibles(csvfile):
             obj.business_partner = None
         temp = row[header['BSCE Email']].strip()
         if temp != '':
-            bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email = row[header['BSCE Email']].strip())
+            bsce_obj, created = BSCEEmail.objects.get_or_create(
+                bsce_email=row[header['BSCE Email']].strip())
             obj.bsce_email = bsce_obj
         else:
             obj.bsce_email = None
-        obj.disabled_with_actual = convert_to_bool_string(row[header['Disabled (Actuals to be cleared)']].strip())
+        obj.disabled_with_actual = convert_to_bool_string(
+            row[header['Disabled (Actuals to be cleared)']].strip())
         obj.active = convert_to_bool_string(row[header['Active']].strip())
         obj.save()
 
 
 import_cc_people_class = ImportInfo({}, 'Hierarchy Responsibility',
-                                               ['CC Code',
-                                                'BP Name', 'BP Surname', 'BP Email',
-                                                'Deputy Name', 'Deputy Surname', 'Deputy Email',
-                                                'BSCE Email', 'Active',
-                                                'Disabled (Actuals to be cleared)'],
-                                            import_cc_responsibles)
+                                    ['CC Code',
+                                     'BP Name', 'BP Surname', 'BP Email',
+                                     'Deputy Name', 'Deputy Surname', 'Deputy Email',
+                                     'BSCE Email', 'Active',
+                                     'Disabled (Actuals to be cleared)'],
+                                    import_cc_responsibles)
 
 
 def import_director(csvfile):
@@ -120,8 +122,9 @@ def import_director(csvfile):
     for row in reader:
         obj = Directorate.objects.get(
             pk=row[header['Directorate Code']].strip())
-        director_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['Director Name']].strip(),
-                                              surname=row[header['Director Surname']].strip())
+        director_obj, created = CostCentrePerson.objects.get_or_create(
+            name=row[header['Director Name']].strip(),
+            surname=row[header['Director Surname']].strip())
         director_obj.email = row[header['Director email']].strip()
         director_obj.active = True
         director_obj.is_director = True
@@ -131,10 +134,10 @@ def import_director(csvfile):
 
 
 import_director_class = ImportInfo({}, 'Directors',
-                                             ['Directorate Code',
-                                              'Directorate Name', 'Directorate Surname',
-                                              'Directorate Email'],
-                                             import_director)
+                                   ['Directorate Code',
+                                    'Directorate Name', 'Directorate Surname',
+                                    'Directorate Email'],
+                                   import_director)
 
 
 def import_group_with_dg(csvfile):
@@ -146,8 +149,9 @@ def import_group_with_dg(csvfile):
     for row in reader:
         obj = DepartmentalGroup.objects.get(
             pk=row[header['Group Code']].strip())
-        dg_obj, created = CostCentrePerson.objects.get_or_create(name=row[header['DG Name']].strip(),
-                                              surname=row[header['DG Surname']].strip())
+        dg_obj, created = CostCentrePerson.objects.get_or_create(
+            name=row[header['DG Name']].strip(),
+            surname=row[header['DG Surname']].strip())
         dg_obj.email = row[header['DG email']].strip()
         dg_obj.active = True
         dg_obj.is_dg = True
@@ -157,9 +161,7 @@ def import_group_with_dg(csvfile):
 
 
 import_departmental_group_class = ImportInfo({}, 'Director Generals',
-                                               ['Group Code',
-                                                'DG Name', 'DG Surname',
-                                                'DG email'],
-                                               import_group_with_dg)
-
-
+                                             ['Group Code',
+                                              'DG Name', 'DG Surname',
+                                              'DG email'],
+                                             import_group_with_dg)

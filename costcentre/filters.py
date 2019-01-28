@@ -12,8 +12,7 @@ class CostCentreFilter(MyFilterSet):
     It will search into group, directorate and cost centre name
     """
     search_all = django_filters.CharFilter(field_name='', label='',
-                                                method='search_all_filter')
-
+                                           method='search_all_filter')
 
     def search_all_filter(selfself, queryset, name, value):
         return queryset.filter(Q(directorate__group__group_name__icontains=value) |
@@ -22,13 +21,13 @@ class CostCentreFilter(MyFilterSet):
                                Q(directorate__group__group_code__icontains=value) |
                                Q(directorate__directorate_code__icontains=value) |
                                Q(cost_centre_code__icontains=value) |
-            Q(directorate__group__director_general__name__icontains=value) |
-            Q(directorate__group__director_general__surname__icontains=value) |
-            Q(directorate__director__name__icontains=value) |
-            Q(directorate__director__surname__icontains=value) |
-            Q(business_partner__name__icontains=value) |
-            Q(business_partner__surname__icontains=value)
-        )
+                               Q(directorate__group__director_general__name__icontains=value) |
+                               Q(directorate__group__director_general__surname__icontains=value) |
+                               Q(directorate__director__name__icontains=value) |
+                               Q(directorate__director__surname__icontains=value) |
+                               Q(business_partner__name__icontains=value) |
+                               Q(business_partner__surname__icontains=value)
+                               )
 
     class Meta(MyFilterSet.Meta):
         model = CostCentre

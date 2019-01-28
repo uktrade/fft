@@ -94,8 +94,8 @@ class NaturalCode(TimeStampedModel, LogChangeModel):
                                             on_delete=models.PROTECT, blank=True, null=True)
     used_for_budget = models.BooleanField(default=False)
     account_L5_code_upload = models.ForeignKey(L5Account,
-                                            on_delete=models.PROTECT,
-                                               verbose_name= 'L5 for OSCAR upload',
+                                               on_delete=models.PROTECT,
+                                               verbose_name='L5 for OSCAR upload',
                                                related_name='L5_OSCAR_Upload',
                                                blank=True, null=True)
 
@@ -149,6 +149,7 @@ class InterEntity(TimeStampedModel, LogChangeModel):
         verbose_name_plural = "Inter-Entities"
         ordering = ['l2_value']
 
+
 class ProjectCode(TimeStampedModel, LogChangeModel):
     project_code = models.CharField('Project Code', primary_key=True, max_length=50)
     project_description = models.CharField(max_length=300, verbose_name='Project Description')
@@ -161,5 +162,19 @@ class ProjectCode(TimeStampedModel, LogChangeModel):
         verbose_name_plural = "Projects"
         ordering = ['project_code']
 
+
+class FCOMapping(TimeStampedModel, LogChangeModel):
+    fco_code = models.IntegerField(primary_key=True, verbose_name='FCO Code')
+    fco_description = models.CharField(max_length=300, verbose_name='FCO Description')
+    account_L6_code_fk = models.ForeignKey(NaturalCode,
+                                           on_delete=models.PROTECT, blank=True, null=True)
+
+    def __str__(self):
+        return str(self.fco_code) + ' - ' + self.fco_description
+
+    class Meta:
+        verbose_name = "FCO Mapping"
+        verbose_name_plural = "FCO Mappings"
+        ordering = ['fco_code']
 
 

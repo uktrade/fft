@@ -11,4 +11,3 @@ def financialyear():
     if currentmonth < 4:  # the new financial year  starts in April
         currentyear = currentyear - 1  # before April, the financial year it is one year behind
     return currentyear
-

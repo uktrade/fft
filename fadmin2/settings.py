@@ -15,7 +15,6 @@ import dj_database_url
 
 import environ
 
-
 AUTH_USER_MODEL = 'core.User'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -49,9 +48,11 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     'custom_usermodel',
+    # 'admintool_support.apps.AdmintoolSupportConfig',
+    'downloadsupport.apps.DownloadSupportConfig',
     'forecast.apps.ForecastConfig',
-    #'dit_user_management',
-    # 'gifthospitality.apps.GifthospitalityConfig',
+    # 'dit_user_management',
+    'gifthospitality.apps.GifthospitalityConfig',
     'payroll.apps.PayrollConfig',
     'costcentre.apps.CostCentreConfig',
     'chartofaccountDIT.apps.ChartAccountConfig',
@@ -62,13 +63,17 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'django_admin_listfilter_dropdown',
+    'dal',
+    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-     'debug_toolbar'
+    'debug_toolbar',
+    'bootstrap4',
+    'bootstrap_datepicker_plus'  # https://pypi.org/project/django-bootstrap-datepicker-plus/
 ]
 
 MIDDLEWARE = [
@@ -141,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'  # must be gb for date entry to work
 
 TIME_ZONE = 'UTC'
 
@@ -157,6 +162,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+# Remove extra details in the label for the filter fields, it does not says 'contains' or similar
 def FILTERS_VERBOSE_LOOKUPS():
     from django_filters.conf import DEFAULTS
 
@@ -177,12 +183,13 @@ AUTHBROKER_CLIENT_ID = env('AUTHBROKER_CLIENT_ID')
 AUTHBROKER_CLIENT_SECRET = env('AUTHBROKER_CLIENT_SECRET')
 AUTHBROKER_SCOPES = 'read write'
 
-
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'authbroker_client.backends.AuthbrokerBackend',
 ]
 
+
+GIT_COMMIT = env('GIT_COMMIT')
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = 'index'
 
@@ -193,4 +200,3 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # for debug_toolbar, to activate it only on localhost
 INTERNAL_IPS = ['127.0.0.1']
-

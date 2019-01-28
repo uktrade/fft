@@ -6,7 +6,7 @@ from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CS
 
 from treasuryCOA.models import L5Account
 
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, \
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 # define the column position in the csv file.
@@ -18,11 +18,10 @@ ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
                      Analysis1.pc_reference.field_name: 'PC Reference',
                  }}  # noqa: E501
 
-
 ANALYSIS2_KEY = {IMPORT_CSV_MODEL_KEY: Analysis2,
                  IMPORT_CSV_PK_KEY: 'Code',
                  IMPORT_CSV_FIELDLIST_KEY: {
-                        Analysis2.analysis2_description.field_name: 'Description',
+                     Analysis2.analysis2_description.field_name: 'Description',
                  }}
 
 
@@ -37,13 +36,11 @@ def import_Analysis2(csvfile):
 import_a1_class = ImportInfo(ANALYSIS1_KEY)
 import_a2_class = ImportInfo(ANALYSIS2_KEY)
 
-
-
 PROJECT_KEY = {IMPORT_CSV_MODEL_KEY: ProjectCode,
-                 IMPORT_CSV_PK_KEY: 'Code',
-                 IMPORT_CSV_FIELDLIST_KEY: {
-                     ProjectCode.project_description.field_name: 'Description',
-                 }}
+               IMPORT_CSV_PK_KEY: 'Code',
+               IMPORT_CSV_FIELDLIST_KEY: {
+                   ProjectCode.project_description.field_name: 'Description',
+               }}
 
 
 def import_Project(csvfile):
@@ -52,16 +49,15 @@ def import_Project(csvfile):
 
 import_project_class = ImportInfo(PROJECT_KEY)
 
-
 L5_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
              IMPORT_CSV_IS_FK: '',
              IMPORT_CSV_PK_KEY: 'L5'
              }
 
 OSCAR_FK_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
-             IMPORT_CSV_IS_FK: '',
-             IMPORT_CSV_PK_KEY: 'OSCAR L5 Mapping'
-             }
+                IMPORT_CSV_IS_FK: '',
+                IMPORT_CSV_PK_KEY: 'OSCAR L5 Mapping'
+                }
 
 NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
            IMPORT_CSV_PK_KEY: 'L6',
@@ -93,8 +89,8 @@ EXP_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: ExpenditureCategory,
 NAC_DIT_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
                IMPORT_CSV_PK_KEY: 'NAC',
                IMPORT_CSV_FIELDLIST_KEY: {NaturalCode.active.field_name: 'Active',
-                                          NaturalCode.commercial_category.field.name: COMM_CAT_FK_KEY,
-                                          NaturalCode.expenditure_category.field.name: EXP_CAT_FK_KEY}}
+                                          NaturalCode.commercial_category.field.name: COMM_CAT_FK_KEY,  # noqa: E501
+                                          NaturalCode.expenditure_category.field.name: EXP_CAT_FK_KEY}}  # noqa: E501
 
 
 def import_NAC_DIT(csvfile):
@@ -151,10 +147,9 @@ def import_NAC_category(csvfile):
 
 COMMERCIAL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
                            IMPORT_CSV_PK_KEY: 'Commercial Category',
-                           IMPORT_CSV_PK_NAME_KEY: CommercialCategory.commercial_category.field_name,
+                           IMPORT_CSV_PK_NAME_KEY: CommercialCategory.commercial_category.field_name,  # noqa: E501
                            IMPORT_CSV_FIELDLIST_KEY:
                                {CommercialCategory.description.field_name: 'Description',
-                                # noqa: E501
                                 CommercialCategory.approvers.field_name: 'Approvers'}}
 
 
@@ -177,21 +172,19 @@ def import_programme(csvfile):
 
 import_prog_class = ImportInfo(PROG_KEY)
 
-
 INTER_ENTITY_L1_KEY = {IMPORT_CSV_MODEL_KEY: InterEntityL1,
-            IMPORT_CSV_PK_KEY: 'L1 Value',
-            IMPORT_CSV_FIELDLIST_KEY: {
-                InterEntityL1.l1_description.field_name: 'L1 Description'}}
-
+                       IMPORT_CSV_PK_KEY: 'L1 Value',
+                       IMPORT_CSV_FIELDLIST_KEY: {
+                           InterEntityL1.l1_description.field_name: 'L1 Description'}}
 
 INTER_ENTITY_KEY = {IMPORT_CSV_MODEL_KEY: InterEntity,
-            IMPORT_CSV_PK_KEY: 'L2 Value',
-            IMPORT_CSV_FIELDLIST_KEY: {
-                InterEntity.l2_description.field_name: 'L2 Description',
-                InterEntity.cpid.field_name: 'CPID',
-                InterEntity.active.field_name: 'Enable',
-                InterEntity.l1_value.field.name: INTER_ENTITY_L1_KEY
-            }}
+                    IMPORT_CSV_PK_KEY: 'L2 Value',
+                    IMPORT_CSV_FIELDLIST_KEY: {
+                        InterEntity.l2_description.field_name: 'L2 Description',
+                        InterEntity.cpid.field_name: 'CPID',
+                        InterEntity.active.field_name: 'Enable',
+                        InterEntity.l1_value.field.name: INTER_ENTITY_L1_KEY
+                    }}
 
 
 def import_inter_entity(csvfile):
@@ -201,4 +194,18 @@ def import_inter_entity(csvfile):
 import_inter_entity_class = ImportInfo(INTER_ENTITY_KEY)
 
 
+L6_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
+                  IMPORT_CSV_IS_FK: '',
+                  IMPORT_CSV_PK_KEY: 'ORACLE Code'
+                  }
 
+
+FCO_MAPPING_KEY = {IMPORT_CSV_MODEL_KEY: FCOMapping,
+                    IMPORT_CSV_PK_KEY: 'FCO Code',
+                    IMPORT_CSV_FIELDLIST_KEY: {
+                        FCOMapping.fco_description.field_name: 'FCO Description',
+                        FCOMapping.account_L6_code_fk.field.name: L6_KEY
+                    }
+                 }
+
+import_fco_mapping_class = ImportInfo(FCO_MAPPING_KEY)

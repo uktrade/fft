@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredCommercialCategoryListView, \
-    FilteredExpenditureCategoryListView, FilteredInterEntityView, \
+    FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, \
     FilteredNACListView, FilteredProgrammeView, FilteredProjectView
 
 urlpatterns = [
@@ -16,5 +16,6 @@ urlpatterns = [
     path('programmefilter/', FilteredProgrammeView.as_view(), name='programmefilter'),
     path('interentityfilter/', FilteredInterEntityView.as_view(), name='interentityfilter'),
     path('projectfilter/', FilteredProjectView.as_view(), name='projectfilter'),
+    path('fcofilter/', FilteredFCOMappingView.as_view(), name='fcofilter'),
 
 ]

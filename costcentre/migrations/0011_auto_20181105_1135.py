@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('costcentre', '0010_auto_20181101_1711'),
     ]
@@ -12,6 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='costcentreperson',
-            options={'verbose_name': 'Hierarchy Responsibility', 'verbose_name_plural': 'Hierarchy Responsibilities'},
+            options={'verbose_name': 'Hierarchy Responsibility',
+                     'verbose_name_plural': 'Hierarchy Responsibilities'},
         ),
     ]

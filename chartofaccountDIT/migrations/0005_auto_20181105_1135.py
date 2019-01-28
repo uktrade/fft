@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('chartofaccountDIT', '0004_interentity_cpid'),
     ]
@@ -23,7 +22,8 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='analysis1',
             name='analysis1_code',
-            field=models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Contract Code'),
+            field=models.CharField(max_length=50, primary_key=True, serialize=False,
+                                   verbose_name='Contract Code'),
         ),
         migrations.AlterField(
             model_name='analysis1',

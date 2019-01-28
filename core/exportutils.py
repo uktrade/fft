@@ -1,18 +1,22 @@
 import csv
 
+from core.utils import today_string
+
 from django.db import models
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
 import openpyxl
+
 from .importcsv import IMPORT_CSV_MODEL_KEY, \
     get_col_from_obj_key, get_field_name
 
-def get_fk_value(obj, field):
+
+def get_fk_value(obj, field, novalue = '-'):
     if obj is not None:
         return getattr(obj, field)
     else:
-        return '-'
+        return novalue
 
 
 # NOT USED
@@ -80,8 +84,9 @@ def generic_table_iterator(queryset):
         yield row
 
 
-def export_to_csv(queryset, f):
-    title = queryset.model._meta.verbose_name_plural.title()
+def export_to_csv(queryset, f, title = ''):
+    if title == '':
+        title = queryset.model._meta.verbose_name_plural.title() + today_string()
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=' + title + '.csv'
     writer = csv.writer(response, csv.excel)
@@ -98,8 +103,9 @@ def generic_export_to_csv(queryset):
 EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 
-def export_to_excel(queryset, f):
-    title = queryset.model._meta.verbose_name_plural.title()
+def export_to_excel(queryset, f, title = ''):
+    if title == '':
+        title = queryset.model._meta.verbose_name_plural.title() + today_string()
     resp = HttpResponse(content_type=EXCEL_TYPE)
     resp['Content-Disposition'] = 'attachment; filename=' + title + '.xlsx'
     wb = openpyxl.Workbook()
@@ -130,4 +136,3 @@ class export_csv_from_import():
         yield self.header_list
         for obj in q:
             yield list(obj.values())
-

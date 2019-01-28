@@ -16,6 +16,7 @@ class CostCentrePerson(TimeStampedModel, LogChangeModel):
     def _get_full_name(self):
         "Returns the person's full name."
         return '%s %s' % (self.surname, self.name)
+
     full_name = property(_get_full_name)
 
     def __str__(self):
@@ -89,15 +90,15 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
     deputy_director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
-                                         verbose_name='Deputy Director',
-                                         null=True, blank=True)
+                                        verbose_name='Deputy Director',
+                                        null=True, blank=True)
     business_partner = models.ForeignKey('BusinessPartner',
                                          verbose_name='Finance Business Partner',
                                          on_delete=models.PROTECT,
                                          null=True, blank=True)
     bsce_email = models.ForeignKey(BSCEEmail, verbose_name='BSCE Email',
-                                         on_delete=models.PROTECT, null=True, blank=True)
-    disabled_with_actual = models.BooleanField( 'Disabled (Actuals to be cleared)', default='False')
+                                   on_delete=models.PROTECT, null=True, blank=True)
+    disabled_with_actual = models.BooleanField('Disabled (Actuals to be cleared)', default='False')
 
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)
@@ -106,5 +107,3 @@ class CostCentre(TimeStampedModel, LogChangeModel):
         verbose_name = "Cost Centre"
         verbose_name_plural = "Cost Centres"
         ordering = ['cost_centre_code']
-
-

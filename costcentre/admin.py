@@ -6,12 +6,10 @@ from django.contrib import admin
 from django.shortcuts import redirect, render
 from django.urls import path
 
-
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .exportcsv import export_admin_cc_iterator, export_cc_iterator, export_person_iterator, export_bsce_iterator, \
-    export_group_iterator, export_directorate_iterator, export_bp_iterator
-
+from .exportcsv import export_bp_iterator, export_bsce_iterator, export_cc_iterator, \
+    export_directorate_iterator, export_group_iterator, export_person_iterator
 from .importcsv import import_cc_class, import_cc_people_class, \
     import_departmental_group_class, import_director_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
@@ -64,16 +62,16 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         if obj:
             return ['cost_centre_code', 'cost_centre_name',
                     'directorate', 'deputy_director', 'business_partner', 'bsce_email',
-                    'disabled_with_actual','active', 'created', 'updated']
+                    'disabled_with_actual', 'active', 'created', 'updated']
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate','bsce_email',
+            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'bsce_email',
                     'deputy_director', 'business_partner', 'disabled_with_actual', 'active']
 
     # the export and import function must be defined as properties, to stop getting 'self' as first
     # parameter
     @property
     def export_func(self):
-#        return export_admin_cc_iterator
+        #        return export_admin_cc_iterator
         return export_cc_iterator
 
     @property
@@ -87,6 +85,8 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     list_filter = ('active', 'disabled_with_actual',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
+
+    autocomplete_fields = ['directorate']
 
     def get_urls(self):
         urls = super().get_urls()
@@ -122,7 +122,7 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
     list_display = ('directorate_code', 'directorate_name',
                     'group_code', 'group_name', 'director', 'active')
     search_fields = ['directorate_code', 'directorate_name',
-                     'group__group_name','group__group_code',
+                     'group__group_name', 'group__group_code',
                      'director__name', 'director__surname']
     list_filter = ('active',
                    ('group', RelatedDropdownFilter))
@@ -201,13 +201,12 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
         return import_departmental_group_class
 
 
-
 class BSCEEmailAdmin(AdminActiveField, AdminExport):
     list_display = ('bsce_email', 'active')
     search_fields = ['bsce_email']
 
     def get_readonly_fields(self, request, obj=None):
-        return [ 'created', 'updated']
+        return ['created', 'updated']
 
     @property
     def export_func(self):
@@ -219,7 +218,7 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
     search_fields = ['name', 'surname', 'bp_email']
 
     def get_readonly_fields(self, request, obj=None):
-        return [ 'created', 'updated']
+        return ['created', 'updated']
 
     @property
     def export_func(self):
@@ -227,7 +226,7 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
 
 
 class CostCentrePersonAdmin(AdminActiveField, AdminExport):
-    list_display = ('full_name','is_dg', 'is_director', 'active')
+    list_display = ('full_name', 'is_dg', 'is_director', 'active')
     search_fields = ['name', 'surname', 'email']
 
     list_filter = ('active',
@@ -236,7 +235,7 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
                    )
 
     def get_readonly_fields(self, request, obj=None):
-        return [ 'created', 'updated']
+        return ['created', 'updated']
 
     @property
     def export_func(self):

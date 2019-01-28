@@ -5,12 +5,20 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
-class TimeStampedModel(models.Model):
+class SimpleTimeStampedModel(models.Model):
+    """ An abstract base class model that provide self-updating
+    'created' and 'modified' field """
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class TimeStampedModel(SimpleTimeStampedModel):
     """ An abstract base class model that provide self-updating
     'created' and 'modified' field, and an active flag"""
     active = models.BooleanField(default=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
@@ -47,7 +55,7 @@ class LogChangeModel(models.Model):
                 newvalue = getattr(self, k)
                 if newvalue != v:
                     message = message + ' ' + self._meta.get_field(k).verbose_name + \
-                              ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
+                        ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
                     changed = True
         if changed:

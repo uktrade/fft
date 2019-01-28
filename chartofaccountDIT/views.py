@@ -1,12 +1,11 @@
 from core.utils import today_string
-
 from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
-    CommercialCategoryFilter, ExpenditureCategoryFilter, \
+    CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
 from .tables import Analysis1Table, Analysis2Table, \
-    CommercialCategoryTable, ExpenditureCategoryTable, \
+    CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable
 
 
@@ -20,7 +19,8 @@ class FilteredNACListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Natural Account Codes (NAC)'
-        context['section_description'] = 'This field tells us what we are spending the money on. ' \
+        context['section_description'] = 'This field tells us what we are ' \
+                                         'spending the money on. ' \
                                          'The structure follows the Treasury Common Chart of ' \
                                          'Accounts and groups a set of transactions ' \
                                          'into a clearly defined category.'
@@ -69,7 +69,8 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Contract Reconciliation (Analysis 1)'
-        context['section_description'] = 'This field helps to reconcile with Commercial’s unique ' \
+        context['section_description'] = 'This field helps to ' \
+                                         'reconcile with Commercial’s unique ' \
                                          'contract identifier. It will enable the organisation ' \
                                          'to match spend on the financial system ' \
                                          'to specific contracts.'
@@ -137,12 +138,29 @@ class FilteredProjectView(FAdminFilteredView):
     filterset_class = ProjectFilter
     export_name = 'Project Codes ' + today_string()
     sheet_name = 'Project Codes'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['section_name'] = 'Project (Spare 1)'
         context['section_description'] = 'This field helps to identify DITs project / portfolio ' \
                                          'and report against them regardless where in the ' \
                                          'organisation expenditure is taking place i.e. ' \
-                                         'Trade Remedies Authority (project) expenditure in TPG, ' \
+                                         'Trade Remedies Authority (project) ' \
+                                         'expenditure in TPG, ' \
                                          'Digital and Estates.'
+        return context
+
+
+
+class FilteredFCOMappingView(FAdminFilteredView):
+    table_class = FCOMappingTable
+    model = table_class.Meta.model
+    filterset_class = FCOMappingtFilter
+    export_name = 'FCO Mappings ' + today_string()
+    sheet_name = 'FCO Mappings'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = 'FCO Mapping'
+        context['section_description'] = 'AAAA AAAA.'
         return context
