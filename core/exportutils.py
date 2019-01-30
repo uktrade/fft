@@ -123,11 +123,8 @@ def export_to_excel(queryset, f, title = ''):
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
     ws.title = title
-    row_num = 0
     for row in f(queryset):
-        for col_num in range(len(row)):
-            ws.cell(row=row_num + 1, column=col_num + 1).value = is_number(row[col_num])
-        row_num += 1
+        ws.append(row)
     wb.save(resp)
     return resp
 
