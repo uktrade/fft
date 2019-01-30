@@ -19,6 +19,18 @@ def get_fk_value(obj, field, novalue = '-'):
         return novalue
 
 
+def is_number(s):
+    try:
+        num = int(s)
+        return num
+    except ValueError:
+        try:
+            num = float(s)
+            return num
+        except ValueError:
+            return s
+
+
 # NOT USED
 class SmartExport:
     """ return lists with the header name and the objects from a queryset
@@ -115,7 +127,7 @@ def export_to_excel(queryset, f, title = ''):
     for row in f(queryset):
         for col_num in range(len(row)):
             c = ws.cell(row=row_num + 1, column=col_num + 1)
-            c.value = row[col_num]
+            c.value = is_number(row[col_num])
         row_num += 1
     wb.save(resp)
     return resp
