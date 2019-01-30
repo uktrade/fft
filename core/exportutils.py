@@ -126,8 +126,7 @@ def export_to_excel(queryset, f, title = ''):
     row_num = 0
     for row in f(queryset):
         for col_num in range(len(row)):
-            c = ws.cell(row=row_num + 1, column=col_num + 1)
-            c.value = is_number(row[col_num])
+            ws.cell(row=row_num + 1, column=col_num + 1).value = is_number(row[col_num])
         row_num += 1
     wb.save(resp)
     return resp
