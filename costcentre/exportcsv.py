@@ -19,7 +19,7 @@ def export_cc_iterator(queryset):
            'Group', 'Group Description',
            'BSCE Email']
     for obj in queryset:
-        yield [obj.cost_centre_code,
+        yield [int(obj.cost_centre_code),
                obj.cost_centre_name,
                obj.active,
                obj.disabled_with_actual,

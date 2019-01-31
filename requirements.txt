@@ -5,7 +5,7 @@ boto3==1.9.42
 botocore==1.12.42
 certifi==2018.8.24
 chardet==3.0.4
--e git+https://github.com/uktrade/django-staff-sso-usermodel.git@f3ab9261de3b7a69b733a446a148419e12055216#egg=custom_usermodel
+-e git+https://github.com/uktrade/django-staff-sso-usermodel.git@c8d0c0ed17c2b39464b98b3cf93660a4db7d67a1#egg=custom_usermodel
 decorator==4.2.1
 diff-match-patch==20121119
 dj-database-url==0.5.0
