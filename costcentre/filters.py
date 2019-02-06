@@ -38,7 +38,9 @@ class CostCentreFilter(MyFilterSet):
     @property
     def qs(self):
         cc = super(CostCentreFilter, self).qs
-        return cc.filter(active=True).order_by('directorate__group__group_code',
+        return cc.filter(active=True).select_related('directorate'). \
+            select_related('deputy_director'). \
+            select_related('directorate__group').order_by('directorate__group__group_code',
                                                'directorate__group__group_name',
                                                'directorate__directorate_code',
                                                'directorate__directorate_name',
