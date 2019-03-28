@@ -1,6 +1,7 @@
 import io
 
 from core.exportutils import export_to_csv
+from core.models import FinancialYear
 
 from django import forms
 from django.contrib import admin, messages
@@ -77,6 +78,7 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(FinancialYear)
 
 
 class AdminActiveField(admin.ModelAdmin):
@@ -221,3 +223,4 @@ class AdminImportExport(AdminExport):
         return render(
             request, "admin/csv_form.html", payload
         )
+

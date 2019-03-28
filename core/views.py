@@ -27,8 +27,6 @@ class AboutView(TemplateView):
 
 
 
-
-
 class TableExportWithSheetName(TableExport):
     def __init__(self, sheet_name=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

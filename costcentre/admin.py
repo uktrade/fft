@@ -1,6 +1,6 @@
 import io
 
-from core.admin import AdminActiveField, AdminExport, AdminImportExport, CsvImportForm
+from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly, CsvImportForm
 
 from django.contrib import admin
 from django.shortcuts import redirect, render
@@ -13,7 +13,7 @@ from .exportcsv import export_bp_iterator, export_bsce_iterator, export_cc_itera
 from .importcsv import import_cc_class, import_cc_people_class, \
     import_departmental_group_class, import_director_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
-    DepartmentalGroup, Directorate
+    DepartmentalGroup, Directorate, HistoricCostCentre
 
 
 # Displays extra fields in the list of cost centres
@@ -242,9 +242,29 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
         return export_person_iterator
 
 
+class HistoricCostCentreAdmin(AdminreadOnly, AdminExport):
+    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
+                    'directorate_name', 'group_code', 'group_name', 'deputy_director_fullname',
+                    'business_partner_fullname', 'active')
+
+    search_fields = ['cost_centre_code', 'cost_centre_name',
+                     'directorate_code', 'directorate_name',
+                     'group_code', 'group_name',
+                     'deputy_director_fullname']
+
+    list_filter = ('active',
+                   'disabled_with_actual',
+                   )
+
+    @property
+    def export_func(self):
+        return export_person_iterator
+
+
 admin.site.register(CostCentre, CostCentreAdmin)
 admin.site.register(DepartmentalGroup, DepartmentalGroupAdmin)
 admin.site.register(Directorate, DirectorateAdmin)
 admin.site.register(BSCEEmail, BSCEEmailAdmin)
 admin.site.register(BusinessPartner, BusinessPartnerAdmin)
 admin.site.register(CostCentrePerson, CostCentrePersonAdmin)
+admin.site.register(HistoricCostCentre, HistoricCostCentreAdmin)

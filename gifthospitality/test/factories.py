@@ -1,8 +1,7 @@
 import factory
 
-from gifthospitality.models import GiftsAndHospitality, GiftsAndHospitalityCategory, \
-    GiftsAndHospitalityClassification, GiftsAndHospitalityCompany
-
+from gifthospitality.models import GiftAndHospitalityClassification, GiftAndHospitality, \
+    GiftAndHospitalityCategory, GiftAndHospitalityCompany
 
 class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
     """
@@ -10,7 +9,7 @@ class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        model = GiftsAndHospitality
+        model = GiftAndHospitality
 
 
 class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
@@ -19,7 +18,7 @@ class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        model = GiftsAndHospitalityCategory
+        model = GiftAndHospitalityCategory
 
 
 class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
@@ -28,7 +27,7 @@ class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        model = GiftsAndHospitalityClassification
+        model = GiftAndHospitalityClassification
 
 
 class GiftsAndHospitalityCompanyFactory(factory.DjangoModelFactory):
@@ -37,4 +36,4 @@ class GiftsAndHospitalityCompanyFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        model = GiftsAndHospitalityCompany
+        model = GiftAndHospitalityCompany
