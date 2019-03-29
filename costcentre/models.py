@@ -115,13 +115,13 @@ class CostCentre(TimeStampedModel, LogChangeModel):
 class HistoricCostCentre(models.Model):
     """Repository for historical cost centres hierarchies.
     The table is not normalised, to make life easier when retrieving data"""
-    group_code = models.CharField('Group No.',  max_length=6)
+    group_code = models.CharField('Group No.',  max_length=50)
     group_name = models.CharField('Group Name', max_length=300)
     dg_fullname = models.CharField('Director General', max_length=200, null=True, blank=True)
-    directorate_code = models.CharField('Directorate',  max_length=6)
+    directorate_code = models.CharField('Directorate',  max_length=50)
     directorate_name = models.CharField('Directorate Name', max_length=300)
     director_fullname = models.CharField('Director', max_length=200, null=True, blank=True)
-    cost_centre_code = models.CharField('Cost Centre No.',  max_length=6)
+    cost_centre_code = models.CharField('Cost Centre No.',  max_length=50)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     deputy_director_fullname = models.CharField('Deputy Director', max_length=200, null=True, blank=True)
     business_partner_fullname = models.CharField('Business Partner', max_length=200, null=True, blank=True)
@@ -133,15 +133,15 @@ class HistoricCostCentre(models.Model):
     archived = models.DateTimeField(auto_now_add=True)
 
     @classmethod
-    def archive_from_cc(cls, cc_obj, year_obj):
+    def archive_from_cc(cls, cc_obj, year_obj, suffix = ''):
         cc_hist = cls(group_code = cc_obj.directorate.group.group_code,
-                    group_name = cc_obj.directorate.group.group_name,
+                    group_name = cc_obj.directorate.group.group_name + suffix,
                     dg_fullname = cc_obj.directorate.group.director_general,
                     directorate_code = cc_obj.directorate.directorate_code,
-                    directorate_name = cc_obj.directorate.directorate_name,
+                    directorate_name = cc_obj.directorate.directorate_name + suffix,
                     director_fullname = cc_obj.directorate.director,
                     cost_centre_code = cc_obj.cost_centre_code,
-                    cost_centre_name = cc_obj.cost_centre_name,
+                    cost_centre_name = cc_obj.cost_centre_name + suffix,
                     deputy_director_fullname = cc_obj.deputy_director,
                     business_partner_fullname = cc_obj.business_partner,
                     financial_year = year_obj,

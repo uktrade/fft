@@ -2,7 +2,7 @@ from core.tables import FadminTable
 
 import django_tables2 as tables
 
-from .models import CostCentre
+from .models import CostCentre, HistoricCostCentre
 
 
 class CostCentreTable(FadminTable):
@@ -27,5 +27,22 @@ class CostCentreTable(FadminTable):
                   'director',
                   'director_general',
                   'business_partner',
+                  'bsce_email'
+                  )
+
+
+class HistoricalCostCentreTable(FadminTable):
+
+    class Meta(FadminTable.Meta):
+        model = HistoricCostCentre
+        fields = ('group_code',
+                  'group_name',
+                  'directorate_code',
+                  'directorate_name',
+                  'cost_centre_code',
+                  'cost_centre_name',
+                  'director_fullname',
+                  'dg_fullname',
+                  'business_partner_fullname',
                   'bsce_email'
                   )

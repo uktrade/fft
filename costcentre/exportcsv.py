@@ -89,14 +89,27 @@ def export_person_iterator(queryset):
 
 
 def export_historic_costcentre_iterator(queryset):
-    yield ['Surname',
-           'Name',
-           'Director General',
-           'Director',
-           'Active']
+    yield ['Cost Centre', 'Cost Centre Description',
+           'Deputy Director', 'Business Partner', 'BSCE Email'
+           'Active', 'Disabled (Actuals to be cleared)',
+           'Directorate', 'Directorate Description', 'Director'
+           'Group', 'Group Description', 'Director General',
+           'Financial Year', 'Date archived'
+           ]
     for obj in queryset:
-        yield [obj.surname,
-               obj.name,
-               obj.is_dg,
-               obj.is_director,
-               obj.active]
+        yield [obj.cost_centre_code,
+               obj.cost_centre_name,
+               obj.deputy_director_fullname,
+               obj.business_partner_fullname,
+               obj.bsce_email,
+               obj.active,
+               obj.disabled_with_actual,
+               obj.directorate_code,
+               obj.directorate_name,
+               obj.director_fullname,
+               obj.group_code,
+               obj.group_name,
+               obj.dg_fullname,
+               obj.financial_year.financial_year_display,
+               obj.archived
+               ]
