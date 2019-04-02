@@ -1,7 +1,6 @@
 from django.db import models
 
-from core.metamodels import LogChangeModel, TimeStampedModel  # noqa I100
-from core.models import FinancialYear
+from core.metamodels import ArchivedModel, LogChangeModel, TimeStampedModel  # noqa I100
 
 
 class CostCentrePerson(TimeStampedModel, LogChangeModel):
@@ -112,7 +111,7 @@ class CostCentre(TimeStampedModel, LogChangeModel):
         ordering = ['cost_centre_code']
 
 
-class HistoricCostCentre(models.Model):
+class HistoricCostCentre(ArchivedModel):
     """Repository for historical cost centres hierarchies.
     The table is not normalised, to make life easier when retrieving data"""
     group_code = models.CharField('Group No.',  max_length=50)
@@ -125,12 +124,10 @@ class HistoricCostCentre(models.Model):
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     deputy_director_fullname = models.CharField('Deputy Director', max_length=200, null=True, blank=True)
     business_partner_fullname = models.CharField('Business Partner', max_length=200, null=True, blank=True)
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
     bsce_email = models.ForeignKey(BSCEEmail, verbose_name='BSCE Email',
                                    on_delete=models.PROTECT, null=True, blank=True)
     active = models.BooleanField(default='True')
     disabled_with_actual = models.BooleanField('Disabled (Actuals to be cleared)', default='False')
-    archived = models.DateTimeField(auto_now_add=True)
 
     @classmethod
     def archive_from_cc(cls, cc_obj, year_obj, suffix = ''):

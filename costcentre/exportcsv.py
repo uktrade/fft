@@ -90,9 +90,9 @@ def export_person_iterator(queryset):
 
 def export_historic_costcentre_iterator(queryset):
     yield ['Cost Centre', 'Cost Centre Description',
-           'Deputy Director', 'Business Partner', 'BSCE Email'
+           'Deputy Director', 'Business Partner', 'BSCE Email',
            'Active', 'Disabled (Actuals to be cleared)',
-           'Directorate', 'Directorate Description', 'Director'
+           'Directorate', 'Directorate Description', 'Director',
            'Group', 'Group Description', 'Director General',
            'Financial Year', 'Date archived'
            ]
@@ -113,3 +113,5 @@ def export_historic_costcentre_iterator(queryset):
                obj.financial_year.financial_year_display,
                obj.archived
                ]
+
+
