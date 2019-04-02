@@ -130,7 +130,7 @@ class HistoricCostCentre(ArchivedModel):
     disabled_with_actual = models.BooleanField('Disabled (Actuals to be cleared)', default='False')
 
     @classmethod
-    def archive_from_cc(cls, cc_obj, year_obj, suffix = ''):
+    def archive_year(cls, cc_obj, year_obj, suffix = ''):
         cc_hist = cls(group_code = cc_obj.directorate.group.group_code,
                     group_name = cc_obj.directorate.group.group_name + suffix,
                     dg_fullname = cc_obj.directorate.group.director_general,

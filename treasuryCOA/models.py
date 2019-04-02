@@ -133,7 +133,7 @@ class HistoricL5Account(L5AccountAbstract, ArchivedModel):
         verbose_name = 'Archived Treasury Level 5 COA'
 
     @classmethod
-    def archive_from_l5(cls, obj, year_obj, suffix = ''):
+    def archive_year(cls, obj, year_obj, suffix = ''):
         coa_hist = cls(
                 financial_year = year_obj,
                 account_l5_long_name = obj.account_l5_long_name + suffix,
