@@ -49,8 +49,6 @@ class HistoricalAnalysis1(Analysis1Abstract, ArchivedModel):
         ordering = ['financial_year', 'analysis1_code']
 
 
-
-
 class Analysis2Abstract(models.Model):
     analysis2_code = models.CharField('Market Code', primary_key=True, max_length=50)
     analysis2_description = models.CharField(max_length=300, verbose_name='Market')
@@ -199,29 +197,101 @@ class HistoricalCommercialCategory(CommercialCategoryAbstract, ArchivedModel):
 
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
-class NaturalCode(TimeStampedModel, LogChangeModel):
+class NaturalCodeAbstract(models.Model):
     natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
     natural_account_code_description = models.CharField(max_length=200,
                                                         verbose_name='NAC Description')
-    account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
+    used_for_budget = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
+
+    class Meta:
+        abstract = True
+        verbose_name = "Natural Account Code (NAC)"
+        verbose_name_plural = "Natural Account Codes (NAC)"
+        ordering = ['natural_account_code']
+
+
+class NaturalCode(NaturalCodeAbstract, TimeStampedModel, LogChangeModel):
     expenditure_category = models.ForeignKey(ExpenditureCategory, verbose_name='Budget Category',
                                              on_delete=models.PROTECT, blank=True, null=True)
     commercial_category = models.ForeignKey(CommercialCategory,
                                             on_delete=models.PROTECT, blank=True, null=True)
-    used_for_budget = models.BooleanField(default=False)
+    account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
     account_L5_code_upload = models.ForeignKey(L5Account,
                                                on_delete=models.PROTECT,
                                                verbose_name='L5 for OSCAR upload',
                                                related_name='L5_OSCAR_Upload',
                                                blank=True, null=True)
 
+
+class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
+    """It includes the fields displayed on the FIDO interface, and it has no foreign keys in it, to avoid dependencies
+    from other tables. The tables is not normalised by design."""
+    natural_account_code = models.IntegerField(verbose_name='PO/Actuals NAC')
+    expenditure_category = models.CharField(max_length=255, verbose_name='Budget Category', blank=True, null=True)
+    NAC_category = models.CharField(max_length=255, verbose_name='Budget Grouping', blank=True, null=True)
+    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',blank=True, null=True)
+    account_L5_code = models.BigIntegerField(blank=True, null=True)
+    account_L5_description = models.CharField(max_length=255, blank=True, null=True)
+    account_L6_budget = models.BigIntegerField( 'Budget/Forecast NAC', blank=True, null=True)
+    account_L5_code_upload = models.BigIntegerField(verbose_name='L5 for OSCAR upload', blank=True, null=True)
+    economic_budget_code = models.CharField(max_length=255, verbose_name='Expenditure Type', blank=True, null=True)
+    active = models.BooleanField(default=False)
+
     def __str__(self):
-        return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
+        return super().__str__() \
+               + ' ' + self.financial_year.financial_year_display
+
+    @classmethod
+    def archive_year(cls, obj, year_obj, suffix =''):
+        if obj.expenditure_category:
+            expenditure_category_value = obj.expenditure_category.grouping_description
+            NAC_category_val = obj.expenditure_category.NAC_category.NAC_category_description
+            account_L6_budget_val = obj.expenditure_category.linked_budget_code.natural_account_code
+        else:
+            expenditure_category_value = None
+            NAC_category_val = None
+            account_L6_budget_val = None
+        if obj.commercial_category:
+            commercial_category_val = obj.commercial_category.commercial_category
+        else:
+            commercial_category_val = None
+        if obj.account_L5_code_upload:
+            account_L5_code_upload_val = obj.account_L5_code_upload.account_L5_code
+        else:
+            account_L5_code_upload_val = None
+        if obj.account_L5_code:
+            account_L5_code_val = obj.account_L5_code.account_l5_code
+            account_L5_description_val = obj.account_L5_code.account_l5_long_name
+            economic_budget_code_val = obj.account_L5_code.economic_budget_code
+        else:
+            account_L5_code_val = None
+            account_L5_description_val = None
+            economic_budget_code_val = None
+        obj_hist = cls(natural_account_code_description = obj.natural_account_code_description  + suffix,
+                       natural_account_code=obj.natural_account_code,
+                       used_for_budget =obj.used_for_budget,
+                       expenditure_category=expenditure_category_value,
+                       NAC_category=NAC_category_val,
+                       commercial_category=commercial_category_val,
+                       account_L6_budget=account_L6_budget_val,
+                       account_L5_code=account_L5_code_val,
+                       account_L5_description=account_L5_description_val,
+                       account_L5_code_upload=account_L5_code_upload_val,
+                       economic_budget_code=economic_budget_code_val,
+                       financial_year=year_obj
+                    )
+        obj_hist.save()
+        return obj_hist
 
     class Meta:
-        verbose_name = "Natural Account Code (NAC)"
-        verbose_name_plural = "Natural Account Codes (NAC)"
-        ordering = ['natural_account_code']
+        verbose_name = "Historical Natural Account Code (NAC)"
+        verbose_name_plural = "Historical Natural Account Codes (NAC)"
+        ordering = ['financial_year', 'natural_account_code']
+
+
 
 
 class ProgrammeCodeAbstract(models.Model):

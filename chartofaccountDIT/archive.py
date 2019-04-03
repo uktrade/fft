@@ -3,7 +3,7 @@ from core.archive import archive_generic
 from .models import ProjectCode, HistoricalProjectCode, ProgrammeCode, HistoricalProgrammeCode, \
     HistoricalExpenditureCategory, ExpenditureCategory, HistoricalInterEntity,  InterEntity, \
     HistoricalFCOMapping, FCOMapping,  HistoricalCommercialCategory, CommercialCategory, \
-    HistoricalAnalysis1, Analysis1, HistoricalAnalysis2, Analysis2
+    HistoricalAnalysis1, Analysis1, HistoricalAnalysis2, Analysis2, HistoricalNaturalCode, NaturalCode
 
 
 def archive_project_code(year):
@@ -36,5 +36,9 @@ def archive_analysis_1(year):
 
 def archive_analysis_2(year):
     archive_generic(year, HistoricalAnalysis2, Analysis2)
+
+
+def archive_natural_code(year):
+    archive_generic(year, HistoricalNaturalCode, NaturalCode)
 
 
