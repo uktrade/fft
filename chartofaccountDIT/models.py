@@ -299,7 +299,6 @@ class InterEntity(InterEntityAbstract, TimeStampedModel, LogChangeModel):
     l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
 
 
-
 class HistoricalInterEntity(InterEntityAbstract, ArchivedModel):
     l2_value = models.CharField('ORACLE - Inter Entity Code',  max_length=10)
     l1_value = models.CharField('Government Body', max_length=10)
@@ -325,8 +324,6 @@ class HistoricalInterEntity(InterEntityAbstract, ArchivedModel):
         verbose_name = "Historic Inter-Entity"
         verbose_name_plural = "Historic Inter-Entities"
         ordering = ['financial_year', 'l2_value']
-
-
 
 
 class ProjectCodeAbstract(models.Model):
@@ -369,21 +366,49 @@ class HistoricalProjectCode(ProjectCodeAbstract, ArchivedModel):
         ordering = ['financial_year', 'project_code']
 
 
-class FCOMapping(TimeStampedModel, LogChangeModel):
+class FCOMappingAbstract(models.Model):
     fco_code = models.IntegerField(primary_key=True, verbose_name='FCO Code')
     fco_description = models.CharField(max_length=300, verbose_name='FCO Description')
-    account_L6_code_fk = models.ForeignKey(NaturalCode,
-                                           on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return str(self.fco_code) + ' - ' + self.fco_description
 
     class Meta:
+        abstract = True
         verbose_name = "FCO Mapping"
         verbose_name_plural = "FCO Mappings"
         ordering = ['fco_code']
 
 
+class FCOMapping(FCOMappingAbstract, TimeStampedModel, LogChangeModel):
+    account_L6_code_fk = models.ForeignKey(NaturalCode,
+                                           on_delete=models.PROTECT, blank=True, null=True)
+
+
+class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
+    fco_code = models.IntegerField(verbose_name='FCO Code')
+    account_L6_code = models.IntegerField(verbose_name='Oracle Code')
+    account_L6_description = models.CharField(max_length=200,
+                                                    verbose_name='Oracle Description')
+    def __str__(self):
+        return super().__str__() \
+               + ' ' + self.financial_year.financial_year_display
+
+    @classmethod
+    def archive_year(cls, obj, year_obj, suffix =''):
+        obj_hist = cls(fco_description = obj.fco_description  + suffix,
+                       fco_code =obj.fco_code,
+                       account_L6_code = obj.account_L6_code_fk.natural_account_code,
+                       account_L6_description = obj.account_L6_code_fk.natural_account_code_description,
+                       financial_year=year_obj
+                      )
+        obj_hist.save()
+        return obj_hist
+
+    class Meta:
+        verbose_name = "Historical FCO Mapping"
+        verbose_name_plural = "Historical FCO Mappings"
+        ordering = ['financial_year', 'fco_code']
 
 
 # Historical data
