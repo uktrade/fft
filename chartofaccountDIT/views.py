@@ -3,27 +3,44 @@ from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, HistoricalProgrammeFilter
+    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, HistoricalProgrammeFilter, HistoricalNACFilter
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
-    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, HistoricalProgrammeTable
+    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
+    HistoricalProgrammeTable, HistoricalNaturalCodeTable
 
 
 class FilteredNACListView(FAdminFilteredView):
     table_class = NaturalCodeTable
     model = table_class.Meta.model
     filterset_class = NACFilter
-    export_name = 'Natural Account Codes' + today_string()
-    sheet_name = 'Natural Account Codes'
+    name = 'Natural Account Codes'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Natural Account Codes (NAC)'
+        context['section_name'] = self.name + ' (NAC)'
         context['section_description'] = 'This field tells us what we are ' \
                                          'spending the money on. ' \
                                          'The structure follows the Treasury Common Chart of ' \
                                          'Accounts and groups a set of transactions ' \
                                          'into a clearly defined category.'
+        return context
+
+
+class HistoricalFilteredNACListView(FAdminFilteredView):
+    table_class = HistoricalNaturalCodeTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalNACFilter
+    name = 'Natural Account Codes  2018-19'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
         return context
 
 

@@ -3,7 +3,8 @@ from django.urls import path
 from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredCommercialCategoryListView, \
     FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, \
-    FilteredNACListView, FilteredProgrammeView, FilteredProjectView, HistoricalFilteredProgrammeView
+    FilteredNACListView, FilteredProgrammeView, FilteredProjectView, \
+    HistoricalFilteredProgrammeView, HistoricalFilteredNACListView
 
 urlpatterns = [
     path('naturalcode/', FilteredNACListView.as_view(), name='naturalcode'),
@@ -18,7 +19,7 @@ urlpatterns = [
     path('projectfilter/', FilteredProjectView.as_view(), name='projectfilter'),
     path('fcofilter/', FilteredFCOMappingView.as_view(), name='fcofilter'),
     # Historical data
-    path('historicalnaturalcode/', FilteredNACListView.as_view(), name='historicalnaturalcode'),
+    path('historicalnaturalcode/', HistoricalFilteredNACListView.as_view(), name='historicalnaturalcode'),
     path('historicalfinancecategory/', FilteredExpenditureCategoryListView.as_view(),
          name='historicalfinancecategory'),
     path('historicalcommercialcategory/', FilteredCommercialCategoryListView.as_view(),

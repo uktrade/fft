@@ -5,7 +5,8 @@ from django.db.models import Q
 import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalProgrammeCode
+    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, \
+    HistoricalProgrammeCode, HistoricalNaturalCode
 
 
 class NACFilter(MyFilterSet):
@@ -29,10 +30,40 @@ class NACFilter(MyFilterSet):
     @property
     def qs(self):
         myfilter = super(NACFilter, self).qs
-        return myfilter.filter(active=True).order_by('-account_L5_code__economic_budget_code',
+        return myfilter.filter(active=True).select_related('expenditure_category'). \
+            select_related('commercial_category').order_by('-account_L5_code__economic_budget_code',
                                                      '-expenditure_category__NAC_category__NAC_category_description',    # noqa: E501
                                                      '-expenditure_category__grouping_description',
                                                      'commercial_category__commercial_category',
+                                                     'natural_account_code'
+                                                     )
+
+
+class HistoricalNACFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(economic_budget_code__icontains=value) |
+                               Q(NAC_category__icontains=value) |
+                               Q(account_L6_budget__icontains=value) |
+                               Q(expenditure_category__icontains=value) |
+                               Q(commercial_category__icontains=value) |
+                               Q(natural_account_code__icontains=value) |
+                               Q(natural_account_code_description__icontains=value)
+                               )
+
+    class Meta(MyFilterSet.Meta):
+        model = HistoricalNaturalCode
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalNACFilter, self).qs
+        return myfilter.filter(active=True).order_by('-economic_budget_code',
+                                                     '-NAC_category',
+                                                     '-expenditure_category',
+                                                     'commercial_category',
                                                      'natural_account_code'
                                                      )
 
@@ -151,6 +182,7 @@ class ProgrammeFilter(MyFilterSet):
 class HistoricalProgrammeFilter(ProgrammeFilter):
     class Meta(ProgrammeFilter.Meta):
         model = HistoricalProgrammeCode
+
 
 class InterEntityFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',

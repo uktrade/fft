@@ -18,6 +18,7 @@ class ProgrammeTable(FadminTable):
 
 
 class HistoricalProgrammeTable(ProgrammeTable):
+    """The historical model is identical to the current one, so we can just inherit the class"""
     class Meta(ProgrammeTable.Meta):
         model = HistoricalProgrammeCode
 
@@ -43,6 +44,19 @@ class NaturalCodeTable(FadminTable):
                   'budget_description',
                   'commercial_category',
                   'budget_NAC_code',
+                  'natural_account_code',
+                  'natural_account_code_description',
+                  )
+
+
+class HistoricalNaturalCodeTable(FadminTable):
+    class Meta(FadminTable.Meta):
+        model = HistoricalNaturalCode
+        fields = ('economic_budget_code',
+                  'NAC_category',
+                  'expenditure_category',
+                  'commercial_category',
+                  'account_L6_budget',
                   'natural_account_code',
                   'natural_account_code_description',
                   )
