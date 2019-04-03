@@ -69,8 +69,9 @@ class Analysis2(Analysis2Abstract, TimeStampedModel):
     pass
 
 
-class HistoricalAnalysis2(Analysis1Abstract, ArchivedModel):
+class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
     analysis2_code = models.CharField('Contract Code', max_length=50)
+
     def __str__(self):
         return super().__str__() \
                + ' ' + self.financial_year.financial_year_display
@@ -411,38 +412,3 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
         ordering = ['financial_year', 'fco_code']
 
 
-# Historical data
-
-# class HistoricalInterEntity(ArchivedModel):
-#     l2_value = models.CharField('ORACLE - Inter Entity Code',  max_length=10)
-#     l2_description = models.CharField('ORACLE - Inter Entity Description', max_length=100)
-#     l1_value = models.CharField('Government Body',  max_length=10)
-#     l1_description = models.CharField('Government Body Description', max_length=100)
-#     cpid = models.CharField('Treasury - CPID (Departmental Code No.)', max_length=10)
-#
-#     def __str__(self):
-#         return self.l2_value + ' - ' + self.l2_description \
-#                + ' ' + self.financial_year.financial_year_display
-#
-#     class Meta:
-#         verbose_name = "Inter-Entity"
-#         verbose_name_plural = "Inter-Entities"
-#         ordering = ['l2_value']
-#
-#
-# class HistoricalFCOMapping(ArchivedModel):
-#     fco_code = models.IntegerField(primary_key=True, verbose_name='FCO Code')
-#     fco_description = models.CharField(max_length=300, verbose_name='FCO Description')
-#     account_L6_code_fk = models.ForeignKey(NaturalCode,
-#                                            on_delete=models.PROTECT, blank=True, null=True)
-#
-#     def __str__(self):
-#         return str(self.fco_code) + ' - ' + self.fco_description \
-#                + ' ' + self.financial_year.financial_year_display
-#
-#     class Meta:
-#         verbose_name = "FCO Mapping"
-#         verbose_name_plural = "FCO Mappings"
-#         ordering = ['fco_code']
-#
-#
