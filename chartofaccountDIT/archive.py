@@ -42,3 +42,13 @@ def archive_natural_code(year):
     archive_generic(year, HistoricalNaturalCode, NaturalCode)
 
 
+def archive_all(year):
+     archive_project_code(year)
+     archive_programme_code(year)
+     archive_expenditure_category(year)
+     archive_inter_entity(year)
+     archive_fco_mapping(year)
+     archive_commercial_category(year)
+     archive_analysis_1(year)
+     archive_analysis_2(year)
+     archive_natural_code(year)

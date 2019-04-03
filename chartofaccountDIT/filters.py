@@ -5,7 +5,7 @@ from django.db.models import Q
 import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode
+    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalProgrammeCode
 
 
 class NACFilter(MyFilterSet):
@@ -147,6 +147,10 @@ class ProgrammeFilter(MyFilterSet):
                                                      'programme_description',
                                                      'budget_type')
 
+
+class HistoricalProgrammeFilter(ProgrammeFilter):
+    class Meta(ProgrammeFilter.Meta):
+        model = HistoricalProgrammeCode
 
 class InterEntityFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',

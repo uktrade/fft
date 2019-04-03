@@ -3,7 +3,7 @@ from django.urls import path
 from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredCommercialCategoryListView, \
     FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, \
-    FilteredNACListView, FilteredProgrammeView, FilteredProjectView
+    FilteredNACListView, FilteredProgrammeView, FilteredProjectView, HistoricalFilteredProgrammeView
 
 urlpatterns = [
     path('naturalcode/', FilteredNACListView.as_view(), name='naturalcode'),
@@ -17,5 +17,17 @@ urlpatterns = [
     path('interentityfilter/', FilteredInterEntityView.as_view(), name='interentityfilter'),
     path('projectfilter/', FilteredProjectView.as_view(), name='projectfilter'),
     path('fcofilter/', FilteredFCOMappingView.as_view(), name='fcofilter'),
+    # Historical data
+    path('historicalnaturalcode/', FilteredNACListView.as_view(), name='historicalnaturalcode'),
+    path('historicalfinancecategory/', FilteredExpenditureCategoryListView.as_view(),
+         name='historicalfinancecategory'),
+    path('historicalcommercialcategory/', FilteredCommercialCategoryListView.as_view(),
+         name='historicalcommercialcategory'),
+    path('historicalanalysis1/', FilteredAnalysis1ListView.as_view(), name='historicalanalysis1'),
+    path('historicalanalysis2/', FilteredAnalysis2ListView.as_view(), name='historicalanalysis2'),
+    path('historicalprogrammefilter/', HistoricalFilteredProgrammeView.as_view(), name='historicalprogrammefilter'),
+    path('historicalinterentityfilter/', FilteredInterEntityView.as_view(), name='historicalinterentityfilter'),
+    path('historicalprojectfilter/', FilteredProjectView.as_view(), name='historicalprojectfilter'),
+    path('historicalfcofilter/', FilteredFCOMappingView.as_view(), name='historicalfcofilter'),
 
 ]

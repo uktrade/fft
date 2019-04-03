@@ -19,6 +19,8 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
     import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
     import_inter_entity_class, import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
+    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalNaturalCode, \
+    HistoricalInterEntity, HistoricalFCOMapping, \
     HistoricalExpenditureCategory, HistoricalProjectCode, HistoricalProgrammeCode, \
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
@@ -325,6 +327,12 @@ admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
 admin.site.register(FCOMapping, FCOMappingAdmin)
 
-admin.site.register(HistoricalProjectCode)
-admin.site.register(HistoricalProgrammeCode)
+admin.site.register(HistoricalAnalysis1)
+admin.site.register(HistoricalAnalysis2)
 admin.site.register(HistoricalExpenditureCategory)
+admin.site.register(HistoricalCommercialCategory)
+admin.site.register(HistoricalNaturalCode)
+admin.site.register(HistoricalProgrammeCode)
+admin.site.register(HistoricalInterEntity)
+admin.site.register(HistoricalProjectCode)
+admin.site.register(HistoricalFCOMapping)

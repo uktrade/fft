@@ -4,7 +4,7 @@ import django_tables2 as tables
 
 from .models import Analysis1, Analysis2, \
     CommercialCategory, ExpenditureCategory, FCOMapping, \
-    InterEntity, NaturalCode, ProgrammeCode, ProjectCode
+    InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalNaturalCode, HistoricalProgrammeCode
 
 
 class ProgrammeTable(FadminTable):
@@ -15,6 +15,11 @@ class ProgrammeTable(FadminTable):
             'programme_description',
             'budget_type'
         )
+
+
+class HistoricalProgrammeTable(ProgrammeTable):
+    class Meta(ProgrammeTable.Meta):
+        model = HistoricalProgrammeCode
 
 
 class NaturalCodeTable(FadminTable):

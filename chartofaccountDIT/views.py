@@ -3,10 +3,10 @@ from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
+    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, HistoricalProgrammeFilter
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
-    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable
+    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, HistoricalProgrammeTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -98,12 +98,13 @@ class FilteredProgrammeView(FAdminFilteredView):
     table_class = ProgrammeTable
     model = table_class.Meta.model
     filterset_class = ProgrammeFilter
-    export_name = 'Programme Codes ' + today_string()
-    sheet_name = 'Programme Codes'
+    name = 'Programme Codes'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Programme Codes'
+        context['section_name'] = self.name
         context['section_description'] = 'This field tells us why we are spending the money ' \
                                          'i.e. what we are trying to deliver on. ' \
                                          'This reflects the two most important reporting ' \
@@ -111,6 +112,21 @@ class FilteredProgrammeView(FAdminFilteredView):
                                          'the next few years (EU exit and ODA) ' \
                                          'and Parliament Control Total ' \
                                          '(DEL/AME and Admin/Programme).'
+        return context
+
+
+class HistoricalFilteredProgrammeView(FAdminFilteredView):
+    table_class = HistoricalProgrammeTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalProgrammeFilter
+    name = 'Programme Codes 2018-19'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = 'Historical data '
         return context
 
 
