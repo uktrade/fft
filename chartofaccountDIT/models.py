@@ -280,19 +280,53 @@ class InterEntityL1(TimeStampedModel, LogChangeModel):
         ordering = ['l1_value']
 
 
-class InterEntity(TimeStampedModel, LogChangeModel):
+class InterEntityAbstract(models.Model):
     l2_value = models.CharField('ORACLE - Inter Entity Code', primary_key=True, max_length=10)
     l2_description = models.CharField('ORACLE - Inter Entity Description', max_length=100)
-    l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
     cpid = models.CharField('Treasury - CPID (Departmental Code No.)', max_length=10)
 
     def __str__(self):
         return self.l2_value + ' - ' + self.l2_description
 
     class Meta:
+        abstract = True
         verbose_name = "Inter-Entity"
         verbose_name_plural = "Inter-Entities"
         ordering = ['l2_value']
+
+
+class InterEntity(InterEntityAbstract, TimeStampedModel, LogChangeModel):
+    l1_value = models.ForeignKey(InterEntityL1, on_delete=models.PROTECT)
+
+
+
+class HistoricalInterEntity(InterEntityAbstract, ArchivedModel):
+    l2_value = models.CharField('ORACLE - Inter Entity Code',  max_length=10)
+    l1_value = models.CharField('Government Body', max_length=10)
+    l1_description = models.CharField('Government Body Description', max_length=100)
+
+    def __str__(self):
+        s = super().__str__()
+        return s + ' ' + self.financial_year.financial_year_display
+
+    @classmethod
+    def archive_year(cls, obj, year_obj, suffix =''):
+        obj_hist = cls(l2_value = obj.l2_value,
+                       l2_description =obj.l2_description + suffix,
+                       cpid = obj.cpid,
+                       l1_description=obj.l1_value.l1_description,
+                       l1_value = obj.l1_value.l1_value,
+                       financial_year=year_obj
+                      )
+        obj_hist.save()
+        return obj_hist
+
+    class Meta:
+        verbose_name = "Historic Inter-Entity"
+        verbose_name_plural = "Historic Inter-Entities"
+        ordering = ['financial_year', 'l2_value']
+
+
 
 
 class ProjectCodeAbstract(models.Model):
