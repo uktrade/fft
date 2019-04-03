@@ -4,7 +4,9 @@ import django_tables2 as tables
 
 from .models import Analysis1, Analysis2, \
     CommercialCategory, ExpenditureCategory, FCOMapping, \
-    InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalNaturalCode, HistoricalProgrammeCode
+    InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalNaturalCode, \
+    HistoricalProgrammeCode, HistoricalExpenditureCategory,  HistoricalCommercialCategory, \
+    HistoricalAnalysis2, HistoricalAnalysis1
 
 
 class ProgrammeTable(FadminTable):
@@ -75,6 +77,16 @@ class ExpenditureCategoryTable(FadminTable):
                   )
 
 
+class HistoricalExpenditureCategoryTable(FadminTable):
+    class Meta(FadminTable.Meta):
+        model = HistoricalExpenditureCategory
+        fields = ('NAC_category',
+                  'grouping_description',
+                  'description',
+                  'further_description'
+                  )
+
+
 class CommercialCategoryTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = CommercialCategory
@@ -83,12 +95,24 @@ class CommercialCategoryTable(FadminTable):
                   )
 
 
+class HistoricalCommercialCategoryTable(CommercialCategoryTable):
+    """The historical model is identical to the current one, so we can just inherit the class"""
+    class Meta(CommercialCategoryTable.Meta):
+        model = HistoricalCommercialCategory
+
+
 class Analysis2Table(FadminTable):
     class Meta(FadminTable.Meta):
         model = Analysis2
         fields = ('analysis2_code',
                   'analysis2_description',
                   )
+
+
+class HistoricalAnalysis2Table(Analysis2Table):
+    """The historical model is identical to the current one, so we can just inherit the class"""
+    class Meta(Analysis2Table.Meta):
+        model = HistoricalAnalysis2
 
 
 class Analysis1Table(FadminTable):
@@ -103,6 +127,12 @@ class Analysis1Table(FadminTable):
                   'pc_reference'
                   )
 
+
+# class HistoricalAnalysis1Table(Analysis1Table):
+#     """The historical model is identical to the current one, so we can just inherit the class"""
+#     class Meta(Analysis1Table):
+#         model = HistoricalAnalysis1
+#
 
 class InterEntityTable(FadminTable):
     l1_value__l1_value = \

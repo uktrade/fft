@@ -6,7 +6,7 @@ import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
     ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, \
-    HistoricalProgrammeCode, HistoricalNaturalCode
+    HistoricalProgrammeCode, HistoricalNaturalCode, HistoricalExpenditureCategory, HistoricalCommercialCategory
 
 
 class NACFilter(MyFilterSet):
@@ -92,6 +92,30 @@ class ExpenditureCategoryFilter(MyFilterSet):
                                  'further_description')
 
 
+class HistoricalExpenditureCategoryFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(NAC_category__icontains=value) |
+                               Q(grouping_description__icontains=value) |
+                               Q(description__icontains=value) |
+                               Q(further_description__icontains=value)
+                               )
+
+    class Meta(MyFilterSet.Meta):
+        model = HistoricalExpenditureCategory
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalExpenditureCategoryFilter, self).qs
+        return myfilter.order_by('-NAC_category',
+                                 'grouping_description',
+                                 'description',
+                                 'further_description')
+
+
 class CommercialCategoryFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
@@ -110,6 +134,30 @@ class CommercialCategoryFilter(MyFilterSet):
         return myfilter.order_by('commercial_category',
                                  'description'
                                  )
+
+
+
+class HistoricalCommercialCategoryFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(Q(commercial_category__icontains=value) |
+                               Q(description__icontains=value))
+
+    class Meta(MyFilterSet.Meta):
+        model = HistoricalCommercialCategory
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalCommercialCategoryFilter, self).qs
+        return myfilter.order_by('commercial_category',
+                                 'description'
+                                 )
+
+
+
 
 
 class Analysis1Filter(MyFilterSet):

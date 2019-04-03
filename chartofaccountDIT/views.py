@@ -3,11 +3,14 @@ from core.views import FAdminFilteredView
 
 from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, HistoricalProgrammeFilter, HistoricalNACFilter
+    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
+    HistoricalProgrammeFilter, HistoricalNACFilter, \
+    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
-    HistoricalProgrammeTable, HistoricalNaturalCodeTable
+    HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
+    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -48,15 +51,31 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
     table_class = ExpenditureCategoryTable
     model = table_class.Meta.model
     filterset_class = ExpenditureCategoryFilter
-    export_name = 'Budget Categories ' + today_string()
-    sheet_name = 'Budget Categories'
+    name = 'Budget Categories'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Budget Categories'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a financial perspective.'
+        return context
+
+
+class HistoricalFilteredExpenditureCategoryListView(FAdminFilteredView):
+    table_class = HistoricalExpenditureCategoryTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalExpenditureCategoryFilter
+    name = 'Budget Categories 2018-19'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018 - 19 '
         return context
 
 
@@ -64,15 +83,31 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
     table_class = CommercialCategoryTable
     model = table_class.Meta.model
     filterset_class = CommercialCategoryFilter
-    export_name = 'Commercial Categories ' + today_string()
-    sheet_name = 'Commercial Categories'
+    name = 'Commercial Categories'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Commercial Categories'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a procurement perspective.'
+        return context
+
+
+class HistoricalFilteredCommercialCategoryListView(FAdminFilteredView):
+    table_class = HistoricalCommercialCategoryTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalCommercialCategoryFilter
+    name = 'Commercial Categories 2018-19'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
         return context
 
 

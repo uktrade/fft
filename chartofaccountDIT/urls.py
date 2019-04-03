@@ -4,7 +4,8 @@ from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredCommercialCategoryListView, \
     FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, \
     FilteredNACListView, FilteredProgrammeView, FilteredProjectView, \
-    HistoricalFilteredProgrammeView, HistoricalFilteredNACListView
+    HistoricalFilteredProgrammeView, HistoricalFilteredNACListView, \
+    HistoricalFilteredExpenditureCategoryListView, HistoricalFilteredCommercialCategoryListView
 
 urlpatterns = [
     path('naturalcode/', FilteredNACListView.as_view(), name='naturalcode'),
@@ -20,9 +21,9 @@ urlpatterns = [
     path('fcofilter/', FilteredFCOMappingView.as_view(), name='fcofilter'),
     # Historical data
     path('historicalnaturalcode/', HistoricalFilteredNACListView.as_view(), name='historicalnaturalcode'),
-    path('historicalfinancecategory/', FilteredExpenditureCategoryListView.as_view(),
+    path('historicalfinancecategory/', HistoricalFilteredExpenditureCategoryListView.as_view(),
          name='historicalfinancecategory'),
-    path('historicalcommercialcategory/', FilteredCommercialCategoryListView.as_view(),
+    path('historicalcommercialcategory/', HistoricalFilteredCommercialCategoryListView.as_view(),
          name='historicalcommercialcategory'),
     path('historicalanalysis1/', FilteredAnalysis1ListView.as_view(), name='historicalanalysis1'),
     path('historicalanalysis2/', FilteredAnalysis2ListView.as_view(), name='historicalanalysis2'),
