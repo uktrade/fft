@@ -351,3 +351,24 @@ class FCOMappingtFilter(MyFilterSet):
         return myfilter.filter(active=True).order_by('fco_code')
 
 
+class HistoricalFCOMappingtFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(fco_code__icontains=value) |
+                               Q(fco_description__icontains=value) |
+                               Q(account_L6_code__icontains=value) |
+                               Q(account_L6_description__icontains=value)
+                               )
+
+    class Meta(MyFilterSet.Meta):
+        model = HistoricalFCOMapping
+        fields = ['search_all']
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalFCOMappingtFilter, self).qs
+        return myfilter.filter(active=True).order_by('fco_code')
+
+

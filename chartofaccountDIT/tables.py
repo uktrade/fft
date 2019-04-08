@@ -193,3 +193,16 @@ class FCOMappingTable(FadminTable):
                   'oracle_code',
                   'oracle_description'
                   )
+
+
+class HistoricalFCOMappingTable(FCOMappingTable):
+    oracle_code = \
+        tables.Column(verbose_name='Oracle Code',
+                      accessor='account_L6_code')
+    oracle_description = \
+        tables.Column(verbose_name='Oracle Description',
+                      accessor='account_L6_description')
+
+    class Meta(FCOMappingTable.Meta):
+        model = HistoricalFCOMapping
+

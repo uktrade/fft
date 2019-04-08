@@ -6,14 +6,16 @@ from .filters import Analysis1Filter, Analysis2Filter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
     HistoricalProgrammeFilter, HistoricalNACFilter, \
     HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, \
-    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter, HistoricalInterEntityFilter
+    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter, \
+    HistoricalInterEntityFilter, HistoricalFCOMappingtFilter
 
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
     HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
     HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable,  \
-    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable, HistoricalInterEntityTable
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable, \
+    HistoricalInterEntityTable, HistoricalFCOMappingTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -288,11 +290,27 @@ class FilteredFCOMappingView(FAdminFilteredView):
     table_class = FCOMappingTable
     model = table_class.Meta.model
     filterset_class = FCOMappingtFilter
-    export_name = 'FCO Mappings ' + today_string()
-    sheet_name = 'FCO Mappings'
+    name = 'FCO Mappings'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'FCO Mapping'
-        context['section_description'] = 'AAAA AAAA.'
+        context['section_name'] = self.name
+        context['section_description'] = ''
+        return context
+
+
+class HistoricalFilteredFCOMappingView(FAdminFilteredView):
+    table_class = HistoricalFCOMappingTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalFCOMappingtFilter
+    name = 'FCO Mappings 2018-19'
+    export_name = name + ' ' + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
         return context
