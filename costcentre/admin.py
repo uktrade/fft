@@ -246,15 +246,18 @@ class HistoricCostCentreAdmin(AdminreadOnly, AdminExport):
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
                     'directorate_name', 'group_code', 'group_name', 'deputy_director_fullname',
                     'business_partner_fullname', 'active')
-
     search_fields = ['cost_centre_code', 'cost_centre_name',
                      'directorate_code', 'directorate_name',
                      'group_code', 'group_name',
                      'deputy_director_fullname']
-
     list_filter = ('active',
                    'disabled_with_actual',
-                   )
+                   ('financial_year', RelatedDropdownFilter))
+    fields = ('financial_year', 'cost_centre_code', 'cost_centre_name',
+                'directorate_code', 'directorate_name', 'director_fullname',
+                'group_code', 'group_name', 'dg_fullname',
+                'deputy_director_fullname', 'business_partner_fullname', 'bsce_email',
+                'disabled_with_actual', 'active', 'archived')
 
     @property
     def export_func(self):
