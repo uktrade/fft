@@ -5,12 +5,15 @@ from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
     HistoricalProgrammeFilter, HistoricalNACFilter, \
-    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, HistoricalAnalysis2Filter
+    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, \
+    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter
+
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
     HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
-    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable, HistoricalAnalysis2Table
+    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable,  \
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -127,6 +130,23 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
                                          'to match spend on the financial system ' \
                                          'to specific contracts.'
         return context
+
+
+class HistoricalFilteredAnalysis1ListView(FAdminFilteredView):
+    table_class = HistoricalAnalysis1Table
+    model = table_class.Meta.model
+    filterset_class = HistoricalAnalysis1Filter
+    name = 'Contract Reconciliation (Analysis 1) 2018-19'
+    export_name = name + today_string()
+    sheet_name = 'Contract Reconciliation 2018 -19'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
+        return context
+
+
 
 
 class FilteredAnalysis2ListView(FAdminFilteredView):

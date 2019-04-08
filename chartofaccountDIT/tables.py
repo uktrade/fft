@@ -128,11 +128,11 @@ class Analysis1Table(FadminTable):
                   )
 
 
-# class HistoricalAnalysis1Table(Analysis1Table):
-#     """The historical model is identical to the current one, so we can just inherit the class"""
-#     class Meta(Analysis1Table):
-#         model = HistoricalAnalysis1
-#
+class HistoricalAnalysis1Table(Analysis1Table):
+    """The historical model is identical to the current one, so we can just inherit the class"""
+    class Meta(Analysis1Table.Meta):
+        model = HistoricalAnalysis1
+
 
 class InterEntityTable(FadminTable):
     l1_value__l1_value = \

@@ -161,6 +161,7 @@ class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
 
 
 class Analysis1Filter(MyFilterSet):
+    """Define the filter for  Analysis 1"""
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -181,6 +182,14 @@ class Analysis1Filter(MyFilterSet):
         return myfilter.filter(active=True).order_by('analysis1_code',
                                                      'analysis1_description'
                                                      )
+
+
+class HistoricalAnalysis1Filter(Analysis1Filter):
+    """Provide the filter definition for Analysis 2. Inherit from current one,
+    because the fields are identical."""
+    class Meta(Analysis1Filter.Meta):
+        model = HistoricalAnalysis1
+
 
 
 class Analysis2Filter(MyFilterSet):
