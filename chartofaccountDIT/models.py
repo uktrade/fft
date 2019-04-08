@@ -47,8 +47,8 @@ class HistoricalAnalysis1(Analysis1Abstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name_plural = "Historic Contract Reconciliations (Analysis 1)"
-        verbose_name = "Historic Contract Reconciliation (Analysis 1)"
+        verbose_name_plural = "Historical Contract Reconciliations (Analysis 1)"
+        verbose_name = "Historical Contract Reconciliation (Analysis 1)"
         ordering = ['financial_year', 'analysis1_code']
 
 
@@ -89,8 +89,8 @@ class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Market (Analysis 2)"
-        verbose_name_plural = "HistoricMarkets (Analysis 2)"
+        verbose_name = "Historical Market (Analysis 2)"
+        verbose_name_plural = "Historical Markets (Analysis 2)"
         ordering = ['financial_year', 'analysis2_code']
 
 
@@ -129,7 +129,6 @@ class ExpenditureCategory(ExpenditureCategoryAbstract, TimeStampedModel, LogChan
                                            blank=True, null=True, verbose_name='Budget Code')
     NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT,
                                      blank=True, null=True, verbose_name='Budget Grouping')
-    pass
 
 
 class HistoricalExpenditureCategory(ExpenditureCategoryAbstract, ArchivedModel):

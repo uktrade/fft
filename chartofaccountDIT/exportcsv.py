@@ -53,6 +53,18 @@ def _export_programme_iterator(queryset):
                obj.active]
 
 
+def _export_programme_iterator(queryset):
+    yield ['Programme Code', 'Description', 'Budget Type', 'Active', 'Financial Year', 'Archived Date']
+    for obj in queryset:
+        yield [obj.programme_code,
+               obj.programme_description,
+               obj.budget_type,
+               obj.active,
+               obj.financial_year.financial_year_display,
+               obj.archived
+               ]
+
+
 def _export_inter_entity_l1_iterator(queryset):
     yield ['L1 Value', 'L1 Description'
            ]
@@ -70,6 +82,19 @@ def _export_fco_mapping_iterator(queryset):
                obj.fco_description,
                obj.account_L6_code_fk.natural_account_code,
                obj.account_L6_code_fk.natural_account_code_description,
+               obj.active]
+
+
+def _export_inter_entity_iterator(queryset):
+    yield ['L1 Value', 'L1 Description', 'L2 Value', 'L2 Description',
+           'CPID', 'Active'
+           ]
+    for obj in queryset:
+        yield [obj.l1_value.l1_value,
+               obj.l1_value.l1_description,
+               obj.l2_value,
+               obj.l2_description,
+               obj.cpid,
                obj.active]
 
 
