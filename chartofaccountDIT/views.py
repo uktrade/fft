@@ -5,12 +5,12 @@ from .filters import Analysis1Filter, Analysis2Filter, \
     CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
     HistoricalProgrammeFilter, HistoricalNACFilter, \
-    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter
+    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, HistoricalAnalysis2Filter
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
     HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
-    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable
+    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable, HistoricalAnalysis2Table
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -143,6 +143,21 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
                                          'The cost centre structure  identifies our 9 regions, ' \
                                          'however, within each region ' \
                                          'the spend is needed by country.'
+        return context
+
+
+class HistoricalFilteredAnalysis2ListView(FAdminFilteredView):
+    table_class = HistoricalAnalysis2Table
+    model = table_class.Meta.model
+    filterset_class = HistoricalAnalysis2Filter
+    name = 'Markets (Analysis 2) 2018-19'
+    export_name = name + today_string()
+    sheet_name = 'Markets 2018-19'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
         return context
 
 

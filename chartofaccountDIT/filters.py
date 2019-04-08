@@ -6,10 +6,12 @@ import django_filters
 
 from .models import Analysis1, Analysis2, CommercialCategory, \
     ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, \
-    HistoricalProgrammeCode, HistoricalNaturalCode, HistoricalExpenditureCategory, HistoricalCommercialCategory
+    HistoricalProgrammeCode, HistoricalNaturalCode, HistoricalExpenditureCategory, HistoricalCommercialCategory, \
+    HistoricalAnalysis2, HistoricalAnalysis1, HistoricalProjectCode, HistoricalFCOMapping, HistoricalInterEntity
 
 
 class NACFilter(MyFilterSet):
+    """It defines the filter for the NAC page. """
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -40,6 +42,8 @@ class NACFilter(MyFilterSet):
 
 
 class HistoricalNACFilter(MyFilterSet):
+    """Provide filter definition for Historical NAC. It cannot inherit from the current NAC filter class because the
+    historical table is denormalised, and the fields are different."""
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -69,6 +73,7 @@ class HistoricalNACFilter(MyFilterSet):
 
 
 class ExpenditureCategoryFilter(MyFilterSet):
+    """It defines the filter for the Expenditure category page. """
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -85,6 +90,8 @@ class ExpenditureCategoryFilter(MyFilterSet):
 
     @property
     def qs(self):
+        # There is no Active field on the Expenditure Category table:
+        # this is why there is no filter on Active  on the queryset
         myfilter = super(ExpenditureCategoryFilter, self).qs
         return myfilter.order_by('-NAC_category__NAC_category_description',
                                  'grouping_description',
@@ -93,6 +100,9 @@ class ExpenditureCategoryFilter(MyFilterSet):
 
 
 class HistoricalExpenditureCategoryFilter(MyFilterSet):
+    """Provide filter definition for Historical Expenditure Category.
+    It cannot inherit from the current Historical Expenditure Category filter class because the
+    historical table is denormalised, and the fields are different."""
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -109,6 +119,8 @@ class HistoricalExpenditureCategoryFilter(MyFilterSet):
 
     @property
     def qs(self):
+        # There is no Active field on the Expenditure Category table:
+        # this is why there is no filter on Active  on the queryset
         myfilter = super(HistoricalExpenditureCategoryFilter, self).qs
         return myfilter.order_by('-NAC_category',
                                  'grouping_description',
@@ -117,6 +129,7 @@ class HistoricalExpenditureCategoryFilter(MyFilterSet):
 
 
 class CommercialCategoryFilter(MyFilterSet):
+    """Define the filter for the Commercial Category"""
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -130,6 +143,8 @@ class CommercialCategoryFilter(MyFilterSet):
 
     @property
     def qs(self):
+        # There is no Active field on the commercial Category table:
+        # this is why there is no filter on Active  on the queryset
         myfilter = super(CommercialCategoryFilter, self).qs
         return myfilter.order_by('commercial_category',
                                  'description'
@@ -137,26 +152,11 @@ class CommercialCategoryFilter(MyFilterSet):
 
 
 
-class HistoricalCommercialCategoryFilter(MyFilterSet):
-    search_all = django_filters.CharFilter(field_name='', label='',
-                                           method='search_all_filter')
-
-    def search_all_filter(selfself, queryset, name, value):
-        return queryset.filter(Q(commercial_category__icontains=value) |
-                               Q(description__icontains=value))
-
-    class Meta(MyFilterSet.Meta):
+class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
+    """Provide the filter definition for Historical Commercial Category. Inherit from current one,
+    because the fields are identical."""
+    class Meta(CommercialCategoryFilter.Meta):
         model = HistoricalCommercialCategory
-        fields = ['search_all']
-
-    @property
-    def qs(self):
-        myfilter = super(HistoricalCommercialCategoryFilter, self).qs
-        return myfilter.order_by('commercial_category',
-                                 'description'
-                                 )
-
-
 
 
 
@@ -184,6 +184,7 @@ class Analysis1Filter(MyFilterSet):
 
 
 class Analysis2Filter(MyFilterSet):
+    """Define the filter for Analysis 2 page"""
     search_all = django_filters.CharFilter(field_name='', label='',
                                            method='search_all_filter')
 
@@ -201,6 +202,13 @@ class Analysis2Filter(MyFilterSet):
         return myfilter.filter(active=True).order_by('analysis2_code',
                                                      'analysis2_description'
                                                      )
+
+
+class HistoricalAnalysis2Filter(Analysis2Filter):
+    """Provide the filter definition for Analysis 1. Inherit from current one,
+    because the fields are identical."""
+    class Meta(Analysis2Filter.Meta):
+        model = HistoricalAnalysis2
 
 
 class ProgrammeFilter(MyFilterSet):
