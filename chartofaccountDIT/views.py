@@ -6,14 +6,14 @@ from .filters import Analysis1Filter, Analysis2Filter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
     HistoricalProgrammeFilter, HistoricalNACFilter, \
     HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, \
-    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter
+    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter
 
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
     HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
     HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable,  \
-    HistoricalAnalysis1Table, HistoricalAnalysis2Table
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -147,8 +147,6 @@ class HistoricalFilteredAnalysis1ListView(FAdminFilteredView):
         return context
 
 
-
-
 class FilteredAnalysis2ListView(FAdminFilteredView):
     table_class = Analysis2Table
     model = table_class.Meta.model
@@ -239,12 +237,13 @@ class FilteredProjectView(FAdminFilteredView):
     table_class = ProjectTable
     model = table_class.Meta.model
     filterset_class = ProjectFilter
-    export_name = 'Project Codes ' + today_string()
-    sheet_name = 'Project Codes'
+    name = 'Project Codes - Spare 1'
+    export_name = name + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Project (Spare 1)'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps to identify DITs project / portfolio ' \
                                          'and report against them regardless where in the ' \
                                          'organisation expenditure is taking place i.e. ' \
@@ -253,6 +252,20 @@ class FilteredProjectView(FAdminFilteredView):
                                          'Digital and Estates.'
         return context
 
+
+class HistoricalFilteredProjectView(FAdminFilteredView):
+    table_class = HistoricalProjectTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalProjectFilter
+    name = 'Project Codes - Spare 1 2018-19'
+    export_name = name + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
+        return context
 
 
 class FilteredFCOMappingView(FAdminFilteredView):

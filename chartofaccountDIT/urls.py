@@ -6,7 +6,7 @@ from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
     FilteredNACListView, FilteredProgrammeView, FilteredProjectView, \
     HistoricalFilteredProgrammeView, HistoricalFilteredNACListView, \
     HistoricalFilteredExpenditureCategoryListView, HistoricalFilteredCommercialCategoryListView, \
-    HistoricalFilteredAnalysis1ListView, HistoricalFilteredAnalysis2ListView
+    HistoricalFilteredAnalysis1ListView, HistoricalFilteredAnalysis2ListView, HistoricalFilteredProjectView
 
 urlpatterns = [
     path('naturalcode/', FilteredNACListView.as_view(), name='naturalcode'),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('historicalanalysis2/', HistoricalFilteredAnalysis2ListView.as_view(), name='historicalanalysis2'),
     path('historicalprogrammefilter/', HistoricalFilteredProgrammeView.as_view(), name='historicalprogrammefilter'),
     path('historicalinterentityfilter/', FilteredInterEntityView.as_view(), name='historicalinterentityfilter'),
-    path('historicalprojectfilter/', FilteredProjectView.as_view(), name='historicalprojectfilter'),
+    path('historicalprojectfilter/', HistoricalFilteredProjectView.as_view(), name='historicalprojectfilter'),
     path('historicalfcofilter/', FilteredFCOMappingView.as_view(), name='historicalfcofilter'),
 
 ]

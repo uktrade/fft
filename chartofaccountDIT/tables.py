@@ -6,7 +6,7 @@ from .models import Analysis1, Analysis2, \
     CommercialCategory, ExpenditureCategory, FCOMapping, \
     InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalNaturalCode, \
     HistoricalProgrammeCode, HistoricalExpenditureCategory,  HistoricalCommercialCategory, \
-    HistoricalAnalysis2, HistoricalAnalysis1
+    HistoricalAnalysis2, HistoricalAnalysis1, HistoricalInterEntity, HistoricalFCOMapping, HistoricalProjectCode
 
 
 class ProgrammeTable(FadminTable):
@@ -158,6 +158,12 @@ class ProjectTable(FadminTable):
         fields = ('project_code',
                   'project_description',
                   )
+
+
+class HistoricalProjectTable(ProjectTable):
+    """The historical model is identical to the current one, so we can just inherit the class"""
+    class Meta(ProjectTable.Meta):
+        model = HistoricalProjectCode
 
 
 class FCOMappingTable(FadminTable):

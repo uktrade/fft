@@ -245,6 +245,8 @@ class ProgrammeFilter(MyFilterSet):
 
 
 class HistoricalProgrammeFilter(ProgrammeFilter):
+    """Provide the filter definition for Programme. Inherit from current one,
+    because the fields are identical."""
     class Meta(ProgrammeFilter.Meta):
         model = HistoricalProgrammeCode
 
@@ -292,6 +294,14 @@ class ProjectFilter(MyFilterSet):
     def qs(self):
         myfilter = super(ProjectFilter, self).qs
         return myfilter.filter(active=True).order_by('project_code')
+
+
+class HistoricalProjectFilter(ProjectFilter):
+    """Provide the filter definition for Programme. Inherit from current one,
+    because the fields are identical."""
+
+    class Meta(ProjectFilter.Meta):
+        model = HistoricalProjectCode
 
 
 class FCOMappingtFilter(MyFilterSet):
