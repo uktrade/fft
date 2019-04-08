@@ -135,21 +135,33 @@ class HistoricalAnalysis1Table(Analysis1Table):
 
 
 class InterEntityTable(FadminTable):
-    l1_value__l1_value = \
+    l1_value = \
         tables.Column(verbose_name='L1 Value',
                       accessor='l1_value.l1_value')
-    l1_value__l1_description = \
+    l1_description = \
         tables.Column(verbose_name='L1 Description',
                       accessor='l1_value.l1_description')
 
     class Meta(FadminTable.Meta):
         model = InterEntity
-        fields = ('l1_value__l1_value',
-                  'l1_value__l1_description',
+        fields = ('l1_value',
+                  'l1_description',
                   'l2_value',
                   'l2_description',
                   'cpid'
                   )
+
+
+class HistoricalInterEntityTable(InterEntityTable):
+    l1_value = \
+        tables.Column(verbose_name='L1 Value',
+                      accessor='l1_value')
+    l1_description = \
+        tables.Column(verbose_name='L1 Description',
+                      accessor='l1_description')
+
+    class Meta(InterEntityTable.Meta):
+        model = HistoricalInterEntity
 
 
 class ProjectTable(FadminTable):

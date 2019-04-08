@@ -277,6 +277,32 @@ class InterEntityFilter(MyFilterSet):
                                                      'l2_value'
                                                      )
 
+class HistoricalInterEntityFilter(MyFilterSet):
+    search_all = django_filters.CharFilter(field_name='', label='',
+                                           method='search_all_filter')
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(l1_description__icontains=value) |
+                               Q(l1_value__icontains=value) |
+                               Q(l2_value__icontains=value) |
+                               Q(l2_description__icontains=value) |
+                               Q(cpid__icontains=value)
+                               )
+
+    class Meta(MyFilterSet.Meta):
+        model = HistoricalInterEntity
+        fields = [
+            'search_all',
+        ]
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalInterEntityFilter, self).qs
+        return myfilter.filter(active=True).order_by('l1_value',
+                                                     'l1_description',
+                                                     'l2_value'
+                                                     )
+
 
 class ProjectFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',

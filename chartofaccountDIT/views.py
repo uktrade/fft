@@ -6,14 +6,14 @@ from .filters import Analysis1Filter, Analysis2Filter, \
     InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
     HistoricalProgrammeFilter, HistoricalNACFilter, \
     HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, \
-    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter
+    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter, HistoricalInterEntityFilter
 
 from .tables import Analysis1Table, Analysis2Table, \
     CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
     InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
     HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
     HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable,  \
-    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable, HistoricalInterEntityTable
 
 
 class FilteredNACListView(FAdminFilteredView):
@@ -219,17 +219,33 @@ class FilteredInterEntityView(FAdminFilteredView):
     table_class = InterEntityTable
     model = table_class.Meta.model
     filterset_class = InterEntityFilter
-    export_name = 'EntityInterEntity ' + today_string()
-    sheet_name = 'EntityInterEntity'
+    name = 'Entity Inter Entity'
+    export_name = name + today_string()
+    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Entity-Inter Entity'
+        context['section_name'] = self.name
         context['section_description'] = 'This field is used to identify transactions with ' \
                                          'Other Government Departments (OGDs) / Bodies which ' \
                                          'is needed for the year-end accounts. To be used ' \
                                          'when setting up Purchase Orders and / or ' \
                                          'journals with OGDs.'
+        return context
+
+
+class HistoricalFilteredInterEntityView(FAdminFilteredView):
+    table_class = HistoricalInterEntityTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalInterEntityFilter
+    name = 'Entity Inter Entity 2018-19'
+    export_name = name + today_string()
+    sheet_name = name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section_name'] = self.name
+        context['section_description'] = '2018-19'
         return context
 
 
