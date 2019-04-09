@@ -13,7 +13,8 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
     _export_fco_mapping_iterator, _export_inter_entity_l1_iterator, \
     _export_nac_cat_iterator, _export_nac_iterator, \
-    _export_programme_iterator, _export_inter_entity_iterator
+    _export_programme_iterator, _export_inter_entity_iterator, \
+    _export_historical_nac_iterator, _export_historical_exp_cat_iterator
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
@@ -100,7 +101,7 @@ class HistoricalNaturalCodeAdmin(AdminreadOnly, AdminExport):
 
     @property
     def export_func(self):
-        return _export_nac_iterator
+        return _export_historical_nac_iterator
 
 
 class Analysis1Admin(AdminActiveField, AdminImportExport):
@@ -229,7 +230,7 @@ class HistoricalExpenditureCategoryAdmin(AdminreadOnly, AdminExport):
 
     @property
     def export_func(self):
-        return _export_exp_cat_iterator
+        return _export_historical_exp_cat_iterator
 
 
 class CommercialCategoryAdmin(AdminImportExport):
@@ -252,7 +253,6 @@ class HistoricalCommercialCategoryAdmin(AdminreadOnly, AdminExport):
 
     fields =  ('financial_year', 'commercial_category', 'description',
                     'active', 'archived')
-
 
     @property
     def export_func(self):

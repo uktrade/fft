@@ -113,7 +113,7 @@ def generic_export_to_csv(queryset):
 
 
 EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
+# '           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 def export_to_excel(queryset, f, title = ''):
     if title == '':

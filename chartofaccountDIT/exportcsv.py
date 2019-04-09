@@ -4,7 +4,7 @@ from core.exportutils import get_fk_value
 def _export_nac_iterator(queryset):
     yield ['Level 6', 'Level 6 Description',
            'Active', 'Level 5', 'Level 5 Description',
-           'Category', 'Dashboard Group']
+           'Category', 'Budget Category']
 
     for obj in queryset:
         yield [obj.natural_account_code,
@@ -12,6 +12,42 @@ def _export_nac_iterator(queryset):
                obj.active,
                get_fk_value(obj.account_L5_code, 'account_l5_code'),
                get_fk_value(obj.account_L5_code, 'account_l5_long_name')]
+
+
+def _export_historical_nac_iterator(queryset):
+    yield [
+                'NAC Description',
+                'used for budget',
+                'PO/Actuals NAC',
+                'Budget Category',
+                'Budget Grouping',
+                'Commercial Category',
+                'account L5 code',
+                'account L5 description',
+                'Budget/Forecast NAC',
+                'L5 for OSCAR upload',
+                'Expenditure Type',
+                'active',
+                'financial year',
+                'archived'
+            ]
+    for obj in queryset:
+        yield [
+                obj.natural_account_code_description,
+                obj.used_for_budget,
+                obj.natural_account_code,
+                obj.expenditure_category,
+                obj.NAC_category,
+                obj.commercial_category,
+                obj.account_L5_code,
+                obj.account_L5_description,
+                obj.account_L6_budget,
+                obj.account_L5_code_upload,
+                obj.economic_budget_code,
+                obj.active,
+                obj.financial_year.financial_year_display,
+                obj.archived
+        ]
 
 
 def _export_exp_cat_iterator(queryset):
@@ -25,6 +61,32 @@ def _export_exp_cat_iterator(queryset):
                obj.further_description,
                obj.linked_budget_code.natural_account_code,
                obj.linked_budget_code.natural_account_code_description]
+
+
+def _export_historical_exp_cat_iterator(queryset):
+    yield [
+        'Budget Category',
+        'description',
+        'further description',
+        'Budget Code',
+        'Budget Description',
+        'Budget Grouping',
+        'active',
+        'financial year',
+        'archived',
+        ]
+    for obj in queryset:
+        yield [
+            obj.grouping_description,
+            obj.description,
+            obj.further_description,
+            obj.linked_budget_code,
+            obj.linked_budget_code_description,
+            obj.NAC_category,
+            obj.active,
+            obj.financial_year.financial_year_display,
+            obj.archived
+        ]
 
 
 def _export_comm_cat_iterator(queryset):
