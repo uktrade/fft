@@ -14,7 +14,9 @@ from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, \
     _export_fco_mapping_iterator, _export_inter_entity_l1_iterator, \
     _export_nac_cat_iterator, _export_nac_iterator, \
     _export_programme_iterator, _export_inter_entity_iterator, \
-    _export_historical_nac_iterator, _export_historical_exp_cat_iterator
+    _export_historical_nac_iterator, _export_historical_exp_cat_iterator, \
+    _export_historical_comm_cat_iterator, \
+    _export_historical_inter_entity_iterator, _export_historical_fco_mapping_iterator
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
@@ -221,12 +223,12 @@ class ExpenditureCategoryAdmin(AdminImportExport):
 class HistoricalExpenditureCategoryAdmin(AdminreadOnly, AdminExport):
     search_fields = ['grouping_description', 'description']
     list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
-    list_filter = ('NAC_category', 'active',  ('financial_year', RelatedDropdownFilter))
+    list_filter = ('NAC_category',  ('financial_year', RelatedDropdownFilter))
 
     fields =  ('financial_year', 'grouping_description', 'description',
                     'further_description', 'linked_budget_code', 'linked_budget_code_description',
                     'NAC_category',
-                    'active', 'archived')
+                    'archived')
 
     @property
     def export_func(self):
@@ -256,7 +258,7 @@ class HistoricalCommercialCategoryAdmin(AdminreadOnly, AdminExport):
 
     @property
     def export_func(self):
-        return _export_comm_cat_iterator
+        return _export_historical_comm_cat_iterator
 
 
 class NACCategoryAdmin(AdminImportExport):
@@ -338,8 +340,8 @@ class HistoricalInterEntityAdmin(AdminreadOnly, AdminExport):
 
 
     @property
-    def import_info(self):
-        return import_inter_entity_class
+    def export_func(self):
+        return _export_historical_inter_entity_iterator
 
 
 class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
@@ -389,7 +391,7 @@ class HistoricalFCOMappingAdmin(AdminreadOnly, AdminExport):
 
     @property
     def export_func(self):
-        return _export_fco_mapping_iterator
+        return _export_historical_fco_mapping_iterator
 
 
 class FCOMappingAdmin(AdminActiveField, AdminImportExport):

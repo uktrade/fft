@@ -71,7 +71,6 @@ def _export_historical_exp_cat_iterator(queryset):
         'Budget Code',
         'Budget Description',
         'Budget Grouping',
-        'active',
         'financial year',
         'archived',
         ]
@@ -83,7 +82,6 @@ def _export_historical_exp_cat_iterator(queryset):
             obj.linked_budget_code,
             obj.linked_budget_code_description,
             obj.NAC_category,
-            obj.active,
             obj.financial_year.financial_year_display,
             obj.archived
         ]
@@ -96,7 +94,23 @@ def _export_comm_cat_iterator(queryset):
     for obj in queryset:
         yield [obj.commercial_category,
                obj.description,
-               obj.approvers]
+               obj.approvers
+               ]
+
+
+def _export_historical_comm_cat_iterator(queryset):
+    yield ['Commercial Category',
+           'Description',
+           'Approvers',
+           'financial year',
+           'archived'
+           ]
+    for obj in queryset:
+        yield [obj.commercial_category,
+               obj.description,
+               obj.approvers,
+               obj.financial_year.financial_year_display,
+               obj.archived]
 
 
 def _export_nac_cat_iterator(queryset):
@@ -137,7 +151,7 @@ def _export_inter_entity_l1_iterator(queryset):
 
 
 def _export_fco_mapping_iterator(queryset):
-    yield ['FCO Code', 'FCO Description', 'Oracle L6 Code',
+    yield ['FCO Code', 'FCO Description', 
            'Oracle L6 Code', 'Oracle L6 Description','Active']
     for obj in queryset:
         yield [obj.fco_code,
@@ -147,9 +161,32 @@ def _export_fco_mapping_iterator(queryset):
                obj.active]
 
 
+def _export_historical_fco_mapping_iterator(queryset):
+    yield ['FCO Code',
+           'FCO Description',
+           'Oracle L6 Code',
+           'Oracle L6 Description',
+           'Active',
+           'Financial Year',
+           'Archived Date']
+    for obj in queryset:
+        yield [obj.fco_code,
+               obj.fco_description,
+               obj.account_L6_code,
+               obj.account_L6_description,
+               obj.active,
+               obj.financial_year.financial_year_display,
+               obj.archived
+               ]
+
+
 def _export_inter_entity_iterator(queryset):
-    yield ['L1 Value', 'L1 Description', 'L2 Value', 'L2 Description',
-           'CPID', 'Active'
+    yield ['L1 Value',
+           'L1 Description',
+           'L2 Value',
+           'L2 Description',
+           'CPID',
+           'Active'
            ]
     for obj in queryset:
         yield [obj.l1_value.l1_value,
@@ -158,5 +195,29 @@ def _export_inter_entity_iterator(queryset):
                obj.l2_description,
                obj.cpid,
                obj.active]
+
+
+def _export_historical_inter_entity_iterator(queryset):
+    yield [
+            'Government Body',
+            'Government Body Description',
+            'ORACLE - Inter Entity Code',
+            'ORACLE - Inter Entity Description',
+            'Treasury - CPID (Departmental Code No.)',
+            'active',
+            'financial year',
+            'archived',
+    ]
+    for obj in queryset:
+        yield [
+            obj.l1_value,
+            obj.l1_description,
+            obj.l2_value,
+            obj.l2_description,
+            obj.cpid,
+            obj.active,
+            obj.financial_year.financial_year_display,
+            obj.archived
+        ]
 
 
