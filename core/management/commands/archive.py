@@ -1,59 +1,44 @@
-from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, \
-    import_NAC_DIT, import_NAC_category,  \
-    import_NAC_expenditure_category, \
-    import_commercial_category, \
-    import_expenditure_category, import_programme
+from chartofaccountDIT.archive import archive_all, archive_analysis_1, archive_analysis_2, \
+    archive_commercial_category, archive_expenditure_category, archive_fco_mapping, \
+    archive_inter_entity, archive_natural_code, archive_programme_code, archive_project_code
 
-from costcentre.importcsv import import_cc
+from costcentre.archive import archive_cost_centre
 
 from django.core.management.base import BaseCommand
 
-from forecast.importcsv import import_actual
+from treasuryCOA.archive import archive_treasury_l5
 
-from payroll.importcsv import import_HR_Report
 
-from treasuryCOA.importcsv import import_treasury_COA
-
-IMPORT_TYPE = {
-    'CostCentre': import_cc,
-    # 'Segments' : import_treasury_segments,
-    'Treasury_COA': import_treasury_COA,
-    'Programmes': import_programme,
-    'NAC': import_NAC,  # import from the BICC file
-    'Analysis1': import_Analysis1,
-    'Analysis2': import_Analysis2,
-    'NAC_Dashboard_Group': import_NAC_expenditure_category,
-    'NAC_Dashboard_Budget': import_expenditure_category,
-    'NAC_Category': import_NAC_category,
-    'NAC_DIT_Setting': import_NAC_DIT,  # add extra fields defined by DIT
-    'HR_Report': import_HR_Report,
-    'NAC_Dashboard_other': import_expenditure_category,
-    'Commercial_Cat': import_commercial_category
+ARCHIVE_TYPE = {
+    'CostCentre': archive_cost_centre,
+    'Treasury_COA': archive_treasury_l5,
+    'Programmes': archive_programme_code,
+    'NAC': archive_natural_code,
+    'Analysis1': archive_analysis_1,
+    'Analysis2': archive_analysis_2,
+    'Expenditure_Cat': archive_expenditure_category,
+    'FCO_mapping': archive_fco_mapping,
+    'Commercial_Cat': archive_commercial_category,
+    'Inter_entity': archive_inter_entity,
+    'Project_Code' : archive_project_code
 }
 
 
 class Command(BaseCommand):
-    help = 'Import CC hierarchy from csv file'
+    help = 'archive element of Chart of Account'
 
     def add_arguments(self, parser):
-        parser.add_argument('csv_path')
         parser.add_argument('type')
-        parser.add_argument('year', type=int, nargs='?', default=None)
-        parser.add_argument('month', nargs='?', default=None)
+        parser.add_argument('year', type=int, nargs='?', default=2018)
 
-    # pass the file path as an argument
-    # second argument will define the content of the file
-    # importing actual is a special case, because we need to specify the month
+    # pass the year an argument
     def handle(self, *args, **options):
-        path = options.get('csv_path')
-        print(path)
-        importtype = options.get('type')
-        # Windows-1252 or CP-1252, used because of a back quote
-        csvfile = open(path, newline='', encoding='cp1252')
-        if importtype == 'Actuals':
-            financialyear = options.get('year')
-            monthtoimport = options.get('month')
-            import_actual(csvfile, financialyear, monthtoimport)
+        financialyear = options.get('year')
+        archivetype = options.get('type')
+        if archivetype == 'All':
+            archive_all(financialyear)
+            archive_cost_centre(financialyear)
+            archive_treasury_l5(financialyear)
         else:
-            IMPORT_TYPE[importtype](csvfile)
-        csvfile.close()
+            row = ARCHIVE_TYPE[archivetype](financialyear)
+            print('Archived ' + str(row) + ' rows')

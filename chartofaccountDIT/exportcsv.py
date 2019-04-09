@@ -151,7 +151,7 @@ def _export_inter_entity_l1_iterator(queryset):
 
 
 def _export_fco_mapping_iterator(queryset):
-    yield ['FCO Code', 'FCO Description', 
+    yield ['FCO Code', 'FCO Description',
            'Oracle L6 Code', 'Oracle L6 Description','Active']
     for obj in queryset:
         yield [obj.fco_code,
