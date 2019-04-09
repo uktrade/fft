@@ -180,18 +180,31 @@ class HistoricalProjectTable(ProjectTable):
 
 class FCOMappingTable(FadminTable):
     oracle_code = \
-        tables.Column(verbose_name='Oracle Code',
+        tables.Column(verbose_name='DIT (Oracle) Code',
                       accessor='account_L6_code_fk.natural_account_code')
     oracle_description = \
-        tables.Column(verbose_name='Oracle Description',
+        tables.Column(verbose_name='DIT (Oracle) Description',
                       accessor='account_L6_code_fk.natural_account_code_description')
+
+    nac_category_description = \
+        tables.Column(verbose_name='Budget Grouping',
+                      accessor='account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description')
+    budget_description = tables.Column(verbose_name='Budget Category',
+                                       accessor='account_L6_code_fk.expenditure_category.grouping_description')
+    account_L5_code__economic_budget_code = \
+        tables.Column(verbose_name='Expenditure Type',
+                      accessor='account_L6_code_fk.account_L5_code.economic_budget_code')
 
     class Meta(FadminTable.Meta):
         model = FCOMapping
-        fields = ('fco_code',
-                  'fco_description',
+        fields = (
+                  'account_L5_code__economic_budget_code',
+                  'nac_category_description',
+                  'budget_description',
                   'oracle_code',
-                  'oracle_description'
+                  'oracle_description',
+                  'fco_code',
+                  'fco_description',
                   )
 
 

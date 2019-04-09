@@ -454,8 +454,8 @@ class HistoricalProjectCode(ProjectCodeAbstract, ArchivedModel):
 
 
 class FCOMappingAbstract(models.Model):
-    fco_code = models.IntegerField(primary_key=True, verbose_name='FCO Code')
-    fco_description = models.CharField(max_length=300, verbose_name='FCO Description')
+    fco_code = models.IntegerField(primary_key=True, verbose_name='FCO (Prism) Code')
+    fco_description = models.CharField(max_length=300, verbose_name='FCO (Prism) Description')
 
     def __str__(self):
         return str(self.fco_code) + ' - ' + self.fco_description
@@ -473,10 +473,10 @@ class FCOMapping(FCOMappingAbstract, TimeStampedModel, LogChangeModel):
 
 
 class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
-    fco_code = models.IntegerField(verbose_name='FCO Code')
-    account_L6_code = models.IntegerField(verbose_name='Oracle Code')
+    fco_code = models.IntegerField(verbose_name='FCO (Prism) Code')
+    account_L6_code = models.IntegerField(verbose_name='Oracle (DIT) Code')
     account_L6_description = models.CharField(max_length=200,
-                                                    verbose_name='Oracle Description')
+                                                    verbose_name='Oracle (DIT) Description')
     active = models.BooleanField(default=False)
 
     def __str__(self):
