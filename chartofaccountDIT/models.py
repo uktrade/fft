@@ -477,6 +477,10 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
     account_L6_code = models.IntegerField(verbose_name='Oracle (DIT) Code')
     account_L6_description = models.CharField(max_length=200,
                                                     verbose_name='Oracle (DIT) Description')
+    nac_category_description = models.CharField(max_length=200, verbose_name='Budget Grouping', blank=True, null=True)
+    budget_description = models.CharField(max_length=200, verbose_name='Budget Category', blank=True, null=True)
+    economic_budget_code = models.CharField(max_length=200, verbose_name='Expenditure Type')
+
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -485,10 +489,19 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix =''):
+        if obj.account_L6_code_fk.expenditure_category:
+            category = obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description
+            budget_desc = obj.account_L6_code_fk.expenditure_category.grouping_description
+        else:
+            category = None
+            budget_desc = None
         obj_hist = cls(fco_description = obj.fco_description  + suffix,
                        fco_code =obj.fco_code,
                        account_L6_code = obj.account_L6_code_fk.natural_account_code,
                        account_L6_description = obj.account_L6_code_fk.natural_account_code_description,
+                       nac_category_description = category,
+                       budget_description = budget_desc,
+                       economic_budget_code = obj.account_L6_code_fk.account_L5_code.economic_budget_code,
                        active=obj.active,
                        financial_year=year_obj
                       )
