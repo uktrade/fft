@@ -191,14 +191,14 @@ class FCOMappingTable(FadminTable):
                       accessor='account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description')
     budget_description = tables.Column(verbose_name='Budget Category',
                                        accessor='account_L6_code_fk.expenditure_category.grouping_description')
-    account_L5_code__economic_budget_code = \
+    economic_budget_code = \
         tables.Column(verbose_name='Expenditure Type',
                       accessor='account_L6_code_fk.account_L5_code.economic_budget_code')
 
     class Meta(FadminTable.Meta):
         model = FCOMapping
         fields = (
-                  'account_L5_code__economic_budget_code',
+                  'economic_budget_code',
                   'nac_category_description',
                   'budget_description',
                   'oracle_code',
@@ -216,6 +216,14 @@ class HistoricalFCOMappingTable(FCOMappingTable):
         tables.Column(verbose_name='Oracle Description',
                       accessor='account_L6_description')
 
+    nac_category_description = \
+        tables.Column(verbose_name='Budget Grouping',
+                      accessor='nac_category_description')
+    budget_description = tables.Column(verbose_name='Budget Category',
+                                       accessor='budget_description')
+    economic_budget_code = \
+        tables.Column(verbose_name='Expenditure Type',
+                      accessor='economic_budget_code')
     class Meta(FCOMappingTable.Meta):
         model = HistoricalFCOMapping
 

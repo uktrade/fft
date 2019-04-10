@@ -362,7 +362,10 @@ class HistoricalFCOMappingtFilter(MyFilterSet):
         return queryset.filter(Q(fco_code__icontains=value) |
                                Q(fco_description__icontains=value) |
                                Q(account_L6_code__icontains=value) |
-                               Q(account_L6_description__icontains=value)
+                               Q(account_L6_description__icontains=value) |
+                               Q(nac_category_description__icontains=value) |
+                               Q(budget_description__icontains=value) |
+                               Q(economic_budget_code__icontains=value)
                                )
 
     class Meta(MyFilterSet.Meta):

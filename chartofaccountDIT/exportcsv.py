@@ -151,8 +151,8 @@ def _export_inter_entity_l1_iterator(queryset):
 
 
 def _export_fco_mapping_iterator(queryset):
-    yield ['FCO Code', 'FCO Description',
-           'Oracle L6 Code', 'Oracle L6 Description','Active']
+    yield ['FCO (Prism) Code', 'FCO (Prism) Description',
+           'Oracle (DIT) Code', 'Oracle (DIT) Description','Active']
     for obj in queryset:
         yield [obj.fco_code,
                obj.fco_description,
@@ -162,10 +162,13 @@ def _export_fco_mapping_iterator(queryset):
 
 
 def _export_historical_fco_mapping_iterator(queryset):
-    yield ['FCO Code',
-           'FCO Description',
-           'Oracle L6 Code',
-           'Oracle L6 Description',
+    yield ['FCO (Prism) Code',
+           'FCO (Prism) Description',
+           'Oracle (DIT) Code',
+           'Oracle (DIT) Description',
+           'Budget Grouping',
+           'Budget Category',
+           'Expenditure Type',
            'Active',
            'Financial Year',
            'Archived Date']
@@ -174,6 +177,9 @@ def _export_historical_fco_mapping_iterator(queryset):
                obj.fco_description,
                obj.account_L6_code,
                obj.account_L6_description,
+               obj.nac_category_description,
+               obj.budget_description,
+               obj.economic_budget_code,
                obj.active,
                obj.financial_year.financial_year_display,
                obj.archived

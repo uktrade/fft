@@ -375,7 +375,7 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
 class HistoricalProjectCodeAdmin(AdminreadOnly, AdminExport):
     search_fields = ['project_description', 'project_code']
     list_display = ('project_code', 'project_description', 'active')
-    list_filter = ['active', ('financial_year', RelatedDropdownFilter)]
+    list_filter = ['active',  ('financial_year', RelatedDropdownFilter)]
     fields =  ('financial_year', 'project_code', 'project_description', 'active')
 
     @property
@@ -387,7 +387,11 @@ class HistoricalFCOMappingAdmin(AdminreadOnly, AdminExport):
     search_fields = ['fco_code', 'fco_description']
     list_display = ('fco_code', 'fco_description', 'active')
     list_filter = ['active', ('financial_year', RelatedDropdownFilter)]
-    fields = ('financial_year', 'fco_code', 'fco_description', 'account_L6_code', 'account_L6_description', 'active')
+    fields = ('financial_year', 'fco_code', 'fco_description',
+              'account_L6_code', 'account_L6_description',
+              'nac_category_description','budget_description',
+              'economic_budget_code',
+              'active')
 
     @property
     def export_func(self):
@@ -420,6 +424,8 @@ class FCOMappingAdmin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_fco_mapping_class
+
+    
 admin.site.register(Analysis1, Analysis1Admin)
 admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
