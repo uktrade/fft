@@ -1,4 +1,5 @@
 from core.utils import today_string
+from core.exportutils import EXC_TAB_NAME_LEN
 
 from django import get_version
 from django.contrib.auth.decorators import login_required
@@ -11,6 +12,7 @@ from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
 from fadmin2.settings import GIT_COMMIT
+
 
 @login_required()
 def index(request):
@@ -59,4 +61,4 @@ class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
         # for the first time
         self.export_name = self.name  + ' ' + today_string()
         # The max lenght for an Excel tab name is 31. So truncate the name, if needed
-        self.sheet_name = self.name[:31]
+        self.sheet_name = self.name[:EXC_TAB_NAME_LEN]

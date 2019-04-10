@@ -8,9 +8,12 @@ from django.utils.encoding import smart_str
 
 import openpyxl
 
+
 from .importcsv import IMPORT_CSV_MODEL_KEY, \
     get_col_from_obj_key, get_field_name
 
+# The max lenght for an Excel tab name is 31. So truncate the name, if needed
+EXC_TAB_NAME_LEN = 31
 
 def get_fk_value(obj, field, novalue = '-'):
     if obj is not None:
@@ -117,12 +120,14 @@ EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 def export_to_excel(queryset, f, title = ''):
     if title == '':
-        title = queryset.model._meta.verbose_name_plural.title() + today_string()
+        title = queryset.model._meta.verbose_name_plural.title()
     resp = HttpResponse(content_type=EXCEL_TYPE)
-    resp['Content-Disposition'] = 'attachment; filename=' + title + '.xlsx'
+    filename = title + today_string() +  ' ' + '.xlsx'
+    resp['Content-Disposition'] = 'attachment; filename=' + filename
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
-    ws.title = title
+    # Truncate the tab name to the maximum lenght permitted by Excel
+    ws.title = title[:EXC_TAB_NAME_LEN]
     for row in f(queryset):
         ws.append(row)
     wb.save(resp)
