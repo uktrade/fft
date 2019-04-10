@@ -13,6 +13,13 @@ def archive_generic(year, to_model, from_model):
     pc_qs = from_model.objects.all().select_related()
     row = 0
     for pc in pc_qs:
-        to_model.archive_year(pc, year_obj, suffix)
+        try:
+            to_model.archive_year(pc, year_obj, suffix)
+        except:
+            print('error archiving table' + from_model.Meta.verbose_name)
+            print('Primary key is ' + str(pc.pk))
+            raise
         row += 1
     return row
+
+

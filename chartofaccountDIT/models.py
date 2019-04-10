@@ -268,7 +268,7 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
         else:
             commercial_category_val = None
         if obj.account_L5_code_upload:
-            account_L5_code_upload_val = obj.account_L5_code_upload.account_L5_code
+            account_L5_code_upload_val = obj.account_L5_code_upload.account_l5_code
         else:
             account_L5_code_upload_val = None
         if obj.account_L5_code:
@@ -495,13 +495,17 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
         else:
             category = None
             budget_desc = None
+        if obj.account_L6_code_fk.account_L5_code:
+            economic_budget_code = obj.account_L6_code_fk.account_L5_code.economic_budget_code
+        else:
+            economic_budget_code = None
         obj_hist = cls(fco_description = obj.fco_description  + suffix,
                        fco_code =obj.fco_code,
                        account_L6_code = obj.account_L6_code_fk.natural_account_code,
                        account_L6_description = obj.account_L6_code_fk.natural_account_code_description,
                        nac_category_description = category,
                        budget_description = budget_desc,
-                       economic_budget_code = obj.account_L6_code_fk.account_L5_code.economic_budget_code,
+                       economic_budget_code = economic_budget_code,
                        active=obj.active,
                        financial_year=year_obj
                       )
