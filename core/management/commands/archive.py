@@ -25,7 +25,7 @@ ARCHIVE_TYPE = {
 
 
 class Command(BaseCommand):
-    help = 'archive element of Chart of Account'
+    help = 'archive element of Chart of Account. Allowed types are - All - ' + ' - '.join(ARCHIVE_TYPE.keys())
 
     def add_arguments(self, parser):
         parser.add_argument('type')
