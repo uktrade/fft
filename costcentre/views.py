@@ -1,4 +1,3 @@
-from core.utils import today_string
 from core.views import FAdminFilteredView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,8 +11,6 @@ class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
     model = table_class.Meta.model
     filterset_class = CostCentreFilter
     name = 'Cost Centre Hierarchy'
-    export_name = name + today_string()
-    sheet_name = name
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -30,17 +27,11 @@ class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
         return context
 
 
-class FilteredCostHistoricalListView(LoginRequiredMixin, FAdminFilteredView):
+class FilteredCostHistoricalListView(FilteredCostListView):
     table_class = HistoricalCostCentreTable
     model = table_class.Meta.model
     name = 'Cost Centre Hierarchy 2018-19'
     filterset_class = CostCentreHistoricalFilter
-    export_name = name + today_string()
-    sheet_name = name
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['section_name'] = self.name
-        context[
-            'section_description'] = 'Cost Centre Hierarchy for 2018-19'
-        return context
+
+

@@ -1,3 +1,5 @@
+from core.utils import today_string
+
 from django import get_version
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -49,4 +51,12 @@ class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
     paginate_by = 200
     template_name = 'core/table_filter_generic.html'
     strict = False
-    sheet_name = 'Chart of Account'
+    name = 'View'
+
+    def __init__(self,  *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Define the export name at init, so it uses the current date, and not the date the class was loaded
+        # for the first time
+        self.export_name = self.name  + ' ' + today_string()
+        # The max lenght for an Excel tab name is 31. So truncate the name, if needed
+        self.sheet_name = self.name[:31]
