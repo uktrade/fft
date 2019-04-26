@@ -280,7 +280,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
     list_filter = ['budget_type', 'active']
 
     def get_readonly_fields(self, request, obj=None):
-        return ['programme_code', 'programme_description', 'budget_type', 'created',
+        return ['programme_code', 'budget_type', 'created',
                 'updated']  # don't allow to edit the code
 
     def get_fields(self, request, obj=None):
