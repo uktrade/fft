@@ -1,24 +1,45 @@
 from core.exportutils import get_fk_value
+from treasuryCOA.exportcsv import EXPORT_L5_ITERATOR_HEADERS, full_l5_obj
 
+EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_ITERATOR_HEADERS + [
+        'Level 6',
+        'Level 6 Description',
+        'used for budget',
+        'Budget Category',
+        'Budget Grouping',
+        'Commercial Category',
+        'account L5 code',
+        'account L5 description',
+        'Economic Budget Code',
+        'Budget/Forecast NAC',
+        'L5 code for OSCAR upload',
+        'L5 description for OSCAR upload',
+        'Expenditure Type'
+    ]
 
 def _export_nac_iterator(queryset):
-    yield ['Level 6', 'Level 6 Description',
-           'Active', 'Level 5', 'Level 5 Description',
-           'Category', 'Budget Category']
+    yield EXPORT_NAC_ITERATOR_HEADERS
 
     for obj in queryset:
-        yield [obj.natural_account_code,
+        yield full_l5_obj(obj.account_L5_code) + [
+               obj.natural_account_code,
                obj.natural_account_code_description,
-               obj.active,
-               get_fk_value(obj.account_L5_code, 'account_l5_code'),
-               get_fk_value(obj.account_L5_code, 'account_l5_long_name')]
+               obj.used_for_budget,
+               get_fk_value(obj.expenditure_category, 'grouping_description'),
+               get_fk_value(obj.expenditure_category.NAC_category, 'NAC_category_description') if obj.expenditure_category else '-',
+               get_fk_value(obj.commercial_category, 'commercial_category'),
+               get_fk_value(obj.expenditure_category.NAC_category, 'NAC_category_description') if obj.expenditure_category else '-',
+               get_fk_value(obj.account_L5_code_upload, 'account_l5_code'),
+               get_fk_value(obj.account_L5_code_upload, 'account_l5_long_name'),
+               obj.active
+               ]
 
 
 def _export_historical_nac_iterator(queryset):
     yield [
-                'NAC Description',
+                'Level 6',
+                'Level 6 Description',
                 'used for budget',
-                'PO/Actuals NAC',
                 'Budget Category',
                 'Budget Grouping',
                 'Commercial Category',
@@ -33,9 +54,9 @@ def _export_historical_nac_iterator(queryset):
             ]
     for obj in queryset:
         yield [
+                obj.natural_account_code,
                 obj.natural_account_code_description,
                 obj.used_for_budget,
-                obj.natural_account_code,
                 obj.expenditure_category,
                 obj.NAC_category,
                 obj.commercial_category,

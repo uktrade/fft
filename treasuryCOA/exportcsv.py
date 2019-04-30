@@ -8,12 +8,9 @@ EXPORT_L5_ITERATOR_HEADERS = ['L0 Code', 'Accounts Code',
                               'Usage', 'Cash Indicator'
                               ]
 
-
-def _export_L5_iterator(queryset):
-    yield EXPORT_L5_ITERATOR_HEADERS
-    for obj in queryset:
-        yield [
-            obj.account_l4.account_l3.account_l2.account_l1.account_l0_code,
+def full_l5_obj(obj):
+    if obj:
+        return[ obj.account_l4.account_l3.account_l2.account_l1.account_l0_code,
             obj.account_l4.account_l3.account_l2.account_l1.account_code,
             obj.account_l4.account_l3.account_l2.account_l1.account_l1_code,
             obj.account_l4.account_l3.account_l2.account_l1.account_l1_long_name,
@@ -30,8 +27,31 @@ def _export_L5_iterator(queryset):
             obj.sector_code,
             obj.estimates_column_code,
             obj.usage_code,
-            obj.cash_indicator_code
-        ]
+            obj.cash_indicator_code]
+    return ['-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-',
+            '-']
+
+
+def _export_L5_iterator(queryset):
+    yield EXPORT_L5_ITERATOR_HEADERS
+    for obj in queryset:
+        yield full_l5_obj(obj)
 
 
 # L4 Account

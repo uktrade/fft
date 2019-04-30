@@ -28,7 +28,7 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 
-class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+class NaturalCodeAdmin(AdminreadOnly, AdminImportExport):
     """Define an extra import button, for the DIT specific fields"""
     change_list_template = "admin/m_import_changelist.html"
 
