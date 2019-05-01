@@ -28,7 +28,7 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
     InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
 
 
-class NaturalCodeAdmin(AdminreadOnly, AdminImportExport):
+class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
     """Define an extra import button, for the DIT specific fields"""
     change_list_template = "admin/m_import_changelist.html"
 
@@ -49,6 +49,14 @@ class NaturalCodeAdmin(AdminreadOnly, AdminImportExport):
                    ('expenditure_category__NAC_category', RelatedDropdownFilter),
                    ('expenditure_category', RelatedDropdownFilter))
 
+    queryset_all = NaturalCode.objects.select_related('expenditure_category',
+                                             'expenditure_category__NAC_category',
+                                             'commercial_category',
+                                             'account_L5_code',
+                                             'account_L5_code__account_l4',
+                                             'account_L5_code__account_l4__account_l3',
+                                             'account_L5_code__account_l4__account_l3__account_l2',
+                                             'account_L5_code__account_l4__account_l3__account_l2__account_l1')
     @property
     def export_func(self):
         return _export_nac_iterator
