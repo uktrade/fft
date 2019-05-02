@@ -1,13 +1,11 @@
-from django.contrib import admin
-
-# Register your models here.
-from django.urls import path
-
 from core.admin import AdminreadOnly
 
-from .exportcsv import export_cost_centres, export_nac_hierarchy
+from django.contrib import admin
+from django.urls import path
 
+from .exportcsv import export_cost_centres, export_nac_hierarchy
 from .models import DownloadLog
+
 
 class AdminToolExport(AdminreadOnly):
     change_list_template = "admin/admintool_changelist.html"
@@ -23,7 +21,7 @@ class AdminToolExport(AdminreadOnly):
         return my_urls + urls
 
     def export_cc(self, request):
-        #request.user
+        # request.user
         DownloadLog.objects.create(downloader=request.user,
                                    download_type=DownloadLog.CC_AT)
         return export_cost_centres()

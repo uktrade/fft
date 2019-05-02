@@ -1,11 +1,12 @@
-from core.exportutils import get_fk_value, export_to_csv
-
 from chartofaccountDIT.models import NaturalCode
+
+from core.exportutils import export_to_csv, get_fk_value
 
 from costcentre.models import CostCentre
 
+
 # The following is the expected list of fields for the query set
-#1,109TTT,DIT,1093HT,ITI - DG Office,10938T,CEO’s Office,109000,Chief Executive's Office,Mentor Map,Operations,Yes
+# 1,109TTT,DIT,1093HT,ITI - DG Office,10938T,CEO’s Office,109000,Chief Executive's Office,Mentor Map,Operations,Yes
 def export_costcentre_iterator(queryset):
     for obj in queryset:
         yield [1,
@@ -43,7 +44,7 @@ def export_nac_hierarchy_iterator(queryset):
                    get_fk_value(obj.expenditure_category.NAC_category, 'NAC_category_description'),
                    'Pay',
                    'Staff Costs'),
-                get_fk_value(obj.expenditure_category, 'grouping_description', 'Remove'),
+               get_fk_value(obj.expenditure_category, 'grouping_description', 'Remove'),
                obj.natural_account_code_description
                ]
 
