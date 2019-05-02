@@ -41,10 +41,10 @@ class CostCentreFilter(MyFilterSet):
         return cc.filter(active=True).select_related('directorate'). \
             select_related('deputy_director'). \
             select_related('directorate__group').order_by('directorate__group__group_code',
-                                               'directorate__group__group_name',
-                                               'directorate__directorate_code',
-                                               'directorate__directorate_name',
-                                               'cost_centre_code')
+                                                          'directorate__group__group_name',
+                                                          'directorate__directorate_code',
+                                                          'directorate__directorate_name',
+                                                          'cost_centre_code')
 
 
 class CostCentreHistoricalFilter(MyFilterSet):

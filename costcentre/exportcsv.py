@@ -113,5 +113,3 @@ def export_historic_costcentre_iterator(queryset):
                obj.financial_year.financial_year_display,
                obj.archived
                ]
-
-

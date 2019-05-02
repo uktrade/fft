@@ -4,5 +4,4 @@ from .models import CostCentre, HistoricCostCentre
 
 
 def archive_cost_centre(year):
-    return archive_generic(year, HistoricCostCentre, CostCentre )
-
+    return archive_generic(year, HistoricCostCentre, CostCentre)

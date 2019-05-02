@@ -32,6 +32,3 @@ class FilteredCostHistoricalListView(FilteredCostListView):
     model = table_class.Meta.model
     name = 'Cost Centre Hierarchy 2018-19'
     filterset_class = CostCentreHistoricalFilter
-
-
-

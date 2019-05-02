@@ -32,7 +32,6 @@ class CostCentreTable(FadminTable):
 
 
 class HistoricalCostCentreTable(FadminTable):
-
     class Meta(FadminTable.Meta):
         model = HistoricCostCentre
         fields = ('group_code',
