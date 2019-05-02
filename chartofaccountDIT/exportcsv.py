@@ -143,7 +143,7 @@ def _export_programme_iterator(queryset):
                obj.active]
 
 
-def _export_programme_iterator(queryset):
+def _export_historical_programme_iterator(queryset):
     yield ['Programme Code', 'Description', 'Budget Type', 'Active', 'Financial Year', 'Archived Date']
     for obj in queryset:
         yield [obj.programme_code,

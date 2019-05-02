@@ -1,21 +1,14 @@
-from core.utils import today_string
 from core.views import FAdminFilteredView
 
-from .filters import Analysis1Filter, Analysis2Filter, \
-    CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter, \
-    HistoricalProgrammeFilter, HistoricalNACFilter, \
-    HistoricalExpenditureCategoryFilter, HistoricalCommercialCategoryFilter, \
-    HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalProjectFilter, \
-    HistoricalInterEntityFilter, HistoricalFCOMappingtFilter
-
-from .tables import Analysis1Table, Analysis2Table, \
-    CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
-    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable, \
-    HistoricalProgrammeTable, HistoricalNaturalCodeTable, \
-    HistoricalExpenditureCategoryTable, HistoricalCommercialCategoryTable,  \
-    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalProjectTable, \
-    HistoricalInterEntityTable, HistoricalFCOMappingTable
+from .filters import Analysis1Filter, Analysis2Filter, CommercialCategoryFilter, ExpenditureCategoryFilter, \
+    FCOMappingtFilter, HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalCommercialCategoryFilter, \
+    HistoricalExpenditureCategoryFilter, HistoricalFCOMappingtFilter, HistoricalInterEntityFilter, HistoricalNACFilter, \
+    HistoricalProgrammeFilter, HistoricalProjectFilter, InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
+from .tables import Analysis1Table, Analysis2Table, CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalCommercialCategoryTable, \
+    HistoricalExpenditureCategoryTable, HistoricalFCOMappingTable, HistoricalInterEntityTable, \
+    HistoricalNaturalCodeTable, HistoricalProgrammeTable, HistoricalProjectTable, InterEntityTable, NaturalCodeTable, \
+    ProgrammeTable, ProjectTable
 
 
 class FilteredNACListView(FAdminFilteredView):

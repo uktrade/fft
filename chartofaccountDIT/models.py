@@ -31,18 +31,17 @@ class HistoricalAnalysis1(Analysis1Abstract, ArchivedModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(analysis1_description = obj.analysis1_description  + suffix,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(analysis1_description=obj.analysis1_description + suffix,
                        analysis1_code=obj.analysis1_code,
                        supplier=obj.supplier,
                        pc_reference=obj.pc_reference,
                        financial_year=year_obj,
                        active=obj.active
-                    )
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -75,16 +74,15 @@ class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(analysis2_description = obj.analysis2_description  + suffix,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(analysis2_description=obj.analysis2_description + suffix,
                        analysis2_code=obj.analysis2_code,
                        financial_year=year_obj,
                        active=obj.active
-                    )
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -134,24 +132,23 @@ class ExpenditureCategory(ExpenditureCategoryAbstract, TimeStampedModel, LogChan
 class HistoricalExpenditureCategory(ExpenditureCategoryAbstract, ArchivedModel):
     linked_budget_code = models.IntegerField(verbose_name='Budget Code')
     linked_budget_code_description = models.CharField(max_length=200,
-                                                        verbose_name='Budget Description')
+                                                      verbose_name='Budget Description')
     NAC_category = models.CharField(max_length=255, verbose_name='Budget Grouping')
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(financial_year = year_obj,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(financial_year=year_obj,
                        active=obj.active,
-                        grouping_description = obj.grouping_description + suffix,
-                        NAC_category = obj.NAC_category.NAC_category_description,
-                        description = obj.description,
-                        further_description = obj.further_description,
-                        linked_budget_code = obj.linked_budget_code.natural_account_code,
-                        linked_budget_code_description = obj.linked_budget_code.natural_account_code_description)
+                       grouping_description=obj.grouping_description + suffix,
+                       NAC_category=obj.NAC_category.NAC_category_description,
+                       description=obj.description,
+                       further_description=obj.further_description,
+                       linked_budget_code=obj.linked_budget_code.natural_account_code,
+                       linked_budget_code_description=obj.linked_budget_code.natural_account_code_description)
         obj_hist.save()
         return obj_hist
 
@@ -178,24 +175,23 @@ class CommercialCategoryAbstract(models.Model):
 
 
 class CommercialCategory(CommercialCategoryAbstract, TimeStampedModel, LogChangeModel):
-        pass
+    pass
 
 
 class HistoricalCommercialCategory(CommercialCategoryAbstract, ArchivedModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(commercial_category = obj.commercial_category  + suffix,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(commercial_category=obj.commercial_category + suffix,
                        description=obj.description,
-                       approvers =obj.approvers,
+                       approvers=obj.approvers,
                        financial_year=year_obj,
                        active=obj.active
-                    )
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -241,20 +237,19 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
     natural_account_code = models.IntegerField(verbose_name='PO/Actuals NAC')
     expenditure_category = models.CharField(max_length=255, verbose_name='Budget Category', blank=True, null=True)
     NAC_category = models.CharField(max_length=255, verbose_name='Budget Grouping', blank=True, null=True)
-    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',blank=True, null=True)
+    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category', blank=True, null=True)
     account_L5_code = models.BigIntegerField(blank=True, null=True)
     account_L5_description = models.CharField(max_length=255, blank=True, null=True)
-    account_L6_budget = models.BigIntegerField( 'Budget/Forecast NAC', blank=True, null=True)
+    account_L6_budget = models.BigIntegerField('Budget/Forecast NAC', blank=True, null=True)
     account_L5_code_upload = models.BigIntegerField(verbose_name='L5 for OSCAR upload', blank=True, null=True)
     economic_budget_code = models.CharField(max_length=255, verbose_name='Expenditure Type', blank=True, null=True)
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
+    def archive_year(cls, obj, year_obj, suffix=''):
         if obj.expenditure_category:
             expenditure_category_value = obj.expenditure_category.grouping_description
             NAC_category_val = obj.expenditure_category.NAC_category.NAC_category_description
@@ -279,9 +274,9 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
             account_L5_code_val = None
             account_L5_description_val = None
             economic_budget_code_val = None
-        obj_hist = cls(natural_account_code_description = obj.natural_account_code_description  + suffix,
+        obj_hist = cls(natural_account_code_description=obj.natural_account_code_description + suffix,
                        natural_account_code=obj.natural_account_code,
-                       used_for_budget =obj.used_for_budget,
+                       used_for_budget=obj.used_for_budget,
                        expenditure_category=expenditure_category_value,
                        NAC_category=NAC_category_val,
                        commercial_category=commercial_category_val,
@@ -291,8 +286,8 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
                        account_L5_code_upload=account_L5_code_upload_val,
                        economic_budget_code=economic_budget_code_val,
                        financial_year=year_obj,
-                       active = obj.active
-                    )
+                       active=obj.active
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -300,8 +295,6 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
         verbose_name = "Historic Natural Account Code (NAC)"
         verbose_name_plural = "Historic Natural Account Codes (NAC)"
         ordering = ['financial_year', 'natural_account_code']
-
-
 
 
 class ProgrammeCodeAbstract(models.Model):
@@ -320,11 +313,11 @@ class ProgrammeCodeAbstract(models.Model):
 
 
 class ProgrammeCode(ProgrammeCodeAbstract, TimeStampedModel, LogChangeModel):
-        pass
+    pass
 
 
 class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
-    programme_code = models.CharField('Programme Code',  max_length=50)
+    programme_code = models.CharField('Programme Code', max_length=50)
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -332,10 +325,10 @@ class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
         return s + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        pc_hist = cls(programme_code = obj.programme_code,
-                      programme_description =obj.programme_description + suffix,
-                      budget_type = obj.budget_type,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        pc_hist = cls(programme_code=obj.programme_code,
+                      programme_description=obj.programme_description + suffix,
+                      budget_type=obj.budget_type,
                       active=obj.active,
                       financial_year=year_obj
                       )
@@ -346,8 +339,6 @@ class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
         verbose_name = "Historic Programme Code"
         verbose_name_plural = "Historic Programme Codes"
         ordering = ['financial_year', 'programme_code']
-
-#
 
 
 class InterEntityL1(TimeStampedModel, LogChangeModel):
@@ -383,7 +374,7 @@ class InterEntity(InterEntityAbstract, TimeStampedModel, LogChangeModel):
 
 
 class HistoricalInterEntity(InterEntityAbstract, ArchivedModel):
-    l2_value = models.CharField('ORACLE - Inter Entity Code',  max_length=10)
+    l2_value = models.CharField('ORACLE - Inter Entity Code', max_length=10)
     l1_value = models.CharField('Government Body', max_length=10)
     l1_description = models.CharField('Government Body Description', max_length=100)
     active = models.BooleanField(default=False)
@@ -393,15 +384,15 @@ class HistoricalInterEntity(InterEntityAbstract, ArchivedModel):
         return s + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(l2_value = obj.l2_value,
-                       l2_description =obj.l2_description + suffix,
-                       cpid = obj.cpid,
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(l2_value=obj.l2_value,
+                       l2_description=obj.l2_description + suffix,
+                       cpid=obj.cpid,
                        l1_description=obj.l1_value.l1_description,
-                       l1_value = obj.l1_value.l1_value,
+                       l1_value=obj.l1_value.l1_value,
                        active=obj.active,
                        financial_year=year_obj
-                      )
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -430,20 +421,19 @@ class ProjectCode(ProjectCodeAbstract, TimeStampedModel, LogChangeModel):
 
 
 class HistoricalProjectCode(ProjectCodeAbstract, ArchivedModel):
-    project_code = models.CharField('Project Code',  max_length=50)
+    project_code = models.CharField('Project Code', max_length=50)
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
-        obj_hist = cls(project_description = obj.project_description  + suffix,
-                      project_code =obj.project_code,
-                      active=obj.active,
-                      financial_year=year_obj
-                    )
+    def archive_year(cls, obj, year_obj, suffix=''):
+        obj_hist = cls(project_description=obj.project_description + suffix,
+                       project_code=obj.project_code,
+                       active=obj.active,
+                       financial_year=year_obj
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -476,7 +466,7 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
     fco_code = models.IntegerField(verbose_name='FCO (Prism) Code')
     account_L6_code = models.IntegerField(verbose_name='Oracle (DIT) Code')
     account_L6_description = models.CharField(max_length=200,
-                                                    verbose_name='Oracle (DIT) Description')
+                                              verbose_name='Oracle (DIT) Description')
     nac_category_description = models.CharField(max_length=200, verbose_name='Budget Grouping', blank=True, null=True)
     budget_description = models.CharField(max_length=200, verbose_name='Budget Category', blank=True, null=True)
     economic_budget_code = models.CharField(max_length=200, verbose_name='Expenditure Type')
@@ -484,11 +474,10 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() \
-               + ' ' + self.financial_year.financial_year_display
+        return super().__str__() + ' ' + self.financial_year.financial_year_display
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix =''):
+    def archive_year(cls, obj, year_obj, suffix=''):
         if obj.account_L6_code_fk.expenditure_category:
             category = obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description
             budget_desc = obj.account_L6_code_fk.expenditure_category.grouping_description
@@ -499,16 +488,16 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
             economic_budget_code = obj.account_L6_code_fk.account_L5_code.economic_budget_code
         else:
             economic_budget_code = None
-        obj_hist = cls(fco_description = obj.fco_description  + suffix,
-                       fco_code =obj.fco_code,
-                       account_L6_code = obj.account_L6_code_fk.natural_account_code,
-                       account_L6_description = obj.account_L6_code_fk.natural_account_code_description,
-                       nac_category_description = category,
-                       budget_description = budget_desc,
-                       economic_budget_code = economic_budget_code,
+        obj_hist = cls(fco_description=obj.fco_description + suffix,
+                       fco_code=obj.fco_code,
+                       account_L6_code=obj.account_L6_code_fk.natural_account_code,
+                       account_L6_description=obj.account_L6_code_fk.natural_account_code_description,
+                       nac_category_description=category,
+                       budget_description=budget_desc,
+                       economic_budget_code=economic_budget_code,
                        active=obj.active,
                        financial_year=year_obj
-                      )
+                       )
         obj_hist.save()
         return obj_hist
 
@@ -516,5 +505,3 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
         verbose_name = "Historic FCO Mapping"
         verbose_name_plural = "Historic FCO Mappings"
         ordering = ['financial_year', 'fco_code']
-
-

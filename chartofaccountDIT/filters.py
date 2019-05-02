@@ -4,10 +4,10 @@ from django.db.models import Q
 
 import django_filters
 
-from .models import Analysis1, Analysis2, CommercialCategory, \
-    ExpenditureCategory, FCOMapping, InterEntity, NaturalCode, ProgrammeCode, ProjectCode, \
-    HistoricalProgrammeCode, HistoricalNaturalCode, HistoricalExpenditureCategory, HistoricalCommercialCategory, \
-    HistoricalAnalysis2, HistoricalAnalysis1, HistoricalProjectCode, HistoricalFCOMapping, HistoricalInterEntity
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
+    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
+    HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
+    InterEntity, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class NACFilter(MyFilterSet):
@@ -17,8 +17,10 @@ class NACFilter(MyFilterSet):
 
     def search_all_filter(selfself, queryset, name, value):
         return queryset.filter(Q(account_L5_code__economic_budget_code__icontains=value) |
-                               Q(expenditure_category__NAC_category__NAC_category_description__icontains=value) |    # noqa: E501
-                               Q(expenditure_category__linked_budget_code__natural_account_code__icontains=value) |    # noqa: E501
+                               Q(
+                                   expenditure_category__NAC_category__NAC_category_description__icontains=value) |  # noqa: E501
+                               Q(
+                                   expenditure_category__linked_budget_code__natural_account_code__icontains=value) |  # noqa: E501
                                Q(expenditure_category__grouping_description__icontains=value) |
                                Q(commercial_category__commercial_category__icontains=value) |
                                Q(natural_account_code__icontains=value) |
@@ -34,11 +36,12 @@ class NACFilter(MyFilterSet):
         myfilter = super(NACFilter, self).qs
         return myfilter.filter(active=True).select_related('expenditure_category'). \
             select_related('commercial_category').order_by('-account_L5_code__economic_budget_code',
-                                                     '-expenditure_category__NAC_category__NAC_category_description',    # noqa: E501
-                                                     '-expenditure_category__grouping_description',
-                                                     'commercial_category__commercial_category',
-                                                     'natural_account_code'
-                                                     )
+                                                           '-expenditure_category__NAC_category__NAC_category_description',
+                                                           # noqa: E501
+                                                           '-expenditure_category__grouping_description',
+                                                           'commercial_category__commercial_category',
+                                                           'natural_account_code'
+                                                           )
 
 
 class HistoricalNACFilter(MyFilterSet):
@@ -151,13 +154,12 @@ class CommercialCategoryFilter(MyFilterSet):
                                  )
 
 
-
 class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
     """Provide the filter definition for Historical Commercial Category. Inherit from current one,
     because the fields are identical."""
+
     class Meta(CommercialCategoryFilter.Meta):
         model = HistoricalCommercialCategory
-
 
 
 class Analysis1Filter(MyFilterSet):
@@ -187,9 +189,9 @@ class Analysis1Filter(MyFilterSet):
 class HistoricalAnalysis1Filter(Analysis1Filter):
     """Provide the filter definition for Analysis 2. Inherit from current one,
     because the fields are identical."""
+
     class Meta(Analysis1Filter.Meta):
         model = HistoricalAnalysis1
-
 
 
 class Analysis2Filter(MyFilterSet):
@@ -216,6 +218,7 @@ class Analysis2Filter(MyFilterSet):
 class HistoricalAnalysis2Filter(Analysis2Filter):
     """Provide the filter definition for Analysis 1. Inherit from current one,
     because the fields are identical."""
+
     class Meta(Analysis2Filter.Meta):
         model = HistoricalAnalysis2
 
@@ -247,6 +250,7 @@ class ProgrammeFilter(MyFilterSet):
 class HistoricalProgrammeFilter(ProgrammeFilter):
     """Provide the filter definition for Programme. Inherit from current one,
     because the fields are identical."""
+
     class Meta(ProgrammeFilter.Meta):
         model = HistoricalProgrammeCode
 
@@ -276,6 +280,7 @@ class InterEntityFilter(MyFilterSet):
                                                      'l1_value__l1_description',
                                                      'l2_value'
                                                      )
+
 
 class HistoricalInterEntityFilter(MyFilterSet):
     search_all = django_filters.CharFilter(field_name='', label='',
@@ -339,7 +344,8 @@ class FCOMappingtFilter(MyFilterSet):
                                Q(fco_description__icontains=value) |
                                Q(account_L6_code_fk__natural_account_code__icontains=value) |
                                Q(account_L6_code_fk__natural_account_code_description__icontains=value) |
-                               Q(account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value) |
+                               Q(
+                                   account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value) |
                                Q(account_L6_code_fk__expenditure_category__grouping_description__icontains=value) |
                                Q(account_L6_code_fk__account_L5_code__economic_budget_code__icontains=value)
                                )
@@ -376,5 +382,3 @@ class HistoricalFCOMappingtFilter(MyFilterSet):
     def qs(self):
         myfilter = super(HistoricalFCOMappingtFilter, self).qs
         return myfilter.filter(active=True).order_by('fco_code')
-
-

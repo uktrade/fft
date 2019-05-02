@@ -1,13 +1,11 @@
 from django.urls import path
 
-from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, \
-    FilteredCommercialCategoryListView, \
-    FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, \
-    FilteredNACListView, FilteredProgrammeView, FilteredProjectView, \
-    HistoricalFilteredProgrammeView, HistoricalFilteredNACListView, \
-    HistoricalFilteredExpenditureCategoryListView, HistoricalFilteredCommercialCategoryListView, \
-    HistoricalFilteredAnalysis1ListView, HistoricalFilteredAnalysis2ListView, \
-    HistoricalFilteredProjectView, HistoricalFilteredInterEntityView, HistoricalFilteredFCOMappingView
+from .views import FilteredAnalysis1ListView, FilteredAnalysis2ListView, FilteredCommercialCategoryListView, \
+    FilteredExpenditureCategoryListView, FilteredFCOMappingView, FilteredInterEntityView, FilteredNACListView, \
+    FilteredProgrammeView, FilteredProjectView, HistoricalFilteredAnalysis1ListView, \
+    HistoricalFilteredAnalysis2ListView, HistoricalFilteredCommercialCategoryListView, \
+    HistoricalFilteredExpenditureCategoryListView, HistoricalFilteredFCOMappingView, HistoricalFilteredInterEntityView, \
+    HistoricalFilteredNACListView, HistoricalFilteredProgrammeView, HistoricalFilteredProjectView
 
 urlpatterns = [
     path('naturalcode/', FilteredNACListView.as_view(), name='naturalcode'),
@@ -30,7 +28,8 @@ urlpatterns = [
     path('historicalanalysis1/', HistoricalFilteredAnalysis1ListView.as_view(), name='historicalanalysis1'),
     path('historicalanalysis2/', HistoricalFilteredAnalysis2ListView.as_view(), name='historicalanalysis2'),
     path('historicalprogrammefilter/', HistoricalFilteredProgrammeView.as_view(), name='historicalprogrammefilter'),
-    path('historicalinterentityfilter/', HistoricalFilteredInterEntityView.as_view(), name='historicalinterentityfilter'),
+    path('historicalinterentityfilter/', HistoricalFilteredInterEntityView.as_view(),
+         name='historicalinterentityfilter'),
     path('historicalprojectfilter/', HistoricalFilteredProjectView.as_view(), name='historicalprojectfilter'),
     path('historicalfcofilter/', HistoricalFilteredFCOMappingView.as_view(), name='historicalfcofilter'),
 

@@ -2,11 +2,10 @@ from core.tables import FadminTable
 
 import django_tables2 as tables
 
-from .models import Analysis1, Analysis2, \
-    CommercialCategory, ExpenditureCategory, FCOMapping, \
-    InterEntity, NaturalCode, ProgrammeCode, ProjectCode, HistoricalNaturalCode, \
-    HistoricalProgrammeCode, HistoricalExpenditureCategory,  HistoricalCommercialCategory, \
-    HistoricalAnalysis2, HistoricalAnalysis1, HistoricalInterEntity, HistoricalFCOMapping, HistoricalProjectCode
+from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
+    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
+    HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
+    InterEntity, NaturalCode, ProgrammeCode, ProjectCode
 
 
 class ProgrammeTable(FadminTable):
@@ -21,6 +20,7 @@ class ProgrammeTable(FadminTable):
 
 class HistoricalProgrammeTable(ProgrammeTable):
     """The historical model is identical to the current one, so we can just inherit the class"""
+
     class Meta(ProgrammeTable.Meta):
         model = HistoricalProgrammeCode
 
@@ -97,6 +97,7 @@ class CommercialCategoryTable(FadminTable):
 
 class HistoricalCommercialCategoryTable(CommercialCategoryTable):
     """The historical model is identical to the current one, so we can just inherit the class"""
+
     class Meta(CommercialCategoryTable.Meta):
         model = HistoricalCommercialCategory
 
@@ -111,6 +112,7 @@ class Analysis2Table(FadminTable):
 
 class HistoricalAnalysis2Table(Analysis2Table):
     """The historical model is identical to the current one, so we can just inherit the class"""
+
     class Meta(Analysis2Table.Meta):
         model = HistoricalAnalysis2
 
@@ -130,6 +132,7 @@ class Analysis1Table(FadminTable):
 
 class HistoricalAnalysis1Table(Analysis1Table):
     """The historical model is identical to the current one, so we can just inherit the class"""
+
     class Meta(Analysis1Table.Meta):
         model = HistoricalAnalysis1
 
@@ -174,6 +177,7 @@ class ProjectTable(FadminTable):
 
 class HistoricalProjectTable(ProjectTable):
     """The historical model is identical to the current one, so we can just inherit the class"""
+
     class Meta(ProjectTable.Meta):
         model = HistoricalProjectCode
 
@@ -198,14 +202,14 @@ class FCOMappingTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = FCOMapping
         fields = (
-                  'economic_budget_code',
-                  'nac_category_description',
-                  'budget_description',
-                  'oracle_code',
-                  'oracle_description',
-                  'fco_code',
-                  'fco_description',
-                  )
+            'economic_budget_code',
+            'nac_category_description',
+            'budget_description',
+            'oracle_code',
+            'oracle_description',
+            'fco_code',
+            'fco_description',
+        )
 
 
 class HistoricalFCOMappingTable(FCOMappingTable):
@@ -224,6 +228,6 @@ class HistoricalFCOMappingTable(FCOMappingTable):
     economic_budget_code = \
         tables.Column(verbose_name='Expenditure Type',
                       accessor='economic_budget_code')
+
     class Meta(FCOMappingTable.Meta):
         model = HistoricalFCOMapping
-
