@@ -1,7 +1,8 @@
 import factory
 
-from gifthospitality.models import GiftAndHospitalityClassification, GiftAndHospitality, \
-    GiftAndHospitalityCategory, GiftAndHospitalityCompany
+from gifthospitality.models import GiftAndHospitality, GiftAndHospitalityCategory, \
+    GiftAndHospitalityClassification, GiftAndHospitalityCompany
+
 
 class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
     """

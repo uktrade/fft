@@ -4,11 +4,7 @@ from core.filters import MyFilterSet
 
 from django_filters import DateFilter, ModelChoiceFilter, NumberFilter
 
-from payroll.models import Grade
-
-
-from .models import GiftAndHospitality, GiftAndHospitalityCategory, \
-    GiftAndHospitalityClassification, GiftAndHospitalityCompany
+from .models import GiftAndHospitality, GiftAndHospitalityCompany
 
 
 class GiftHospitalityFilter(MyFilterSet):

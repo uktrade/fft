@@ -6,6 +6,7 @@ from payroll.models import Grade
 from .models import GiftAndHospitality, GiftAndHospitalityCategory, \
     GiftAndHospitalityClassification, GiftAndHospitalityCompany
 
+
 GH_CLASSIF_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
                   IMPORT_CSV_PK_NAME_KEY:
                       GiftAndHospitalityClassification.gif_hospitality_classification.field_name,
@@ -53,7 +54,6 @@ GH_GRADE_FK_KEY = {IMPORT_CSV_MODEL_KEY: Grade,
                    IMPORT_CSV_IS_FK: '',
                    IMPORT_CSV_PK_KEY: 'Grade'
                    }
-
 
 GH_KEY = {IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
           IMPORT_CSV_FIELDLIST_KEY: {

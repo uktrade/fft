@@ -4,7 +4,6 @@ from core.exportutils import generic_table_iterator
 from django.contrib import admin
 
 from .exportcsv import _export_gh_iterator
-
 from .importcsv import import_gh_category_class, import_gh_class, import_gh_classification_class, \
     import_gh_company_class
 from .models import GiftAndHospitality, GiftAndHospitalityCategory, \
