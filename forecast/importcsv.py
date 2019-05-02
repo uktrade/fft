@@ -8,7 +8,6 @@ from costcentre.models import CostCentre
 
 from .models import ADIReport
 
-
 # define the column position in the csv file.
 # it reflects the position of columns in the Oracle report used to download the actuals
 MONTH_KEY = {
