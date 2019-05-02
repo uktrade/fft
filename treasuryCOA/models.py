@@ -96,14 +96,11 @@ class L5AccountAbstract(models.Model):
     class Meta:
         abstract = True
 
-
     def __str__(self):
         return str(self.account_l5_code) + ' - ' + str(self.account_l5_long_name)
 
 
-
 class L5Account(L5AccountAbstract, TimeStampedModel):
-
     account_l4 = models.ForeignKey(L4Account, verbose_name='account l4 code',
                                    on_delete=models.PROTECT)
 
@@ -112,7 +109,6 @@ class L5Account(L5AccountAbstract, TimeStampedModel):
 
 
 class HistoricL5Account(L5AccountAbstract, ArchivedModel):
-
     account_l5_code = models.BigIntegerField(verbose_name='account l5 code')
     account_l4_code = models.BigIntegerField(verbose_name='account l4 code')
     account_l4_long_name = models.CharField(max_length=255,
@@ -133,32 +129,30 @@ class HistoricL5Account(L5AccountAbstract, ArchivedModel):
         verbose_name = 'Archived Treasury Level 5 COA'
 
     @classmethod
-    def archive_year(cls, obj, year_obj, suffix = ''):
+    def archive_year(cls, obj, year_obj, suffix=''):
         coa_hist = cls(
-                financial_year = year_obj,
-                account_l5_long_name = obj.account_l5_long_name + suffix,
-                account_l5_description = obj.account_l5_description + suffix,
-                economic_budget_code = obj.economic_budget_code,
-                sector_code = obj.sector_code,
-                estimates_column_code = obj.estimates_column_code,
-                usage_code = obj.usage_code,
-                cash_indicator_code = obj.cash_indicator_code,
-                account_l5_code = obj.account_l5_code,
-                account_l4_code = obj.account_l4.account_l4_code,
-                account_l4_long_name = obj.account_l4.account_l4_long_name,
-                account_l3_code = obj.account_l4.account_l3.account_l3_code,
-                account_l3_long_name = obj.account_l4.account_l3.account_l3_long_name,
-                account_l2_code = obj.account_l4.account_l3.account_l2.account_l2_code,
-                account_l2_long_name = obj.account_l4.account_l3.account_l2.account_l2_long_name,
-                account_l1_code = obj.account_l4.account_l3.account_l2.account_l1.account_l1_code,
-                account_l1_long_name = obj.account_l4.account_l3.account_l2.account_l1.account_l1_long_name,
-                account_code = obj.account_l4.account_l3.account_l2.account_l1.account_code,
-                account_l0_code = obj.account_l4.account_l3.account_l2.account_l1.account_l0_code)
+            financial_year=year_obj,
+            account_l5_long_name=obj.account_l5_long_name + suffix,
+            account_l5_description=obj.account_l5_description + suffix,
+            economic_budget_code=obj.economic_budget_code,
+            sector_code=obj.sector_code,
+            estimates_column_code=obj.estimates_column_code,
+            usage_code=obj.usage_code,
+            cash_indicator_code=obj.cash_indicator_code,
+            account_l5_code=obj.account_l5_code,
+            account_l4_code=obj.account_l4.account_l4_code,
+            account_l4_long_name=obj.account_l4.account_l4_long_name,
+            account_l3_code=obj.account_l4.account_l3.account_l3_code,
+            account_l3_long_name=obj.account_l4.account_l3.account_l3_long_name,
+            account_l2_code=obj.account_l4.account_l3.account_l2.account_l2_code,
+            account_l2_long_name=obj.account_l4.account_l3.account_l2.account_l2_long_name,
+            account_l1_code=obj.account_l4.account_l3.account_l2.account_l1.account_l1_code,
+            account_l1_long_name=obj.account_l4.account_l3.account_l2.account_l1.account_l1_long_name,
+            account_code=obj.account_l4.account_l3.account_l2.account_l1.account_code,
+            account_l0_code=obj.account_l4.account_l3.account_l2.account_l1.account_l0_code)
         coa_hist.save()
         return coa_hist
 
-
     def __str__(self):
         return str(self.account_l5_code) + ' - ' + str(self.account_l5_long_name) \
-               + ' ' + self.financial_year.financial_year_display
-
+            + ' ' + self.financial_year.financial_year_display
