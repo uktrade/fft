@@ -49,8 +49,10 @@ class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
                    ('expenditure_category__NAC_category', RelatedDropdownFilter),
                    ('expenditure_category', RelatedDropdownFilter))
 
+
     queryset_all = NaturalCode.objects.select_related('expenditure_category',
                                              'expenditure_category__NAC_category',
+                                             'expenditure_category__linked_budget_code',
                                              'commercial_category',
                                              'account_L5_code',
                                              'account_L5_code__account_l4',

@@ -1,66 +1,66 @@
-from core.exportutils import get_fk_value
 from treasuryCOA.exportcsv import EXPORT_L5_ITERATOR_HEADERS, full_l5_obj
 
 EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_ITERATOR_HEADERS + [
-        'Level 6',
-        'Level 6 Description',
-        'Used for budget',
-        'Budget Grouping',
-        'Budget Category',
-        'Commercial Category',
-        'Budget NAC',
-        'Active'
-    ]
+    'Level 6',
+    'Level 6 Description',
+    'Used for budget',
+    'Budget Grouping',
+    'Budget Category',
+    'Commercial Category',
+    'Budget NAC',
+    'Active'
+]
+
 
 def _export_nac_iterator(queryset):
     yield EXPORT_NAC_ITERATOR_HEADERS
 
     for obj in queryset:
         yield full_l5_obj(obj.account_L5_code) + [
-               obj.natural_account_code,
-               obj.natural_account_code_description,
-               obj.used_for_budget,
-               obj.expenditure_category.NAC_category.NAC_category_description if obj.expenditure_category else '-',
-               obj.expenditure_category.grouping_description if obj.expenditure_category else '-',
-               obj.commercial_category.commercial_category if obj.commercial_category else '-',
-               obj.expenditure_category.linked_budget_code.natural_account_code if obj.expenditure_category else '-',
-               obj.active
-               ]
+            obj.natural_account_code,
+            obj.natural_account_code_description,
+            obj.used_for_budget,
+            obj.expenditure_category.NAC_category.NAC_category_description if obj.expenditure_category else '-',
+            obj.expenditure_category.grouping_description if obj.expenditure_category else '-',
+            obj.commercial_category.commercial_category if obj.commercial_category else '-',
+            obj.expenditure_category.linked_budget_code.natural_account_code if obj.expenditure_category else '-',
+            obj.active
+        ]
 
 
 def _export_historical_nac_iterator(queryset):
     yield [
-                'Level 6',
-                'Level 6 Description',
-                'used for budget',
-                'Budget Category',
-                'Budget Grouping',
-                'Commercial Category',
-                'account L5 code',
-                'account L5 description',
-                'Budget NAC',
-                'L5 for OSCAR upload',
-                'Expenditure Type',
-                'active',
-                'financial year',
-                'archived'
-            ]
+        'Level 6',
+        'Level 6 Description',
+        'used for budget',
+        'Budget Category',
+        'Budget Grouping',
+        'Commercial Category',
+        'account L5 code',
+        'account L5 description',
+        'Budget NAC',
+        'L5 for OSCAR upload',
+        'Expenditure Type',
+        'active',
+        'financial year',
+        'archived'
+    ]
     for obj in queryset:
         yield [
-                obj.natural_account_code,
-                obj.natural_account_code_description,
-                obj.used_for_budget,
-                obj.expenditure_category,
-                obj.NAC_category,
-                obj.commercial_category,
-                obj.account_L5_code,
-                obj.account_L5_description,
-                obj.account_L6_budget,
-                obj.account_L5_code_upload,
-                obj.economic_budget_code,
-                obj.active,
-                obj.financial_year.financial_year_display,
-                obj.archived
+            obj.natural_account_code,
+            obj.natural_account_code_description,
+            obj.used_for_budget,
+            obj.expenditure_category,
+            obj.NAC_category,
+            obj.commercial_category,
+            obj.account_L5_code,
+            obj.account_L5_description,
+            obj.account_L6_budget,
+            obj.account_L5_code_upload,
+            obj.economic_budget_code,
+            obj.active,
+            obj.financial_year.financial_year_display,
+            obj.archived
         ]
 
 
@@ -87,7 +87,7 @@ def _export_historical_exp_cat_iterator(queryset):
         'Budget Grouping',
         'financial year',
         'archived',
-        ]
+    ]
     for obj in queryset:
         yield [
             obj.grouping_description,
@@ -166,7 +166,7 @@ def _export_inter_entity_l1_iterator(queryset):
 
 def _export_fco_mapping_iterator(queryset):
     yield ['FCO (Prism) Code', 'FCO (Prism) Description',
-           'Oracle (DIT) Code', 'Oracle (DIT) Description','Active']
+           'Oracle (DIT) Code', 'Oracle (DIT) Description', 'Active']
     for obj in queryset:
         yield [obj.fco_code,
                obj.fco_description,
@@ -219,14 +219,14 @@ def _export_inter_entity_iterator(queryset):
 
 def _export_historical_inter_entity_iterator(queryset):
     yield [
-            'Government Body',
-            'Government Body Description',
-            'ORACLE - Inter Entity Code',
-            'ORACLE - Inter Entity Description',
-            'Treasury - CPID (Departmental Code No.)',
-            'active',
-            'financial year',
-            'archived',
+        'Government Body',
+        'Government Body Description',
+        'ORACLE - Inter Entity Code',
+        'ORACLE - Inter Entity Description',
+        'Treasury - CPID (Departmental Code No.)',
+        'active',
+        'financial year',
+        'archived',
     ]
     for obj in queryset:
         yield [
@@ -239,5 +239,3 @@ def _export_historical_inter_entity_iterator(queryset):
             obj.financial_year.financial_year_display,
             obj.archived
         ]
-
-
