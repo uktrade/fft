@@ -4,17 +4,12 @@ from treasuryCOA.exportcsv import EXPORT_L5_ITERATOR_HEADERS, full_l5_obj
 EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_ITERATOR_HEADERS + [
         'Level 6',
         'Level 6 Description',
-        'used for budget',
-        'Budget Category',
+        'Used for budget',
         'Budget Grouping',
+        'Budget Category',
         'Commercial Category',
-        'account L5 code',
-        'account L5 description',
-        'Economic Budget Code',
-        'Budget/Forecast NAC',
-        'L5 code for OSCAR upload',
-        'L5 description for OSCAR upload',
-        'Expenditure Type'
+        'Budget NAC',
+        'Active'
     ]
 
 def _export_nac_iterator(queryset):
@@ -25,12 +20,10 @@ def _export_nac_iterator(queryset):
                obj.natural_account_code,
                obj.natural_account_code_description,
                obj.used_for_budget,
-               get_fk_value(obj.expenditure_category, 'grouping_description'),
-               get_fk_value(obj.expenditure_category.NAC_category, 'NAC_category_description') if obj.expenditure_category else '-',
-               get_fk_value(obj.commercial_category, 'commercial_category'),
-               get_fk_value(obj.expenditure_category.NAC_category, 'NAC_category_description') if obj.expenditure_category else '-',
-               get_fk_value(obj.account_L5_code_upload, 'account_l5_code'),
-               get_fk_value(obj.account_L5_code_upload, 'account_l5_long_name'),
+               obj.expenditure_category.NAC_category.NAC_category_description if obj.expenditure_category else '-',
+               obj.expenditure_category.grouping_description if obj.expenditure_category else '-',
+               obj.commercial_category.commercial_category if obj.commercial_category else '-',
+               obj.expenditure_category.linked_budget_code.natural_account_code if obj.expenditure_category else '-',
                obj.active
                ]
 
@@ -45,7 +38,7 @@ def _export_historical_nac_iterator(queryset):
                 'Commercial Category',
                 'account L5 code',
                 'account L5 description',
-                'Budget/Forecast NAC',
+                'Budget NAC',
                 'L5 for OSCAR upload',
                 'Expenditure Type',
                 'active',
