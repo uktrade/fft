@@ -189,10 +189,10 @@ class AdminExport(admin.ModelAdmin):
     def get_actions(self, request):
         # Do it like this to avoid deleting actions defined by other admin model (inheritance)
         actions = super().get_actions(request)
-        if not 'export_selection_xlsx' in actions:
-             actions['export_selection_xlsx'] = (self.export_selection_xlsx, 'export_selection_xlsx', u'Export selected object(s) to Excel')
+        if 'export_selection_xlsx' not in actions:
+            actions['export_selection_xlsx'] = (
+                self.export_selection_xlsx, 'export_selection_xlsx', u'Export selected object(s) to Excel')
         return actions
-
 
 
 class CsvImportForm(forms.Form):
@@ -247,4 +247,3 @@ class AdminImportExport(AdminExport):
         return render(
             request, "admin/csv_form.html", payload
         )
-

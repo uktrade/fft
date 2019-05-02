@@ -1,5 +1,6 @@
 from .models import FinancialYear
 
+
 def archive_generic(year, to_model, from_model):
     """It calls the archive function for the given model.
      It deletes the archived data for the same year, so it is possible to archive several time,
@@ -15,11 +16,9 @@ def archive_generic(year, to_model, from_model):
     for pc in pc_qs:
         try:
             to_model.archive_year(pc, year_obj, suffix)
-        except:
+        except:  # noqa: E722 do not use bare except. I reraising the exception, so it is ok to have a bare except
             print('error archiving table' + from_model.Meta.verbose_name)
             print('Primary key is ' + str(pc.pk))
             raise
         row += 1
     return row
-
-

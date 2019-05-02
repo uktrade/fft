@@ -8,7 +8,6 @@ from django.core.management.base import BaseCommand
 
 from treasuryCOA.archive import archive_treasury_l5
 
-
 ARCHIVE_TYPE = {
     'CostCentre': archive_cost_centre,
     'Treasury_COA': archive_treasury_l5,
@@ -20,7 +19,7 @@ ARCHIVE_TYPE = {
     'FCO_mapping': archive_fco_mapping,
     'Commercial_Cat': archive_commercial_category,
     'Inter_entity': archive_inter_entity,
-    'Project_Code' : archive_project_code
+    'Project_Code': archive_project_code
 }
 
 

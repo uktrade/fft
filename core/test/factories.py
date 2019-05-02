@@ -1,6 +1,6 @@
-import factory
-
 from core.models import FinancialYear
+
+import factory
 
 
 class FinancialYearFactory(factory.DjangoModelFactory):
@@ -10,6 +10,3 @@ class FinancialYearFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = FinancialYear
-
-
-

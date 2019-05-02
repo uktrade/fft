@@ -1,5 +1,3 @@
-from core.models import FinancialYear
-
 import pytest
 
 from .factories import FinancialYearFactory
@@ -11,4 +9,3 @@ from .factories import FinancialYearFactory
 def test_FinancialYear_model():
     model_test = FinancialYearFactory(financial_year=2018)
     assert model_test.financial_year == 2018
-
