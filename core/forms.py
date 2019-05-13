@@ -6,6 +6,7 @@ class FormAutocompleteSelect(AutocompleteSelect):
     by passing the name of the model to use in
     the auto complete dropdown.
     Unfortunately, it only works for people with Admin access'''
+
     class admin_site:
         pass
 

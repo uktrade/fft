@@ -1,3 +1,6 @@
+from core.exportutils import EXC_TAB_NAME_LEN
+from core.utils import today_string
+
 from django import get_version
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -10,6 +13,7 @@ from django_tables2.views import SingleTableMixin
 
 from fadmin2.settings import GIT_COMMIT
 
+
 @login_required()
 def index(request):
     return render(
@@ -19,14 +23,12 @@ def index(request):
 
 class AboutView(TemplateView):
     template_name = 'core/about.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['django_version'] = get_version()
         context['git_commit'] = GIT_COMMIT
         return context
-
-
-
 
 
 class TableExportWithSheetName(TableExport):
@@ -51,4 +53,12 @@ class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
     paginate_by = 200
     template_name = 'core/table_filter_generic.html'
     strict = False
-    sheet_name = 'Chart of Account'
+    name = 'View'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Define the export name at init, so it uses the current date, and not the date the class was loaded
+        # for the first time
+        self.export_name = self.name + ' ' + today_string()
+        # The max lenght for an Excel tab name is 31. So truncate the name, if needed
+        self.sheet_name = self.name[:EXC_TAB_NAME_LEN]

@@ -79,3 +79,11 @@ class LogChangeModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class ArchivedModel(models.Model):
+    financial_year = models.ForeignKey('core.FinancialYear', on_delete=models.PROTECT)
+    archived = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True

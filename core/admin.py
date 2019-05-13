@@ -1,6 +1,7 @@
 import io
 
 from core.exportutils import export_to_csv
+from core.models import FinancialYear
 
 from django import forms
 from django.contrib import admin, messages
@@ -77,6 +78,7 @@ class LogEntryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(FinancialYear)
 
 
 class AdminActiveField(admin.ModelAdmin):
@@ -115,6 +117,14 @@ class AdminActiveField(admin.ModelAdmin):
     make_active.short_description = u"Activate the selected object(s)"
     actions = [make_inactive, make_active]
     list_filter = ('active',)
+    # # Add export to the list of actions
+    # def get_actions(self, request):
+    #     actions = super().get_actions(request)
+    #     import pdb;
+    #     pdb.set_trace()
+    #     actions['make_inactive'] = (self.make_inactive, self.make_inactive.short_description)
+    #     actions['make_active'] = (self.make_active, self.make_active.short_description)
+    #     return actions
 
 
 class AdminEditOnly(admin.ModelAdmin):
@@ -124,6 +134,7 @@ class AdminEditOnly(admin.ModelAdmin):
     # Remove delete from the list of action
     def get_actions(self, request):
         actions = super().get_actions(request)
+
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
@@ -158,15 +169,30 @@ class AdminExport(admin.ModelAdmin):
         return my_urls + urls
 
     def export_all_xls(self, request):
-        # self.message_user(request, "Export called")
-        return export_to_excel(self.model.objects.all(), self.export_func)
-
-    def export_selection_xlsx(self, request, queryset):
+        try:
+            queryset = self.queryset_all
+        except AttributeError:
+            queryset = self.model.objects.all()
+            # self.message_user(request, "Export called")
         return export_to_excel(queryset, self.export_func)
 
-    export_selection_xlsx.short_description = u'Export selected object(s) to Excel'
+    def export_selection_xlsx(self, self1, request, queryset):
+        # Self1 is required because the function get called with self passed in twice.
+        # Something to do with adding the action in 'get_actions'
+        return export_to_excel(queryset, self.export_func)
 
-    actions = [export_selection_xlsx]
+    # export_selection_xlsx.short_description = u'Export selected object(s) to Excel'
+
+    # actions = [export_selection_xlsx]
+
+    # Add export to the list of actions
+    def get_actions(self, request):
+        # Do it like this to avoid deleting actions defined by other admin model (inheritance)
+        actions = super().get_actions(request)
+        if 'export_selection_xlsx' not in actions:
+            actions['export_selection_xlsx'] = (
+                self.export_selection_xlsx, 'export_selection_xlsx', u'Export selected object(s) to Excel')
+        return actions
 
 
 class CsvImportForm(forms.Form):

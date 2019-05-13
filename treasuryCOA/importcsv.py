@@ -1,4 +1,3 @@
-
 from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, ImportInfo, import_obj
 
@@ -73,7 +72,8 @@ L4_KEY = {IMPORT_CSV_MODEL_KEY: L4Account,
 L5_KEY = {IMPORT_CSV_MODEL_KEY: L5Account,
           IMPORT_CSV_PK_KEY: 'Account L5 Code',
           IMPORT_CSV_FIELDLIST_KEY: {L5Account.account_l5_long_name.field_name: 'Account L5 Long Name',  # noqa: E501
-                                     L5Account.account_l5_description.field_name: 'Account L5 Description',  # noqa: E501
+                                     L5Account.account_l5_description.field_name: 'Account L5 Description',
+                                     # noqa: E501
                                      L5Account.economic_budget_code.field_name: 'Economic Budget Code',  # noqa: E501
                                      L5Account.sector_code.field_name: 'Sector Code',
                                      L5Account.estimates_column_code.field_name: 'Estimates Column Code',  # noqa: E501

@@ -1,24 +1,25 @@
-from core.utils import today_string
 from core.views import FAdminFilteredView
 
-from .filters import Analysis1Filter, Analysis2Filter, \
-    CommercialCategoryFilter, ExpenditureCategoryFilter, FCOMappingtFilter, \
-    InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
-from .tables import Analysis1Table, Analysis2Table, \
-    CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
-    InterEntityTable, NaturalCodeTable, ProgrammeTable, ProjectTable
+from .filters import Analysis1Filter, Analysis2Filter, CommercialCategoryFilter, ExpenditureCategoryFilter, \
+    FCOMappingtFilter, HistoricalAnalysis1Filter, HistoricalAnalysis2Filter, HistoricalCommercialCategoryFilter, \
+    HistoricalExpenditureCategoryFilter, HistoricalFCOMappingtFilter, HistoricalInterEntityFilter, HistoricalNACFilter, \
+    HistoricalProgrammeFilter, HistoricalProjectFilter, InterEntityFilter, NACFilter, ProgrammeFilter, ProjectFilter
+from .tables import Analysis1Table, Analysis2Table, CommercialCategoryTable, ExpenditureCategoryTable, FCOMappingTable, \
+    HistoricalAnalysis1Table, HistoricalAnalysis2Table, HistoricalCommercialCategoryTable, \
+    HistoricalExpenditureCategoryTable, HistoricalFCOMappingTable, HistoricalInterEntityTable, \
+    HistoricalNaturalCodeTable, HistoricalProgrammeTable, HistoricalProjectTable, InterEntityTable, NaturalCodeTable, \
+    ProgrammeTable, ProjectTable
 
 
 class FilteredNACListView(FAdminFilteredView):
     table_class = NaturalCodeTable
     model = table_class.Meta.model
     filterset_class = NACFilter
-    export_name = 'Natural Account Codes' + today_string()
-    sheet_name = 'Natural Account Codes'
+    name = 'Natural Account Codes (NAC)'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Natural Account Codes (NAC)'
+        context['section_name'] = self.name
         context['section_description'] = 'This field tells us what we are ' \
                                          'spending the money on. ' \
                                          'The structure follows the Treasury Common Chart of ' \
@@ -27,48 +28,66 @@ class FilteredNACListView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredNACListView(FilteredNACListView):
+    table_class = HistoricalNaturalCodeTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalNACFilter
+    name = 'Natural Account Codes  2018-19'
+
+
 class FilteredExpenditureCategoryListView(FAdminFilteredView):
     table_class = ExpenditureCategoryTable
     model = table_class.Meta.model
     filterset_class = ExpenditureCategoryFilter
-    export_name = 'Budget Categories ' + today_string()
-    sheet_name = 'Budget Categories'
+    name = 'Budget Categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Budget Categories'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a financial perspective.'
         return context
 
 
+class HistoricalFilteredExpenditureCategoryListView(FilteredExpenditureCategoryListView):
+    table_class = HistoricalExpenditureCategoryTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalExpenditureCategoryFilter
+    name = 'Budget Categories 2018-19'
+
+
 class FilteredCommercialCategoryListView(FAdminFilteredView):
     table_class = CommercialCategoryTable
     model = table_class.Meta.model
     filterset_class = CommercialCategoryFilter
-    export_name = 'Commercial Categories ' + today_string()
-    sheet_name = 'Commercial Categories'
+    name = 'Commercial Categories'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Commercial Categories'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps you in acquiring the correct ' \
                                          'Natural Account Code for your purchase ' \
                                          'from a procurement perspective.'
         return context
 
 
+class HistoricalFilteredCommercialCategoryListView(FilteredCommercialCategoryListView):
+    table_class = HistoricalCommercialCategoryTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalCommercialCategoryFilter
+    name = 'Commercial Categories 2018-19'
+
+
 class FilteredAnalysis1ListView(FAdminFilteredView):
     table_class = Analysis1Table
     model = table_class.Meta.model
     filterset_class = Analysis1Filter
-    export_name = 'Contract Reconciliation (Analysis 1) ' + today_string()
-    sheet_name = 'Contract Reconciliation'
+    name = 'Contract Reconciliation (Analysis 1)'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Contract Reconciliation (Analysis 1)'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps to ' \
                                          'reconcile with Commercial’s unique ' \
                                          'contract identifier. It will enable the organisation ' \
@@ -77,16 +96,22 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredAnalysis1ListView(FilteredAnalysis1ListView):
+    table_class = HistoricalAnalysis1Table
+    model = table_class.Meta.model
+    filterset_class = HistoricalAnalysis1Filter
+    name = 'Contract Reconciliation (Analysis 1) 2018-19'
+
+
 class FilteredAnalysis2ListView(FAdminFilteredView):
     table_class = Analysis2Table
     model = table_class.Meta.model
     filterset_class = Analysis2Filter
-    export_name = 'Markets (Analysis 2) ' + today_string()
-    sheet_name = 'Markets'
+    name = 'Markets (Analysis 2)'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Markets (Analysis 2)'
+        context['section_name'] = self.name
         context['section_description'] = 'This field is used by the Overseas Team. ' \
                                          'The cost centre structure  identifies our 9 regions, ' \
                                          'however, within each region ' \
@@ -94,16 +119,22 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredAnalysis2ListView(FilteredAnalysis2ListView):
+    table_class = HistoricalAnalysis2Table
+    model = table_class.Meta.model
+    filterset_class = HistoricalAnalysis2Filter
+    name = 'Markets (Analysis 2) 2018-19'
+
+
 class FilteredProgrammeView(FAdminFilteredView):
     table_class = ProgrammeTable
     model = table_class.Meta.model
     filterset_class = ProgrammeFilter
-    export_name = 'Programme Codes ' + today_string()
-    sheet_name = 'Programme Codes'
+    name = 'Programme Codes'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Programme Codes'
+        context['section_name'] = self.name
         context['section_description'] = 'This field tells us why we are spending the money ' \
                                          'i.e. what we are trying to deliver on. ' \
                                          'This reflects the two most important reporting ' \
@@ -114,16 +145,22 @@ class FilteredProgrammeView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredProgrammeView(FilteredProgrammeView):
+    table_class = HistoricalProgrammeTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalProgrammeFilter
+    name = 'Programme Codes 2018-19'
+
+
 class FilteredInterEntityView(FAdminFilteredView):
     table_class = InterEntityTable
     model = table_class.Meta.model
     filterset_class = InterEntityFilter
-    export_name = 'EntityInterEntity ' + today_string()
-    sheet_name = 'EntityInterEntity'
+    name = 'Entity Inter Entity'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Entity-Inter Entity'
+        context['section_name'] = self.name
         context['section_description'] = 'This field is used to identify transactions with ' \
                                          'Other Government Departments (OGDs) / Bodies which ' \
                                          'is needed for the year-end accounts. To be used ' \
@@ -132,16 +169,22 @@ class FilteredInterEntityView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredInterEntityView(FilteredInterEntityView):
+    table_class = HistoricalInterEntityTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalInterEntityFilter
+    name = 'Entity Inter Entity 2018-19'
+
+
 class FilteredProjectView(FAdminFilteredView):
     table_class = ProjectTable
     model = table_class.Meta.model
     filterset_class = ProjectFilter
-    export_name = 'Project Codes ' + today_string()
-    sheet_name = 'Project Codes'
+    name = 'Project Codes (Spare 1)'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'Project (Spare 1)'
+        context['section_name'] = self.name
         context['section_description'] = 'This field helps to identify DITs project / portfolio ' \
                                          'and report against them regardless where in the ' \
                                          'organisation expenditure is taking place i.e. ' \
@@ -151,16 +194,28 @@ class FilteredProjectView(FAdminFilteredView):
         return context
 
 
+class HistoricalFilteredProjectView(FilteredProjectView):
+    table_class = HistoricalProjectTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalProjectFilter
+    name = 'Project Codes (Spare 1) 2018-19'
+
 
 class FilteredFCOMappingView(FAdminFilteredView):
     table_class = FCOMappingTable
     model = table_class.Meta.model
     filterset_class = FCOMappingtFilter
-    export_name = 'FCO Mappings ' + today_string()
-    sheet_name = 'FCO Mappings'
+    name = 'FCO Mappings'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['section_name'] = 'FCO Mapping'
-        context['section_description'] = 'AAAA AAAA.'
+        context['section_name'] = self.name
+        context['section_description'] = ''
         return context
+
+
+class HistoricalFilteredFCOMappingView(FilteredFCOMappingView):
+    table_class = HistoricalFCOMappingTable
+    model = table_class.Meta.model
+    filterset_class = HistoricalFCOMappingtFilter
+    name = 'FCO Mappings 2018-19'

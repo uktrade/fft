@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class DownloadLog(models.Model):
     CC_AT = 'CC'
     NAC_H_AT = 'NAC H'

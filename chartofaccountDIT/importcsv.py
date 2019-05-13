@@ -193,19 +193,17 @@ def import_inter_entity(csvfile):
 
 import_inter_entity_class = ImportInfo(INTER_ENTITY_KEY)
 
-
 L6_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
-                  IMPORT_CSV_IS_FK: '',
-                  IMPORT_CSV_PK_KEY: 'ORACLE Code'
-                  }
-
+          IMPORT_CSV_IS_FK: '',
+          IMPORT_CSV_PK_KEY: 'ORACLE Code'
+          }
 
 FCO_MAPPING_KEY = {IMPORT_CSV_MODEL_KEY: FCOMapping,
-                    IMPORT_CSV_PK_KEY: 'FCO Code',
-                    IMPORT_CSV_FIELDLIST_KEY: {
-                        FCOMapping.fco_description.field_name: 'FCO Description',
-                        FCOMapping.account_L6_code_fk.field.name: L6_KEY
-                    }
-                 }
+                   IMPORT_CSV_PK_KEY: 'FCO Code',
+                   IMPORT_CSV_FIELDLIST_KEY: {
+                       FCOMapping.fco_description.field_name: 'FCO Description',
+                       FCOMapping.account_L6_code_fk.field.name: L6_KEY
+                   }
+                   }
 
 import_fco_mapping_class = ImportInfo(FCO_MAPPING_KEY)
