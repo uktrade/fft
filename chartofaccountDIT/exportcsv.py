@@ -7,7 +7,7 @@ EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_ITERATOR_HEADERS + [
     'Budget Grouping',
     'Budget Category',
     'Commercial Category',
-    'Budget NAC',
+    'Prime NAC',
     'Active'
 ]
 
@@ -22,7 +22,7 @@ def _export_nac_iterator(queryset):
             obj.used_for_budget,
             obj.expenditure_category.NAC_category.NAC_category_description if obj.expenditure_category else '-',
             obj.expenditure_category.grouping_description if obj.expenditure_category else '-',
-            obj.commercial_category.commercial_category if obj.commercial_category else '-',
+            obj.commercial_category.commercial_category if obj.commercial_category else 'N/A',
             obj.expenditure_category.linked_budget_code.natural_account_code if obj.expenditure_category else '-',
             obj.active
         ]
@@ -38,7 +38,7 @@ def _export_historical_nac_iterator(queryset):
         'Commercial Category',
         'account L5 code',
         'account L5 description',
-        'Budget NAC',
+        'Prime NAC',
         'L5 for OSCAR upload',
         'Expenditure Type',
         'active',
@@ -125,6 +125,13 @@ def _export_historical_comm_cat_iterator(queryset):
                obj.approvers,
                obj.financial_year.financial_year_display,
                obj.archived]
+
+
+def _export_op_del_cat_iterator(queryset):
+    yield ['Operating Delivery Plan Category']
+
+    for obj in queryset:
+        yield [obj.operating_delivery_description, ]
 
 
 def _export_nac_cat_iterator(queryset):

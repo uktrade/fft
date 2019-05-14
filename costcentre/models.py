@@ -57,7 +57,7 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
 
 
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
-    group_code = models.CharField('Group No.', primary_key=True, max_length=6)
+    group_code = models.CharField('Group Code', primary_key=True, max_length=6)
     group_name = models.CharField('Group Name', max_length=300)
     director_general = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
                                          null=True, blank=True)
@@ -72,8 +72,8 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
 
 
 class Directorate(TimeStampedModel, LogChangeModel):
-    directorate_code = models.CharField('Directorate', primary_key=True, max_length=6)
-    directorate_name = models.CharField('Directorate No.', max_length=300)
+    directorate_code = models.CharField('Directorate Code', primary_key=True, max_length=6)
+    directorate_name = models.CharField('Directorate Name', max_length=300)
     director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
                                  null=True, blank=True)
     group = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)
@@ -88,7 +88,7 @@ class Directorate(TimeStampedModel, LogChangeModel):
 
 
 class CostCentre(TimeStampedModel, LogChangeModel):
-    cost_centre_code = models.CharField('Cost Centre No.', primary_key=True, max_length=6)
+    cost_centre_code = models.CharField('Cost Centre Code', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
     deputy_director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
@@ -114,13 +114,13 @@ class CostCentre(TimeStampedModel, LogChangeModel):
 class HistoricCostCentre(ArchivedModel):
     """Repository for historical cost centres hierarchies.
     The table is not normalised, to make life easier when retrieving data"""
-    group_code = models.CharField('Group No.', max_length=50)
+    group_code = models.CharField('Group Code', max_length=50)
     group_name = models.CharField('Group Name', max_length=300)
     dg_fullname = models.CharField('Director General', max_length=200, null=True, blank=True)
-    directorate_code = models.CharField('Directorate', max_length=50)
+    directorate_code = models.CharField('Directorate Code', max_length=50)
     directorate_name = models.CharField('Directorate Name', max_length=300)
     director_fullname = models.CharField('Director', max_length=200, null=True, blank=True)
-    cost_centre_code = models.CharField('Cost Centre No.', max_length=50)
+    cost_centre_code = models.CharField('Cost Centre Code', max_length=50)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     deputy_director_fullname = models.CharField('Deputy Director', max_length=200, null=True, blank=True)
     business_partner_fullname = models.CharField('Business Partner', max_length=200, null=True, blank=True)

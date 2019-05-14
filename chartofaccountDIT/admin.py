@@ -14,15 +14,15 @@ from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, _exp
     _export_historical_comm_cat_iterator, _export_historical_exp_cat_iterator, _export_historical_fco_mapping_iterator, \
     _export_historical_inter_entity_iterator, _export_historical_nac_iterator, \
     _export_inter_entity_iterator, _export_inter_entity_l1_iterator, _export_nac_cat_iterator, \
-    _export_nac_iterator, _export_programme_iterator
+    _export_nac_iterator, _export_op_del_cat_iterator, _export_programme_iterator
 from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
-    import_inter_entity_class, import_prog_class
+    import_inter_entity_class, import_op_del_category_class, import_prog_class
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
     HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
     HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
-    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode
 
 
 class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
@@ -431,6 +431,19 @@ class FCOMappingAdmin(AdminActiveField, AdminImportExport):
         return import_fco_mapping_class
 
 
+class OpDelCategoryAdmin(AdminImportExport):
+    search_fields = ['operating_delivery_description']
+    list_display = ['operating_delivery_description']
+
+    @property
+    def export_func(self):
+        return _export_op_del_cat_iterator
+
+    @property
+    def import_info(self):
+        return import_op_del_category_class
+
+
 admin.site.register(Analysis1, Analysis1Admin)
 admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
@@ -442,6 +455,8 @@ admin.site.register(InterEntityL1, InterEntityL1Admin)
 admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
 admin.site.register(FCOMapping, FCOMappingAdmin)
+admin.site.register(OperatingDeliveryCategory, OpDelCategoryAdmin)
+
 
 admin.site.register(HistoricalAnalysis1, HistoricalAnalysis1Admin)
 admin.site.register(HistoricalAnalysis2, HistoricalAnalysis2Admin)

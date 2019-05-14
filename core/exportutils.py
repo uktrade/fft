@@ -33,6 +33,16 @@ def is_number(s):
             return s
 
 
+def display_yes_no(row):
+    """It takes a row generated for export and change boolean to string 'Yes' or 'No' instead of True/False"""
+    for ind, item in enumerate(row):
+        if isinstance(item, bool):
+            if item:
+                row[ind] = 'Yes'
+            else:
+                row[ind] = 'No'
+    return row
+
 # NOT USED
 class SmartExport:
     """ return lists with the header name and the objects from a queryset
@@ -131,6 +141,7 @@ def export_to_excel(queryset, f, title=''):
     ws.title = title[:EXC_TAB_NAME_LEN]
     for row in f(queryset):
         ws.append(row)
+        # ws.append(display_yes_no(row))
     wb.save(resp)
     return resp
 

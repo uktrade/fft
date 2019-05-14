@@ -7,7 +7,7 @@ from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CS
 from treasuryCOA.models import L5Account
 
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
-    InterEntity, InterEntityL1, NACCategory, NaturalCode, ProgrammeCode, ProjectCode
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode
 
 # define the column position in the csv file.
 ANALYSIS1_KEY = {IMPORT_CSV_MODEL_KEY: Analysis1,
@@ -111,6 +111,14 @@ def import_NAC_expenditure_category(csvfile):
 
 import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
 
+
+OP_DEL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: OperatingDeliveryCategory,
+                    IMPORT_CSV_PK_KEY: 'Operating Delivery Category',
+                    IMPORT_CSV_PK_NAME_KEY: OperatingDeliveryCategory.operating_delivery_description.field_name,
+                    IMPORT_CSV_FIELDLIST_KEY: {}}
+
+
+import_op_del_category_class = ImportInfo(OP_DEL_CATEGORY_KEY)
 
 def import_expenditure_category(csvfile):
     """Special function to import Expenditure category, because I need to change the NAC code

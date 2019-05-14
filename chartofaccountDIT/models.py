@@ -106,6 +106,20 @@ class NACCategory(TimeStampedModel, LogChangeModel):
         ordering = ['NAC_category_description']
 
 
+class OperatingDeliveryCategory(TimeStampedModel, LogChangeModel):
+    """Another way to classify the Budget NACs"""
+    operating_delivery_description = models.CharField(max_length=255, verbose_name='Operating Delivery Plan Category',
+                                                unique=True)
+
+    def __str__(self):
+        return str(self.operating_delivery_description)
+
+    class Meta:
+        verbose_name = "Operating Delivery Plan Category"
+        verbose_name_plural = "Operating Delivery Plan Categories"
+        ordering = ['operating_delivery_description']
+
+
 class ExpenditureCategoryAbstract(models.Model):
     grouping_description = models.CharField(max_length=255, verbose_name='Budget Category',
                                             unique=True)
@@ -127,6 +141,8 @@ class ExpenditureCategory(ExpenditureCategoryAbstract, TimeStampedModel, LogChan
                                            blank=True, null=True, verbose_name='Budget Code')
     NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT,
                                      blank=True, null=True, verbose_name='Budget Grouping')
+    op_del_category = models.ForeignKey(OperatingDeliveryCategory, on_delete=models.PROTECT,
+                                     blank=True, null=True, verbose_name='Operating Delivery Plan')
 
 
 class HistoricalExpenditureCategory(ExpenditureCategoryAbstract, ArchivedModel):
