@@ -195,7 +195,7 @@ class HistoricalAnalysis2Admin(AdminreadOnly, AdminExport):
 
 class ExpenditureCategoryAdmin(AdminImportExport):
     search_fields = ['grouping_description', 'description']
-    list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
+    list_display = ['grouping_description', 'description', 'NAC_category', 'op_del_category', 'linked_budget_code']
     list_filter = ('NAC_category',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -210,7 +210,7 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         if obj:
             return ['grouping_description', 'description',
                     'further_description', 'linked_budget_code',
-                    'NAC_category',
+                    'NAC_category','op_del_category',
                     'created', 'updated']
         else:
             return ['grouping_description', 'description',

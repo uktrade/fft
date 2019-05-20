@@ -139,13 +139,16 @@ def import_expenditure_category(csvfile):
         cat_obj = NACCategory.objects.get(
             NAC_category_description=row[header['Budget Grouping']].strip())
         obj.NAC_category = cat_obj
+        op_plan_obj = OperatingDeliveryCategory.objects.get(
+            operating_delivery_description=row[header['Operating Delivery Plan']].strip())
+        obj.op_del_category = op_plan_obj
         obj.save()
 
 
 import_expenditure_category_class = ImportInfo({}, 'Budget Categories',
                                                ['Budget Grouping', 'Budget Category',
                                                 'Description', 'Further Information',
-                                                'Budget NAC'],
+                                                'Budget NAC', 'Operating Delivery Plan'],
                                                import_expenditure_category)
 
 

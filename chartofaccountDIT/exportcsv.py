@@ -66,7 +66,7 @@ def _export_historical_nac_iterator(queryset):
 
 def _export_exp_cat_iterator(queryset):
     yield ['Budget Grouping', 'Expenditure Category',
-           'Description', 'Further Description', 'Budget NAC', 'Budget NAC Description'
+           'Description', 'Further Description', 'Budget NAC', 'Budget NAC Description', 'Operating Delivery Plan'
            ]
     for obj in queryset:
         yield [obj.NAC_category.NAC_category_description,
@@ -74,7 +74,8 @@ def _export_exp_cat_iterator(queryset):
                obj.description,
                obj.further_description,
                obj.linked_budget_code.natural_account_code,
-               obj.linked_budget_code.natural_account_code_description]
+               obj.linked_budget_code.natural_account_code_description,
+               obj.op_del_category.operating_delivery_description]
 
 
 def _export_historical_exp_cat_iterator(queryset):
