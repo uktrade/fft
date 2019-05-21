@@ -20,6 +20,8 @@ class NACFilter(MyFilterSet):
                                Q(
                                    expenditure_category__NAC_category__NAC_category_description__icontains=value) |  # noqa: E501
                                Q(
+                                   expenditure_category__op_del_category__operating_delivery_description__icontains=value) |  # noqa: E501
+                               Q(
                                    expenditure_category__linked_budget_code__natural_account_code__icontains=value) |  # noqa: E501
                                Q(expenditure_category__grouping_description__icontains=value) |
                                Q(commercial_category__commercial_category__icontains=value) |

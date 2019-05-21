@@ -38,6 +38,9 @@ class NaturalCodeTable(FadminTable):
                       accessor='account_L5_code.economic_budget_code')
     natural_account_code = tables.Column(verbose_name='PO/Actuals NAC')
     natural_account_code_description = tables.Column(verbose_name='NAC Description')
+    op_delivery_plan = \
+        tables.Column(verbose_name='Operational Delivery Plan',
+                      accessor='expenditure_category.op_del_category.operating_delivery_description')
 
     class Meta(FadminTable.Meta):
         model = NaturalCode
@@ -45,6 +48,7 @@ class NaturalCodeTable(FadminTable):
                   'nac_category_description',
                   'budget_description',
                   'commercial_category',
+                  'op_delivery_plan',
                   'budget_NAC_code',
                   'natural_account_code',
                   'natural_account_code_description',
