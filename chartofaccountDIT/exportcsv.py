@@ -1,28 +1,31 @@
-from treasuryCOA.exportcsv import EXPORT_L5_ITERATOR_HEADERS, full_l5_obj
+from treasuryCOA.exportcsv import EXPORT_L5_FIELD_ITERATOR_HEADERS, EXPORT_L5_HIERARCHY_ITERATOR_HEADERS, \
+    l5_field_obj, l5_hierarchy_obj
 
-EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_ITERATOR_HEADERS + [
+EXPORT_NAC_ITERATOR_HEADERS = EXPORT_L5_HIERARCHY_ITERATOR_HEADERS + [
     'Level 6',
-    'Level 6 Description',
+    'Level 6 Description'] + EXPORT_L5_FIELD_ITERATOR_HEADERS + [
     'Used for budget',
     'Budget Grouping',
     'Budget Category',
     'Commercial Category',
+    'Operational Delivery Plan',
     'Prime NAC',
-    'Active'
-]
+    'Active']
 
 
 def _export_nac_iterator(queryset):
     yield EXPORT_NAC_ITERATOR_HEADERS
 
     for obj in queryset:
-        yield full_l5_obj(obj.account_L5_code) + [
+        yield l5_hierarchy_obj(obj.account_L5_code) + [
             obj.natural_account_code,
-            obj.natural_account_code_description,
+            obj.natural_account_code_description] + l5_field_obj(obj.account_L5_code) + [
             obj.used_for_budget,
             obj.expenditure_category.NAC_category.NAC_category_description if obj.expenditure_category else '-',
             obj.expenditure_category.grouping_description if obj.expenditure_category else '-',
             obj.commercial_category.commercial_category if obj.commercial_category else 'N/A',
+            obj.expenditure_category.op_del_category.operating_delivery_description
+                if obj.expenditure_category and obj.expenditure_category.op_del_category else 'N/A',
             obj.expenditure_category.linked_budget_code.natural_account_code if obj.expenditure_category else '-',
             obj.active
         ]
@@ -75,7 +78,7 @@ def _export_exp_cat_iterator(queryset):
                obj.further_description,
                obj.linked_budget_code.natural_account_code,
                obj.linked_budget_code.natural_account_code_description,
-               obj.op_del_category.operating_delivery_description]
+               obj.op_del_category.operating_delivery_description if obj.op_del_category else '-']
 
 
 def _export_historical_exp_cat_iterator(queryset):

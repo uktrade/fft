@@ -99,6 +99,7 @@ def import_NAC_DIT(csvfile):
 
 import_NAC_DIT_class = ImportInfo(NAC_DIT_KEY)
 
+
 NAC_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: NACCategory,
                     IMPORT_CSV_PK_KEY: 'Budget Grouping',
                     IMPORT_CSV_PK_NAME_KEY: NACCategory.NAC_category_description.field_name,
@@ -120,6 +121,7 @@ OP_DEL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: OperatingDeliveryCategory,
 
 import_op_del_category_class = ImportInfo(OP_DEL_CATEGORY_KEY)
 
+
 def import_expenditure_category(csvfile):
     """Special function to import Expenditure category, because I need to change the NAC code
     during the import"""
@@ -128,19 +130,19 @@ def import_expenditure_category(csvfile):
     header = csvheadertodict(next(reader))
     for row in reader:
         obj, created = ExpenditureCategory.objects.get_or_create(
-            grouping_description=row[header['Budget Category']].strip())
-        nac_obj = NaturalCode.objects.get(pk=row[header['Budget NAC']].strip())
+            grouping_description=row[header['budget category']].strip())
+        nac_obj = NaturalCode.objects.get(pk=row[header['budget nac']].strip())
         nac_obj.active = True
         nac_obj.used_for_budget = True
         nac_obj.save()
         obj.linked_budget_code = nac_obj
-        obj.description = row[header['Description']].strip()
-        obj.further_description = row[header['Further Information']].strip()
+        obj.description = row[header['description']].strip()
+        obj.further_description = row[header['further description']].strip()
         cat_obj = NACCategory.objects.get(
-            NAC_category_description=row[header['Budget Grouping']].strip())
+            NAC_category_description=row[header['budget grouping']].strip())
         obj.NAC_category = cat_obj
-        op_plan_obj = OperatingDeliveryCategory.objects.get(
-            operating_delivery_description=row[header['Operating Delivery Plan']].strip())
+        op_plan_obj, created  = OperatingDeliveryCategory.objects.get_or_create(
+            operating_delivery_description=row[header['operating delivery plan']].strip())
         obj.op_del_category = op_plan_obj
         obj.save()
 

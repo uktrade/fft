@@ -1,15 +1,19 @@
-EXPORT_L5_ITERATOR_HEADERS = ['L0 Code', 'Accounts Code',
+EXPORT_L5_HIERARCHY_ITERATOR_HEADERS = ['L0 Code', 'Accounts Code',
                               'L1 Code', 'L1 Name',
                               'L2 Code', 'L2 Name',
                               'L3 Code', 'L3 Name',
                               'L4 Code', 'L4 Name',
-                              'L5 Code', 'L5 Name', 'L5 Description',
+                              'L5 Code', 'L5 Name', 'L5 Description'
+                              ]
+
+
+EXPORT_L5_FIELD_ITERATOR_HEADERS = [
                               'Economic Budget', 'Sector', 'Estimate Column',
                               'Usage', 'Cash Indicator'
                               ]
 
 
-def full_l5_obj(obj):
+def l5_hierarchy_obj(obj):
     if obj:
         return [obj.account_l4.account_l3.account_l2.account_l1.account_l0_code,
                 obj.account_l4.account_l3.account_l2.account_l1.account_code,
@@ -23,18 +27,8 @@ def full_l5_obj(obj):
                 obj.account_l4.account_l4_long_name,
                 obj.account_l5_code,
                 obj.account_l5_long_name,
-                obj.account_l5_description,
-                obj.economic_budget_code,
-                obj.sector_code,
-                obj.estimates_column_code,
-                obj.usage_code,
-                obj.cash_indicator_code]
+                obj.account_l5_description]
     return ['-',
-            '-',
-            '-',
-            '-',
-            '-',
-            '-',
             '-',
             '-',
             '-',
@@ -49,10 +43,24 @@ def full_l5_obj(obj):
             '-']
 
 
+def l5_field_obj(obj):
+    if obj:
+        return [obj.economic_budget_code,
+                obj.sector_code,
+                obj.estimates_column_code,
+                obj.usage_code,
+                obj.cash_indicator_code]
+    return ['-',
+            '-',
+            '-',
+            '-',
+            '-']
+
+
 def _export_L5_iterator(queryset):
-    yield EXPORT_L5_ITERATOR_HEADERS
+    yield EXPORT_L5_HIERARCHY_ITERATOR_HEADERS + EXPORT_L5_FIELD_ITERATOR_HEADERS
     for obj in queryset:
-        yield full_l5_obj(obj)
+        yield l5_hierarchy_obj(obj) + l5_field_obj(obj)
 
 
 # L4 Account

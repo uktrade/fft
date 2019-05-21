@@ -140,8 +140,8 @@ def export_to_excel(queryset, f, title=''):
     # Truncate the tab name to the maximum lenght permitted by Excel
     ws.title = title[:EXC_TAB_NAME_LEN]
     for row in f(queryset):
-        ws.append(row)
-        # ws.append(display_yes_no(row))
+        # ws.append(row)
+        ws.append(display_yes_no(row))
     wb.save(resp)
     return resp
 
