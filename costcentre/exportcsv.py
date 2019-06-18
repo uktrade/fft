@@ -14,7 +14,7 @@ def export_bp_iterator(queryset):
 
 
 def export_cc_iterator(queryset):
-    yield ['Cost Centre', 'Cost Centre Description', 'Active', 'Disabled (Actuals to be cleared)',
+    yield ['Cost Centre', 'Cost Centre Description', 'Active', 'Used for Travel', 'Disabled (Actuals to be cleared)',
            'Directorate', 'Directorate Description',
            'Group', 'Group Description',
            'BSCE Email']
@@ -22,6 +22,7 @@ def export_cc_iterator(queryset):
         yield [int(obj.cost_centre_code),
                obj.cost_centre_name,
                obj.active,
+               obj.used_for_travel,
                obj.disabled_with_actual,
                obj.directorate.directorate_code,
                obj.directorate.directorate_name,

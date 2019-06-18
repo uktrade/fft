@@ -61,14 +61,13 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     def get_fields(self, request, obj=None):
         if obj:
             return ['cost_centre_code', 'cost_centre_name',
-                    'directorate', 'deputy_director', 'business_partner', 'bsce_email',
+                    'directorate', 'deputy_director', 'business_partner', 'bsce_email', 'used_for_travel',
                     'disabled_with_actual', 'active', 'created', 'updated']
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'bsce_email',
+            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'bsce_email', 'used_for_travel',
                     'deputy_director', 'business_partner', 'disabled_with_actual', 'active']
 
-    # the export and import function must be defined as properties, to stop getting 'self' as first
-    # parameter
+    # the export and import function must be defined as properties, to stop getting 'self' as first parameter
     @property
     def export_func(self):
         #        return export_admin_cc_iterator
@@ -82,7 +81,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
                      'directorate__directorate_code', 'directorate__directorate_name',
                      'directorate__group__group_code', 'directorate__group__group_name',
                      'deputy_director__name', 'deputy_director__surname']
-    list_filter = ('active', 'disabled_with_actual',
+    list_filter = ('active', 'disabled_with_actual', 'used_for_travel',
                    ('directorate', RelatedDropdownFilter),
                    ('directorate__group', RelatedDropdownFilter))
 
