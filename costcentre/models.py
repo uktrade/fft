@@ -1,5 +1,7 @@
 from core.metamodels import ArchivedModel, LogChangeModel, TimeStampedModel  # noqa I100
 
+from treasurySS.models import DITSSGroup
+
 from django.db import models
 
 
@@ -91,7 +93,7 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     cost_centre_code = models.CharField('Cost Centre Code', primary_key=True, max_length=6)
     cost_centre_name = models.CharField('Cost Centre Name', max_length=300)
     directorate = models.ForeignKey(Directorate, on_delete=models.PROTECT)
-    deputy_director = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
+    deputy_director = models.ForeignKey(CostCentrePerson, on_delete=models.PROTECT,
                                         verbose_name='Deputy Director',
                                         null=True, blank=True)
     business_partner = models.ForeignKey('BusinessPartner',
@@ -102,7 +104,8 @@ class CostCentre(TimeStampedModel, LogChangeModel):
                                    on_delete=models.PROTECT, null=True, blank=True)
     disabled_with_actual = models.BooleanField('Disabled (Actuals to be cleared)', default='False')
     used_for_travel = models.BooleanField('Used for Travel', default='False')
-
+    subsegment_mapping = models.ForeignKey(DITSSGroup, verbose_name='Sub Segment Group Mapping',
+                                   on_delete=models.PROTECT, null=True, blank=True)
     def __str__(self):
         return str(self.cost_centre_code) + ' - ' + str(self.cost_centre_name)
 

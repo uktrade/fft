@@ -1,5 +1,8 @@
 import csv
 
+import operator
+
+
 """Set of functions used to import from csv into the FIDO model.
 The import is specified as a dictionary, defining the model, the name of the primary key
 and the list of fields. Recursions are used to defind foreign keys."""
@@ -150,8 +153,10 @@ def get_col_from_obj_key(obj_key):
                 header_list.append(v)
     return list(filter(None, [element.lower() for element in header_list]))
 
+def alwaystrue(a,b):
+    return True
 
-def import_obj(csvfile, obj_key):
+def import_obj(csvfile, obj_key, op = alwaystrue, pos = 1, value = 1):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
     l1 = get_col_from_obj_key(obj_key)
@@ -165,12 +170,17 @@ def import_obj(csvfile, obj_key):
         return False, msg
     # import pdb;
     # pdb.set_trace()
-    row_number = 1
     d = addposition(obj_key, header)
+    if isinstance(pos,str):
+        pos = header[pos.lower()]
+    row_number = 1
     for row in reader:
         row_number = row_number + 1
-        obj, msg = readcsvfromdict(d, row)
-        print(row_number, msg)
+        if op(row[pos], value):
+            obj, msg = readcsvfromdict(d, row)
+            print(row_number, msg)
+        else:
+            print(row[pos])
     return True, msg
 
 
@@ -185,7 +195,7 @@ def import_list_obj(csvfile, model, fieldname):
 class ImportInfo():
     """Use to define the function used to import from the Admin view list"""
 
-    def __init__(self, key={}, title='', hlist=[], my_import_func=None):
+    def __init__(self, key={}, title='', hlist=[], my_import_func=None, filter=[]):
         self.key = key
         self.special_func = my_import_func
         if bool(key):
@@ -198,9 +208,14 @@ class ImportInfo():
         else:
             self.form_title = title
 
+        if filter:
+            self.op = filter[0]
+            self.header = filter[1]
+            self.value  = filter[2]
+
     def my_import_func(self, c):
         if bool(self.key):
-            return import_obj(c, self.key)
+            return import_obj(c, self.key, self.op, self.header, self.value)
         else:
             return self.special_func(c)
 

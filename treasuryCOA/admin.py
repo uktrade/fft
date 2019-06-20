@@ -8,7 +8,6 @@ from .importcsv import import_L5_class
 from .models import HistoricL5Account, L1Account, L2Account, L3Account, L4Account, L5Account
 
 
-# Displays extra fields in the list of cost centres
 class L5AccountAdmin(AdminreadOnly, AdminImportExport):
     list_display = ('account_l5_code', 'account_l5_long_name',
                     'economic_budget_code', 'usage_code')
@@ -23,7 +22,6 @@ class L5AccountAdmin(AdminreadOnly, AdminImportExport):
         return import_L5_class
 
 
-# Displays extra fields in the list of cost centres
 class L4AccountAdmin(AdminreadOnly, AdminExport):
     list_display = ('account_l4_code', 'account_l4_long_name', 'account_l3')
 

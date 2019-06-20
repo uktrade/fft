@@ -9,9 +9,12 @@ class SegmentGrandParent(TimeStampedModel):
                                                  verbose_name='segment grand parent code')
     segment_grand_parent_long_name = models.CharField(max_length=255,
                                                       verbose_name='segment grandparent long name')
-
+    segment_department_code = models.CharField(max_length=20,
+                                                      verbose_name='segment department code', default = '')
+    segment_department_long_name = models.CharField(max_length=255,
+                                                      verbose_name='segment department long name', default = '')
     def __str__(self):
-        return self.Segment_grand_parent_code
+        return self.segment_grand_parent_code
 
 
 class SegmentParent(TimeStampedModel):
@@ -22,7 +25,7 @@ class SegmentParent(TimeStampedModel):
     segment_grand_parent_code = models.ForeignKey(SegmentGrandParent, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.Segment_parent_code
+        return self.segment_parent_code + ' - ' +  self.segment_parent_long_name
 
 
 class Segment(TimeStampedModel):
@@ -39,6 +42,7 @@ class EstimateRow(TimeStampedModel):
                                          verbose_name='estimates row code')
     estimate_row_long_name = models.CharField(max_length=255,
                                               verbose_name='estimates row long name')
+    sort_order = models.IntegerField(verbose_name='sort order', default = 9999)
 
     def __str__(self):
         return self.estimate_row_code
@@ -83,8 +87,6 @@ class SubSegment(TimeStampedModel):
                                                   choices=CONTROL_BUDGET_CHOICES, default=NB,
                                                   verbose_name='control budget detail code')
     estimates_row_code = models.ForeignKey(EstimateRow, on_delete=models.PROTECT)
-    net_subhead_code = models.CharField(max_length=255, verbose_name='net subhead code')
-    policy_ringfence_code = models.CharField(max_length=255, verbose_name='policy ringfence code')
     accounting_authority_code = models.CharField(max_length=255,
                                                  verbose_name='accounting authority code')
     accounting_authority_DetailCode = \
@@ -94,4 +96,25 @@ class SubSegment(TimeStampedModel):
                          verbose_name='accounting authority detail code')
 
     def __str__(self):
-        return self.sub_segment_code
+        return self.sub_segment_code + ' - ' + self.sub_segment_long_name
+
+
+class DITSSGroup(TimeStampedModel):
+    '''This class is used to create the mapping from cost centres to subsegment.
+    There are three possible subsegments for each cost centre, depending on the Budget code.
+    This provide a grouping so there is only one assignment for cost centre instead of three'''
+    group_description = models.CharField(max_length=255, verbose_name='Group Description')
+    admin_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
+                                          related_name = 'admin_sub_segment_linked',
+                                          null=True, blank=True, verbose_name='Admin SubSegment')
+    del_prog_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
+                                             related_name='del_prog_sub_segment_linked',
+                                             null=True, blank=True, verbose_name='Del Programme SubSegment')
+    ame_prog_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
+                                             related_name='ame_prog_sub_segment_linked',
+                                             null=True, blank=True, verbose_name='AME Programme SubSegment')
+
+    def __str__(self):
+        return self.group_description
+
+
