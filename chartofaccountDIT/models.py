@@ -314,7 +314,7 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
 
 
 class BudgetType(models.Model):
-    budget_key = models.CharField('Key', primary_key=True, max_length=50)
+    budget_type_key = models.CharField('Key', primary_key=True, max_length=50)
     budget_type = models.CharField('Budget Type', max_length=100)
 
     def __str__(self):
