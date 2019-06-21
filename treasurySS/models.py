@@ -1,3 +1,5 @@
+from chartofaccountDIT.models import BudgetType
+
 from core.metamodels import TimeStampedModel
 
 from django.db import models
@@ -94,6 +96,10 @@ class SubSegment(TimeStampedModel):
                          choices=CONTROL_ACCOUNTING_AUTH_CHOICES,
                          default=UNDEF,
                          verbose_name='accounting authority detail code')
+    # the following field is used to link the subsegment to the DIT programme codes, to create the Oscar report
+    # its value could be derived from Control Budget, but it is easier to have an indipendent fields.
+    # there are only a handful of subsegments, so the maintenance of this field is not a problem!
+    dit_budget_type = models.ForeignKey(BudgetType, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return self.sub_segment_code + ' - ' + self.sub_segment_long_name

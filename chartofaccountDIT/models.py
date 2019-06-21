@@ -337,7 +337,8 @@ class ProgrammeCodeAbstract(models.Model):
 
 
 class ProgrammeCode(ProgrammeCodeAbstract, TimeStampedModel, LogChangeModel):
-    pass
+    budget_type_fk = models.ForeignKey(BudgetType, verbose_name='Budget Type',
+                                             on_delete=models.PROTECT, blank=True, null=True)
 
 
 class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
