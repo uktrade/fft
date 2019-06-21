@@ -69,7 +69,7 @@ ESTIMATE_ROW_KEY = {IMPORT_CSV_MODEL_KEY: EstimateRow,
 
 
 SUB_SEGMENT_KEY = {IMPORT_CSV_MODEL_KEY: SubSegment,
-          IMPORT_CSV_PK_KEY: 'Segment Code',
+          IMPORT_CSV_PK_KEY: 'Sub Segment Code',
           IMPORT_CSV_FIELDLIST_KEY: {'sub_segment_long_name': 'Segment Long Name',  # noqa: E501
                                      SubSegment.Segment_code.field.name: SEGMENT_KEY,
                                      'control_budget_detail_code': 'Control Budget Detail Code',
