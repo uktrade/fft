@@ -99,22 +99,3 @@ class SubSegment(TimeStampedModel):
         return self.sub_segment_code + ' - ' + self.sub_segment_long_name
 
 
-class DITSSGroup(TimeStampedModel):
-    '''This class is used to create the mapping from cost centres to subsegment.
-    There are three possible subsegments for each cost centre, depending on the Budget code.
-    This provide a grouping so there is only one assignment for cost centre instead of three'''
-    group_description = models.CharField(max_length=255, verbose_name='Group Description')
-    admin_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
-                                          related_name = 'admin_sub_segment_linked',
-                                          null=True, blank=True, verbose_name='Admin SubSegment')
-    del_prog_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
-                                             related_name='del_prog_sub_segment_linked',
-                                             null=True, blank=True, verbose_name='Del Programme SubSegment')
-    ame_prog_sub_segment = models.ForeignKey(SubSegment, on_delete=models.PROTECT,
-                                             related_name='ame_prog_sub_segment_linked',
-                                             null=True, blank=True, verbose_name='AME Programme SubSegment')
-
-    def __str__(self):
-        return self.group_description
-
-

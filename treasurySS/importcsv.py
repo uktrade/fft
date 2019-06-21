@@ -3,7 +3,7 @@ import operator
 from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, \
     IMPORT_CSV_PK_KEY, ImportInfo, import_obj
 
-from .models import DITSSGroup, EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
+from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
 # Segment Department Code
 # Segment Department Long Name
@@ -54,7 +54,6 @@ SEGMENT_P_KEY = {IMPORT_CSV_MODEL_KEY: SegmentParent,
           IMPORT_CSV_PK_KEY: 'Segment Parent Code',
           IMPORT_CSV_FIELDLIST_KEY: {SegmentParent.segment_parent_long_name.field_name: 'Segment Parent Long Name',  # noqa: E501
                                      SegmentParent.segment_grand_parent_code.field.name: SEGMENT_GP_KEY}}
-
 
 
 SEGMENT_KEY = {IMPORT_CSV_MODEL_KEY: Segment,

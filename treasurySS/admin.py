@@ -2,7 +2,7 @@ from core.admin import AdminExport, AdminImportExport, AdminreadOnly
 
 from django.contrib import admin
 
-from .models import DITSSGroup, EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
+from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
 from .importcsv import import_SS_class
 
@@ -38,4 +38,4 @@ admin.site.register(SegmentGrandParent, SegmentGrandParentAdmin)
 admin.site.register(SegmentParent, SegmentParentAdmin)
 admin.site.register(SubSegment, SubSegmentAdmin)
 admin.site.register(EstimateRow, EstimateRowAdmin)
-admin.site.register(DITSSGroup)
+
