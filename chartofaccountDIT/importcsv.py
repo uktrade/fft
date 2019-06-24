@@ -6,7 +6,7 @@ from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_IS_FK, IMPORT_CS
 
 from treasuryCOA.models import L5Account
 
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
+from .models import Analysis1, Analysis2, BudgetType, CommercialCategory, ExpenditureCategory, FCOMapping, \
     InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode
 
 # define the column position in the csv file.
@@ -172,11 +172,18 @@ def import_commercial_category(csvfile):
 
 import_comm_cat_class = ImportInfo(COMMERCIAL_CATEGORY_KEY)
 
+BUDGET_KEY = {IMPORT_CSV_MODEL_KEY: BudgetType,
+              IMPORT_CSV_PK_KEY: 'type',
+              IMPORT_CSV_IS_FK: '',
+              IMPORT_CSV_PK_NAME_KEY: BudgetType.budget_type.field_name
+              }
+
+
 PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,
             IMPORT_CSV_PK_KEY: 'Code',
             IMPORT_CSV_FIELDLIST_KEY: {
                 ProgrammeCode.programme_description.field_name: 'Description',  # noqa: E501
-                ProgrammeCode.budget_type.field_name: 'Type'}}
+                ProgrammeCode.budget_type_fk.field.name: BUDGET_KEY}}
 
 
 def import_programme(csvfile):

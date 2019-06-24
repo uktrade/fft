@@ -179,7 +179,6 @@ def import_obj(csvfile, obj_key, op = alwaystrue, pos = 1, value = 1):
         # print (row_number)
         if op(row[pos], value):
             obj, msg = readcsvfromdict(d, row)
-            print(row_number, obj.sub_segment_code, row)
     return True, msg
 
 
@@ -211,10 +210,15 @@ class ImportInfo():
             self.op = filter[0]
             self.header = filter[1]
             self.value  = filter[2]
+        else:
+            self.op = None
 
     def my_import_func(self, c):
         if bool(self.key):
-            return import_obj(c, self.key, self.op, self.header, self.value)
+            if self.op:
+                return import_obj(c, self.key, self.op, self.header, self.value)
+            else:
+                return import_obj(c, self.key)
         else:
             return self.special_func(c)
 

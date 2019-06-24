@@ -9,12 +9,15 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
 
 
 class ProgrammeTable(FadminTable):
+    budget_type_descr = tables.Column(verbose_name='Budget Type',
+                                    accessor='budget_type_fk.budget_type')
+
     class Meta(FadminTable.Meta):
         model = ProgrammeCode
         fields = (
             'programme_code',
             'programme_description',
-            'budget_type'
+            'budget_type_descr'
         )
 
 

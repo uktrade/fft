@@ -281,17 +281,17 @@ class NACCategoryAdmin(AdminImportExport):
 
 
 class ProgrammeAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('programme_code', 'programme_description', 'budget_type', 'active')
+    list_display = ('programme_code', 'programme_description', 'budget_type_fk', 'active')
     search_fields = ['programme_code', 'programme_description']
-    list_filter = ['budget_type', 'active']
+    list_filter = ['budget_type_fk', 'active']
 
     def get_readonly_fields(self, request, obj=None):
-        return ['programme_code', 'budget_type', 'created',
+        return ['programme_code', 'programme_description', 'budget_type_fk', 'created',
                 'updated']  # don't allow to edit the code
 
     def get_fields(self, request, obj=None):
         return ['programme_code', 'programme_description',
-                'budget_type', 'active', 'created', 'updated']
+                'budget_type_fk', 'active', 'created', 'updated']
 
     @property
     def export_func(self):
