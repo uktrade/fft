@@ -17,7 +17,7 @@ def export_cc_iterator(queryset):
     yield ['Cost Centre', 'Cost Centre Description', 'Active', 'Used for Travel', 'Disabled (Actuals to be cleared)',
            'Directorate', 'Directorate Description',
            'Group', 'Group Description',
-           'BSCE Email']
+           'BSCE Email', 'Treasury Segment']
     for obj in queryset:
         yield [int(obj.cost_centre_code),
                obj.cost_centre_name,
@@ -28,7 +28,9 @@ def export_cc_iterator(queryset):
                obj.directorate.directorate_name,
                obj.directorate.group.group_code,
                obj.directorate.group.group_name,
-               get_fk_value(obj.bsce_email, 'bsce_email')
+               get_fk_value(obj.bsce_email, 'bsce_email'),
+               obj.directorate.group.treasury_segment_fk.segment_long_name
+                                    if obj.directorate.group.treasury_segment_fk else '-'
                ]
 
 
@@ -61,10 +63,11 @@ def export_directorate_iterator(queryset):
 
 
 def export_group_iterator(queryset):
-    yield ['Group', 'Group Description', 'Active']
+    yield ['Group', 'Group Description', 'Treasury Segment','Active']
     for obj in queryset:
         yield [obj.group_code,
                obj.group_name,
+               obj.treasury_segment_fk.segment_long_name if obj.treasury_segment_fk else '-',
                obj.active]
 
 

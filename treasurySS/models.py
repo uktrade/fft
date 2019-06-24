@@ -36,7 +36,7 @@ class Segment(TimeStampedModel):
     segment_parent_code = models.ForeignKey(SegmentParent, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.segment_code
+        return self.segment_long_name
 
 
 class EstimateRow(TimeStampedModel):

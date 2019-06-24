@@ -1,5 +1,6 @@
 from core.metamodels import ArchivedModel, LogChangeModel, TimeStampedModel  # noqa I100
 
+from treasurySS.models import Segment
 from django.db import models
 
 
@@ -59,8 +60,11 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
 class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     group_code = models.CharField('Group Code', primary_key=True, max_length=6)
     group_name = models.CharField('Group Name', max_length=300)
-    director_general = models.ForeignKey('CostCentrePerson', on_delete=models.PROTECT,
+    director_general = models.ForeignKey(CostCentrePerson, on_delete=models.PROTECT,
                                          null=True, blank=True)
+    treasury_segment_fk = models.ForeignKey(Segment, verbose_name='Treasury Segment', on_delete=models.PROTECT,
+                                         null=True, blank=True)
+
 
     def __str__(self):
         return str(self.group_name)

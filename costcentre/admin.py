@@ -23,7 +23,7 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
 
     list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
                     'directorate_name', 'group_code', 'group_name', 'deputy_director',
-                    'business_partner', 'active')
+                    'business_partner', 'treasury_segment', 'active')
 
     def directorate_name(self, instance):  # required to display the field from a foreign key
         return instance.directorate.directorate_name
@@ -37,10 +37,14 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     def group_code(self, instance):
         return instance.directorate.group.group_code
 
+    def treasury_segment(self, instance):
+        return instance.directorate.group.treasury_segment_fk
+
     directorate_name.admin_order_field = 'directorate__directorate_name'
     directorate_code.admin_order_field = 'directorate__directorate_code'
     group_name.admin_order_field = 'directorate__group__group_name'
     group_code.admin_order_field = 'directorate__group__group_code'
+    treasury_segment.admin_order_field = 'directorate__group__treasury_segment_fk'
 
     # limit the entries for specific foreign fields
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -168,9 +172,12 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
 
 
 class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('group_code', 'group_name', 'director_general', 'active')
+    list_display = ('group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active')
     search_fields = ['group_code', 'group_name',
                      'director_general__name', 'director_general__surname']
+    list_filter = ('active',
+                   ('treasury_segment_fk', RelatedDropdownFilter))
+
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director_general':
@@ -187,9 +194,9 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['group_code', 'group_name', 'director_general', 'active', 'created', 'updated']
+            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active', 'created', 'updated']
         else:
-            return ['group_code', 'group_name', 'director_general', 'active']
+            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active']
 
     @property
     def export_func(self):
