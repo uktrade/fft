@@ -64,3 +64,18 @@ def export_analysis1_iterator(queryset):
 
 def export_analysis2_iterator(queryset):
     pass
+
+
+def export_travel_cc_iterator(queryset):
+    'Format requested by Trainline: dash between code and description,  max len is 30 chars'
+    for obj in queryset:
+        yield [
+               (obj.cost_centre_code + '-' + obj.cost_centre_name) [:30]
+               ]
+
+
+def export_travel_cost_centres():
+    queryset = CostCentre.objects.filter(active=True, used_for_travel=True)
+    return export_to_csv(queryset, export_travel_cc_iterator)
+
+

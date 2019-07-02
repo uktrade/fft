@@ -4,7 +4,9 @@ from django.db import models
 class DownloadLog(models.Model):
     CC_AT = 'CC'
     NAC_H_AT = 'NAC H'
+    CC_TRAVEL = 'CC TRAV'
     DOWNLOAD_CHOICE = (
+        (CC_TRAVEL, 'Cost Centre  for Trainline'),
         (CC_AT, 'Cost Centre Hierarchy for Admin Tool'),
         (NAC_H_AT, 'NAC Hierarchy for Admin Tool')
     )

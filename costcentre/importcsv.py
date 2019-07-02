@@ -101,15 +101,16 @@ def import_cc_responsibles(csvfile):
         obj.disabled_with_actual = convert_to_bool_string(
             row[header['Disabled (Actuals to be cleared)']].strip())
         obj.active = convert_to_bool_string(row[header['Active']].strip())
+        obj.used_for_travel = convert_to_bool_string(row[header['Used for Travel']].strip())
         obj.save()
 
 
-import_cc_people_class = ImportInfo({}, 'Hierarchy Responsibility',
+import_cc_people_class = ImportInfo({}, 'DIT Information',
                                     ['CC Code',
                                      'BP Name', 'BP Surname', 'BP Email',
                                      'Deputy Name', 'Deputy Surname', 'Deputy Email',
                                      'BSCE Email', 'Active',
-                                     'Disabled (Actuals to be cleared)'],
+                                     'Disabled (Actuals to be cleared)', 'Used for Travel'],
                                     import_cc_responsibles)
 
 

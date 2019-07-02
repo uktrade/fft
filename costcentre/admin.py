@@ -74,7 +74,6 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
     # the export and import function must be defined as properties, to stop getting 'self' as first parameter
     @property
     def export_func(self):
-        #        return export_admin_cc_iterator
         return export_cc_iterator
 
     @property
