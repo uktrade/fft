@@ -37,7 +37,12 @@ if settings.DEBUG:
         url(r'^__debug__/', include(debug_toolbar.urls))
     ] + urlpatterns
 
+if settings.DEBUG:
+    admin.site.site_header = "FIDO Admin - TEST"
+    admin.site.site_title = "FIDO Admin Portal - TEST"
+    admin.site.index_title = "Welcome to FIDO Admin Portal - TEST"
+else:
+    admin.site.site_header = "FIDO Admin"
+    admin.site.site_title = "FIDO Admin Portal"
+    admin.site.index_title = "Welcome to FIDO Admin Portal"
 
-admin.site.site_header = "FIDO Admin"
-admin.site.site_title = "FIDO Admin Portal"
-admin.site.index_title = "Welcome to FIDO Admin Portal"
