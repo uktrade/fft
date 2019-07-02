@@ -68,7 +68,7 @@ def import_cc_responsibles(csvfile):
     header = csvheadertodict(next(reader))
     for row in reader:
         obj = CostCentre.objects.get(
-            pk=row[header['CC Code']].strip())
+            pk=row[header['Cost Centre']].strip())
         temp = row[header['Deputy Name']].strip()
         if temp != '':
             deputy_obj, created = CostCentrePerson.objects.get_or_create(
@@ -106,7 +106,7 @@ def import_cc_responsibles(csvfile):
 
 
 import_cc_people_class = ImportInfo({}, 'DIT Information',
-                                    ['CC Code',
+                                    ['Cost Centre',
                                      'BP Name', 'BP Surname', 'BP Email',
                                      'Deputy Name', 'Deputy Surname', 'Deputy Email',
                                      'BSCE Email', 'Active',
