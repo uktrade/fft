@@ -13,22 +13,41 @@ def export_bp_iterator(queryset):
                obj.active]
 
 
+def dd_field_obj(obj):
+    if obj:
+        return [obj.name, obj.surname, obj.email]
+    else:
+        return ['-', '-', '-']
+
+
+def bp_field_obj(obj):
+    if obj:
+        return [obj.name, obj.surname, obj.bp_email]
+    else:
+        return ['-', '-', '-']
+
+
 def export_cc_iterator(queryset):
-    yield ['Cost Centre', 'Cost Centre Description', 'Active', 'Used for Travel', 'Disabled (Actuals to be cleared)',
-           'Directorate', 'Directorate Description',
-           'Group', 'Group Description',
-           'BSCE Email', 'Treasury Segment']
+    yield ['Cost Centre', 'Cost Centre Description',
+           'Directorate Code', 'Directorate Description',
+           'Group Code', 'Group Description',
+           'BSCE Email',
+           'BP Name', 'BP Surname', 'BP Email',
+           'Deputy Name', 'Deputy Surname', 'Deputy Email',
+           'Active', 'Used for Travel', 'Disabled (Actuals to be cleared)',
+           'Treasury Segment']
     for obj in queryset:
         yield [int(obj.cost_centre_code),
                obj.cost_centre_name,
-               obj.active,
-               obj.used_for_travel,
-               obj.disabled_with_actual,
                obj.directorate.directorate_code,
                obj.directorate.directorate_name,
                obj.directorate.group.group_code,
                obj.directorate.group.group_name,
-               get_fk_value(obj.bsce_email, 'bsce_email'),
+               get_fk_value(obj.bsce_email, 'bsce_email')
+               ] + bp_field_obj(obj.business_partner) + dd_field_obj(obj.deputy_director) + [
+               obj.active,
+               obj.used_for_travel,
+               obj.disabled_with_actual,
                obj.directorate.group.treasury_segment_fk.segment_long_name
                                     if obj.directorate.group.treasury_segment_fk else '-'
                ]
