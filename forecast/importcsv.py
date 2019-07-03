@@ -11,19 +11,19 @@ from .models import ADIReport
 # define the column position in the csv file.
 # it reflects the position of columns in the Oracle report used to download the actuals
 MONTH_KEY = {
-    ADIReport.apr.field_name: 'Apr',
-    ADIReport.may.field_name: 'May',
-    ADIReport.jun.field_name: 'Jun',
-    ADIReport.jul.field_name: 'Jul',
-    ADIReport.aug.field_name: 'Aug',
-    ADIReport.sep.field_name: 'Sep',
-    ADIReport.oct.field_name: 'Oct',
-    ADIReport.nov.field_name: 'Nov',
-    ADIReport.dec.field_name: 'Dec',
-    ADIReport.jan.field_name: 'Jan',
-    ADIReport.feb.field_name: 'Feb',
-    ADIReport.mar.field_name: 'Mar',
-    ADIReport.adj1.field_name: 'Adj_1'}
+    ADIReport.apr.field_name: 'Apr'.lower(),
+    ADIReport.may.field_name: 'May'.lower(),
+    ADIReport.jun.field_name: 'Jun'.lower(),
+    ADIReport.jul.field_name: 'Jul'.lower(),
+    ADIReport.aug.field_name: 'Aug'.lower(),
+    ADIReport.sep.field_name: 'Sep'.lower(),
+    ADIReport.oct.field_name: 'Oct'.lower(),
+    ADIReport.nov.field_name: 'Nov'.lower(),
+    ADIReport.dec.field_name: 'Dec'.lower(),
+    ADIReport.jan.field_name: 'Jan'.lower(),
+    ADIReport.feb.field_name: 'Feb'.lower(),
+    ADIReport.mar.field_name: 'Mar'.lower(),
+    ADIReport.adj1.field_name: 'Adj01'.lower()}
 
 
 # ADIReport.Adjustment1.field_name: 'Adj_1',
@@ -54,17 +54,17 @@ def import_actual(csvfile, financialyear, what):
     for row in csvreader:
         line += 1
         errmsg = ''
-        ccobj, msg = get_fk(CostCentre, row[col_key['Cost Centre']].strip())
+        ccobj, msg = get_fk(CostCentre, row[col_key['cost centre']].strip())
         errmsg += msg
-        an1obj, msg = get_fk(Analysis1, int(row[col_key['Analysis 1']]))
+        an1obj, msg = get_fk(Analysis1, row[col_key['analysis']].zfill(5))
         errmsg += msg
-        an2obj, msg = get_fk(Analysis2, int(row[col_key['Analysis 2']]))
+        an2obj, msg = get_fk(Analysis2, row[col_key['analysis2']].zfill(5))
         errmsg += msg
-        nacobj, msg = get_fk(NaturalCode, row[col_key['Account']].strip())
+        nacobj, msg = get_fk(NaturalCode, row[col_key['natural account']].strip())
         errmsg += msg
-        prog = row[col_key['Programme']].strip()
+        prog = row[col_key['programme']].strip()
         if prog == 0:
-            prog = 310801
+            prog = 310940
         progobj, msg = get_fk(ProgrammeCode, prog)
         errmsg += msg
         if errmsg == '':
