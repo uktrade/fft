@@ -46,7 +46,7 @@ class BusinessPartner(TimeStampedModel, LogChangeModel):
 
 class BSCEEmail(TimeStampedModel, LogChangeModel):
     """Model used to store the generic BSCE email"""
-    bsce_email = models.EmailField('BSCE email')
+    bsce_email = models.EmailField('BSCE email', unique=True)
 
     def __str__(self):
         return str(self.bsce_email)

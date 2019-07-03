@@ -61,57 +61,57 @@ def import_cc(csvfile):
 import_cc_class = ImportInfo(CC_KEY, 'Departmental Groups, Directorates and Cost Centres')
 
 
-def import_cc_responsibles(csvfile):
+def import_cc_dit_specific(csvfile):
     """Special function to import the Deputy Director,  Business partner and BSCE email"""
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csvheadertodict(next(reader))
     for row in reader:
         obj = CostCentre.objects.get(
-            pk=row[header['Cost Centre']].strip())
-        temp = row[header['Deputy Name']].strip()
+            pk=row[header['cost centre']].strip())
+        temp = row[header['deputy name']].strip()
         if temp != '':
             deputy_obj, created = CostCentrePerson.objects.get_or_create(
-                name=row[header['Deputy Name']].strip(),
-                surname=row[header['Deputy Surname']].strip())
-            deputy_obj.email = row[header['Deputy Email']].strip()
+                name=row[header['deputy name']].strip(),
+                surname=row[header['deputy surname']].strip())
+            deputy_obj.email = row[header['deputy email']].strip()
             deputy_obj.active = True
             deputy_obj.save()
             obj.deputy_director = deputy_obj
         else:
             obj.deputy_director = None
-        temp = row[header['BP Name']].strip()
+        temp = row[header['bp name']].strip()
         if temp != '':
             bp_obj, created = BusinessPartner.objects.get_or_create(
-                name=row[header['BP Name']].strip(),
-                surname=row[header['BP Surname']].strip())
-            bp_obj.bp_email = row[header['BP Email']].strip()
+                name=row[header['bp name']].strip(),
+                surname=row[header['bp surname']].strip())
+            bp_obj.bp_email = row[header['bp email']].strip()
             bp_obj.active = True
             bp_obj.save()
             obj.business_partner = bp_obj
         else:
             obj.business_partner = None
-        temp = row[header['BSCE Email']].strip()
+        temp = row[header['bsce email']].strip()
         if temp != '':
             bsce_obj, created = BSCEEmail.objects.get_or_create(
-                bsce_email=row[header['BSCE Email']].strip())
+                bsce_email=row[header['bsce email']].strip())
             obj.bsce_email = bsce_obj
         else:
             obj.bsce_email = None
         obj.disabled_with_actual = convert_to_bool_string(
-            row[header['Disabled (Actuals to be cleared)']].strip())
-        obj.active = convert_to_bool_string(row[header['Active']].strip())
-        obj.used_for_travel = convert_to_bool_string(row[header['Used for Travel']].strip())
+            row[header['disabled (actuals to be cleared)']].strip())
+        obj.active = convert_to_bool_string(row[header['active']].strip())
+        obj.used_for_travel = convert_to_bool_string(row[header['used for travel']].strip())
         obj.save()
 
 
-import_cc_people_class = ImportInfo({}, 'DIT Information',
-                                    ['Cost Centre',
+import_cc_dit_specific_class = ImportInfo({}, 'DIT Information',
+                                          ['Cost Centre',
                                      'BP Name', 'BP Surname', 'BP Email',
                                      'Deputy Name', 'Deputy Surname', 'Deputy Email',
                                      'BSCE Email', 'Active',
                                      'Disabled (Actuals to be cleared)', 'Used for Travel'],
-                                    import_cc_responsibles)
+                                          import_cc_dit_specific)
 
 
 def import_director(csvfile):

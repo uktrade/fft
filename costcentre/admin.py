@@ -10,7 +10,7 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from .exportcsv import export_bp_iterator, export_bsce_iterator, export_cc_iterator, export_directorate_iterator, \
     export_group_iterator, export_historic_costcentre_iterator, export_person_iterator
-from .importcsv import import_cc_class, import_cc_people_class, \
+from .importcsv import import_cc_class, import_cc_dit_specific_class, \
     import_departmental_group_class, import_director_class
 from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
     DepartmentalGroup, Directorate, HistoricCostCentre
@@ -98,9 +98,9 @@ class CostCentreAdmin(AdminActiveField, AdminImportExport):
         return my_urls + urls
 
     def import1_csv(self, request):
-        header_list = import_cc_people_class.header_list
-        import_func = import_cc_people_class.my_import_func
-        form_title = import_cc_people_class.form_title
+        header_list = import_cc_dit_specific_class.header_list
+        import_func = import_cc_dit_specific_class.my_import_func
+        form_title = import_cc_dit_specific_class.form_title
         if request.method == "POST":
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
