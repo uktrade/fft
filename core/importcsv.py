@@ -1,7 +1,5 @@
 import csv
 
-import operator
-
 
 """Set of functions used to import from csv into the FIDO model.
 The import is specified as a dictionary, defining the model, the name of the primary key
@@ -153,10 +151,12 @@ def get_col_from_obj_key(obj_key):
                 header_list.append(v)
     return list(filter(None, [element.lower() for element in header_list]))
 
-def alwaystrue(a,b):
+
+def alwaystrue(a, b):
     return True
 
-def import_obj(csvfile, obj_key, op = alwaystrue, pos = 1, value = 1):
+
+def import_obj(csvfile, obj_key, op=alwaystrue, pos=1, value=1):
     reader = csv.reader(csvfile)
     header = csvheadertodict(next(reader))
     l1 = get_col_from_obj_key(obj_key)
@@ -171,7 +171,7 @@ def import_obj(csvfile, obj_key, op = alwaystrue, pos = 1, value = 1):
     # import pdb;
     # pdb.set_trace()
     d = addposition(obj_key, header)
-    if isinstance(pos,str):
+    if isinstance(pos, str):
         pos = header[pos.lower()]
     row_number = 1
     for row in reader:
@@ -209,7 +209,7 @@ class ImportInfo():
         if filter:
             self.op = filter[0]
             self.header = filter[1]
-            self.value  = filter[2]
+            self.value = filter[2]
         else:
             self.op = None
 

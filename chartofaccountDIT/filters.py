@@ -233,7 +233,7 @@ class ProgrammeFilter(MyFilterSet):
         return queryset.filter(Q(programme_code__icontains=value) |
                                Q(programme_description__icontains=value) |
                                Q(budget_type_fk__budget_type__icontains=value)
-                                )
+                               )
 
     class Meta(MyFilterSet.Meta):
         model = ProgrammeCode

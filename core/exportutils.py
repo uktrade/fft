@@ -43,6 +43,7 @@ def display_yes_no(row):
                 row[ind] = 'No'
     return row
 
+
 # NOT USED
 class SmartExport:
     """ return lists with the header name and the objects from a queryset

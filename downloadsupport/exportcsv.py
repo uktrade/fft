@@ -45,8 +45,7 @@ def export_nac_hierarchy_iterator(queryset):
                    'Pay',
                    'Staff Costs'),
                get_fk_value(obj.expenditure_category, 'grouping_description', 'Remove'),
-               obj.natural_account_code_description
-               ]
+               obj.natural_account_code_description]
 
 
 def export_nac_hierarchy():
@@ -70,12 +69,10 @@ def export_travel_cc_iterator(queryset):
     'Format requested by Trainline: dash between code and description,  max len is 30 chars'
     for obj in queryset:
         yield [
-               (obj.cost_centre_code + '-' + obj.cost_centre_name) [:30]
-               ]
+            (obj.cost_centre_code + '-' + obj.cost_centre_name)[:30]
+        ]
 
 
 def export_travel_cost_centres():
     queryset = CostCentre.objects.filter(active=True, used_for_travel=True)
     return export_to_csv(queryset, export_travel_cc_iterator)
-
-

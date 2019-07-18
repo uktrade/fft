@@ -210,7 +210,7 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         if obj:
             return ['grouping_description', 'description',
                     'further_description', 'linked_budget_code',
-                    'NAC_category','op_del_category',
+                    'NAC_category', 'op_del_category',
                     'created', 'updated']
         else:
             return ['grouping_description', 'description',
@@ -456,7 +456,6 @@ admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
 admin.site.register(FCOMapping, FCOMappingAdmin)
 admin.site.register(OperatingDeliveryCategory, OpDelCategoryAdmin)
-
 
 admin.site.register(HistoricalAnalysis1, HistoricalAnalysis1Admin)
 admin.site.register(HistoricalAnalysis2, HistoricalAnalysis2Admin)

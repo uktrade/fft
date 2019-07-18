@@ -12,9 +12,10 @@ class SegmentGrandParent(TimeStampedModel):
     segment_grand_parent_long_name = models.CharField(max_length=255,
                                                       verbose_name='segment grandparent long name')
     segment_department_code = models.CharField(max_length=20,
-                                                      verbose_name='segment department code', default = '')
+                                               verbose_name='segment department code', default='')
     segment_department_long_name = models.CharField(max_length=255,
-                                                      verbose_name='segment department long name', default = '')
+                                                    verbose_name='segment department long name', default='')
+
     def __str__(self):
         return self.segment_grand_parent_code
 
@@ -27,7 +28,7 @@ class SegmentParent(TimeStampedModel):
     segment_grand_parent_code = models.ForeignKey(SegmentGrandParent, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.segment_parent_code + ' - ' +  self.segment_parent_long_name
+        return self.segment_parent_code + ' - ' + self.segment_parent_long_name
 
 
 class Segment(TimeStampedModel):
@@ -44,7 +45,7 @@ class EstimateRow(TimeStampedModel):
                                          verbose_name='estimates row code')
     estimate_row_long_name = models.CharField(max_length=255,
                                               verbose_name='estimates row long name')
-    sort_order = models.IntegerField(verbose_name='sort order', default = 9999)
+    sort_order = models.IntegerField(verbose_name='sort order', default=9999)
 
     def __str__(self):
         return self.estimate_row_code
@@ -103,5 +104,3 @@ class SubSegment(TimeStampedModel):
 
     def __str__(self):
         return self.sub_segment_code + ' - ' + self.sub_segment_long_name
-
-

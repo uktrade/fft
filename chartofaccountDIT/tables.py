@@ -10,7 +10,7 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
 
 class ProgrammeTable(FadminTable):
     budget_type_descr = tables.Column(verbose_name='Budget Type',
-                                    accessor='budget_type_fk.budget_type')
+                                      accessor='budget_type_fk.budget_type')
 
     class Meta(FadminTable.Meta):
         model = ProgrammeCode

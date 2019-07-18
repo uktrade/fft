@@ -30,12 +30,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls))
-    ] + urlpatterns
+
+    urlpatterns = [url(r'^__debug__/', include(debug_toolbar.urls))] + urlpatterns
 
 if settings.DEBUG:
     admin.site.site_header = "FIDO Admin - TEST"
@@ -45,4 +43,3 @@ else:
     admin.site.site_header = "FIDO Admin"
     admin.site.site_title = "FIDO Admin Portal"
     admin.site.index_title = "Welcome to FIDO Admin Portal"
-

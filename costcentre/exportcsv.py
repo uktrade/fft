@@ -45,12 +45,11 @@ def export_cc_iterator(queryset):
                obj.directorate.group.group_name,
                get_fk_value(obj.bsce_email, 'bsce_email')
                ] + bp_field_obj(obj.business_partner) + dd_field_obj(obj.deputy_director) + [
-               obj.active,
-               obj.used_for_travel,
-               obj.disabled_with_actual,
-               obj.directorate.group.treasury_segment_fk.segment_long_name
-                                    if obj.directorate.group.treasury_segment_fk else '-'
-               ]
+            obj.active,
+            obj.used_for_travel,
+            obj.disabled_with_actual,
+            obj.directorate.group.treasury_segment_fk.segment_long_name
+            if obj.directorate.group.treasury_segment_fk else '-']
 
 
 def export_directorate_iterator(queryset):
@@ -66,7 +65,7 @@ def export_directorate_iterator(queryset):
 
 
 def export_group_iterator(queryset):
-    yield ['Group', 'Group Description', 'Treasury Segment','Active']
+    yield ['Group', 'Group Description', 'Treasury Segment', 'Active']
     for obj in queryset:
         yield [obj.group_code,
                obj.group_name,

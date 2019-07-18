@@ -1,7 +1,8 @@
 from core.metamodels import ArchivedModel, LogChangeModel, TimeStampedModel  # noqa I100
 
-from treasurySS.models import Segment
 from django.db import models
+
+from treasurySS.models import Segment
 
 
 class CostCentrePerson(TimeStampedModel, LogChangeModel):
@@ -63,8 +64,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
     director_general = models.ForeignKey(CostCentrePerson, on_delete=models.PROTECT,
                                          null=True, blank=True)
     treasury_segment_fk = models.ForeignKey(Segment, verbose_name='Treasury Segment', on_delete=models.PROTECT,
-                                         null=True, blank=True)
-
+                                            null=True, blank=True)
 
     def __str__(self):
         return str(self.group_name)

@@ -2,9 +2,9 @@ from core.admin import AdminExport, AdminImportExport, AdminreadOnly
 
 from django.contrib import admin
 
+from .importcsv import import_SS_class
 from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
-from .importcsv import import_SS_class
 
 class SegmentAdmin(AdminreadOnly):
     list_display = ('segment_code', 'segment_long_name', 'segment_parent_code')
@@ -38,4 +38,3 @@ admin.site.register(SegmentGrandParent, SegmentGrandParentAdmin)
 admin.site.register(SegmentParent, SegmentParentAdmin)
 admin.site.register(SubSegment, SubSegmentAdmin)
 admin.site.register(EstimateRow, EstimateRowAdmin)
-

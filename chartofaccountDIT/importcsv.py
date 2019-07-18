@@ -99,7 +99,6 @@ def import_NAC_DIT(csvfile):
 
 import_NAC_DIT_class = ImportInfo(NAC_DIT_KEY)
 
-
 NAC_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: NACCategory,
                     IMPORT_CSV_PK_KEY: 'Budget Grouping',
                     IMPORT_CSV_PK_NAME_KEY: NACCategory.NAC_category_description.field_name,
@@ -112,12 +111,10 @@ def import_NAC_expenditure_category(csvfile):
 
 import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
 
-
 OP_DEL_CATEGORY_KEY = {IMPORT_CSV_MODEL_KEY: OperatingDeliveryCategory,
-                    IMPORT_CSV_PK_KEY: 'Operating Delivery Category',
-                    IMPORT_CSV_PK_NAME_KEY: OperatingDeliveryCategory.operating_delivery_description.field_name,
-                    IMPORT_CSV_FIELDLIST_KEY: {}}
-
+                       IMPORT_CSV_PK_KEY: 'Operating Delivery Category',
+                       IMPORT_CSV_PK_NAME_KEY: OperatingDeliveryCategory.operating_delivery_description.field_name,
+                       IMPORT_CSV_FIELDLIST_KEY: {}}
 
 import_op_del_category_class = ImportInfo(OP_DEL_CATEGORY_KEY)
 
@@ -141,7 +138,7 @@ def import_expenditure_category(csvfile):
         cat_obj = NACCategory.objects.get(
             NAC_category_description=row[header['budget grouping']].strip())
         obj.NAC_category = cat_obj
-        op_plan_obj, created  = OperatingDeliveryCategory.objects.get_or_create(
+        op_plan_obj, created = OperatingDeliveryCategory.objects.get_or_create(
             operating_delivery_description=row[header['operating delivery plan']].strip())
         obj.op_del_category = op_plan_obj
         obj.save()
@@ -177,7 +174,6 @@ BUDGET_KEY = {IMPORT_CSV_MODEL_KEY: BudgetType,
               IMPORT_CSV_IS_FK: '',
               IMPORT_CSV_PK_NAME_KEY: BudgetType.budget_type.field_name
               }
-
 
 PROG_KEY = {IMPORT_CSV_MODEL_KEY: ProgrammeCode,
             IMPORT_CSV_PK_KEY: 'Code',

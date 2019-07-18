@@ -177,7 +177,6 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
     list_filter = ('active',
                    ('treasury_segment_fk', RelatedDropdownFilter))
 
-
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director_general':
             kwargs["queryset"] = CostCentrePerson.objects.filter(is_dg=True, active=True)
@@ -193,7 +192,8 @@ class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active', 'created', 'updated']
+            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active', 'created',
+                    'updated']
         else:
             return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active']
 

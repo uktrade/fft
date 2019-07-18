@@ -107,10 +107,10 @@ def import_cc_dit_specific(csvfile):
 
 import_cc_dit_specific_class = ImportInfo({}, 'DIT Information',
                                           ['Cost Centre',
-                                     'BP Name', 'BP Surname', 'BP Email',
-                                     'Deputy Name', 'Deputy Surname', 'Deputy Email',
-                                     'BSCE Email', 'Active',
-                                     'Disabled (Actuals to be cleared)', 'Used for Travel'],
+                                           'BP Name', 'BP Surname', 'BP Email',
+                                           'Deputy Name', 'Deputy Surname', 'Deputy Email',
+                                           'BSCE Email', 'Active',
+                                           'Disabled (Actuals to be cleared)', 'Used for Travel'],
                                           import_cc_dit_specific)
 
 
