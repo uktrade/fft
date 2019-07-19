@@ -9,9 +9,9 @@ class Migration(migrations.Migration):
         ('costcentre', '0025_costcentre_subsegment_mapping'),
     ]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='costcentre',
-            name='subsegment_mapping',
-        ),
-    ]
+    # operations = [
+    #     migrations.RemoveField(
+    #         model_name='costcentre',
+    #         name='subsegment_mapping',
+    #     ),
+    # ]
