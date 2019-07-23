@@ -246,15 +246,29 @@ class ProgrammeFilter(MyFilterSet):
         myfilter = super(ProgrammeFilter, self).qs
         return myfilter.filter(active=True).order_by('programme_code',
                                                      'programme_description',
-                                                     'budget_type')
+                                                     'budget_type_fk__budget_type')
 
 
 class HistoricalProgrammeFilter(ProgrammeFilter):
     """Provide the filter definition for Programme. Inherit from current one,
-    because the fields are identical."""
+    but change the filter to ."""
+
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(Q(programme_code__icontains=value) |
+                               Q(programme_description__icontains=value) |
+                               Q(budget_type__icontains=value)
+                               )
 
     class Meta(ProgrammeFilter.Meta):
         model = HistoricalProgrammeCode
+
+
+    @property
+    def qs(self):
+        myfilter = super(ProgrammeFilter, self).qs
+        return myfilter.filter(active=True).order_by('programme_code',
+                                                     'programme_description',
+                                                     'budget_type')
 
 
 class InterEntityFilter(MyFilterSet):
