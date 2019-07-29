@@ -25,20 +25,24 @@ from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategor
     InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode
 
 
-class NaturalCodeAdmin(AdminreadOnly, AdminActiveField, AdminImportExport):
+class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
     """Define an extra import button, for the DIT specific fields"""
     change_list_template = "admin/m_import_changelist.html"
 
     list_display = ('natural_account_code', 'natural_account_code_description', 'active')
 
     def get_readonly_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description',
-                'account_L5_code']
+        if obj:
+            return ['natural_account_code', 'natural_account_code_description',
+                'account_L5_code', 'created', 'updated']
+        else:
+            return ['created', 'updated']
+
 
     def get_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description',
                 'account_L5_code', 'expenditure_category', 'account_L5_code_upload',
-                'commercial_category', 'used_for_budget', 'active']
+                'commercial_category', 'used_for_budget', 'active', 'created', 'updated']
 
     search_fields = ['natural_account_code', 'natural_account_code_description']
     list_filter = ('active',
