@@ -193,9 +193,11 @@ def import_list_obj(csvfile, model, fieldname):
 class ImportInfo():
     """Use to define the function used to import from the Admin view list"""
 
-    def __init__(self, key={}, title='', hlist=[], my_import_func=None, filter=[]):
+    def __init__(self, key={}, title='', hlist=[], my_import_func=None, filter=[], extra_func=None):
         self.key = key
         self.special_func = my_import_func
+        # extra_func is used to perform clean up after the import, like setting empty references to a valid value
+        self.extra_func = extra_func
         if bool(key):
             self.header_list = get_col_from_obj_key(key)
         else:
@@ -216,12 +218,14 @@ class ImportInfo():
     def my_import_func(self, c):
         if bool(self.key):
             if self.op:
-                return import_obj(c, self.key, self.op, self.header, self.value)
+                success, message = import_obj(c, self.key, self.op, self.header, self.value)
             else:
-                return import_obj(c, self.key)
+                success, message = import_obj(c, self.key)
         else:
-            return self.special_func(c)
-
+            success, message = self.special_func(c)
+        if success and self.extra_func:
+            self.extra_func()
+        return success, message
 
 def get_field_name(obj_key, prefix):
     """Takes the dictionary used to define the import, and
