@@ -1,0 +1,26 @@
+version: '2'
+services:
+ db:
+   image: postgres:10.7
+   ports:
+     - "5432:5432"
+ fido:
+   build: ./fido
+   command: python manage.py runserver 0.0.0.0:8000
+   volumes:
+     - ./fido/:/fido/
+   ports:
+     - "8000:8000"
+   depends_on:
+     - db
+   environment:
+     DEBUG: 'True'
+     DATABASE_URL: psql://postgres:postgres@db:5432/fido
+     SECRET_KEY: do_not_use_this_in_production
+     ALLOWED_HOSTS: '*'
+     AUTHBROKER_SCOPES: 'read write'
+     AUTHBROKER_URL: 'https://sso.trade.gov.uk/'
+     GIT_COMMIT: 'test'
+     DJANGO_SETTINGS_MODULE: fido.settings.prod
+     AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
+     AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}

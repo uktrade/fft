@@ -11,7 +11,7 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from fadmin2.settings import GIT_COMMIT
+from fido.settings.prod import GIT_COMMIT
 
 
 @login_required()
