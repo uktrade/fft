@@ -114,3 +114,6 @@ prod_dump_clean_backup.sql
 
 # Docker compose
 .env
+
+# Local src dir
+src/
