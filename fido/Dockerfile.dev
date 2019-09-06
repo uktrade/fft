@@ -1,0 +1,6 @@
+FROM rossmillerdecoded/jessie-and-py3.6:v1
+ADD . /fido
+WORKDIR /fido
+RUN pip install -r requirements/local.txt
+
+CMD front_end/fido/npm start

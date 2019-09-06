@@ -1,0 +1,13 @@
+{% load render_bundle from webpack_loader %}
+
+<html>
+<head>
+    <title>React prototype</title>
+</head>
+    <body>
+        <div id="root"></div>
+        {% render_bundle 'vendors' %}
+        {% render_bundle 'main' %}
+        {% render_bundle 'runtime~main' %}
+    </body>
+</html>

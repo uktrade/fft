@@ -1,16 +1,19 @@
-version: '2'
+version: '3'
 services:
  db:
    image: postgres:10.7
    ports:
      - "5432:5432"
  fido:
-   build: ./fido
+   build:
+      context: ./fido
+      dockerfile: "Dockerfile.dev"
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./fido/:/fido/
    ports:
-     - "8000:8000"
+     - "0.0.0.0:3000:3000"
+     - "0.0.0.0:8000:8000"
    depends_on:
      - db
    environment:
@@ -24,3 +27,4 @@ services:
      DJANGO_SETTINGS_MODULE: fido.settings.prod
      AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
      AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
+     HOST: 0.0.0.0
