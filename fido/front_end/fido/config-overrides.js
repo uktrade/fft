@@ -6,7 +6,7 @@ module.exports = {
     config.plugins.push(
       new BundleTracker({
         path: __dirname,
-        filename: './build/webpack-stats.json',
+        filename: './config/webpack-stats.json',
       }),
     );
 

@@ -4,15 +4,23 @@ services:
    image: postgres:10.7
    ports:
      - "5432:5432"
+ front_end:
+   build:
+      context: ./fido
+      dockerfile: "docker_local/Dockerfile.node.dev"
+   command: "npm start"
+   ports:
+     - "0.0.0.0:3000:3000"
+   environment:
+     HOST: 0.0.0.0
  fido:
    build:
       context: ./fido
-      dockerfile: "Dockerfile.dev"
+      dockerfile: "docker_local/Dockerfile.django.dev"
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./fido/:/fido/
    ports:
-     - "0.0.0.0:3000:3000"
      - "0.0.0.0:8000:8000"
    depends_on:
      - db
@@ -24,7 +32,6 @@ services:
      AUTHBROKER_SCOPES: 'read write'
      AUTHBROKER_URL: 'https://sso.trade.gov.uk/'
      GIT_COMMIT: 'test'
-     DJANGO_SETTINGS_MODULE: fido.settings.prod
+     DJANGO_SETTINGS_MODULE: fido.settings.dev
      AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
      AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
-     HOST: 0.0.0.0

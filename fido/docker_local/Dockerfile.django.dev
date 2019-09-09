@@ -1,0 +1,4 @@
+FROM python:3.6
+ADD . /fido
+WORKDIR /fido
+RUN pip install -r requirements/local.txt
