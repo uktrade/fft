@@ -14,7 +14,7 @@ STATICFILES_DIRS = (
 WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
-        "BUNDLE_DIR_NAME": "front_end/fido/build/",  # must end with slash
+        "BUNDLE_DIR_NAME": "build/",  # must end with slash
         "STATS_FILE": "/fido/front_end/fido/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
     }
 }

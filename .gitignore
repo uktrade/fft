@@ -119,7 +119,4 @@ prod_dump_clean_backup.sql
 src/
 
 # Front end static dir
-fido/fido/staticfiles
-
-# Front end local file config
-fido/fido/staticfiles/staticfiles.json
+fido/fido/staticfiles/*
