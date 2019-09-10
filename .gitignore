@@ -122,4 +122,4 @@ fido/src/
 fido/fido/staticfiles/*
 
 # Web pack stats
-fido/front_end/fido/config/webpack-stats.json
+front_end/fido/config/webpack-stats.json
