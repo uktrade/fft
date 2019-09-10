@@ -13,7 +13,7 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from fadmin2.settings import GIT_COMMIT
+from django.conf import settings
 
 from .models import Document
 
@@ -31,7 +31,7 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['django_version'] = get_version()
-        context['git_commit'] = GIT_COMMIT
+        context['git_commit'] = settings.GIT_COMMIT
         return context
 
 

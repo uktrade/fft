@@ -43,6 +43,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     # 'admintool_support.apps.AdmintoolSupportConfig',
+    'importdata.apps.ImportdataConfig',
     'downloadsupport.apps.DownloadSupportConfig',
     'forecast.apps.ForecastConfig',
     # 'dit_user_management',
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap_datepicker_plus',  # https://pypi.org/project/django-bootstrap-datepicker-plus/
     'custom_usermodel',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -192,3 +194,32 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Your Amazon Web Services secret access key, as a string.
+
+# AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''
+
+
+AWS_STORAGE_BUCKET_NAME = 'secchiello1234546a'
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+# AWS_S3_REGION_NAME='eu-west-2'
+#
+AWS_DEFAULT_ACL = None
+#
+
+# celery
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'

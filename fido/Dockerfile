@@ -7,4 +7,4 @@ RUN rm -f .environ \
     && pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements/production.txt
 
-CMD python manage.py migrate && gunicorn fadmin2.wsgi:application --bind 0.0.0.0
+CMD python manage.py migrate && gunicorn fido.wsgi:application --bind 0.0.0.0
