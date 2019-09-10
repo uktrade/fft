@@ -1,4 +1,0 @@
-FROM node:10.16.3-jessie
-ADD . /fido
-WORKDIR /fido/front_end/fido
-RUN npm install

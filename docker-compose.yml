@@ -6,19 +6,18 @@ services:
      - "5432:5432"
  front_end:
    build:
-      context: ./fido
+      context: .
       dockerfile: "docker_local/Dockerfile.node.dev"
    command: "npm start"
    volumes:
-     - ./fido/:/fido/
+     - ./front_end/:/front_end/
    ports:
      - "0.0.0.0:3000:3000"
    environment:
-     HOST: 0.0.0.0
      PUBLIC_URL: http://localhost:3000
  fido:
    build:
-      context: ./fido
+      context: .
       dockerfile: "docker_local/Dockerfile.django.dev"
    command: python manage.py runserver 0.0.0.0:8000
    volumes:

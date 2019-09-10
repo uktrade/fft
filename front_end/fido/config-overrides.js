@@ -13,10 +13,10 @@ module.exports = {
     config.entry = [
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/dev-server',
-      '/fido/front_end/fido/src/index'
+      '/front_end/fido/src/index'
     ];
     config.output = {
-      path: '/fido/front_end/fido/build/static/',
+      path: '/front_end/fido/build/static/',
       publicPath: 'http://localhost:3000/',
     };
     config.optimization.splitChunks.name = 'vendors';

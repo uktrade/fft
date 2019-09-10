@@ -7,7 +7,7 @@ INSTALLED_APPS += (
 
 STATICFILES_DIRS = (
     #os.path.join(BASE_DIR, "front_end", "fido", "build", "static"),
-    "/fido/front_end/fido/build/static",
+    "/front_end/fido/build/static",
     #"/fido/front_end/fido/dist/static",
 )
 
@@ -15,7 +15,7 @@ WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": "/fido/front_end/fido/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
+        "STATS_FILE": "/front_end/fido/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
     }
 }
 
