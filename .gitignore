@@ -116,10 +116,10 @@ prod_dump_clean_backup.sql
 .env
 
 # Local src dir
-src/
+fido/src/
 
 # Front end static dir
 fido/fido/staticfiles/*
 
 # Web pack stats
-/fido/front_end/fido/config/webpack-stats.json
+fido/front_end/fido/config/webpack-stats.json
