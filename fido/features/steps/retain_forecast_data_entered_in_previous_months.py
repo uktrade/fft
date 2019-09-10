@@ -1,4 +1,3 @@
-# -- FILE: features/steps/example_steps.py
 from behave import given, when, then, step
 
 
@@ -8,7 +7,7 @@ def step_impl(context):
 
 
 @when('we look at last month')
-def step_impl(context):  # -- NOTE: number is converted into integer
+def step_impl(context):
     pass
 
 
