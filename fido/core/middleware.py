@@ -8,7 +8,7 @@ _thread_locals = local()
 
 def get_current_user():
     """ returns the current user, if exist, otherwise returns None """
-    return getattr(_thread_locals, "userid", 1)
+    return getattr(_thread_locals, "userid", None)
 
 
 class ThreadLocalMiddleware:

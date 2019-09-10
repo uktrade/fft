@@ -1,6 +1,17 @@
+from core.admin import AdminAsyncImportExport, AdminreadOnly
+
 from django.contrib import admin
 
-from .models import ADIReport, SubSegmentUKTIMapping
+from .importcsv import import_adi_file_class
+from .models import FinancialPeriod, MonthlyFigure
 
-admin.site.register(ADIReport)
-admin.site.register(SubSegmentUKTIMapping)
+
+class MonthlyFigureAdmin(AdminAsyncImportExport, AdminreadOnly):
+
+    @property
+    def import_info(self):
+        return import_adi_file_class
+
+
+admin.site.register(MonthlyFigure, MonthlyFigureAdmin)
+admin.site.register(FinancialPeriod)

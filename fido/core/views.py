@@ -4,14 +4,18 @@ from core.utils import today_string
 from django import get_version
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 
 from django_filters.views import FilterView
 
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from fido.settings.prod import GIT_COMMIT
+from fadmin2.settings import GIT_COMMIT
+
+from .models import Document
 
 
 @login_required()
@@ -62,3 +66,15 @@ class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
         self.export_name = self.name + ' ' + today_string()
         # The max lenght for an Excel tab name is 31. So truncate the name, if needed
         self.sheet_name = self.name[:EXC_TAB_NAME_LEN]
+
+
+class DocumentCreateView(CreateView):
+    model = Document
+    fields = ['upload', ]
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        documents = Document.objects.all()
+        context['documents'] = documents
+        return context

@@ -8,7 +8,7 @@ from costcentre.importcsv import import_cc
 
 from django.core.management.base import BaseCommand
 
-from forecast.importcsv import import_actual
+from forecast.importcsv import import_adi_file, import_unpivot_actual
 
 from payroll.importcsv import import_HR_Report
 
@@ -28,12 +28,13 @@ IMPORT_TYPE = {
     'NAC_DIT_Setting': import_NAC_DIT,  # add extra fields defined by DIT
     'HR_Report': import_HR_Report,
     'NAC_Dashboard_other': import_expenditure_category,
-    'Commercial_Cat': import_commercial_category
+    'Commercial_Cat': import_commercial_category,
+    'ADI': import_adi_file
 }
 
 
 class Command(BaseCommand):
-    help = 'Import CC hierarchy from csv file'
+    help = 'Import data from csv file'
 
     def add_arguments(self, parser):
         parser.add_argument('csv_path')
@@ -50,10 +51,9 @@ class Command(BaseCommand):
         importtype = options.get('type')
         # Windows-1252 or CP-1252, used because of a back quote
         csvfile = open(path, newline='', encoding='cp1252')
-        if importtype == 'Actuals':
+        if importtype == 'UnPivotActuals':
             financialyear = options.get('year')
-            monthtoimport = options.get('month')
-            import_actual(csvfile, financialyear, monthtoimport)
+            import_unpivot_actual(csvfile, financialyear)
         else:
             IMPORT_TYPE[importtype](csvfile)
         csvfile.close()

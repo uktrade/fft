@@ -1,9 +1,12 @@
-{% extends "base_generic.html" %}
+{% extends "standard_content.html" %}
 
 {% load render_table from django_tables2 %}
 {% load querystring from django_tables2 %}
 
 {% block content %}
+    {% block top %}
+        {{ block.super }}
+    {% endblock %}
     <h3>{{ section_name }}</h3>
     <p>{{ section_description }}</p>
     {% if filter %}
@@ -23,4 +26,7 @@
     <a href="{% querystring '_export'='xlsx' %}">Download to Excel</a>
 
     {% render_table table %}
+    {% block bottom %}
+        {{ block.super }}
+    {% endblock %}
 {% endblock %}

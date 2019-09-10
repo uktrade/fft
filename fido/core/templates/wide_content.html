@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% block top %}
+        <div class="container-fluid">
+    {% endblock %}
+        {{ block.super }}
+    {% block bottom %}
+        </div>
+    {% endblock %}
+{% endblock %}

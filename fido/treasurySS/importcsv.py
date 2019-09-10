@@ -70,13 +70,13 @@ ESTIMATE_ROW_KEY = {IMPORT_CSV_MODEL_KEY: EstimateRow,
 
 SUB_SEGMENT_KEY = {IMPORT_CSV_MODEL_KEY: SubSegment,
                    IMPORT_CSV_PK_KEY: 'Sub Segment Code',
-                   IMPORT_CSV_FIELDLIST_KEY: {'sub_segment_long_name': 'Segment Long Name',  # noqa: E501
+                   IMPORT_CSV_FIELDLIST_KEY: {'sub_segment_long_name': 'Sub Segment Long Name',
                                               SubSegment.Segment_code.field.name: SEGMENT_KEY,
                                               'control_budget_detail_code': 'Control Budget Detail Code',
                                               SubSegment.estimates_row_code.field.name: ESTIMATE_ROW_KEY,
                                               SubSegment.accounting_authority_code.field_name: 'Accounting Authority Code',
-                                              SubSegment.accounting_authority_DetailCode.field_name: 'Accounting Authority Detail Code'
-                                              }}
+                                              SubSegment.accounting_authority_DetailCode.field_name:
+                                                  'Accounting Authority Detail Code'}}
 
 
 def import_treasury_SS(csvfile):

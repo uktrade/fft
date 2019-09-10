@@ -71,6 +71,7 @@ NAC_KEY = {IMPORT_CSV_MODEL_KEY: NaturalCode,
 def import_NAC(csvfile):
     import_obj(csvfile, NAC_KEY)
 
+
 def fix_L5_ref():
     """When importing the NAC from the flat file provided by BEIS, there are references to non existing (obsolete)
      L5 code. If there is an alternative L5 code in Oscar Upload field, use it. This avoids having NAC without a
@@ -83,7 +84,7 @@ def fix_L5_ref():
         r.save()
 
 
-import_NAC_class = ImportInfo(NAC_KEY, extra_func= fix_L5_ref)
+import_NAC_class = ImportInfo(NAC_KEY, extra_func=fix_L5_ref)
 
 COMM_CAT_FK_KEY = {IMPORT_CSV_MODEL_KEY: CommercialCategory,
                    IMPORT_CSV_IS_FK: '',

@@ -100,7 +100,8 @@ class SubSegment(TimeStampedModel):
     # the following field is used to link the subsegment to the DIT programme codes, to create the Oscar report
     # its value could be derived from Control Budget, but it is easier to have an indipendent fields.
     # there are only a handful of subsegments, so the maintenance of this field is not a problem!
-    dit_budget_type = models.ForeignKey(BudgetType, on_delete=models.PROTECT, blank=True, null=True)
+    dit_budget_type = models.ForeignKey(BudgetType, on_delete=models.PROTECT, blank=True, null=True,
+                                        verbose_name='DIT Budget Code (used to generate the Oscar return)')
 
     def __str__(self):
         return self.sub_segment_code + ' - ' + self.sub_segment_long_name

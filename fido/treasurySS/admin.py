@@ -1,4 +1,4 @@
-from core.admin import AdminExport, AdminImportExport, AdminreadOnly
+from core.admin import AdminEditOnly, AdminImportExport, AdminreadOnly
 
 from django.contrib import admin
 
@@ -24,9 +24,20 @@ class EstimateRowAdmin(AdminreadOnly):
     list_display = ('estimate_row_code', 'estimate_row_long_name')
 
 
-class SubSegmentAdmin(AdminreadOnly, AdminImportExport):
+class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
     list_display = ('sub_segment_code', 'sub_segment_long_name',
                     'Segment_code', 'control_budget_detail_code', 'accounting_authority_DetailCode')
+
+    def get_readonly_fields(self, request, obj=None):
+        return ['sub_segment_code', 'sub_segment_long_name',
+                'Segment_code', 'control_budget_detail_code', 'accounting_authority_DetailCode',
+                'accounting_authority_code', 'estimates_row_code']
+
+    def get_fields(self, request, obj=None):
+        return ['sub_segment_code', 'sub_segment_long_name',
+                'Segment_code', 'control_budget_detail_code',
+                'dit_budget_type', 'accounting_authority_DetailCode',
+                'accounting_authority_code', 'estimates_row_code']
 
     @property
     def import_info(self):

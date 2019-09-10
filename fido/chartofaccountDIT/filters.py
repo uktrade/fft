@@ -262,7 +262,6 @@ class HistoricalProgrammeFilter(ProgrammeFilter):
     class Meta(ProgrammeFilter.Meta):
         model = HistoricalProgrammeCode
 
-
     @property
     def qs(self):
         myfilter = super(ProgrammeFilter, self).qs

@@ -42,6 +42,8 @@ class LogChangeModel(models.Model):
         return instance
 
     def save(self, *args, **kwargs):
+        print('In save')
+        import core
         # check what has changed
         message = ''
         changed = False
@@ -51,28 +53,33 @@ class LogChangeModel(models.Model):
             message = 'Created'
         else:
             flag = CHANGE
+
             for k, v in self._original_values.items():
                 newvalue = getattr(self, k)
                 if newvalue != v:
+                    # import pdb;
+                    # pdb.set_trace()
+
                     message = message + ' ' + self._meta.get_field(k).verbose_name + \
-                        ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
+                              ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
                     changed = True
         if changed:
-            # write to the Admin history log the list of changes
-            message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
-            userid = get_current_user()
-            # userid = 1
-            ct = ContentType.objects.get_for_model(self)
-            LogEntry.objects.log_action(
-                user_id=userid,
-                content_type_id=ct.pk,
-                object_id=self.pk,
-                object_repr=self.__str__(),
-                action_flag=flag,
-                change_message=message)
-        # maybe it should not be saved if nothing has changed, but I need to think about it
-        super().save(*args, **kwargs)
+            # If you have been called from a test, the userid does not exists, and the save of changes will fail.
+            if hasattr(core, '_called_from_test') == False:
+                # write to the Admin history log the list of changes
+                message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
+                userid = get_current_user()
+                # userid = 1
+                ct = ContentType.objects.get_for_model(self)
+                LogEntry.objects.log_action(
+                    user_id=userid,
+                    content_type_id=ct.pk,
+                    object_id=self.pk,
+                    object_repr=self.__str__(),
+                    action_flag=flag,
+                    change_message=message)
+            super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         pass

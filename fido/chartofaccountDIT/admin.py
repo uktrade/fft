@@ -34,10 +34,9 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return ['natural_account_code', 'natural_account_code_description',
-                'account_L5_code', 'created', 'updated']
+                    'account_L5_code', 'created', 'updated']
         else:
             return ['created', 'updated']
-
 
     def get_fields(self, request, obj=None):
         return ['natural_account_code', 'natural_account_code_description',

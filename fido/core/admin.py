@@ -11,6 +11,8 @@ from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import escape
 
+from importdata.tasks import import_task
+
 from .exportutils import export_csv_from_import, export_to_excel
 
 
@@ -197,8 +199,8 @@ class AdminExport(admin.ModelAdmin):
 
 class CsvImportForm(forms.Form):
     '''Form used to get the file to upload for importing data'''
-
     def __init__(self, header_list, form_title, *args, **kwargs):
+        # Form title and header list are used in the template to show the expected fields and the form title.
         self.header_list = header_list
         self.form_title = form_title
         super(CsvImportForm, self).__init__(*args, **kwargs)  # call base class
@@ -227,20 +229,57 @@ class AdminImportExport(AdminExport):
         header_list = self.import_info.header_list
         import_func = self.import_info.my_import_func
         form_title = self.import_info.form_title
+        check_headers =  self.import_info.my_check_headers
         if request.method == "POST":
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
             if form.is_valid():
-                csv_file = request.FILES["csv_file"]
+                import_file = request.FILES["csv_file"]
                 # read() gives you the file contents as a bytes object,
                 # on which you can call decode().
                 # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
-                t = io.StringIO(csv_file.read().decode('cp1252'))
-                success, message = import_func(t)
+                t = io.StringIO(import_file.read().decode('cp1252'))
+                success, message = check_headers(t)
                 if success:
-                    return redirect("..")
-                else:
-                    messages.error(request, 'Error: ' + message)
+                    t.seek(0)
+                    success, message = import_func(t)
+                    if success:
+                        return redirect("..")
+
+                messages.error(request, 'Error: ' + message)
+        else:
+            form = CsvImportForm(header_list, form_title)
+        payload = {"form": form}
+        return render(
+            request, "admin/csv_form.html", payload
+        )
+
+
+class AdminAsyncImportExport(AdminImportExport):
+
+    def import_csv(self, request):
+        header_list = self.import_info.header_list
+        import_func = self.import_info.my_import_func
+        form_title = self.import_info.form_title + ' ASYNC'
+        check_headers =  self.import_info.my_check_headers
+        if request.method == "POST":
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
+            if form.is_valid():
+                import_file = request.FILES["csv_file"]
+                # read() gives you the file contents as a bytes object,
+                # on which you can call decode().
+                # decode('cp1252') turns your bytes into a string, with known encoding.
+                # cp1252 is used to handle single quotes in the strings
+                t = io.StringIO(import_file.read().decode('cp1252'))
+                success, message = check_headers(t)
+                if success:
+                    t.seek(0)
+                    task = import_task.delay('TEST', 1, 'test1', 'test2')
+                    success, message = import_func(t)
+                    if success:
+                        return redirect("..")
+
+                messages.error(request, 'Error: ' + message)
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}

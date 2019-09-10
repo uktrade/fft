@@ -106,3 +106,10 @@ button {
     /*content: '\f6d3';*/
 /*}*/
 
+.main-content {
+    margin-top: 20px;
+}
+
+.nav {
+    background-color: red;
+}

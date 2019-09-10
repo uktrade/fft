@@ -1,6 +1,5 @@
 import csv
 
-
 """Set of functions used to import from csv into the FIDO model.
 The import is specified as a dictionary, defining the model, the name of the primary key
 and the list of fields. Recursions are used to defind foreign keys."""
@@ -17,9 +16,9 @@ def convert_to_bool_string(s):
     """
     truelist = ['y', 'yes', 'true', '1']
     if s.lower() in truelist:
-        return ('True')
+        return (True)
     else:
-        return ('False')
+        return (False)
 
 
 # build the dict from the header row
@@ -193,18 +192,24 @@ def import_list_obj(csvfile, model, fieldname):
 class ImportInfo():
     """Use to define the function used to import from the Admin view list"""
 
+    # key is the dictionary describing the import
+    # title is the title to display in the import form. If not specified, it is the name of the model defined in key
+    # hlist is the header row as list. Required if key is not defined. It is used to validate the file being imported
+    # my_import_func is the function tio use for import if key is not defined
+    # filter[] is a dictionary defining filtering to use for selecting the row to import
+    # extra_func is a clean up function to run when the import is completed successfully
+
     def __init__(self, key={}, title='', hlist=[], my_import_func=None, filter=[], extra_func=None):
         self.key = key
         self.special_func = my_import_func
-        # extra_func is used to perform clean up after the import, like setting empty references to a valid value
-        self.extra_func = extra_func
         if bool(key):
             self.header_list = get_col_from_obj_key(key)
         else:
             self.header_list = hlist
 
         if title == '':
-            self.form_title = key[IMPORT_CSV_MODEL_KEY]._meta.verbose_name.title()
+            if bool(key):
+                self.form_title = key[IMPORT_CSV_MODEL_KEY]._meta.verbose_name.title()
         else:
             self.form_title = title
 
@@ -214,6 +219,9 @@ class ImportInfo():
             self.value = filter[2]
         else:
             self.op = None
+
+        # extra_func is used to perform clean up after the import, like setting empty references to a valid value
+        self.extra_func = extra_func
 
     def my_import_func(self, c):
         if bool(self.key):
@@ -226,6 +234,22 @@ class ImportInfo():
         if success and self.extra_func:
             self.extra_func()
         return success, message
+
+    def my_check_headers(self, t):
+        reader = csv.reader(t)
+        header = csvheadertodict(next(reader))
+        # import pdb;
+        # pdb.set_trace()
+
+        l1 =  [x.lower() for x in [x.lower() for x in self.header_list]]
+        # Before starting to read, check that all the expected columns exists
+        if not all(elem in header for elem in l1):
+            msg = 'Missing/wrong headers: expected ' + ', '.join(l1) + '. The file has: ' \
+                  + ', '.join(header.keys()) + '.'
+            return False, msg
+
+        return True, ''
+
 
 def get_field_name(obj_key, prefix):
     """Takes the dictionary used to define the import, and
