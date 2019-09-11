@@ -1,26 +1,19 @@
 import React from 'react';
 import './App.css';
+import TableRow from './Components/TableRow/index'
+import TableCell from './Components/TableCell/index'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hier...whoop test 1111112222 55445</h1>
-
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>Test</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <table border="1">
+        <tbody>
+        	<TableRow>
+        		<TableCell>This is a test...</TableCell>
+                <TableCell>This is a test...</TableCell>
+                <TableCell>This is a test...</TableCell>
+        	</TableRow>
+        </tbody>
+    </table>
   );
 }
 
