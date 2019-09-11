@@ -72,6 +72,9 @@ def import_adi_file(csvfile):
     Hard coded the year because it is a temporary solution....
     The information is used to create the OSCAR report to be uploaded to Treasury"""
     finyear = 2019
+    # Clear the table first. The adi file has several lines with the same key, so the figures have to be added
+    # and we don't want to add to existing data!
+    MonthlyFigure.objects.filter(financial_year=finyear).delete()
     reader = csv.reader(csvfile)
     col_key = csvheadertodict(next(reader))
     line = 1

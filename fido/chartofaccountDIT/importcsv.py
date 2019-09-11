@@ -158,9 +158,9 @@ def import_expenditure_category(csvfile):
 
 import_expenditure_category_class = ImportInfo({}, 'Budget Categories',
                                                ['Budget Grouping', 'Budget Category',
-                                                'Description', 'Further Information',
+                                                'Description', 'Further description',
                                                 'Budget NAC', 'Operating Delivery Plan'],
-                                               import_expenditure_category)
+                                               my_import_func=import_expenditure_category)
 
 
 def import_NAC_category(csvfile):

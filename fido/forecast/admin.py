@@ -1,4 +1,4 @@
-from core.admin import AdminAsyncImportExport, AdminreadOnly
+from core.admin import AdminAsyncImportExport, AdminImportExport, AdminreadOnly
 
 from django.contrib import admin
 
@@ -6,7 +6,7 @@ from .importcsv import import_adi_file_class
 from .models import FinancialPeriod, MonthlyFigure
 
 
-class MonthlyFigureAdmin(AdminAsyncImportExport, AdminreadOnly):
+class MonthlyFigureAdmin(AdminImportExport, AdminreadOnly):
 
     @property
     def import_info(self):
