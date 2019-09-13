@@ -1,41 +1,41 @@
 
 export const SET_SELECTED_ROW = 'SET_SELECTED_ROW';
 export const ADD_SELECTED_CELL = 'ADD_SELECTED_CELL';
+export const UNSELECT_ALL_CELLS = 'UNSELECT_ALL_CELLS';
+export const SET_INITIAL_CELL = 'SET_INITIAL_CELL';
+export const SET_LAST_CELL = 'SET_LAST_CELL';
+export const IS_SELECTING = 'IS_SELECTING';
 
 const selectionInitial = {
     row: null,
-    cells: []
+    cells: [],
+    initialCell: null,
+    lastCell: null,
+    isSelecting: false
 };
 
-function insertItem(array, action) {
-  return [
-    ...array.slice(0, action.index),
-    action.cell,
-    ...array.slice(action.index)
-  ]
-}
-
-function updateObjectInArray(array, action) {
-  return array.map((item, index) => {
-    if (index !== action.index) {
-      // This isn't the item we care about - keep it as-is
-      return item
-    }
-
-    // Otherwise, this is the one we want - return an updated value
-    return {
-      ...item,
-      ...action.cell
-    }
-  })
-}
-
 export const selection = (state = selectionInitial, action) => {
-	console.log("state", state);
     switch (action.type) {
+        case IS_SELECTING:
+            return Object.assign({}, state, {
+                isSelecting: action.isSelecting,
+            });
+        case SET_INITIAL_CELL:
+            return Object.assign({}, state, {
+                initialCell: action.cell,
+            });
+        case SET_LAST_CELL:
+            return Object.assign({}, state, {
+                lastCell: action.cell,
+            });
         case SET_SELECTED_ROW:
             return Object.assign({}, state, {
                 row: action.row,
+                cells: []
+            });
+        case UNSELECT_ALL_CELLS:
+            return Object.assign({}, state, {
+                row: null,
                 cells: []
             });
         case ADD_SELECTED_CELL:
@@ -44,7 +44,7 @@ export const selection = (state = selectionInitial, action) => {
             let cells = state.cells.slice();
 
             if(idAlreadyExists) {
-                cells = cells.filter(id => id != action.cell);                
+                //cells = cells.filter(id => id != action.cell);                
             }     
             else {
                 // modify the COPY, not the original

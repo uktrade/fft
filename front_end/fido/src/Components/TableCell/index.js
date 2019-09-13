@@ -1,20 +1,25 @@
 import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { ADD_SELECTED_CELL } from '../../Reducers/Selection'
-import TableContext from '../../Components/TableContext'
+import {
+	SET_INITIAL_CELL,
+	SET_LAST_CELL,
+	ADD_SELECTED_CELL
+} from '../../Reducers/Selection'
+import { ADD_CELL } from '../../Reducers/Cells'
 
 function TableCell({children, cellId}) {
     const dispatch = useDispatch();
 
-	const context = useContext(TableContext);
-
 	const [cellContent, setCellContent] = useState("test");
 	const [editMode, setEditMode] = useState(false);
 
-	const cellRef = useRef(null);
+	let cellRef = React.createRef();
 	const inputRef = useRef(null);
 
 	const selectedCells = useSelector(state => state.selection.cells);
+	const intialCell = useSelector(state => state.selection.intialCell);
+
+	const mouseDn = useSelector(state => state.mouse.down);
 
 	const checkInteraction = (e) => {
 		if (editMode && e.target != inputRef.current) {
@@ -22,62 +27,70 @@ function TableCell({children, cellId}) {
 		}
 	}
 
-	const selectCell = () => {
-		console.log(context.mouseIsDown);
+	const selectCell = (override = false) => {
+		console.log("override", override);
+		if (mouseDn || override) {
+			if (selectedCells.length == 0) {
+		        dispatch({
+		            type: SET_INITIAL_CELL,
+		            cell: cellId
+		        });
+			}
+	        dispatch({
+	            type: ADD_SELECTED_CELL,
+	            cell: cellId
+	        });
 
-		//if (mouseIsDown) {
-	        // dispatch({
-	        //     type: ADD_SELECTED_CELL,
-	        //     cell: cellId
-	        // });
-		//}
+	        dispatch({
+	            type: SET_LAST_CELL,
+	            cell: cellId
+	        });
+		}
 	}
 
     useEffect(() => {
-		document.addEventListener("mouseover", selectCell);
-		return () => {
-			document.removeEventListener("mouseover", selectCell);
-		};
-    }, [editMode]);
-
-    useEffect(() => {
-		document.addEventListener("click", checkInteraction);
-		return () => {
-			document.removeEventListener("click", checkInteraction);
-		};
-    }, [editMode]);
+        dispatch({
+            type: ADD_CELL,
+            id: "id_" + cellId,
+            rect: cellRef.current.getBoundingClientRect()
+        });
+    }, []);
 
 	useEffect(() => {
-		console.log(inputRef);
 		if (inputRef && inputRef.current) {
 			inputRef.current.focus();
 		}
 	});
 
+	const allCells = useSelector(state => state.allCells.allCells);
+
 	const isSelected = () => {
-		console.log(selectedCells);
+		let cellData = allCells["id_" + cellId];
 
-
-		if (selectedCells.includes(cellId)) {
+		if (cellData && cellData.selected) {
 			return true;
-		} else {
-			return false;
 		}
+
+		return false
 	}
 
 	return (
 		<Fragment>
 			<td
-				className={isSelected() ? 'highlight' : ''}
+				className={isSelected() ? 'highlight' : 'no-select'}
 				ref={cellRef}
 
 				onDoubleClick={ () => { 
 					setEditMode(true);
 				}}
 
-				// onClick={ () => { 
-				// 	selectCell();
-				// }}
+				onMouseOver={ () => { 
+					selectCell();
+				}}
+
+				onMouseDown={ () => {
+					selectCell(true);
+				}}
 			>
 				{editMode ? (
 					<input
@@ -88,6 +101,7 @@ function TableCell({children, cellId}) {
 					/>
 				) : (
 					<Fragment>
+						{cellId}:
 						{cellContent}
 					</Fragment>
 				)}
