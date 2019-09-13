@@ -5,7 +5,10 @@ import {
 	SET_LAST_CELL,
 	ADD_SELECTED_CELL
 } from '../../Reducers/Selection'
-import { ADD_CELL } from '../../Reducers/Cells'
+import { 
+	ADD_CELL,
+	SET_EDITING
+} from '../../Reducers/Cells'
 
 function TableCell({children, cellId}) {
     const dispatch = useDispatch();
@@ -21,25 +24,20 @@ function TableCell({children, cellId}) {
 
 	const mouseDn = useSelector(state => state.mouse.down);
 
+    const allCells = useSelector(state => state.allCells.allCells);
+
 	const checkInteraction = (e) => {
 		if (editMode && e.target != inputRef.current) {
 			setEditMode(false);
 		}
 	}
 
-	const selectCell = (override = false) => {
-		console.log("override", override);
-		if (mouseDn || override) {
-			if (selectedCells.length == 0) {
-		        dispatch({
-		            type: SET_INITIAL_CELL,
-		            cell: cellId
-		        });
-			}
-	        dispatch({
-	            type: ADD_SELECTED_CELL,
-	            cell: cellId
-	        });
+	const selectCell = () => {
+		if (mouseDn) {
+	        // dispatch({
+	        //     type: ADD_SELECTED_CELL,
+	        //     cell: cellId
+	        // });
 
 	        dispatch({
 	            type: SET_LAST_CELL,
@@ -62,12 +60,18 @@ function TableCell({children, cellId}) {
 		}
 	});
 
-	const allCells = useSelector(state => state.allCells.allCells);
-
 	const isSelected = () => {
 		let cellData = allCells["id_" + cellId];
-
 		if (cellData && cellData.selected) {
+			return true;
+		}
+
+		return false
+	}
+
+	const isEditing = () => {
+		let cellData = allCells["id_" + cellId];
+		if (cellData && cellData.isEditing) {
 			return true;
 		}
 
@@ -81,7 +85,10 @@ function TableCell({children, cellId}) {
 				ref={cellRef}
 
 				onDoubleClick={ () => { 
-					setEditMode(true);
+					dispatch({
+						type: SET_EDITING,
+						cell: cellId
+					});
 				}}
 
 				onMouseOver={ () => { 
@@ -89,10 +96,13 @@ function TableCell({children, cellId}) {
 				}}
 
 				onMouseDown={ () => {
-					selectCell(true);
+					dispatch({
+						type: SET_INITIAL_CELL,
+						cell: cellId
+					});
 				}}
 			>
-				{editMode ? (
+				{isEditing() ? (
 					<input
 						ref={inputRef}
 						type="text"

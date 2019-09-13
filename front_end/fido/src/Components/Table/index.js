@@ -5,11 +5,30 @@ import TableRow from '../../Components/TableRow/index'
 import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
 import { SET_MOUSE_DOWN } from '../../Reducers/Mouse'
-import { UNSELECT_ALL_CELLS, IS_SELECTING } from '../../Reducers/Selection'
+import { 
+    UNSELECT_ALL_CELLS, 
+    IS_SELECTING, 
+    ADD_CELL_TO_SELECTION 
+} from '../../Reducers/Selection'
 import { SELECT_CELL, UNSELECT_CELL } from '../../Reducers/Cells'
 
 function Table() {
+    const LEFT_TO_RIGHT = 'LEFT_TO_RIGHT';
+    const RIGHT_TO_LEFT = 'RIGHT_TO_LEFT';
+
+    const TOP_TO_BOTTOM = 'TOP_TO_BOTTOM';
+    const BOTTOM_TO_TOP = 'BOTTOM_TO_TOP';
+
     const dispatch = useDispatch();
+    const initialCell = useSelector(state => state.selection.initialCell);
+    const lastCell = useSelector(state => state.selection.lastCell);
+    const selectedCells = useSelector(state => state.selection.cells);
+    const allCells = useSelector(state => state.allCells.allCells);
+    const isSelecting = useSelector(state => state.selection.isSelecting);
+
+    const unselectAllCells = () => {
+
+    }
 
     const captureMouseDn = (e) => {
         dispatch({
@@ -49,21 +68,6 @@ function Table() {
         };
     }, []);
 
-    const initialCell = useSelector(state => state.selection.initialCell);
-    const lastCell = useSelector(state => state.selection.lastCell);
-	const selectedCells = useSelector(state => state.selection.cells);
-    const allCells = useSelector(state => state.allCells.allCells);
-    const isSelecting = useSelector(state => state.selection.isSelecting);
-
-    console.log("initialCell", initialCell);
-    console.log("lastCell", lastCell);
-
-    const LEFT_TO_RIGHT = 'LEFT_TO_RIGHT';
-    const RIGHT_TO_LEFT = 'RIGHT_TO_LEFT';
-
-    const TOP_TO_BOTTOM = 'TOP_TO_BOTTOM';
-    const BOTTOM_TO_TOP = 'BOTTOM_TO_TOP';
-
 	if (isSelecting) {
 		let initial = allCells["id_" + initialCell];
 		let last = allCells["id_" + lastCell];
@@ -72,54 +76,105 @@ function Table() {
 
             let horizontalDirection = LEFT_TO_RIGHT;
             let verticalDirection = TOP_TO_BOTTOM;
+
             // Check for select direction
             if (initial.rect.x > last.rect.x) {
                 // left to right
                 horizontalDirection = RIGHT_TO_LEFT;
             }
 
-            if (initial.y > last.y) {
+            if (initial.rect.y > last.rect.y) {
                 // top to bottom
                 verticalDirection = BOTTOM_TO_TOP
             }
+
+            console.log(horizontalDirection);
+            console.log(verticalDirection);
 
 			for (let cellId in allCells) {
                 let cell = allCells[cellId];
                 let selectable = false;
 				//let cell = allCells["id_" + selected];
 
-				console.log("cell.id", cell.id);
-				console.log("cell.y", cell.rect.y);
-				console.log("initial.y", initial.rect.y);
+                if (horizontalDirection === LEFT_TO_RIGHT) {
+                    if (verticalDirection === TOP_TO_BOTTOM) {
+                        if (
+                            cell.rect.x <= last.rect.x &&
+                            cell.rect.x >= initial.rect.x &&
 
-                if (
-                    horizontalDirection == LEFT_TO_RIGHT &&
-                    verticalDirection == TOP_TO_BOTTOM
-                ) {
-                    if (
-                        cell.rect.y >= initial.rect.y &&
-                        cell.rect.y <= last.rect.y &&
-                        cell.rect.x <= last.rect.x &&
-                        cell.rect.x >= initial.rect.x
-                    ) {
-                        selectable = true;
+                            cell.rect.y >= initial.rect.y &&
+                            cell.rect.y <= last.rect.y
+                        ) {
+                            selectable = true;
+                        }
+                    } else {
+                        if (
+                            cell.rect.x <= last.rect.x &&
+                            cell.rect.x >= initial.rect.x &&
+
+                            cell.rect.y <= initial.rect.y &&
+                            cell.rect.y >= last.rect.y
+                        ) {
+                            selectable = true;
+                        }
                     }
-                } else {
-                    if (
-                        cell.rect.y <= initial.rect.y &&
-                        cell.rect.y >= last.rect.y &&
-                        cell.rect.x >= last.rect.x &&
-                        cell.rect.x <= initial.rect.x
-                    ) {
-                        selectable = true;
+                } else { // RIGHT_TO_LEFT
+                    if (verticalDirection === TOP_TO_BOTTOM) {
+                        if (
+                            cell.rect.x >= last.rect.x &&
+                            cell.rect.x <= initial.rect.x &&
+
+                            cell.rect.y >= initial.rect.y &&
+                            cell.rect.y <= last.rect.y
+                        ) {
+                            selectable = true;
+                        }
+                    } else {
+                        if ( // BOTTOM_TO_TOP
+                            cell.rect.x >= last.rect.x &&
+                            cell.rect.x <= initial.rect.x &&
+
+                            cell.rect.y <= initial.rect.y &&
+                            cell.rect.y >= last.rect.y
+                        ) {
+                            selectable = true;
+                        }
                     }
                 }
+
+                // if (
+                //     horizontalDirection == LEFT_TO_RIGHT &&
+                //     verticalDirection == TOP_TO_BOTTOM
+                // ) {
+                //     if (
+                //         cell.rect.y >= initial.rect.y &&
+                //         cell.rect.y <= last.rect.y &&
+                //         cell.rect.x <= last.rect.x &&
+                //         cell.rect.x >= initial.rect.x
+                //     ) {
+                //         selectable = true;
+                //     }
+                // } else {
+                //     if (
+                //         cell.rect.y <= initial.rect.y &&
+                //         cell.rect.y >= last.rect.y &&
+                //         cell.rect.x >= last.rect.x &&
+                //         cell.rect.x <= initial.rect.x
+                //     ) {
+                //         selectable = true;
+                //     }
+                // }
 
                 if (selectable) {
                    dispatch({
                         type: SELECT_CELL,
                         id: cell.id
                     });
+                   dispatch({
+                        type: ADD_CELL_TO_SELECTION,
+                        id: cell.id
+                    });
+                    
                 } else {
                    dispatch({
                         type: UNSELECT_CELL,
@@ -127,7 +182,7 @@ function Table() {
                     });
                 }
 
-                console.log("=====\\======");
+                //console.log("=====\\======");
 			}
 		}
 	}
