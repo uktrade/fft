@@ -3,7 +3,7 @@ export const SET_SELECTED_ROW = 'SET_SELECTED_ROW';
 export const SET_INITIAL_CELL = 'SET_INITIAL_CELL';
 export const SET_LAST_CELL = 'SET_LAST_CELL';
 export const IS_SELECTING = 'IS_SELECTING';
-export const UNSELECT_ALL_CELLS = 'UNSELECT_ALL_CELLS';
+export const UNSELECT_ALL = 'UNSELECT_ALL';
 export const ADD_CELL_TO_SELECTION = 'ADD_CELL_TO_SELECTION';
 
 const selectionInitial = {
@@ -32,7 +32,7 @@ export const selection = (state = selectionInitial, action) => {
                 row: action.row,
                 cells: []
             });
-        case UNSELECT_ALL_CELLS:
+        case UNSELECT_ALL:
             return Object.assign({}, state, {
                 row: null,
                 cells: []

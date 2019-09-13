@@ -1,41 +1,41 @@
+import { createSlice, PayloadAction } from 'redux-starter-kit';
+// Use of this lib guarentees no state mutatation
 
-export const ADD_CELL = 'ADD_CELL';
-export const SELECT_CELL = 'SELECT_CELL';
-export const UNSELECT_CELL = 'UNSELECT_CELL';
-export const SET_EDITING = 'SET_EDITING';
-
-const allCellsInitial = {
-    allCells: {}
-};
-
-export const allCells = (state = allCellsInitial, action) => {
-    switch (action.type) {
-        case ADD_CELL:
-            var newState = state.allCells[action.id] = {
-                id: action.id,
-                rect: action.rect,
-                selected: false,
-                isEditing: false
+const allCells = createSlice({
+    slice: 'allCells',
+    initialState: {},
+    reducers: {
+        ADD_CELL: (state, action) => {
+            state[action.payload.id] = {
+                id: action.payload.id,
+                rect: action.payload.rect,
+                highlight: false,
+                //isEditing: false
             }
-            return Object.assign({}, state, {
-                newState,
-            });
-        case SELECT_CELL:
-            newState = state.allCells[action.id]["selected"] = true
-            return Object.assign({}, state, {
-                newState,
-            });
-        case UNSELECT_CELL:
-            newState = state.allCells[action.id]["selected"] = false
-            return Object.assign({}, state, {
-                newState,
-            });
-        case SET_EDITING:
-            newState = state.allCells[action.id]["isEditing"] = false
-            return Object.assign({}, state, {
-                newState,
-            });
-        default:
-            return state;
+        },
+        HIGHLIGHT_CELL: (state, action) => {
+            state[action.payload.id]["highlight"] = true;
+        },
+        UNHIGHLIGHT_CELL: (state, action) => {
+            state[action.payload.id]["highlight"] = false;
+        },
+        // SET_EDITING: (state, action) => {
+        //     state[action.payload.id]["isEditing"] = true;
+        // },
+        UNHIGHLIGHT_ALL: (state, action) => {
+            for (var cellId in state.allCells) {
+                state[cellId]["highlight"] = false;
+            }
+        }
     }
-}
+});
+
+export const { 
+    ADD_CELL, 
+    HIGHLIGHT_CELL, 
+    UNHIGHLIGHT_CELL, 
+    SET_EDITING, 
+    UNHIGHLIGHT_ALL 
+} = allCells.actions;
+
+export default allCells.reducer;

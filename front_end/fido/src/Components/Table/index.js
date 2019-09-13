@@ -6,11 +6,18 @@ import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
 import { SET_MOUSE_DOWN } from '../../Reducers/Mouse'
 import { 
-    UNSELECT_ALL_CELLS, 
+    UNSELECT_ALL, 
     IS_SELECTING, 
     ADD_CELL_TO_SELECTION 
 } from '../../Reducers/Selection'
-import { SELECT_CELL, UNSELECT_CELL } from '../../Reducers/Cells'
+import { 
+    HIGHLIGHT_CELL, 
+    UNHIGHLIGHT_CELL,
+    UNHIGHLIGHT_ALL
+} from '../../Reducers/Cells'
+import { 
+    SET_EDIT_CELL
+} from '../../Reducers/Edit'
 
 function Table() {
     const LEFT_TO_RIGHT = 'LEFT_TO_RIGHT';
@@ -23,16 +30,25 @@ function Table() {
     const initialCell = useSelector(state => state.selection.initialCell);
     const lastCell = useSelector(state => state.selection.lastCell);
     const selectedCells = useSelector(state => state.selection.cells);
-    const allCells = useSelector(state => state.allCells.allCells);
+    const allCells = useSelector(state => state.allCells);
     const isSelecting = useSelector(state => state.selection.isSelecting);
 
-    const unselectAllCells = () => {
-
-    }
-
     const captureMouseDn = (e) => {
+        console.log(e);
+
         dispatch({
-            type: UNSELECT_ALL_CELLS
+            type: UNSELECT_ALL
+        });
+
+        if (e.srcElement.localName != "input") {
+            dispatch({
+                type: SET_EDIT_CELL,
+                cellId: null
+            });
+        }
+
+        dispatch({
+            type: UNHIGHLIGHT_ALL
         });
 
         dispatch({
@@ -88,11 +104,15 @@ function Table() {
                 verticalDirection = BOTTOM_TO_TOP
             }
 
-            console.log(horizontalDirection);
-            console.log(verticalDirection);
-
 			for (let cellId in allCells) {
                 let cell = allCells[cellId];
+
+                if (!cell) {
+                    break;
+                }
+
+                // console.log("cell", cell);
+
                 let selectable = false;
 				//let cell = allCells["id_" + selected];
 
@@ -142,44 +162,24 @@ function Table() {
                     }
                 }
 
-                // if (
-                //     horizontalDirection == LEFT_TO_RIGHT &&
-                //     verticalDirection == TOP_TO_BOTTOM
-                // ) {
-                //     if (
-                //         cell.rect.y >= initial.rect.y &&
-                //         cell.rect.y <= last.rect.y &&
-                //         cell.rect.x <= last.rect.x &&
-                //         cell.rect.x >= initial.rect.x
-                //     ) {
-                //         selectable = true;
-                //     }
-                // } else {
-                //     if (
-                //         cell.rect.y <= initial.rect.y &&
-                //         cell.rect.y >= last.rect.y &&
-                //         cell.rect.x >= last.rect.x &&
-                //         cell.rect.x <= initial.rect.x
-                //     ) {
-                //         selectable = true;
-                //     }
-                // }
-
                 if (selectable) {
-                   dispatch({
-                        type: SELECT_CELL,
-                        id: cell.id
-                    });
+                    dispatch(
+                        HIGHLIGHT_CELL({
+                            id: cell.id
+                        })
+                    );
+
                    dispatch({
                         type: ADD_CELL_TO_SELECTION,
                         id: cell.id
                     });
                     
                 } else {
-                   dispatch({
-                        type: UNSELECT_CELL,
-                        id: cell.id
-                    });
+                   dispatch(
+                        UNHIGHLIGHT_CELL({
+                            id: cell.id
+                        })
+                    );
                 }
 
                 //console.log("=====\\======");

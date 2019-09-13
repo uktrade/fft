@@ -19,6 +19,18 @@ code {
 td {
    cursor: crosshair;
    min-width: 120px;
+
+    user-select: none; /* supported by Chrome and Opera */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+
+   font-size: 14px;
+}
+
+input {
+    font-size: 14px;
 }
 
 .no-select {

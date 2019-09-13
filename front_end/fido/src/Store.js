@@ -5,7 +5,8 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { selection } from './Reducers/Selection';
 import { mouse } from './Reducers/Mouse';
-import { allCells } from './Reducers/Cells';
+import allCells from './Reducers/Cells';
+import { editCell } from './Reducers/Edit'
 
 const persistConfig = {
     key: 'root',
@@ -16,7 +17,8 @@ const persistConfig = {
 const appReducer = combineReducers({
     selection,
     mouse,
-    allCells
+    allCells,
+    editCell
 });
 
 const persistedReducer = persistReducer(persistConfig, appReducer)
