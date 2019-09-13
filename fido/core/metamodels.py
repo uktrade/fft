@@ -42,7 +42,6 @@ class LogChangeModel(models.Model):
         return instance
 
     def save(self, *args, **kwargs):
-        print('In save')
         import core
         # check what has changed
         message = ''
@@ -53,13 +52,9 @@ class LogChangeModel(models.Model):
             message = 'Created'
         else:
             flag = CHANGE
-
             for k, v in self._original_values.items():
                 newvalue = getattr(self, k)
                 if newvalue != v:
-                    # import pdb;
-                    # pdb.set_trace()
-
                     message = message + ' ' + self._meta.get_field(k).verbose_name + \
                               ' changed from "' + str(v) + '" to "' + str(newvalue) + '";'
                     self._original_values[k] = newvalue
@@ -79,7 +74,7 @@ class LogChangeModel(models.Model):
                     object_repr=self.__str__(),
                     action_flag=flag,
                     change_message=message)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         pass
