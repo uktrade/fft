@@ -29,12 +29,10 @@ export const selection = (state = selectionInitial, action) => {
             });
         case SET_SELECTED_ROW:
             return Object.assign({}, state, {
-                row: action.row,
                 cells: []
             });
         case UNSELECT_ALL:
             return Object.assign({}, state, {
-                row: null,
                 cells: []
             });
         case ADD_CELL_TO_SELECTION:

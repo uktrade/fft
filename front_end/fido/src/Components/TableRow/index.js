@@ -2,26 +2,86 @@ import React, {Fragment, useState, useEffect, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { RowProvider } from  '../../Components/RowContext'
 import { SET_SELECTED_ROW } from '../../Reducers/Selection'
+import { 
+    UNSELECT_ALL, 
+    IS_SELECTING, 
+    ADD_CELL_TO_SELECTION 
+} from '../../Reducers/Selection'
+import { 
+    HIGHLIGHT_CELL, 
+    UNHIGHLIGHT_CELL,
+    UNHIGHLIGHT_ALL
+} from '../../Reducers/Cells'
 
 function TableRow({children, index}) {
     const dispatch = useDispatch();
-	const [selected, setSelected] = useState(false);
-	const selectedRow = useSelector(state => state.selection.row);
+    const allCells = useSelector(state => state.allCells);
 
-	const selectRow = () => {
+    const selectRow = (rowIndex) => {
+
         dispatch({
-            type: SET_SELECTED_ROW,
-            row: index
+            type: UNSELECT_ALL
         });
-	}
 
-	return (
-		<RowProvider value={{ selectRow: selectRow }}>
-			<tr className={selectedRow == index ? 'highlight' : ''}>
-				{children}
-			</tr>
-		</RowProvider>
-	);
+        dispatch({
+            type: UNHIGHLIGHT_ALL
+        });
+
+        console.log(allCells);
+
+        for (let cellId in allCells) {
+            let cell = allCells[cellId];
+            if (cell.rowIndex == rowIndex) {
+                dispatch(
+                    HIGHLIGHT_CELL({
+                        id: cell.id
+                    })
+                );
+
+                dispatch({
+                    type: ADD_CELL_TO_SELECTION,
+                    id: cell.id
+                });
+            }
+       }
+    }
+
+    const selectColumn = (colIndex) => {
+        dispatch({
+            type: UNSELECT_ALL
+        });
+
+        dispatch({
+            type: UNHIGHLIGHT_ALL
+        });
+
+        for (let cellId in allCells) {
+            let cell = allCells[cellId];
+            if (cell.colIndex == colIndex) {
+                dispatch(
+                    HIGHLIGHT_CELL({
+                        id: cell.id
+                    })
+                );
+
+                dispatch({
+                    type: ADD_CELL_TO_SELECTION,
+                    id: cell.id
+                });
+            }
+       }
+    }
+
+    return (
+        <RowProvider value={{ 
+            selectRow: selectRow,
+            selectColumn: selectColumn
+        }}>
+            <tr>
+                {children}
+            </tr>
+        </RowProvider>
+    );
 }
 
 export default TableRow;

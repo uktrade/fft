@@ -13,7 +13,44 @@ code {
 }
 
 .highlight {
-	background-color: red;
+	background-color: #c6c6c6;
+  border-color: #a5a5a4;
+}
+
+.handle {
+    background-color:black;
+    color: white;
+    font-weight: bold;
+    width: 20px;
+    padding: 0 2px;
+    text-align: center;
+    overflow:none;
+}
+
+.column-header {
+    background-color:black;
+    color: white;
+}
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table, td, th {
+  border: 1px solid #d4d5d4;
+}
+
+input {
+    padding:0px;
+    height: 17px;
+    outline: none;
+    border:0;
 }
 
 td {

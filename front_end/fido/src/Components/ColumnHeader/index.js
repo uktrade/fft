@@ -2,18 +2,18 @@ import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 
 import RowContext from '../../Components/RowContext'
 
-function TableHandle({rowIndex}) {
+function ColumnHeader({index}) {
 	const context = useContext(RowContext)
 
 	return (
-		<td className="handle"
-			onClick={() => { 
-				context.selectRow(rowIndex);
+		<th className="column-header"
+			onClick={() => {
+				context.selectColumn(index);
 			}
 		}>
-			{rowIndex}
-		</td>
+			Column {index}
+		</th>
 	);
 }
 
-export default TableHandle;
+export default ColumnHeader;

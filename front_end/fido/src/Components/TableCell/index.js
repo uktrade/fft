@@ -15,7 +15,7 @@ import {
     SET_EDIT_CELL
 } from '../../Reducers/Edit'
 
-function TableCell({children, cellId}) {
+function TableCell({children, cellId, rowIndex, colIndex}) {
     const dispatch = useDispatch();
 
     const [cellContent, setCellContent] = useState("test");
@@ -48,6 +48,8 @@ function TableCell({children, cellId}) {
         dispatch(
             ADD_CELL({
                 id: "id_" + cellId,
+                rowIndex: rowIndex,
+                colIndex: colIndex,
                 rect: cellRef.current.getBoundingClientRect()
             })
         );
@@ -68,6 +70,15 @@ function TableCell({children, cellId}) {
         return false
     }
 
+    const handleKeyPress = (event) => {
+        if(event.key === 'Enter'){
+            dispatch({
+                type: SET_EDIT_CELL,
+                cellId: null
+            });
+        }
+    }
+
     return (
         <Fragment>
             <td
@@ -78,16 +89,6 @@ function TableCell({children, cellId}) {
                         type: SET_EDIT_CELL,
                         cellId: cellId
                     });
-
-                    // dispatch(
-                    //     SET_EDIT_CELL({
-                    //         cellId: cellId
-                    //     })
-                    // );
-
-                    console.log("Set edit cell...");
-                    console.log(editCell);
-                    console.log(cellId);
                 }}
 
                 onMouseOver={ () => { 
@@ -111,6 +112,7 @@ function TableCell({children, cellId}) {
                         type="text"
                         value={cellContent}
                         onChange={e => setCellContent(e.target.value)}
+                        onKeyPress={handleKeyPress}
                     />
                 ) : (
                     <Fragment>

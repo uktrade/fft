@@ -4,6 +4,7 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import TableRow from '../../Components/TableRow/index'
 import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
+import ColumnHeader from '../../Components/ColumnHeader/index'
 import { SET_MOUSE_DOWN } from '../../Reducers/Mouse'
 import { 
     UNSELECT_ALL, 
@@ -34,8 +35,6 @@ function Table() {
     const isSelecting = useSelector(state => state.selection.isSelecting);
 
     const captureMouseDn = (e) => {
-        console.log(e);
-
         dispatch({
             type: UNSELECT_ALL
         });
@@ -204,79 +203,91 @@ function Table() {
   //   }
 
     return (
-        <table border="1">
+        <table>
             <tbody>
+                <TableRow index="0">
+                    <th className="handle"></th>
+                    <ColumnHeader index="0">Col 1</ColumnHeader>
+                    <ColumnHeader index="1">Col 2</ColumnHeader>
+                    <ColumnHeader index="2">Col 3</ColumnHeader>
+                    <ColumnHeader index="3">Col 4</ColumnHeader>
+                    <ColumnHeader index="4">Col 5</ColumnHeader>
+                    <ColumnHeader index="5">Col 6</ColumnHeader>
+                    <ColumnHeader index="6">Col 7</ColumnHeader>
+                    <ColumnHeader index="7">Col 8</ColumnHeader>
+                    <ColumnHeader index="8">Col 9</ColumnHeader>
+                </TableRow>
             	<TableRow index="0">
-                    <TableHandle />
-            		<TableCell cellId="1">This is a test...</TableCell>
-                    <TableCell cellId="2">This is a test...</TableCell>
-                    <TableCell cellId="3">This is a test...</TableCell>
-                    <TableCell cellId="4">This is a test...</TableCell>
-                    <TableCell cellId="5">This is a test...</TableCell>
-                    <TableCell cellId="6">This is a test...</TableCell>
-                    <TableCell cellId="7">This is a test...</TableCell>
-                    <TableCell cellId="8">This is a test...</TableCell>
-                    <TableCell cellId="9">This is a test...</TableCell>
+                    <TableHandle rowIndex="0" />
+            		<TableCell rowIndex="0" colIndex="0" cellId="1">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="1" cellId="2">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="2" cellId="3">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="3" cellId="4">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="4" cellId="5">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="5" cellId="6">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="6" cellId="7">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="7" cellId="8">This is a test...</TableCell>
+                    <TableCell rowIndex="0" colIndex="8" cellId="9">This is a test...</TableCell>
             	</TableRow>
                 <TableRow index="1">
-                    <TableHandle />
-            		<TableCell cellId="11">This is a test...</TableCell>
-                    <TableCell cellId="12">This is a test...</TableCell>
-                    <TableCell cellId="13">This is a test...</TableCell>
-                    <TableCell cellId="14">This is a test...</TableCell>
-                    <TableCell cellId="15">This is a test...</TableCell>
-                    <TableCell cellId="16">This is a test...</TableCell>
-                    <TableCell cellId="17">This is a test...</TableCell>
-                    <TableCell cellId="18">This is a test...</TableCell>
-                    <TableCell cellId="19">This is a test...</TableCell>
+                    <TableHandle rowIndex="1" />
+            		<TableCell rowIndex="1" colIndex="0" cellId="11">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="1" cellId="12">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="2" cellId="13">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="3" cellId="14">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="4" cellId="15">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="5" cellId="16">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="6" cellId="17">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="7" cellId="18">This is a test...</TableCell>
+                    <TableCell rowIndex="1" colIndex="8" cellId="19">This is a test...</TableCell>
                 </TableRow>
                 <TableRow index="2">
-                    <TableHandle />
-            		<TableCell cellId="21">This is a test...</TableCell>
-                    <TableCell cellId="22">This is a test...</TableCell>
-                    <TableCell cellId="23">This is a test...</TableCell>
-                    <TableCell cellId="24">This is a test...</TableCell>
-                    <TableCell cellId="25">This is a test...</TableCell>
-                    <TableCell cellId="26">This is a test...</TableCell>
-                    <TableCell cellId="27">This is a test...</TableCell>
-                    <TableCell cellId="28">This is a test...</TableCell>
-                    <TableCell cellId="29">This is a test...</TableCell>
+                    <TableHandle rowIndex="2" />
+            		<TableCell rowIndex="2" colIndex="0" cellId="21">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="1" cellId="22">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="2" cellId="23">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="3" cellId="24">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="4" cellId="25">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="5" cellId="26">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="6" cellId="27">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="7" cellId="28">This is a test...</TableCell>
+                    <TableCell rowIndex="2" colIndex="8" cellId="29">This is a test...</TableCell>
                 </TableRow>
                 <TableRow index="3">
-                    <TableHandle />
-            		<TableCell cellId="31">This is a test...</TableCell>
-                    <TableCell cellId="32">This is a test...</TableCell>
-                    <TableCell cellId="33">This is a test...</TableCell>
-                    <TableCell cellId="34">This is a test...</TableCell>
-                    <TableCell cellId="35">This is a test...</TableCell>
-                    <TableCell cellId="36">This is a test...</TableCell>
-                    <TableCell cellId="37">This is a test...</TableCell>
-                    <TableCell cellId="38">This is a test...</TableCell>
-                    <TableCell cellId="39">This is a test...</TableCell>
+                    <TableHandle rowIndex="3" />
+            		<TableCell rowIndex="3" colIndex="0" cellId="31">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="1" cellId="32">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="2" cellId="33">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="3" cellId="34">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="4" cellId="35">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="5" cellId="36">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="6" cellId="37">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="7" cellId="38">This is a test...</TableCell>
+                    <TableCell rowIndex="3" colIndex="8" cellId="39">This is a test...</TableCell>
                 </TableRow>
                 <TableRow index="4">
-                    <TableHandle />
-            		<TableCell cellId="41">This is a test...</TableCell>
-                    <TableCell cellId="42">This is a test...</TableCell>
-                    <TableCell cellId="43">This is a test...</TableCell>
-                    <TableCell cellId="44">This is a test...</TableCell>
-                    <TableCell cellId="45">This is a test...</TableCell>
-                    <TableCell cellId="46">This is a test...</TableCell>
-                    <TableCell cellId="47">This is a test...</TableCell>
-                    <TableCell cellId="48">This is a test...</TableCell>
-                    <TableCell cellId="49">This is a test...</TableCell>
+                    <TableHandle rowIndex="4" />
+            		<TableCell rowIndex="4" colIndex="0" cellId="41">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="1" cellId="42">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="2" cellId="43">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="3" cellId="44">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="4" cellId="45">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="5" cellId="46">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="6" cellId="47">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="7" cellId="48">This is a test...</TableCell>
+                    <TableCell rowIndex="4" colIndex="8" cellId="49">This is a test...</TableCell>
                 </TableRow>
                 <TableRow index="5">
-                    <TableHandle />
-            		<TableCell cellId="51">This is a test...</TableCell>
-                    <TableCell cellId="52">This is a test...</TableCell>
-                    <TableCell cellId="53">This is a test...</TableCell>
-                    <TableCell cellId="54">This is a test...</TableCell>
-                    <TableCell cellId="55">This is a test...</TableCell>
-                    <TableCell cellId="56">This is a test...</TableCell>
-                    <TableCell cellId="57">This is a test...</TableCell>
-                    <TableCell cellId="58">This is a test...</TableCell>
-                    <TableCell cellId="59">This is a test...</TableCell>
+                    <TableHandle rowIndex="5" />
+            		<TableCell rowIndex="5" colIndex="0" cellId="51">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="1" cellId="52">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="2" cellId="53">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="3" cellId="54">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="4" cellId="55">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="5" cellId="56">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="6" cellId="57">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="7" cellId="58">This is a test...</TableCell>
+                    <TableCell rowIndex="5" colIndex="8" cellId="59">This is a test...</TableCell>
                 </TableRow>
             </tbody>
         </table>

@@ -9,6 +9,8 @@ const allCells = createSlice({
             state[action.payload.id] = {
                 id: action.payload.id,
                 rect: action.payload.rect,
+                rowIndex: action.payload.rowIndex,
+                colIndex: action.payload.colIndex,
                 highlight: false,
                 //isEditing: false
             }
@@ -23,7 +25,7 @@ const allCells = createSlice({
         //     state[action.payload.id]["isEditing"] = true;
         // },
         UNHIGHLIGHT_ALL: (state, action) => {
-            for (var cellId in state.allCells) {
+            for (var cellId in state) {
                 state[cellId]["highlight"] = false;
             }
         }
