@@ -4,6 +4,8 @@ services:
    image: postgres:10.7
    ports:
      - "5432:5432"
+   environment:
+     POSTGRES_DB: 'fido'
  front_end:
    build:
       context: .

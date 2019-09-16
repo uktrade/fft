@@ -1,12 +1,22 @@
-from costcentre.models import CostCentre, DepartmentalGroup, Directorate
-from chartofaccountDIT.models import Analysis1, Analysis2, BudgetType, ExpenditureCategory, \
-    NACCategory, NaturalCode, ProgrammeCode, ProjectCode
-from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Account
-
 from django.core.management.base import BaseCommand
-
 import core
 
+from costcentre.models import (
+    CostCentre,
+    DepartmentalGroup,
+    Directorate,
+)
+from chartofaccountDIT.models import (
+    Analysis1,
+    Analysis2,
+    BudgetType,
+    ExpenditureCategory,
+    NACCategory,
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode,
+)
+from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Account
 
 # group = Group code,  directorate list
 #  directorate = directorate code,  cost centre list
@@ -14,16 +24,58 @@ import core
 # The descriptions are generated from a counter
 
 
-class CostHierarchy():
+class CostHierarchy:
     name = 'Cost Centre Hierarchy'
     cost_centre_hierarchy = [
-        ['8888AA', [['88881A', [888811, 888812, 888813]],
-                    ['88882A', [888821, 888822, 888823]]
-                    ]],
-        ['8888BB', [['88881B', [888831, 888832, 888833]],
-                    ['88882B', [888841, 888842, 888843]],
-                    ['88883C', [888851, 888852, 888853]],
-                    ]]]
+        [
+            '8888AA', [
+                [
+                    '88881A',
+                    [
+                        888811,
+                        888812,
+                        888813
+                    ]
+                ],
+                [
+                    '88882A',
+                    [
+                        888821,
+                        888822,
+                        888823
+                    ]
+                ]
+            ]
+        ],
+        [
+            '8888BB', [
+                [
+                    '88881B',
+                    [
+                        888831,
+                        888832,
+                        888833
+                    ]
+                ],
+                [
+                    '88882B',
+                    [
+                        888841,
+                        888842,
+                        888843
+                    ]
+                ],
+                [
+                    '88883C',
+                    [
+                        888851,
+                        888852,
+                        888853
+                    ]
+                ],
+            ]
+        ]
+    ]
 
     def clear(self):
         CostCentre.objects.all().delete()
@@ -33,8 +85,8 @@ class CostHierarchy():
     def create(self):
         """Clear the Cost Centre, Directorate and Group tables, and create the stub data"""
         self.clear()
-        counter = 0
-        for departmental_group_code in self.cost_centre_hierarchy:
+
+        for counter, departmental_group_code in enumerate(self.cost_centre_hierarchy):
             departmental_group = DepartmentalGroup.objects.create(
                 group_code=departmental_group_code[0],
                 active=True,
@@ -139,7 +191,7 @@ class ProjectCodes():
 
 # TODO rename model NaturalCode to NaturalAccountCode
 # TODO check CASCADE in model
-class NaturalAccountCodes():
+class NaturalAccountCodes:
     name = 'Natural Account Codes'
 
     def clear(self):
@@ -157,13 +209,14 @@ class NaturalAccountCodes():
         L2Account.objects.all().delete()
         L1Account.objects.all().delete()
 
-    def create_natural_account_code_expenditure_group(self,
-                                                      nac_category,
-                                                      l5,
-                                                      cat_description,
-                                                      nac_base,
-                                                      howmany
-                                                      ):
+    def create_natural_account_code_expenditure_group(
+        self,
+        nac_category,
+        l5,
+        cat_description,
+        nac_base,
+        howmany
+    ):
         expenditure_category = ExpenditureCategory.objects.create(
             active=True,
             grouping_description=cat_description,
@@ -235,36 +288,79 @@ class NaturalAccountCodes():
             economic_budget_code='CAPITAL'
         )
         # use real values for NAC categories. Easier than inventing some
-        nac_category = NACCategory.objects.create(active=True, NAC_category_description='Pay')
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_resource, 'Contractors (Pay)',
-                                                           71111000, 5)
+        nac_category = NACCategory.objects.create(
+            active=True,
+            NAC_category_description='Pay'
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_resource,
+            'Contractors (Pay)',
+            71111000,
+            5
+        )
 
-        nac_category = NACCategory.objects.create(active=True, NAC_category_description='NonCash')
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_resource, 'Provisions', 71112000, 2)
+        nac_category = NACCategory.objects.create(
+            active=True,
+            NAC_category_description='NonCash'
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_resource,
+            'Provisions',
+            71112000,
+            2
+        )
 
-        nac_category = NACCategory.objects.create(active=True, NAC_category_description='NonPay')
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_resource, 'Staff Welfare', 71113000,
-                                                           2)
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_resource, 'Estates', 71114000, 1)
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_resource, 'Grant', 71115000, 4)
+        nac_category = NACCategory.objects.create(
+            active=True,
+            NAC_category_description='NonPay',
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_resource,
+            'Staff Welfare',
+            71113000,
+            2
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_resource,
+            'Estates',
+            71114000,
+            1
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_resource,
+            'Grant',
+            71115000,
+            4
+        )
 
-        nac_category = NACCategory.objects.create(active=True, NAC_category_description='Capital')
-        self.create_natural_account_code_expenditure_group(nac_category, l5_account_capital, 'Estates (Capital)',
-                                                           71121000, 4)
+        nac_category = NACCategory.objects.create(
+            active=True,
+            NAC_category_description='Capital'
+        )
+        self.create_natural_account_code_expenditure_group(
+            nac_category,
+            l5_account_capital,
+            'Estates (Capital)',
+            71121000,
+            4
+        )
 
 
-TEST_TYPE = {
-    'CostCentre': CostHierarchy,
-    'Programme': ProgrammeCodes,
-    'NAC': NaturalAccountCodes,
-    'Analysis1': Analysis1Codes,
-    'Analysis2': Analysis2Codes,
-    'Project': ProjectCodes
-}
-
-
-# TODO use try in handle
 class Command(BaseCommand):
+    TEST_TYPE = {
+        'CostCentre': CostHierarchy,
+        'Programme': ProgrammeCodes,
+        'NAC': NaturalAccountCodes,
+        'Analysis1': Analysis1Codes,
+        'Analysis2': Analysis2Codes,
+        'Project': ProjectCodes
+    }
+
     help = 'Create stub data. Allowed types are - All - ' + ' - '.join(TEST_TYPE.keys())
     arg_name = 'what'
 
@@ -280,20 +376,25 @@ class Command(BaseCommand):
         )
 
     def create(self, what):
-        # The modified save writes the current user to the log, but the user is not available while we are running a command.
+        # The modified save writes the current user to the log, but
+        # the user is not available while we are running a command.
         # So set  the test flag to stop writing to the log
         core._called_from_test = True
         p = what()
         p.create()
         del core._called_from_test
-        self.stdout.write(self.style.SUCCESS('Successfully completed stub data creation for {}.'.format(p.name)))
+        self.stdout.write(self.style.SUCCESS(
+            'Successfully completed stub data creation for {}.'.format(p.name))
+        )
 
     def clear(self, what):
         core._called_from_test = True
         p = what()
         p.clear()
         del core._called_from_test
-        self.stdout.write(self.style.SUCCESS('Successfully cleared stub data for {}.'.format(p.name)))
+        self.stdout.write(self.style.SUCCESS(
+            'Successfully cleared stub data for {}.'.format(p.name))
+        )
 
     def handle(self, *args, **options):
         if options['delete']:
@@ -302,8 +403,8 @@ class Command(BaseCommand):
             func = self.create
         for arg in options[self.arg_name]:
             if arg == 'All':
-                for t in TEST_TYPE.values():
+                for t in self.TEST_TYPE.values():
                     func(t)
                 return
             else:
-                func(TEST_TYPE[arg])
+                func(self.TEST_TYPE[arg])
