@@ -16,16 +16,22 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Account
-
-# group = Group code,  directorate list
-#  directorate = directorate code,  cost centre list
-#  costcentre = code
-# The descriptions are generated from a counter
+from treasuryCOA.models import (
+    L1Account,
+    L2Account,
+    L3Account,
+    L4Account,
+    L5Account,
+)
 
 
 class CostHierarchy:
     name = 'Cost Centre Hierarchy'
+
+    # group = Group code,  directorate list
+    # directorate = directorate code,  cost centre list
+    # costcentre = code
+    # The descriptions are generated from a counter
     cost_centre_hierarchy = [
         [
             '8888AA', [
