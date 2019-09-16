@@ -8,6 +8,7 @@ from django_tables2 import RequestConfig
 
 from .models import MonthlyFigure
 from .tables import ForecastTable
+from .forms import EditForm
 
 
 class PivotClassView(FidoExportMixin, SingleTableView):
@@ -67,3 +68,18 @@ def pivot_test1(request):
     table = ForecastTable(field_dict, q1)
     RequestConfig(request).configure(table)
     return render(request, 'forecast/forecast.html', {'table': table})
+
+
+def edit_forecast(request):
+    if request.method == 'POST':
+        form = EditForm(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = EditForm()
+
+    return render(
+        request,
+        'forecast/edit.html',
+        {'form': form}
+    )

@@ -4,8 +4,8 @@ services:
    image: postgres:10.7
    ports:
      - "5432:5432"
-   environment:
-     POSTGRES_DB: 'fido'
+   volumes:
+     - ./docker_local/init.sql:/docker-entrypoint-initdb.d/init.sql
  front_end:
    build:
       context: .
@@ -28,6 +28,7 @@ services:
      - "0.0.0.0:8000:8000"
    depends_on:
      - db
+     - front_end
    environment:
      DEBUG: 'True'
      DATABASE_URL: psql://postgres:postgres@db:5432/fido
