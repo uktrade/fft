@@ -27,61 +27,36 @@ from treasuryCOA.models import (
 
 class CostHierarchy:
     name = 'Cost Centre Hierarchy'
+    counter = 0
 
-    # group = Group code,  directorate list
-    # directorate = directorate code,  cost centre list
-    # costcentre = code
-    # The descriptions are generated from a counter
-    cost_centre_hierarchy = [
-        [
-            '8888AA', [
-                [
-                    '88881A',
-                    [
-                        888811,
-                        888812,
-                        888813
-                    ]
-                ],
-                [
-                    '88882A',
-                    [
-                        888821,
-                        888822,
-                        888823
-                    ]
-                ]
-            ]
-        ],
-        [
-            '8888BB', [
-                [
-                    '88881B',
-                    [
-                        888831,
-                        888832,
-                        888833
-                    ]
-                ],
-                [
-                    '88882B',
-                    [
-                        888841,
-                        888842,
-                        888843
-                    ]
-                ],
-                [
-                    '88883C',
-                    [
-                        888851,
-                        888852,
-                        888853
-                    ]
-                ],
-            ]
-        ]
-    ]
+    def create_departmental_group(self, group_code, howmany_directorate, howmany_cost_centres):
+        departmental_group = DepartmentalGroup.objects.create(
+            group_code=group_code,
+            active=True,
+            group_name='Departmental Group {}'.format(self.counter)
+        )
+        self.counter += 1
+        directorate_code_base = int(group_code[0:4]) * 10
+        for i in range(howmany_directorate):
+            self.create_directorate(departmental_group, '{}A'.format(directorate_code_base), howmany_cost_centres)
+            directorate_code_base += 1
+
+    def create_directorate(self, departmental_group, directorate_code, howmany_cost_centres):
+        directorate = Directorate.objects.create(
+            directorate_code=directorate_code,
+            active=True,
+            directorate_name='Directorate {}'.format(self.counter),
+            group=departmental_group
+        )
+        self.counter += 1
+        for i in range(howmany_cost_centres):
+            CostCentre.objects.create(
+                cost_centre_code=888810 + self.counter,
+                active=True,
+                cost_centre_name='Cost Centre {}'.format(self.counter),
+                directorate=directorate
+            )
+            self.counter += 1
 
     def clear(self):
         CostCentre.objects.all().delete()
@@ -91,29 +66,10 @@ class CostHierarchy:
     def create(self):
         """Clear the Cost Centre, Directorate and Group tables, and create the stub data"""
         self.clear()
-
-        for counter, departmental_group_code in enumerate(self.cost_centre_hierarchy):
-            departmental_group = DepartmentalGroup.objects.create(
-                group_code=departmental_group_code[0],
-                active=True,
-                group_name='Departmental Group {}'.format(counter)
-            )
-            counter += 1
-            for directorate_code in departmental_group_code[1]:
-                directorate = Directorate.objects.create(
-                    directorate_code=directorate_code[0],
-                    active=True,
-                    directorate_name='Directorate {}'.format(counter),
-                    group=departmental_group
-                )
-                counter += 1
-                for cost_centre_code in directorate_code[1]:
-                    CostCentre.objects.create(
-                        cost_centre_code=cost_centre_code, active=True,
-                        cost_centre_name='Cost Centre {}'.format(counter),
-                        directorate=directorate
-                    )
-                    counter += 1
+        self.create_departmental_group('8888AA', 1, 1)
+        # self.create_departmental_group('8123AA', 5, 3)
+        # self.create_departmental_group('8213CC', 5, 3)
+        # self.create_departmental_group('8456AA', 5, 3)
 
 
 class ProgrammeCodes():
@@ -216,12 +172,12 @@ class NaturalAccountCodes:
         L1Account.objects.all().delete()
 
     def create_natural_account_code_expenditure_group(
-        self,
-        nac_category,
-        l5,
-        cat_description,
-        nac_base,
-        howmany
+            self,
+            nac_category,
+            l5,
+            cat_description,
+            nac_base,
+            howmany
     ):
         expenditure_category = ExpenditureCategory.objects.create(
             active=True,
