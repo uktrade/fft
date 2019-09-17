@@ -2,7 +2,7 @@ from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, Programm
 
 from core.metamodels import TimeStampedModel
 from core.models import FinancialYear
-from core.myutils import financialyear
+from core.myutils import get_current_financial_year
 
 from costcentre.models import CostCentre
 
@@ -70,12 +70,20 @@ class Budget(FinancialCode, TimeStampedModel):
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    def pivotdata(self, aggr_list, filterlist={}, year=0):
+    def pivotdata(self, aggr_list=[], filterlist={}, year=0):
         def lowercase(s):
             return s.lower()
 
         if year == 0:
-            year = financialyear()
+            year = get_current_financial_year()
+        if aggr_list == []:
+            aggr_list = {'cost_centre__cost_centre_code': 'Cost Centre Code',
+                         'cost_centre__cost_centre_name': 'Cost Centre Description',
+                         'natural_account_code__natural_account_code': 'Natural Account Code',
+                         'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
+                         'programme__programme_code': 'Programme Code',
+                         'programme__programme_description': 'Programme Description',
+                         }
         q1 = self.get_queryset().filter(financial_year=year, **filterlist)
         return pivot(q1,
                      aggr_list,
@@ -173,40 +181,23 @@ class OSCARReturn(models.Model):
 class ADIReport(models.Model):
     pass
 
-
-class FinancialCode(models.Model):
-    """Contains the members of Chart of Account needed to create a unique key"""
-    programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
-    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
-    natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
-    analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT, blank=True, null=True)
-    analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT, blank=True, null=True)
-    project_code = models.ForeignKey(ProjectCode, on_delete=models.PROTECT, blank=True, null=True)
-
-    class Meta:
-        abstract = True
-
-
-class PivotManager(models.Manager):
-    """Managers returning the data in Monthly figures pivoted"""
-
-    def pivotdata(self, aggr_list, filterlist={}, year=0):
-        def lowercase(s):
-            return s.lower()
-
-        if year == 0:
-            year = financialyear()
-        q1 = self.get_queryset().filter(financial_year=year, **filterlist)
-        return pivot(q1,
-                     aggr_list,
-                     'financial_period__period_short_name',
-                     'amount', display_transform=lowercase)
+# class FinancialCode(models.Model):
+#     """Contains the members of Chart of Account needed to create a unique key"""
+#     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
+#     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
+#     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
+#     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT, blank=True, null=True)
+#     analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT, blank=True, null=True)
+#     project_code = models.ForeignKey(ProjectCode, on_delete=models.PROTECT, blank=True, null=True)
+#
+#     class Meta:
+#         abstract = True
 
 
 # First, define the Manager subclass.
-class BudgetManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(financial_period=99)
+# class BudgetManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().filter(financial_period=99)
 
 # Query to use to return the info for the OSCAR return
 # DROP VIEW "forecast_oscarreturn";
