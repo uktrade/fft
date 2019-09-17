@@ -1,16 +1,10 @@
 import React, {Fragment, useState, useEffect, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { RowProvider } from  '../../Components/RowContext'
-import { SET_SELECTED_ROW } from '../../Reducers/Selection'
 import { 
-    UNSELECT_ALL, 
-    IS_SELECTING, 
-    ADD_CELL_TO_SELECTION 
-} from '../../Reducers/Selection'
-import { 
-    HIGHLIGHT_CELL, 
-    UNHIGHLIGHT_CELL,
-    UNHIGHLIGHT_ALL
+    SELECT_CELL,
+    UNSELECT_CELL,
+    UNSELECT_ALL
 } from '../../Reducers/Cells'
 
 function TableRow({children, index}) {
@@ -24,50 +18,34 @@ function TableRow({children, index}) {
         });
 
         dispatch({
-            type: UNHIGHLIGHT_ALL
+            type: UNSELECT_CELL
         });
-
-        console.log(allCells);
 
         for (let cellId in allCells) {
             let cell = allCells[cellId];
             if (cell.rowIndex == rowIndex) {
                 dispatch(
-                    HIGHLIGHT_CELL({
+                    SELECT_CELL({
                         id: cell.id
                     })
                 );
-
-                dispatch({
-                    type: ADD_CELL_TO_SELECTION,
-                    id: cell.id
-                });
             }
        }
     }
 
-    const selectColumn = (colIndex) => {
+    const selectColumn = (colKey) => {
         dispatch({
             type: UNSELECT_ALL
         });
 
-        dispatch({
-            type: UNHIGHLIGHT_ALL
-        });
-
         for (let cellId in allCells) {
             let cell = allCells[cellId];
-            if (cell.colIndex == colIndex) {
+            if (cell.key == colKey) {
                 dispatch(
-                    HIGHLIGHT_CELL({
+                    SELECT_CELL({
                         id: cell.id
                     })
                 );
-
-                dispatch({
-                    type: ADD_CELL_TO_SELECTION,
-                    id: cell.id
-                });
             }
        }
     }

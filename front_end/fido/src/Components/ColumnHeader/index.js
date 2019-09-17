@@ -2,7 +2,7 @@ import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 
 import RowContext from '../../Components/RowContext'
 
-function ColumnHeader({index}) {
+function ColumnHeader({children, index}) {
 	const context = useContext(RowContext)
 
 	return (
@@ -11,7 +11,7 @@ function ColumnHeader({index}) {
 				context.selectColumn(index);
 			}
 		}>
-			Column {index}
+			{children}
 		</th>
 	);
 }
