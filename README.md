@@ -20,6 +20,14 @@ In order to add stub data for local development purposes run:
 docker-compose run fido python manage.py create_stub_data All
 ```
 
+Now access any page within the site and log in with your single sign on credentails.
+
+You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
+
+```
+docker-compose run fido python manage.py elevate_sso_user_permissions
+```
+
 ### Environment variables
 
 You need to populate the .env file in the project root folder with the following variables:

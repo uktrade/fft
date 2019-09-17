@@ -1,5 +1,7 @@
 from .base import *  # noqa
 
+CAN_ELEVATE_SSO_USER_PERMISSIONS = True
+
 INSTALLED_APPS += (
     'forecast_prototype',
     'webpack_loader',
