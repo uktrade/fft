@@ -12,7 +12,8 @@ services:
       dockerfile: "docker_local/Dockerfile.node.dev"
    command: "npm start"
    volumes:
-     - ./front_end/:/front_end/
+     - ./front_end/fido:/front_end/fido/
+     - fido_node_modules:/front_end/fido/node_modules
    ports:
      - "0.0.0.0:3000:3000"
    environment:
@@ -40,3 +41,5 @@ services:
      DJANGO_SETTINGS_MODULE: fido.settings.dev
      AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
      AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
+volumes:
+  fido_node_modules:

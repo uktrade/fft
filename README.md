@@ -46,3 +46,7 @@ Try increasing size of container machine and see if npm start will work
 
 Have we used any indexes in the database?
 aaaaa
+
+
+### Notes
+In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
