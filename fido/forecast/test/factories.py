@@ -1,4 +1,4 @@
-from forecast.models import ADIReport, Budget, FinancialCode, \
+from forecast.models import Budget, FinancialCode, \
     FinancialPeriod, MonthlyFigure, OSCARReturn
 
 import factory
@@ -49,15 +49,6 @@ class OSCARReturnFactory(factory.DjangoModelFactory):
         model = OSCARReturn
 
 
-class ADIReportFactory(factory.DjangoModelFactory):
-    """
-    Define ADIReport Factory
-    """
-
-    class Meta:
-        model = ADIReport
-
-
 class FinancialCodeFactory(factory.DjangoModelFactory):
     """
     Define FinancialCode Factory
@@ -65,5 +56,3 @@ class FinancialCodeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = FinancialCode
-
-

@@ -9,52 +9,6 @@ from costcentre.models import CostCentre
 from .models import FinancialPeriod, FinancialYear, MonthlyFigure
 
 
-# define the column position in the csv file.
-# it reflects the position of columns in the Oracle report used to download the actuals
-# MONTH_KEY = {
-#     ADIReport.apr.field_name: 'Apr'.lower(),
-#     ADIReport.may.field_name: 'May'.lower(),
-#     ADIReport.jun.field_name: 'Jun'.lower(),
-#     ADIReport.jul.field_name: 'Jul'.lower(),
-#     ADIReport.aug.field_name: 'Aug'.lower(),
-#     ADIReport.sep.field_name: 'Sep'.lower(),
-#     ADIReport.oct.field_name: 'Oct'.lower(),
-#     ADIReport.nov.field_name: 'Nov'.lower(),
-#     ADIReport.dec.field_name: 'Dec'.lower(),
-#     ADIReport.jan.field_name: 'Jan'.lower(),
-#     ADIReport.feb.field_name: 'Feb'.lower(),
-#     ADIReport.mar.field_name: 'Mar'.lower(),
-#     ADIReport.adj1.field_name: 'Adj01'.lower()}
-#
-
-# 'Cost Centre'
-# 'Natural Account'
-# 'Programme'
-# 'Analysis'
-# 'Analysis2'
-# 'Spare2'
-# 'Period'
-# 'Value'
-
-
-# define the column position in the csv file.
-# it reflects the position of columns in the Oracle report used to download the actuals
-# MONTH_KEY = {
-#     ADIReport.apr.field_name: 'Apr',
-#     ADIReport.may.field_name: 'May',
-#     ADIReport.jun.field_name: 'Jun',
-#     ADIReport.jul.field_name: 'Jul',
-#     ADIReport.aug.field_name: 'Aug',
-#     ADIReport.sep.field_name: 'Sep',
-#     ADIReport.oct.field_name: 'Oct',
-#     ADIReport.nov.field_name: 'Nov',
-#     ADIReport.dec.field_name: 'Dec',
-#     ADIReport.jan.field_name: 'Jan',
-#     ADIReport.feb.field_name: 'Feb',
-#     ADIReport.mar.field_name: 'Mar',
-#     ADIReport.adj1.field_name: 'Adj_1'}
-
-
 def get_month_dict():
     """Link the column names in the ADI file with the foreign key used in the MonthlyFigure to identify the period"""
     q = FinancialPeriod.objects.filter(period_calendar_code__gt=0).values('period_short_name')
