@@ -9,6 +9,9 @@ from django_tables2 import RequestConfig
 from .models import MonthlyFigure
 from .tables import ForecastTable
 from .forms import EditForm
+from forecast.models import MonthlyFigure
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class PivotClassView(FidoExportMixin, SingleTableView):
@@ -71,9 +74,16 @@ def pivot_test1(request):
 
 
 def edit_forecast(request):
+    monthly_figures = MonthlyFigure.pivot.pivotdata()
+    json_dump = json.dumps(
+        list(monthly_figures),
+        cls=DjangoJSONEncoder
+    )
+
     if request.method == 'POST':
         form = EditForm(request.POST)
         if form.is_valid():
+            cell_data = form.cleaned_data['cell_data']
             pass
     else:
         form = EditForm()
@@ -81,5 +91,8 @@ def edit_forecast(request):
     return render(
         request,
         'forecast/edit.html',
-        {'form': form}
+        {
+            'form': form,
+            'json_dump': json_dump
+        }
     )

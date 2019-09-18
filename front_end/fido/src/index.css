@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+#table-data-submission label, #table-data-submission textarea  {
+    display: none;
+}
+
 .highlight {
 	background-color: #c6c6c6;
   border-color: #a5a5a4;

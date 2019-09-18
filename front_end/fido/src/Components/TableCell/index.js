@@ -1,30 +1,27 @@
 import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import {
-    SET_INITIAL_CELL,
-    SET_LAST_CELL,
-    ADD_SELECTED_CELL
-} from '../../Reducers/Selection'
-import { 
-    ADD_CELL,
-    SET_EDITING,
-    UNHIGHLIGHT_ALL,
-    UNHIGHLIGHT_CELL
+    SET_RECT,
+    SELECT_CELL
 } from '../../Reducers/Cells'
 import { 
     SET_EDIT_CELL
 } from '../../Reducers/Edit'
+import {
+    SET_INITIAL_CELL,
+    SET_LAST_CELL
+} from '../../Reducers/Select'
+import {
+    getCellId
+} from '../../Util'
 
-function TableCell({children, cellId, rowIndex, colIndex}) {
+function TableCell({children, cellId}) {
     const dispatch = useDispatch();
 
-    const [cellContent, setCellContent] = useState("test");
+    const [cellContent, setCellContent] = useState(children);
 
     let cellRef = React.createRef();
     const inputRef = useRef(null);
-
-    const selectedCells = useSelector(state => state.selection.cells);
-    const intialCell = useSelector(state => state.selection.intialCell);
 
     const mouseDn = useSelector(state => state.mouse.down);
     const allCells = useSelector(state => state.allCells);
@@ -32,27 +29,29 @@ function TableCell({children, cellId, rowIndex, colIndex}) {
 
     const selectCell = () => {
         if (mouseDn) {
-            // dispatch({
-            //     type: ADD_SELECTED_CELL,
-            //     cell: cellId
-            // });
+            dispatch(
+                SELECT_CELL({
+                    id: cellId
+                })
+            );
 
-            dispatch({
-                type: SET_LAST_CELL,
-                cell: cellId
-            });
+            dispatch(
+                SET_LAST_CELL({
+                    id: cellId
+                })
+            );
         }
     }
 
     useEffect(() => {
-        dispatch(
-            ADD_CELL({
-                id: "id_" + cellId,
-                rowIndex: rowIndex,
-                colIndex: colIndex,
-                rect: cellRef.current.getBoundingClientRect()
-            })
-        );
+        if (allCells) {
+            dispatch(
+                SET_RECT({
+                    id: cellId,
+                    rect: cellRef.current.getBoundingClientRect()
+                })
+            );
+        }
     }, []);
 
     useEffect(() => {
@@ -62,8 +61,11 @@ function TableCell({children, cellId, rowIndex, colIndex}) {
     });
 
     const isSelected = () => {
-        let cellData = allCells["id_" + cellId];
-        if (cellData && cellData.highlight) {
+        let cellData = allCells[cellId];
+
+        //console.log("cellData", cellData);
+
+        if (cellData && cellData.selected) {
             return true;
         }
 
@@ -96,14 +98,23 @@ function TableCell({children, cellId, rowIndex, colIndex}) {
                 }}
 
                 onMouseDown={ () => {
-                    dispatch({
-                        type: SET_INITIAL_CELL,
-                        cell: cellId
-                    });
-                    dispatch({
-                        type: SET_LAST_CELL,
-                        cell: cellId
-                    });
+                    dispatch(
+                        SELECT_CELL({
+                            id: cellId
+                        })
+                    );
+
+                    dispatch(
+                        SET_INITIAL_CELL({
+                            id: cellId
+                        })
+                    );
+
+                    dispatch(
+                        SET_LAST_CELL({
+                            id: cellId
+                        })
+                    );
                 }}
             >
                 {editCell == cellId ? (

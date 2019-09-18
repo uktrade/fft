@@ -8,25 +8,30 @@ const allCells = createSlice({
         ADD_CELL: (state, action) => {
             state[action.payload.id] = {
                 id: action.payload.id,
-                rect: action.payload.rect,
+                key: action.payload.key,
+                value: action.payload.value,
                 rowIndex: action.payload.rowIndex,
-                colIndex: action.payload.colIndex,
-                highlight: false,
-                //isEditing: false
+                // rect: action.payload.rect,
+                selected: false,
+                edited: false
             }
         },
-        HIGHLIGHT_CELL: (state, action) => {
-            state[action.payload.id]["highlight"] = true;
+        SET_RECT: (state, action) => {
+            state[action.payload.id]["rect"] = action.payload.rect;
         },
-        UNHIGHLIGHT_CELL: (state, action) => {
-            state[action.payload.id]["highlight"] = false;
+        SELECT_CELL: (state, action) => {
+            //alert('Hier...');
+            state[action.payload.id]["selected"] = true;
         },
-        // SET_EDITING: (state, action) => {
-        //     state[action.payload.id]["isEditing"] = true;
-        // },
-        UNHIGHLIGHT_ALL: (state, action) => {
+        UNSELECT_CELL: (state, action) => {
+            state[action.payload.id]["selected"] = false;
+        },
+        SET_EDITED: (state, action) => {
+            state[action.payload.id]["edited"] = true;
+        },
+        UNSELECT_ALL: (state, action) => {
             for (var cellId in state) {
-                state[cellId]["highlight"] = false;
+                state[cellId]["selected"] = false;
             }
         }
     }
@@ -34,10 +39,11 @@ const allCells = createSlice({
 
 export const { 
     ADD_CELL, 
-    HIGHLIGHT_CELL, 
-    UNHIGHLIGHT_CELL, 
-    SET_EDITING, 
-    UNHIGHLIGHT_ALL 
+    SELECT_CELL,
+    UNSELECT_CELL,
+    SET_EDITED,
+    UNSELECT_ALL,
+    SET_RECT
 } = allCells.actions;
 
 export default allCells.reducer;
