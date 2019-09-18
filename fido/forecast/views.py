@@ -1,3 +1,4 @@
+import json
 from core.views import FidoExportMixin
 
 from django.shortcuts import render
@@ -6,11 +7,13 @@ from django.views.generic.base import TemplateView
 from django_tables2 import MultiTableMixin, SingleTableView
 from django_tables2 import RequestConfig
 
-from .models import MonthlyFigure
+from .models import MonthlyFigure, FinancialPeriod
 from .tables import ForecastTable
 from .forms import EditForm
 from forecast.models import MonthlyFigure
+from django.core import serializers
 import json
+
 from django.core.serializers.json import DjangoJSONEncoder
 
 
@@ -74,25 +77,62 @@ def pivot_test1(request):
 
 
 def edit_forecast(request):
-    monthly_figures = MonthlyFigure.pivot.pivotdata()
-    json_dump = json.dumps(
-        list(monthly_figures),
-        cls=DjangoJSONEncoder
-    )
+    financial_year = 2019
+    cost_centre_code = "888812"
 
     if request.method == 'POST':
         form = EditForm(request.POST)
         if form.is_valid():
-            cell_data = form.cleaned_data['cell_data']
-            pass
+            cost_centre_code = form.cleaned_data['cost_centre_code']
+            financial_year = form.cleaned_data['financial_year']
+
+            cell_data = json.loads(
+                form.cleaned_data['cell_data']
+            )
+
+            for key, cell in cell_data.items():
+                if cell["editable"]:
+                    monthly_figure = MonthlyFigure.objects.filter(
+                        cost_centre__cost_centre_code=cost_centre_code,
+                        financial_year__financial_year=financial_year,
+                        financial_period__period_short_name__iexact=cell["key"],
+                        programme__programme_code=cell["programmeCode"],
+                        natural_account_code__natural_account_code=cell["naturalAccountCode"],
+                    ).first()
+                    monthly_figure.amount = int(float(cell["value"]))
+                    monthly_figure.save()
     else:
-        form = EditForm()
+        form = EditForm(
+            initial={
+                'financial_year': financial_year,
+                'cost_centre_code': cost_centre_code
+            }
+        )
+
+    monthly_figures = MonthlyFigure.pivot.pivotdata()
+
+    # TODO - Luisella to restrict to financial year
+    editable_periods = list(
+        FinancialPeriod.objects.filter(
+            actual_loaded=False,
+        ).all()
+    )
+
+    editable_periods_dump = serializers.serialize(
+        "json", editable_periods
+    )
+
+    forecast_dump = json.dumps(
+        list(monthly_figures),
+        cls=DjangoJSONEncoder
+    )
 
     return render(
         request,
         'forecast/edit.html',
         {
             'form': form,
-            'json_dump': json_dump
+            'editable_periods_dump': editable_periods_dump,
+            'forecast_dump': forecast_dump,
         }
     )

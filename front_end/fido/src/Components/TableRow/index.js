@@ -13,20 +13,16 @@ function TableRow({children, index}) {
 
     const selectRow = (rowIndex) => {
 
-        dispatch({
-            type: UNSELECT_ALL
-        });
-
-        dispatch({
-            type: UNSELECT_CELL
-        });
+        dispatch(
+            UNSELECT_ALL()
+        );
 
         for (let cellId in allCells) {
             let cell = allCells[cellId];
             if (cell.rowIndex == rowIndex) {
                 dispatch(
                     SELECT_CELL({
-                        id: cell.id
+                        id: cellId
                     })
                 );
             }
@@ -34,9 +30,9 @@ function TableRow({children, index}) {
     }
 
     const selectColumn = (colKey) => {
-        dispatch({
-            type: UNSELECT_ALL
-        });
+        dispatch(
+            UNSELECT_ALL()
+        );
 
         for (let cellId in allCells) {
             let cell = allCells[cellId];

@@ -1,6 +1,8 @@
 import React, {Fragment, useState, useEffect, useRef } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 
+import { store } from '../../Store';
+
 import TableRow from '../../Components/TableRow/index'
 import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
@@ -14,6 +16,7 @@ import {
     SELECT_CELL,
     UNSELECT_CELL,
     UNSELECT_ALL,
+    SET_VALUE,
 } from '../../Reducers/Cells'
 import {
     getCellId
@@ -68,15 +71,61 @@ function Table() {
         });
     }
 
+    const capturePaste = (e) => {
+        let pasteContent = e.clipboardData.getData('Text');
+        let lines = pasteContent.split('\n');
+        const state = store.getState();
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+            let values = line.split('\t');
+
+            for (let j = 0; j < values.length; j++) {
+                let newCellVal = values[j];
+
+                for (let key in state.allCells) {
+                    let cell = state.allCells[key];
+
+                    if (cell.selected) {
+                        dispatch(
+                            SET_VALUE({
+                                id: cell.id,
+                                value: newCellVal
+                            })
+                        );
+                    }
+                }
+            };
+        };
+    }
+
+    useEffect(() => {
+        window.cell_data = allCells;
+    }, [allCells]);
+
     useEffect(() => {
         window.table_data.forEach(function (cellData, rowIndex) {
             for (let key in cellData) {
+
+                let editable = false;
+
+                for (let i = 0; i < window.editable_periods.length; i++) {
+                    let shortName = window.editable_periods[i]["fields"]["period_short_name"];
+                    if (shortName && shortName.toLowerCase() == key) {
+                        editable = true;
+                        break;
+                    }
+                }
+
                 dispatch(
                     ADD_CELL({
                         id: getCellId(key, rowIndex),
                         rowIndex: rowIndex,
                         key: key,
-                        value: cellData[key]
+                        value: cellData[key],
+                        editable: editable,
+                        programmeCode: cellData["programme__programme_code"],
+                        naturalAccountCode: cellData["natural_account_code__natural_account_code"]
                     })
                 );
             }
@@ -85,18 +134,19 @@ function Table() {
         window.addEventListener("mousedown", captureMouseDn);
         window.addEventListener("mouseup", captureMouseUp);
 
+        window.addEventListener("paste", capturePaste);
+
         return () => {
             window.removeEventListener("onmouseup", captureMouseDn);
             window.removeEventListener("mousedown", captureMouseUp);
+
+            window.removeEventListener("paste", capturePaste);
         };
     }, []);
 
 	if (mouseDown) {
 		let initial = allCells[initialCell];
 		let last = allCells[lastCell];
-
-        console.log(initial);
-        console.log(last);
 
 		if (initial && last) {
 
@@ -117,14 +167,11 @@ function Table() {
 			for (let cellId in allCells) {
                 let cell = allCells[cellId];
 
-                if (!cell|| !cell.rect) {
-                    break;
+                if (!cell || !cell.rect) {
+                    continue;
                 }
 
-                // console.log("cell", cell);
-
                 let selectable = false;
-				//let cell = allCells["id_" + selected];
 
                 if (horizontalDirection === LEFT_TO_RIGHT) {
                     if (verticalDirection === TOP_TO_BOTTOM) {
@@ -191,9 +238,6 @@ function Table() {
 
     const getCells = () => {
 	    let cells = [];
-
-	    let id = 0;
-
         if (window.table_data) {
             window.table_data.forEach(function (cellData, i) {
                 cells.push(
@@ -208,7 +252,6 @@ function Table() {
                         <TableCell rowIndex={i} colIndex="3" cellId={getCellId("sep", i)}>{cellData["sep"]}</TableCell>
                     </TableRow>
                 );
-                id += 7;
             });
         }
 
@@ -220,13 +263,13 @@ function Table() {
             <tbody>
                 <TableRow index="0">
                     <th className="handle"></th>
-                    <ColumnHeader index="0">Programme</ColumnHeader>
-                    <ColumnHeader index="1">Apr</ColumnHeader>
-                    <ColumnHeader index="2">May</ColumnHeader>
-                    <ColumnHeader index="3">Jun</ColumnHeader>
-                    <ColumnHeader index="4">Jul</ColumnHeader>
-                    <ColumnHeader index="5">Aug</ColumnHeader>
-                    <ColumnHeader index="6">Sep</ColumnHeader>
+                    <ColumnHeader colKey="programme__programme_code">Programme</ColumnHeader>
+                    <ColumnHeader colKey="apr">Apr</ColumnHeader>
+                    <ColumnHeader colKey="may">May</ColumnHeader>
+                    <ColumnHeader colKey="jun">Jun</ColumnHeader>
+                    <ColumnHeader colKey="jul">Jul</ColumnHeader>
+                    <ColumnHeader colKey="aug">Aug</ColumnHeader>
+                    <ColumnHeader colKey="sep">Sep</ColumnHeader>
                 </TableRow>
                 {getCells()}
             </tbody>

@@ -1,22 +1,3 @@
-// import { createSlice, PayloadAction } from 'redux-starter-kit';
-// // Use of this lib guarentees no state mutatation
-
-// const editCell = createSlice({
-//     slice: 'editCell',
-//     initialState: 44,
-//     reducers: {
-//         SET_EDIT_CELL: (state, action) => {
-//         	console.log("action", action.payload.cellId);
-//             state = action.payload.cellId
-//         }
-//     }
-// });
-
-// export const { 
-//     SET_EDIT_CELL 
-// } = editCell.actions;
-
-// export default editCell.reducer;
 
 export const SET_EDIT_CELL = 'SET_EDIT_CELL';
 

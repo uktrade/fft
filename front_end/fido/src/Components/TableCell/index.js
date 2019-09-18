@@ -2,7 +2,8 @@ import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import {
     SET_RECT,
-    SELECT_CELL
+    SELECT_CELL,
+    SET_VALUE
 } from '../../Reducers/Cells'
 import { 
     SET_EDIT_CELL
@@ -17,8 +18,6 @@ import {
 
 function TableCell({children, cellId}) {
     const dispatch = useDispatch();
-
-    const [cellContent, setCellContent] = useState(children);
 
     let cellRef = React.createRef();
     const inputRef = useRef(null);
@@ -63,8 +62,6 @@ function TableCell({children, cellId}) {
     const isSelected = () => {
         let cellData = allCells[cellId];
 
-        //console.log("cellData", cellData);
-
         if (cellData && cellData.selected) {
             return true;
         }
@@ -79,6 +76,16 @@ function TableCell({children, cellId}) {
                 cellId: null
             });
         }
+    }
+
+    const setContentState = (value) => {
+        //setCellContent(value);
+        dispatch(
+            SET_VALUE({
+                id: cellId,
+                value: value
+            })
+        );
     }
 
     return (
@@ -121,13 +128,13 @@ function TableCell({children, cellId}) {
                     <input
                         ref={inputRef}
                         type="text"
-                        value={cellContent}
-                        onChange={e => setCellContent(e.target.value)}
+                        value={allCells[cellId].value}
+                        onChange={e => setContentState(e.target.value)}
                         onKeyPress={handleKeyPress}
                     />
                 ) : (
                     <Fragment>
-                        {cellContent}
+                        {allCells[cellId].value}
                     </Fragment>
                 )}
             </td>

@@ -9,11 +9,9 @@ const select = createSlice({
     },
     reducers: {
         SET_INITIAL_CELL: (state, action) => {
-            console.log(action.payload.id);
             state["initial"] = action.payload.id
         },
         SET_LAST_CELL: (state, action) => {
-            console.log(action.payload.id);
             state["last"] = action.payload.id
         },
     }

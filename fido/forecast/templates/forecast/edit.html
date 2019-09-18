@@ -5,7 +5,7 @@
 </head>
     <body>
         <div id="root"></div>
-        <form id="table-data-submission" action="" method="post" novalidate="novalidate">
+        <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
             {% csrf_token %}
             {{ form }}
             <input type="submit" value="Save changes">
@@ -15,6 +15,13 @@
         {% render_bundle 'runtime~main' %}
     </body>
     <script>
-        window.table_data = {{ json_dump|safe }}
+        function setData() {
+            console.log("FROM DJANGO TEMPLATE...", window.cell_data);
+            document.getElementById("id_cell_data").value = JSON.stringify(window.cell_data);
+
+            console.log(document.getElementById("table-data-submission").value);
+        }
+        window.editable_periods = {{ editable_periods_dump|safe }};
+        window.table_data = {{ forecast_dump|safe }};
     </script>
 </html>

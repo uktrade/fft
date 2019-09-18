@@ -7,11 +7,15 @@ const allCells = createSlice({
     reducers: {
         ADD_CELL: (state, action) => {
             state[action.payload.id] = {
+                programmeCode: action.payload.programmeCode,
+                naturalAccountCode: action.payload.naturalAccountCode,
+                projectCode: action.payload.projectCode,
                 id: action.payload.id,
                 key: action.payload.key,
+                editable: action.payload.editable,
                 value: action.payload.value,
                 rowIndex: action.payload.rowIndex,
-                // rect: action.payload.rect,
+                rect: null,
                 selected: false,
                 edited: false
             }
@@ -20,7 +24,6 @@ const allCells = createSlice({
             state[action.payload.id]["rect"] = action.payload.rect;
         },
         SELECT_CELL: (state, action) => {
-            //alert('Hier...');
             state[action.payload.id]["selected"] = true;
         },
         UNSELECT_CELL: (state, action) => {
@@ -28,6 +31,9 @@ const allCells = createSlice({
         },
         SET_EDITED: (state, action) => {
             state[action.payload.id]["edited"] = true;
+        },
+        SET_VALUE: (state, action) => {
+            state[action.payload.id]["value"] = action.payload.value;
         },
         UNSELECT_ALL: (state, action) => {
             for (var cellId in state) {
@@ -43,7 +49,8 @@ export const {
     UNSELECT_CELL,
     SET_EDITED,
     UNSELECT_ALL,
-    SET_RECT
+    SET_RECT,
+    SET_VALUE
 } = allCells.actions;
 
 export default allCells.reducer;
