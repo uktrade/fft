@@ -97,10 +97,12 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     id = models.AutoField('Monthly ID', primary_key=True)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
     financial_period = models.ForeignKey(FinancialPeriod, on_delete=models.PROTECT)
+    # The figures are stored ar pence, to avoid rounding problems.
+    # Some formatting will take care of displaying the figures as pounds only
+    amount = models.BigIntegerField(default=0)
 
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
-    amount = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = ('programme',
@@ -126,6 +128,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
 class OSCARReturn(models.Model):
     """Used for downloading the Oscar return. Mapped to a view in the database, because the query is too complex"""
     # The view is created by the migration 0016_recreate_oscar_view.py
+    # TODO Change the database view to return figures in thousands. At the moment the figures are in pence.
     row_number = models.BigIntegerField()
     account_l5_code = models.ForeignKey('treasuryCOA.L5Account', on_delete=models.PROTECT, db_column='account_l5_code')
     sub_segment_code = models.CharField(max_length=8, primary_key=True)
