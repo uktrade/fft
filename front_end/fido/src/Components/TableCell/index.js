@@ -108,6 +108,18 @@ function TableCell({children, index, cellId}) {
             });
 
             dispatch(
+                SET_LAST_CELL({
+                    id: nextCell.id
+                })
+            );
+
+            dispatch(
+                SET_INITIAL_CELL({
+                    id: nextCell.id
+                })
+            );
+
+            dispatch(
                 SELECT_CELL({
                     id: nextCell.id
                 })

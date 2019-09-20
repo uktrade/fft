@@ -22,6 +22,10 @@ import {
     getCellId,
     months
 } from '../../Util'
+import {
+    SET_INITIAL_CELL,
+    SET_LAST_CELL
+} from '../../Reducers/Select'
 
 function Table() {
     const LEFT_TO_RIGHT = 'LEFT_TO_RIGHT';
@@ -50,7 +54,7 @@ function Table() {
         dispatch({
             type: UNSELECT_ALL
         });
-
+        
         if (e.srcElement.localName != "input") {
             dispatch({
                 type: SET_EDIT_CELL,
@@ -73,7 +77,7 @@ function Table() {
 
     const handleKeyDown = (event) => {
         console.log(event);
-        if (event.keyCode == 9 && event.target.localName != "input") {
+        if (event.keyCode == 9 && event.target.localName != "input") {            
             const state = store.getState();
             // Get next cell
             let cellData =  state.allCells[state.select.initial]
@@ -101,6 +105,18 @@ function Table() {
             dispatch({
                 type: UNSELECT_ALL
             });
+
+            dispatch(
+                SET_LAST_CELL({
+                    id: nextCell.id
+                })
+            );
+
+            dispatch(
+                SET_INITIAL_CELL({
+                    id: nextCell.id
+                })
+            );
 
             dispatch(
                 SELECT_CELL({

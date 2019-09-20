@@ -7,7 +7,8 @@ import {
     UNSELECT_ALL
 } from '../../Reducers/Cells'
 import {
-    SET_INITIAL_CELL
+    SET_INITIAL_CELL,
+    SET_LAST_CELL
 } from '../../Reducers/Select'
 
 function TableRow({children, index}) {
@@ -39,6 +40,13 @@ function TableRow({children, index}) {
                         id: cellId
                     })
                 );
+
+                dispatch(
+                    SET_LAST_CELL({
+                        id: cellId
+                    })
+                );
+
             }
        }
     }
@@ -64,6 +72,12 @@ function TableRow({children, index}) {
                 dispatch(
                     SELECT_CELL({
                         id: cell.id
+                    })
+                );
+
+                dispatch(
+                    SET_LAST_CELL({
+                        id: cellId
                     })
                 );
             }
