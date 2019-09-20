@@ -3,7 +3,8 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import {
     SET_RECT,
     SELECT_CELL,
-    SET_VALUE
+    SET_VALUE,
+    UNSELECT_ALL
 } from '../../Reducers/Cells'
 import { 
     SET_EDIT_CELL
@@ -13,7 +14,8 @@ import {
     SET_LAST_CELL
 } from '../../Reducers/Select'
 import {
-    getCellId
+    getCellId,
+    months
 } from '../../Util'
 
 function TableCell({children, index, cellId}) {
@@ -78,8 +80,52 @@ function TableCell({children, index, cellId}) {
         }
     }
 
+    const handleKeyDown = (event) => {
+        if (event.keyCode == 9) {
+            // Get next cell
+            let cellData = allCells[cellId]
+            let colIndex = months.indexOf(cellData.key);
+
+            let inScope = [];
+
+            // TODO - do this once at the start of the app
+            for (const key in allCells) {
+                let cell = allCells[key];
+                inScope.push(cell);
+            }
+
+            let cells = inScope.filter((cell) => {
+                return (
+                    cell.rowIndex == cellData.rowIndex &&
+                    cell.key === months[colIndex + 1]
+                )
+            })
+
+            let nextCell = cells[0]
+
+            dispatch({
+                type: UNSELECT_ALL
+            });
+
+            dispatch(
+                SELECT_CELL({
+                    id: nextCell.id
+                })
+            );
+
+            dispatch({
+                type: SET_EDIT_CELL,
+                cellId: nextCell.id
+            });
+        }
+    }
+
     const setContentState = (value) => {
         //setCellContent(value);
+        if (!parseInt(value)) {
+            return
+        }
+
         dispatch(
             SET_VALUE({
                 id: cellId,
@@ -131,6 +177,7 @@ function TableCell({children, index, cellId}) {
                         value={allCells[cellId].value}
                         onChange={e => setContentState(e.target.value)}
                         onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyDown}
                     />
                 ) : (
                     <Fragment>

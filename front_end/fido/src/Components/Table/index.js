@@ -19,7 +19,8 @@ import {
     SET_VALUE,
 } from '../../Reducers/Cells'
 import {
-    getCellId
+    getCellId,
+    months
 } from '../../Util'
 
 function Table() {
@@ -34,6 +35,7 @@ function Table() {
     const lastCell = useSelector(state => state.select.last);
 
     const [allCellsArr, setAllCellsArr] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     // const selectedCells = useSelector(state => state.selection.cells);
     //const allCells = useSelector(state => state.allCells);
@@ -41,21 +43,6 @@ function Table() {
 
     const mouseDown = useSelector(state => state.mouse.down);
     const allCells = useSelector(state => state.allCells);
-
-    var months = [ 
-        "apr", 
-        "may", 
-        "jun",
-        "jul", 
-        "aug", 
-        "sep", 
-        "oct", 
-        "nov", 
-        "dec",
-        "jan", 
-        "feb", 
-        "mar"
-    ];
 
     //const [tableData, setTableData] = useState([]);
 
@@ -72,10 +59,6 @@ function Table() {
         }
 
         dispatch({
-            type: UNSELECT_ALL
-        });
-
-        dispatch({
             type: SET_MOUSE_DOWN,
             down: true
         });
@@ -86,6 +69,50 @@ function Table() {
             type: SET_MOUSE_DOWN,
             down: false
         });
+    }
+
+    const handleKeyDown = (event) => {
+        console.log(event);
+        if (event.keyCode == 9 && event.target.localName != "input") {
+            const state = store.getState();
+            // Get next cell
+            let cellData =  state.allCells[state.select.initial]
+            let colIndex = months.indexOf(cellData.key);
+
+            let inScope = [];
+
+            // TODO - do this once at the start of the app
+            for (const key in state.allCells) {
+                let cell = state.allCells[key];
+                inScope.push(cell);
+            }
+
+            console.log(inScope);
+
+            let cells = inScope.filter((cell) => {
+                return (
+                    cell.rowIndex == cellData.rowIndex &&
+                    cell.key === months[colIndex + 1]
+                )
+            })
+
+            let nextCell = cells[0]
+
+            dispatch({
+                type: UNSELECT_ALL
+            });
+
+            dispatch(
+                SELECT_CELL({
+                    id: nextCell.id
+                })
+            );
+
+            dispatch({
+                type: SET_EDIT_CELL,
+                cellId: nextCell.id
+            });
+        }
     }
 
     // const findCellByIndex
@@ -100,7 +127,7 @@ function Table() {
         let initialCell = state.allCells[initial];
 
         let inScope = [];
-
+        // TODO - do this once at the start of the app
         for (const key in state.allCells) {
             let cell = state.allCells[key];
             inScope.push(cell);
@@ -131,6 +158,11 @@ function Table() {
             let colIndex = months.indexOf(topLeftCell.key);
 
             for (const linePart of lineParts) {
+                if (!parseInt(linePart)) {
+                    setErrorMessage("You can only paste whole numbers into cells");
+                    continue
+                }
+
                 let cells = inScope.filter((cell) => {
                     return (
                         cell.rowIndex == rowIndex &&
@@ -190,11 +222,13 @@ function Table() {
         window.addEventListener("mousedown", captureMouseDn);
         window.addEventListener("mouseup", captureMouseUp);
         window.addEventListener("paste", capturePaste);
+        window.addEventListener("keydown", handleKeyDown);
 
         return () => {
             window.removeEventListener("onmouseup", captureMouseDn);
             window.removeEventListener("mousedown", captureMouseUp);
             window.removeEventListener("paste", capturePaste);
+            window.removeEventListener("keydown", handleKeyDown);
         };
     }, []);
 
@@ -297,14 +331,12 @@ function Table() {
             window.table_data.forEach(function (cellData, i) {
                 let monthCells = [];
                 for (const month of months) {
-                    console.log(month);
                     let id = getCellId(month, i)
                     monthCells.push(
-                        <TableCell index={cellIndex} cellId={id} />
+                        <TableCell key={cellIndex} index={cellIndex} cellId={id} />
                     )
                     cellIndex++
                 }
-                console.log(monthCells);
                 cells.push(
                     <TableRow key={i} index={(i + 1)}>
                         <TableHandle rowIndex={i} />
@@ -318,27 +350,43 @@ function Table() {
     }
 
     return (
-        <table>
-            <tbody>
-                <TableRow index="0">
-                    <th className="handle"></th>
-                    <ColumnHeader colKey="programme__programme_code">Programme</ColumnHeader>
-                    <ColumnHeader colKey="apr">Apr</ColumnHeader>
-                    <ColumnHeader colKey="may">May</ColumnHeader>
-                    <ColumnHeader colKey="jun">Jun</ColumnHeader>
-                    <ColumnHeader colKey="jul">Jul</ColumnHeader>
-                    <ColumnHeader colKey="aug">Aug</ColumnHeader>
-                    <ColumnHeader colKey="sep">Sep</ColumnHeader>
-                    <ColumnHeader colKey="oct">Oct</ColumnHeader>
-                    <ColumnHeader colKey="nov">Nov</ColumnHeader>
-                    <ColumnHeader colKey="dec">Dec</ColumnHeader>
-                    <ColumnHeader colKey="jan">Jan</ColumnHeader>
-                    <ColumnHeader colKey="feb">Feb</ColumnHeader>
-                    <ColumnHeader colKey="mar">Mar</ColumnHeader>
-                </TableRow>
-                {getCells()}
-            </tbody>
-        </table>
+        <Fragment>
+            {errorMessage &&
+                <div className="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabIndex="-1" data-module="govuk-error-summary">
+                    <h2 className="govuk-error-summary__title" id="error-summary-title">
+                        There is a problem
+                    </h2>
+                    <div className="govuk-error-summary__body">
+                        <ul className="govuk-list govuk-error-summary__list">
+                            <li>
+                                <a href="#passport-issued-error">{errorMessage}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+            <table>
+                <tbody>
+                    <TableRow index="0">
+                        <th className="handle"></th>
+                        <ColumnHeader colKey="programme__programme_code">Programme</ColumnHeader>
+                        <ColumnHeader colKey="apr">Apr</ColumnHeader>
+                        <ColumnHeader colKey="may">May</ColumnHeader>
+                        <ColumnHeader colKey="jun">Jun</ColumnHeader>
+                        <ColumnHeader colKey="jul">Jul</ColumnHeader>
+                        <ColumnHeader colKey="aug">Aug</ColumnHeader>
+                        <ColumnHeader colKey="sep">Sep</ColumnHeader>
+                        <ColumnHeader colKey="oct">Oct</ColumnHeader>
+                        <ColumnHeader colKey="nov">Nov</ColumnHeader>
+                        <ColumnHeader colKey="dec">Dec</ColumnHeader>
+                        <ColumnHeader colKey="jan">Jan</ColumnHeader>
+                        <ColumnHeader colKey="feb">Feb</ColumnHeader>
+                        <ColumnHeader colKey="mar">Mar</ColumnHeader>
+                    </TableRow>
+                    {getCells()}
+                </tbody>
+            </table>
+        </Fragment>
     );
 }
 

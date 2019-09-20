@@ -6,6 +6,9 @@ import {
     UNSELECT_CELL,
     UNSELECT_ALL
 } from '../../Reducers/Cells'
+import {
+    SET_INITIAL_CELL
+} from '../../Reducers/Select'
 
 function TableRow({children, index}) {
     const dispatch = useDispatch();
@@ -21,7 +24,7 @@ function TableRow({children, index}) {
 
         for (let cellId in allCells) {
             let cell = allCells[cellId];
-            if (cell.rowIndex == rowIndex) {
+            if (cell.editable && cell.rowIndex == rowIndex) {
                 if (!setInital) {
                     dispatch(
                         SET_INITIAL_CELL({
