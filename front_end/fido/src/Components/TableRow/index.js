@@ -41,6 +41,8 @@ function TableRow({children, index}) {
                     })
                 );
 
+                // TODO - set this as actual last cell in row (needs to use array rather than object state)
+
                 dispatch(
                     SET_LAST_CELL({
                         id: cellId

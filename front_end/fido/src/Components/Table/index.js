@@ -131,14 +131,24 @@ function Table() {
         }
     }
 
-    // const findCellByIndex
+    const getTopLeftCell = (cells, initialCell) => {
+        let topLeftCell = initialCell;
+
+        for (const cell of cells) {
+            if (cell.rect.x < topLeftCell.rect.x && 
+                cell.rect.y < topLeftCell.rect.y) {
+                topLeftCell = cell
+            }
+        }
+
+        return topLeftCell
+    }
 
     const capturePaste = (e) => {
         let pasteContent = e.clipboardData.getData('Text');
         let lines = pasteContent.split('\n');
         const state = store.getState();
 
-        // Need to work out top left cell
         let initial = state.select.initial;
         let initialCell = state.allCells[initial];
 
@@ -158,15 +168,7 @@ function Table() {
         });
 
         // Find top left cell
-        let topLeftCell = initialCell;
-
-        for (const cell of selectedCells) {
-            if (cell.rect.x < topLeftCell.rect.x && 
-                cell.rect.y < topLeftCell.rect.y) {
-                topLeftCell = cell
-            }
-        }
-
+        let topLeftCell = getTopLeftCell(selectedCells, initialCell)
         let rowIndex = topLeftCell.rowIndex
 
         for (const line of lines) {
@@ -198,6 +200,50 @@ function Table() {
             }
             rowIndex++
         }
+    }
+
+    const setClipBoardContent = (e) => {
+
+        const state = store.getState();
+        // TODO - do this once at the start of the app
+        let inScope = [];
+        for (const key in state.allCells) {
+            let cell = state.allCells[key];
+            inScope.push(cell);
+        }
+
+        let initial = state.select.initial;
+        let initialCell = state.allCells[initial];
+
+        if (!initialCell.selected) {
+            return
+        }
+
+        e.preventDefault();
+
+        let selectedCells = inScope.filter((cell) => {
+            return cell.selected
+        });
+
+        let topLeftCell = getTopLeftCell(selectedCells, initialCell)
+
+        console.log(selectedCells);
+
+        let clipBoardContent = "";
+
+        // let currentRow = topLeftCell.rowIndex
+
+        let rowIndex = topLeftCell.rowIndex
+
+        for (const cell of selectedCells) {
+            if (cell.rowIndex != rowIndex) {
+                rowIndex = cell.rowIndex
+                clipBoardContent += "\n"
+            }
+            clipBoardContent += cell.value + "\t"
+        }
+
+        navigator.clipboard.writeText(clipBoardContent.trim())
     }
 
     useEffect(() => {
@@ -239,12 +285,14 @@ function Table() {
         window.addEventListener("mouseup", captureMouseUp);
         window.addEventListener("paste", capturePaste);
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("copy", setClipBoardContent);
 
         return () => {
             window.removeEventListener("onmouseup", captureMouseDn);
             window.removeEventListener("mousedown", captureMouseUp);
             window.removeEventListener("paste", capturePaste);
             window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("copy", setClipBoardContent);
         };
     }, []);
 
