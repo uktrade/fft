@@ -7,6 +7,7 @@ const allCells = createSlice({
     reducers: {
         ADD_CELL: (state, action) => {
             state[action.payload.id] = {
+                index: action.payload.index,
                 programmeCode: action.payload.programmeCode,
                 naturalAccountCode: action.payload.naturalAccountCode,
                 projectCode: action.payload.projectCode,

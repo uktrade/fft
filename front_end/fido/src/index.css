@@ -39,7 +39,7 @@ code {
 table {
   border-collapse: collapse;
   table-layout: fixed;
-  width: 100%;
+  /*width: 100%;*/
 }
 
 table {
@@ -48,6 +48,7 @@ table {
 
 table, td, th {
   border: 1px solid #d4d5d4;
+  white-space: nowrap;
 }
 
 input {

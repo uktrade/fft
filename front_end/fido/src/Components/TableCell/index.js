@@ -16,7 +16,7 @@ import {
     getCellId
 } from '../../Util'
 
-function TableCell({children, cellId}) {
+function TableCell({children, index, cellId}) {
     const dispatch = useDispatch();
 
     let cellRef = React.createRef();

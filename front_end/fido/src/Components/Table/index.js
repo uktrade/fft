@@ -33,12 +33,29 @@ function Table() {
     const initialCell = useSelector(state => state.select.initial);
     const lastCell = useSelector(state => state.select.last);
 
+    const [allCellsArr, setAllCellsArr] = useState([]);
+
     // const selectedCells = useSelector(state => state.selection.cells);
     //const allCells = useSelector(state => state.allCells);
     // const isSelecting = useSelector(state => state.selection.isSelecting);
 
     const mouseDown = useSelector(state => state.mouse.down);
     const allCells = useSelector(state => state.allCells);
+
+    var months = [ 
+        "apr", 
+        "may", 
+        "jun",
+        "jul", 
+        "aug", 
+        "sep", 
+        "oct", 
+        "nov", 
+        "dec",
+        "jan", 
+        "feb", 
+        "mar"
+    ];
 
     //const [tableData, setTableData] = useState([]);
 
@@ -71,32 +88,68 @@ function Table() {
         });
     }
 
+    // const findCellByIndex
+
     const capturePaste = (e) => {
         let pasteContent = e.clipboardData.getData('Text');
         let lines = pasteContent.split('\n');
         const state = store.getState();
 
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i];
-            let values = line.split('\t');
+        // Need to work out top left cell
+        let initial = state.select.initial;
+        let initialCell = state.allCells[initial];
 
-            for (let j = 0; j < values.length; j++) {
-                let newCellVal = values[j];
+        let inScope = [];
 
-                for (let key in state.allCells) {
-                    let cell = state.allCells[key];
+        for (const key in state.allCells) {
+            let cell = state.allCells[key];
+            inScope.push(cell);
+        }
 
-                    if (cell.selected) {
-                        dispatch(
-                            SET_VALUE({
-                                id: cell.id,
-                                value: newCellVal
-                            })
-                        );
-                    }
+        if (!initialCell.selected) {
+            return
+        }
+
+        let selectedCells = inScope.filter((cell) => {
+            return cell.selected
+        });
+
+        // Find top left cell
+        let topLeftCell = initialCell;
+
+        for (const cell of selectedCells) {
+            if (cell.rect.x < topLeftCell.rect.x && 
+                cell.rect.y < topLeftCell.rect.y) {
+                topLeftCell = cell
+            }
+        }
+
+        let rowIndex = topLeftCell.rowIndex
+
+        for (const line of lines) {
+            let lineParts = line.split('\t')
+            let colIndex = months.indexOf(topLeftCell.key);
+
+            for (const linePart of lineParts) {
+                let cells = inScope.filter((cell) => {
+                    return (
+                        cell.rowIndex == rowIndex &&
+                        cell.key === months[colIndex]
+                    )
+                })
+                if (cells[0]) {
+                    dispatch(
+                        SET_VALUE({
+                            id: cells[0].id,
+                            value: linePart
+                        })
+                    );
                 }
-            };
-        };
+
+                colIndex++
+            }
+            rowIndex++
+        }
     }
 
     useEffect(() => {
@@ -104,6 +157,7 @@ function Table() {
     }, [allCells]);
 
     useEffect(() => {
+        let cellIndex = 0;
         window.table_data.forEach(function (cellData, rowIndex) {
             for (let key in cellData) {
 
@@ -120,6 +174,7 @@ function Table() {
                 dispatch(
                     ADD_CELL({
                         id: getCellId(key, rowIndex),
+                        index: cellIndex,
                         rowIndex: rowIndex,
                         key: key,
                         value: cellData[key],
@@ -128,18 +183,17 @@ function Table() {
                         naturalAccountCode: cellData["natural_account_code__natural_account_code"]
                     })
                 );
+                cellIndex++;
             }
         });
 
         window.addEventListener("mousedown", captureMouseDn);
         window.addEventListener("mouseup", captureMouseUp);
-
         window.addEventListener("paste", capturePaste);
 
         return () => {
             window.removeEventListener("onmouseup", captureMouseDn);
             window.removeEventListener("mousedown", captureMouseUp);
-
             window.removeEventListener("paste", capturePaste);
         };
     }, []);
@@ -237,24 +291,29 @@ function Table() {
 	}
 
     const getCells = () => {
-	    let cells = [];
+        let cells = [];
         if (window.table_data) {
+            let cellIndex = 0;
             window.table_data.forEach(function (cellData, i) {
+                let monthCells = [];
+                for (const month of months) {
+                    console.log(month);
+                    let id = getCellId(month, i)
+                    monthCells.push(
+                        <TableCell index={cellIndex} cellId={id} />
+                    )
+                    cellIndex++
+                }
+                console.log(monthCells);
                 cells.push(
                     <TableRow key={i} index={(i + 1)}>
                         <TableHandle rowIndex={i} />
-                        <TableCell rowIndex={i} colIndex="0" cellId={getCellId("programme__programme_code", i)}>{cellData["programme__programme_code"]} - {cellData["programme__programme_description"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="1" cellId={getCellId("apr", i)}>{cellData["apr"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="2" cellId={getCellId("may", i)}>{cellData["may"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="3" cellId={getCellId("jun", i)}>{cellData["jun"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="3" cellId={getCellId("jul", i)}>{cellData["jul"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="3" cellId={getCellId("aug", i)}>{cellData["aug"]}</TableCell>
-                        <TableCell rowIndex={i} colIndex="3" cellId={getCellId("sep", i)}>{cellData["sep"]}</TableCell>
+                        <td>{cellData["programme__programme_code"]} - {cellData["programme__programme_description"]}</td>
+                        {monthCells}
                     </TableRow>
                 );
             });
         }
-
 	    return cells;
     }
 
@@ -270,6 +329,12 @@ function Table() {
                     <ColumnHeader colKey="jul">Jul</ColumnHeader>
                     <ColumnHeader colKey="aug">Aug</ColumnHeader>
                     <ColumnHeader colKey="sep">Sep</ColumnHeader>
+                    <ColumnHeader colKey="oct">Oct</ColumnHeader>
+                    <ColumnHeader colKey="nov">Nov</ColumnHeader>
+                    <ColumnHeader colKey="dec">Dec</ColumnHeader>
+                    <ColumnHeader colKey="jan">Jan</ColumnHeader>
+                    <ColumnHeader colKey="feb">Feb</ColumnHeader>
+                    <ColumnHeader colKey="mar">Mar</ColumnHeader>
                 </TableRow>
                 {getCells()}
             </tbody>

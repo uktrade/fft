@@ -17,9 +17,20 @@ function TableRow({children, index}) {
             UNSELECT_ALL()
         );
 
+        let setInital = false;
+
         for (let cellId in allCells) {
             let cell = allCells[cellId];
             if (cell.rowIndex == rowIndex) {
+                if (!setInital) {
+                    dispatch(
+                        SET_INITIAL_CELL({
+                            id: cellId
+                        })
+                    );
+                    setInital = true;
+                }
+
                 dispatch(
                     SELECT_CELL({
                         id: cellId
@@ -33,10 +44,20 @@ function TableRow({children, index}) {
         dispatch(
             UNSELECT_ALL()
         );
+        let setInital = false;
 
         for (let cellId in allCells) {
             let cell = allCells[cellId];
             if (cell.key == colKey) {
+                if (!setInital) {
+                    dispatch(
+                        SET_INITIAL_CELL({
+                            id: cellId
+                        })
+                    );
+                    setInital = true;
+                }
+
                 dispatch(
                     SELECT_CELL({
                         id: cell.id

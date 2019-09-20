@@ -13,7 +13,7 @@ const select = createSlice({
         },
         SET_LAST_CELL: (state, action) => {
             state["last"] = action.payload.id
-        },
+        }
     }
 });
 
