@@ -3,5 +3,5 @@ ADD ./fido /fido
 ADD ./front_end /front_end
 WORKDIR /fido
 
-RUN pip install --upgrade pip && \
-pip install -r requirements/local.txt
+RUN pip install --upgrade pip
+RUN pip install -r requirements/local.txt

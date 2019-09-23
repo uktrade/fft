@@ -429,7 +429,7 @@ function Table() {
                     </div>
                 </div>
             }
-            <table>
+            <table id="forecast-table">
                 <tbody>
                     <TableRow index="0">
                         <th className="handle"></th>

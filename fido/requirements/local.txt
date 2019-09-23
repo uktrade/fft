@@ -3,3 +3,7 @@ Faker==0.9.0
 factory-boy==2.11.1
 django-webpack-loader
 behave
+selenium
+libsass
+django-compressor
+django-sass-processor

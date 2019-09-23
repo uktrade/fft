@@ -1,3 +1,4 @@
+{% load sass_tags %}
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
 
@@ -16,17 +17,8 @@
   <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png">
   <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png">
 
-  <!--[if !IE 8]><!-->
-  <link href="/govuk-frontend/govuk/all.css" rel="stylesheet" />
-  <!--<![endif]-->
+  <link href="{% sass_src 'core/css/styles.scss' %}" rel="stylesheet" type="text/css" />
 
-  <!--[if IE 8]>
-    <link href="/govuk-frontend/all-ie8.css" rel="stylesheet" />
-  <![endif]-->
-
-  <!--[if lt IE 9]>
-    <script src="/html5-shiv/html5shiv.js"></script>
-  <![endif]-->
   {% load static %}
   <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
 </head>
@@ -54,11 +46,62 @@
           </span>
         </a>
       </div>
+        <div class="govuk-header__content">
+          <a href="#" class="govuk-header__link govuk-header__link--service-name">
+            FIDO
+          </a>
+          <button type="button" role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
+          <nav>
+            <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
+              <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+                <a class="govuk-header__link" href="#1">
+                  Navigation item 1
+                </a>
+              </li>
+              <li class="govuk-header__navigation-item">
+                <a class="govuk-header__link" href="#2">
+                  Navigation item 2
+                </a>
+              </li>
+              <li class="govuk-header__navigation-item">
+                <a class="govuk-header__link" href="#3">
+                  Navigation item 3
+                </a>
+              </li>
+              <li class="govuk-header__navigation-item">
+                <a class="govuk-header__link" href="#4">
+                  Navigation item 4
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
     </div>
   </header>
 
   <div class="govuk-width-container">
+
+
+          <div class="govuk-breadcrumbs">
+          <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+              <a class="govuk-breadcrumbs__link" href="#">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+              <a class="govuk-breadcrumbs__link" href="#">Passports, travel and living abroad</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item" aria-current="page">Travel abroad</li>
+          </ol>
+        </div>
+
+
     <main class="govuk-main-wrapper " id="main-content" role="main">
+
+
+
+
+
+
         {% block content %}{% endblock %}
     </main>
   </div>

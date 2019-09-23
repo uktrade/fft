@@ -23,3 +23,8 @@ WEBPACK_LOADER = {
 
 # for debug_toolbar, to activate it only on localhost
 INTERNAL_IPS = ['127.0.0.1']
+
+
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    os.path.join('/node_modules'),
+]

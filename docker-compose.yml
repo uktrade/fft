@@ -25,6 +25,7 @@ services:
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./fido/:/fido/
+     - fido_node_modules:/node_modules
    ports:
      - "0.0.0.0:8000:8000"
    depends_on:
@@ -41,5 +42,11 @@ services:
      DJANGO_SETTINGS_MODULE: fido.settings.dev
      AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
      AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
+ test:
+   build:
+      context: .
+      dockerfile: "docker_local/Dockerfile.test.dev"
+   volumes:
+     - ./fido/:/fido/
 volumes:
   fido_node_modules:

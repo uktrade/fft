@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'bootstrap_datepicker_plus',  # https://pypi.org/project/django-bootstrap-datepicker-plus/
     'custom_usermodel',
     'storages',
+    'sass_processor',
 ]
 
 MIDDLEWARE = [
@@ -225,3 +226,9 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = False
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
