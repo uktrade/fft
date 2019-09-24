@@ -39,6 +39,37 @@ class PivotClassView(FidoExportMixin, SingleTableView):
         super().__init__(*args, **kwargs)
 
 
+class CostClassView(FidoExportMixin, SingleTableView):
+    template_name = 'forecast/forecast.html'
+    sheet_name = 'Forecast'
+    filterset_class = None
+    table_class = ForecastTable
+
+    def get_table_kwargs(self):
+        return {
+            'column_dict': self.column_dict
+        }
+
+    def __init__(self, *args, **kwargs):
+        # set the queryset at init, because it requires the current year, so it is recall each
+        # time. Maybe an overkill, but I don't want to risk to forget to change the year!
+        columns = {'cost_centre__cost_centre_code': 'Cost Centre Code',
+                   'cost_centre__cost_centre_name': 'Cost Centre Description',
+                   'natural_account_code__natural_account_code': 'Natural Account Code',
+                   'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
+                   'programme__programme_code': 'Programme Code',
+                   'programme__programme_description': 'Programme Description',
+                   'project_code__project_code': 'Programme Code',
+                   'project_code__project_description': 'Programme Description',
+                   }
+        cost_centre_code = 888812
+        pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
+        q = MonthlyFigure.pivot.pivotdata(columns.keys(), pivot_filter)
+        self.queryset = q
+        self.column_dict = columns
+        super().__init__(*args, **kwargs)
+
+
 class MultiforecastView(MultiTableMixin, TemplateView):
     template_name = 'forecast/forecastmulti.html'
 
@@ -67,13 +98,15 @@ class MultiforecastView(MultiTableMixin, TemplateView):
 
 def pivot_test1(request):
     field_dict = {'cost_centre__directorate': 'Directorate',
-                  'cost_centre__directorate__directorate_name': 'Name'}
+                  'cost_centre__directorate__directorate_name': 'Name',
+                  'natural_account_code': 'NAC'}
 
     q1 = MonthlyFigure.pivot.pivotdata(field_dict.keys(),
                                        {'cost_centre__directorate__group': '1090AA'})
     table = ForecastTable(field_dict, q1)
     RequestConfig(request).configure(table)
     return render(request, 'forecast/forecast.html', {'table': table})
+
 
 
 def edit_forecast(request):
@@ -108,8 +141,8 @@ def edit_forecast(request):
                 'cost_centre_code': cost_centre_code
             }
         )
-
-    monthly_figures = MonthlyFigure.pivot.pivotdata()
+    pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code) }
+    monthly_figures = MonthlyFigure.pivot.pivotdata({}, pivot_filter)
 
     # TODO - Luisella to restrict to financial year
     editable_periods = list(

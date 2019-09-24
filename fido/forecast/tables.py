@@ -25,9 +25,9 @@ class SummingFooterCol(tables.Column):
     def value(self, record, value):
         return float(value or 0)
 
-    # attrs = {'td': {'class': 'text-right'},
-    #          'th': {'class': 'text-right other-class'},
-    #          'tf': {'class': 'text-right font-weight-bold'}}
+    attrs = {'td': {'class': 'text-right'},
+             'th': {'class': 'text-right'},
+             'tf': {'class': 'text-right font-weight-bold'}}
 
     def render_footer(self, bound_column, table):
         return intcomma(self.tot_value)
@@ -84,19 +84,20 @@ class ForecastTable(tables.Table):
         column_list = column_dict.keys()
         actual_period = actual_month()
         actual_month_list = self.full_year[:actual_period]
-        forecast_month_list = self.full_year[actual_period:]
-        forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
+        # forecast_month_list = self.full_year[actual_period:]
+        # forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
 
         extra_col.extend([('year_to_date', SummingMonthCol(actual_month_list,
                                                            'Year to Date', empty_values=())),
                           ('year_total', SummingMonthCol(self.full_year, 'Year Total', empty_values=()))])
         super().__init__(extra_columns=extra_col,
                          sequence=column_list, *args, **kwargs)
-        for month in forecast_month_list:
+        for month in actual_month_list:
             col = self.columns[month]
-            col.column.attrs = {
-                            'tf': {'class': 'forecast_class'}
-                            }
+            col.column.attrs = {'td': {'class': 'actualmonth'},
+             'th': {'class': 'actualmonth'},
+             'tf': {'class': 'actualmonth font-weight-bold'}}
+
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'

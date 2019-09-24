@@ -9,7 +9,8 @@ INSTALLED_APPS += (
 
 STATICFILES_DIRS = (
     #os.path.join(BASE_DIR, "front_end", "fido", "build", "static"),
-    "/front_end/fido/build/static",
+    # "/front_end/fido/build/static",
+    "/node_modules/govuk-frontend/govuk/assets/",
     #"/fido/front_end/fido/dist/static",
 )
 
@@ -28,3 +29,5 @@ INTERNAL_IPS = ['127.0.0.1']
 SASS_PROCESSOR_INCLUDE_DIRS = [
     os.path.join('/node_modules'),
 ]
+
+
