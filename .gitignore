@@ -120,6 +120,7 @@ fido/src/
 
 # Front end static dir
 fido/fido/staticfiles/*
+fido/staticfiles/*
 
 # Web pack stats
 fido/front_end/fido/config/webpack-stats.json
