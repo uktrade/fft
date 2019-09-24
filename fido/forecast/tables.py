@@ -19,14 +19,15 @@ class SummingFooterCol(tables.Column):
     def render(self, value):
         v = (value or 0)
         self.tot_value += v
+        # return '{:0.2f}'.format(value)
         return intcomma(v)
 
     def value(self, record, value):
         return float(value or 0)
 
-    attrs = {'td': {'class': 'text-right'},
-             'th': {'class': 'text-right'},
-             'tf': {'class': 'text-right font-weight-bold'}}
+    # attrs = {'td': {'class': 'text-right'},
+    #          'th': {'class': 'text-right other-class'},
+    #          'tf': {'class': 'text-right font-weight-bold'}}
 
     def render_footer(self, bound_column, table):
         return intcomma(self.tot_value)
@@ -61,8 +62,8 @@ class ForecastTable(tables.Table):
     # full list of month, in the correct order for the financial year
     # I don't like hardcoded strings, but the month names are not going to change, and anyway
     # they must match the columns defined below
-    full_year = ['apr', 'may', 'jun', 'jul', 'aug', 'sep',
-                 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
+    full_year = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
+
     budg = SummingFooterCol('Budget', empty_values=())
     apr = SummingFooterCol('April', empty_values=())
     may = SummingFooterCol('May', empty_values=())
@@ -79,12 +80,23 @@ class ForecastTable(tables.Table):
 
     def __init__(self, column_dict={}, *args, **kwargs):
         extra_col = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
+
         column_list = column_dict.keys()
-        extra_col.extend([('year_to_date', SummingMonthCol(self.full_year[:actual_month()],
+        actual_period = actual_month()
+        actual_month_list = self.full_year[:actual_period]
+        forecast_month_list = self.full_year[actual_period:]
+        forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
+
+        extra_col.extend([('year_to_date', SummingMonthCol(actual_month_list,
                                                            'Year to Date', empty_values=())),
                           ('year_total', SummingMonthCol(self.full_year, 'Year Total', empty_values=()))])
         super().__init__(extra_columns=extra_col,
                          sequence=column_list, *args, **kwargs)
+        for month in forecast_month_list:
+            col = self.columns[month]
+            col.column.attrs = {
+                            'tf': {'class': 'forecast_class'}
+                            }
 
     class Meta:
         template_name = 'django_tables2/bootstrap.html'
