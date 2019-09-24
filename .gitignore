@@ -122,7 +122,7 @@ fido/src/
 fido/fido/staticfiles/*
 
 # Web pack stats
-front_end/fido/config/webpack-stats.json
+fido/front_end/fido/config/webpack-stats.json
 
 # Node module dir
-fido/node_modules
+fido/fido/node_modules
