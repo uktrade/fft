@@ -125,4 +125,4 @@ fido/fido/staticfiles/*
 front_end/fido/config/webpack-stats.json
 
 # Node module dir
-fido/front_end/fido/node_modules
+node_modules

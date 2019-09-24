@@ -1,4 +1,0 @@
-FROM node:10.16.3-jessie
-WORKDIR /front_end/fido/
-COPY ./front_end/fido/package*.json /front_end/fido/
-RUN npm install

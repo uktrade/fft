@@ -5,32 +5,19 @@ services:
    ports:
      - "5432:5432"
    volumes:
-     - ./docker_local/init.sql:/docker-entrypoint-initdb.d/init.sql
- front_end:
-   build:
-      context: .
-      dockerfile: "docker_local/Dockerfile.node.dev"
-   command: "npm start"
-   volumes:
-     - ./front_end/fido:/front_end/fido/
-     - fido_node_modules:/front_end/fido/node_modules
-   ports:
-     - "0.0.0.0:3000:3000"
-   environment:
-     PUBLIC_URL: http://localhost:3000
+     - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
  fido:
    build:
       context: .
-      dockerfile: "docker_local/Dockerfile.django.dev"
+      dockerfile: "fido/Dockerfile.dev"
+   env_file: .env
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./fido/:/fido/
-     - fido_node_modules:/node_modules
    ports:
      - "0.0.0.0:8000:8000"
    depends_on:
      - db
-     - front_end
    environment:
      DEBUG: 'True'
      DATABASE_URL: psql://postgres:postgres@db:5432/fido
@@ -42,11 +29,3 @@ services:
      DJANGO_SETTINGS_MODULE: fido.settings.dev
      AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
      AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
- test:
-   build:
-      context: .
-      dockerfile: "docker_local/Dockerfile.test.dev"
-   volumes:
-     - ./fido/:/fido/
-volumes:
-  fido_node_modules:
