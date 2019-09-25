@@ -70,7 +70,7 @@ class Budget(FinancialCode, TimeStampedModel):
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    def pivotdata(self, columns={}, filter_dict={}, year=0):
+    def pivotdata(self, columns={}, filter_dict={}, year=0, order_list=[]):
         def lowercase(s):
             return s.lower()
 
@@ -83,8 +83,10 @@ class PivotManager(models.Manager):
                        'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
                        'programme__programme_code': 'Programme Code',
                        'programme__programme_description': 'Programme Description',
+                       'project_code__project_code': 'Project Code',
+                       'project_code__project_description': 'Project Description',
                        }
-        q1 = self.get_queryset().filter(financial_year=year, **filter_dict)
+        q1 = self.get_queryset().filter(financial_year=year, **filter_dict).order_by(*order_list)
         return pivot(q1,
                      columns,
                      'financial_period__period_short_name',

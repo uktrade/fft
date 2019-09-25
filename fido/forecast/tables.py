@@ -103,3 +103,6 @@ class ForecastTable(tables.Table):
         template_name = 'django_tables2/bootstrap.html'
         empty_text = ''
         attrs = {"class": "table-bordered table-condensed small-font"}
+        # row_attrs = {
+        #     "class": lambda record: record["row_type"]
+        # }

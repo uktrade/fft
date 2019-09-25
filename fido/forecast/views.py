@@ -16,6 +16,27 @@ import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 
+# programme__budget_type_fk__budget_type indicates if DEL, AME, ADMIN used in every view
+# TODO handling the Hidden columns
+budget_type_columns = {
+    'programme__budget_type_fk__budget_type': 'Budget_type',
+    'cost_centre__cost_centre_code': 'Cost Centre Code',
+    'cost_centre__cost_centre_name': 'Cost Centre Description',
+}
+
+programme_columns = {
+    'programme__budget_type_fk__budget_type': 'Hidden',
+    'natural_account_code__account_L5_code__economic_budget_code': 'Expenditure Type',
+    'programme__programme_code': 'Programme Code',
+    'programme__programme_description': 'Programme Description'
+}
+
+natural_account_columns = {
+    'programme__budget_type_fk__budget_type': 'Hidden',
+    'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Budget Grouping',
+    'natural_account_code__expenditure_category__grouping_description': 'Budget Category',
+}
+
 
 class PivotClassView(FidoExportMixin, SingleTableView):
     template_name = 'forecast/forecast.html'
@@ -59,7 +80,7 @@ class CostClassView(FidoExportMixin, SingleTableView):
                    'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
                    'programme__programme_code': 'Programme Code',
                    'programme__programme_description': 'Programme Description',
-                   'project_code__project_code': 'Programme Code',
+                   'project_code__project_code': 'Project Code',
                    'project_code__project_description': 'Programme Description',
                    }
         cost_centre_code = 888812
@@ -78,19 +99,21 @@ class MultiforecastView(MultiTableMixin, TemplateView):
     }
 
     def __init__(self, *args, **kwargs):
+        # TODO remove hardcoded cost centre
+        # TODO Add a field to the chart of account tables specifying the display order
+        # the filter will be set from the request
+        cost_centre_code = 888812
+        order_list = ['-programme__budget_type_fk__budget_type']
+        pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
         # set the queryset at init, because it requires the current year, so it is recall each
         # time. Maybe an overkill, but I don't want to risk to forget to change the year!
-        d1 = {'cost_centre__directorate__group': 'Group',
-              'cost_centre__directorate__group__group_name': 'Name'}
-        q1 = MonthlyFigure.pivot.pivotdata(d1.keys())
-        d2 = {'programme__budget_type_fk__budget_type': 'Programme'}
-        q2 = MonthlyFigure.pivot.pivotdata(d2.keys())
-        d3 = {'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Expenditure Type'}
-        q3 = MonthlyFigure.pivot.pivotdata(d3.keys())
+        q1 = MonthlyFigure.pivot.pivotdata(budget_type_columns.keys(),pivot_filter, order_list = order_list)
+        q2 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
+        q3 = MonthlyFigure.pivot.pivotdata(natural_account_columns.keys(),pivot_filter, order_list = order_list)
         self.tables = [
-            ForecastTable(d1, q1),
-            ForecastTable(d2, q2),
-            ForecastTable(d3, q3)
+            ForecastTable(budget_type_columns, q1),
+            ForecastTable(programme_columns, q2),
+            ForecastTable(natural_account_columns, q3)
         ]
 
         super().__init__(*args, **kwargs)
@@ -106,7 +129,6 @@ def pivot_test1(request):
     table = ForecastTable(field_dict, q1)
     RequestConfig(request).configure(table)
     return render(request, 'forecast/forecast.html', {'table': table})
-
 
 
 def edit_forecast(request):
@@ -141,7 +163,7 @@ def edit_forecast(request):
                 'cost_centre_code': cost_centre_code
             }
         )
-    pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code) }
+    pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
     monthly_figures = MonthlyFigure.pivot.pivotdata({}, pivot_filter)
 
     # TODO - Luisella to restrict to financial year

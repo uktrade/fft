@@ -9,14 +9,8 @@ from costcentre.models import (
     Directorate,
 )
 from chartofaccountDIT.models import (
-    Analysis1,
-    Analysis2,
-    BudgetType,
-    ExpenditureCategory,
-    NACCategory,
     NaturalCode,
     ProgrammeCode,
-    ProjectCode,
 )
 from forecast.models import (
     FinancialPeriod,
@@ -32,26 +26,23 @@ def monthly_figures_create():
     monthly_figures_clear()
     current_financial_year = FinancialYear.objects.get(current=True)
     cost_centre_fk = CostCentre.objects.first()
-    programme_code_ame_fk = ProgrammeCode.objects.filter(budget_type_fk__budget_type_key='AME').first()
-    programme_del_fk = ProgrammeCode.objects.filter(budget_type_fk__budget_type_key='DEL').first()
-    programme_admin_fk = ProgrammeCode.objects.filter(budget_type_fk__budget_type_key='ADMIN').first()
-    programme_list = [programme_code_ame_fk, programme_del_fk, programme_admin_fk]
-    natural_account_code_fk = NaturalCode.objects.first()
+    programme_list = ProgrammeCode.objects.all()
+    natural_account_list = NaturalCode.objects.all()
     financial_periods = FinancialPeriod.objects.exclude(period_long_name__icontains='adj')
-    base_amount = 10
+    monthly_amount = 0
     for programme_fk in programme_list:
-        base_amount *= 10
-        monthly_amount = base_amount
-        for f in financial_periods:
-            MonthlyFigure.objects.create(
-                financial_year=current_financial_year,
-                financial_period=f,
-                programme=programme_fk,
-                cost_centre=cost_centre_fk,
-                amount=monthly_amount,
-                natural_account_code=natural_account_code_fk
-            )
-            monthly_amount += 1
+        monthly_amount += 10
+        for natural_account_code_fk in natural_account_list:
+            for f in financial_periods:
+                MonthlyFigure.objects.create(
+                    financial_year=current_financial_year,
+                    financial_period=f,
+                    programme=programme_fk,
+                    cost_centre=cost_centre_fk,
+                    amount=monthly_amount,
+                    natural_account_code=natural_account_code_fk
+                )
+                monthly_amount += 1
 
 
 class Command(BaseCommand):
