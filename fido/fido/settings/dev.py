@@ -8,9 +8,8 @@ INSTALLED_APPS += (
 )
 
 STATICFILES_DIRS = (
-    #os.path.join(BASE_DIR, "front_end", "fido", "build", "static"),
     "/fido/front_end/build/static",
-    #"/fido/front_end/fido/dist/static",
+    "/fido/node_modules/govuk-frontend",
 )
 
 WEBPACK_LOADER = {
