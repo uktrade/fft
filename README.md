@@ -55,6 +55,7 @@ docker-compose run --service-ports
 
 ## TODO
 Try increasing size of container machine and see if npm start will work
+Add setup steps to make file and amend readme
 
 ### Questions
 

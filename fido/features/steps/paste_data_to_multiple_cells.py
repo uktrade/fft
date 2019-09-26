@@ -13,14 +13,18 @@ from selenium.webdriver.support import expected_conditions as EC
 @given(u'the user pastes into the edit forecast table')
 def step_impl(context):
 
-    print("Hellloo....")
-    context.driver.get("http://fido:8000/forecast/edit/")
+    #context.browser.get("https://www.google.com")
 
-    WebDriverWait(context.driver, 30).until(
+    # br = context.browser
+    # br.open(context.browser_url('/forecast/edit/'))
+
+    context.browser.get("http://localhost:8000/forecast/edit/")
+
+    WebDriverWait(context.browser, 30).until(
         EC.presence_of_element_located((By.ID, "forecast-table"))
     )
 
-    table_cells = context.driver.find_element_by_css_selector('td.no-select')
+    table_cells = context.browser.find_element_by_css_selector('td.no-select')
 
     print(table_cells)
 

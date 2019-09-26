@@ -8,17 +8,15 @@ INSTALLED_APPS += (
 )
 
 STATICFILES_DIRS = (
-    #os.path.join(BASE_DIR, "front_end", "fido", "build", "static"),
-    # "/front_end/fido/build/static",
-    "/node_modules/govuk-frontend/govuk/assets/",
-    #"/fido/front_end/fido/dist/static",
+    "/fido/front_end/build/static",
+    "/fido/node_modules/govuk-frontend",
 )
 
 WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": "/front_end/fido/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
+        "STATS_FILE": "/fido/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
     }
 }
 
@@ -29,5 +27,3 @@ INTERNAL_IPS = ['127.0.0.1']
 SASS_PROCESSOR_INCLUDE_DIRS = [
     os.path.join('/node_modules'),
 ]
-
-

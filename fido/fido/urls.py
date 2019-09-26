@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('auth/', include('authbroker_client.urls', namespace='authbroker')),
@@ -29,6 +30,13 @@ urlpatterns = [
     path('gifthospitality/', include('gifthospitality.urls')),
     path('payroll/', include('payroll.urls')),
     path('admin/', admin.site.urls),
+    # TODO - split below out into develop only?
+    path(
+        'assets/<path:asset_path>',
+        RedirectView.as_view(
+            url='/static/govuk/assets/%(asset_path)s'
+        )
+    ),
 ]
 
 if settings.DEBUG:
