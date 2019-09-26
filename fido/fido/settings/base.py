@@ -232,3 +232,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
+
+BROWSERSTACK_USERNAME = env('BROWSERSTACK_USERNAME')
+BROWSERSTACK_ACCESS_KEY = env('BROWSERSTACK_ACCESS_KEY')
