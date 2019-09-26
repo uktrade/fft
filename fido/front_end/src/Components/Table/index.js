@@ -194,6 +194,18 @@ function Table() {
                             value: linePart
                         })
                     );
+
+                    dispatch(
+                        SELECT_CELL({
+                            id: cells[0].id
+                        })
+                    );
+
+                    dispatch(
+                        SET_LAST_CELL({
+                            id: cells[0].id
+                        })
+                    )
                 }
 
                 colIndex++
@@ -241,9 +253,14 @@ function Table() {
                 clipBoardContent += "\n"
             }
             clipBoardContent += cell.value + "\t"
+
+            console.log(cell.value + "\t");
+            console.log(clipBoardContent);
         }
 
-        navigator.clipboard.writeText(clipBoardContent.trim())
+        console.log("clipBoardContent.trim()", clipBoardContent);
+
+        navigator.clipboard.writeText(clipBoardContent)
     }
 
     useEffect(() => {
@@ -403,8 +420,7 @@ function Table() {
                 }
                 cells.push(
                     <TableRow key={i} index={(i + 1)}>
-                        <TableHandle rowIndex={i} />
-                        <td>{cellData["programme__programme_code"]} - {cellData["programme__programme_description"]}</td>
+                        <TableHandle rowIndex={i}>{cellData["programme__programme_code"]} - {cellData["programme__programme_description"]}</TableHandle>
                         {monthCells}
                     </TableRow>
                 );
@@ -429,10 +445,10 @@ function Table() {
                     </div>
                 </div>
             }
-            <table id="forecast-table">
-                <tbody>
+            <table className="govuk-table" id="forecast-table">
+                <caption className="govuk-table__caption">Edit forecast</caption>
+                <thead className="govuk-table__head">
                     <TableRow index="0">
-                        <th className="handle"></th>
                         <ColumnHeader colKey="programme__programme_code">Programme</ColumnHeader>
                         <ColumnHeader colKey="apr">Apr</ColumnHeader>
                         <ColumnHeader colKey="may">May</ColumnHeader>
@@ -447,6 +463,8 @@ function Table() {
                         <ColumnHeader colKey="feb">Feb</ColumnHeader>
                         <ColumnHeader colKey="mar">Mar</ColumnHeader>
                     </TableRow>
+                </thead>
+                <tbody className="govuk-table__body">
                     {getCells()}
                 </tbody>
             </table>

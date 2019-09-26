@@ -4,9 +4,12 @@
 {% load querystring from django_tables2 %}
 
 {% block content %}
-<h3>Financial Report</h3>
-    <p></p>
-    <a href="{% querystring '_export'='xls' %}">Download to Excel</a>
+<h3 class="govuk-heading-m">Financial Report</h3>
 
-{% render_table table %}
+
+<p><a class="govuk-link" href="{% querystring '_export'='xls' %}">Download to Excel</a></p>
+
+<div class="tables-container">
+    {% render_table table %}
+</div>
 {% endblock %}

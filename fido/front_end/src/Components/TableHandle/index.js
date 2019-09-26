@@ -2,16 +2,16 @@ import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
 
 import RowContext from '../../Components/RowContext'
 
-function TableHandle({rowIndex}) {
+function TableHandle({children, rowIndex}) {
 	const context = useContext(RowContext)
 
 	return (
-		<td className="handle"
+		<td className="handle govuk-table__cell"
 			onClick={() => { 
 				context.selectRow(rowIndex);
 			}
 		}>
-			{rowIndex}
+			{children}
 		</td>
 	);
 }

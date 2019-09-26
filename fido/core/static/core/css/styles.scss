@@ -119,6 +119,7 @@ button {
 
 .govuk-table__cell {
     white-space: nowrap;
+  padding-left:4px;
 }
 
 .govuk-table__header {
@@ -127,4 +128,23 @@ button {
 
 .tables-container {
   overflow-x: scroll;
+}
+
+input {
+    @include govuk-font($size: 19);
+}
+
+.highlight {
+	background-color: $govuk-focus-colour;
+    border: 2px solid $govuk-text-colour;
+}
+
+input.cell-input {
+    padding:0px;
+    //height: 17px;
+    outline: 2px solid #FF0000 !important;
+    outline: 5px auto #FF0000 !important;
+    //border:0;
+    //height: 100%;
+    width:100%;
 }

@@ -1,27 +1,26 @@
+{% extends "wide_content.html" %}
 {% load render_bundle from webpack_loader %}
-<html>
-<head>
-    <title>Edit forecast</title>
-</head>
-    <body>
-        <div id="root"></div>
-        <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
-            {% csrf_token %}
-            {{ form }}
-            <input type="submit" value="Save changes">
-        </form>
-        {% render_bundle 'vendors' %}
-        {% render_bundle 'main' %}
-        {% render_bundle 'runtime~main' %}
-    </body>
+
+{% block content %}
+    <h3 class="govuk-heading-m">Title</h3>
+    <div id="root"></div>
+    <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
+        {% csrf_token %}
+        {{ form }}
+        <input class="govuk-button" data-module="govuk-button" type="submit" value="Save changes" >
+    </form>
+{% endblock %}
+{% block scripts %}
+    {% render_bundle 'vendors' %}
+    {% render_bundle 'main' %}
+    {% render_bundle 'runtime~main' %}
     <script>
         function setData() {
-            console.log("FROM DJANGO TEMPLATE...", window.cell_data);
+            //console.log("FROM DJANGO TEMPLATE...", window.cell_data);
             document.getElementById("id_cell_data").value = JSON.stringify(window.cell_data);
-
-            console.log(document.getElementById("table-data-submission").value);
+            //console.log(document.getElementById("table-data-submission").value);
         }
         window.editable_periods = {{ editable_periods_dump|safe }};
         window.table_data = {{ forecast_dump|safe }};
     </script>
-</html>
+{% endblock %}

@@ -91,7 +91,7 @@ function TableRow({children, index}) {
             selectRow: selectRow,
             selectColumn: selectColumn
         }}>
-            <tr>
+            <tr className="govuk-table__row">
                 {children}
             </tr>
         </RowProvider>

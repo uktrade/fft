@@ -53,24 +53,24 @@
           <button type="button" role="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation" aria-label="Show or hide Top Level Navigation">Menu</button>
           <nav>
             <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
-              <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
-                <a class="govuk-header__link" href="#1">
-                  Navigation item 1
+              <li class="govuk-header__navigation-item {% if request.path == '/forecast/costcentre/' %}govuk-header__navigation-item--active{% endif %}">
+                <a class="govuk-header__link" href="/forecast/costcentre/">
+                  Cost Centre
                 </a>
               </li>
-              <li class="govuk-header__navigation-item">
-                <a class="govuk-header__link" href="#2">
-                  Navigation item 2
+              <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivot/' %}govuk-header__navigation-item--active{% endif %}">
+                <a class="govuk-header__link" href="/forecast/pivot/">
+                  Pivot
                 </a>
               </li>
-              <li class="govuk-header__navigation-item">
-                <a class="govuk-header__link" href="#3">
-                  Navigation item 3
+              <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivotmulti/' %}govuk-header__navigation-item--active{% endif %}">
+                <a class="govuk-header__link" href="/forecast/pivotmulti/">
+                  Multi-pivot
                 </a>
               </li>
-              <li class="govuk-header__navigation-item">
-                <a class="govuk-header__link" href="#4">
-                  Navigation item 4
+              <li class="govuk-header__navigation-item {% if request.path == '/forecast/edit/' %}govuk-header__navigation-item--active{% endif %}">
+                <a class="govuk-header__link" href="/forecast/edit/">
+                  Edit
                 </a>
               </li>
             </ul>

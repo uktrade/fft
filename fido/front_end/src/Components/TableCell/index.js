@@ -149,7 +149,7 @@ function TableCell({children, index, cellId}) {
     return (
         <Fragment>
             <td
-                className={isSelected() ? 'highlight' : 'no-select'}
+                className={isSelected() ? 'highlight govuk-table__cell' : 'no-select govuk-table__cell'}
                 ref={cellRef}
                 onDoubleClick={ () => {
                     dispatch({
@@ -184,6 +184,7 @@ function TableCell({children, index, cellId}) {
             >
                 {editCell == cellId ? (
                     <input
+                        className="cell-input"
                         ref={inputRef}
                         type="text"
                         value={allCells[cellId].value}
