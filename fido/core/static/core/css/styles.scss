@@ -116,3 +116,15 @@ button {
 .main-content {
     margin-top: 20px;
 }
+
+.govuk-table__cell {
+    white-space: nowrap;
+}
+
+.govuk-table__header {
+    white-space: nowrap;
+}
+
+.tables-container {
+  overflow-x: scroll;
+}

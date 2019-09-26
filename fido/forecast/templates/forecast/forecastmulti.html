@@ -4,9 +4,11 @@
 {% load querystring from django_tables2 %}
 
 {% block content %}
-<h3>Financial Report</h3>
+<h3 class="govuk-heading-m">Title</h3>
 
-{% for table in tables %}
-    {% render_table table %}
-{% endfor %}
+<div class="tables-container">
+    {% for table in tables %}
+        {% render_table table %}
+    {% endfor %}
+</div>
 {% endblock %}

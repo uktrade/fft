@@ -87,22 +87,49 @@ class ForecastTable(tables.Table):
         # forecast_month_list = self.full_year[actual_period:]
         # forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
 
-        extra_col.extend([('year_to_date', SummingMonthCol(actual_month_list,
-                                                           'Year to Date', empty_values=())),
-                          ('year_total', SummingMonthCol(self.full_year, 'Year Total', empty_values=()))])
-        super().__init__(extra_columns=extra_col,
-                         sequence=column_list, *args, **kwargs)
-        for month in actual_month_list:
-            col = self.columns[month]
-            col.column.attrs = {'td': {'class': 'actualmonth'},
-             'th': {'class': 'actualmonth'},
-             'tf': {'class': 'actualmonth font-weight-bold'}}
+        extra_col.extend(
+            [
+                (
+                    'year_to_date',
+                    SummingMonthCol(
+                        actual_month_list,
+                        'Year to Date',
+                        empty_values=()
+                    )
+                ),
+                (
+                    'year_total',
+                    SummingMonthCol(
+                        self.full_year,
+                        'Year Total',
+                        empty_values=()
+                    )
+                )
+            ]
+        )
 
+        super().__init__(
+            extra_columns=extra_col,
+            sequence=column_list, *args, **kwargs
+        )
+
+        for col in self.columns:
+            col.column.attrs = {
+                'th': {'class': 'govuk-table__header'},
+                'td': {'class': 'govuk-table__cell'},
+                'tf': {'class': 'govuk-table__cell'}
+            }
 
     class Meta:
-        template_name = 'django_tables2/bootstrap.html'
+        template_name = 'django_tables_2_bootstrap.html'
         empty_text = ''
-        attrs = {"class": "table-bordered table-condensed small-font"}
-        # row_attrs = {
-        #     "class": lambda record: record["row_type"]
-        # }
+        attrs = {
+            "class": "govuk-table",
+            "caption": "Financial Report",
+            "thead": {'class': 'govuk-table__head'},
+            "tbody": {'class': 'govuk-table__body'},
+        }
+        orderable = False
+        row_attrs = {
+            "class": "govuk-table__row"
+        }

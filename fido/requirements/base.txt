@@ -23,7 +23,7 @@ django-import-export==1.1.0
 django-pivot==1.7
 django-staff-sso-client==0.3.1
 django-storages==1.7.1
-django-tables2==1.21.2
+django-tables2==v2.1.1
 django-tablib==3.2
 docutils==0.14
 et-xmlfile==1.0.1
