@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-
-behave
-python manage.py test
+npm run bdd
+docker-compose run fido python manage.py test
+docker-compose run fido behave

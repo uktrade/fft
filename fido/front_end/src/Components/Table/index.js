@@ -449,7 +449,7 @@ function Table() {
                 <caption className="govuk-table__caption">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <TableRow index="0">
-                        <ColumnHeader colKey="programme__programme_code">Programme</ColumnHeader>
+                        <th className="govuk-table__header ">Programme</th>
                         <ColumnHeader colKey="apr">Apr</ColumnHeader>
                         <ColumnHeader colKey="may">May</ColumnHeader>
                         <ColumnHeader colKey="jun">Jun</ColumnHeader>

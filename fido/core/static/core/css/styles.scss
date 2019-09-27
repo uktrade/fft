@@ -22,7 +22,6 @@ h3 {
     margin-bottom: 20px;
 }
 
-
 /*use firebrick as DIT red */
 a:link, a:active, a:visited  {
      color: firebrick;
@@ -147,4 +146,9 @@ input.cell-input {
     //border:0;
     //height: 100%;
     width:100%;
+}
+
+.indicate-action {
+  text-decoration: underline!important;
+  //background-color: #f3f2f1;
 }

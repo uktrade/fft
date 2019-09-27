@@ -12,13 +12,13 @@ module.exports = {
       }),
     ];
     config.entry = [
-      'webpack-dev-server/client?http://localhost:3000',
+      'webpack-dev-server/client?http://' + process.env.PUBLIC_PATH + ':3000',
       'webpack/hot/dev-server',
       './src/index'
     ];
     config.output = {
       path:  path.resolve(__dirname, 'build/static/'),
-      publicPath: 'http://localhost:3000/',
+      publicPath: 'http://' + process.env.PUBLIC_PATH + ':3000/',
     };
     config.optimization.splitChunks.name = 'vendors';
 
@@ -36,7 +36,7 @@ module.exports = {
         'Access-Control-Allow-Origin': '*'
       };
       config.hot = true;
-      config.public = "localhost:3000";
+      config.public = process.env.PUBLIC_PATH + ":3000";
 
       return config;
     };

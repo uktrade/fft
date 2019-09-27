@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "cd front_end && npm run start",
+    "bdd": "cd front_end && npm run bdd",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"

@@ -6,7 +6,7 @@ function ColumnHeader({children, colKey}) {
     const context = useContext(RowContext)
 
     return (
-        <th className="govuk-table__header"
+        <th className="govuk-table__header indicate-action"
             onClick={() => {
                 context.selectColumn(colKey);
             }

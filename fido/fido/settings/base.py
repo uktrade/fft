@@ -43,7 +43,6 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 INSTALLED_APPS = [
     'authbroker_client',
     # 'admintool_support.apps.AdmintoolSupportConfig',
-    'importdata.apps.ImportdataConfig',
     'downloadsupport.apps.DownloadSupportConfig',
     'forecast.apps.ForecastConfig',
     # 'dit_user_management',
@@ -54,6 +53,7 @@ INSTALLED_APPS = [
     'treasuryCOA.apps.TreasuryCOAConfig',
     'treasurySS.apps.TreasurySSConfig',
     'core.apps.CoreConfig',
+    'importdata.apps.ImportDataConfig',
     'django_extensions',
     'django_tables2',
     'django_filters',

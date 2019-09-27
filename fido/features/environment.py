@@ -1,7 +1,21 @@
+from behave import use_fixture
+from core.behave_fixtures import django_test_runner, django_test_case
+import os
 from selenium import webdriver
 from browserstack.local import Local
 from django.conf import settings
 import os, json
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+#os.environ["DJANGO_SETTINGS_MODULE"] = "test_project.settings"
+
+
+def before_all(context):
+    use_fixture(django_test_runner, context)
+
+
+def before_scenario(context, scenario):
+    use_fixture(django_test_case, context)
 
 TASK_ID = int(os.environ['TASK_ID']) if 'TASK_ID' in os.environ else 0
 
@@ -42,24 +56,38 @@ def stop_local():
 
 
 def before_feature(context, feature):
-    desired_capabilities = CONFIG['environments'][TASK_ID]
-
-    for key in CONFIG["capabilities"]:
-        if key not in desired_capabilities:
-            desired_capabilities[key] = CONFIG["capabilities"][key]
-
-    if 'BROWSERSTACK_APP_ID' in os.environ:
-        desired_capabilities['app'] = os.environ['BROWSERSTACK_APP_ID']
-
-    if "browserstack.local" in desired_capabilities and desired_capabilities["browserstack.local"]:
-        start_local()
+    # desired_capabilities = CONFIG['environments'][TASK_ID]
+    #
+    # for key in CONFIG["capabilities"]:
+    #     if key not in desired_capabilities:
+    #         desired_capabilities[key] = CONFIG["capabilities"][key]
+    #
+    # if 'BROWSERSTACK_APP_ID' in os.environ:
+    #     desired_capabilities['app'] = os.environ['BROWSERSTACK_APP_ID']
+    #
+    # if "browserstack.local" in desired_capabilities and desired_capabilities["browserstack.local"]:
+    #     start_local()
+    #
+    # context.browser = webdriver.Remote(
+    #     desired_capabilities=desired_capabilities,
+    #     command_executor="http://%s:%s@%s/wd/hub" % (BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, CONFIG['server'])
+    # )
 
     context.browser = webdriver.Remote(
-        desired_capabilities=desired_capabilities,
-        command_executor="http://%s:%s@%s/wd/hub" % (BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, CONFIG['server'])
+        command_executor='http://selenium-hub:4444/wd/hub',
+        desired_capabilities=DesiredCapabilities.FIREFOX
     )
+    context.browser.implicitly_wait(5)
+
+
+
+    # self.firefox = webdriver.Remote(
+    #     command_executor='http://selenium_hub:4444/wd/hub',
+    #     desired_capabilities=DesiredCapabilities.FIREFOX
+    # )
+    # self.firefox.implicitly_wait(10)
 
 
 def after_feature(context, feature):
     context.browser.quit()
-    stop_local()
+    # stop_local()

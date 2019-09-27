@@ -18,15 +18,15 @@ def step_impl(context):
     # br = context.browser
     # br.open(context.browser_url('/forecast/edit/'))
 
-    context.browser.get("http://bs-local.com:8000/forecast/edit/")
+    context.browser.get("http://fido:8000/forecast/edit/")
 
     WebDriverWait(context.browser, 30).until(
         EC.presence_of_element_located((By.ID, "forecast-table"))
     )
 
-    table_cells = context.browser.find_element_by_css_selector('td.no-select')
+    #table_cells = context.browser.find_element_by_css_selector('td.no-select')
 
-    print(table_cells)
+    # print(table_cells)
 
     # click_and_hold()
     #

@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "react-scripts build",
-    "start": "react-app-rewired start"
+    "start": "PUBLIC_PATH=localhost react-app-rewired start",
+    "bdd": "PUBLIC_PATH=host.docker.internal react-app-rewired start"
   },
   "dependencies": {
     "react-scripts": "^1.0.17"

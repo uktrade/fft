@@ -6,7 +6,7 @@ function TableHandle({children, rowIndex}) {
 	const context = useContext(RowContext)
 
 	return (
-		<td className="handle govuk-table__cell"
+		<td className="handle govuk-table__cell indicate-action"
 			onClick={() => { 
 				context.selectRow(rowIndex);
 			}
