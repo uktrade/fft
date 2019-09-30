@@ -108,11 +108,19 @@ class MultiforecastView(MultiTableMixin, TemplateView):
         # set the queryset at init, because it requires the current year, so it is recall each
         # time. Maybe an overkill, but I don't want to risk to forget to change the year!
         q1 = MonthlyFigure.pivot.pivotdata(budget_type_columns.keys(),pivot_filter, order_list = order_list)
-        q2 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
+        # subtotal_data
+        sub_totals = ['programme__budget_type_fk__budget_type',
+                    'natural_account_code__account_L5_code__economic_budget_code']
+
+
+        # q2 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
+        q4 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
+        q2 = MonthlyFigure.pivot.subtotal_data(sub_totals, programme_columns.keys(),pivot_filter, order_list = order_list)
         q3 = MonthlyFigure.pivot.pivotdata(natural_account_columns.keys(),pivot_filter, order_list = order_list)
         self.tables = [
-            ForecastTable(budget_type_columns, q1),
+            # ForecastTable(budget_type_columns, q1),
             ForecastTable(programme_columns, q2),
+            ForecastTable(programme_columns, q4),
             ForecastTable(natural_account_columns, q3)
         ]
 
