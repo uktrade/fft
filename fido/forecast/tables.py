@@ -25,9 +25,11 @@ class SummingFooterCol(tables.Column):
     def value(self, record, value):
         return float(value or 0)
 
-    attrs = {'td': {'class': 'text-right'},
-             'th': {'class': 'text-right'},
-             'tf': {'class': 'text-right font-weight-bold'}}
+    attrs = {
+                'th': {'class': 'govuk-table__header'},
+                'td': {'class': 'govuk-table__cell'},
+                'tf': {'class': 'govuk-table__cell'}
+            }
 
     def render_footer(self, bound_column, table):
         return intcomma(self.tot_value)
@@ -78,8 +80,12 @@ class ForecastTable(tables.Table):
     feb = SummingFooterCol('February', empty_values=())
     mar = SummingFooterCol('March', empty_values=())
 
-    def __init__(self, column_dict={}, *args, **kwargs):
-        extra_col = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
+    def __init__(self, column_dict1={}, *args, **kwargs):
+
+         # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
+        #  calculating the subtotals, but they are not required in the displayed table.
+        column_dict = {k: v for k, v in column_dict1.items() if v != 'Hidden'}
+        extra_column_to_display = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
 
         column_list = column_dict.keys()
         actual_period = actual_month()
@@ -87,7 +93,7 @@ class ForecastTable(tables.Table):
         # forecast_month_list = self.full_year[actual_period:]
         # forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
 
-        extra_col.extend(
+        extra_column_to_display.extend(
             [
                 (
                     'year_to_date',
@@ -109,16 +115,18 @@ class ForecastTable(tables.Table):
         )
 
         super().__init__(
-            extra_columns=extra_col,
+            extra_columns=extra_column_to_display,
             sequence=column_list, *args, **kwargs
         )
+        # change the stile for columns showing actuals. It has to be done after super().__init__
+        # otherwise it gets overwritten. Commented out because it does not conform to GOV guidelines
+        #
+        # for month in actual_period:
+        #     col = self.columns[month]
+        #     col.column.attrs = {
+        #         'td': {'class': 'actual_class'}
+        #     }
 
-        for col in self.columns:
-            col.column.attrs = {
-                'th': {'class': 'govuk-table__header'},
-                'td': {'class': 'govuk-table__cell'},
-                'tf': {'class': 'govuk-table__cell'}
-            }
 
     class Meta:
         template_name = 'django_tables_2_bootstrap.html'
@@ -128,8 +136,23 @@ class ForecastTable(tables.Table):
             "caption": "Financial Report",
             "thead": {'class': 'govuk-table__head'},
             "tbody": {'class': 'govuk-table__body'},
+            'th': {'class': 'govuk-table__header'},
+            'td': {'class': 'govuk-table__cell'},
+            'tf': {'class': 'govuk-table__cell'}
         }
         orderable = False
         row_attrs = {
             "class": "govuk-table__row"
         }
+
+
+class ForecastSubTotalTable(ForecastTable, tables.Table):
+    class Meta(ForecastTable.Meta):
+        orderable = False
+
+        row_attrs = {
+            "class": lambda record: record["row_type"],
+        }
+        # row_attrs.update( {
+        #     "class": lambda record: record["row_type"],
+        # })

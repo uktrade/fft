@@ -67,8 +67,6 @@ class Budget(FinancialCode, TimeStampedModel):
                + str(self.financial_year)
 
 
-import pdb;
-
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
     default_columns = {'cost_centre__cost_centre_code': 'Cost Centre Code',
@@ -83,24 +81,15 @@ class PivotManager(models.Manager):
 
     period_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
 
-    def lowercase(s):
-        return s.lower()
-
     def output_row_to_table(self, table, row, style_name):
         #     Add the stile entry to the dictionary
         #     add the resulting dictionary to the list
-        r = row.copy()
-        r['row_class'] = style_name
-        table.append(r)
+        row['row_type'] = style_name
+        table.append(row)
 
     def add_row_to_subtotal(self, row_from, sub_total):
         for k in self.period_list:
             p = k.lower()
-            # pdb.set_trace()
-            print(p)
-            print(sub_total)
-            a = sub_total[p]
-            b = row_from[p]
             sub_total[p] += row_from[p]
 
     def clear_row(self, row):
@@ -108,8 +97,7 @@ class PivotManager(models.Manager):
             p = k.lower()
             row[p] = 0
 
-    def subtotal_data(self, subtotal_columns, data_columns , filter_dict={}, year=0, order_list=[]):
-
+    def subtotal_data(self, subtotal_columns, data_columns, filter_dict={}, year=0, order_list=[]):
         # If requesting a subtotal, the list of columns must be specified
         if subtotal_columns == []:
             # TODO error('Must supply columns for subtotal')
@@ -121,30 +109,30 @@ class PivotManager(models.Manager):
 
         data_returned = self.pivotdata(data_columns, filter_dict, year, order_list)
         result_table = []
-        q1 = list(data_returned)
+        pivot_data = list(data_returned)
         subtotal_columns.reverse()
+        first_row = pivot_data.pop(0)
+        self.output_row_to_table(result_table, first_row, 'normal')
+
         # Initialise the structure required
         # a dictionary with the previous value of the columns to be sub-totalled
         # a dictionary of subtotal dictionaries, with an extra entry (gran total)
-        # take the first dictionary from the returned queryset
-        first_row = q1.pop(0)
-        self.output_row_to_table(result_table, first_row, 'normal')
+        sub_total_row = first_row.copy()
 
         previous_values = {k: first_row[k] for k in subtotal_columns}
         subtotals = {k: first_row.copy() for k in subtotal_columns}
-        subtotals['Gran_Total'] = first_row
-
         for k, v in subtotals.items():
-            v['programme__budget_type_fk__budget_type'] = 'Total'
+            v[k] = 'Total'
 
+        subtotals['Gran_Total'] = first_row.copy()
 
-        for current_row in q1:
-            for a in subtotal_columns:
-                if current_row[a] != previous_values[a]:
-                    #       output the subtotal
-                    self.output_row_to_table(result_table, subtotals[a], 'sub_total')
-                    self.clear_row(subtotals[a])
-                    previous_values[a] = current_row[a]
+        for current_row in pivot_data:
+            for column in subtotal_columns:
+                if current_row[column] != previous_values[column]:
+                    #  output the subtotal
+                    self.output_row_to_table(result_table, subtotals[column].copy(), 'sub_total')
+                    self.clear_row(subtotals[column])
+                    previous_values[column] = current_row[column]
                 else:
                     break
 
@@ -152,13 +140,12 @@ class PivotManager(models.Manager):
                 self.add_row_to_subtotal(current_row, totals)
 
             self.output_row_to_table(result_table, current_row, 'normal')
-    #     output all the subtotals, because it is finished
-        for a in subtotal_columns:
-            self.output_row_to_table(result_table, subtotals[a], 'sub_total')
+
+        #     output all the subtotals, because it is finished
+        for column in subtotal_columns:
+            self.output_row_to_table(result_table, subtotals[column], 'sub_total')
         self.output_row_to_table(result_table, subtotals['Gran_Total'], 'sub_total')
         return result_table
-
-
 
     def pivotdata(self, columns={}, filter_dict={}, year=0, order_list=[]):
         def lowercase(s):

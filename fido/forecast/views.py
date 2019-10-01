@@ -8,7 +8,7 @@ from django_tables2 import MultiTableMixin, SingleTableView
 from django_tables2 import RequestConfig
 
 from .models import MonthlyFigure, FinancialPeriod
-from .tables import ForecastTable
+from .tables import ForecastSubTotalTable, ForecastTable
 from .forms import EditForm
 from forecast.models import MonthlyFigure
 from django.core import serializers
@@ -101,7 +101,7 @@ class MultiforecastView(MultiTableMixin, TemplateView):
     def __init__(self, *args, **kwargs):
         # TODO remove hardcoded cost centre
         # TODO Add a field to the chart of account tables specifying the display order
-        # the filter will be set from the request
+        # TODO the filter will be set from the request
         cost_centre_code = 888812
         order_list = ['-programme__budget_type_fk__budget_type']
         pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
@@ -119,7 +119,7 @@ class MultiforecastView(MultiTableMixin, TemplateView):
         q3 = MonthlyFigure.pivot.pivotdata(natural_account_columns.keys(),pivot_filter, order_list = order_list)
         self.tables = [
             # ForecastTable(budget_type_columns, q1),
-            ForecastTable(programme_columns, q2),
+            ForecastSubTotalTable(programme_columns, q2),
             ForecastTable(programme_columns, q4),
             ForecastTable(natural_account_columns, q3)
         ]
