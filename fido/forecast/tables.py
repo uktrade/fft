@@ -26,10 +26,10 @@ class SummingFooterCol(tables.Column):
         return float(value or 0)
 
     attrs = {
-                'th': {'class': 'govuk-table__header'},
-                'td': {'class': 'govuk-table__cell'},
-                'tf': {'class': 'govuk-table__cell'}
-            }
+        'th': {'class': 'govuk-table__header'},
+        'td': {'class': 'govuk-table__cell'},
+        'tf': {'class': 'govuk-table__cell'}
+    }
 
     def render_footer(self, bound_column, table):
         return intcomma(self.tot_value)
@@ -81,8 +81,7 @@ class ForecastTable(tables.Table):
     mar = SummingFooterCol('March', empty_values=())
 
     def __init__(self, column_dict1={}, *args, **kwargs):
-
-         # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
+        # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
         #  calculating the subtotals, but they are not required in the displayed table.
         column_dict = {k: v for k, v in column_dict1.items() if v != 'Hidden'}
         extra_column_to_display = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
@@ -127,7 +126,6 @@ class ForecastTable(tables.Table):
         #         'td': {'class': 'actual_class'}
         #     }
 
-
     class Meta:
         template_name = 'django_tables_2_bootstrap.html'
         empty_text = ''
@@ -148,8 +146,6 @@ class ForecastTable(tables.Table):
 
 class ForecastSubTotalTable(ForecastTable, tables.Table):
     class Meta(ForecastTable.Meta):
-        orderable = False
-
         row_attrs = {
             "class": lambda record: record["row_type"],
         }
