@@ -25,11 +25,11 @@ class SummingFooterCol(tables.Column):
     def value(self, record, value):
         return float(value or 0)
 
-    attrs = {
-        'th': {'class': 'govuk-table__header'},
-        'td': {'class': 'govuk-table__cell'},
-        'tf': {'class': 'govuk-table__cell'}
-    }
+    # attrs = {
+    #     'th': {'class': 'govuk-table__header'},
+    #     'td': {'class': 'govuk-table__cell'},
+    #     'tf': {'class': 'govuk-table__cell'}
+    # }
 
     def render_footer(self, bound_column, table):
         return intcomma(self.tot_value)
@@ -80,10 +80,10 @@ class ForecastTable(tables.Table):
     feb = SummingFooterCol('February', empty_values=())
     mar = SummingFooterCol('March', empty_values=())
 
-    def __init__(self, column_dict={}, *args, **kwargs):
+    def __init__(self, column_dict1={}, *args, **kwargs):
         # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
         #  calculating the subtotals, but they are not required in the displayed table.
-        #column_dict = {k: v for k, v in column_dict1.items() if v != 'Hidden'}
+        column_dict = {k: v for k, v in column_dict1.items() if v != 'Hidden'}
         extra_column_to_display = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
 
         column_list = column_dict.keys()
@@ -118,13 +118,12 @@ class ForecastTable(tables.Table):
             sequence=column_list, *args, **kwargs
         )
         # change the stile for columns showing actuals. It has to be done after super().__init__
-        # otherwise it gets overwritten. Commented out because it does not conform to GOV guidelines
-        #
-        # for month in actual_period:
-        #     col = self.columns[month]
-        #     col.column.attrs = {
-        #         'td': {'class': 'actual_class'}
-        #     }
+        # otherwise it gets overwritten.
+        for month in actual_month_list:
+            col = self.columns[month]
+            col.column.attrs = {
+                'td': {'class': 'actual_class'}
+            }
 
     class Meta:
         template_name = 'django_tables_2_bootstrap.html'

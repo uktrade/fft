@@ -17,7 +17,6 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 
 # programme__budget_type_fk__budget_type indicates if DEL, AME, ADMIN used in every view
-# TODO handling the Hidden columns
 budget_type_columns = {
     'programme__budget_type_fk__budget_type': 'Budget_type',
     'cost_centre__cost_centre_code': 'Cost Centre Code',
@@ -100,7 +99,7 @@ class MultiforecastView(MultiTableMixin, TemplateView):
 
     def __init__(self, *args, **kwargs):
         # TODO remove hardcoded cost centre
-        # TODO Add a field to the chart of account tables specifying the display order
+        # TODO Add a field to the chart of account tables specifying the row display order
         # TODO the filter will be set from the request
         cost_centre_code = 888812
         order_list = ['-programme__budget_type_fk__budget_type']
@@ -111,11 +110,11 @@ class MultiforecastView(MultiTableMixin, TemplateView):
         # subtotal_data
         sub_totals = ['programme__budget_type_fk__budget_type',
                     'natural_account_code__account_L5_code__economic_budget_code']
-
+        display_sub_total_column = 'programme__programme_description'
 
         # q2 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
         q4 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
-        q2 = MonthlyFigure.pivot.subtotal_data(sub_totals, programme_columns.keys(),pivot_filter, order_list = order_list)
+        q2 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_totals, programme_columns.keys(),pivot_filter, order_list = order_list)
         q3 = MonthlyFigure.pivot.pivotdata(natural_account_columns.keys(),pivot_filter, order_list = order_list)
         self.tables = [
             # ForecastTable(budget_type_columns, q1),

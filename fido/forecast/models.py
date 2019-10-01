@@ -8,6 +8,8 @@ from costcentre.models import CostCentre
 
 from django.db import models
 
+from django.db.models.functions import Lower
+
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py
 from django_pivot.pivot import pivot
 
@@ -91,7 +93,6 @@ class PivotManager(models.Manager):
                        'project_code__project_description': 'Project Description',
                        }
 
-    period_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
 
     def output_row_to_table(self, table, row, style_name):
         #     Add the stile entry to the dictionary
@@ -100,22 +101,24 @@ class PivotManager(models.Manager):
         table.append(row)
 
     def add_row_to_subtotal(self, row_from, sub_total):
-        for k in self.period_list:
-            p = k.lower()
-            sub_total[p] += row_from[p]
+        for period in self.period_list:
+            sub_total[period] += row_from[period]
 
     def clear_row(self, row):
-        for k in self.period_list:
-            p = k.lower()
-            row[p] = 0
+        for period in self.period_list:
+            row[period] = 0
 
-    def subtotal_data(self, subtotal_columns, data_columns, filter_dict={}, year=0, order_list=[]):
+    def subtotal_data(self, display_total_column, subtotal_columns, data_columns, filter_dict={}, year=0, order_list=[]):
         # If requesting a subtotal, the list of columns must be specified
         if not subtotal_columns:
             raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
 
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
+
+        self.period_list = list(FinancialPeriod.objects.values_list(Lower('period_short_name'), flat=True))
+
+        # TODO check that the display_total_column exists in the list of columns
 
         data_returned = self.pivotdata(data_columns, filter_dict, year, order_list)
         result_table = []
@@ -127,15 +130,15 @@ class PivotManager(models.Manager):
         # Initialise the structure required
         # a dictionary with the previous value of the columns to be sub-totalled
         # a dictionary of subtotal dictionaries, with an extra entry (gran total)
-        sub_total_row = first_row.copy()
+        sub_total_row = {k:(v if k in self.period_list else '') for k,v in first_row}
 
-        previous_values = {k: first_row[k] for k in subtotal_columns}
-        subtotals = {k: first_row.copy() for k in subtotal_columns}
+        previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
+        subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
 
-        for k, v in subtotals.items():
-            v[k] = 'Total'
+        # for k, v in subtotals.items():
+        #     v[k] = 'Total'
 
-        subtotals['Gran_Total'] = first_row.copy()
+        subtotals['Gran_Total'] = sub_total_row.copy()
 
         for current_row in pivot_data:
             for column in subtotal_columns:
