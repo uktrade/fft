@@ -1,9 +1,15 @@
+from collections import OrderedDict
+
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db.models import Max
 
 import django_tables2 as tables
 
 from .models import FinancialPeriod
+from core.utils import (
+    FINANCIAL_YEAR_MONTHS,
+    FULL_YEAR,
+)
 
 
 def actual_month():
@@ -64,23 +70,35 @@ class ForecastTable(tables.Table):
     # full list of month, in the correct order for the financial year
     # I don't like hardcoded strings, but the month names are not going to change, and anyway
     # they must match the columns defined below
-    full_year = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
+    #full_year = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
 
-    budg = SummingFooterCol(True, 'Budget', empty_values=())
-    apr = SummingFooterCol(True, 'April', empty_values=())
-    may = SummingFooterCol(True, 'May', empty_values=())
-    jun = SummingFooterCol(True, 'June', empty_values=())
-    jul = SummingFooterCol(True, 'July', empty_values=())
-    aug = SummingFooterCol(True, 'August', empty_values=())
-    sep = SummingFooterCol(True, 'September', empty_values=())
-    oct = SummingFooterCol(True, 'October', empty_values=())
-    nov = SummingFooterCol(True, 'November', empty_values=())
-    dec = SummingFooterCol(True, 'December', empty_values=())
-    jan = SummingFooterCol(True, 'January', empty_values=())
-    feb = SummingFooterCol(True, 'February', empty_values=())
-    mar = SummingFooterCol(True, 'March', empty_values=())
+    # budg = SummingFooterCol(True, 'Budget', empty_values=())
+    # apr = SummingFooterCol(True, 'April', empty_values=())
+    # may = SummingFooterCol(True, 'May', empty_values=())
+    # jun = SummingFooterCol(True, 'June', empty_values=())
+    # jul = SummingFooterCol(True, 'July', empty_values=())
+    # aug = SummingFooterCol(True, 'August', empty_values=())
+    # sep = SummingFooterCol(True, 'September', empty_values=())
+    # oct = SummingFooterCol(True, 'October', empty_values=())
+    # nov = SummingFooterCol(True, 'November', empty_values=())
+    # dec = SummingFooterCol(True, 'December', empty_values=())
+    # jan = SummingFooterCol(True, 'January', empty_values=())
+    # feb = SummingFooterCol(True, 'February', empty_values=())
+    # mar = SummingFooterCol(True, 'March', empty_values=())
 
     def __init__(self, column_dict={}, *args, **kwargs):
+        cols = []
+
+        for month in FINANCIAL_YEAR_MONTHS:
+            cols.append((
+                month[0],
+                SummingFooterCol(True, month[1], empty_values=())
+            ))
+
+        self.base_columns.update(OrderedDict(cols))
+
+        # self.base_columns = OrderedDict(cols)
+
         # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
         #  calculating the subtotals, but they are not required in the displayed table.
         column_dict = {k: v for k, v in column_dict.items() if v != 'Hidden'}
@@ -88,7 +106,7 @@ class ForecastTable(tables.Table):
 
         column_list = column_dict.keys()
         actual_period = actual_month()
-        actual_month_list = self.full_year[:actual_period]
+        actual_month_list = FULL_YEAR[:actual_period]
         # forecast_month_list = self.full_year[actual_period:]
         # forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
 
@@ -106,7 +124,7 @@ class ForecastTable(tables.Table):
                 (
                     'year_total',
                     SummingMonthFooterCol(
-                        self.full_year,
+                        FULL_YEAR,
                         True,
                         'Year Total',
                         empty_values=()
@@ -146,21 +164,21 @@ class ForecastTable(tables.Table):
 
 
 class ForecastSubTotalTable(tables.Table):
-    full_year = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
 
-    budg = SummingFooterCol(False, 'Budget', empty_values=())
-    apr = SummingFooterCol(False, 'April', empty_values=())
-    may = SummingFooterCol(False, 'May', empty_values=())
-    jun = SummingFooterCol(False, 'June', empty_values=())
-    jul = SummingFooterCol(False, 'July', empty_values=())
-    aug = SummingFooterCol(False, 'August', empty_values=())
-    sep = SummingFooterCol(False, 'September', empty_values=())
-    oct = SummingFooterCol(False, 'October', empty_values=())
-    nov = SummingFooterCol(False, 'November', empty_values=())
-    dec = SummingFooterCol(False, 'December', empty_values=())
-    jan = SummingFooterCol(False, 'January', empty_values=())
-    feb = SummingFooterCol(False, 'February', empty_values=())
-    mar = SummingFooterCol(False, 'March', empty_values=())
+
+    # budg = SummingFooterCol(False, 'Budget', empty_values=())
+    # apr = SummingFooterCol(False, 'April', empty_values=())
+    # may = SummingFooterCol(False, 'May', empty_values=())
+    # jun = SummingFooterCol(False, 'June', empty_values=())
+    # jul = SummingFooterCol(False, 'July', empty_values=())
+    # aug = SummingFooterCol(False, 'August', empty_values=())
+    # sep = SummingFooterCol(False, 'September', empty_values=())
+    # oct = SummingFooterCol(False, 'October', empty_values=())
+    # nov = SummingFooterCol(False, 'November', empty_values=())
+    # dec = SummingFooterCol(False, 'December', empty_values=())
+    # jan = SummingFooterCol(False, 'January', empty_values=())
+    # feb = SummingFooterCol(False, 'February', empty_values=())
+    # mar = SummingFooterCol(False, 'March', empty_values=())
 
     def __init__(self, column_dict1={}, *args, **kwargs):
         # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
@@ -170,7 +188,7 @@ class ForecastSubTotalTable(tables.Table):
 
         column_list = column_dict.keys()
         actual_period = actual_month()
-        actual_month_list = self.full_year[:actual_period]
+        actual_month_list = FULL_YEAR[:actual_period]
         # forecast_month_list = self.full_year[actual_period:]
         # forecast_month_col = [ tables.Column(v) for v in forecast_month_list]
 
@@ -188,7 +206,7 @@ class ForecastSubTotalTable(tables.Table):
                 (
                     'year_total',
                     SummingMonthFooterCol(
-                        self.full_year,
+                        FULL_YEAR,
                         False,
                         'Year Total',
                         empty_values=()
