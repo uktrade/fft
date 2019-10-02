@@ -126,11 +126,12 @@ class PivotManager(models.Manager):
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
         self.output_row_to_table(result_table, first_row, 'normal')
-
+        # import pdb;
+        # pdb.set_trace()
         # Initialise the structure required
         # a dictionary with the previous value of the columns to be sub-totalled
         # a dictionary of subtotal dictionaries, with an extra entry (gran total)
-        sub_total_row = {k:(v if k in self.period_list else '') for k,v in first_row}
+        sub_total_row = {k:(v if k in self.period_list else ' ') for k,v in first_row.items()}
 
         previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
         subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
@@ -144,7 +145,9 @@ class PivotManager(models.Manager):
             for column in subtotal_columns:
                 if current_row[column] != previous_values[column]:
                     #  output the subtotal
-                    self.output_row_to_table(result_table, subtotals[column].copy(), 'sub_total')
+                    subtotal_out = subtotals[column].copy()
+                    subtotal_out[display_total_column] = 'Total for {}'.format(previous_values[column])
+                    self.output_row_to_table(result_table, subtotal_out, 'sub_total')
                     self.clear_row(subtotals[column])
                     previous_values[column] = current_row[column]
                 else:
@@ -157,8 +160,9 @@ class PivotManager(models.Manager):
 
         # output all the subtotals, because it is finished
         for column in subtotal_columns:
+            subtotals[column][display_total_column] = 'Total for {}'.format(previous_values[column])
             self.output_row_to_table(result_table, subtotals[column], 'sub_total')
-
+        subtotals['Gran_Total'][display_total_column] = 'Gran Total'
         self.output_row_to_table(result_table, subtotals['Gran_Total'], 'sub_total')
 
         return result_table
