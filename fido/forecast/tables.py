@@ -113,7 +113,7 @@ class ForecastTable(tables.Table):
         for month in actual_month_list:
             col = self.columns[month]
             col.column.attrs = {
-                'td': {'class': 'actual-month'}
+                'td': {'class': 'govuk-table__cell actual-month'}
             }
 
     class Meta:
