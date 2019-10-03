@@ -181,7 +181,7 @@ class PivotManager(models.Manager):
                 if current_row[column] != previous_values[column]:
                     #  output the subtotal
                     subtotal_out = subtotals[column].copy()
-                    subtotal_out[display_total_column] = 'Total for {}'.format(previous_values[column])
+                    subtotal_out[display_total_column] = 'Total {}'.format(previous_values[column])
                     self.output_row_to_table(result_table, subtotal_out, SUB_TOTAL_CLASS)
                     self.clear_row(subtotals[column])
                     previous_values[column] = current_row[column]
@@ -195,9 +195,9 @@ class PivotManager(models.Manager):
 
         # output all the subtotals, because it is finished
         for column in subtotal_columns:
-            subtotals[column][display_total_column] = 'Total for {}'.format(previous_values[column])
+            subtotals[column][display_total_column] = 'Total {}'.format(previous_values[column])
             self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS)
-        subtotals['Gran_Total'][display_total_column] = 'Gran Total'
+        subtotals['Gran_Total'][display_total_column] = 'Total Managed Expenditure'
         self.output_row_to_table(result_table, subtotals['Gran_Total'], SUB_TOTAL_CLASS)
 
         return result_table
