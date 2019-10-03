@@ -13,3 +13,5 @@ def today_string():
     today = datetime.datetime.today()
     return today.strftime('%d %b %Y')
 
+
+SUB_TOTAL_CLASS = 'sub-total'

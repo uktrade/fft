@@ -99,8 +99,8 @@ button {
     width: 15%;
 }
 
-.actualmonth {
-     background-color: DarkSeaGreen;
+.actual-month {
+    background-color: $govuk-secondary-text-colour;
     color: white;
 }
 
@@ -153,6 +153,7 @@ input.cell-input {
   //background-color: #f3f2f1;
 }
 
-.sub_total {
+.sub-total {
   background-color: $govuk-brand-colour;
+  color: $govuk-body-background-colour;
 }
