@@ -8,7 +8,8 @@ from costcentre.models import CostCentre
 
 from django.db import models
 
-from django.db.models.functions import Lower
+from django.db.models import Max
+
 
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py
 from django_pivot.pivot import pivot
@@ -26,6 +27,21 @@ class SubTotalFieldNotSpecifiedError(Exception):
         self.errors = errors
 
 
+class FinancialPeriodManager(models.Manager):
+    def period_display_list(self):
+        return(list(self.get_queryset().filter(display_figure=True).values_list('period_short_name', flat=True)))
+
+    def actual_month(self):
+        m = self.get_queryset().filter(actual_loaded=True).aggregate(Max('financial_period_code'))
+        return m['financial_period_code__max'] or 0
+
+    def actual_month_list(self):
+        return self.period_display_list()[:self.actual_month()]
+
+    def periods(self):
+        return self.get_queryset().filter(display_figure=True).values_list('period_short_name','period_long_name')
+
+
 class FinancialPeriod(models.Model):
     """Financial periods: correspond to month, but there are 3 extra periods at the end"""
     financial_period_code = models.IntegerField(primary_key=True)  # April = 1
@@ -35,6 +51,10 @@ class FinancialPeriod(models.Model):
     # use a flag to indicate if the actuals have been uploaded instead of relying on the date
     # the actuals are manually uploaded, so it is not garanteed on which date they are uploaded
     actual_loaded = models.BooleanField(default=False)
+    display_figure = models.BooleanField(default=True)
+
+    objects = models.Manager()  # The default manager.
+    financial_period_info = FinancialPeriodManager()
 
     class Meta:
         ordering = ['financial_period_code']
@@ -116,7 +136,7 @@ class PivotManager(models.Manager):
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
 
-        self.period_list = list(FinancialPeriod.objects.values_list(Lower('period_short_name'), flat=True))
+        self.period_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
 
         # TODO check that the display_total_column exists in the list of columns
 
@@ -168,9 +188,6 @@ class PivotManager(models.Manager):
         return result_table
 
     def pivotdata(self, columns={}, filter_dict={}, year=0, order_list=[]):
-        def lowercase(s):
-            return s.lower()
-
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
@@ -185,7 +202,7 @@ class PivotManager(models.Manager):
             q1,
             columns,
             'financial_period__period_short_name',
-            'amount', display_transform=lowercase
+            'amount'
         )
 
 

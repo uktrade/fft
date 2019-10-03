@@ -15,10 +15,11 @@ def today_string():
 
 
 FINANCIAL_YEAR_MONTHS = [
-    ('apr', 'April'),
-    ('may', 'May'),
-    ('jun', 'June'),
-    ('jul', 'July'),
+    ('Apr', 'April'),
+    ('May', 'May'),
+    ('Jun', 'June'),
+    ('Jul', 'July'),
 ]
 
 FULL_YEAR = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
+
