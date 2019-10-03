@@ -16,22 +16,22 @@ import json
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-# programme__budget_type_fk__budget_type indicates if DEL, AME, ADMIN used in every view
+# programme__budget_type_fk__budget_type_display indicates if DEL, AME, ADMIN used in every view
 budget_type_columns = {
-    'programme__budget_type_fk__budget_type': 'Budget_type',
+    'programme__budget_type_fk__budget_type_display': 'Budget_type',
     'cost_centre__cost_centre_code': 'Cost Centre Code',
     'cost_centre__cost_centre_name': 'Cost Centre Description',
 }
 
 programme_columns = {
-    'programme__budget_type_fk__budget_type': 'Hidden',
+    'programme__budget_type_fk__budget_type_display': 'Hidden',
     'natural_account_code__account_L5_code__economic_budget_code': 'Expenditure Type',
     'programme__programme_code': 'Programme Code',
     'programme__programme_description': 'Programme Description'
 }
 
 natural_account_columns = {
-    'programme__budget_type_fk__budget_type': 'Hidden',
+    'programme__budget_type_fk__budget_type_display': 'Hidden',
     'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Budget Grouping',
     'natural_account_code__expenditure_category__grouping_description': 'Budget Category',
 }
@@ -83,7 +83,11 @@ class CostClassView(FidoExportMixin, SingleTableView):
                    'programme__programme_code': 'Programme Code',
                    'programme__programme_description': 'Programme Description',
                    'project_code__project_code': 'Project Code',
-                   'project_code__project_description': 'Programme Description',
+                   'project_code__project_description': 'Project Description',
+                   'programme__budget_type_fk__budget_type_display': 'Budget Type',
+                   'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Budget Grouping',
+                   'natural_account_code__expenditure_category__grouping_description': 'Budget Category',
+                   'natural_account_code__account_L5_code__economic_budget_code': 'Expenditure Type',
                    }
         cost_centre_code = 888812
         pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
@@ -106,20 +110,21 @@ class MultiforecastView(MultiTableMixin, TemplateView):
         # TODO Add a field to the chart of account tables specifying the row display order
         # TODO the filter will be set from the request
         cost_centre_code = 888812
-        order_list = ['-programme__budget_type_fk__budget_type']
+        order_list = ['programme__budget_type_fk__budget_type_display_order']
         pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
 
-        sub_total_type = ['programme__budget_type_fk__budget_type']
+        sub_total_type = ['programme__budget_type_fk__budget_type_display']
         display_sub_total_column = 'cost_centre__cost_centre_name'
         q1 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_type,
                                                budget_type_columns.keys(),pivot_filter, order_list = order_list)
         # subtotal_data
-        sub_total_prog = ['programme__budget_type_fk__budget_type',
+        order_list = ['programme__budget_type_fk__budget_type_display_order','natural_account_code__account_L5_code__economic_budget_code']
+        sub_total_prog = ['programme__budget_type_fk__budget_type_display',
                     'natural_account_code__account_L5_code__economic_budget_code']
         display_sub_total_column = 'programme__programme_description'
         q2 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_prog, programme_columns.keys(),pivot_filter, order_list = order_list)
 
-        sub_total_nac = ['programme__budget_type_fk__budget_type',
+        sub_total_nac = ['programme__budget_type_fk__budget_type_display',
                     'natural_account_code__expenditure_category__NAC_category__NAC_category_description']
         display_sub_total_column = 'natural_account_code__expenditure_category__grouping_description'
 

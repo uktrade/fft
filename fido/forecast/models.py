@@ -128,13 +128,13 @@ class PivotManager(models.Manager):
             row[period] = 0
 
     def subtotal_data(
-        self,
-        display_total_column,
-        subtotal_columns,
-        data_columns,
-        filter_dict={},
-        year=0,
-        order_list=[]
+            self,
+            display_total_column,
+            subtotal_columns,
+            data_columns,
+            filter_dict={},
+            year=0,
+            order_list=[]
     ):
         # If requesting a subtotal, the list of columns must be specified
         if not subtotal_columns:
@@ -142,8 +142,6 @@ class PivotManager(models.Manager):
 
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
-
-        self.period_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
 
         # TODO check that the display_total_column exists in the list of columns
 
@@ -164,6 +162,9 @@ class PivotManager(models.Manager):
             first_row,
             ''
         )
+        # remove missing periods from the list used to add and zero the totals
+        full_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
+        self.period_list = [value for value in full_list if value in first_row.keys()]
         # import pdb;
         # pdb.set_trace()
         # Initialise the structure required
@@ -180,7 +181,7 @@ class PivotManager(models.Manager):
                 if current_row[column] != previous_values[column]:
                     #  output the subtotal
                     subtotal_out = subtotals[column].copy()
-                    subtotal_out[display_total_column] = 'Total for {}'.format(previous_values[column])
+                    subtotal_out[display_total_column] = 'Total {}'.format(previous_values[column])
                     self.output_row_to_table(result_table, subtotal_out, SUB_TOTAL_CLASS)
                     self.clear_row(subtotals[column])
                     previous_values[column] = current_row[column]
@@ -194,9 +195,9 @@ class PivotManager(models.Manager):
 
         # output all the subtotals, because it is finished
         for column in subtotal_columns:
-            subtotals[column][display_total_column] = 'Total for {}'.format(previous_values[column])
+            subtotals[column][display_total_column] = 'Total {}'.format(previous_values[column])
             self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS)
-        subtotals['Gran_Total'][display_total_column] = 'Gran Total'
+        subtotals['Gran_Total'][display_total_column] = 'Total Managed Expenditure'
         self.output_row_to_table(result_table, subtotals['Gran_Total'], SUB_TOTAL_CLASS)
 
         return result_table

@@ -22,7 +22,7 @@ from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_N
 from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
     HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
     HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
-    InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode
+    InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode, BudgetType
 
 
 class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
@@ -469,3 +469,5 @@ admin.site.register(HistoricalProgrammeCode, HistoricalProgrammeAdmin)
 admin.site.register(HistoricalInterEntity, HistoricalInterEntityAdmin)
 admin.site.register(HistoricalProjectCode, HistoricalProjectCodeAdmin)
 admin.site.register(HistoricalFCOMapping, HistoricalFCOMappingAdmin)
+
+admin.site.register(BudgetType)

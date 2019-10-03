@@ -37,7 +37,7 @@ class SummingMonthFooterCol(SummingFooterCol):
     Used to calculate and display year to date, full year, etc"""
 
     def calc_value(self, record):
-        val = sum(record[m] for m in self.month_list if record[m] is not None)
+        val = sum(record[m] for m in self.month_list if m in record and record[m] is not None )
         return val or 0
 
     def render(self, value, record):

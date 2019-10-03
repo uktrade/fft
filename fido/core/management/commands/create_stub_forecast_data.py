@@ -44,6 +44,15 @@ def monthly_figures_create():
                 )
                 monthly_amount += 1
 
+        for i in range(1,3):
+            actual = FinancialPeriod.objects.get(financial_period_code=i)
+            actual.actual_loaded = True
+            actual.save()
+
+        # for i in range(13,15):
+        #     actual = FinancialPeriod.objects.get(financial_period_code=i)
+        #     actual.display_figure = False
+        #     actual.save()
 
 class Command(BaseCommand):
     help = 'Create stub forecast data. Use --delete to clear the data'
