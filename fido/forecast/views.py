@@ -43,6 +43,8 @@ class PivotClassView(FidoExportMixin, SingleTableView):
     filterset_class = None
     table_class = ForecastTable
 
+    table_pagination = False
+
     def get_table_kwargs(self):
         return {
             'column_dict': self.column_dict
@@ -64,6 +66,7 @@ class CostClassView(FidoExportMixin, SingleTableView):
     sheet_name = 'Forecast'
     filterset_class = None
     table_class = ForecastTable
+    table_pagination = False
 
     def get_table_kwargs(self):
         return {
@@ -93,9 +96,10 @@ class CostClassView(FidoExportMixin, SingleTableView):
 class MultiforecastView(MultiTableMixin, TemplateView):
     template_name = 'forecast/forecastmulti.html'
 
-    table_pagination = {
-        'per_page': 30
-    }
+    # table_pagination = {
+    #     'per_page': 30
+    # }
+    table_pagination = False
 
     def __init__(self, *args, **kwargs):
         # TODO remove hardcoded cost centre

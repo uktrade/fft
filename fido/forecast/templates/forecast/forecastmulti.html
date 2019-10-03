@@ -6,9 +6,10 @@
 {% block content %}
 <h3 class="govuk-heading-m">Title</h3>
 
-<div class="tables-container">
-    {% for table in tables %}
+{% for table in tables %}
+    <div class="tables-container">
         {% render_table table %}
-    {% endfor %}
-</div>
+    </div>
+{% endfor %}
+
 {% endblock %}
