@@ -104,23 +104,27 @@ class MultiforecastView(MultiTableMixin, TemplateView):
         cost_centre_code = 888812
         order_list = ['-programme__budget_type_fk__budget_type']
         pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
-        # set the queryset at init, because it requires the current year, so it is recall each
-        # time. Maybe an overkill, but I don't want to risk to forget to change the year!
-        q1 = MonthlyFigure.pivot.pivotdata(budget_type_columns.keys(),pivot_filter, order_list = order_list)
+
+        sub_total_type = ['programme__budget_type_fk__budget_type']
+        display_sub_total_column = 'cost_centre__cost_centre_name'
+        q1 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_type,
+                                               budget_type_columns.keys(),pivot_filter, order_list = order_list)
         # subtotal_data
-        sub_totals = ['programme__budget_type_fk__budget_type',
+        sub_total_prog = ['programme__budget_type_fk__budget_type',
                     'natural_account_code__account_L5_code__economic_budget_code']
         display_sub_total_column = 'programme__programme_description'
+        q2 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_prog, programme_columns.keys(),pivot_filter, order_list = order_list)
 
-        # q2 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
-        q4 = MonthlyFigure.pivot.pivotdata(programme_columns.keys(),pivot_filter, order_list = order_list)
-        q2 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_totals, programme_columns.keys(),pivot_filter, order_list = order_list)
-        q3 = MonthlyFigure.pivot.pivotdata(natural_account_columns.keys(),pivot_filter, order_list = order_list)
+        sub_total_nac = ['programme__budget_type_fk__budget_type',
+                    'natural_account_code__expenditure_category__NAC_category__NAC_category_description']
+        display_sub_total_column = 'natural_account_code__expenditure_category__grouping_description'
+
+        q3 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_nac,
+                                                natural_account_columns.keys(),pivot_filter, order_list = order_list)
         self.tables = [
-            # ForecastTable(budget_type_columns, q1),
+            ForecastSubTotalTable(budget_type_columns, q1),
             ForecastSubTotalTable(programme_columns, q2),
-            ForecastTable(programme_columns, q4),
-            ForecastTable(natural_account_columns, q3)
+            ForecastSubTotalTable(natural_account_columns, q3)
         ]
 
         super().__init__(*args, **kwargs)
