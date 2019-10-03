@@ -135,7 +135,7 @@ class PivotManager(models.Manager):
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
 
-        self.period_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
+
 
         # TODO check that the display_total_column exists in the list of columns
 
@@ -145,6 +145,9 @@ class PivotManager(models.Manager):
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
         self.output_row_to_table(result_table, first_row, '')
+        # remove missing periods from the list used to add and zero the totals
+        full_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
+        self.period_list = [value for value in full_list if value in first_row.keys()]
         # import pdb;
         # pdb.set_trace()
         # Initialise the structure required
