@@ -102,15 +102,16 @@ class Budget(FinancialCode, TimeStampedModel):
 
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
-    default_columns = {'cost_centre__cost_centre_code': 'Cost Centre Code',
-                       'cost_centre__cost_centre_name': 'Cost Centre Description',
-                       'natural_account_code__natural_account_code': 'Natural Account Code',
-                       'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
-                       'programme__programme_code': 'Programme Code',
-                       'programme__programme_description': 'Programme Description',
-                       'project_code__project_code': 'Project Code',
-                       'project_code__project_description': 'Project Description',
-                       }
+    default_columns = {
+        'cost_centre__cost_centre_code': 'Cost Centre Code',
+        'cost_centre__cost_centre_name': 'Cost Centre Description',
+        'natural_account_code__natural_account_code': 'Natural Account Code',
+        'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
+        'programme__programme_code': 'Programme Code',
+        'programme__programme_description': 'Programme Description',
+        'project_code__project_code': 'Project Code',
+        'project_code__project_description': 'Project Description',
+    }
 
     def output_row_to_table(self, table, row, style_name):
         #     Add the stile entry to the dictionary
@@ -126,8 +127,15 @@ class PivotManager(models.Manager):
         for period in self.period_list:
             row[period] = 0
 
-    def subtotal_data(self, display_total_column, subtotal_columns, data_columns, filter_dict={}, year=0,
-                      order_list=[]):
+    def subtotal_data(
+            self,
+            display_total_column,
+            subtotal_columns,
+            data_columns,
+            filter_dict={},
+            year=0,
+            order_list=[]
+    ):
         # If requesting a subtotal, the list of columns must be specified
         if not subtotal_columns:
             raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
@@ -135,16 +143,25 @@ class PivotManager(models.Manager):
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
 
-
-
         # TODO check that the display_total_column exists in the list of columns
 
-        data_returned = self.pivotdata(data_columns, filter_dict, year, order_list)
+        data_returned = self.pivotdata(
+            data_columns,
+            filter_dict,
+            year,
+            order_list
+        )
+
         result_table = []
         pivot_data = list(data_returned)
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
-        self.output_row_to_table(result_table, first_row, '')
+
+        self.output_row_to_table(
+            result_table,
+            first_row,
+            ''
+        )
         # remove missing periods from the list used to add and zero the totals
         full_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
         self.period_list = [value for value in full_list if value in first_row.keys()]
@@ -218,14 +235,16 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     pivot = PivotManager()
 
     class Meta:
-        unique_together = ('programme',
-                           'cost_centre',
-                           'natural_account_code',
-                           'analysis1_code',
-                           'analysis2_code',
-                           'project_code',
-                           'financial_year',
-                           'financial_period')
+        unique_together = (
+            'programme',
+            'cost_centre',
+            'natural_account_code',
+            'analysis1_code',
+            'analysis2_code',
+            'project_code',
+            'financial_year',
+            'financial_period'
+        )
 
     def __str__(self):
         return str(self.cost_centre) + '--' \
@@ -243,7 +262,11 @@ class OSCARReturn(models.Model):
     # The view is created by the migration 0016_recreate_oscar_view.py
     # TODO Change the database view to return figures in thousands. At the moment the figures are in pence.
     row_number = models.BigIntegerField()
-    account_l5_code = models.ForeignKey('treasuryCOA.L5Account', on_delete=models.PROTECT, db_column='account_l5_code')
+    account_l5_code = models.ForeignKey(
+        'treasuryCOA.L5Account',
+        on_delete=models.PROTECT,
+        db_column='account_l5_code'
+    )
     sub_segment_code = models.CharField(max_length=8, primary_key=True)
     sub_segment_long_name = models.CharField(max_length=255)
     apr = models.BigIntegerField(default=0)

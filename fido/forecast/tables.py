@@ -60,11 +60,10 @@ class ForecastTable(tables.Table):
     display_footer = True
 
     def __init__(self, column_dict={}, *args, **kwargs):
-        cols = []
-        cols.append((
+        cols = [(
             'budg',
             SummingFooterCol(self.display_footer, 'Budget', empty_values=())
-        ))
+        )]
 
         for month in FinancialPeriod.financial_period_info.periods():
             cols.append((
