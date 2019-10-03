@@ -17,16 +17,6 @@ class FinancialYear(models.Model):
     #     return str(self.financial_year_display)
 
 
-class AdminInfo(models.Model):
-    """Used for general information for the application.
-       The current month is the calendar month, 1 for jan, etc, calendar month, not financial
-       Financial year is the first year of the financial year, ie 2018 for 2018-19 financial year
-    """
-    current_month = models.IntegerField()  #
-
-    current_financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-
-
 class Document(TimeStampedModel):
     """Used to test S3 upload"""
     uploaded_at = models.DateTimeField(auto_now_add=True)

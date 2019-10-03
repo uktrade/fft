@@ -13,13 +13,3 @@ def today_string():
     today = datetime.datetime.today()
     return today.strftime('%d %b %Y')
 
-
-FINANCIAL_YEAR_MONTHS = [
-    ('Apr', 'April'),
-    ('May', 'May'),
-    ('Jun', 'June'),
-    ('Jul', 'July'),
-]
-
-FULL_YEAR = ['apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec', 'jan', 'feb', 'mar']
-

@@ -1,4 +1,4 @@
-from core.models import AdminInfo, Document, EventLog, FinancialYear
+from core.models import Document, EventLog, FinancialYear
 
 import factory
 
@@ -19,15 +19,6 @@ class FinancialYearFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = FinancialYear
-
-
-class AdminInfoFactory(factory.DjangoModelFactory):
-    """
-    Define AdminInfo Factory
-    """
-
-    class Meta:
-        model = AdminInfo
 
 
 class DocumentFactory(factory.DjangoModelFactory):
