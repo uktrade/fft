@@ -101,7 +101,6 @@ my_project_visualized.png
 .idea/
 .pytest_cache/
 bin/
-!fido/bin/post_compile
 .environ
 
 include/
@@ -128,3 +127,5 @@ fido/front_end/config/webpack-stats.json
 
 # Node module dir
 fido/node_modules
+
+!fido/bin/
