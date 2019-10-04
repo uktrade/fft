@@ -101,6 +101,7 @@ my_project_visualized.png
 .idea/
 .pytest_cache/
 bin/
+!fido/bin/post_compile
 .environ
 
 include/
