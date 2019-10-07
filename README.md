@@ -65,3 +65,12 @@ aaaaa
 
 ### Notes
 In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
+
+### Product URLs
+
+#### Dev URL
+https://fido.trade.uat.uktrade.io/core/
+
+#### Production URL
+https://fido.trade.gov.uk/core/
+
