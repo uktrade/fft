@@ -1,5 +1,5 @@
 FROM python:3.6
-ADD ./fido /fido
+ADD . /fido
 WORKDIR /fido
 
 RUN pip install --upgrade pip
