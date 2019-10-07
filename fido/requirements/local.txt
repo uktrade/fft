@@ -6,4 +6,3 @@ behave
 selenium
 libsass
 django-compressor
-django-sass-processor
