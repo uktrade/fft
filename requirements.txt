@@ -1,1 +1,1 @@
--r fido/requirements/production.txt
+-r requirements/production.txt
