@@ -85,3 +85,4 @@ xlwt==1.3.0
 django-reversion
 browserstack-local
 django-sass-processor
+libsass
