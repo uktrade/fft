@@ -1,1 +1,1 @@
-web: python fido/manage.py migrate --noinput && python fido/manage.py collectstatic --noinput && gunicorn fido.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file -
+web: python fido/manage.py migrate --noinput && python fido/manage.py collectstatic --noinput && gunicorn fido.fido.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file -
