@@ -1,5 +1,3 @@
 ---
 applications:
-  - buildpacks:
-  - nodejs_buildpack
-  - python_buildpack
+  - buildpack: https://github.com/cloudfoundry/multi-buildpack
