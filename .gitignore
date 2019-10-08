@@ -117,6 +117,7 @@ prod_dump_clean_backup.sql
 
 # Local src dir
 src/
+!/front_end/src/
 
 # Front end static dir
 fido/staticfiles/*

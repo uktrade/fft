@@ -86,3 +86,4 @@ django-reversion
 browserstack-local
 django-sass-processor
 libsass
+django-webpack-loader
