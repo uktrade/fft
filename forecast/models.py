@@ -143,7 +143,8 @@ class PivotManager(models.Manager):
         if not all(elem in [*data_columns] for elem in subtotal_columns):
             raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
 
-        # TODO check that the display_total_column exists in the list of columns
+        if display_total_column not in [*data_columns]:
+            raise SubTotalFieldDoesNotExistError("Display sub total column does not exist")
 
         data_returned = self.pivotdata(
             data_columns,
@@ -162,31 +163,43 @@ class PivotManager(models.Manager):
             first_row,
             ''
         )
-        # remove missing periods from the list used to add and zero the totals
         full_list = list(FinancialPeriod.objects.values_list('period_short_name', flat=True))
+        # remove missing periods (like Adj1, etc from the list used to add the periods together.
         self.period_list = [value for value in full_list if value in first_row.keys()]
         # import pdb;
         # pdb.set_trace()
         # Initialise the structure required
         # a dictionary with the previous value of the columns to be sub-totalled
-        # a dictionary of subtotal dictionaries, with an extra entry (gran total)
+        # a dictionary of subtotal dictionaries, with an extra entry for the final total (gran total)
         sub_total_row = {k: (v if k in self.period_list else ' ') for k, v in first_row.items()}
 
         previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
         subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
         subtotals['Gran_Total'] = sub_total_row.copy()
-
+        output_subtotal = {field_name:False for field_name in subtotal_columns}
         for current_row in pivot_data:
+            subtotal_time = False
             for column in subtotal_columns:
                 if current_row[column] != previous_values[column]:
-                    #  output the subtotal
-                    subtotal_out = subtotals[column].copy()
-                    subtotal_out[display_total_column] = 'Total {}'.format(previous_values[column])
-                    self.output_row_to_table(result_table, subtotal_out, SUB_TOTAL_CLASS)
-                    self.clear_row(subtotals[column])
-                    previous_values[column] = current_row[column]
-                else:
-                    break
+                    subtotal_time = True
+                    output_subtotal[column] = True
+            if subtotal_time:
+                v = False
+                for column in subtotal_columns[::-1]:
+                    if output_subtotal[column]:
+                        v = True
+                    else:
+                        output_subtotal[column] = v
+                for column in subtotal_columns:
+                    if output_subtotal[column]:
+                        subtotal_row = subtotals[column].copy()
+                        subtotal_row[display_total_column] = 'Total {}'.format(previous_values[column])
+                        self.output_row_to_table(result_table, subtotal_row, SUB_TOTAL_CLASS)
+                        self.clear_row(subtotals[column])
+                        previous_values[column] = current_row[column]
+                        output_subtotal[column] = False
+                    else:
+                        break
 
             for k, totals in subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
