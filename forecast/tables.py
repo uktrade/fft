@@ -2,7 +2,6 @@ from collections import OrderedDict
 
 from django.contrib.humanize.templatetags.humanize import intcomma
 
-
 import django_tables2 as tables
 
 from .models import FinancialPeriod
@@ -37,7 +36,7 @@ class SummingMonthFooterCol(SummingFooterCol):
     Used to calculate and display year to date, full year, etc"""
 
     def calc_value(self, record):
-        val = sum(record[m] for m in self.month_list if m in record and record[m] is not None )
+        val = sum(record[m] for m in self.month_list if m in record and record[m] is not None)
         return val or 0
 
     def render(self, value, record):
@@ -51,6 +50,46 @@ class SummingMonthFooterCol(SummingFooterCol):
 
     def __init__(self, month_list, *args, **kwargs):
         self.month_list = month_list
+        super().__init__(*args, **kwargs)
+
+
+class SubtractCol(SummingFooterCol):
+    def calc_value(self, table):
+        a = table.columns.columns[self.col1].current_value
+        b = table.columns.columns[self.col2].current_value
+        val = int(a.replace(',', '')) - int(b.replace(',', ''))
+        return intcomma(val)
+
+    def render(self, table):
+        return self.calc_value(table)
+
+    def value(self, table):
+        return self.calc_value(table)
+
+    def __init__(self, col1, col2, *args, **kwargs):
+        self.col1 = col1
+        self.col2 = col2
+        super().__init__(*args, **kwargs)
+
+
+class PercentageCol(SummingFooterCol):
+    def calc_value(self, table):
+        a = table.columns.columns[self.col1].current_value
+        b = table.columns.columns[self.col2].current_value
+        if b == '0':
+            return 'No Budget'
+        val = int(a.replace(',', '')) / int(b.replace(',', ''))
+        return "{0:.0%}".format(val)
+
+    def render(self, table):
+        return self.calc_value(table)
+
+    def value(self, table):
+        return self.calc_value(table)
+
+    def __init__(self, col1, col2, *args, **kwargs):
+        self.col1 = col1
+        self.col2 = col2
         super().__init__(*args, **kwargs)
 
 
@@ -100,7 +139,28 @@ class ForecastTable(tables.Table):
                         'Year Total',
                         empty_values=()
                     )
+                ),
+                (
+                    'spend',
+                    SubtractCol(
+                        'budg',
+                        'year_total',
+                        self.display_footer,
+                        'Underspend (Overspend)',
+                        empty_values=()
+                    )
+                ),
+                (
+                    'percentage',
+                    PercentageCol(
+                        'spend',
+                        'budg',
+                        self.display_footer,
+                        '%',
+                        empty_values=()
+                    )
                 )
+
             ]
         )
 

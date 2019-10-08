@@ -155,6 +155,8 @@ class PivotManager(models.Manager):
 
         result_table = []
         pivot_data = list(data_returned)
+        if not pivot_data:
+            return []
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
 
