@@ -18,7 +18,7 @@
   "scripts": {
     "start": "cd front_end && npm run start",
     "bdd": "cd front_end && npm run bdd",
-    "prepare": "cd front_end && npm run build"
+    "postinstall": "cd front_end && npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
