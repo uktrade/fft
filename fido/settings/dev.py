@@ -4,7 +4,6 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 INSTALLED_APPS += (
     'forecast_prototype',
-    'webpack_loader',
 )
 
 STATICFILES_DIRS = (
