@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Install Python deps
           command:
-            pip install -r requirements/test.txt
+            sudo pip install -r requirements/test.txt
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
           paths:
@@ -40,7 +40,7 @@ jobs:
       - run:
           name: Install React app
           command:
-            npm install
+            sudo npm install
       - save_cache:
           key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
