@@ -1,4 +1,7 @@
-Django==2.2.4
-selenium
+-r base.txt
+Faker==0.9.0
+factory-boy==2.11.1
 behave
+selenium
+django-compressor
 PyVirtualDisplay
