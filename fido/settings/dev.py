@@ -11,14 +11,6 @@ STATICFILES_DIRS = (
     "/app/node_modules/govuk-frontend",
 )
 
-WEBPACK_LOADER = {
-    "DEFAULT": {
-        "CACHE": not DEBUG,
-        "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": "/app/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
-    }
-}
-
 # for debug_toolbar, to activate it only on localhost
 INTERNAL_IPS = ['127.0.0.1']
 
