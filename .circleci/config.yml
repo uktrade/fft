@@ -36,15 +36,15 @@ jobs:
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
           paths:
-            - /app
+            - ./
       - run:
           name: Install React app
           command:
-            sudo npm install
+            npm install
       - save_cache:
           key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
-            - /app
+            - ./
       - run:
           name: Run tests
           command: python manage.py test
