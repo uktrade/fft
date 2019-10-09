@@ -6,6 +6,7 @@ jobs:
         environment:
           FLASK_CONFIG: testing
           TEST_DATABASE_URL: psql://ubuntu@localhost:5432/fido_test?sslmode=disable
+
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: ubuntu
@@ -34,12 +35,16 @@ jobs:
             pip install -r requirements/test.txt
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - /app
       - run:
           name: Install React app
           command:
             npm install
       - save_cache:
           key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - /app
       - run:
           name: Run tests
           command: python manage.py test
