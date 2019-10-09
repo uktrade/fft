@@ -12,11 +12,13 @@ class SummingFooterCol(tables.Column):
     default = 0
     tot_value = 0
 
+    def display_value(self, value):
+        return intcomma(value)
+
     def render(self, value):
         v = (value or 0)
         self.tot_value += v
-        # return '{:0.2f}'.format(value)
-        return intcomma(v)
+        return self.display_value(v)
 
     def value(self, record, value):
         return float(value or 0)
@@ -28,7 +30,7 @@ class SummingFooterCol(tables.Column):
             self.render_footer = self.proto_render_footer
 
     def proto_render_footer(self, bound_column, table):
-        return intcomma(self.tot_value)
+        return self.display_value(self.tot_value)
 
 
 class SummingMonthFooterCol(SummingFooterCol):
@@ -42,7 +44,7 @@ class SummingMonthFooterCol(SummingFooterCol):
     def render(self, value, record):
         val = self.calc_value(record)
         self.tot_value += val
-        return intcomma(val)
+        return self.display_value(val)
 
     def value(self, record, value):
         val = self.calc_value(record)
@@ -58,7 +60,7 @@ class SubtractCol(SummingFooterCol):
         a = table.columns.columns[self.col1].current_value
         b = table.columns.columns[self.col2].current_value
         val = int(a.replace(',', '')) - int(b.replace(',', ''))
-        return intcomma(val)
+        return self.display_value(val)
 
     def render(self, table):
         return self.calc_value(table)
