@@ -32,10 +32,10 @@ jobs:
           key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Install Python deps
-          command:
+          command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install requirements/test.txt
+            pip install -r requirements/test.txt
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
           paths:
