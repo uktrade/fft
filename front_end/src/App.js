@@ -1,16 +1,13 @@
-import React, {Fragment, useState, useEffect, useRef } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+//import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import './App.css';
-import { Provider } from 'react-redux';
-import { store } from './Store';
-import { PersistGate } from 'redux-persist/integration/react';
-import Table from './Components/Table/index'
+//import { Provider } from 'react-redux';
+//import { store } from './Store';
+//import { PersistGate } from 'redux-persist/integration/react';
 
 function App() {
     return (
-        <Provider store={store}>
-            <Table />
-        </Provider>
+        <h1>React app</h1>
     );
 }
 
