@@ -56,6 +56,7 @@ class SummingMonthFooterCol(SummingFooterCol):
 
 
 class SubtractCol(SummingFooterCol):
+    """Used to display the difference between the figures in two columns"""
     def calc_value(self, table):
         a = table.columns.columns[self.col1].current_value
         b = table.columns.columns[self.col2].current_value
@@ -75,6 +76,7 @@ class SubtractCol(SummingFooterCol):
 
 
 class PercentageCol(SummingFooterCol):
+    """Used to display the percentage of values in two columns"""
     def calc_value(self, table):
         a = table.columns.columns[self.col1].current_value
         b = table.columns.columns[self.col2].current_value
