@@ -199,6 +199,15 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+# Django webpack loader
+WEBPACK_LOADER = {
+    "DEFAULT": {
+        "CACHE": not DEBUG,
+        "BUNDLE_DIR_NAME": "build/",  # must end with slash
+        "STATS_FILE": "/app/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
+    }
+}
+
 # Your Amazon Web Services secret access key, as a string.
 
 # AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
