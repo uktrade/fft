@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'custom_usermodel',
     'storages',
     'sass_processor',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [

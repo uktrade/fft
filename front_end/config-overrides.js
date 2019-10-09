@@ -1,31 +1,22 @@
 var BundleTracker = require('webpack-bundle-tracker');
 const path = require('path');
-var webpack = require('webpack')
+var webpack = require('webpack');
 
 module.exports = {
   webpack: (config, env) => {
-    config.plugins = [
-    new webpack.HotModuleReplacementPlugin(),
-    new BundleTracker({
-        path: __dirname,
-        filename: './config/webpack-stats.json',
+    config.plugins.push(
+      new BundleTracker({
+          path: __dirname,
+          filename: './config/webpack-stats.json',
       }),
-    ];
+    );
     config.entry = [
-      'webpack-dev-server/client?http://' + process.env.PUBLIC_PATH + ':3000',
+      'webpack-dev-server/client?' + process.env.PUBLIC_PATH,
       'webpack/hot/dev-server',
       './src/index'
     ];
-    config.output = {
-      path:  path.resolve(__dirname, 'build/static/'),
-      publicPath: 'http://' + process.env.PUBLIC_PATH + ':3000/',
-    };
+    config.output["publicPath"] = process.env.PUBLIC_PATH;
     config.optimization.splitChunks.name = 'vendors';
-
-    // config.resolve = {
-    //   ...config.resolve,
-    //   alias: { '@': path.resolve(__dirname, 'front_end/src') },
-    // };
 
     return config;
   },

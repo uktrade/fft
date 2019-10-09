@@ -1,3 +1,0 @@
-echo "POST-COMPILE"
-
-npm run build

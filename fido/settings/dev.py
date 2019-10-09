@@ -4,19 +4,18 @@ CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 INSTALLED_APPS += (
     'forecast_prototype',
-    'webpack_loader',
 )
 
 STATICFILES_DIRS = (
-    "/fido/front_end/build/static",
-    "/fido/node_modules/govuk-frontend",
+    "/app/front_end/build/static",
+    "/app/node_modules/govuk-frontend",
 )
 
 WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": "/fido/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
+        "STATS_FILE": "/app/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
     }
 }
 
