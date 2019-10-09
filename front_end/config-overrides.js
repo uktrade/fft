@@ -2,7 +2,7 @@ const BundleTracker = require('webpack-bundle-tracker');
 const path = require('path');
 const webpack = require('webpack');
 
-if (!process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV !== "development") {
   module.exports = {
     webpack: (config, env) => {
       config.plugins.push(
@@ -11,9 +11,11 @@ if (!process.env.NODE_ENV === "development") {
             filename: './config/webpack-stats.json',
           })
       );
+      config.output["publicPath"] = process.env.PUBLIC_PATH;
+      config.optimization.splitChunks.name = 'vendors';
 
       return config;
-    }
+    },
   }
 } else {
   module.exports = {
@@ -41,7 +43,7 @@ if (!process.env.NODE_ENV === "development") {
           'Access-Control-Allow-Origin': '*'
         };
         config.hot = true;
-        config.public = process.env.PUBLIC_PATH + ":3000";
+        config.public = process.env.PUBLIC_PATH;
 
         return config;
       };
