@@ -1,86 +1,57 @@
 version: 2.1
-
-  job_defaults: &job_defaults
-    parameters:
-      python_image:
-        type: string
-
-      postgres_image:
-        type: string
-
-      publish_coverage:
-        type: boolean
-        default: false
-
-    environment:
-      DATABASE_URL: postgresql://postgres@localhost/fido
-      ICMS_DEBUG: 'True'
-      DJANGO_SECRET_KEY: test
-      DJANGO_SETTINGS_MODULE: fido.settings.dev
-
-    working_directory: ~/
-
+jobs:
+  build:
     docker:
-      - image: <<parameters.python_image>>
-      - image: <<parameters.postgres_image>>
+      - image: circleci/python:3.6-stretch-node-browsers-legacy
         environment:
-          POSTGRES_DB=fido
+          FLASK_CONFIG: testing
+          TEST_DATABASE_URL: psql://ubuntu@localhost:5432/fido_test?sslmode=disable
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: fido_test
+          POSTGRES_PASSWORD: ""
 
     steps:
       - checkout
-
-#      - restore_cache:
-#          name: Restore pip cache
-#          keys:
-#            - v1-icms-{{ checksum "Pipfile.lock" }}
-#            - v1-icms-
-#          paths:
-#            - ~/cache/pip
-
+      - run: mkdir test-reports
       - run:
-          name: Install Python dependencies
-          command: pip install
-
+          name: Download Selenium
+          command: |
+            curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
       - run:
-          name: Install JS dependencies
-          command: npm install
-
-#      - save_cache:
-#          name: Save pip cache
-#          key: v1-icms-{{ checksum "Pipfile.lock" }}
-#          paths:
-#            - ~/cache/pip
-
+          name: Start Selenium
+          command: |
+            java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+          background: true
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
+      - restore_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
+      - run:
+          name: Install Python deps
+          command:
+            pip install -r requirements/test.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
+      - run:
+          name: Install React app
+          command:
+            npm install
+      - save_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: Run tests
           command: python manage.py test
-
+      - run:
+          name: Run tests
+          command: python behave
       - run:
           name: Run Flake8
           command: python -m flake8
 
+      - store_artifacts:
+          path: test-reports/
+          destination: tr1
       - store_test_results:
-          path: test-reports
-
-      - when:
-          condition: <<parameters.publish_coverage>>
-          steps:
-            - run:
-                name: Publish coverage
-                command: |
-                  wget -O codecov.sh https://codecov.io/bash
-                  bash ./codecov.sh -t ${COV_TOKEN}
-  jobs:
-    build:
-      <<: *job_defaults
-
-  workflows:
-    version: 2
-
-    # Current standard environment
-    Default build:
-      jobs:
-        - build:
-            publish_coverage: true
-            python_image: python:3.6.6-node
-            postgres_image: postgres:10.7
+          path: test-reports/
