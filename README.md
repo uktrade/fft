@@ -60,7 +60,7 @@ Add setup steps to make file and amend readme
 ### Questions
 
 Have we used any indexes in the database?
-aaaaa
+
 
 
 ### Notes

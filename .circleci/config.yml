@@ -53,7 +53,7 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            python behave
+            behave
       - run:
           name: Run Flake8
           command: |
