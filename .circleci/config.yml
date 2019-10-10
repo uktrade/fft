@@ -8,7 +8,7 @@ jobs:
           TEST_DATABASE_URL: psql://ubuntu@localhost:5432/fido_test?sslmode=disable
           DJANGO_SETTINGS_MODULE: fido.settings.test
           SECRET_KEY: used_for_testing
-          ALLOWED_HOSTS: *
+          ALLOWED_HOSTS: "*"
 
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
