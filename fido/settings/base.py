@@ -188,7 +188,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-GIT_COMMIT = env('GIT_COMMIT')
+GIT_COMMIT = env('GIT_COMMIT', None)
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = 'index'
 
