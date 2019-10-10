@@ -28,28 +28,22 @@ jobs:
           command: |
             java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
           background: true
-#      - restore_cache:
-#          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
-#      - restore_cache:
-#          key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
       - run:
           name: Install Python deps
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements/test.txt
-#      - save_cache:
-#          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
-#          paths:
-#            - "venv"
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - "venv"
       - run:
           name: Install React app
           command:
             npm install
-#      - save_cache:
-#          key: deps2-{{ .Branch }}-{{ checksum "package.json" }}
-#          paths:
-#            - ./
       - run:
           name: Run tests
           command: |
