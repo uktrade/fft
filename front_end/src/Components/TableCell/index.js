@@ -1,200 +1,115 @@
-import React, {Fragment, useState, useEffect, useRef, useContext } from 'react';
+import React, {Fragment, useState, useEffect, useRef, useContext, memo } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import {
-    SET_RECT,
-    SELECT_CELL,
-    SET_VALUE,
-    UNSELECT_ALL
-} from '../../Reducers/Cells'
-import { 
-    SET_EDIT_CELL
-} from '../../Reducers/Edit'
-import {
-    SET_INITIAL_CELL,
-    SET_LAST_CELL
-} from '../../Reducers/Select'
 import {
     getCellId,
     months
 } from '../../Util'
 
-function TableCell({children, index, cellId}) {
+const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
     const dispatch = useDispatch();
 
     let cellRef = React.createRef();
     const inputRef = useRef(null);
 
-    const mouseDn = useSelector(state => state.mouse.down);
-    const allCells = useSelector(state => state.allCells);
-    const editCell = useSelector(state => state.editCell.cellId);
+    //const editCell = useSelector(state => state.editCell.cellId);
 
-    const selectCell = () => {
-        if (mouseDn) {
-            dispatch(
-                SELECT_CELL({
-                    id: cellId
-                })
-            );
 
-            dispatch(
-                SET_LAST_CELL({
-                    id: cellId
-                })
-            );
-        }
-    }
 
-    useEffect(() => {
-        if (allCells) {
-            dispatch(
-                SET_RECT({
-                    id: cellId,
-                    rect: cellRef.current.getBoundingClientRect()
-                })
-            );
-        }
-    }, []);
+
+    const [value, setValue] = useState(initialValue);
+
+    //const [rect, setRect] = useState(null);
+
+    // console.log("Re-rendering...");
+
+    // const selectCell = () => {
+    //     if (window.mouseDown) {
+    //         dispatch(
+    //             SELECT_CELL({
+    //                 id: cellId
+    //             })
+    //         );
+
+    //         dispatch(
+    //             SET_LAST_CELL({
+    //                 id: cellId
+    //             })
+    //         );
+    //     }
+    // }
 
     useEffect(() => {
-        if (inputRef && inputRef.current) {
-            inputRef.current.focus();
-        }
-    });
+        setRect(cellId, row, cellRef.current.getBoundingClientRect())
+    }, [])
+
+    // useEffect(() => {
+    //     if (inputRef && inputRef.current) {
+    //         inputRef.current.focus();
+    //     }
+    // });
 
     const isSelected = () => {
-        let cellData = allCells[cellId];
+        // let cellData = thisCell;
 
-        if (cellData && cellData.selected) {
-            return true;
-        }
+        // if (cellData && cellData.selected) {
+        //     return true;
+        // }
+
+        // return false
 
         return false
     }
 
     const handleKeyPress = (event) => {
-        if(event.key === 'Enter'){
-            dispatch({
-                type: SET_EDIT_CELL,
-                cellId: null
-            });
-        }
-    }
-
-    const handleKeyDown = (event) => {
-        if (event.keyCode == 9) {
-            // Get next cell
-            let cellData = allCells[cellId]
-            let colIndex = months.indexOf(cellData.key);
-
-            let inScope = [];
-
-            // TODO - do this once at the start of the app
-            for (const key in allCells) {
-                let cell = allCells[key];
-                inScope.push(cell);
-            }
-
-            let cells = inScope.filter((cell) => {
-                return (
-                    cell.rowIndex == cellData.rowIndex &&
-                    cell.key === months[colIndex + 1]
-                )
-            })
-
-            let nextCell = cells[0]
-
-            dispatch({
-                type: UNSELECT_ALL
-            });
-
-            dispatch(
-                SET_LAST_CELL({
-                    id: nextCell.id
-                })
-            );
-
-            dispatch(
-                SET_INITIAL_CELL({
-                    id: nextCell.id
-                })
-            );
-
-            dispatch(
-                SELECT_CELL({
-                    id: nextCell.id
-                })
-            );
-
-            dispatch({
-                type: SET_EDIT_CELL,
-                cellId: nextCell.id
-            });
-        }
+        // if(event.key === 'Enter'){
+        //     dispatch({
+        //         type: SET_EDIT_CELL,
+        //         cellId: null
+        //     });
+        // }
     }
 
     const setContentState = (value) => {
-        //setCellContent(value);
         if (!parseInt(value)) {
             return
         }
 
-        dispatch(
-            SET_VALUE({
-                id: cellId,
-                value: value
-            })
-        );
+        setValue(value)
     }
 
     return (
         <Fragment>
             <td
-                className={isSelected() ? 'highlight govuk-table__cell' : 'no-select govuk-table__cell'}
+                className={selected ? 'highlight govuk-table__cell' : 'no-select govuk-table__cell'}
                 ref={cellRef}
                 onDoubleClick={ () => {
-                    dispatch({
-                        type: SET_EDIT_CELL,
-                        cellId: cellId
-                    });
+                    setEditing(cellId, row)
                 }}
 
-                onMouseOver={ () => { 
-                    selectCell();
+                onMouseOver={ () => {
+                    mouseOverCell(cellId, row, col)
+                }}
+
+                onMouseUp={ () => {
+                    mouseUpOnCell(cellId, row, col)
                 }}
 
                 onMouseDown={ () => {
-                    dispatch(
-                        SELECT_CELL({
-                            id: cellId
-                        })
-                    );
-
-                    dispatch(
-                        SET_INITIAL_CELL({
-                            id: cellId
-                        })
-                    );
-
-                    dispatch(
-                        SET_LAST_CELL({
-                            id: cellId
-                        })
-                    );
+                    selectInitialCell(cellId, row, col)
                 }}
             >
-                {editCell == cellId ? (
+                {editing ? (
                     <input
                         className="cell-input"
                         ref={inputRef}
                         type="text"
-                        value={allCells[cellId].value}
+                        value={value}
                         onChange={e => setContentState(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        onKeyDown={handleKeyDown}
                     />
                 ) : (
                     <Fragment>
-                        {allCells[cellId].value}
+                        {value}
                     </Fragment>
                 )}
             </td>
@@ -202,4 +117,11 @@ function TableCell({children, index, cellId}) {
     );
 }
 
-export default TableCell;
+const comparisonFn = function(prevProps, nextProps) {
+    return (
+        prevProps.editing === nextProps.editing &&
+        prevProps.selected === nextProps.selected
+    )
+};
+
+export default memo(TableCell, comparisonFn);
