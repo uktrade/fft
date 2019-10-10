@@ -74,8 +74,8 @@ def before_feature(context, feature):
     # )
 
     context.browser = webdriver.Remote(
-        command_executor='http://selenium-hub:4444/wd/hub',
-        desired_capabilities=DesiredCapabilities.FIREFOX
+        command_executor='http://{}:4444/wd/hub'.format(settings.SELENIUM_ADDRESS),
+        desired_capabilities=DesiredCapabilities.CHROME
     )
     context.browser.implicitly_wait(5)
 

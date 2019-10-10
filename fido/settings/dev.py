@@ -32,3 +32,5 @@ MIDDLEWARE = [
     #'authbroker_client.middleware.ProtectAllViewsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+SELENIUM_ADDRESS = "selenium-hub"
