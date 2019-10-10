@@ -7,8 +7,8 @@ import {
     UNSELECT_ALL
 } from '../../Reducers/Cells'
 import {
-    SET_INITIAL_CELL,
-    SET_LAST_CELL
+    SET_INITIAL,
+    SET_LAST
 } from '../../Reducers/Select'
 
 function TableRow({children, index}) {
@@ -28,7 +28,7 @@ function TableRow({children, index}) {
             if (cell.editable && cell.rowIndex == rowIndex) {
                 if (!setInital) {
                     dispatch(
-                        SET_INITIAL_CELL({
+                        SET_INITIAL({
                             id: cellId
                         })
                     );
@@ -44,7 +44,7 @@ function TableRow({children, index}) {
                 // TODO - set this as actual last cell in row (needs to use array rather than object state)
 
                 dispatch(
-                    SET_LAST_CELL({
+                    SET_LAST({
                         id: cellId
                     })
                 );
@@ -64,7 +64,7 @@ function TableRow({children, index}) {
             if (cell.key == colKey) {
                 if (!setInital) {
                     dispatch(
-                        SET_INITIAL_CELL({
+                        SET_INITIAL({
                             id: cellId
                         })
                     );
@@ -78,7 +78,7 @@ function TableRow({children, index}) {
                 );
 
                 dispatch(
-                    SET_LAST_CELL({
+                    SET_LAST({
                         id: cellId
                     })
                 );

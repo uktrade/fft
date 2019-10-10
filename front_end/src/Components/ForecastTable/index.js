@@ -1,6 +1,7 @@
 import React, {Fragment, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
 import Table from '../../Components/Table/index'
+import Selection from '../../Components/Selection/index'
 
 import {
     getCellId,
@@ -8,10 +9,25 @@ import {
 } from '../../Util'
 
 function ForecastTable() {
+
     const [rowData, setRowData] = useState([]);
     const [cellCount, setCellCount] = useState(0);
 
+    const timer = () => {
+            setTimeout(() => {
+            if (window.table_data) {
+                loadData()
+            } else {
+                timer()
+            }
+        }, 100);
+    }
+
     useEffect(() => {
+        timer()
+    }, [])
+
+    const loadData = () => {
         let cellCounter = -1
         let cellIndex = 0;
         let rows = [];
@@ -58,10 +74,11 @@ function ForecastTable() {
         setRowData(rows)
         console.log("cellCounter", cellCounter)
         setCellCount(cellCounter)
-    }, [window.table_data]);
+    }
 
     return (
         <Fragment>
+            <Selection />
             <Table rowData={rowData} cellCount={cellCount} />
         </Fragment>
     );

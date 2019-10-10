@@ -4,6 +4,7 @@ import {
     getCellId,
     months
 } from '../../Util'
+import { SET_INITIAL, SET_LAST } from '../../Reducers/Select'
 
 const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
     const dispatch = useDispatch();
@@ -87,7 +88,7 @@ const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, 
                 }}
 
                 onMouseOver={ () => {
-                    mouseOverCell(cellId, row, col)
+                    mouseOverCell(cellId, row, col, cellRef.current.getBoundingClientRect())
                 }}
 
                 onMouseUp={ () => {
@@ -95,7 +96,7 @@ const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, 
                 }}
 
                 onMouseDown={ () => {
-                    selectInitialCell(cellId, row, col)
+                    selectInitialCell(cellId, row, col, cellRef.current.getBoundingClientRect())
                 }}
             >
                 {editing ? (

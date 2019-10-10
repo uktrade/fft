@@ -202,8 +202,6 @@ def edit_forecast(request):
         cls=DjangoJSONEncoder
     )
 
-    print(forecast_dump)
-
     return render(
         request,
         'forecast/edit.html',

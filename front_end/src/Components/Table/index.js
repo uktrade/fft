@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, {Fragment, useState, useEffect, useRef, useCallback, useContext, memo } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import update from 'react-addons-update';
 
@@ -8,6 +8,8 @@ import TableRow from '../../Components/TableRow/index'
 import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
 import ColumnHeader from '../../Components/ColumnHeader/index'
+import Selection from '../../Components/Selection/index'
+import { SET_INITIAL, SET_LAST } from '../../Reducers/Select'
 
 import {
     getCellId,
@@ -64,11 +66,7 @@ function Table({rowData, cellCount}) {
     }, []);
 
     useEffect(() => {
-        console.log("Whoopppppp")
-
-        console.log("rowData...", rowData)
         setRows(rowData)
-
     }, [rowData]);
 
     const updateRow = (cellId, row, property, value=true) => {
@@ -101,54 +99,91 @@ function Table({rowData, cellCount}) {
         return index
     }
 
-    const mouseOverCell = (cellId, row, col) => {
+    const mouseOverCell = (cellId, row, col, lastRect) => {
         if (mouseRef.current) {
-            setlastSelection({
-                "id": cellId,
-                "row": row,
-                "col": col
-            })
-        }
+                dispatch(
+                    SET_LAST({
+                        last: lastRect
+                    })
+                );
+           }
     }
 
-    const selectInitialCell = (cellId, row, col) => {
-        let newRows = [...rows];
+    const selectInitialCell = (cellId, row, col, rect) => {
 
-        if (editCellRef.current) {
-            let cellIndex = getCellIndex(editCellRef.current.id, editCellRef.current.row)
-            newRows[editCellRef.current.row][cellIndex]["editing"] = false
-        }
+        dispatch(
+            SET_INITIAL({
+                initial: rect
+            })
+        );
 
-        for (let selected of selectedCellsRef.current) {
-            let cellIndex = getCellIndex(selected.id, selected.row)
-            newRows[selected.row][cellIndex]["selected"] = false
-        }
+        dispatch(
+            SET_LAST({
+                last: rect
+            })
+        );
+        // let newRows = [...rows];
 
-        let cellIndex = getCellIndex(cellId, row)
-        newRows[row][cellIndex]["selected"] = true
+        // if (editCellRef.current) {
+        //     let cellIndex = getCellIndex(editCellRef.current.id, editCellRef.current.row)
+            
+        //     let newRows = update(rows, {[row]: {
+        //                 [cellIndex]: {
+        //                     ["editing"]: {$set: false}
+        //                 }
+        //             }
+        //         }
+        //     )
 
-        setRows(newRows);
+        //     setRows(newRows);
+        // }
 
-        selectedCellsRef.current = [{
-            "id": cellId,
-            "row": row
-        }]
+        // for (let selected of selectedCellsRef.current) {
+        //     let cellIndex = getCellIndex(selected.id, selected.row)
+        //     newRows[selected.row][cellIndex]["selected"] = false
+        // }
 
-        setInitialSelection({
-            "id": cellId,
-            "row": row,
-            "col": col
-        })
+        // let cellIndex = getCellIndex(cellId, row)
+        // newRows[row][cellIndex]["selected"] = true
 
-        setlastSelection({
-            "id": cellId,
-            "row": row,
-            "col": col
-        })
+        // setRows(newRows);
+
+
+
+        
+
+        // selectedCellsRef.current = [{
+        //     "id": cellId,
+        //     "row": row
+        // }]
+
+        // dispatch(
+        //     SET_INITIAL({
+        //         initial: rect
+        //     })
+        // );
+
+        // dispatch(
+        //     SET_LAST({
+        //         last: rect
+        //     })
+        // );
+
+        // setInitialSelection({
+        //     "id": cellId,
+        //     "row": row,
+        //     "col": col
+        // })
+
+        // setlastSelection({
+        //     "id": cellId,
+        //     "row": row,
+        //     "col": col
+        // })
     }
 
     const mouseUpOnCell = (cellId, row, col) => {
-        setlastSelection([cellId, row, col])
+        //setlastSelection([cellId, row, col])
     }
 
     const editCell = (cellId, row) => {
@@ -162,7 +197,7 @@ function Table({rowData, cellCount}) {
             row: row
         }
 
-        setRows(newRows)
+        //setRows(newRows)
     }
 
     const captureMouseUp = (e) => {
@@ -208,167 +243,40 @@ function Table({rowData, cellCount}) {
         return cellIndex
     }
 
+    const [selectionArea, setSelectionArea] = useState({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+    });
+
     const createSelectionArea = () => {
         if (mouseRef.current && initialSelection && lastSelection) {
             let initial = getCellData(initialSelection.id, initialSelection.row)
             let last = getCellData(lastSelection.id, lastSelection.row)
-
-            let newRows = [...rows]
-            let changed = false
-
-            let selected = [...selectedCells];
-
-            if (initial.rect && last.rect) {
-                for (let sel of selectedCellsRef.current) {
-                    if (
-                        sel.id != initialSelection.id &&
-                        sel.id != lastSelection.id
-                    ) {
-                        let cellIndex = getCellIndex(sel.id, sel.row)
-                        newRows[sel.row][cellIndex]["selected"] = false
-
-
-                        // let newRows = update(rows, {[row]: {
-                        //             [cellIndex]: {
-                        //                 [property]: {$set: value}
-                        //             }
-                        //         }
-                        //     }
-                        // )
-
-
-                    }
-                }
-
-                selectedCellsRef.current = [
-                    initialSelection,
-                    lastSelection
-                ]
-
-                let horizontalDirection = LEFT_TO_RIGHT;
-                let verticalDirection = TOP_TO_BOTTOM;
-
-                // Check for select direction
-                if (initial.rect.x > last.rect.x) {
-                    // left to right
-                    horizontalDirection = RIGHT_TO_LEFT;
-                }
-
-                if (initial.rect.y > last.rect.y) {
-                    // top to bottom
-                    verticalDirection = BOTTOM_TO_TOP
-                }
-
-                let relevantRows = []
-                let colStart = 0
-                let colEnd = 0
-
-                // Only look at cells in the same rows as inital and last
-                //if (horizontalDirection === LEFT_TO_RIGHT) {
-                if (verticalDirection === TOP_TO_BOTTOM) {
-                    relevantRows = rows.filter((rowObj, index) => {
-                        // Return element for new_array
-                        return index >= initialSelection.row && index <= lastSelection.row
-                    })
-                } else {
-                    relevantRows = rows.filter((rowObj, index) => {
-                        // Return element for new_array
-                        return index <= initialSelection.row && index >= lastSelection.row
-                    })
-                }
-
-                if (horizontalDirection === LEFT_TO_RIGHT) {
-                    colStart = initialSelection.col
-                    colEnd = lastSelection.col
-                } else {
-                    colStart = lastSelection.col
-                    colEnd = initialSelection.col
-                }
-
-                for (let row of relevantRows) {
-                    for (let cell of row) {
-                        if (!cell || !cell.rect) {
-                            continue;
-                        }
-
-                        if (colStart != colEnd && (cell.colIndex < colStart || cell.colIndex > colEnd)) {
-                            continue;
-                        }
-
-                        let selectable = false;
-
-                        if (horizontalDirection === LEFT_TO_RIGHT) {
-                            if (verticalDirection === TOP_TO_BOTTOM) {
-                                if (
-                                    cell.rect.x <= last.rect.x &&
-                                    cell.rect.x >= initial.rect.x &&
-
-                                    cell.rect.y >= initial.rect.y &&
-                                    cell.rect.y <= last.rect.y
-                                ) {
-                                    selectable = true;
-                                }
-                            } else {
-                                if (
-                                    cell.rect.x <= last.rect.x &&
-                                    cell.rect.x >= initial.rect.x &&
-
-                                    cell.rect.y <= initial.rect.y &&
-                                    cell.rect.y >= last.rect.y
-                                ) {
-                                    selectable = true;
-                                }
-                            }
-                        } else { // RIGHT_TO_LEFT
-                            if (verticalDirection === TOP_TO_BOTTOM) {
-                                if (
-                                    cell.rect.x >= last.rect.x &&
-                                    cell.rect.x <= initial.rect.x &&
-
-                                    cell.rect.y >= initial.rect.y &&
-                                    cell.rect.y <= last.rect.y
-                                ) {
-                                    selectable = true;
-                                }
-                            } else {
-                                if ( // BOTTOM_TO_TOP
-                                    cell.rect.x >= last.rect.x &&
-                                    cell.rect.x <= initial.rect.x &&
-
-                                    cell.rect.y <= initial.rect.y &&
-                                    cell.rect.y >= last.rect.y
-                                ) {
-                                    selectable = true;
-                                }
-                            }
-                        }
-
-                        let cellIndex = getCellIndex(cell.id, cell.rowIndex)
-
-                        if (selectable) {
-                            let isSelected = newRows[cell.rowIndex][cellIndex]["selected"]
-
-                            if (!isSelected) {
-                                newRows[cell.rowIndex][cellIndex]["selected"] = true
-                                selectedCellsRef.current.push({
-                                    id: cell.id,
-                                    row: cell.rowIndex
-                                })
-                                changed = true
-                            }
-                        } else {
-                            newRows[cell.rowIndex][cellIndex]["selected"] = false
-                            changed = removeFromSelected(selectedCellsRef.current, cell.id)
-                        }
-                    }
-                }
-            }
-
-            if (changed) {
-                 setRows(newRows);
-            }
         }
+
+        // bottom: 149
+        // height: 46
+        // left: 255
+        // right: 367
+        // top: 103
+        // width: 112
+        // x: 255
+        // y: 103
     }
+
+    console.log("Rendering table...")
+
+    // const updateSelection = (cellRects) => {
+
+    //     let startX = 0
+    //     let startY = 0
+
+    //     for (let rect of cellRects) {
+    //         if (rect.x) < 
+    //     }
+    // }
 
     return (
         <Fragment>
@@ -387,8 +295,6 @@ function Table({rowData, cellCount}) {
                 </div>
             }
             <table
-                onMouseMove={createSelectionArea}
-                onMouseDown={createSelectionArea}
                 className="govuk-table" id="forecast-table">
                 <caption className="govuk-table__caption">Edit forecast</caption>
                 <thead className="govuk-table__head">
@@ -444,4 +350,10 @@ function Table({rowData, cellCount}) {
     );
 }
 
-export default Table;
+const comparisonFn = function(prevProps, nextProps) {
+    return (
+        prevProps.rowData === nextProps.rowData
+    )
+};
+
+export default memo(Table, comparisonFn);

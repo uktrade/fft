@@ -4,22 +4,32 @@ import { createSlice, PayloadAction } from 'redux-starter-kit';
 const select = createSlice({
     slice: 'select',
     initialState: {
-        initial: null,
-        last: null
+        initial: {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        },
+        last: {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        }
     },
     reducers: {
-        SET_INITIAL_CELL: (state, action) => {
-            state["initial"] = action.payload.id
+        SET_INITIAL: (state, action) => {
+            state.initial = action.payload.initial
         },
-        SET_LAST_CELL: (state, action) => {
-            state["last"] = action.payload.id
+        SET_LAST: (state, action) => {
+            state.last = action.payload.last
         }
     }
 });
 
 export const {
-    SET_INITIAL_CELL,
-    SET_LAST_CELL,
+    SET_INITIAL,
+    SET_LAST,
 } = select.actions;
 
 export default select.reducer;
