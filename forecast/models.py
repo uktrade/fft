@@ -1,4 +1,11 @@
-from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, ProgrammeCode, ProjectCode
+from chartofaccountDIT.models import (
+    Analysis1,
+    Analysis2,
+    BudgetType,
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode
+)
 
 from core.metamodels import TimeStampedModel
 from core.models import FinancialYear
@@ -24,6 +31,46 @@ class SubTotalFieldNotSpecifiedError(Exception):
     def __init__(self, message, errors):
         super().__init__(message)
         self.errors = errors
+
+
+class ForecastExpenditureType(models.Model):
+    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
+    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
+    This table is prepulated with the information needed to calculate the expenditure_type.
+    """
+    forecast_expenditure_type_name = models.CharField(max_length=100)
+    forecast_expenditure_type_description = models.CharField(max_length=100)
+    forecast_expenditure_type_display_order = models.IntegerField()
+
+    def __str__(self):
+        return self.forecast_expenditure_type_name
+
+
+class CalcForecastExpenditureType(models.Model):
+     """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
+     As such, it can only be defined for a forecast row, when both NAC and programme are defined.
+     This table is prepulated with the information needed to calculate the expenditure_type.
+     """
+     nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
+     programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
+     forecast_expenditure_type_fk = models.ForeignKey(ForecastExpenditureType, on_delete=models.CASCADE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class FinancialPeriodManager(models.Manager):
@@ -178,7 +225,7 @@ class PivotManager(models.Manager):
         previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
         subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
         subtotals['Gran_Total'] = sub_total_row.copy()
-        output_subtotal = {field_name:False for field_name in subtotal_columns}
+        output_subtotal = {field_name: False for field_name in subtotal_columns}
         for current_row in pivot_data:
             subtotal_time = False
             for column in subtotal_columns:
