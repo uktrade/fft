@@ -2,6 +2,7 @@ import React, {Fragment, useState, useEffect, useRef, useCallback, useMemo } fro
 
 import Table from '../../Components/Table/index'
 import Selection from '../../Components/Selection/index'
+import EditCell from '../../Components/EditCell/index'
 
 import {
     getCellId,
@@ -78,6 +79,7 @@ function ForecastTable() {
 
     return (
         <Fragment>
+            <EditCell />
             <Selection />
             <Table rowData={rowData} cellCount={cellCount} />
         </Fragment>

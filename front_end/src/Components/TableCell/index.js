@@ -1,20 +1,19 @@
-import React, {Fragment, useState, useEffect, useRef, useContext, memo } from 'react';
+import React, {Fragment, useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import {
     getCellId,
     months
 } from '../../Util'
 import { SET_INITIAL, SET_LAST } from '../../Reducers/Select'
+import { SET_EDIT_CELL } from '../../Reducers/Edit'
 
-const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
+const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
     const dispatch = useDispatch();
 
     let cellRef = React.createRef();
     const inputRef = useRef(null);
 
-    //const editCell = useSelector(state => state.editCell.cellId);
-
-
+    const [isEditing, setIsEditing] = useState(false);
 
 
     const [value, setValue] = useState(initialValue);
@@ -70,6 +69,8 @@ const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, 
         // }
     }
 
+    //console.log("re-render cell")
+
     const setContentState = (value) => {
         if (!parseInt(value)) {
             return
@@ -78,13 +79,21 @@ const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, 
         setValue(value)
     }
 
+    //sconsole.log("Cell ids: ",editCellId, cellId)
+
     return (
         <Fragment>
             <td
                 className={selected ? 'highlight govuk-table__cell' : 'no-select govuk-table__cell'}
                 ref={cellRef}
                 onDoubleClick={ () => {
-                    setEditing(cellId, row)
+                    console.log("cellId", cellId)
+                    dispatch(
+                        SET_EDIT_CELL({
+                            rect: cellRef.current.getBoundingClientRect(),
+                            content: value
+                        })
+                    )
                 }}
 
                 onMouseOver={ () => {
@@ -99,7 +108,7 @@ const TableCell = ({index, cellId, initialValue, selected, editing, setEditing, 
                     selectInitialCell(cellId, row, col, cellRef.current.getBoundingClientRect())
                 }}
             >
-                {editing ? (
+                {1 == 2 ? (
                     <input
                         className="cell-input"
                         ref={inputRef}

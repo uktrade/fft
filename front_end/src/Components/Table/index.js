@@ -47,6 +47,7 @@ function Table({rowData, cellCount}) {
     const [initialSelection, setInitialSelection] = useState([])
     const [lastSelection, setlastSelection] = useState([])
 
+
     useEffect(() => {
         window.addEventListener("mousedown", captureMouseDn);
         window.addEventListener("mouseup", captureMouseUp);
@@ -268,6 +269,7 @@ function Table({rowData, cellCount}) {
 
     console.log("Rendering table...")
 
+
     // const updateSelection = (cellRects) => {
 
     //     let startX = 0
@@ -277,6 +279,17 @@ function Table({rowData, cellCount}) {
     //         if (rect.x) < 
     //     }
     // }
+
+    // const memoizedEditingCallback = useCallback(
+    //     () => {
+    //         if (editCellId === cellId) {
+    //             setIsEditing(true)
+    //         }
+    //     },
+    //     [editCellId],
+    // );
+
+
 
     return (
         <Fragment>
@@ -332,8 +345,6 @@ function Table({rowData, cellCount}) {
                                         index={cellIndex}
                                         cellId={cell.id}
                                         selected={cell.selected}
-                                        editing={cell.editing}
-                                        setEditing={editCell}
                                         selectInitialCell={selectInitialCell}
                                         initialValue={cell.value}
                                         mouseOverCell={mouseOverCell}
