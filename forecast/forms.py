@@ -1,5 +1,6 @@
-
 from django import forms
+from django.forms import ModelForm
+from forecast.models import MonthlyFigure
 
 
 class EditForm(forms.Form):
@@ -12,3 +13,12 @@ class EditForm(forms.Form):
         widget=forms.HiddenInput(),
         initial=123
     )
+
+
+class AddForecastRowForm(ModelForm):
+
+    class Meta:
+        model = MonthlyFigure
+        fields = [
+            'cost_centre',
+        ]

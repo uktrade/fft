@@ -1,0 +1,44 @@
+{% extends "wide_content.html" %}
+
+{% block content %}
+<div class="app-pane__content">
+    <h1 class="govuk-heading-xl">Financial Report</h1>
+    <h2 class="govuk-heading-l">Cost centre details</h2>
+    <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Group
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ group }}
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Directorate
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ directorate }}
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Cost centre name
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ cost_centre_name }}
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Cost centre
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ cost_centre_num }}
+            </dd>
+        </div>
+    </dl>
+    {% block page_content %}
+    {% endblock %}
+</div>
+{% endblock %}

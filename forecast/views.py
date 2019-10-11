@@ -9,7 +9,10 @@ from django_tables2 import RequestConfig
 
 from .models import MonthlyFigure, FinancialPeriod
 from .tables import ForecastSubTotalTable, ForecastTable
-from .forms import EditForm
+from .forms import (
+    EditForm,
+    AddForecastRowForm,
+)
 from forecast.models import MonthlyFigure
 from django.core import serializers
 import json
@@ -151,7 +154,49 @@ def pivot_test1(request):
     return render(request, 'forecast/forecast.html', {'table': table})
 
 
+def add_forecast_row(request):
+    if request.method == 'POST':
+        form = AddForecastRowForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = AddForecastRowForm()
+    return render(
+        request,
+        'forecast/add.html', {
+            'form': form,
+        }
+    )
+
+
 def edit_forecast(request):
+    field_dict = {
+        'cost_centre__directorate': 'Directorate',
+        'cost_centre__directorate__directorate_name': 'Name',
+        'natural_account_code': 'NAC'
+    }
+
+    q1 = MonthlyFigure.pivot.pivotdata(
+        field_dict.keys(), {
+            'cost_centre__directorate__group': '1090AA'
+        }
+    )
+    table = ForecastTable(field_dict, q1)
+    RequestConfig(request).configure(table)
+
+    return render(
+        request,
+        'forecast/edit.html', {
+            'group': "Test group",
+            'directorate': "Test directorate",
+            'cost_centre_name': "Test cost centre",
+            'cost_centre_num': "1090AA",
+            'table': table
+        }
+    )
+
+
+def edit_forecast_prototype(request):
     financial_year = 2019
     cost_centre_code = "888812"
 
@@ -204,7 +249,7 @@ def edit_forecast(request):
 
     return render(
         request,
-        'forecast/edit.html',
+        'forecast/edit_prototype.html',
         {
             'form': form,
             'editable_periods_dump': editable_periods_dump,
