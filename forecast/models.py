@@ -282,7 +282,7 @@ class PivotManager(models.Manager):
             caption = 'Total {}'.format(previous_values[column])
             for out_total in subtotal_columns[level + 1:]:
                 caption = '{} {}'.format(
-                    subtotal_row[display_total_column],
+                    caption,
                     previous_values[out_total])
             subtotals[column][display_total_column] = caption
             self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS, sub_total_levels - level)
