@@ -1,6 +1,8 @@
 import json
 from core.views import FidoExportMixin
 
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 
@@ -155,25 +157,59 @@ def pivot_test1(request):
 
 
 def add_forecast_row(request):
+    cost_centre_code = 888812
+    financial_year_id = 2019
+
     if request.method == 'POST':
-        form = AddForecastRowForm(request.POST)
+        form = AddForecastRowForm(
+            request.POST,
+        )
         if form.is_valid():
-            form.save()
+            forecast_row = form.save(commit=False)
+            for financial_period in range(1, 13):
+                monthly_figure = MonthlyFigure(
+                    financial_year_id=financial_year_id,
+                    financial_period_id=financial_period,
+                    cost_centre_id=cost_centre_code,
+                    programme_id=forecast_row.programme_id,
+                    natural_account_code_id=forecast_row.natural_account_code_id,
+                    analysis1_code_id=forecast_row.analysis1_code_id,
+                    analysis2_code_id=forecast_row.analysis2_code_id,
+                    amount=0,
+                )
+                monthly_figure.save()
+
+            return HttpResponseRedirect(
+                reverse('edit_forecast')
+            )
     else:
         form = AddForecastRowForm()
+
+        gov_select_class = {
+            'class': 'govuk-select'
+        }
+        form.fields['programme'].widget.attrs = gov_select_class
+        form.fields['natural_account_code'].widget.attrs = gov_select_class
+        form.fields['analysis1_code'].widget.attrs = gov_select_class
+        form.fields['analysis2_code'].widget.attrs = gov_select_class
+        form.fields['project_code'].widget.attrs = gov_select_class
     return render(
         request,
         'forecast/add.html', {
             'form': form,
+            'group': 'Test group',
+            'directorate': 'Test directorate',
+            'cost_centre_name': 'Test cost centre name',
+            'cost_centre_num': cost_centre_code,
         }
     )
 
 
 def edit_forecast(request):
     field_dict = {
-        'cost_centre__directorate': 'Directorate',
-        'cost_centre__directorate__directorate_name': 'Name',
-        'natural_account_code': 'NAC'
+        'cost_centre__directorate': 'Directorate 1',
+        # 'cost_centre__directorate__directorate_name': 'Name',
+        # 'natural_account_code': 'NAC'
     }
 
     q1 = MonthlyFigure.pivot.pivotdata(
@@ -249,8 +285,7 @@ def edit_forecast_prototype(request):
 
     return render(
         request,
-        'forecast/edit_prototype.html',
-        {
+        'forecast/edit_prototype.html', {
             'form': form,
             'editable_periods_dump': editable_periods_dump,
             'forecast_dump': forecast_dump,

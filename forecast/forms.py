@@ -16,9 +16,12 @@ class EditForm(forms.Form):
 
 
 class AddForecastRowForm(ModelForm):
-
     class Meta:
         model = MonthlyFigure
         fields = [
-            'cost_centre',
+            'programme',
+            'natural_account_code',
+            'analysis1_code',
+            'analysis2_code',
+            'project_code',
         ]

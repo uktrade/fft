@@ -12,9 +12,9 @@
                     <p>AREA FOR DATA SELECTION</p>
                 </div>
                 <div class="govuk-grid-column-one-third">
-                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                        Add a new row
-                    </button>
+                    <a href="{% url 'add_forecast_row' %}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                      Add a new row
+                    </a>
                 </div>
                 <div class="govuk-grid-column-one-third">
                     <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
@@ -24,8 +24,6 @@
             </div>
         </div>
     </div>
-
-    <p><a class="govuk-link" href="{% querystring '_export'='xls' %}">Download to Excel</a></p>
     <div class="tables-container">
         {% render_table table %}
     </div>

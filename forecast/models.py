@@ -258,7 +258,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
             'analysis2_code',
             'project_code',
             'financial_year',
-            'financial_period'
+            'financial_period',
         )
 
     def __str__(self):

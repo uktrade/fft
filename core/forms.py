@@ -17,5 +17,3 @@ class FormAutocompleteSelect(AutocompleteSelect):
         self.admin_site.name = 'admin'
         self.rel.model = model
         super(FormAutocompleteSelect, self).__init__(self.rel, self.admin_site, **kwargs)
-
-
