@@ -4,3 +4,4 @@ factory-boy==2.11.1
 behave
 selenium
 django-compressor
+beautifulsoup4

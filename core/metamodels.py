@@ -64,16 +64,18 @@ class LogChangeModel(models.Model):
             if hasattr(core, '_called_from_test') == False:
                 # write to the Admin history log the list of changes
                 message = '<' + self.__class__.__name__ + ' ' + self.__str__() + '>  ' + message
-                userid = get_current_user()
-                # userid = 1
-                ct = ContentType.objects.get_for_model(self)
-                LogEntry.objects.log_action(
-                    user_id=userid,
-                    content_type_id=ct.pk,
-                    object_id=self.pk,
-                    object_repr=self.__str__(),
-                    action_flag=flag,
-                    change_message=message)
+                user_id = get_current_user()
+
+                # TODO - verify this with Luiscella
+                if user_id:
+                    ct = ContentType.objects.get_for_model(self)
+                    LogEntry.objects.log_action(
+                        user_id=user_id,
+                        content_type_id=ct.pk,
+                        object_id=self.pk,
+                        object_repr=self.__str__(),
+                        action_flag=flag,
+                        change_message=message)
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

@@ -87,3 +87,4 @@ browserstack-local
 django-sass-processor
 libsass
 django-webpack-loader
+django-bootstrap-breadcrumbs

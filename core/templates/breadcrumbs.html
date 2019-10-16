@@ -1,0 +1,13 @@
+<div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+        {% for url, label in breadcrumbs %}
+            <li class="govuk-breadcrumbs__list-item">
+                {% ifnotequal forloop.counter breadcrumbs_total %}
+                    <a lass="govuk-breadcrumbs__link" href="{{ url }}">{{ label|safe }}</a>
+                {% else %}
+                    {{ label|safe }}
+                {% endifnotequal %}
+            </li>
+        {% endfor %}
+    </ol>
+</div>

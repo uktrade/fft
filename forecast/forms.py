@@ -3,6 +3,10 @@ from django.forms import ModelForm
 from forecast.models import MonthlyFigure
 
 
+class AddForecastRowFormCommitException(Exception):
+    pass
+
+
 class EditForm(forms.Form):
     cell_data = forms.CharField(widget=forms.Textarea)
     cost_centre_code = forms.IntegerField(
@@ -25,3 +29,15 @@ class AddForecastRowForm(ModelForm):
             'analysis2_code',
             'project_code',
         ]
+
+    def save(self, commit=True, *args, **kwargs):
+        forecast_row = super(AddForecastRowForm, self).save(
+            commit=False,
+            *args,
+            **kwargs
+        )
+        if commit:
+            raise AddForecastRowFormCommitException(
+                "This form should not be used to save instances, use with commit=False"
+            )
+        return forecast_row

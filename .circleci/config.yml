@@ -6,9 +6,10 @@ jobs:
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
-          DJANGO_SETTINGS_MODULE: fido.settings.test
+          DJANGO_SETTINGS_MODULE: fido.settings.dev
           SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
+          SELENIUM_ADDRESS: localhost
 
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
@@ -35,7 +36,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -r requirements/test.txt
+            pip install -r requirements/dev.txt
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/test.txt" }}
           paths:

@@ -185,14 +185,12 @@ def add_forecast_row(request):
     else:
         form = AddForecastRowForm()
 
-        gov_select_class = {
-            'class': 'govuk-select'
+    for key, value in form.fields.items():
+        form.fields[key].widget.attrs = {
+            'class': 'govuk-select',
+            'aria-describedby': "{0}-hint {0}-error".format(key)
         }
-        form.fields['programme'].widget.attrs = gov_select_class
-        form.fields['natural_account_code'].widget.attrs = gov_select_class
-        form.fields['analysis1_code'].widget.attrs = gov_select_class
-        form.fields['analysis2_code'].widget.attrs = gov_select_class
-        form.fields['project_code'].widget.attrs = gov_select_class
+
     return render(
         request,
         'forecast/add.html', {
@@ -207,16 +205,17 @@ def add_forecast_row(request):
 
 def edit_forecast(request):
     field_dict = {
-        'cost_centre__directorate': 'Directorate 1',
-        # 'cost_centre__directorate__directorate_name': 'Name',
-        # 'natural_account_code': 'NAC'
+        'cost_centre__directorate': 'Directorate',
+        'cost_centre__directorate__directorate_name': 'Name',
+        'natural_account_code': 'NAC',
+        'cost_centre': '888812',
     }
 
     q1 = MonthlyFigure.pivot.pivotdata(
-        field_dict.keys(), {
-            'cost_centre__directorate__group': '1090AA'
-        }
+        field_dict.keys(),
+        {'cost_centre': '888812'}
     )
+
     table = ForecastTable(field_dict, q1)
     RequestConfig(request).configure(table)
 
@@ -226,7 +225,7 @@ def edit_forecast(request):
             'group': "Test group",
             'directorate': "Test directorate",
             'cost_centre_name': "Test cost centre",
-            'cost_centre_num': "1090AA",
+            'cost_centre_num': "888812",
             'table': table
         }
     )

@@ -1,11 +1,31 @@
-from chartofaccountDIT.models import Analysis1, Analysis2, BudgetType, CommercialCategory, ExpenditureCategory, \
-    FCOMapping, \
-    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
-    HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, \
-    HistoricalProjectCode, InterEntity, InterEntityL1, NACCategory, NaturalCode, \
-    OperatingDeliveryCategory, ProgrammeCode, ProjectCode
-
 import factory
+
+from core.test.factories import UserFactory
+
+from chartofaccountDIT.models import (
+    Analysis1,
+    Analysis2,
+    BudgetType,
+    CommercialCategory,
+    ExpenditureCategory,
+    FCOMapping,
+    HistoricalAnalysis1,
+    HistoricalAnalysis2,
+    HistoricalCommercialCategory,
+    HistoricalExpenditureCategory,
+    HistoricalFCOMapping,
+    HistoricalInterEntity,
+    HistoricalNaturalCode,
+    HistoricalProgrammeCode,
+    HistoricalProjectCode,
+    InterEntity,
+    InterEntityL1,
+    NACCategory,
+    NaturalCode,
+    OperatingDeliveryCategory,
+    ProgrammeCode,
+    ProjectCode,
+)
 
 
 class Analysis1Factory(factory.DjangoModelFactory):
@@ -51,6 +71,8 @@ class NACCategoryFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = NACCategory
+
+    NAC_category_description = "Test NAC desc"
 
 
 class OperatingDeliveryCategoryFactory(factory.DjangoModelFactory):
@@ -106,6 +128,10 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
     class Meta:
         model = NaturalCode
 
+    natural_account_code = 999999
+    natural_account_code_description = "NAC description"
+    used_for_budget = False
+
 
 class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
     """
@@ -124,14 +150,23 @@ class BudgetTypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = BudgetType
 
+    budget_type_key = "Test"
+    budget_type = "Test"
+    budget_type_display = "Test"
+    budget_type_display_order = 1
 
-class ProgrammeCodeFactory(factory.DjangoModelFactory):
+
+class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ProgrammeCode Factory
     """
 
     class Meta:
         model = ProgrammeCode
+
+    programme_code = "Test"
+    programme_description = "Test description"
+    budget_type_fk = factory.SubFactory(BudgetTypeFactory)
 
 
 class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):

@@ -93,9 +93,15 @@ class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
 
 
 # Category defined by DIT
-class NACCategory(TimeStampedModel, LogChangeModel):
-    NAC_category_description = models.CharField(max_length=255, verbose_name='Budget Grouping',
-                                                unique=True)
+class NACCategory(
+    TimeStampedModel,
+    #LogChangeModel
+):
+    NAC_category_description = models.CharField(
+        max_length=255,
+        verbose_name='Budget Grouping',
+        unique=True,
+    )
 
     def __str__(self):
         return str(self.NAC_category_description)
@@ -234,17 +240,38 @@ class NaturalCodeAbstract(models.Model):
         ordering = ['natural_account_code']
 
 
-class NaturalCode(NaturalCodeAbstract, TimeStampedModel, LogChangeModel):
-    expenditure_category = models.ForeignKey(ExpenditureCategory, verbose_name='Budget Category',
-                                             on_delete=models.PROTECT, blank=True, null=True)
-    commercial_category = models.ForeignKey(CommercialCategory,
-                                            on_delete=models.PROTECT, blank=True, null=True)
-    account_L5_code = models.ForeignKey(L5Account, on_delete=models.PROTECT, blank=True, null=True)
-    account_L5_code_upload = models.ForeignKey(L5Account,
-                                               on_delete=models.PROTECT,
-                                               verbose_name='L5 for OSCAR upload',
-                                               related_name='L5_OSCAR_Upload',
-                                               blank=True, null=True)
+class NaturalCode(
+    NaturalCodeAbstract,
+    TimeStampedModel,
+    LogChangeModel,
+):
+    expenditure_category = models.ForeignKey(
+        ExpenditureCategory,
+        verbose_name='Budget Category',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    commercial_category = models.ForeignKey(
+        CommercialCategory,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    account_L5_code = models.ForeignKey(
+        L5Account,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True
+    )
+    account_L5_code_upload = models.ForeignKey(
+        L5Account,
+        on_delete=models.PROTECT,
+        verbose_name='L5 for OSCAR upload',
+        related_name='L5_OSCAR_Upload',
+        blank=True,
+        null=True,
+    )
 
 
 class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
@@ -337,9 +364,19 @@ class ProgrammeCodeAbstract(models.Model):
         ordering = ['programme_code']
 
 
-class ProgrammeCode(ProgrammeCodeAbstract, TimeStampedModel, LogChangeModel):
-    budget_type_fk = models.ForeignKey(BudgetType, verbose_name='Budget Type',
-                                       on_delete=models.PROTECT, blank=True, null=True)
+class ProgrammeCode(
+    ProgrammeCodeAbstract,
+    TimeStampedModel,
+    LogChangeModel
+):
+    # TODO - remove "fk" add related name
+    budget_type_fk = models.ForeignKey(
+        BudgetType,
+        verbose_name='Budget Type',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
 
 
 class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):

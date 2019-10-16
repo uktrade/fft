@@ -23,7 +23,7 @@ class DirectorateFactory(factory.DjangoModelFactory):
     group = factory.SubFactory(DepartmentalGroupFactory)
 
 
-class CostcentreFactory(factory.DjangoModelFactory):
+class CostCentreFactory(factory.DjangoModelFactory):
     """
         Define CostCentre Factory
     """
@@ -32,3 +32,5 @@ class CostcentreFactory(factory.DjangoModelFactory):
         model = CostCentre
 
     directorate = factory.SubFactory(DirectorateFactory)
+    cost_centre_code = 999999
+    cost_centre_name = "Test Cost Centre"
