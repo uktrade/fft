@@ -1,9 +1,16 @@
-from chartofaccountDIT.models import Analysis1, Analysis2, NaturalCode, ProgrammeCode, ProjectCode
+from chartofaccountDIT.models import (
+    Analysis1,
+    Analysis2,
+    BudgetType,
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode
+)
 
 from core.metamodels import TimeStampedModel
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
-from core.utils import SUB_TOTAL_CLASS
+from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
 from costcentre.models import CostCentre
 
 from django.db import models
@@ -24,6 +31,33 @@ class SubTotalFieldNotSpecifiedError(Exception):
     def __init__(self, message, errors):
         super().__init__(message)
         self.errors = errors
+
+
+class ForecastExpenditureType(models.Model):
+    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
+    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
+    This table is prepulated with the information needed to calculate the expenditure_type.
+    """
+    forecast_expenditure_type_name = models.CharField(max_length=100)
+    forecast_expenditure_type_description = models.CharField(max_length=100)
+    forecast_expenditure_type_display_order = models.IntegerField()
+
+    def __str__(self):
+        return self.forecast_expenditure_type_name
+
+
+class CalcForecastExpenditureType(models.Model):
+    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
+    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
+    This table is prepulated with the information needed to calculate the expenditure_type.
+    """
+    nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
+    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
+    forecast_expenditure_type_fk = models.ForeignKey(ForecastExpenditureType, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('nac_economic_budget_code',
+                           'programme_budget_type')
 
 
 class FinancialPeriodManager(models.Manager):
@@ -70,6 +104,24 @@ class FinancialCode(models.Model):
     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT, blank=True, null=True)
     analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT, blank=True, null=True)
     project_code = models.ForeignKey(ProjectCode, on_delete=models.PROTECT, blank=True, null=True)
+    # The following field is calculated from programme and NAC.
+    forecast_expenditure_type = models.ForeignKey(ForecastExpenditureType, on_delete=models.PROTECT, default=1)
+
+    def save(self, *args, **kwargs):
+        # Override save to calculate the forecast_expenditure_type.
+        if self._state.adding is True:
+            # calculate the forecast_expenditure_type
+            nac_economic_budget_code = self.natural_account_code.account_L5_code.economic_budget_code
+            programme_budget_type = self.programme.budget_type_fk
+            c = CalcForecastExpenditureType.objects.all()
+            # import pdb;
+            # pdb.set_trace()
+            calc_forecast = CalcForecastExpenditureType.objects.filter(
+                programme_budget_type=programme_budget_type,
+                nac_economic_budget_code=nac_economic_budget_code
+            )
+            self.forecast_expenditure_type = calc_forecast[0].forecast_expenditure_type_fk
+        super(FinancialCode, self).save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -113,9 +165,11 @@ class PivotManager(models.Manager):
         'project_code__project_description': 'Project Description',
     }
 
-    def output_row_to_table(self, table, row, style_name):
+    def output_row_to_table(self, table, row, style_name='', level=99):
         #     Add the stile entry to the dictionary
         #     add the resulting dictionary to the list
+        # if style_name != '':
+        #     style_name = '{}-{}'.format(style_name, level)
         row['row_type'] = style_name
         table.append(row)
 
@@ -141,10 +195,10 @@ class PivotManager(models.Manager):
             raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
 
         if not all(elem in [*data_columns] for elem in subtotal_columns):
-            raise SubTotalFieldDoesNotExistError("Sub-total field does not exist")
+            raise SubTotalFieldDoesNotExistError("Sub-total column does not exist")
 
         if display_total_column not in [*data_columns]:
-            raise SubTotalFieldDoesNotExistError("Display sub total column does not exist")
+            raise SubTotalFieldDoesNotExistError("Display sub-total column does not exist")
 
         data_returned = self.pivotdata(
             data_columns,
@@ -157,6 +211,8 @@ class PivotManager(models.Manager):
         pivot_data = list(data_returned)
         if not pivot_data:
             return []
+        # The subtotals are passed in from the outer totals
+        # for calculation, it is easier to call subtotal 0 the innermost subtotal
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
 
@@ -174,29 +230,41 @@ class PivotManager(models.Manager):
         # a dictionary with the previous value of the columns to be sub-totalled
         # a dictionary of subtotal dictionaries, with an extra entry for the final total (gran total)
         sub_total_row = {k: (v if k in self.period_list else ' ') for k, v in first_row.items()}
-
         previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
+        # initialise all the subtotals, and add an extra row for the final total (gran total)
         subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
+        sub_total_levels = len(subtotals)
         subtotals['Gran_Total'] = sub_total_row.copy()
-        output_subtotal = {field_name:False for field_name in subtotal_columns}
+        output_subtotal = {field_name: False for field_name in subtotal_columns}
         for current_row in pivot_data:
             subtotal_time = False
+            # check if we need a subtotal.
+            # we check from the inner subtotal
             for column in subtotal_columns:
                 if current_row[column] != previous_values[column]:
                     subtotal_time = True
                     output_subtotal[column] = True
             if subtotal_time:
-                v = False
+                do_subtotal = False
+                # Check the subtotals, from the outer subtotal to the inner one.
+                # if an outer subtotal is needed, all the inner one are needed too
                 for column in subtotal_columns[::-1]:
                     if output_subtotal[column]:
-                        v = True
+                        # this trigger the subtotals in the inner fields.
+                        do_subtotal = True
                     else:
-                        output_subtotal[column] = v
+                        output_subtotal[column] = do_subtotal
+
                 for column in subtotal_columns:
                     if output_subtotal[column]:
                         subtotal_row = subtotals[column].copy()
+                        level = subtotal_columns.index(column)
                         subtotal_row[display_total_column] = 'Total {}'.format(previous_values[column])
-                        self.output_row_to_table(result_table, subtotal_row, SUB_TOTAL_CLASS)
+                        for out_total in subtotal_columns[level + 1:]:
+                            subtotal_row[display_total_column] = '{} {}'.format(
+                                subtotal_row[display_total_column],
+                                previous_values[out_total])
+                        self.output_row_to_table(result_table, subtotal_row, SUB_TOTAL_CLASS, sub_total_levels - level)
                         self.clear_row(subtotals[column])
                         previous_values[column] = current_row[column]
                         output_subtotal[column] = False
@@ -206,14 +274,20 @@ class PivotManager(models.Manager):
             for k, totals in subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
 
-            self.output_row_to_table(result_table, current_row, '')
+            self.output_row_to_table(result_table, current_row)
 
         # output all the subtotals, because it is finished
         for column in subtotal_columns:
-            subtotals[column][display_total_column] = 'Total {}'.format(previous_values[column])
-            self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS)
+            level = subtotal_columns.index(column)
+            caption = 'Total {}'.format(previous_values[column])
+            for out_total in subtotal_columns[level + 1:]:
+                caption = '{} {}'.format(
+                    caption,
+                    previous_values[out_total])
+            subtotals[column][display_total_column] = caption
+            self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS, sub_total_levels - level)
         subtotals['Gran_Total'][display_total_column] = 'Total Managed Expenditure'
-        self.output_row_to_table(result_table, subtotals['Gran_Total'], SUB_TOTAL_CLASS)
+        self.output_row_to_table(result_table, subtotals['Gran_Total'], GRAN_TOTAL_CLASS, 0)
 
         return result_table
 
