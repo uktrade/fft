@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from 'redux-starter-kit';
+import { createSlice } from 'redux-starter-kit';
 // Use of this lib guarentees no state mutatation
 
 const select = createSlice({
