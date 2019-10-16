@@ -25,20 +25,20 @@ class TestAddForecastRowForm(TestCase):
         project_code = "3000"
 
         programme = ProgrammeCodeFactory.create()
-        nac = NaturalCodeFactory.create(
+        NaturalCodeFactory.create(
             natural_account_code=nac_code,
+        )
+        ProjectCodeFactory.create(
+            project_code=project_code,
+        )
+        CostCentreFactory.create(
+            cost_centre_code=cost_centre_code,
         )
         analysis_1 = Analysis1Factory.create(
             analysis1_code=analysis_1_code,
         )
         analysis_2 = Analysis2Factory.create(
             analysis2_code=analysis_2_code,
-        )
-        project_code = ProjectCodeFactory.create(
-            project_code=project_code,
-        )
-        CostCentreFactory.create(
-            cost_centre_code=cost_centre_code,
         )
 
         form = AddForecastRowForm({
@@ -51,9 +51,6 @@ class TestAddForecastRowForm(TestCase):
 
         monthly_figures_count = MonthlyFigure.objects.count()
         self.assertEqual(monthly_figures_count, 0)
-
-        print(form.errors)
-
         self.assertTrue(form.is_valid())
 
         form.save(commit=False)

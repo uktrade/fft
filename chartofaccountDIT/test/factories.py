@@ -213,6 +213,8 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
     class Meta:
         model = ProjectCode
 
+    project_code = "5000"
+
 
 class HistoricalProjectCodeFactory(factory.DjangoModelFactory):
     """
