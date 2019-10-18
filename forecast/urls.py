@@ -6,8 +6,8 @@ from .views import (
     PivotClassView,
     pivot_test1,
     edit_forecast_prototype,
-    edit_forecast,
-    add_forecast_row,
+    EditForecastView,
+    AddRowView,
 )
 
 urlpatterns = [
@@ -15,7 +15,7 @@ urlpatterns = [
     path('costcentre/', CostClassView.as_view(), name='costcentre'),
     path('pivotmulti/', MultiforecastView.as_view(), name='pivotmulti'),
     path('pivot1/', pivot_test1, name='pivot1'),
-    path('edit/', edit_forecast, name='edit_forecast'),
-    path('add/', add_forecast_row, name='add_forecast_row'),
+    path('edit/', EditForecastView.as_view(), name='edit_forecast'),
+    path('add/', AddRowView.as_view(), name='add_forecast_row'),
     path('edit-prototype/', edit_forecast_prototype, name='edit_prototype')
 ]

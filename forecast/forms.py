@@ -1,10 +1,11 @@
 from django import forms
-from django.forms import ModelForm
-from forecast.models import MonthlyFigure
-
-
-class AddForecastRowFormCommitException(Exception):
-    pass
+from chartofaccountDIT.models import (
+    Analysis1,
+    Analysis2,
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode,
+)
 
 
 class EditForm(forms.Form):
@@ -19,25 +20,51 @@ class EditForm(forms.Form):
     )
 
 
-class AddForecastRowForm(ModelForm):
-    class Meta:
-        model = MonthlyFigure
-        fields = [
-            'programme',
-            'natural_account_code',
-            'analysis1_code',
-            'analysis2_code',
-            'project_code',
-        ]
+class AddForecastRowForm(forms.Form):
+    programme = forms.ModelChoiceField(
+        queryset=ProgrammeCode.objects.all(),
+        empty_label=""
+    )
+    programme.widget.attrs.update({
+        'class': 'govuk-select',
+        'aria-describedby': "programme-hint programme-error"
+    })
 
-    def save(self, commit=True, *args, **kwargs):
-        forecast_row = super(AddForecastRowForm, self).save(
-            commit=False,
-            *args,
-            **kwargs
-        )
-        if commit:
-            raise AddForecastRowFormCommitException(
-                "This form should not be used to save instances, use with commit=False"
-            )
-        return forecast_row
+    natural_account_code = forms.ModelChoiceField(
+        queryset=NaturalCode.objects.all(),
+        empty_label=""
+    )
+    natural_account_code.widget.attrs.update({
+        'class': 'govuk-select',
+        'aria-describedby': "natural_account_code-hint natural_account_code-error"
+    })
+
+    analysis1_code = forms.ModelChoiceField(
+        queryset=Analysis1.objects.all(),
+        required=False,
+        empty_label=""
+    )
+    analysis1_code.widget.attrs.update({
+        'class': 'govuk-select',
+        'aria-describedby': "analysis1_code-hint analysis1_code-error"
+    })
+
+    analysis2_code = forms.ModelChoiceField(
+        queryset=Analysis2.objects.all(),
+        required=False,
+        empty_label=""
+    )
+    analysis2_code.widget.attrs.update({
+        'class': 'govuk-select',
+        'aria-describedby': "analysis2_code-hint analysis2_code-error"
+    })
+
+    project_code = forms.ModelChoiceField(
+        queryset=ProjectCode.objects.all(),
+        required=False,
+        empty_label=""
+    )
+    project_code.widget.attrs.update({
+        'class': 'govuk-select',
+        'aria-describedby': "project_code-hint project_code-error"
+    })

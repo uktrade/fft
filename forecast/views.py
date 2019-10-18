@@ -1,13 +1,15 @@
 import json
 from core.views import FidoExportMixin
 
-from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
-
-from django_tables2 import MultiTableMixin, SingleTableView
-from django_tables2 import RequestConfig
+from django.views.generic.edit import FormView
+from django_tables2 import (
+    MultiTableMixin,
+    SingleTableView,
+    RequestConfig,
+)
 
 from .models import MonthlyFigure, FinancialPeriod
 from .tables import ForecastSubTotalTable, ForecastTable
@@ -156,79 +158,66 @@ def pivot_test1(request):
     return render(request, 'forecast/forecast.html', {'table': table})
 
 
-def add_forecast_row(request):
+class AddRowView(FormView):
+    template_name = 'forecast/add.html'
+    form_class = AddForecastRowForm
+    success_url = reverse_lazy('edit_forecast')
     cost_centre_code = 888812
     financial_year_id = 2019
 
-    if request.method == 'POST':
-        form = AddForecastRowForm(
-            request.POST,
-        )
-        if form.is_valid():
-            forecast_row = form.save(commit=False)
-            for financial_period in range(1, 13):
-                monthly_figure = MonthlyFigure(
-                    financial_year_id=financial_year_id,
-                    financial_period_id=financial_period,
-                    cost_centre_id=cost_centre_code,
-                    programme_id=forecast_row.programme_id,
-                    natural_account_code_id=forecast_row.natural_account_code_id,
-                    analysis1_code_id=forecast_row.analysis1_code_id,
-                    analysis2_code_id=forecast_row.analysis2_code_id,
-                    amount=0,
-                )
-                monthly_figure.save()
-
-            return HttpResponseRedirect(
-                reverse('edit_forecast')
-            )
-    else:
-        form = AddForecastRowForm()
-
-    for key, value in form.fields.items():
-        form.fields[key].widget.attrs = {
-            'class': 'govuk-select',
-            'aria-describedby': "{0}-hint {0}-error".format(key)
-        }
-
-    return render(
-        request,
-        'forecast/add.html', {
-            'form': form,
+    def cost_centre_details(self):
+        return {
             'group': 'Test group',
             'directorate': 'Test directorate',
             'cost_centre_name': 'Test cost centre name',
-            'cost_centre_num': cost_centre_code,
+            'cost_centre_num': self.cost_centre_code,
         }
-    )
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        for financial_period in range(1, 13):
+            monthly_figure = MonthlyFigure(
+                financial_year_id=self.financial_year_id,
+                financial_period_id=financial_period,
+                cost_centre_id=self.cost_centre_code,
+                programme=data["programme"],
+                natural_account_code=data["natural_account_code"],
+                analysis1_code_id=data["analysis1_code"],
+                analysis2_code_id=data["analysis2_code"],
+                project_code=data["project_code"],
+                amount=0,
+            )
+            monthly_figure.save()
+
+        return super().form_valid(form)
 
 
-def edit_forecast(request):
-    field_dict = {
-        'cost_centre__directorate': 'Directorate',
-        'cost_centre__directorate__directorate_name': 'Name',
-        'natural_account_code': 'NAC',
-        'cost_centre': '888812',
-    }
+class EditForecastView(TemplateView):
+    template_name = "forecast/edit.html"
+    cost_centre_code = "888812"
 
-    q1 = MonthlyFigure.pivot.pivotdata(
-        field_dict.keys(),
-        {'cost_centre': '888812'}
-    )
-
-    table = ForecastTable(field_dict, q1)
-    RequestConfig(request).configure(table)
-
-    return render(
-        request,
-        'forecast/edit.html', {
-            'group': "Test group",
-            'directorate': "Test directorate",
-            'cost_centre_name': "Test cost centre",
-            'cost_centre_num': "888812",
-            'table': table
+    def cost_centre_details(self):
+        return {
+            'group': 'Test group',
+            'directorate': 'Test directorate',
+            'cost_centre_name': 'Test cost centre name',
+            'cost_centre_num': self.cost_centre_code,
         }
-    )
+
+    def table(self):
+        field_dict = {
+            'cost_centre__directorate': 'Directorate',
+            'cost_centre__directorate__directorate_name': 'Name',
+            'natural_account_code': 'NAC',
+            'cost_centre': self.cost_centre_code,
+        }
+
+        q1 = MonthlyFigure.pivot.pivotdata(
+            field_dict.keys(),
+            {'cost_centre': self.cost_centre_code}
+        )
+
+        return ForecastTable(field_dict, q1)
 
 
 def edit_forecast_prototype(request):

@@ -2,9 +2,7 @@ from django.test import TestCase
 
 from forecast.forms import (
     AddForecastRowForm,
-    AddForecastRowFormCommitException,
 )
-from forecast.models import MonthlyFigure
 from costcentre.test.factories import CostCentreFactory
 from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
@@ -49,17 +47,7 @@ class TestAddForecastRowForm(TestCase):
             'project_code': project_code,
         })
 
-        monthly_figures_count = MonthlyFigure.objects.count()
-        self.assertEqual(monthly_figures_count, 0)
         self.assertTrue(form.is_valid())
-
-        form.save(commit=False)
-
-        monthly_figures_count = MonthlyFigure.objects.count()
-        self.assertEqual(monthly_figures_count, 0)
-
-        with self.assertRaises(AddForecastRowFormCommitException):
-            form.save()
 
     def test_blank_data(self):
         form = AddForecastRowForm({})
