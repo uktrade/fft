@@ -1,6 +1,6 @@
 import io
 
-from core.admin import AdminActiveField, AdminExport, AdminImportExport, AdminreadOnly, CsvImportForm
+from guardian.admin import GuardedModelAdmin
 
 from django.contrib import admin
 from django.shortcuts import redirect, render
@@ -8,16 +8,45 @@ from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .exportcsv import export_bp_iterator, export_bsce_iterator, export_cc_iterator, export_directorate_iterator, \
-    export_group_iterator, export_historic_costcentre_iterator, export_person_iterator
-from .importcsv import import_cc_class, import_cc_dit_specific_class, \
-    import_departmental_group_class, import_director_class
-from .models import BSCEEmail, BusinessPartner, CostCentre, CostCentrePerson, \
-    DepartmentalGroup, Directorate, HistoricCostCentre
+from core.admin import (
+    AdminActiveField,
+    AdminExport,
+    AdminImportExport,
+    AdminreadOnly,
+    CsvImportForm,
+)
+from .exportcsv import (
+    export_bp_iterator,
+    export_bsce_iterator,
+    export_cc_iterator,
+    export_directorate_iterator,
+    export_group_iterator,
+    export_historic_costcentre_iterator,
+    export_person_iterator,
+)
+from .importcsv import (
+    import_cc_class,
+    import_cc_dit_specific_class,
+    import_departmental_group_class,
+    import_director_class,
+)
+from .models import (
+    BSCEEmail,
+    BusinessPartner,
+    CostCentre,
+    CostCentrePerson,
+    DepartmentalGroup,
+    Directorate,
+    HistoricCostCentre,
+)
 
 
 # Displays extra fields in the list of cost centres
-class CostCentreAdmin(AdminActiveField, AdminImportExport):
+class CostCentreAdmin(
+    GuardedModelAdmin,
+    AdminActiveField,
+    AdminImportExport
+):
     """Define an extra import button, for the DIT specific fields"""
     change_list_template = "admin/m_import_changelist.html"
 

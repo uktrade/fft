@@ -73,6 +73,8 @@ INSTALLED_APPS = [
     'storages',
     'sass_processor',
     'webpack_loader',
+    'django_bootstrap_breadcrumbs',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -185,6 +187,7 @@ AUTHBROKER_SCOPES = 'read write'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'authbroker_client.backends.AuthbrokerBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 
 
