@@ -1,22 +1,25 @@
 import json
-from core.views import FidoExportMixin
 
-from django.urls import reverse_lazy
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django_tables2 import MultiTableMixin, SingleTableView
+from django_tables2 import (
+    MultiTableMixin,
+    SingleTableView,
+)
 from django_tables2 import RequestConfig
+from django.core import serializers
 
 from costcentre.models import CostCentre
-from .models import MonthlyFigure, FinancialPeriod
-from .tables import ForecastSubTotalTable, ForecastTable
+from .models import FinancialPeriod
+from .tables import (
+    ForecastSubTotalTable,
+    ForecastTable,
+)
 from .forms import EditForm
 from forecast.models import MonthlyFigure
-from django.core import serializers
-import json
-
-from django.core.serializers.json import DjangoJSONEncoder
+from core.views import FidoExportMixin
 
 # programme__budget_type_fk__budget_type_display indicates if DEL, AME, ADMIN used in every view
 budget_type_columns = {
@@ -56,8 +59,10 @@ class PivotClassView(FidoExportMixin, SingleTableView):
     def __init__(self, *args, **kwargs):
         # set the queryset at init, because it requires the current year, so it is recall each
         # time. Maybe an overkill, but I don't want to risk to forget to change the year!
-        d1 = {'cost_centre__directorate__group': 'Group',
-              'cost_centre__directorate__group__group_name': 'Name'}
+        d1 = {
+            'cost_centre__directorate__group': 'Group',
+            'cost_centre__directorate__group__group_name': 'Name',
+        }
         q = MonthlyFigure.pivot.pivotdata(d1.keys())
         self.queryset = q
         self.column_dict = d1
@@ -79,22 +84,28 @@ class CostClassView(FidoExportMixin, SingleTableView):
     def __init__(self, *args, **kwargs):
         # set the queryset at init, because it requires the current year, so it is recall each
         # time. Maybe an overkill, but I don't want to risk to forget to change the year!
-        columns = {'cost_centre__cost_centre_code': 'Cost Centre Code',
-                   'cost_centre__cost_centre_name': 'Cost Centre Description',
-                   'natural_account_code__natural_account_code': 'Natural Account Code',
-                   'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
-                   'programme__programme_code': 'Programme Code',
-                   'programme__programme_description': 'Programme Description',
-                   'project_code__project_code': 'Project Code',
-                   'project_code__project_description': 'Project Description',
-                   'programme__budget_type_fk__budget_type_display': 'Budget Type',
-                   'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Budget Grouping',
-                   'natural_account_code__expenditure_category__grouping_description': 'Budget Category',
-                   'natural_account_code__account_L5_code__economic_budget_code': 'Expenditure Type',
-                   }
+        columns = {
+            'cost_centre__cost_centre_code': 'Cost Centre Code',
+            'cost_centre__cost_centre_name': 'Cost Centre Description',
+            'natural_account_code__natural_account_code': 'Natural Account Code',
+            'natural_account_code__natural_account_code_description': 'Natural Account Code Description',
+            'programme__programme_code': 'Programme Code',
+            'programme__programme_description': 'Programme Description',
+            'project_code__project_code': 'Project Code',
+            'project_code__project_description': 'Project Description',
+            'programme__budget_type_fk__budget_type_display': 'Budget Type',
+            'natural_account_code__expenditure_category__NAC_category__NAC_category_description': 'Budget Grouping',
+            'natural_account_code__expenditure_category__grouping_description': 'Budget Category',
+            'natural_account_code__account_L5_code__economic_budget_code': 'Expenditure Type',
+        }
         cost_centre_code = 888812
-        pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
-        q = MonthlyFigure.pivot.pivotdata(columns.keys(), pivot_filter)
+        pivot_filter = {
+            'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)
+        }
+        q = MonthlyFigure.pivot.pivotdata(
+            columns.keys(),
+            pivot_filter,
+        )
         self.queryset = q
         self.column_dict = columns
         super().__init__(*args, **kwargs)
@@ -115,27 +126,56 @@ class MultiforecastView(
         # TODO remove hardcoded cost centre
         # TODO the filter will be set from the request
         cost_centre_code = 888812
-        order_list = ['programme__budget_type_fk__budget_type_display_order']
-        pivot_filter = {'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)}
+        order_list = [
+            'programme__budget_type_fk__budget_type_display_order'
+        ]
+        pivot_filter = {
+            'cost_centre__cost_centre_code': '{}'.format(cost_centre_code)
+        }
 
-        sub_total_type = ['programme__budget_type_fk__budget_type_display']
+        sub_total_type = [
+            'programme__budget_type_fk__budget_type_display'
+        ]
         display_sub_total_column = 'cost_centre__cost_centre_name'
-        q1 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_type,
-                                               budget_type_columns.keys(),pivot_filter, order_list = order_list)
-        # subtotal_data
-        order_list = ['programme__budget_type_fk__budget_type_display_order',
-                      'forecast_expenditure_type__forecast_expenditure_type_display_order']
-        sub_total_prog = ['programme__budget_type_fk__budget_type_display',
-                    'forecast_expenditure_type__forecast_expenditure_type_description']
-        display_sub_total_column = 'programme__programme_description'
-        q2 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_prog, programme_columns.keys(),pivot_filter, order_list = order_list)
+        q1 = MonthlyFigure.pivot.subtotal_data(
+            display_sub_total_column,
+            sub_total_type,
+            budget_type_columns.keys(),
+            pivot_filter,
+            order_list=order_list
+        )
 
-        sub_total_nac = ['programme__budget_type_fk__budget_type_display',
-                    'natural_account_code__expenditure_category__NAC_category__NAC_category_description']
+        # subtotal_data
+        order_list = [
+            'programme__budget_type_fk__budget_type_display_order',
+            'forecast_expenditure_type__forecast_expenditure_type_display_order',
+        ]
+        sub_total_prog = [
+            'programme__budget_type_fk__budget_type_display',
+            'forecast_expenditure_type__forecast_expenditure_type_description'
+        ]
+        display_sub_total_column = 'programme__programme_description'
+
+        q2 = MonthlyFigure.pivot.subtotal_data(
+            display_sub_total_column,
+            sub_total_prog,
+            programme_columns.keys(),
+            pivot_filter, order_list=order_list
+        )
+
+        sub_total_nac = [
+            'programme__budget_type_fk__budget_type_display',
+            'natural_account_code__expenditure_category__NAC_category__NAC_category_description'
+        ]
         display_sub_total_column = 'natural_account_code__expenditure_category__grouping_description'
 
-        q3 = MonthlyFigure.pivot.subtotal_data(display_sub_total_column, sub_total_nac,
-                                                natural_account_columns.keys(),pivot_filter, order_list = order_list)
+        q3 = MonthlyFigure.pivot.subtotal_data(
+            display_sub_total_column,
+            sub_total_nac,
+            natural_account_columns.keys(),
+            pivot_filter,
+            order_list=order_list,
+        )
         self.tables = [
             ForecastSubTotalTable(budget_type_columns, q1),
             ForecastSubTotalTable(programme_columns, q2),
@@ -146,12 +186,16 @@ class MultiforecastView(
 
 
 def pivot_test1(request):
-    field_dict = {'cost_centre__directorate': 'Directorate',
-                  'cost_centre__directorate__directorate_name': 'Name',
-                  'natural_account_code': 'NAC'}
+    field_dict = {
+        'cost_centre__directorate': 'Directorate',
+        'cost_centre__directorate__directorate_name': 'Name',
+        'natural_account_code': 'NAC'
+    }
 
-    q1 = MonthlyFigure.pivot.pivotdata(field_dict.keys(),
-                                       {'cost_centre__directorate__group': '1090AA'})
+    q1 = MonthlyFigure.pivot.pivotdata(
+        field_dict.keys(),
+        {'cost_centre__directorate__group': '1090AA'}
+    )
     table = ForecastTable(field_dict, q1)
     RequestConfig(request).configure(table)
     return render(request, 'forecast/forecast.html', {'table': table})
@@ -168,7 +212,10 @@ class EditForecastView(
         cost_centre = CostCentre.objects.get(
             cost_centre_code=self.cost_centre_code
         )
-        return self.request.user.has_perm('change_cost_centre', cost_centre)
+        return self.request.user.has_perm(
+            'change_cost_centre',
+            cost_centre,
+        )
 
     def handle_no_permission(self):
         return redirect('costcentre')
