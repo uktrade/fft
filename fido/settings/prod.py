@@ -15,3 +15,7 @@ from .base import *  # noqa
 STATICFILES_DIRS = (
     "/app/front_end/build/static",
 )
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

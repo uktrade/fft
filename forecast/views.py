@@ -212,9 +212,15 @@ class EditForecastView(
         cost_centre = CostCentre.objects.get(
             cost_centre_code=self.cost_centre_code
         )
-        return self.request.user.has_perm(
-            'change_cost_centre',
-            cost_centre,
+
+        return (
+            self.request.user.has_perm(
+                'view_costcentre',
+                cost_centre,
+            ) and self.request.user.has_perm(
+                'change_costcentre',
+                cost_centre,
+            )
         )
 
     def handle_no_permission(self):

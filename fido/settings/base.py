@@ -198,10 +198,6 @@ LOGIN_REDIRECT_URL = 'index'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 # Django webpack loader
 WEBPACK_LOADER = {
     "DEFAULT": {
