@@ -1,16 +1,22 @@
 from guardian.shortcuts import assign_perm
 
 from django.urls import reverse
-from django.test import TestCase
+from django.test import (
+    RequestFactory,
+    TestCase,
+)
 from django.contrib.auth import (
     get_user_model,
 )
 
 from costcentre.test.factories import CostCentreFactory
+from forecast.views import EditForecastView
 
 
 class ViewPermissionsTest(TestCase):
     def setUp(self):
+        self.factory = RequestFactory()
+
         self.cost_centre_code = 888812
         self.test_user_email = "test@test.com"
         self.test_password = "test_password"
@@ -35,24 +41,15 @@ class ViewPermissionsTest(TestCase):
             )
         )
 
-        self.client.force_login(
-            user=self.test_user
+        request = self.factory.get(
+            reverse('edit_forecast')
         )
+        request.user = self.test_user
 
-        resp = self.client.get(
-            reverse('edit_forecast'),
-            follow=True,
-        )
+        resp = EditForecastView.as_view()(request)
 
-        self.assertEqual(
-            resp.status_code,
-            200
-        )
-
-        self.assertRedirects(
-            resp,
-            reverse('costcentre'),
-        )
+        # Should have been redirected (no permission)
+        self.assertEqual(resp.status_code, 302)
 
         assign_perm(
             "change_costcentre",
@@ -71,7 +68,6 @@ class ViewPermissionsTest(TestCase):
                 self.cost_centre,
             )
         )
-
         self.assertTrue(
             self.test_user.has_perm(
                 "view_costcentre",
@@ -79,13 +75,12 @@ class ViewPermissionsTest(TestCase):
             )
         )
 
-        self.client.force_login(
-            user=self.test_user
+        request = self.factory.get(
+            reverse('edit_forecast')
         )
+        request.user = self.test_user
 
-        resp = self.client.get(
-            reverse('edit_forecast'),
-        )
+        resp = EditForecastView.as_view()(request)
 
         # Should be allowed
         self.assertEqual(
