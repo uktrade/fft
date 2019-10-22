@@ -1,25 +1,9 @@
 import json
 
-<<<<<<< HEAD
 from django.core.serializers.json import DjangoJSONEncoder
-from django.shortcuts import render, redirect
-from django.views.generic.base import TemplateView
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django_tables2 import (
-    MultiTableMixin,
-    SingleTableView,
-)
-from django_tables2 import RequestConfig
 from django.core import serializers
-
-from costcentre.models import CostCentre
-from .models import FinancialPeriod
-from .tables import (
-    ForecastSubTotalTable,
-    ForecastTable,
-)
-from .forms import EditForm
-=======
 from django.urls import reverse_lazy
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
@@ -30,14 +14,16 @@ from django_tables2 import (
     RequestConfig,
 )
 
+from costcentre.models import CostCentre
 from .models import MonthlyFigure, FinancialPeriod
-from .tables import ForecastSubTotalTable, ForecastTable
+from .tables import (
+    ForecastSubTotalTable,
+    ForecastTable,
+)
 from .forms import (
     EditForm,
     AddForecastRowForm,
 )
->>>>>>> feature/add-row
-from forecast.models import MonthlyFigure
 from core.views import FidoExportMixin
 
 # programme__budget_type_fk__budget_type_display indicates if DEL, AME, ADMIN used in every view
