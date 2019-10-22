@@ -1,5 +1,6 @@
 import json
 
+<<<<<<< HEAD
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
@@ -18,6 +19,24 @@ from .tables import (
     ForecastTable,
 )
 from .forms import EditForm
+=======
+from django.urls import reverse_lazy
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
+from django_tables2 import (
+    MultiTableMixin,
+    SingleTableView,
+    RequestConfig,
+)
+
+from .models import MonthlyFigure, FinancialPeriod
+from .tables import ForecastSubTotalTable, ForecastTable
+from .forms import (
+    EditForm,
+    AddForecastRowForm,
+)
+>>>>>>> feature/add-row
 from forecast.models import MonthlyFigure
 from core.views import FidoExportMixin
 
@@ -201,6 +220,40 @@ def pivot_test1(request):
     return render(request, 'forecast/forecast.html', {'table': table})
 
 
+class AddRowView(FormView):
+    template_name = 'forecast/add.html'
+    form_class = AddForecastRowForm
+    success_url = reverse_lazy('edit_forecast')
+    cost_centre_code = 888812
+    financial_year_id = 2019
+
+    def cost_centre_details(self):
+        return {
+            'group': 'Test group',
+            'directorate': 'Test directorate',
+            'cost_centre_name': 'Test cost centre name',
+            'cost_centre_num': self.cost_centre_code,
+        }
+
+    def form_valid(self, form):
+        data = form.cleaned_data
+        for financial_period in range(1, 13):
+            monthly_figure = MonthlyFigure(
+                financial_year_id=self.financial_year_id,
+                financial_period_id=financial_period,
+                cost_centre_id=self.cost_centre_code,
+                programme=data["programme"],
+                natural_account_code=data["natural_account_code"],
+                analysis1_code_id=data["analysis1_code"],
+                analysis2_code_id=data["analysis2_code"],
+                project_code=data["project_code"],
+                amount=0,
+            )
+            monthly_figure.save()
+
+        return super().form_valid(form)
+
+
 class EditForecastView(
     UserPassesTestMixin,
     TemplateView,
@@ -303,8 +356,7 @@ def edit_forecast_prototype(request):
 
     return render(
         request,
-        'forecast/edit.html',
-        {
+        'forecast/edit_prototype.html', {
             'form': form,
             'editable_periods_dump': editable_periods_dump,
             'forecast_dump': forecast_dump,

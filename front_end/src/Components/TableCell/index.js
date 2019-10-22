@@ -1,10 +1,5 @@
-import React, {Fragment, useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import {
-    getCellId,
-    months
-} from '../../Util'
-import { SET_INITIAL, SET_LAST } from '../../Reducers/Select'
+import React, {Fragment, useState, useEffect, useRef, memo } from 'react';
+import { useDispatch } from 'react-redux';
 import { SET_EDIT_CELL } from '../../Reducers/Edit'
 
 const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
@@ -12,10 +7,6 @@ const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, ro
 
     let cellRef = React.createRef();
     const inputRef = useRef(null);
-
-    const [isEditing, setIsEditing] = useState(false);
-
-
     const [value, setValue] = useState(initialValue);
 
     //const [rect, setRect] = useState(null);

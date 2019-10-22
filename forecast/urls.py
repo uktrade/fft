@@ -7,6 +7,7 @@ from .views import (
     pivot_test1,
     edit_forecast_prototype,
     EditForecastView,
+    AddRowView,
 )
 
 urlpatterns = [
@@ -15,5 +16,6 @@ urlpatterns = [
     path('pivotmulti/', MultiforecastView.as_view(), name='pivotmulti'),
     path('pivot1/', pivot_test1, name='pivot1'),
     path('edit/', EditForecastView.as_view(), name='edit_forecast'),
+    path('add/', AddRowView.as_view(), name='add_forecast_row'),
     path('edit-prototype/', edit_forecast_prototype, name='edit_prototype')
 ]

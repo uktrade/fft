@@ -33,4 +33,4 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-SELENIUM_ADDRESS = "selenium-hub"
+SELENIUM_ADDRESS = env('SELENIUM_ADDRESS', default="selenium-hub")

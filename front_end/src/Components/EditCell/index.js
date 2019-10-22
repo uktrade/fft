@@ -1,6 +1,5 @@
-import React, {Fragment, useState, useCallback, useEffect, useRef, useContext, memo } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { store } from '../../Store';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const EditCell = () => {
 	const rect = useSelector(state => state.edit.rect);

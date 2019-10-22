@@ -1,9 +1,8 @@
-import React, {Fragment, useState, useEffect, useRef } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { RowProvider } from  '../../Components/RowContext'
 import { 
     SELECT_CELL,
-    UNSELECT_CELL,
     UNSELECT_ALL
 } from '../../Reducers/Cells'
 import {
@@ -11,7 +10,7 @@ import {
     SET_LAST
 } from '../../Reducers/Select'
 
-function TableRow({children, index}) {
+function TableRow({children}) {
     const dispatch = useDispatch();
     const allCells = useSelector(state => state.allCells);
 

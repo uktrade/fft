@@ -1,12 +1,9 @@
-{% extends "wide_content.html" %}
+{% extends "forecast/forecast_base.html" %}
 
 {% load render_table from django_tables2 %}
 {% load querystring from django_tables2 %}
 
-{% block content %}
-<h3 class="govuk-heading-m">Financial Report</h3>
-
-
+{% block page_content %}
 <p><a class="govuk-link" href="{% querystring '_export'='xls' %}">Download to Excel</a></p>
 
 <div class="tables-container">

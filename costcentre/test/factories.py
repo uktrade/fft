@@ -32,3 +32,5 @@ class CostCentreFactory(factory.DjangoModelFactory):
         model = CostCentre
 
     directorate = factory.SubFactory(DirectorateFactory)
+    cost_centre_code = 999999
+    cost_centre_name = "Test Cost Centre"

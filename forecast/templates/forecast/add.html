@@ -1,0 +1,26 @@
+{% extends "forecast/forecast_base.html" %}
+
+{% block page_content %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="govuk-form-group{% if field.errors %} govuk-form-group--error{% endif %}">
+                <label class="govuk-label" for="{{ field.name }}">
+                    {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+                </label>
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <span id="{{ field.name }}-issued-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            {{ error|escape }}
+                        </span>
+                    {% endfor %}
+                {% endif %}
+                {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button"/>
+    </form>
+{% endblock %}
+

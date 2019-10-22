@@ -1,5 +1,4 @@
-
-{% extends "wide_content.html" %}
+{% extends "forecast/forecast_base.html" %}
 
 {% load render_table from django_tables2 %}
 {% load querystring from django_tables2 %}
@@ -10,13 +9,23 @@
     {% breadcrumb "Forecast" "edit_forecast" %}
 {% endblock %}
 
-{% block content %}
+{% block page_content %}
     <h3 class="govuk-heading-m">Forecast workbook</h3>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
                     <p>AREA FOR DATA SELECTION</p>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <a href="{% url 'add_forecast_row' %}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                      Add a new row
+                    </a>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        Download
+                    </button>
                 </div>
             </div>
         </div>

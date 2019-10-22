@@ -1,18 +1,12 @@
-import React, {Fragment, useState, useEffect, useRef, useCallback, useContext, memo } from 'react';
-import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import update from 'react-addons-update';
-
-import { store } from '../../Store';
-
+import React, {Fragment, useState, useEffect, useRef, memo } from 'react';
+import { useDispatch } from 'react-redux';
 import TableRow from '../../Components/TableRow/index'
 import TableCell from '../../Components/TableCell/index'
 import TableHandle from '../../Components/TableHandle/index'
 import ColumnHeader from '../../Components/ColumnHeader/index'
-import Selection from '../../Components/Selection/index'
 import { SET_INITIAL, SET_LAST } from '../../Reducers/Select'
 
 import {
-    getCellId,
     months
 } from '../../Util'
 
@@ -26,12 +20,6 @@ Cut down cell loop to relevant cells
 function Table({rowData, cellCount}) {
     const dispatch = useDispatch();
 
-    const LEFT_TO_RIGHT = 'LEFT_TO_RIGHT';
-    const RIGHT_TO_LEFT = 'RIGHT_TO_LEFT';
-
-    const TOP_TO_BOTTOM = 'TOP_TO_BOTTOM';
-    const BOTTOM_TO_TOP = 'BOTTOM_TO_TOP';
-
     const [errorMessage, setErrorMessage] = useState(null);
 
     const mouseRef = useRef(false);
@@ -40,9 +28,6 @@ function Table({rowData, cellCount}) {
     const rects = []
 
     const [rows, setRows] = useState([]);
-
-    const selectedCellsRef = useRef([]);
-    const [selectedCells, setSelectedCells] = useState([])
 
     const [initialSelection, setInitialSelection] = useState([])
     const [lastSelection, setlastSelection] = useState([])
