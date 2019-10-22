@@ -9,12 +9,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         if settings.CAN_ELEVATE_SSO_USER_PERMISSIONS:
             user = get_user_model()
-            sso_user = user.objects.first()
+            sso_user = user.objects.last()
             sso_user.is_superuser = True
             sso_user.is_staff = True
             sso_user.save()
             self.stdout.write(
-                self.style.SUCCESS('Successfully elevated user permission')
+                self.style.SUCCESS(
+                    'Successfully elevated user permission for user {}'.format(
+                        sso_user.email
+                    )
+                )
             )
         else:
             self.stdout.write(

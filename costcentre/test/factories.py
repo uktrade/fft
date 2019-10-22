@@ -23,7 +23,7 @@ class DirectorateFactory(factory.DjangoModelFactory):
     group = factory.SubFactory(DepartmentalGroupFactory)
 
 
-class CostcentreFactory(factory.DjangoModelFactory):
+class CostCentreFactory(factory.DjangoModelFactory):
     """
         Define CostCentre Factory
     """
