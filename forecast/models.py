@@ -31,6 +31,20 @@ class SubTotalFieldNotSpecifiedError(Exception):
     pass
 
 
+class CalcForecastExpenditureType(models.Model):
+    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
+    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
+    This table is prepulated with the information needed to calculate the expenditure_type.
+    """
+    nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
+    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
+    forecast_expenditure_type_fk = models.ForeignKey(ForecastExpenditureType, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('nac_economic_budget_code',
+                           'programme_budget_type')
+
+
 class ForecastExpenditureType(models.Model):
     """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
     As such, it can only be defined for a forecast row, when both NAC and programme are defined.
@@ -88,9 +102,8 @@ class FinancialCode(models.Model):
     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT, blank=True, null=True)
     analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT, blank=True, null=True)
     project_code = models.ForeignKey(ProjectCode, on_delete=models.PROTECT, blank=True, null=True)
-    expenditure_type_short_name = models.CharField(max_length=100, blank=True, null=True)
-    expenditure_type_name = models.CharField(max_length=100, blank=True, null=True)
-    expenditure_type_order = models.IntegerField(default=0)
+    # The following field is calculated from programme and NAC.
+    forecast_expenditure_type = models.ForeignKey(ForecastExpenditureType, on_delete=models.PROTECT, default=1)
 
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
@@ -99,22 +112,12 @@ class FinancialCode(models.Model):
             nac_economic_budget_code = self.natural_account_code.account_L5_code.economic_budget_code
             programme_budget_type = self.programme.budget_type_fk
 
-            nac_programme_code = "{} {}".format(
-                nac_economic_budget_code,
-                programme_budget_type,
+            calc_forecast = CalcForecastExpenditureType.objects.filter(
+                programme_budget_type=programme_budget_type,
+                nac_economic_budget_code=nac_economic_budget_code,
             )
 
-            self.expenditure_type_short_name = settings.FORECAST_TYPE[
-                nac_programme_code
-            ]["short_name"]
-
-            self.expenditure_type_name = settings.FORECAST_TYPE[
-                nac_programme_code
-            ]["name"]
-
-            self.expenditure_type_order = settings.FORECAST_TYPE[
-                nac_programme_code
-            ]["order"]
+            self.forecast_expenditure_type = calc_forecast[0].forecast_expenditure_type_fk
 
         super(FinancialCode, self).save(*args, **kwargs)
 

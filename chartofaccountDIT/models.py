@@ -398,12 +398,16 @@ class HistoricalProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=''):
-        pc_hist = cls(programme_code=obj.programme_code,
-                      programme_description=obj.programme_description + suffix,
-                      budget_type=obj.budget_type_fk.budget_type,
-                      active=obj.active,
-                      financial_year=year_obj
-                      )
+        pc_hist = cls(
+            programme_code=obj.programme_code,
+            programme_description="{}{}".format(
+                obj.programme_description,
+                suffix
+            ),
+            budget_type=obj.budget_type_fk.budget_type,
+            active=obj.active,
+            financial_year=year_obj,
+        )
         pc_hist.save()
         return pc_hist
 
