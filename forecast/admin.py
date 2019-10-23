@@ -2,7 +2,7 @@ from core.admin import AdminAsyncImportExport, AdminImportExport, AdminreadOnly
 
 from django.contrib import admin
 
-from .importcsv import import_adi_file_class
+from .import_csv import import_adi_file_class
 from .models import FinancialPeriod, MonthlyFigure
 
 

@@ -24,11 +24,19 @@ ARCHIVE_TYPE = {
 
 
 class Command(BaseCommand):
-    help = 'archive element of Chart of Account. Allowed types are - All - ' + ' - '.join(ARCHIVE_TYPE.keys())
+    help = 'archive element of Chart of Account. ' \
+           'Allowed types are - All - {} - '.format(
+                ' - '.join(ARCHIVE_TYPE.keys())
+            )
 
     def add_arguments(self, parser):
         parser.add_argument('type')
-        parser.add_argument('year', type=int, nargs='?', default=2018)
+        parser.add_argument(
+            'year',
+            type=int,
+            nargs='?',
+            default=2018,
+        )
 
     # pass the year an argument
     def handle(self, *args, **options):

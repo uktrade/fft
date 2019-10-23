@@ -1,18 +1,18 @@
-from chartofaccountDIT.importcsv import import_Analysis1, import_Analysis2, import_NAC, \
+from chartofaccountDIT.import_csv import import_Analysis1, import_Analysis2, import_NAC, \
     import_NAC_DIT, import_NAC_category,  \
     import_NAC_expenditure_category, \
     import_commercial_category, \
     import_expenditure_category, import_programme
 
-from costcentre.importcsv import import_cc
+from costcentre.import_csv import import_cc
 
 from django.core.management.base import BaseCommand
 
-from forecast.importcsv import import_adi_file, import_unpivot_actual
+from forecast.import_csv import import_adi_file, import_unpivot_actual
 
-from payroll.importcsv import import_HR_Report
+from payroll.import_csv import import_HR_Report
 
-from treasuryCOA.importcsv import import_treasury_COA
+from treasuryCOA.import_csv import import_treasury_COA
 
 IMPORT_TYPE = {
     'CostCentre': import_cc,

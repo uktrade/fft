@@ -7,13 +7,31 @@ from treasuryCOA.models import L5Account
 
 # Other members of Account Codes
 class Analysis1Abstract(models.Model):
-    analysis1_code = models.CharField('Contract Code', primary_key=True, max_length=50)
-    analysis1_description = models.CharField('Contract Name', max_length=300)
-    supplier = models.CharField('Supplier', max_length=300, default='')
-    pc_reference = models.CharField('PC Reference', max_length=300, default='')
+    analysis1_code = models.CharField(
+        'Contract Code',
+        primary_key=True,
+        max_length=50,
+    )
+    analysis1_description = models.CharField(
+        'Contract Name',
+        max_length=300,
+    )
+    supplier = models.CharField(
+        'Supplier',
+        max_length=300,
+        default='',
+    )
+    pc_reference = models.CharField(
+        'PC Reference',
+        max_length=300,
+        default='',
+    )
 
     def __str__(self):
-        return self.analysis1_code + ' - ' + self.analysis1_description
+        return "{} - {}".format(
+            self.analysis1_code,
+            self.analysis1_description,
+        )
 
     class Meta:
         abstract = True
@@ -22,26 +40,45 @@ class Analysis1Abstract(models.Model):
         ordering = ['analysis1_code']
 
 
-class Analysis1(Analysis1Abstract, TimeStampedModel, LogChangeModel):
+class Analysis1(
+    Analysis1Abstract,
+    TimeStampedModel,
+    LogChangeModel,
+):
     pass
 
 
-class HistoricalAnalysis1(Analysis1Abstract, ArchivedModel):
-    analysis1_code = models.CharField('Contract Code', max_length=50)
-    active = models.BooleanField(default=False)
+class HistoricalAnalysis1(
+    Analysis1Abstract,
+    ArchivedModel
+):
+    analysis1_code = models.CharField(
+        'Contract Code',
+        max_length=50,
+    )
+    active = models.BooleanField(
+        default=False,
+    )
 
     def __str__(self):
-        return super().__str__() + ' ' + self.financial_year.financial_year_display
+        return "{} {}".format(
+            super().__str__(),
+            self.financial_year.financial_year_display,
+        )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=''):
-        obj_hist = cls(analysis1_description=obj.analysis1_description + suffix,
-                       analysis1_code=obj.analysis1_code,
-                       supplier=obj.supplier,
-                       pc_reference=obj.pc_reference,
-                       financial_year=year_obj,
-                       active=obj.active
-                       )
+        obj_hist = cls(
+            analysis1_description="{}{}".format(
+                obj.analysis1_description,
+                suffix,
+            ),
+            analysis1_code=obj.analysis1_code,
+            supplier=obj.supplier,
+            pc_reference=obj.pc_reference,
+            financial_year=year_obj,
+            active=obj.active
+        )
         obj_hist.save()
         return obj_hist
 
@@ -52,11 +89,21 @@ class HistoricalAnalysis1(Analysis1Abstract, ArchivedModel):
 
 
 class Analysis2Abstract(models.Model):
-    analysis2_code = models.CharField('Market Code', primary_key=True, max_length=50)
-    analysis2_description = models.CharField(max_length=300, verbose_name='Market')
+    analysis2_code = models.CharField(
+        'Market Code',
+        primary_key=True,
+        max_length=50,
+    )
+    analysis2_description = models.CharField(
+        max_length=300,
+        verbose_name='Market',
+    )
 
     def __str__(self):
-        return self.analysis2_code + ' - ' + self.analysis2_description
+        return "{} - {}".format(
+            self.analysis2_code,
+            self.analysis2_description,
+        )
 
     class Meta:
         abstract = True
@@ -65,24 +112,39 @@ class Analysis2Abstract(models.Model):
         ordering = ['analysis2_code']
 
 
-class Analysis2(Analysis2Abstract, TimeStampedModel):
+class Analysis2(
+    Analysis2Abstract,
+    TimeStampedModel,
+):
     pass
 
 
-class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
-    analysis2_code = models.CharField('Contract Code', max_length=50)
-    active = models.BooleanField(default=False)
+class HistoricalAnalysis2(
+    Analysis2Abstract,
+    ArchivedModel,
+):
+    analysis2_code = models.CharField(
+        'Contract Code',
+        max_length=50,
+    )
+    active = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
-        return super().__str__() + ' ' + self.financial_year.financial_year_display
+        return "".format(
+            super().__str__(),
+            self.financial_year.financial_year_display,
+        )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=''):
-        obj_hist = cls(analysis2_description=obj.analysis2_description + suffix,
-                       analysis2_code=obj.analysis2_code,
-                       financial_year=year_obj,
-                       active=obj.active
-                       )
+        obj_hist = cls(
+            analysis2_description=obj.analysis2_description + suffix,
+            analysis2_code=obj.analysis2_code,
+            financial_year=year_obj,
+            active=obj.active,
+        )
         obj_hist.save()
         return obj_hist
 
@@ -95,7 +157,7 @@ class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
 # Category defined by DIT
 class NACCategory(
     TimeStampedModel,
-    #LogChangeModel
+    LogChangeModel
 ):
     NAC_category_description = models.CharField(
         max_length=255,
@@ -112,13 +174,21 @@ class NACCategory(
         ordering = ['NAC_category_description']
 
 
-class OperatingDeliveryCategory(TimeStampedModel, LogChangeModel):
+class OperatingDeliveryCategory(
+    TimeStampedModel,
+    LogChangeModel,
+):
     """Another way to classify the Budget NACs"""
-    operating_delivery_description = models.CharField(max_length=255, verbose_name='Operating Delivery Plan Category',
-                                                      unique=True)
+    operating_delivery_description = models.CharField(
+        max_length=255,
+        verbose_name='Operating Delivery Plan Category',
+        unique=True,
+    )
 
     def __str__(self):
-        return str(self.operating_delivery_description)
+        return str(
+            self.operating_delivery_description
+        )
 
     class Meta:
         verbose_name = "Operating Delivery Plan Category"
@@ -127,10 +197,21 @@ class OperatingDeliveryCategory(TimeStampedModel, LogChangeModel):
 
 
 class ExpenditureCategoryAbstract(models.Model):
-    grouping_description = models.CharField(max_length=255, verbose_name='Budget Category',
-                                            unique=True)
-    description = models.CharField(max_length=5000, blank=True, null=True)
-    further_description = models.CharField(max_length=5000, blank=True, null=True)
+    grouping_description = models.CharField(
+        max_length=255,
+        verbose_name='Budget Category',
+        unique=True,
+    )
+    description = models.CharField(
+        max_length=5000,
+        blank=True,
+        null=True,
+    )
+    further_description = models.CharField(
+        max_length=5000,
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return str(self.grouping_description)
@@ -142,35 +223,71 @@ class ExpenditureCategoryAbstract(models.Model):
         ordering = ['grouping_description']
 
 
-class ExpenditureCategory(ExpenditureCategoryAbstract, TimeStampedModel, LogChangeModel):
-    linked_budget_code = models.ForeignKey('NaturalCode', on_delete=models.PROTECT,
-                                           blank=True, null=True, verbose_name='Budget Code')
-    NAC_category = models.ForeignKey(NACCategory, on_delete=models.PROTECT,
-                                     blank=True, null=True, verbose_name='Budget Grouping')
-    op_del_category = models.ForeignKey(OperatingDeliveryCategory, on_delete=models.PROTECT,
-                                        blank=True, null=True, verbose_name='Operating Delivery Plan')
+class ExpenditureCategory(
+    ExpenditureCategoryAbstract,
+    TimeStampedModel,
+    LogChangeModel,
+):
+    linked_budget_code = models.ForeignKey(
+        'NaturalCode',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name='Budget Code',
+    )
+    NAC_category = models.ForeignKey(
+        NACCategory,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name='Budget Grouping',
+    )
+    op_del_category = models.ForeignKey(
+        OperatingDeliveryCategory,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name='Operating Delivery Plan',
+    )
 
 
-class HistoricalExpenditureCategory(ExpenditureCategoryAbstract, ArchivedModel):
-    linked_budget_code = models.IntegerField(verbose_name='Budget Code')
-    linked_budget_code_description = models.CharField(max_length=200,
-                                                      verbose_name='Budget Description')
-    NAC_category = models.CharField(max_length=255, verbose_name='Budget Grouping')
-    active = models.BooleanField(default=False)
+class HistoricalExpenditureCategory(
+    ExpenditureCategoryAbstract,
+    ArchivedModel
+):
+    linked_budget_code = models.IntegerField(
+        verbose_name='Budget Code',
+    )
+    linked_budget_code_description = models.CharField(
+        max_length=200,
+        verbose_name='Budget Description',
+    )
+    NAC_category = models.CharField(
+        max_length=255,
+        verbose_name='Budget Grouping',
+    )
+    active = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
-        return super().__str__() + ' ' + self.financial_year.financial_year_display
+        return "".format(
+            super().__str__(),
+            self.financial_year.financial_year_display
+        )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=''):
-        obj_hist = cls(financial_year=year_obj,
-                       active=obj.active,
-                       grouping_description=obj.grouping_description + suffix,
-                       NAC_category=obj.NAC_category.NAC_category_description,
-                       description=obj.description,
-                       further_description=obj.further_description,
-                       linked_budget_code=obj.linked_budget_code.natural_account_code,
-                       linked_budget_code_description=obj.linked_budget_code.natural_account_code_description)
+        obj_hist = cls(
+            financial_year=year_obj,
+            active=obj.active,
+            grouping_description=obj.grouping_description + suffix,
+            NAC_category=obj.NAC_category.NAC_category_description,
+            description=obj.description,
+            further_description=obj.further_description,
+            linked_budget_code=obj.linked_budget_code.natural_account_code,
+            linked_budget_code_description=obj.linked_budget_code.natural_account_code_description
+        )
         obj_hist.save()
         return obj_hist
 
@@ -181,10 +298,21 @@ class HistoricalExpenditureCategory(ExpenditureCategoryAbstract, ArchivedModel):
 
 
 class CommercialCategoryAbstract(models.Model):
-    commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category',
-                                           unique=True)
-    description = models.CharField(max_length=5000, blank=True, null=True)
-    approvers = models.CharField(max_length=5000, blank=True, null=True)
+    commercial_category = models.CharField(
+        max_length=255,
+        verbose_name='Commercial Category',
+        unique=True,
+    )
+    description = models.CharField(
+        max_length=5000,
+        blank=True,
+        null=True,
+    )
+    approvers = models.CharField(
+        max_length=5000,
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return str(self.commercial_category)
@@ -196,24 +324,35 @@ class CommercialCategoryAbstract(models.Model):
         ordering = ['commercial_category']
 
 
-class CommercialCategory(CommercialCategoryAbstract, TimeStampedModel, LogChangeModel):
+class CommercialCategory(
+    CommercialCategoryAbstract,
+    TimeStampedModel,
+    LogChangeModel,
+):
     pass
 
 
-class HistoricalCommercialCategory(CommercialCategoryAbstract, ArchivedModel):
+class HistoricalCommercialCategory(
+    CommercialCategoryAbstract,
+    ArchivedModel,
+):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return super().__str__() + ' ' + self.financial_year.financial_year_display
+        return "{} {}".format(
+            super().__str__(),
+            self.financial_year.financial_year_display,
+        )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=''):
-        obj_hist = cls(commercial_category=obj.commercial_category + suffix,
-                       description=obj.description,
-                       approvers=obj.approvers,
-                       financial_year=year_obj,
-                       active=obj.active
-                       )
+        obj_hist = cls(
+            commercial_category=obj.commercial_category + suffix,
+            description=obj.description,
+            approvers=obj.approvers,
+            financial_year=year_obj,
+            active=obj.active
+        )
         obj_hist.save()
         return obj_hist
 
@@ -282,11 +421,22 @@ class NaturalCode(
     )
 
 
-class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
-    """It includes the fields displayed on the FIDO interface, and it has no foreign keys in it, to avoid dependencies
+class HistoricalNaturalCode(
+    NaturalCodeAbstract,
+    ArchivedModel
+):
+    """It includes the fields displayed on the FIDO interface,
+    and it has no foreign keys in it, to avoid dependencies
     from other tables. The tables is not normalised by design."""
-    natural_account_code = models.IntegerField(verbose_name='PO/Actuals NAC')
-    expenditure_category = models.CharField(max_length=255, verbose_name='Budget Category', blank=True, null=True)
+    natural_account_code = models.IntegerField(
+        verbose_name='PO/Actuals NAC'
+    )
+    expenditure_category = models.CharField(
+        max_length=255,
+        verbose_name='Budget Category',
+        blank=True,
+        null=True,
+    )
     NAC_category = models.CharField(max_length=255, verbose_name='Budget Grouping', blank=True, null=True)
     commercial_category = models.CharField(max_length=255, verbose_name='Commercial Category', blank=True, null=True)
     account_L5_code = models.BigIntegerField(blank=True, null=True)

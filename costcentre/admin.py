@@ -6,7 +6,9 @@ from django.contrib import admin
 from django.shortcuts import redirect, render
 from django.urls import path
 
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from django_admin_listfilter_dropdown.filters import (
+    RelatedDropdownFilter,
+)
 
 from core.admin import (
     AdminActiveField,
@@ -24,7 +26,7 @@ from .exportcsv import (
     export_historic_costcentre_iterator,
     export_person_iterator,
 )
-from .importcsv import (
+from .import_csv import (
     import_cc_class,
     import_cc_dit_specific_class,
     import_departmental_group_class,
@@ -50,14 +52,23 @@ class CostCentreAdmin(
     """Define an extra import button, for the DIT specific fields"""
     change_list_template = "admin/m_import_changelist.html"
 
-    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
-                    'directorate_name', 'group_code', 'group_name', 'deputy_director',
-                    'business_partner', 'treasury_segment', 'active')
+    list_display = (
+        'cost_centre_code',
+        'cost_centre_name',
+        'directorate_code',
+        'directorate_name',
+        'group_code',
+        'group_name',
+        'deputy_director',
+        'business_partner',
+        'treasury_segment',
+        'active'
+    )
 
-    def directorate_name(self, instance):  # required to display the field from a foreign key
+    def directorate_name(self, instance):
         return instance.directorate.directorate_name
 
-    def directorate_code(self, instance):  # required to display the field from a foreign key
+    def directorate_code(self, instance):
         return instance.directorate.directorate_code
 
     def group_name(self, instance):
@@ -86,21 +97,48 @@ class CostCentreAdmin(
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['cost_centre_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                'cost_centre_code',
+                'created',
+                'updated'
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return [
+                'created',
+                'updated'
+            ]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['cost_centre_code', 'cost_centre_name',
-                    'directorate', 'deputy_director', 'business_partner', 'bsce_email', 'used_for_travel',
-                    'disabled_with_actual', 'active', 'created', 'updated']
+            return [
+                'cost_centre_code',
+                'cost_centre_name',
+                'directorate',
+                'deputy_director',
+                'business_partner',
+                'bsce_email',
+                'used_for_travel',
+                'disabled_with_actual',
+                'active',
+                'created',
+                'updated'
+            ]
         else:
-            return ['cost_centre_code', 'cost_centre_name', 'directorate', 'bsce_email', 'used_for_travel',
-                    'deputy_director', 'business_partner', 'disabled_with_actual', 'active']
+            return [
+                'cost_centre_code',
+                'cost_centre_name',
+                'directorate',
+                'bsce_email',
+                'used_for_travel',
+                'deputy_director',
+                'business_partner',
+                'disabled_with_actual',
+                'active'
+            ]
 
-    # the export and import function must be defined as properties, to stop getting 'self' as first parameter
+    # the export and import function must be defined as
+    # properties, to stop getting 'self' as first parameter
     @property
     def export_func(self):
         return export_cc_iterator
@@ -109,13 +147,29 @@ class CostCentreAdmin(
     def import_info(self):
         return import_cc_class
 
-    search_fields = ['cost_centre_code', 'cost_centre_name',
-                     'directorate__directorate_code', 'directorate__directorate_name',
-                     'directorate__group__group_code', 'directorate__group__group_name',
-                     'deputy_director__name', 'deputy_director__surname']
-    list_filter = ('active', 'disabled_with_actual', 'used_for_travel',
-                   ('directorate', RelatedDropdownFilter),
-                   ('directorate__group', RelatedDropdownFilter))
+    search_fields = [
+        'cost_centre_code',
+        'cost_centre_name',
+        'directorate__directorate_code',
+        'directorate__directorate_name',
+        'directorate__group__group_code',
+        'directorate__group__group_name',
+        'deputy_director__name',
+        'deputy_director__surname'
+    ]
+    list_filter = (
+        'active',
+        'disabled_with_actual',
+        'used_for_travel',
+        (
+            'directorate',
+            RelatedDropdownFilter
+        ),
+        (
+            'directorate__group',
+            RelatedDropdownFilter
+        )
+    )
 
     autocomplete_fields = ['directorate']
 
@@ -131,12 +185,18 @@ class CostCentreAdmin(
         import_func = import_cc_dit_specific_class.my_import_func
         form_title = import_cc_dit_specific_class.form_title
         if request.method == "POST":
-            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
+            form = CsvImportForm(
+                header_list,
+                form_title,
+                request.POST,
+                request.FILES,
+            )
             if form.is_valid():
                 csv_file = request.FILES["csv_file"]
                 # read() gives you the file contents as a bytes object,
                 # on which you can call decode().
-                # decode('cp1252') turns your bytes into a string, with known encoding.
+                # decode('cp1252') turns your bytes
+                # into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
                 t = io.StringIO(csv_file.read().decode('cp1252'))
                 import_func(t)
@@ -150,13 +210,29 @@ class CostCentreAdmin(
 
 
 class DirectorateAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('directorate_code', 'directorate_name',
-                    'group_code', 'group_name', 'director', 'active')
-    search_fields = ['directorate_code', 'directorate_name',
-                     'group__group_name', 'group__group_code',
-                     'director__name', 'director__surname']
-    list_filter = ('active',
-                   ('group', RelatedDropdownFilter))
+    list_display = (
+        'directorate_code',
+        'directorate_name',
+        'group_code',
+        'group_name',
+        'director',
+        'active'
+    )
+    search_fields = [
+        'directorate_code',
+        'directorate_name',
+        'group__group_name',
+        'group__group_code',
+        'director__name',
+        'director__surname'
+    ]
+    list_filter = (
+        'active',
+        (
+            'group',
+            RelatedDropdownFilter
+        )
+    )
 
     def group_name(self, instance):
         return instance.group.group_name
@@ -170,25 +246,54 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
     # limit the list available in the drop downs
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director':
-            kwargs["queryset"] = CostCentrePerson.objects.filter(is_director=True, active=True)
+            kwargs["queryset"] = CostCentrePerson.objects.filter(
+                is_director=True,
+                active=True,
+            )
         if db_field.name == 'group':
-            kwargs["queryset"] = DepartmentalGroup.objects.filter(active=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            kwargs["queryset"] = DepartmentalGroup.objects.filter(
+                active=True
+            )
+        return super().formfield_for_foreignkey(
+            db_field,
+            request,
+            **kwargs
+        )
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['directorate_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                'directorate_code',
+                'created',
+                'updated',
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return [
+                'created',
+                'updated',
+            ]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['directorate_code', 'directorate_name', 'group',
-                    'director', 'active', 'created', 'updated']
+            return [
+                'directorate_code',
+                'directorate_name',
+                'group',
+                'director',
+                'active',
+                'created',
+                'updated'
+            ]
         else:
-            return ['directorate_code', 'directorate_name', 'group', 'director', 'active']
+            return [
+                'directorate_code',
+                'directorate_name',
+                'group',
+                'director',
+                'active'
+            ]
 
     @property
     def export_func(self):
@@ -200,31 +305,73 @@ class DirectorateAdmin(AdminActiveField, AdminImportExport):
 
 
 class DepartmentalGroupAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active')
-    search_fields = ['group_code', 'group_name',
-                     'director_general__name', 'director_general__surname']
-    list_filter = ('active',
-                   ('treasury_segment_fk', RelatedDropdownFilter))
+    list_display = (
+        'group_code',
+        'group_name',
+        'director_general',
+        'treasury_segment_fk',
+        'active'
+    )
+    search_fields = [
+        'group_code',
+        'group_name',
+        'director_general__name',
+        'director_general__surname',
+    ]
+    list_filter = (
+        'active',
+        (
+            'treasury_segment_fk',
+            RelatedDropdownFilter
+        )
+    )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'director_general':
-            kwargs["queryset"] = CostCentrePerson.objects.filter(is_dg=True, active=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            kwargs["queryset"] = CostCentrePerson.objects.filter(
+                is_dg=True,
+                active=True
+            )
+        return super().formfield_for_foreignkey(
+            db_field,
+            request,
+            **kwargs,
+        )
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['group_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                'group_code',
+                'created',
+                'updated'
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return [
+                'created',
+                'updated'
+            ]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active', 'created',
-                    'updated']
+            return [
+                'group_code',
+                'group_name',
+                'director_general',
+                'treasury_segment_fk',
+                'active',
+                'created',
+                'updated',
+            ]
         else:
-            return ['group_code', 'group_name', 'director_general', 'treasury_segment_fk', 'active']
+            return [
+                'group_code',
+                'group_name',
+                'director_general',
+                'treasury_segment_fk',
+                'active',
+            ]
 
     @property
     def export_func(self):
@@ -252,7 +399,10 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
     search_fields = ['name', 'surname', 'bp_email']
 
     def get_readonly_fields(self, request, obj=None):
-        return ['created', 'updated']
+        return [
+            'created',
+            'updated'
+        ]
 
     @property
     def export_func(self):
@@ -263,10 +413,11 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
     list_display = ('full_name', 'is_dg', 'is_director', 'active')
     search_fields = ['name', 'surname', 'email']
 
-    list_filter = ('active',
-                   'is_director',
-                   'is_dg',
-                   )
+    list_filter = (
+        'active',
+        'is_director',
+        'is_dg',
+    )
 
     def get_readonly_fields(self, request, obj=None):
         return ['created', 'updated']
@@ -277,21 +428,51 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
 
 
 class HistoricCostCentreAdmin(AdminreadOnly, AdminExport):
-    list_display = ('cost_centre_code', 'cost_centre_name', 'directorate_code',
-                    'directorate_name', 'group_code', 'group_name', 'deputy_director_fullname',
-                    'business_partner_fullname', 'active')
-    search_fields = ['cost_centre_code', 'cost_centre_name',
-                     'directorate_code', 'directorate_name',
-                     'group_code', 'group_name',
-                     'deputy_director_fullname']
-    list_filter = ('active',
-                   'disabled_with_actual',
-                   ('financial_year', RelatedDropdownFilter))
-    fields = ('financial_year', 'cost_centre_code', 'cost_centre_name',
-              'directorate_code', 'directorate_name', 'director_fullname',
-              'group_code', 'group_name', 'dg_fullname',
-              'deputy_director_fullname', 'business_partner_fullname', 'bsce_email',
-              'disabled_with_actual', 'active', 'archived')
+    list_display = (
+        'cost_centre_code',
+        'cost_centre_name',
+        'directorate_code',
+        'directorate_name',
+        'group_code',
+        'group_name',
+        'deputy_director_fullname',
+        'business_partner_fullname',
+        'active',
+    )
+    search_fields = [
+        'cost_centre_code',
+        'cost_centre_name',
+        'directorate_code',
+        'directorate_name',
+        'group_code',
+        'group_name',
+        'deputy_director_fullname',
+    ]
+    list_filter = (
+        'active',
+        'disabled_with_actual',
+        (
+            'financial_year',
+            RelatedDropdownFilter,
+        )
+    )
+    fields = (
+        'financial_year',
+        'cost_centre_code',
+        'cost_centre_name',
+        'directorate_code',
+        'directorate_name',
+        'director_fullname',
+        'group_code',
+        'group_name',
+        'dg_fullname',
+        'deputy_director_fullname',
+        'business_partner_fullname',
+        'bsce_email',
+        'disabled_with_actual',
+        'active',
+        'archived',
+    )
 
     @property
     def export_func(self):

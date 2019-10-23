@@ -1,6 +1,12 @@
-from treasurySS.models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
-
 import factory
+
+from treasurySS.models import (
+    EstimateRow,
+    Segment,
+    SegmentGrandParent,
+    SegmentParent,
+    SubSegment,
+)
 
 
 class SegmentGrandParentFactory(factory.DjangoModelFactory):

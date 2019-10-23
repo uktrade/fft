@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from .exportcsv import _export_L1_iterator, _export_L2_iterator, _export_L3_iterator, _export_L4_iterator, \
     _export_L5_iterator, _export_historic_L5_iterator
-from .importcsv import import_L5_class
+from .import_csv import import_L5_class
 from .models import HistoricL5Account, L1Account, L2Account, L3Account, L4Account, L5Account
 
 

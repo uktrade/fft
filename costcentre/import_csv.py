@@ -1,6 +1,6 @@
 import csv
 
-from core.importcsv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
+from core.import_csv import IMPORT_CSV_FIELDLIST_KEY, IMPORT_CSV_MODEL_KEY, IMPORT_CSV_PK_KEY, \
     ImportInfo, convert_to_bool_string, csvheadertodict, import_obj
 
 from .models import BSCEEmail, BusinessPartner, \

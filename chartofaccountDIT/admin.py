@@ -15,7 +15,7 @@ from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, _exp
     _export_historical_inter_entity_iterator, _export_historical_nac_iterator, \
     _export_inter_entity_iterator, _export_inter_entity_l1_iterator, _export_nac_cat_iterator, \
     _export_nac_iterator, _export_op_del_cat_iterator, _export_programme_iterator
-from .importcsv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
+from .import_csv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
     import_a1_class, import_a2_class, \
     import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
     import_inter_entity_class, import_op_del_category_class, import_prog_class

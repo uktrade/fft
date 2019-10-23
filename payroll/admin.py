@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .importcsv import import_HR_class, import_grade_class
+from .import_csv import import_HR_class, import_grade_class
 from .models import DITPeople, Grade
 
 

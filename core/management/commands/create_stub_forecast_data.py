@@ -28,7 +28,9 @@ def monthly_figures_create():
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
     natural_account_list = NaturalCode.objects.all()
-    financial_periods = FinancialPeriod.objects.exclude(period_long_name__icontains='adj')
+    financial_periods = FinancialPeriod.objects.exclude(
+        period_long_name__icontains='adj'
+    )
     monthly_amount = 0
     for programme_fk in programme_list:
         monthly_amount += 10
@@ -44,7 +46,7 @@ def monthly_figures_create():
                 )
                 monthly_amount += 1
 
-        for i in range(1,3):
+        for i in range(1, 3):
             actual = FinancialPeriod.objects.get(financial_period_code=i)
             actual.actual_loaded = True
             actual.save()
@@ -53,6 +55,7 @@ def monthly_figures_create():
         #     actual = FinancialPeriod.objects.get(financial_period_code=i)
         #     actual.display_figure = False
         #     actual.save()
+
 
 class Command(BaseCommand):
     help = 'Create stub forecast data. Use --delete to clear the data'
