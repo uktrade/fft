@@ -144,20 +144,6 @@ class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
         model = HistoricalNaturalCode
 
 
-class BudgetTypeFactory(factory.DjangoModelFactory):
-    """
-    Define BudgetType Factory
-    """
-
-    class Meta:
-        model = BudgetType
-
-    budget_type_key = "AME"
-    budget_type = "AME"
-    budget_type_display = "Test"
-    budget_type_display_order = 1
-
-
 class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ProgrammeCode Factory
@@ -168,7 +154,7 @@ class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
 
     programme_code = "Test"
     programme_description = "Test description"
-    budget_type_fk = factory.SubFactory(BudgetTypeFactory)
+    budget_type_fk = factory.Iterator(BudgetType.objects.all())
 
 
 class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):
