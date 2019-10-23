@@ -6,7 +6,7 @@ from chartofaccountDIT.models import (
     BudgetType,
     NaturalCode,
     ProgrammeCode,
-    ProjectCode
+    ProjectCode,
 )
 
 from core.metamodels import TimeStampedModel
@@ -31,28 +31,23 @@ class SubTotalFieldNotSpecifiedError(Exception):
     pass
 
 
-class CalcForecastExpenditureType(models.Model):
-    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
-    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
-    This table is prepulated with the information needed to calculate the expenditure_type.
-    """
-    nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
-    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
-    forecast_expenditure_type_fk = models.ForeignKey(ForecastExpenditureType, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('nac_economic_budget_code',
-                           'programme_budget_type')
-
-
 class ForecastExpenditureType(models.Model):
     """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
     As such, it can only be defined for a forecast row, when both NAC and programme are defined.
-    This table is prepulated with the information needed to calculate the expenditure_type.
+    This table is prepopulated with the information needed to get the expenditure_type.
     """
+    nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
+    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
+
     forecast_expenditure_type_name = models.CharField(max_length=100)
     forecast_expenditure_type_description = models.CharField(max_length=100)
     forecast_expenditure_type_display_order = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            'nac_economic_budget_code',
+            'programme_budget_type',
+        )
 
     def __str__(self):
         return self.forecast_expenditure_type_name
@@ -112,12 +107,12 @@ class FinancialCode(models.Model):
             nac_economic_budget_code = self.natural_account_code.account_L5_code.economic_budget_code
             programme_budget_type = self.programme.budget_type_fk
 
-            calc_forecast = CalcForecastExpenditureType.objects.filter(
+            forecast_type = ForecastExpenditureType.objects.filter(
                 programme_budget_type=programme_budget_type,
                 nac_economic_budget_code=nac_economic_budget_code,
             )
 
-            self.forecast_expenditure_type = calc_forecast[0].forecast_expenditure_type_fk
+            self.forecast_expenditure_type = forecast_type.first()
 
         super(FinancialCode, self).save(*args, **kwargs)
 

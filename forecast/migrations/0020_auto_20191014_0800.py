@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('chartofaccountDIT', '0049_auto_20191003_1317'),
-        ('forecast', '0023_auto_20191011_1811'),
+        ('forecast', '0019_auto_20191011_1732'),
     ]
 
     operations = [
@@ -21,9 +21,5 @@ class Migration(migrations.Migration):
             model_name='monthlyfigure',
             name='forecast_expenditure_type',
             field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='forecast.ForecastExpenditureType'),
-        ),
-        migrations.AlterUniqueTogether(
-            name='calcforecastexpendituretype',
-            unique_together={('nac_economic_budget_code', 'programme_budget_type')},
         ),
     ]
