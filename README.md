@@ -74,3 +74,13 @@ https://fido.trade.uat.uktrade.io/core/
 #### Production URL
 https://fido.trade.gov.uk/core/
 
+### Managing user permissions
+
+4 management commands have been added to make dealing with user cost centre easier:
+
+ * add_user_to_cost_centre
+ * cost_centre_users
+ * remove_user_from_cost_centre
+ * user_permissions
+ 
+The names of the management commands denote their function.

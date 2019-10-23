@@ -23,8 +23,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        self.stdout.write(options['email'])
-
         _User = get_user_model()
         user = _User.objects.filter(
             email=options['email']
