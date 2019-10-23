@@ -225,13 +225,21 @@ class HistoricalCommercialCategory(CommercialCategoryAbstract, ArchivedModel):
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCodeAbstract(models.Model):
-    natural_account_code = models.IntegerField(primary_key=True, verbose_name='NAC')
-    natural_account_code_description = models.CharField(max_length=200,
-                                                        verbose_name='NAC Description')
+    natural_account_code = models.IntegerField(
+        primary_key=True,
+        verbose_name='NAC',
+    )
+    natural_account_code_description = models.CharField(
+        max_length=200,
+        verbose_name='NAC Description',
+    )
     used_for_budget = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.natural_account_code) + ' - ' + self.natural_account_code_description
+        return "{} - {}".format(
+            self.natural_account_code,
+            self.natural_account_code_description,
+        )
 
     class Meta:
         abstract = True

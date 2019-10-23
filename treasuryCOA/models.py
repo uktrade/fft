@@ -48,17 +48,29 @@ class L3Account(TimeStampedModel):
 
 
 class L4Account(TimeStampedModel):
-    account_l4_code = models.BigIntegerField(verbose_name='account l4 code', primary_key=True)
-    account_l4_long_name = models.CharField(max_length=255,
-                                            verbose_name='account l4 long name', blank=True)
-    account_l3 = models.ForeignKey(L3Account,
-                                   verbose_name='account l3 code', on_delete=models.PROTECT)
+    account_l4_code = models.BigIntegerField(
+        verbose_name='account l4 code',
+        primary_key=True,
+    )
+    account_l4_long_name = models.CharField(
+        max_length=255,
+        verbose_name='account l4 long name',
+        blank=True,
+    )
+    account_l3 = models.ForeignKey(
+        L3Account,
+        verbose_name='account l3 code',
+        on_delete=models.PROTECT,
+    )
 
     class Meta:
         verbose_name = 'Treasury Level 4 COA'
 
     def __str__(self):
-        return str(self.account_l4_code) + ' - ' + str(self.account_l4_long_name)
+        return "{} - {}".format(
+            self.account_l4_code,
+            self.account_l4_long_name
+        )
 
 
 class L5AccountAbstract(models.Model):

@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -22,15 +24,11 @@ from django_pivot.pivot import pivot
 
 
 class SubTotalFieldDoesNotExistError(Exception):
-    def __init__(self, message, errors):
-        super().__init__(message)
-        self.errors = errors
+    pass
 
 
 class SubTotalFieldNotSpecifiedError(Exception):
-    def __init__(self, message, errors):
-        super().__init__(message)
-        self.errors = errors
+    pass
 
 
 class ForecastExpenditureType(models.Model):
@@ -44,20 +42,6 @@ class ForecastExpenditureType(models.Model):
 
     def __str__(self):
         return self.forecast_expenditure_type_name
-
-
-class CalcForecastExpenditureType(models.Model):
-    """The expenditure type is a combination of the economic budget (NAC) and the budget type (Programme).
-    As such, it can only be defined for a forecast row, when both NAC and programme are defined.
-    This table is prepulated with the information needed to calculate the expenditure_type.
-    """
-    nac_economic_budget_code = models.CharField(max_length=255, verbose_name='economic budget code')
-    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
-    forecast_expenditure_type_fk = models.ForeignKey(ForecastExpenditureType, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ('nac_economic_budget_code',
-                           'programme_budget_type')
 
 
 class FinancialPeriodManager(models.Manager):
@@ -104,23 +88,34 @@ class FinancialCode(models.Model):
     analysis1_code = models.ForeignKey(Analysis1, on_delete=models.PROTECT, blank=True, null=True)
     analysis2_code = models.ForeignKey(Analysis2, on_delete=models.PROTECT, blank=True, null=True)
     project_code = models.ForeignKey(ProjectCode, on_delete=models.PROTECT, blank=True, null=True)
-    # The following field is calculated from programme and NAC.
-    forecast_expenditure_type = models.ForeignKey(ForecastExpenditureType, on_delete=models.PROTECT, default=1)
+    expenditure_type_short_name = models.CharField(max_length=100, blank=True, null=True)
+    expenditure_type_name = models.CharField(max_length=100, blank=True, null=True)
+    expenditure_type_order = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
-        if self._state.adding is True:
+        if self.pk is None:
             # calculate the forecast_expenditure_type
             nac_economic_budget_code = self.natural_account_code.account_L5_code.economic_budget_code
             programme_budget_type = self.programme.budget_type_fk
-            c = CalcForecastExpenditureType.objects.all()
-            # import pdb;
-            # pdb.set_trace()
-            calc_forecast = CalcForecastExpenditureType.objects.filter(
-                programme_budget_type=programme_budget_type,
-                nac_economic_budget_code=nac_economic_budget_code
+
+            nac_programme_code = "{} {}".format(
+                nac_economic_budget_code,
+                programme_budget_type,
             )
-            self.forecast_expenditure_type = calc_forecast[0].forecast_expenditure_type_fk
+
+            self.expenditure_type_short_name = settings.FORECAST_TYPE[
+                nac_programme_code
+            ]["short_name"]
+
+            self.expenditure_type_name = settings.FORECAST_TYPE[
+                nac_programme_code
+            ]["name"]
+
+            self.expenditure_type_order = settings.FORECAST_TYPE[
+                nac_programme_code
+            ]["order"]
+
         super(FinancialCode, self).save(*args, **kwargs)
 
     class Meta:
@@ -182,13 +177,13 @@ class PivotManager(models.Manager):
             row[period] = 0
 
     def subtotal_data(
-            self,
-            display_total_column,
-            subtotal_columns,
-            data_columns,
-            filter_dict={},
-            year=0,
-            order_list=[]
+        self,
+        display_total_column,
+        subtotal_columns,
+        data_columns,
+        filter_dict={},
+        year=0,
+        order_list=[],
     ):
         # If requesting a subtotal, the list of columns must be specified
         if not subtotal_columns:

@@ -241,3 +241,51 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'sass_processor.finders.CssFinder',
 ]
+
+BUDGET_TYPES = {
+    "DEL": {
+        "name": "DEL",
+        "budget_type": "Programme DEL",
+        "display": "DEL",
+        "order": 1,
+    },
+    "AME": {
+        "name": "AME",
+        "budget_type": "Programme AME",
+        "display": "AME",
+        "order": 2,
+    },
+    "ADMIN": {
+        "name": "ADMIN",
+        "budget_type": "Admin",
+        "display": "DEL",
+        "order": 1,
+    },
+}
+
+forecast_expenditure_types = {
+    "resource_programme": {
+        "short_name": "Programme",
+        "name": "Resource Programme",
+        "order": 2,
+    },
+    "resource_admin": {
+        "short_name": "Admin",
+        "name": "Resource Admin",
+        "order": 1,
+    },
+    "capital": {
+        "short_name": "Capital",
+        "name": "Capital",
+        "order": 3,
+    },
+}
+
+FORECAST_TYPE = {
+    "RESOURCE Programme DEL": forecast_expenditure_types["resource_programme"],
+    "RESOURCE Programme AME": forecast_expenditure_types["resource_programme"],
+    "RESOURCE Admin": forecast_expenditure_types["resource_admin"],
+    "CAPITAL Programme DEL": forecast_expenditure_types["capital"],
+    "CAPITAL Programme AME": forecast_expenditure_types["capital"],
+    "CAPITAL Admin": forecast_expenditure_types["capital"],
+}

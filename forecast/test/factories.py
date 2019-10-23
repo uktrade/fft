@@ -1,5 +1,10 @@
-from forecast.models import Budget, FinancialCode, \
-    FinancialPeriod, MonthlyFigure, OSCARReturn
+from forecast.models import (
+    Budget,
+    FinancialCode,
+    FinancialPeriod,
+    MonthlyFigure,
+    OSCARReturn,
+)
 
 import factory
 

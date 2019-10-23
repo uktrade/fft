@@ -39,15 +39,11 @@ CHART_ACCOUNT_SEPARATOR = '-'
 
 
 class SubTotalFieldDoesNotExistError(Exception):
-    def __init__(self, message, errors):
-        super().__init__(message)
-        self.errors = errors
+    pass
 
 
 class SubTotalFieldNotSpecifiedError(Exception):
-    def __init__(self, message, errors):
-        super().__init__(message)
-        self.errors = errors
+    pass
 
 
 def check_trial_balance_format(file, period):

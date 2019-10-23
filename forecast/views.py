@@ -35,8 +35,7 @@ budget_type_columns = {
 
 programme_columns = {
     'programme__budget_type_fk__budget_type_display': 'Hidden',
-    'forecast_expenditure_type__forecast_expenditure_type_description': 'Hidden',
-    'forecast_expenditure_type__forecast_expenditure_type_name': 'Expenditure Type',
+    'expenditure_type_short_name': 'Expenditure Type',
     'programme__programme_code': 'Programme Code',
     'programme__programme_description': 'Programme Description'
 }
@@ -153,11 +152,11 @@ class MultiforecastView(
         # subtotal_data
         order_list = [
             'programme__budget_type_fk__budget_type_display_order',
-            'forecast_expenditure_type__forecast_expenditure_type_display_order',
+            'expenditure_type_order',
         ]
         sub_total_prog = [
             'programme__budget_type_fk__budget_type_display',
-            'forecast_expenditure_type__forecast_expenditure_type_description'
+            'expenditure_type_short_name',
         ]
         display_sub_total_column = 'programme__programme_description'
 
@@ -165,7 +164,8 @@ class MultiforecastView(
             display_sub_total_column,
             sub_total_prog,
             programme_columns.keys(),
-            pivot_filter, order_list=order_list
+            pivot_filter,
+            order_list=order_list,
         )
 
         sub_total_nac = [

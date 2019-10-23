@@ -26,6 +26,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+from treasuryCOA.test.factories import L5AccountFactory
 
 
 class Analysis1Factory(factory.DjangoModelFactory):
@@ -131,6 +132,7 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
     natural_account_code = 999999
     natural_account_code_description = "NAC description"
     used_for_budget = False
+    account_L5_code = factory.SubFactory(L5AccountFactory)
 
 
 class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
@@ -150,8 +152,8 @@ class BudgetTypeFactory(factory.DjangoModelFactory):
     class Meta:
         model = BudgetType
 
-    budget_type_key = "Test"
-    budget_type = "Test"
+    budget_type_key = "AME"
+    budget_type = "AME"
     budget_type_display = "Test"
     budget_type_display_order = 1
 

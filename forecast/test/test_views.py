@@ -94,19 +94,49 @@ class ViewPermissionsTest(TestCase):
 
 
 class AddForecastRowTest(TestCase):
-    def test_view_add_row(self):
-        # Set up test objects
-        programme = ProgrammeCodeFactory.create()
-        nac = NaturalCodeFactory.create(
+    def setUp(self):
+        self.factory = RequestFactory()
+
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(
             natural_account_code=999999
         )
-        CostCentreFactory.create(
-            cost_centre_code=888812
+
+        self.cost_centre_code = 888812
+        self.test_user_email = "test@test.com"
+        self.test_password = "test_password"
+
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
         )
 
-        edit_resp = self.client.get(
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email=self.test_user_email
+        )
+
+        self.test_user.set_password(
+            self.test_password
+        )
+
+    def test_view_add_row(self):
+        # Set up test objects
+        assign_perm(
+            "change_costcentre",
+            self.test_user,
+            self.cost_centre
+        )
+        assign_perm(
+            "view_costcentre",
+            self.test_user,
+            self.cost_centre
+        )
+
+        request = self.factory.get(
             reverse('edit_forecast')
         )
+        request.user = self.test_user
+        edit_resp = EditForecastView.as_view()(request)
+
         self.assertEqual(
             edit_resp.status_code,
             200,
@@ -130,8 +160,8 @@ class AddForecastRowTest(TestCase):
         # add_forecast_row
         add_row_resp = self.client.post(
             reverse('add_forecast_row'), {
-                "programme": programme.programme_code,
-                "natural_account_code": nac.natural_account_code,
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
             },
             follow=True,
         )
