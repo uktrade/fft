@@ -4,28 +4,23 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0020_auto_20181218_0959'),
-    ]
+    dependencies = [("gifthospitality", "0020_auto_20181218_0959")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='giftandhospitality',
-            name='band',
+        migrations.RemoveField(model_name="giftandhospitality", name="band"),
+        migrations.AlterField(
+            model_name="giftandhospitalitycategory",
+            name="gif_hospitality_category",
+            field=models.CharField(max_length=100, verbose_name="Category"),
         ),
         migrations.AlterField(
-            model_name='giftandhospitalitycategory',
-            name='gif_hospitality_category',
-            field=models.CharField(max_length=100, verbose_name='Category'),
+            model_name="giftandhospitalityclassification",
+            name="gif_hospitality_classification",
+            field=models.CharField(max_length=100, verbose_name="Classification"),
         ),
         migrations.AlterField(
-            model_name='giftandhospitalityclassification',
-            name='gif_hospitality_classification',
-            field=models.CharField(max_length=100, verbose_name='Classification'),
-        ),
-        migrations.AlterField(
-            model_name='giftandhospitalitycompany',
-            name='gif_hospitality_company',
-            field=models.CharField(max_length=100, verbose_name='Company'),
+            model_name="giftandhospitalitycompany",
+            name="gif_hospitality_company",
+            field=models.CharField(max_length=100, verbose_name="Company"),
         ),
     ]

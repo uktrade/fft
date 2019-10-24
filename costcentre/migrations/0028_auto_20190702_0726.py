@@ -6,19 +6,23 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('costcentre', '0027_departmentalgroup_treasury_segment_fk'),
-    ]
+    dependencies = [("costcentre", "0027_departmentalgroup_treasury_segment_fk")]
 
     operations = [
         migrations.AlterField(
-            model_name='costcentre',
-            name='used_for_travel',
-            field=models.BooleanField(default='True', verbose_name='Used for Travel'),
+            model_name="costcentre",
+            name="used_for_travel",
+            field=models.BooleanField(default="True", verbose_name="Used for Travel"),
         ),
         migrations.AlterField(
-            model_name='departmentalgroup',
-            name='treasury_segment_fk',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='treasurySS.Segment', verbose_name='Treasury Segment'),
+            model_name="departmentalgroup",
+            name="treasury_segment_fk",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="treasurySS.Segment",
+                verbose_name="Treasury Segment",
+            ),
         ),
     ]

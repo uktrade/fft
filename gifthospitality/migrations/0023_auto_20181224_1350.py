@@ -6,15 +6,19 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gifthospitality', '0022_auto_20181224_1344'),
-    ]
+    dependencies = [("gifthospitality", "0022_auto_20181224_1344")]
 
     operations = [
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='category_fk',
-            field=models.ForeignKey(default=1, limit_choices_to={'active': True}, on_delete=django.db.models.deletion.PROTECT, to='gifthospitality.GiftAndHospitalityCategory', verbose_name='category'),
+            model_name="giftandhospitality",
+            name="category_fk",
+            field=models.ForeignKey(
+                default=1,
+                limit_choices_to={"active": True},
+                on_delete=django.db.models.deletion.PROTECT,
+                to="gifthospitality.GiftAndHospitalityCategory",
+                verbose_name="category",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

@@ -1,22 +1,24 @@
 from django.db import models
 
+
 class AsyncImportLog(models.Model):
     """Used to log and follow the asyncronous import of data"""
+
     IMPORT_ADI = 1
     IMPORT_GL = 2
 
     IMPORT_CHOICE = (
-        (IMPORT_ADI, 'ADI file from Admin Tool'),
-        (IMPORT_GL, 'GL Report from Oracle')
+        (IMPORT_ADI, "ADI file from Admin Tool"),
+        (IMPORT_GL, "GL Report from Oracle"),
     )
     STATUS_STARTED = 1
     STATUS_COMPLETED = 2
     STATUS_FAILED = 3
 
     STATUS_CHOICE = (
-        (STATUS_STARTED, 'Started'),
-        (STATUS_COMPLETED, 'Completed successfully'),
-        (STATUS_FAILED, 'Failed'),
+        (STATUS_STARTED, "Started"),
+        (STATUS_COMPLETED, "Completed successfully"),
+        (STATUS_FAILED, "Failed"),
     )
     import_type = models.CharField(choices=IMPORT_CHOICE, max_length=100)
     import_status = models.CharField(choices=STATUS_CHOICE, max_length=100)
@@ -28,4 +30,4 @@ class AsyncImportLog(models.Model):
     class Meta:
         verbose_name = "Import Log"
         verbose_name_plural = "Import Logs"
-        ordering = ['-import_start']
+        ordering = ["-import_start"]

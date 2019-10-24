@@ -4,163 +4,155 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0003_auto_20181109_0823'),
-    ]
+    dependencies = [("gifthospitality", "0003_auto_20181109_0823")]
 
     operations = [
         migrations.CreateModel(
-            name='GiftAndHospitality',
+            name="GiftAndHospitality",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
-                                        verbose_name='ID')),
-                ('classification', models.CharField(max_length=100)),
-                ('group_name', models.CharField(max_length=200)),
-                ('date_offered', models.DateField()),
-                ('venue', models.CharField(max_length=1000)),
-                ('reason', models.CharField(max_length=1000)),
-                ('value', models.DecimalField(decimal_places=2, max_digits=18)),
-                ('band', models.CharField(max_length=50)),
-                ('rep', models.CharField(max_length=255)),
-                ('offer',
-                 models.CharField(choices=[('Received', 'Received'), ('Offered', 'Offered')],
-                                  max_length=50)),
-                ('company_rep', models.CharField(max_length=50)),
-                ('company', models.CharField(max_length=100)),
-                ('action_taken', models.CharField(choices=[('Action1', 'Accepted'), (
-                'Action2', 'Accepted (difference paid to Department)'), ('Action3',
-                                                                         'Accepted (surrendered to Department)')],
-                                                  max_length=20, verbose_name='Action taken')),
-                ('date_stamp', models.DateTimeField()),
-                ('entered_by', models.CharField(max_length=50)),
-                ('staff_no', models.CharField(max_length=50)),
-                ('entered_date_stamp', models.DateTimeField(auto_now=True)),
-                ('category', models.CharField(max_length=100)),
-                ('grade', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("classification", models.CharField(max_length=100)),
+                ("group_name", models.CharField(max_length=200)),
+                ("date_offered", models.DateField()),
+                ("venue", models.CharField(max_length=1000)),
+                ("reason", models.CharField(max_length=1000)),
+                ("value", models.DecimalField(decimal_places=2, max_digits=18)),
+                ("band", models.CharField(max_length=50)),
+                ("rep", models.CharField(max_length=255)),
+                (
+                    "offer",
+                    models.CharField(
+                        choices=[("Received", "Received"), ("Offered", "Offered")],
+                        max_length=50,
+                    ),
+                ),
+                ("company_rep", models.CharField(max_length=50)),
+                ("company", models.CharField(max_length=100)),
+                (
+                    "action_taken",
+                    models.CharField(
+                        choices=[
+                            ("Action1", "Accepted"),
+                            ("Action2", "Accepted (difference paid to Department)"),
+                            ("Action3", "Accepted (surrendered to Department)"),
+                        ],
+                        max_length=20,
+                        verbose_name="Action taken",
+                    ),
+                ),
+                ("date_stamp", models.DateTimeField()),
+                ("entered_by", models.CharField(max_length=50)),
+                ("staff_no", models.CharField(max_length=50)),
+                ("entered_date_stamp", models.DateTimeField(auto_now=True)),
+                ("category", models.CharField(max_length=100)),
+                ("grade", models.CharField(max_length=50)),
             ],
             options={
-                'verbose_name': 'Gift and Hospitality',
-                'verbose_name_plural': 'Gift and Hospitality',
+                "verbose_name": "Gift and Hospitality",
+                "verbose_name_plural": "Gift and Hospitality",
             },
         ),
         migrations.CreateModel(
-            name='GiftAndHospitalityCategory',
+            name="GiftAndHospitalityCategory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
-                                        verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('category', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("category", models.CharField(max_length=100)),
             ],
             options={
-                'verbose_name': 'Gift and Hospitality Category',
-                'verbose_name_plural': 'Gift and Hospitality Categories',
+                "verbose_name": "Gift and Hospitality Category",
+                "verbose_name_plural": "Gift and Hospitality Categories",
             },
         ),
         migrations.CreateModel(
-            name='GiftAndHospitalityClassification',
+            name="GiftAndHospitalityClassification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
-                                        verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('gift_type',
-                 models.CharField(choices=[('GIFT', 'Gift'), ('HOSPITALITY', 'Hospitality')],
-                                  default='HOSPITALITY', max_length=20, verbose_name='Type')),
-                ('classification', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "gift_type",
+                    models.CharField(
+                        choices=[("GIFT", "Gift"), ("HOSPITALITY", "Hospitality")],
+                        default="HOSPITALITY",
+                        max_length=20,
+                        verbose_name="Type",
+                    ),
+                ),
+                ("classification", models.CharField(max_length=100)),
             ],
             options={
-                'verbose_name': 'Gift and Hospitality Classification',
-                'verbose_name_plural': 'Gift and Hospitality Classifications',
+                "verbose_name": "Gift and Hospitality Classification",
+                "verbose_name_plural": "Gift and Hospitality Classifications",
             },
         ),
         migrations.CreateModel(
-            name='GiftAndHospitalityCompany',
+            name="GiftAndHospitalityCompany",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
-                                        verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('company', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("company", models.CharField(max_length=100)),
             ],
             options={
-                'verbose_name': 'Gift and Hospitality Company',
-                'verbose_name_plural': 'Gift and Hospitality Companies',
+                "verbose_name": "Gift and Hospitality Company",
+                "verbose_name_plural": "Gift and Hospitality Companies",
             },
         ),
-        migrations.AlterModelOptions(
-            name='giftsandhospitality',
-            options={},
-        ),
+        migrations.AlterModelOptions(name="giftsandhospitality", options={}),
+        migrations.RemoveField(model_name="giftsandhospitality", name="action_taken"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="band"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="category"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="company"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="company_rep"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="date_offered"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="date_stamp"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="entered_by"),
         migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='action_taken',
+            model_name="giftsandhospitality", name="entered_date_stamp"
         ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='band',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='category',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='company',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='company_rep',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='date_offered',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='date_stamp',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='entered_by',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='entered_date_stamp',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='grade',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='group_name',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='offer',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='reason',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='rep',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='staff_no',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='value',
-        ),
-        migrations.RemoveField(
-            model_name='giftsandhospitality',
-            name='venue',
-        ),
+        migrations.RemoveField(model_name="giftsandhospitality", name="grade"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="group_name"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="offer"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="reason"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="rep"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="staff_no"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="value"),
+        migrations.RemoveField(model_name="giftsandhospitality", name="venue"),
     ]

@@ -1,10 +1,10 @@
-from core.admin import AdminreadOnly
+from core.admin import AdminReadOnly
 from django.contrib import admin
 
 from .models import AsyncImportLog
 
 
-class AsyncImportLogAdmin(AdminreadOnly):
+class AsyncImportLogAdmin(AdminReadOnly):
     pass
 
 

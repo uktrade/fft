@@ -4,13 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0006_auto_20181123_1204'),
-    ]
+    dependencies = [("gifthospitality", "0006_auto_20181123_1204")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='giftandhospitality',
-            name='date_stamp',
-        ),
+        migrations.RemoveField(model_name="giftandhospitality", name="date_stamp")
     ]

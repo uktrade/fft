@@ -7,25 +7,51 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='AsyncImportLog',
+            name="AsyncImportLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('import_type', models.CharField(choices=[(1, 'ADI file from Admin Tool'), (2, 'GL Report from Oracle')], max_length=100)),
-                ('import_status', models.CharField(choices=[(1, 'Started'), (2, 'Completed successfully'), (3, 'Failed')], max_length=100)),
-                ('import_message', models.CharField(blank=True, max_length=100)),
-                ('imported_by', models.CharField(max_length=300)),
-                ('import_start', models.DateTimeField(auto_now_add=True)),
-                ('import_end', models.DateTimeField(blank=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "import_type",
+                    models.CharField(
+                        choices=[
+                            (1, "ADI file from Admin Tool"),
+                            (2, "GL Report from Oracle"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "import_status",
+                    models.CharField(
+                        choices=[
+                            (1, "Started"),
+                            (2, "Completed successfully"),
+                            (3, "Failed"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                ("import_message", models.CharField(blank=True, max_length=100)),
+                ("imported_by", models.CharField(max_length=300)),
+                ("import_start", models.DateTimeField(auto_now_add=True)),
+                ("import_end", models.DateTimeField(blank=True)),
             ],
             options={
-                'verbose_name': 'Import Log',
-                'verbose_name_plural': 'Import Logs',
-                'ordering': ['-import_start'],
+                "verbose_name": "Import Log",
+                "verbose_name_plural": "Import Logs",
+                "ordering": ["-import_start"],
             },
-        ),
+        )
     ]

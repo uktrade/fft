@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0013_adireport'),
-    ]
+    dependencies = [("forecast", "0013_adireport")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='SubSegmentUKTIMapping',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="SubSegmentUKTIMapping")]

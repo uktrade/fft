@@ -1,38 +1,40 @@
 from openpyxl import load_workbook
 
-from fido.chartofaccountDIT.models import (
+from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
     NaturalCode,
     ProgrammeCode,
-    ProjectCode
+    ProjectCode,
 )
-from fido.core.import_csv import get_fk
-from fido.costcentre.models import CostCentre
-from .models import MonthlyFigure
+from core.import_csv import get_fk
+from costcentre.models import CostCentre
+from forecast.models import MonthlyFigure
 
-CHART_OF_ACCOUNT_COL = 'D'
-MONTHLY_FIGURE_COL = 'F'
-NAC_COL = 'A'
+CHART_OF_ACCOUNT_COL = "D"
+MONTHLY_FIGURE_COL = "F"
+NAC_COL = "A"
 
 FIRST_DATA_ROW = 13
 
-MONTH_CELL = 'B2'
-TITLE_CELL = 'B1'
-CORRECT_TITLE = 'Detail Trial Balance'
+MONTH_CELL = "B2"
+TITLE_CELL = "B1"
+CORRECT_TITLE = "Detail Trial Balance"
 
 # Sample chart of account entry
 # '3000-30000-109189-52191003-310940-00000-00000-0000-0000-0000' # noqa
 # The following are the index for the
 # chart of account after decoded into a list
-DIT_INDEX = 0  # col value must be 3000. If not, the trial balance is for another department # noqa
+DIT_INDEX = (
+    0
+)  # col value must be 3000. If not, the trial balance is for another department # noqa
 CC_INDEX = 2
 NAC_INDEX = 3
 PROGRAMME_INDEX = 4
 ANALYSIS1_INDEX = 5
 ANALYSIS2_INDEX = 6
 PROJECT_INDEX = 7
-CHART_ACCOUNT_SEPARATOR = '-'
+CHART_ACCOUNT_SEPARATOR = "-"
 
 
 class SubTotalFieldDoesNotExistError(Exception):
@@ -59,53 +61,28 @@ def row_to_use(row):
     return True
 
 
-def save_row(
-    chart_of_account,
-    value,
-    period_obj,
-    year_obj,
-):
+def save_row(chart_of_account, value, period_obj, year_obj):
     """Parse the long strings containing the
     chart of account information. Return errors
     if missing from database."""
     # '3000-30000-109189-52191003-310940-00000-00000-0000-0000-0000' # noqa
-    chart_account_list = chart_of_account[
-        CHART_OF_ACCOUNT_COL
-    ].split(
+    chart_account_list = chart_of_account[CHART_OF_ACCOUNT_COL].split(
         CHART_ACCOUNT_SEPARATOR
     )
-    error_message = ''
-    cc_obj, message = get_fk(
-        CostCentre,
-        chart_account_list[CC_INDEX],
-    )
+    error_message = ""
+    cc_obj, message = get_fk(CostCentre, chart_account_list[CC_INDEX])
     error_message += message
-    nac_obj, message = get_fk(
-        NaturalCode,
-        chart_account_list[NAC_INDEX],
-    )
+    nac_obj, message = get_fk(NaturalCode, chart_account_list[NAC_INDEX])
     error_message += message
-    programme_obj, message = get_fk(
-        ProgrammeCode,
-        chart_account_list[PROGRAMME_INDEX],
-    )
+    programme_obj, message = get_fk(ProgrammeCode, chart_account_list[PROGRAMME_INDEX])
     error_message += message
-    analysis1_obj, message = get_fk(
-        Analysis1,
-        chart_account_list[ANALYSIS1_INDEX],
-    )
+    analysis1_obj, message = get_fk(Analysis1, chart_account_list[ANALYSIS1_INDEX])
     error_message += message
-    analysis2_obj, message = get_fk(
-        Analysis2,
-        chart_account_list[ANALYSIS2_INDEX],
-    )
+    analysis2_obj, message = get_fk(Analysis2, chart_account_list[ANALYSIS2_INDEX])
     error_message += message
-    project_obj, message = get_fk(
-        ProjectCode,
-        chart_account_list[PROJECT_INDEX],
-    )
+    project_obj, message = get_fk(ProjectCode, chart_account_list[PROJECT_INDEX])
 
-    if error_message == '':
+    if error_message == "":
         monthly_figure_obj, created = MonthlyFigure.objects.get_or_create(
             financial_year=year_obj,
             programme=programme_obj,
@@ -130,7 +107,7 @@ def upload_file(path, period, year):
     if there is an error in the file"""
     wb = load_workbook(path)
     ws = wb.worksheets[0]
-    if ws.title != 'FNDWRR':
+    if ws.title != "FNDWRR":
         # wrong file
         return False
     if ws[TITLE_CELL].value != CORRECT_TITLE:

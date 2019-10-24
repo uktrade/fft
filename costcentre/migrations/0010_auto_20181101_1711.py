@@ -5,31 +5,38 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('costcentre', '0009_auto_20181101_1703'),
-    ]
+    dependencies = [("costcentre", "0009_auto_20181101_1703")]
 
     operations = [
         migrations.AlterField(
-            model_name='costcentre',
-            name='deputy_director',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT,
-                                    to='costcentre.CostCentrePerson',
-                                    verbose_name='Deputy Director'),
+            model_name="costcentre",
+            name="deputy_director",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="costcentre.CostCentrePerson",
+                verbose_name="Deputy Director",
+            ),
         ),
         migrations.AlterField(
-            model_name='departmentalgroup',
-            name='director_general',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT,
-                                    to='costcentre.CostCentrePerson'),
+            model_name="departmentalgroup",
+            name="director_general",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="costcentre.CostCentrePerson",
+            ),
         ),
         migrations.AlterField(
-            model_name='directorate',
-            name='director',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT,
-                                    to='costcentre.CostCentrePerson'),
+            model_name="directorate",
+            name="director",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="costcentre.CostCentrePerson",
+            ),
         ),
     ]

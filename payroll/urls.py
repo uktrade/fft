@@ -5,8 +5,8 @@ from .views import DITPeopleAutocomplete
 
 urlpatterns = [
     url(
-        r'^people-autocomplete/$',
+        r"^people-autocomplete/$",
         DITPeopleAutocomplete.as_view(),
-        name='people-autocomplete',
-    ),
+        name="people-autocomplete",
+    )
 ]

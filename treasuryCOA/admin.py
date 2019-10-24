@@ -1,17 +1,34 @@
-from core.admin import AdminExport, AdminImportExport, AdminreadOnly
+from core.admin import AdminExport, AdminImportExport, AdminReadOnly
 
 from django.contrib import admin
 
-from .exportcsv import _export_L1_iterator, _export_L2_iterator, _export_L3_iterator, _export_L4_iterator, \
-    _export_L5_iterator, _export_historic_L5_iterator
+from .export_csv import (
+    _export_L1_iterator,
+    _export_L2_iterator,
+    _export_L3_iterator,
+    _export_L4_iterator,
+    _export_L5_iterator,
+    _export_historic_L5_iterator,
+)
 from .import_csv import import_L5_class
-from .models import HistoricL5Account, L1Account, L2Account, L3Account, L4Account, L5Account
+from .models import (
+    HistoricL5Account,
+    L1Account,
+    L2Account,
+    L3Account,
+    L4Account,
+    L5Account,
+)
 
 
-class L5AccountAdmin(AdminreadOnly, AdminImportExport):
-    list_display = ('account_l5_code', 'account_l5_long_name',
-                    'economic_budget_code', 'usage_code')
-    list_filter = ('economic_budget_code', 'usage_code')
+class L5AccountAdmin(AdminReadOnly, AdminImportExport):
+    list_display = (
+        "account_l5_code",
+        "account_l5_long_name",
+        "economic_budget_code",
+        "usage_code",
+    )
+    list_filter = ("economic_budget_code", "usage_code")
 
     @property
     def export_func(self):
@@ -22,42 +39,47 @@ class L5AccountAdmin(AdminreadOnly, AdminImportExport):
         return import_L5_class
 
 
-class L4AccountAdmin(AdminreadOnly, AdminExport):
-    list_display = ('account_l4_code', 'account_l4_long_name', 'account_l3')
+class L4AccountAdmin(AdminReadOnly, AdminExport):
+    list_display = ("account_l4_code", "account_l4_long_name", "account_l3")
 
     @property
     def export_func(self):
         return _export_L4_iterator
 
 
-class L3AccountAdmin(AdminreadOnly, AdminExport):
-    list_display = ('account_l3_code', 'account_l3_long_name', 'account_l2')
+class L3AccountAdmin(AdminReadOnly, AdminExport):
+    list_display = ("account_l3_code", "account_l3_long_name", "account_l2")
 
     @property
     def export_func(self):
         return _export_L3_iterator
 
 
-class L2AccountAdmin(AdminreadOnly, AdminExport):
-    list_display = ('account_l2_code', 'account_l2_long_name', 'account_l1')
+class L2AccountAdmin(AdminReadOnly, AdminExport):
+    list_display = ("account_l2_code", "account_l2_long_name", "account_l1")
 
     @property
     def export_func(self):
         return _export_L2_iterator
 
 
-class L1AccountAdmin(AdminreadOnly, AdminExport):
-    list_display = ('account_l1_code', 'account_l1_long_name')
+class L1AccountAdmin(AdminReadOnly, AdminExport):
+    list_display = ("account_l1_code", "account_l1_long_name")
 
     @property
     def export_func(self):
         return _export_L1_iterator
 
 
-class HistoricL5AccountAdmin(AdminreadOnly, AdminExport):
-    list_display = ('financial_year', 'account_l5_code', 'account_l5_long_name',
-                    'economic_budget_code', 'usage_code')
-    list_filter = ('economic_budget_code', 'usage_code')
+class HistoricL5AccountAdmin(AdminReadOnly, AdminExport):
+    list_display = (
+        "financial_year",
+        "account_l5_code",
+        "account_l5_long_name",
+        "economic_budget_code",
+        "usage_code",
+    )
+    list_filter = ("economic_budget_code", "usage_code")
 
     @property
     def export_func(self):

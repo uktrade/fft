@@ -5,13 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0007_auto_20190708_0719'),
-    ]
+    dependencies = [("core", "0007_auto_20190708_0719")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='admininfo',
-            name='current_financial_year',
-        ),
+        migrations.RemoveField(model_name="admininfo", name="current_financial_year")
     ]

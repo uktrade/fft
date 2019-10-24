@@ -6,7 +6,7 @@ jobs:
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
-          DJANGO_SETTINGS_MODULE: fido.settings.dev
+          DJANGO_SETTINGS_MODULE: config.settings.dev
           SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
           SELENIUM_ADDRESS: localhost

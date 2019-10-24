@@ -5,13 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0047_auto_20190624_0719'),
-    ]
+    dependencies = [("chartofaccountDIT", "0047_auto_20190624_0719")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='programmecode',
-            name='budget_type',
-        ),
+        migrations.RemoveField(model_name="programmecode", name="budget_type")
     ]

@@ -5,20 +5,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0021_historicalinterentity'),
-    ]
+    dependencies = [("chartofaccountDIT", "0021_historicalinterentity")]
 
     operations = [
         migrations.RemoveField(
-            model_name='historicalinterentity',
-            name='financial_year',
+            model_name="historicalinterentity", name="financial_year"
         ),
-        migrations.RemoveField(
-            model_name='historicalinterentity',
-            name='l1_value',
-        ),
-        migrations.DeleteModel(
-            name='HistoricalInterEntity',
-        ),
+        migrations.RemoveField(model_name="historicalinterentity", name="l1_value"),
+        migrations.DeleteModel(name="HistoricalInterEntity"),
     ]

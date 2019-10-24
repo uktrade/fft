@@ -2,30 +2,34 @@
 
 from django.db import migrations
 
-fields = ['financial_period_code',
-            'period_long_name',
-            'period_short_name',
-            'period_calendar_code' ]
+fields = [
+    "financial_period_code",
+    "period_long_name",
+    "period_short_name",
+    "period_calendar_code",
+]
 
-periods = [[1, 'April', 'Apr', 4 ],
-            [2, 'May', 'May', 5 ],
-            [3, 'June', 'Jun', 6 ],
-            [4, 'July', 'Jul', 7 ],
-            [5, 'August', 'Aug', 8 ],
-            [6, 'September', 'Sep', 9 ],
-            [7, 'October', 'Oct', 10 ],
-            [8, 'November', 'Nov', 11 ],
-            [9, 'December', 'Dec', 12 ],
-            [10, 'January', 'Jan', 1 ],
-            [11, 'February', 'Feb', 2 ],
-            [12, 'March', 'Mar', 3 ],
-            [13, 'Adjustment 1', 'Adj1', 0 ],
-            [14, 'Adjustment 2', 'Adj2', 0 ],
-            [15, 'Adjustment 3', 'Adj3', 0 ]]
+periods = [
+    [1, "April", "Apr", 4],
+    [2, "May", "May", 5],
+    [3, "June", "Jun", 6],
+    [4, "July", "Jul", 7],
+    [5, "August", "Aug", 8],
+    [6, "September", "Sep", 9],
+    [7, "October", "Oct", 10],
+    [8, "November", "Nov", 11],
+    [9, "December", "Dec", 12],
+    [10, "January", "Jan", 1],
+    [11, "February", "Feb", 2],
+    [12, "March", "Mar", 3],
+    [13, "Adjustment 1", "Adj1", 0],
+    [14, "Adjustment 2", "Adj2", 0],
+    [15, "Adjustment 3", "Adj3", 0],
+]
 
 
 def populate_period(apps, schema_editor):
-    PeriodModel = apps.get_model('forecast', 'FinancialPeriod')
+    PeriodModel = apps.get_model("forecast", "FinancialPeriod")
     for l in periods:
         d = dict(zip(fields, l))
         obj, created = PeriodModel.objects.get_or_create(**d)
@@ -33,11 +37,6 @@ def populate_period(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0003_auto_20190206_1024'),
-    ]
+    dependencies = [("forecast", "0003_auto_20190206_1024")]
 
-
-    operations = [
-        migrations.RunPython(populate_period),
-    ]
+    operations = [migrations.RunPython(populate_period)]

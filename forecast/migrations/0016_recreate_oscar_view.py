@@ -5,12 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0015_auto_20190918_0937'),
-    ]
+    dependencies = [("forecast", "0015_auto_20190918_0937")]
 
     operations = [
-        migrations.RunSQL('''
+        migrations.RunSQL(
+            """
                  CREATE VIEW "forecast_oscarreturn" as               
                  SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
                  coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id") account_l5_code
@@ -38,8 +37,7 @@ class Migration(migrations.Migration):
                  WHERE "core_financialyear"."current" = TRUE
                  GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
                  "treasurySS_subsegment"."sub_segment_code" ;
-         ''',
-                          'DROP VIEW "forecast_oscarreturn";'
-                          )
+         """,
+            'DROP VIEW "forecast_oscarreturn";',
+        )
     ]
-

@@ -5,23 +5,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('downloadsupport', '0003_auto_20190708_1011'),
-    ]
+    dependencies = [("downloadsupport", "0003_auto_20190708_1011")]
 
     operations = [
         migrations.CreateModel(
-            name='UploadFile',
+            name="UploadFile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file_to_upload', models.FileField(upload_to='')),
-                ('uploader', models.CharField(max_length=300, verbose_name='upload by')),
-                ('upload_time', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("file_to_upload", models.FileField(upload_to="")),
+                (
+                    "uploader",
+                    models.CharField(max_length=300, verbose_name="upload by"),
+                ),
+                ("upload_time", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'Upload Log',
-                'verbose_name_plural': 'Uploads',
-                'ordering': ['-upload_time'],
+                "verbose_name": "Upload Log",
+                "verbose_name_plural": "Uploads",
+                "ordering": ["-upload_time"],
             },
-        ),
+        )
     ]

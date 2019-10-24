@@ -3,19 +3,9 @@ import core
 
 from core.models import FinancialYear
 
-from costcentre.models import (
-    CostCentre,
-    DepartmentalGroup,
-    Directorate,
-)
-from chartofaccountDIT.models import (
-    NaturalCode,
-    ProgrammeCode,
-)
-from forecast.models import (
-    FinancialPeriod,
-    MonthlyFigure,
-)
+from costcentre.models import CostCentre, DepartmentalGroup, Directorate
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
+from forecast.models import FinancialPeriod, MonthlyFigure
 
 
 def monthly_figures_clear():
@@ -29,7 +19,7 @@ def monthly_figures_create():
     programme_list = ProgrammeCode.objects.all()
     natural_account_list = NaturalCode.objects.all()
     financial_periods = FinancialPeriod.objects.exclude(
-        period_long_name__icontains='adj'
+        period_long_name__icontains="adj"
     )
     monthly_amount = 0
     for programme_fk in programme_list:
@@ -42,7 +32,7 @@ def monthly_figures_create():
                     programme=programme_fk,
                     cost_centre=cost_centre_fk,
                     amount=monthly_amount,
-                    natural_account_code=natural_account_code_fk
+                    natural_account_code=natural_account_code_fk,
                 )
                 monthly_amount += 1
 
@@ -58,22 +48,24 @@ def monthly_figures_create():
 
 
 class Command(BaseCommand):
-    help = 'Create stub forecast data. Use --delete to clear the data'
-    arg_name = 'what'
+    help = "Create stub forecast data. Use --delete to clear the data"
+    arg_name = "what"
 
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument(
-            '--delete',
-            action='store_true',
-            help='Delete stub data instead of creating it',
+            "--delete",
+            action="store_true",
+            help="Delete stub data instead of creating it",
         )
 
     def handle(self, *args, **options):
-        if options['delete']:
+        if options["delete"]:
             monthly_figures_clear()
-            msg = 'cleared'
+            msg = "cleared"
         else:
             monthly_figures_create()
-            msg = 'created'
-        self.stdout.write(self.style.SUCCESS('Successfully {} stub forecast data.'.format(msg)))
+            msg = "created"
+        self.stdout.write(
+            self.style.SUCCESS("Successfully {} stub forecast data.".format(msg))
+        )

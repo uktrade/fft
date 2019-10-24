@@ -4,47 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0016_remove_giftandhospitality_staff_no'),
-    ]
+    dependencies = [("gifthospitality", "0016_remove_giftandhospitality_staff_no")]
 
     operations = [
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='action_taken',
-            field=models.CharField(blank=True, choices=[('Action1', 'Rejected'), (
-            'Action2', 'Accepted (difference paid to Department)'), ('Action3',
-                                                                     'Accepted (surrendered to Department)'),
-                                                        ('Action0', 'Accepted')], max_length=200,
-                                   verbose_name='Action taken'),
+            model_name="giftandhospitality",
+            name="action_taken",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("Action1", "Rejected"),
+                    ("Action2", "Accepted (difference paid to Department)"),
+                    ("Action3", "Accepted (surrendered to Department)"),
+                    ("Action0", "Accepted"),
+                ],
+                max_length=200,
+                verbose_name="Action taken",
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='company',
-            field=models.CharField(max_length=200, verbose_name='Company offered to/from'),
+            model_name="giftandhospitality",
+            name="company",
+            field=models.CharField(
+                max_length=200, verbose_name="Company offered to/from"
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='company_rep',
-            field=models.CharField(max_length=200,
-                                   verbose_name='Company representative offered to/from'),
+            model_name="giftandhospitality",
+            name="company_rep",
+            field=models.CharField(
+                max_length=200, verbose_name="Company representative offered to/from"
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='entered_by',
+            model_name="giftandhospitality",
+            name="entered_by",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='gift_type',
-            field=models.CharField(blank=True, max_length=200, null=True,
-                                   verbose_name='Classification'),
+            model_name="giftandhospitality",
+            name="gift_type",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Classification"
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='offer',
+            model_name="giftandhospitality",
+            name="offer",
             field=models.CharField(
-                choices=[('Received', 'Received by DIT Staff'), ('Offered', 'Given by DIT Staff')],
-                max_length=200),
+                choices=[
+                    ("Received", "Received by DIT Staff"),
+                    ("Offered", "Given by DIT Staff"),
+                ],
+                max_length=200,
+            ),
         ),
     ]

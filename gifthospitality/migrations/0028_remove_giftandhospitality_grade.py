@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gifthospitality', '0027_giftandhospitality_grade_fk'),
-    ]
+    dependencies = [("gifthospitality", "0027_giftandhospitality_grade_fk")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='giftandhospitality',
-            name='grade',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="giftandhospitality", name="grade")]

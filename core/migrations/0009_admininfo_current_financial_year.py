@@ -6,15 +6,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0008_remove_admininfo_current_financial_year'),
-    ]
+    dependencies = [("core", "0008_remove_admininfo_current_financial_year")]
 
     operations = [
         migrations.AddField(
-            model_name='admininfo',
-            name='current_financial_year',
-            field=models.ForeignKey(default=False, on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear'),
+            model_name="admininfo",
+            name="current_financial_year",
+            field=models.ForeignKey(
+                default=False,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="core.FinancialYear",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

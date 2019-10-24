@@ -4,24 +4,22 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0007_remove_giftandhospitality_date_stamp'),
-    ]
+    dependencies = [("gifthospitality", "0007_remove_giftandhospitality_date_stamp")]
 
     operations = [
         migrations.RenameField(
-            model_name='giftandhospitalitycategory',
-            old_name='category',
-            new_name='gif_hospitality_category',
+            model_name="giftandhospitalitycategory",
+            old_name="category",
+            new_name="gif_hospitality_category",
         ),
         migrations.RenameField(
-            model_name='giftandhospitalityclassification',
-            old_name='classification',
-            new_name='gif_hospitality_classification',
+            model_name="giftandhospitalityclassification",
+            old_name="classification",
+            new_name="gif_hospitality_classification",
         ),
         migrations.RenameField(
-            model_name='giftandhospitalitycompany',
-            old_name='company',
-            new_name='gif_hospitality_company',
+            model_name="giftandhospitalitycompany",
+            old_name="company",
+            new_name="gif_hospitality_company",
         ),
     ]

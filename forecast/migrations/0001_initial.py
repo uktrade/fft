@@ -9,64 +9,186 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('costcentre', '0001_initial'),
-        ('treasurySS', '0001_initial'),
-        ('chartofaccountDIT', '0001_initial'),
+        ("costcentre", "0001_initial"),
+        ("treasurySS", "0001_initial"),
+        ("chartofaccountDIT", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ADIReport',
+            name="ADIReport",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('financial_year', models.IntegerField()),
-                ('original_budget', models.DecimalField(decimal_places=0, default=0, max_digits=18)),
-                ('budget', models.DecimalField(decimal_places=0, default=0, max_digits=18)),
-                ('apr', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('may', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('jun', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('jul', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('aug', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('sep', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('oct', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('nov', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('dec', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('jan', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('feb', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('mar', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('adj1', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('adj2', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('adj3', models.DecimalField(decimal_places=2, default=0, max_digits=18)),
-                ('narrative', models.CharField(blank=True, max_length=2000)),
-                ('created_by', models.CharField(blank=True, max_length=100)),
-                ('update_by', models.CharField(blank=True, max_length=100)),
-                ('analysis1_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis1')),
-                ('analysis2_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.Analysis2')),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('natural_account_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("financial_year", models.IntegerField()),
+                (
+                    "original_budget",
+                    models.DecimalField(decimal_places=0, default=0, max_digits=18),
+                ),
+                (
+                    "budget",
+                    models.DecimalField(decimal_places=0, default=0, max_digits=18),
+                ),
+                (
+                    "apr",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "may",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "jun",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "jul",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "aug",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "sep",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "oct",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "nov",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "dec",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "jan",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "feb",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "mar",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "adj1",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "adj2",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                (
+                    "adj3",
+                    models.DecimalField(decimal_places=2, default=0, max_digits=18),
+                ),
+                ("narrative", models.CharField(blank=True, max_length=2000)),
+                ("created_by", models.CharField(blank=True, max_length=100)),
+                ("update_by", models.CharField(blank=True, max_length=100)),
+                (
+                    "analysis1_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.Analysis1",
+                    ),
+                ),
+                (
+                    "analysis2_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.Analysis2",
+                    ),
+                ),
+                (
+                    "cost_centre",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="costcentre.CostCentre",
+                    ),
+                ),
+                (
+                    "natural_account_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.NaturalCode",
+                    ),
+                ),
+                (
+                    "programme",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.ProgrammeCode",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SubSegmentUKTIMapping',
+            name="SubSegmentUKTIMapping",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('cost_centre', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='costcentre.CostCentre')),
-                ('programme', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.ProgrammeCode')),
-                ('sub_segment_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='treasurySS.SubSegment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "cost_centre",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="costcentre.CostCentre",
+                    ),
+                ),
+                (
+                    "programme",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.ProgrammeCode",
+                    ),
+                ),
+                (
+                    "sub_segment_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="treasurySS.SubSegment",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.AlterUniqueTogether(
-            name='adireport',
-            unique_together={('financial_year', 'programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code')},
+            name="adireport",
+            unique_together={
+                (
+                    "financial_year",
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "analysis2_code",
+                )
+            },
         ),
     ]

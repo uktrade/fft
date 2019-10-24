@@ -5,27 +5,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('treasurySS', '0090_auto_20190619_0956'),
-    ]
+    dependencies = [("treasurySS", "0090_auto_20190619_0956")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='subsegment',
-            name='net_subhead_code',
-        ),
-        migrations.RemoveField(
-            model_name='subsegment',
-            name='policy_ringfence_code',
-        ),
+        migrations.RemoveField(model_name="subsegment", name="net_subhead_code"),
+        migrations.RemoveField(model_name="subsegment", name="policy_ringfence_code"),
         migrations.AddField(
-            model_name='estimaterow',
-            name='sort_order',
-            field=models.IntegerField(default=9999, verbose_name='sort order'),
+            model_name="estimaterow",
+            name="sort_order",
+            field=models.IntegerField(default=9999, verbose_name="sort order"),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME'))), ('NON-BUDGET', 'NON-BUDGET')], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                    ("NON-BUDGET", "NON-BUDGET"),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
     ]

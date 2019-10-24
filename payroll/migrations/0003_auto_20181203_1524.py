@@ -5,21 +5,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payroll', '0002_auto_20181008_1319'),
-    ]
+    dependencies = [("payroll", "0002_auto_20181008_1319")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='ditpeople',
-            name='email',
-        ),
-        migrations.RemoveField(
-            model_name='ditpeople',
-            name='isbusinesspartner',
-        ),
-        migrations.RemoveField(
-            model_name='ditpeople',
-            name='isdirector',
-        ),
+        migrations.RemoveField(model_name="ditpeople", name="email"),
+        migrations.RemoveField(model_name="ditpeople", name="isbusinesspartner"),
+        migrations.RemoveField(model_name="ditpeople", name="isdirector"),
     ]

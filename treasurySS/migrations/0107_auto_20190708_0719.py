@@ -6,19 +6,35 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('treasurySS', '0106_merge_20190708_0719'),
-    ]
+    dependencies = [("treasurySS", "0106_merge_20190708_0719")]
 
     operations = [
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME'))), ('NON-BUDGET', 'NON-BUDGET')], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                    ("NON-BUDGET", "NON-BUDGET"),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.BudgetType', verbose_name='DIT Budget Code (used to generate the Oscar return)'),
+            model_name="subsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.BudgetType",
+                verbose_name="DIT Budget Code (used to generate the Oscar return)",
+            ),
         ),
     ]

@@ -6,25 +6,39 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0009_auto_20181123_0859'),
-    ]
+    dependencies = [("chartofaccountDIT", "0009_auto_20181123_0859")]
 
     operations = [
         migrations.CreateModel(
-            name='FCOMapping',
+            name="FCOMapping",
             fields=[
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('active', models.BooleanField(default=False)),
-                ('fco_code', models.IntegerField(primary_key=True, serialize=False, verbose_name='FCO Code')),
-                ('fco_description', models.CharField(max_length=300, verbose_name='FCO Description')),
-                ('account_L6_code_fk', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.NaturalCode')),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("active", models.BooleanField(default=False)),
+                (
+                    "fco_code",
+                    models.IntegerField(
+                        primary_key=True, serialize=False, verbose_name="FCO Code"
+                    ),
+                ),
+                (
+                    "fco_description",
+                    models.CharField(max_length=300, verbose_name="FCO Description"),
+                ),
+                (
+                    "account_L6_code_fk",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.NaturalCode",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'FCO Mapping',
-                'verbose_name_plural': 'FCO Mappings',
-                'ordering': ['fco_code'],
+                "verbose_name": "FCO Mapping",
+                "verbose_name_plural": "FCO Mappings",
+                "ordering": ["fco_code"],
             },
-        ),
+        )
     ]

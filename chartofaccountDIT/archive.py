@@ -1,9 +1,25 @@
 from core.archive import archive_generic
 
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
-    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
-    HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
-    InterEntity, NaturalCode, ProgrammeCode, ProjectCode
+from .models import (
+    Analysis1,
+    Analysis2,
+    CommercialCategory,
+    ExpenditureCategory,
+    FCOMapping,
+    HistoricalAnalysis1,
+    HistoricalAnalysis2,
+    HistoricalCommercialCategory,
+    HistoricalExpenditureCategory,
+    HistoricalFCOMapping,
+    HistoricalInterEntity,
+    HistoricalNaturalCode,
+    HistoricalProgrammeCode,
+    HistoricalProjectCode,
+    InterEntity,
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode,
+)
 
 
 def archive_project_code(year):

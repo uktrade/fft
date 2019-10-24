@@ -9,7 +9,7 @@ from django.db import models
 # define a choice field for this
 class Grade(models.Model):
     grade = models.CharField(primary_key=True, max_length=10)
-    gradedescription = models.CharField('Grade Description', max_length=50)
+    gradedescription = models.CharField("Grade Description", max_length=50)
     order = models.IntegerField
 
     def __str__(self):
@@ -25,22 +25,26 @@ class DITPeople(TimeStampedModel, LogChangeModel):
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50)
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT, null=True, blank=True)
-    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT, null=True, blank=True)
+    cost_centre = models.ForeignKey(
+        CostCentre, on_delete=models.PROTECT, null=True, blank=True
+    )
 
     def __str__(self):
-        return self.surname + ' ' + self.name
+        return self.surname + " " + self.name
 
     class Meta:
-        verbose_name = 'DIT People'
-        verbose_name_plural = 'DIT People'
-        ordering = ['surname']
+        verbose_name = "DIT People"
+        verbose_name_plural = "DIT People"
+        ordering = ["surname"]
 
 
 # Pre-calculated salary averages, used for the forecast
 class SalaryMonthlyAverage(models.Model):
-    AVERAGETYPE_CHOICES = (('CC', 'CostCentre'),
-                           ('DIR', 'Directorate'),
-                           ('DG', 'DepartmentalGroup'),)
+    AVERAGETYPE_CHOICES = (
+        ("CC", "CostCentre"),
+        ("DIR", "Directorate"),
+        ("DG", "DepartmentalGroup"),
+    )
     grade = models.ForeignKey(Grade, on_delete=models.PROTECT)
     average_type = models.CharField(max_length=50, choices=AVERAGETYPE_CHOICES)
     average_by = models.CharField(max_length=50)
@@ -112,6 +116,7 @@ class PayModel(TimeStampedModel):
 #     feb = models.BooleanField()
 #     mar = models.BooleanField()
 #
+
 
 class AdminPayModel(TimeStampedModel):
     group_code = models.ForeignKey(DepartmentalGroup, on_delete=models.PROTECT)

@@ -5,13 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0010_oscarreturn'),
-    ]
+    dependencies = [("forecast", "0010_oscarreturn")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='oscarreturn',
-            options={'managed': False, 'ordering': ['sub_segment_code']},
-        ),
+            name="oscarreturn",
+            options={"managed": False, "ordering": ["sub_segment_code"]},
+        )
     ]

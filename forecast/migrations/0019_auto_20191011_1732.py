@@ -6,13 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0049_auto_20191003_1317'),
-        ('forecast', '0018_forecast_expenditure_type'),
+        ("chartofaccountDIT", "0049_auto_20191003_1317"),
+        ("forecast", "0018_forecast_expenditure_type"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Forecast_Expenditure_Type',
-            new_name='ForecastExpenditureType',
-        ),
+            old_name="Forecast_Expenditure_Type", new_name="ForecastExpenditureType"
+        )
     ]

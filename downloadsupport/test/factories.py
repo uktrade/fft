@@ -10,5 +10,3 @@ class DownloadLogFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = DownloadLog
-
-

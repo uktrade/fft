@@ -6,8 +6,8 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('treasurySS', '0090_auto_20190619_0956'),
-        ('costcentre', '0024_costcentre_used_for_travel'),
+        ("treasurySS", "0090_auto_20190619_0956"),
+        ("costcentre", "0024_costcentre_used_for_travel"),
     ]
 
     # operations = [

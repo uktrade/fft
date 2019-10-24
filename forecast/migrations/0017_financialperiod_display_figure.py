@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0016_recreate_oscar_view'),
-    ]
+    dependencies = [("forecast", "0016_recreate_oscar_view")]
 
     operations = [
         migrations.AddField(
-            model_name='financialperiod',
-            name='display_figure',
+            model_name="financialperiod",
+            name="display_figure",
             field=models.BooleanField(default=True),
-        ),
+        )
     ]

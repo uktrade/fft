@@ -16,7 +16,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].required = True
-        self.fields['company'].visible = False
+        self.fields["company"].visible = False
 
     def save(self, *args, **kwargs):
         self.instance.offer = self.offer
@@ -24,8 +24,9 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         if self.instance.rep_fk:
             self.instance.rep = self.instance.rep_fk
             self.instance.grade_fk = self.instance.rep_fk.grade
-            self.instance.group_name = \
+            self.instance.group_name = (
                 self.instance.rep_fk.cost_centre.directorate.group.group_name
+            )
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
     class Meta:
@@ -34,27 +35,28 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
 
         model = GiftAndHospitality
         fields = [
-            'classification_fk',
-            'category_fk',
-            'date_offered',
-            'action_taken',
-            'venue',
-            'reason',
-            'value',
-            'rep_fk',
-            'company_rep',
-            'company_fk',
-            'company'
+            "classification_fk",
+            "category_fk",
+            "date_offered",
+            "action_taken",
+            "venue",
+            "reason",
+            "value",
+            "rep_fk",
+            "company_rep",
+            "company_fk",
+            "company",
         ]
-        labels = {'company_fk': _('Company received from'),
-                  'company_rep': _('Company Representative received from'),
-                  'rep_fk': _('DIT Representative offered to')
-                  }
+        labels = {
+            "company_fk": _("Company received from"),
+            "company_rep": _("Company Representative received from"),
+            "rep_fk": _("DIT Representative offered to"),
+        }
 
         widgets = {
             # 'rep_fk' : ModelSelect2Bootstrap(url='people-autocomplete'),
-            'rep_fk': autocomplete.ModelSelect2(url='people-autocomplete'),
-            'date_offered': DatePickerInput(
+            "rep_fk": autocomplete.ModelSelect2(url="people-autocomplete"),
+            "date_offered": DatePickerInput(
                 options={
                     "format": "DD/MM/YYYY",  # moment date-time format
                     "showClose": True,
@@ -71,7 +73,8 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
 
     class Meta(GiftAndHospitalityReceivedForm.Meta):
-        labels = {'company_fk': _('Company offered to'),
-                  'company_rep': _('Company Representative offered to'),
-                  'rep_fk': _('DIT Representative received from')
-                  }
+        labels = {
+            "company_fk": _("Company offered to"),
+            "company_rep": _("Company Representative offered to"),
+            "rep_fk": _("DIT Representative received from"),
+        }

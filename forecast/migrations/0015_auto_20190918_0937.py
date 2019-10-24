@@ -5,24 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0014_delete_subsegmentuktimapping'),
-    ]
+    dependencies = [("forecast", "0014_delete_subsegmentuktimapping")]
 
     operations = [
         migrations.RunSQL('DROP VIEW "forecast_oscarreturn";'),
-
-        migrations.DeleteModel(
-            name='ADIReport',
+        migrations.DeleteModel(name="ADIReport"),
+        migrations.AlterField(
+            model_name="budget", name="budget", field=models.BigIntegerField(default=0)
         ),
         migrations.AlterField(
-            model_name='budget',
-            name='budget',
-            field=models.BigIntegerField(default=0),
-        ),
-        migrations.AlterField(
-            model_name='monthlyfigure',
-            name='amount',
+            model_name="monthlyfigure",
+            name="amount",
             field=models.BigIntegerField(default=0),
         ),
     ]

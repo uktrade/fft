@@ -4,37 +4,34 @@ from django.db import migrations, models
 
 
 def update_budget_types(apps, schema_editor):
-    BudgetType = apps.get_model('chartofaccountDIT', 'BudgetType')
-    b = BudgetType.objects.get(budget_type_key='DEL')
-    b.budget_type_display = 'DEL'
+    BudgetType = apps.get_model("chartofaccountDIT", "BudgetType")
+    b = BudgetType.objects.get(budget_type_key="DEL")
+    b.budget_type_display = "DEL"
     b.budget_type_display_order = 1
     b.save()
-    b = BudgetType.objects.get(budget_type_key='AME', budget_type='Programme AME')
-    b.budget_type_display = 'AME'
+    b = BudgetType.objects.get(budget_type_key="AME", budget_type="Programme AME")
+    b.budget_type_display = "AME"
     b.budget_type_display_order = 2
     b.save()
-    b = BudgetType.objects.get(budget_type_key='ADMIN', budget_type='Admin')
-    b.budget_type_display = 'DEL'
+    b = BudgetType.objects.get(budget_type_key="ADMIN", budget_type="Admin")
+    b.budget_type_display = "DEL"
     b.budget_type_display_order = 1
     b.save()
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('chartofaccountDIT', '0048_remove_programmecode_budget_type'),
-    ]
+    dependencies = [("chartofaccountDIT", "0048_remove_programmecode_budget_type")]
 
     operations = [
         migrations.AddField(
-            model_name='budgettype',
-            name='budget_type_display',
+            model_name="budgettype",
+            name="budget_type_display",
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AddField(
-            model_name='budgettype',
-            name='budget_type_display_order',
+            model_name="budgettype",
+            name="budget_type_display_order",
             field=models.IntegerField(default=99),
         ),
         migrations.RunPython(update_budget_types),
-
     ]

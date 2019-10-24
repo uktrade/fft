@@ -4,7 +4,7 @@ from django.contrib.humanize.templatetags.humanize import intcomma
 
 import django_tables2 as tables
 
-from .models import FinancialPeriod
+from forecast.models import FinancialPeriod
 
 
 class SummingFooterCol(tables.Column):
@@ -16,7 +16,7 @@ class SummingFooterCol(tables.Column):
         return intcomma(value)
 
     def render(self, value):
-        v = (value or 0)
+        v = value or 0
         self.tot_value += v
         return self.display_value(v)
 
@@ -38,7 +38,9 @@ class SummingMonthFooterCol(SummingFooterCol):
     Used to calculate and display year to date, full year, etc"""
 
     def calc_value(self, record):
-        val = sum(record[m] for m in self.month_list if m in record and record[m] is not None)
+        val = sum(
+            record[m] for m in self.month_list if m in record and record[m] is not None
+        )
         return val or 0
 
     def render(self, value, record):
@@ -57,10 +59,11 @@ class SummingMonthFooterCol(SummingFooterCol):
 
 class SubtractCol(SummingFooterCol):
     """Used to display the difference between the figures in two columns"""
+
     def calc_value(self, table):
         a = table.columns.columns[self.col1].current_value
         b = table.columns.columns[self.col2].current_value
-        val = int(a.replace(',', '')) - int(b.replace(',', ''))
+        val = int(a.replace(",", "")) - int(b.replace(",", ""))
         return self.display_value(val)
 
     def render(self, table):
@@ -77,12 +80,13 @@ class SubtractCol(SummingFooterCol):
 
 class PercentageCol(SummingFooterCol):
     """Used to display the percentage of values in two columns"""
+
     def calc_value(self, table):
         a = table.columns.columns[self.col1].current_value
         b = table.columns.columns[self.col2].current_value
-        if b == '0':
-            return 'No Budget'
-        val = int(a.replace(',', '')) / int(b.replace(',', ''))
+        if b == "0":
+            return "No Budget"
+        val = int(a.replace(",", "")) / int(b.replace(",", ""))
         return "{0:.0%}".format(val)
 
     def render(self, table):
@@ -100,26 +104,34 @@ class PercentageCol(SummingFooterCol):
 class ForecastTable(tables.Table):
     """Define the month columns format and their footer.
     Used every time we need to display a forecast"""
+
     display_footer = True
 
     def __init__(self, column_dict={}, *args, **kwargs):
-        cols = [(
-            'budg',
-            SummingFooterCol(self.display_footer, 'Budget', empty_values=())
-        )]
+        cols = [
+            ("budg", SummingFooterCol(self.display_footer, "Budget", empty_values=()))
+        ]
 
         for month in FinancialPeriod.financial_period_info.periods():
-            cols.append((
-                month[0],
-                SummingFooterCol(self.display_footer, month[1], empty_values=())
-            ))
+            cols.append(
+                (
+                    month[0],
+                    SummingFooterCol(self.display_footer, month[1], empty_values=()),
+                )
+            )
 
         self.base_columns.update(OrderedDict(cols))
 
-        # Remove the columns with a value of 'Hidden'. They are needed in the dataset for
-        #  calculating the subtotals, but they are not required in the displayed table.
-        column_dict = {k: v for k, v in column_dict.items() if v != 'Hidden'}
-        extra_column_to_display = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
+        # Remove the columns with a
+        # value of 'Hidden'. They are
+        # needed in the dataset for
+        #  calculating the subtotals,
+        #  but they are not required
+        #  in the displayed table.
+        column_dict = {k: v for k, v in column_dict.items() if v != "Hidden"}
+        extra_column_to_display = [
+            (k, tables.Column(v)) for (k, v) in column_dict.items()
+        ]
 
         column_list = column_dict.keys()
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
@@ -127,75 +139,67 @@ class ForecastTable(tables.Table):
         extra_column_to_display.extend(
             [
                 (
-                    'year_to_date',
+                    "year_to_date",
                     SummingMonthFooterCol(
                         actual_month_list,
                         self.display_footer,
-                        'Year to Date',
-                        empty_values=()
-                    )
+                        "Year to Date",
+                        empty_values=(),
+                    ),
                 ),
                 (
-                    'year_total',
+                    "year_total",
                     SummingMonthFooterCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
                         self.display_footer,
-                        'Year Total',
-                        empty_values=()
-                    )
+                        "Year Total",
+                        empty_values=(),
+                    ),
                 ),
                 (
-                    'spend',
+                    "spend",
                     SubtractCol(
-                        'budg',
-                        'year_total',
+                        "budg",
+                        "year_total",
                         self.display_footer,
-                        'Underspend (Overspend)',
-                        empty_values=()
-                    )
+                        "Underspend (Overspend)",
+                        empty_values=(),
+                    ),
                 ),
                 (
-                    'percentage',
+                    "percentage",
                     PercentageCol(
-                        'spend',
-                        'budg',
-                        self.display_footer,
-                        '%',
-                        empty_values=()
-                    )
-                )
-
+                        "spend", "budg", self.display_footer, "%", empty_values=()
+                    ),
+                ),
             ]
         )
 
         super().__init__(
             extra_columns=extra_column_to_display,
-            sequence=column_list, *args, **kwargs
+            sequence=column_list, *args, **kwargs,
         )
-        # change the stile for columns showing actuals. It has to be done after super().__init__
+        # change the stile for columns showing "actuals".
+        # It has to be done after super().__init__
         # otherwise it gets overwritten.
         for month in actual_month_list:
             col = self.columns[month]
-            col.column.attrs = {
-                'td': {'class': 'govuk-table__cell actual-month'}
-            }
+            col.column.attrs = {"td": {"class": "govuk-table__cell actual-month"}}
 
     class Meta:
-        template_name = 'django_tables_2_bootstrap.html'
-        empty_text = ''
+        template_name = "django_tables_2_bootstrap.html"
+        empty_text = ""
         attrs = {
             "class": "govuk-table",
             "caption": "Financial Report",
-            "thead": {'class': 'govuk-table__head'},
-            "tbody": {'class': 'govuk-table__body'},
-            'th': {'class': 'govuk-table__header'},
-            'td': {'class': 'govuk-table__cell'},
-            'tf': {'class': 'govuk-table__cell'}
+            "thead": {"class": "govuk-table__head"},
+            "tbody": {"class": "govuk-table__body"},
+            "th": {"class": "govuk-table__header"},
+            "td": {"class": "govuk-table__cell"},
+            "tf": {"class": "govuk-table__cell"},
         }
         orderable = False
-        row_attrs = {
-            "class": "govuk-table__row"
-        }
+        row_attrs = {"class": "govuk-table__row"}
 
 
 class ForecastSubTotalTable(ForecastTable, tables.Table):
@@ -203,5 +207,5 @@ class ForecastSubTotalTable(ForecastTable, tables.Table):
 
     class Meta(ForecastTable.Meta):
         row_attrs = {
-            "class": lambda record: 'govuk-table__row {}'.format(record["row_type"]),
+            "class": lambda record: "govuk-table__row {}".format(record["row_type"])
         }

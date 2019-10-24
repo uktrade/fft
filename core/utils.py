@@ -11,8 +11,8 @@ class ChoiceEnum(Enum):
 
 def today_string():
     today = datetime.datetime.today()
-    return today.strftime('%d %b %Y')
+    return today.strftime("%d %b %Y")
 
 
-SUB_TOTAL_CLASS = 'sub-total'
-GRAN_TOTAL_CLASS = 'gran-total'
+SUB_TOTAL_CLASS = "sub-total"
+GRAN_TOTAL_CLASS = "gran-total"

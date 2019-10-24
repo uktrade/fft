@@ -15,8 +15,9 @@ def get_current_financial_year():
         today = datetime.datetime.now()
         currentmonth = today.month
         current_financial_year = today.year
-        if currentmonth < 3 or (currentmonth == 4 and today.day <5):
-            current_financial_year -= 1  # before 5th April, the financial year it is one year behind the calendar year
-
+        if currentmonth < 3 or (currentmonth == 4 and today.day < 5):
+            current_financial_year -= (
+                1
+            )  # before 5th April, the financial year it is one year behind the calendar year
 
     return current_financial_year

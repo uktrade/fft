@@ -7,32 +7,64 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0002_financialyear'),
-        ('costcentre', '0015_auto_20181123_0859'),
+        ("core", "0002_financialyear"),
+        ("costcentre", "0015_auto_20181123_0859"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricCostCentre',
+            name="HistoricCostCentre",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('group_code', models.CharField(max_length=6, verbose_name='Group No.')),
-                ('group_name', models.CharField(max_length=300, verbose_name='Group Name')),
-                ('directorate_code', models.CharField(max_length=6, verbose_name='Directorate')),
-                ('directorate_name', models.CharField(max_length=300, verbose_name='Directorate No.')),
-                ('cost_centre_code', models.CharField(max_length=6, verbose_name='Cost Centre No.')),
-                ('cost_centre_name', models.CharField(max_length=300, verbose_name='Cost Centre Name')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "group_code",
+                    models.CharField(max_length=6, verbose_name="Group No."),
+                ),
+                (
+                    "group_name",
+                    models.CharField(max_length=300, verbose_name="Group Name"),
+                ),
+                (
+                    "directorate_code",
+                    models.CharField(max_length=6, verbose_name="Directorate"),
+                ),
+                (
+                    "directorate_name",
+                    models.CharField(max_length=300, verbose_name="Directorate No."),
+                ),
+                (
+                    "cost_centre_code",
+                    models.CharField(max_length=6, verbose_name="Cost Centre No."),
+                ),
+                (
+                    "cost_centre_name",
+                    models.CharField(max_length=300, verbose_name="Cost Centre Name"),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Cost Centre',
-                'verbose_name_plural': 'Historic Cost Centres',
-                'ordering': ['cost_centre_code'],
+                "verbose_name": "Historic Cost Centre",
+                "verbose_name_plural": "Historic Cost Centres",
+                "ordering": ["cost_centre_code"],
             },
         ),
         migrations.AlterUniqueTogether(
-            name='historiccostcentre',
-            unique_together={('cost_centre_code', 'financial_year')},
+            name="historiccostcentre",
+            unique_together={("cost_centre_code", "financial_year")},
         ),
     ]

@@ -1,13 +1,17 @@
-from core.admin import AdminreadOnly
+from core.admin import AdminReadOnly
 
 from django.contrib import admin
 from django.urls import path
 
-from .export_csv import export_cost_centres, export_nac_hierarchy, export_travel_cost_centres
+from .export_csv import (
+    export_cost_centres,
+    export_nac_hierarchy,
+    export_travel_cost_centres,
+)
 from .models import DownloadLog
 
 
-class AdminToolExport(AdminreadOnly):
+class AdminToolExport(AdminReadOnly):
     """This is an interface for downloading files in a
     predefined format, used to upload data to other application.
     To add a new download do the following:
@@ -16,37 +20,35 @@ class AdminToolExport(AdminreadOnly):
     Add the url for it
     Add the export function to this class
     Add the url to the admintool_changelist.html"""
+
     change_list_template = "admin/admintool_changelist.html"
-    list_display = ('download_type', 'downloader', 'download_time')
+    list_display = ("download_type", "downloader", "download_time")
     list_display_links = None
 
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path('export_travel_cc/', self.export_travel_cc),
-            path('export-cc/', self.export_cc),
-            path('export-nac/', self.export_nac),
+            path("export_travel_cc/", self.export_travel_cc),
+            path("export-cc/", self.export_cc),
+            path("export-nac/", self.export_nac),
         ]
         return my_urls + urls
 
     def export_travel_cc(self, request):
         DownloadLog.objects.create(
-            downloader=request.user,
-            download_type=DownloadLog.CC_TRAVEL,
+            downloader=request.user, download_type=DownloadLog.CC_TRAVEL
         )
         return export_travel_cost_centres()
 
     def export_cc(self, request):
         DownloadLog.objects.create(
-            downloader=request.user,
-            download_type=DownloadLog.CC_AT,
+            downloader=request.user, download_type=DownloadLog.CC_AT
         )
         return export_cost_centres()
 
     def export_nac(self, request):
         DownloadLog.objects.create(
-            downloader=request.user,
-            download_type=DownloadLog.NAC_H_AT,
+            downloader=request.user, download_type=DownloadLog.NAC_H_AT
         )
         return export_nac_hierarchy()
 

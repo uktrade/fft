@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('downloadsupport', '0004_uploadfile'),
-    ]
+    dependencies = [("downloadsupport", "0004_uploadfile")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='UploadFile',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="UploadFile")]

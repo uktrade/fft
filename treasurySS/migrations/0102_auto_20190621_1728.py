@@ -7,19 +7,36 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0045_programmecode_budget_type_fk'),
-        ('treasurySS', '0101_auto_20190621_1727'),
+        ("chartofaccountDIT", "0045_programmecode_budget_type_fk"),
+        ("treasurySS", "0101_auto_20190621_1727"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.BudgetType'),
+            model_name="subsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.BudgetType",
+            ),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME'))), ('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
     ]

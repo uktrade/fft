@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('core', '0002_document'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("core", "0002_document"),
     ]
 
-    operations = [
-    ]
+    operations = []

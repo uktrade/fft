@@ -20,18 +20,16 @@ from .models import Document
 
 @login_required()
 def index(request):
-    return render(
-        request, 'core/index.html'
-    )
+    return render(request, "core/index.html")
 
 
 class AboutView(TemplateView):
-    template_name = 'core/about.html'
+    template_name = "core/about.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['django_version'] = get_version()
-        context['git_commit'] = settings.GIT_COMMIT
+        context["django_version"] = get_version()
+        context["git_commit"] = settings.GIT_COMMIT
         return context
 
 
@@ -55,26 +53,26 @@ class FidoExportMixin(ExportMixin):
 
 class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
     paginate_by = 200
-    template_name = 'core/table_filter_generic.html'
+    template_name = "core/table_filter_generic.html"
     strict = False
-    name = 'View'
+    name = "View"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Define the export name at init, so it uses the current date, and not the date the class was loaded
         # for the first time
-        self.export_name = self.name + ' ' + today_string()
+        self.export_name = self.name + " " + today_string()
         # The max lenght for an Excel tab name is 31. So truncate the name, if needed
         self.sheet_name = self.name[:EXC_TAB_NAME_LEN]
 
 
 class DocumentCreateView(CreateView):
     model = Document
-    fields = ['upload', ]
-    success_url = reverse_lazy('home')
+    fields = ["upload"]
+    success_url = reverse_lazy("home")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         documents = Document.objects.all()
-        context['documents'] = documents
+        context["documents"] = documents
         return context

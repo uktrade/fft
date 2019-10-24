@@ -5,16 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0017_historicalexpenditurecategory'),
-    ]
+    dependencies = [("chartofaccountDIT", "0017_historicalexpenditurecategory")]
 
     operations = [
         migrations.RemoveField(
-            model_name='historicalexpenditurecategory',
-            name='financial_year',
+            model_name="historicalexpenditurecategory", name="financial_year"
         ),
-        migrations.DeleteModel(
-            name='HistoricalExpenditureCategory',
-        ),
+        migrations.DeleteModel(name="HistoricalExpenditureCategory"),
     ]

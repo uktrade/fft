@@ -7,19 +7,27 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0049_auto_20191003_1317'),
-        ('forecast', '0019_auto_20191011_1732'),
+        ("chartofaccountDIT", "0049_auto_20191003_1317"),
+        ("forecast", "0019_auto_20191011_1732"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='budget',
-            name='forecast_expenditure_type',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='forecast.ForecastExpenditureType'),
+            model_name="budget",
+            name="forecast_expenditure_type",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="forecast.ForecastExpenditureType",
+            ),
         ),
         migrations.AddField(
-            model_name='monthlyfigure',
-            name='forecast_expenditure_type',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='forecast.ForecastExpenditureType'),
+            model_name="monthlyfigure",
+            name="forecast_expenditure_type",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="forecast.ForecastExpenditureType",
+            ),
         ),
     ]

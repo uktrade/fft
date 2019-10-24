@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0019_historicalexpenditurecategory'),
-    ]
+    dependencies = [("chartofaccountDIT", "0019_historicalexpenditurecategory")]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalexpenditurecategory',
-            name='NAC_category',
-            field=models.CharField(max_length=255, verbose_name='Budget Grouping'),
-        ),
+            model_name="historicalexpenditurecategory",
+            name="NAC_category",
+            field=models.CharField(max_length=255, verbose_name="Budget Grouping"),
+        )
     ]

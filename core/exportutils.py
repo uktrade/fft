@@ -14,7 +14,7 @@ from .import_csv import IMPORT_CSV_MODEL_KEY, get_col_from_obj_key, get_field_na
 EXC_TAB_NAME_LEN = 31
 
 
-def get_fk_value(obj, field, novalue='-'):
+def get_fk_value(obj, field, novalue="-"):
     if obj is not None:
         return getattr(obj, field)
     else:
@@ -38,9 +38,9 @@ def display_yes_no(row):
     for ind, item in enumerate(row):
         if isinstance(item, bool):
             if item:
-                row[ind] = 'Yes'
+                row[ind] = "Yes"
             else:
-                row[ind] = 'No'
+                row[ind] = "No"
     return row
 
 
@@ -55,8 +55,10 @@ class SmartExport:
         self.model = mydata_qs.model  # get the model
         self.model_fields = self.model._meta.fields + self.model._meta.many_to_many
         # Create  headers. Use the verbose name
-        self.headers = \
-            [self.model._meta.get_field(field.name).verbose_name for field in self.model_fields]
+        self.headers = [
+            self.model._meta.get_field(field.name).verbose_name
+            for field in self.model_fields
+        ]
 
     def get_row(self, obj):
         row = []
@@ -66,9 +68,11 @@ class SmartExport:
                 if val:
                     val = smart_str(val)
             elif type(field) == models.ManyToManyField:
-                val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
+                val = u", ".join(
+                    [smart_str(item) for item in getattr(obj, field.name).all()]
+                )
             elif field.choices:
-                val = getattr(obj, 'get_%s_display' % field.name)()
+                val = getattr(obj, "get_%s_display" % field.name)()
             else:
                 val = smart_str(getattr(obj, field.name))
             row.append(val.encode("utf-8"))
@@ -86,7 +90,9 @@ def generic_table_iterator(queryset):
     mymodel = queryset.model  # get the model
     model_fields = mymodel._meta.fields + mymodel._meta.many_to_many
     # Create  headers. Use the verbose name
-    headers = [mymodel._meta.get_field(field.name).verbose_name for field in model_fields]
+    headers = [
+        mymodel._meta.get_field(field.name).verbose_name for field in model_fields
+    ]
     yield headers
 
     for obj in queryset:
@@ -97,45 +103,48 @@ def generic_table_iterator(queryset):
                 if val:
                     val = smart_str(val)
             elif type(field) == models.ManyToManyField:
-                val = u', '.join([smart_str(item) for item in getattr(obj, field.name).all()])
+                val = u", ".join(
+                    [smart_str(item) for item in getattr(obj, field.name).all()]
+                )
             elif field.choices:
-                val = getattr(obj, 'get_%s_display' % field.name)()
+                val = getattr(obj, "get_%s_display" % field.name)()
             else:
                 val = smart_str(getattr(obj, field.name))
             if val is None:
-                val = ''
+                val = ""
 
             row.append(val.encode("utf-8"))
         yield row
 
 
-def export_to_csv(queryset, f, title=''):
-    if title == '':
+def export_to_csv(queryset, f, title=""):
+    if title == "":
         title = queryset.model._meta.verbose_name_plural.title() + today_string()
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=' + title + '.csv'
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = "attachment; filename=" + title + ".csv"
     writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))  # Excel needs UTF-8 to open the file
+    response.write(u"\ufeff".encode("utf8"))  # Excel needs UTF-8 to open the file
     for row in f(queryset):
         writer.writerow(row)
     return response
 
 
 def generic_export_to_csv(queryset):
-    return (export_to_csv(queryset, generic_table_iterator))
+    return export_to_csv(queryset, generic_table_iterator)
 
 
-EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 # '           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-def export_to_excel(queryset, f, title=''):
-    if title == '':
+
+def export_to_excel(queryset, f, title=""):
+    if title == "":
         title = queryset.model._meta.verbose_name_plural.title()
     resp = HttpResponse(content_type=EXCEL_TYPE)
-    filename = title + today_string() + ' ' + '.xlsx'
-    resp['Content-Disposition'] = 'attachment; filename=' + filename
+    filename = title + today_string() + " " + ".xlsx"
+    resp["Content-Disposition"] = "attachment; filename=" + filename
     wb = openpyxl.Workbook()
     ws = wb.get_active_sheet()
     # Truncate the tab name to the maximum lenght permitted by Excel
@@ -148,13 +157,13 @@ def export_to_excel(queryset, f, title=''):
 
 
 def generic_export_to_excel(queryset):
-    return (export_to_excel(queryset, generic_table_iterator))
+    return export_to_excel(queryset, generic_table_iterator)
 
 
-class export_csv_from_import():
+class export_csv_from_import:
     def __init__(self, obj_key):
         model = obj_key[IMPORT_CSV_MODEL_KEY]
-        field_list = get_field_name(obj_key, '')
+        field_list = get_field_name(obj_key, "")
         self.header_list = get_col_from_obj_key(obj_key)
         self.queryset = model.objects.all().values(*field_list)
 

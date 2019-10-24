@@ -3,11 +3,7 @@ from faker import Faker
 
 from django.contrib.auth import get_user_model
 
-from core.models import (
-    Document,
-    EventLog,
-    FinancialYear,
-)
+from core.models import Document, EventLog, FinancialYear
 
 fake = Faker()
 
@@ -17,10 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = get_user_model()
 
     email = fake.email()
-    password = factory.PostGenerationMethodCall(
-        "set_password",
-        "test_password",
-    )
+    password = factory.PostGenerationMethodCall("set_password", "test_password")
 
 
 class EventLogFactory(factory.DjangoModelFactory):

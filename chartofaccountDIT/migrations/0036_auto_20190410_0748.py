@@ -5,19 +5,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0035_historicalfcomapping'),
-    ]
+    dependencies = [("chartofaccountDIT", "0035_historicalfcomapping")]
 
     operations = [
         migrations.AlterField(
-            model_name='historicalfcomapping',
-            name='budget_description',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Budget Category'),
+            model_name="historicalfcomapping",
+            name="budget_description",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Budget Category"
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalfcomapping',
-            name='nac_category_description',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Budget Grouping'),
+            model_name="historicalfcomapping",
+            name="nac_category_description",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Budget Grouping"
+            ),
         ),
     ]

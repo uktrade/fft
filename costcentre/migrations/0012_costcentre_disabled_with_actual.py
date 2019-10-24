@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('costcentre', '0011_auto_20181105_1135'),
-    ]
+    dependencies = [("costcentre", "0011_auto_20181105_1135")]
 
     operations = [
         migrations.AddField(
-            model_name='costcentre',
-            name='disabled_with_actual',
-            field=models.BooleanField(default='False',
-                                      verbose_name='Disabled (Actuals to be cleared)'),
-        ),
+            model_name="costcentre",
+            name="disabled_with_actual",
+            field=models.BooleanField(
+                default="False", verbose_name="Disabled (Actuals to be cleared)"
+            ),
+        )
     ]

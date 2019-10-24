@@ -1,4 +1,8 @@
-from django.conf import settings
+from django.db import models
+from django.db.models import Max
+
+# https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py # noqa
+from django_pivot.pivot import pivot
 
 from chartofaccountDIT.models import (
     Analysis1,
@@ -8,19 +12,11 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.metamodels import TimeStampedModel
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
 from costcentre.models import CostCentre
-
-from django.db import models
-
-from django.db.models import Max
-
-# https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py # noqa
-from django_pivot.pivot import pivot
 
 
 class SubTotalFieldDoesNotExistError(Exception):
@@ -39,28 +35,18 @@ class ForecastExpenditureType(models.Model):
     This table is prepopulated with the  information
     needed to get the expenditure_type.
     """
-    nac_economic_budget_code = models.CharField(
-        max_length=255,
-        verbose_name='economic budget code',
-    )
-    programme_budget_type = models.ForeignKey(
-        BudgetType,
-        on_delete=models.CASCADE,
-    )
 
-    forecast_expenditure_type_name = models.CharField(
-        max_length=100,
+    nac_economic_budget_code = models.CharField(
+        max_length=255, verbose_name="economic budget code"
     )
-    forecast_expenditure_type_description = models.CharField(
-        max_length=100,
-    )
+    programme_budget_type = models.ForeignKey(BudgetType, on_delete=models.CASCADE)
+
+    forecast_expenditure_type_name = models.CharField(max_length=100)
+    forecast_expenditure_type_description = models.CharField(max_length=100)
     forecast_expenditure_type_display_order = models.IntegerField()
 
     class Meta:
-        unique_together = (
-            'nac_economic_budget_code',
-            'programme_budget_type',
-        )
+        unique_together = ("nac_economic_budget_code", "programme_budget_type")
 
     def __str__(self):
         return self.forecast_expenditure_type_name
@@ -68,67 +54,52 @@ class ForecastExpenditureType(models.Model):
 
 class FinancialPeriodManager(models.Manager):
     def period_display_list(self):
-        return (
-            list(
-                self.get_queryset().filter(
-                    display_figure=True
-                ).values_list(
-                    'period_short_name',
-                    flat=True
-                )
-            )
+        return list(
+            self.get_queryset()
+            .filter(display_figure=True)
+            .values_list("period_short_name", flat=True)
         )
 
     def actual_month(self):
-        m = self.get_queryset().filter(
-            actual_loaded=True
-        ).aggregate(
-            Max(
-                'financial_period_code'
-            )
+        m = (
+            self.get_queryset()
+            .filter(actual_loaded=True)
+            .aggregate(Max("financial_period_code"))
         )
-        return m['financial_period_code__max'] or 0
+        return m["financial_period_code__max"] or 0
 
     def actual_month_list(self):
-        return self.period_display_list()[:self.actual_month()]
+        return self.period_display_list()[: self.actual_month()]
 
     def periods(self):
-        return self.get_queryset().filter(
-            display_figure=True
-        ).values_list(
-            'period_short_name',
-            'period_long_name',
+        return (
+            self.get_queryset()
+            .filter(display_figure=True)
+            .values_list("period_short_name", "period_long_name")
         )
 
 
 class FinancialPeriod(models.Model):
-    """Financial periods: correspond to month, but there are 3 extra periods at the end"""
-    financial_period_code = models.IntegerField(
-        primary_key=True
-    )  # April = 1
-    period_long_name = models.CharField(
-        max_length=20
-    )
-    period_short_name = models.CharField(
-        max_length=10
-    )
+    """Financial periods: correspond
+    to month, but there are 3 extra
+    periods at the end"""
+
+    financial_period_code = models.IntegerField(primary_key=True)  # April = 1
+    period_long_name = models.CharField(max_length=20)
+    period_short_name = models.CharField(max_length=10)
     period_calendar_code = models.IntegerField()  # January = 1
     # use a flag to indicate if the "actuals"
     # have been uploaded instead of relying on the date
     # the "actuals" are manually uploaded, so it is not
     # guaranteed on which date they are uploaded
-    actual_loaded = models.BooleanField(
-        default=False
-    )
-    display_figure = models.BooleanField(
-        default=True
-    )
+    actual_loaded = models.BooleanField(default=False)
+    display_figure = models.BooleanField(default=True)
 
     objects = models.Manager()  # The default manager.
     financial_period_info = FinancialPeriodManager()
 
     class Meta:
-        ordering = ['financial_period_code']
+        ordering = ["financial_period_code"]
 
     def __str__(self):
         return self.period_long_name
@@ -136,48 +107,31 @@ class FinancialPeriod(models.Model):
 
 class FinancialCode(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
-    programme = models.ForeignKey(
-        ProgrammeCode,
-        on_delete=models.PROTECT,
-    )
-    cost_centre = models.ForeignKey(
-        CostCentre,
-        on_delete=models.PROTECT,
-    )
-    natural_account_code = models.ForeignKey(
-        NaturalCode,
-        on_delete=models.PROTECT,
-    )
+
+    programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
+    cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
+    natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
     analysis1_code = models.ForeignKey(
-        Analysis1,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
+        Analysis1, on_delete=models.PROTECT, blank=True, null=True
     )
     analysis2_code = models.ForeignKey(
-        Analysis2,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
+        Analysis2, on_delete=models.PROTECT, blank=True, null=True
     )
     project_code = models.ForeignKey(
-        ProjectCode,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
+        ProjectCode, on_delete=models.PROTECT, blank=True, null=True
     )
     # The following field is calculated from programme and NAC.
     forecast_expenditure_type = models.ForeignKey(
-        ForecastExpenditureType,
-        on_delete=models.PROTECT,
-        default=1,
+        ForecastExpenditureType, on_delete=models.PROTECT, default=1
     )
 
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
         if self.pk is None:
             # calculate the forecast_expenditure_type
-            nac_economic_budget_code = self.natural_account_code.account_L5_code.economic_budget_code
+            nac_economic_budget_code = (
+                self.natural_account_code.account_L5_code.economic_budget_code
+            )
             programme_budget_type = self.programme.budget_type_fk
 
             forecast_type = ForecastExpenditureType.objects.filter(
@@ -194,28 +148,23 @@ class FinancialCode(models.Model):
 
 
 class Budget(FinancialCode, TimeStampedModel):
-    """Used to store the budgets for the financial year. The data is not profiled"""
-    id = models.AutoField(
-        'Budget ID',
-        primary_key=True,
-    )
-    financial_year = models.ForeignKey(
-        FinancialYear,
-        on_delete=models.PROTECT,
-    )
-    budget = models.BigIntegerField(
-        default=0
-    )
+    """Used to store the budgets
+    for the financial year. The
+    data is not profiled"""
+
+    id = models.AutoField("Budget ID", primary_key=True)
+    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
+    budget = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = (
-            'programme',
-            'cost_centre',
-            'natural_account_code',
-            'analysis1_code',
-            'analysis2_code',
-            'project_code',
-            'financial_year',
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+            "financial_year",
         )
 
     def __str__(self):
@@ -231,23 +180,24 @@ class Budget(FinancialCode, TimeStampedModel):
 
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
+
     default_columns = {
-        'cost_centre__cost_centre_code': 'Cost Centre Code',
-        'cost_centre__cost_centre_name': 'Cost Centre Description',
-        'natural_account_code__natural_account_code': 'Natural Account Code',
-        'natural_account_code__natural_account_code_description': 'Natural Account Code Description',  # noqa
-        'programme__programme_code': 'Programme Code',
-        'programme__programme_description': 'Programme Description',
-        'project_code__project_code': 'Project Code',
-        'project_code__project_description': 'Project Description',
+        "cost_centre__cost_centre_code": "Cost Centre Code",
+        "cost_centre__cost_centre_name": "Cost Centre Description",
+        "natural_account_code__natural_account_code": "Natural Account Code",
+        "natural_account_code__natural_account_code_description": "Natural Account Code Description",  # noqa
+        "programme__programme_code": "Programme Code",
+        "programme__programme_description": "Programme Description",
+        "project_code__project_code": "Project Code",
+        "project_code__project_description": "Project Description",
     }
 
-    def output_row_to_table(self, table, row, style_name='', level=99):
+    def output_row_to_table(self, table, row, style_name="", level=99):
         #     Add the stile entry to the dictionary
         #     add the resulting dictionary to the list
         # if style_name != '':
         #     style_name = '{}-{}'.format(style_name, level)
-        row['row_type'] = style_name
+        row["row_type"] = style_name
         table.append(row)
 
     def add_row_to_subtotal(self, row_from, sub_total):
@@ -267,62 +217,64 @@ class PivotManager(models.Manager):
         year=0,
         order_list=[],
     ):
-        # If requesting a subtotal, the list of columns must be specified
+        # If requesting a subtotal, the
+        # list of columns must be specified
         if not subtotal_columns:
-            raise SubTotalFieldNotSpecifiedError(
-                "Sub-total field not specified"
-            )
+            raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
 
         if not all(elem in [*data_columns] for elem in subtotal_columns):
-            raise SubTotalFieldDoesNotExistError(
-                "Sub-total column does not exist"
-            )
+            raise SubTotalFieldDoesNotExistError("Sub-total column does not exist")
 
         if display_total_column not in [*data_columns]:
             raise SubTotalFieldDoesNotExistError(
                 "Display sub-total column does not exist"
             )
 
-        data_returned = self.pivotdata(
-            data_columns,
-            filter_dict,
-            year,
-            order_list
-        )
+        data_returned = self.pivot_data(data_columns, filter_dict, year, order_list)
 
         result_table = []
         pivot_data = list(data_returned)
         if not pivot_data:
             return []
-        # The subtotals are passed in from the outer totals
-        # for calculation, it is easier to call subtotal 0 the innermost subtotal
+        # The subtotals are passed in from
+        # the outer totals for calculation,
+        # it is easier to call subtotal 0
+        # the innermost subtotal
         subtotal_columns.reverse()
         first_row = pivot_data.pop(0)
 
-        self.output_row_to_table(
-            result_table,
-            first_row,
-            ''
-        )
+        self.output_row_to_table(result_table, first_row, "")
         full_list = list(
-            FinancialPeriod.objects.values_list(
-                'period_short_name',
-                flat=True,
-            )
+            FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
-        # remove missing periods (like Adj1, etc from the list used to add the periods together.
-        self.period_list = [value for value in full_list if value in first_row.keys()]
-        # import pdb;
-        # pdb.set_trace()
+        # remove missing periods (like Adj1,
+        # etc from the list used to add the
+        # periods together.
+        self.period_list = [
+            value for value in full_list if value in first_row.keys()
+        ]
+
         # Initialise the structure required
-        # a dictionary with the previous value of the columns to be sub-totalled
-        # a dictionary of subtotal dictionaries, with an extra entry for the final total (gran total)
-        sub_total_row = {k: (v if k in self.period_list else ' ') for k, v in first_row.items()}
-        previous_values = {field_name: first_row[field_name] for field_name in subtotal_columns}
-        # initialise all the subtotals, and add an extra row for the final total (gran total)
-        subtotals = {field_name: sub_total_row.copy() for field_name in subtotal_columns}
+        # a dictionary with the previous
+        # value of the columns to be
+        # sub-totalled a dictionary of
+        # subtotal dictionaries, with an
+        # extra entry for the final total
+        # (gran total)
+        sub_total_row = {
+            k: (v if k in self.period_list else " ") for k, v in first_row.items()
+        }
+        previous_values = {
+            field_name: first_row[field_name] for field_name in subtotal_columns
+        }
+        # initialise all the subtotals,
+        # and add an extra row for the
+        # final total (gran total)
+        subtotals = {
+            field_name: sub_total_row.copy() for field_name in subtotal_columns
+        }
         sub_total_levels = len(subtotals)
-        subtotals['Gran_Total'] = sub_total_row.copy()
+        subtotals["Gran_Total"] = sub_total_row.copy()
         output_subtotal = {field_name: False for field_name in subtotal_columns}
         for current_row in pivot_data:
             subtotal_time = False
@@ -347,12 +299,20 @@ class PivotManager(models.Manager):
                     if output_subtotal[column]:
                         subtotal_row = subtotals[column].copy()
                         level = subtotal_columns.index(column)
-                        subtotal_row[display_total_column] = 'Total {}'.format(previous_values[column])
+                        subtotal_row[display_total_column] = "Total {}".format(
+                            previous_values[column]
+                        )
                         for out_total in subtotal_columns[level + 1:]:
-                            subtotal_row[display_total_column] = '{} {}'.format(
+                            subtotal_row[display_total_column] = "{} {}".format(
                                 subtotal_row[display_total_column],
-                                previous_values[out_total])
-                        self.output_row_to_table(result_table, subtotal_row, SUB_TOTAL_CLASS, sub_total_levels - level)
+                                previous_values[out_total],
+                            )
+                        self.output_row_to_table(
+                            result_table,
+                            subtotal_row,
+                            SUB_TOTAL_CLASS,
+                            sub_total_levels - level,
+                        )
                         self.clear_row(subtotals[column])
                         previous_values[column] = current_row[column]
                         output_subtotal[column] = False
@@ -367,43 +327,51 @@ class PivotManager(models.Manager):
         # output all the subtotals, because it is finished
         for column in subtotal_columns:
             level = subtotal_columns.index(column)
-            caption = 'Total {}'.format(previous_values[column])
+            caption = "Total {}".format(previous_values[column])
             for out_total in subtotal_columns[level + 1:]:
-                caption = '{} {}'.format(
-                    caption,
-                    previous_values[out_total])
+                caption = "{} {}".format(caption, previous_values[out_total])
             subtotals[column][display_total_column] = caption
-            self.output_row_to_table(result_table, subtotals[column], SUB_TOTAL_CLASS, sub_total_levels - level)
-        subtotals['Gran_Total'][display_total_column] = 'Total Managed Expenditure'
-        self.output_row_to_table(result_table, subtotals['Gran_Total'], GRAN_TOTAL_CLASS, 0)
+            self.output_row_to_table(
+                result_table,
+                subtotals[column],
+                SUB_TOTAL_CLASS,
+                sub_total_levels - level,
+            )
+        subtotals["Gran_Total"][display_total_column] = "Total Managed Expenditure"
+        self.output_row_to_table(
+            result_table, subtotals["Gran_Total"], GRAN_TOTAL_CLASS, 0
+        )
 
         return result_table
 
-    def pivotdata(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
 
-        q1 = self.get_queryset().filter(
-            financial_year=year,
-            **filter_dict
-        ).order_by(*order_list)
-
-        return pivot(
-            q1,
-            columns,
-            'financial_period__period_short_name',
-            'amount'
+        q1 = (
+            self.get_queryset()
+            .filter(financial_year=year, **filter_dict)
+            .order_by(*order_list)
         )
+
+        return pivot(q1, columns, "financial_period__period_short_name", "amount")
 
 
 class MonthlyFigure(FinancialCode, TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
-    id = models.AutoField('Monthly ID', primary_key=True)
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    financial_period = models.ForeignKey(FinancialPeriod, on_delete=models.PROTECT)
+
+    id = models.AutoField("Monthly ID", primary_key=True)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
+    financial_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+    )
     # The figures are stored ar pence, to avoid rounding problems.
     # Some formatting will take care of displaying the figures as pounds only
     amount = models.BigIntegerField(default=0)
@@ -413,14 +381,14 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
 
     class Meta:
         unique_together = (
-            'programme',
-            'cost_centre',
-            'natural_account_code',
-            'analysis1_code',
-            'analysis2_code',
-            'project_code',
-            'financial_year',
-            'financial_period',
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+            "financial_year",
+            "financial_period",
         )
 
     def __str__(self):
@@ -440,59 +408,36 @@ class OSCARReturn(models.Model):
     """Used for downloading the Oscar return.
     Mapped to a view in the database, because
     the query is too complex"""
+
     # The view is created by the migration 0016_recreate_oscar_view.py
     # TODO Change the database view to return
     #  figures in thousands. At the moment the
     #  figures are in pence.
     row_number = models.BigIntegerField()
     account_l5_code = models.ForeignKey(
-        'treasuryCOA.L5Account',
+        "treasuryCOA.L5Account",
         on_delete=models.PROTECT,
-        db_column='account_l5_code'
+        db_column="account_l5_code",
     )
     sub_segment_code = models.CharField(max_length=8, primary_key=True)
     sub_segment_long_name = models.CharField(max_length=255)
-    apr = models.BigIntegerField(
-        default=0
-    )
-    may = models.BigIntegerField(
-        default=0
-    )
-    jun = models.BigIntegerField(
-        default=0
-    )
-    jul = models.BigIntegerField(
-        default=0
-    )
-    aug = models.BigIntegerField(
-        default=0
-    )
-    sep = models.BigIntegerField(
-        default=0
-    )
-    oct = models.BigIntegerField(
-        default=0
-    )
-    nov = models.BigIntegerField(
-        default=0
-    )
-    dec = models.BigIntegerField(
-        default=0
-    )
-    jan = models.BigIntegerField(
-        default=0
-    )
-    feb = models.BigIntegerField(
-        default=0
-    )
-    mar = models.BigIntegerField(
-        default=0
-    )
+    apr = models.BigIntegerField(default=0)
+    may = models.BigIntegerField(default=0)
+    jun = models.BigIntegerField(default=0)
+    jul = models.BigIntegerField(default=0)
+    aug = models.BigIntegerField(default=0)
+    sep = models.BigIntegerField(default=0)
+    oct = models.BigIntegerField(default=0)
+    nov = models.BigIntegerField(default=0)
+    dec = models.BigIntegerField(default=0)
+    jan = models.BigIntegerField(default=0)
+    feb = models.BigIntegerField(default=0)
+    mar = models.BigIntegerField(default=0)
 
     class Meta:
         managed = False
-        db_table = 'forecast_oscarreturn'
-        ordering = ['sub_segment_code']
+        db_table = "forecast_oscarreturn"
+        ordering = ["sub_segment_code"]
 
 
 """

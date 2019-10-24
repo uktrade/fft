@@ -7,25 +7,47 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('chartofaccountDIT', '0010_fcomapping'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("chartofaccountDIT", "0010_fcomapping"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalProjectCode',
+            name="HistoricalProjectCode",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('project_description', models.CharField(max_length=300, verbose_name='Project Description')),
-                ('project_code', models.CharField(max_length=50, verbose_name='Project Code')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "project_description",
+                    models.CharField(
+                        max_length=300, verbose_name="Project Description"
+                    ),
+                ),
+                (
+                    "project_code",
+                    models.CharField(max_length=50, verbose_name="Project Code"),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Project',
-                'verbose_name_plural': 'Projects',
-                'ordering': ['project_code'],
-                'abstract': False,
+                "verbose_name": "Project",
+                "verbose_name_plural": "Projects",
+                "ordering": ["project_code"],
+                "abstract": False,
             },
-        ),
+        )
     ]

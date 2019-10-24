@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0010_asyncimportlog'),
-    ]
+    dependencies = [("core", "0010_asyncimportlog")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='AsyncImportLog',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="AsyncImportLog")]

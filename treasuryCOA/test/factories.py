@@ -1,4 +1,11 @@
-from treasuryCOA.models import HistoricL5Account, L1Account, L2Account, L3Account, L4Account, L5Account
+from treasuryCOA.models import (
+    HistoricL5Account,
+    L1Account,
+    L2Account,
+    L3Account,
+    L4Account,
+    L5Account,
+)
 
 import factory
 

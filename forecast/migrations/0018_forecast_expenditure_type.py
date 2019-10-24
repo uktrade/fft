@@ -7,20 +7,42 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0049_auto_20191003_1317'),
-        ('forecast', '0017_financialperiod_display_figure'),
+        ("chartofaccountDIT", "0049_auto_20191003_1317"),
+        ("forecast", "0017_financialperiod_display_figure"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Forecast_Expenditure_Type',
+            name="Forecast_Expenditure_Type",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nac_economic_budget_code', models.CharField(max_length=255, verbose_name='economic budget code')),
-                ('forecast_expenditure_type_name', models.CharField(max_length=100)),
-                ('forecast_expenditure_type_description', models.CharField(max_length=100)),
-                ('forecast_expenditure_type_display_order', models.IntegerField()),
-                ('programme_budget_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='chartofaccountDIT.ProgrammeCode')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "nac_economic_budget_code",
+                    models.CharField(
+                        max_length=255, verbose_name="economic budget code"
+                    ),
+                ),
+                ("forecast_expenditure_type_name", models.CharField(max_length=100)),
+                (
+                    "forecast_expenditure_type_description",
+                    models.CharField(max_length=100),
+                ),
+                ("forecast_expenditure_type_display_order", models.IntegerField()),
+                (
+                    "programme_budget_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="chartofaccountDIT.ProgrammeCode",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

@@ -7,43 +7,103 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('chartofaccountDIT', '0012_auto_20190402_1520'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("chartofaccountDIT", "0012_auto_20190402_1520"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalAnalysis1',
+            name="HistoricalAnalysis1",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('analysis1_description', models.CharField(max_length=300, verbose_name='Contract Name')),
-                ('supplier', models.CharField(default='', max_length=300, verbose_name='Supplier')),
-                ('pc_reference', models.CharField(default='', max_length=300, verbose_name='PC Reference')),
-                ('analysis1_code', models.CharField(max_length=50, verbose_name='Contract Code')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "analysis1_description",
+                    models.CharField(max_length=300, verbose_name="Contract Name"),
+                ),
+                (
+                    "supplier",
+                    models.CharField(
+                        default="", max_length=300, verbose_name="Supplier"
+                    ),
+                ),
+                (
+                    "pc_reference",
+                    models.CharField(
+                        default="", max_length=300, verbose_name="PC Reference"
+                    ),
+                ),
+                (
+                    "analysis1_code",
+                    models.CharField(max_length=50, verbose_name="Contract Code"),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Contract Reconciliation (Analysis 1)',
-                'verbose_name_plural': 'Historic Contract Reconciliations (Analysis 1)',
-                'ordering': ['financial_year', 'analysis1_code'],
+                "verbose_name": "Historic Contract Reconciliation (Analysis 1)",
+                "verbose_name_plural": "Historic Contract Reconciliations (Analysis 1)",
+                "ordering": ["financial_year", "analysis1_code"],
             },
         ),
         migrations.CreateModel(
-            name='HistoricalAnalysis2',
+            name="HistoricalAnalysis2",
             fields=[
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('analysis1_code', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Contract Code')),
-                ('analysis1_description', models.CharField(max_length=300, verbose_name='Contract Name')),
-                ('supplier', models.CharField(default='', max_length=300, verbose_name='Supplier')),
-                ('pc_reference', models.CharField(default='', max_length=300, verbose_name='PC Reference')),
-                ('analysis2_code', models.CharField(max_length=50, verbose_name='Contract Code')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "analysis1_code",
+                    models.CharField(
+                        max_length=50,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="Contract Code",
+                    ),
+                ),
+                (
+                    "analysis1_description",
+                    models.CharField(max_length=300, verbose_name="Contract Name"),
+                ),
+                (
+                    "supplier",
+                    models.CharField(
+                        default="", max_length=300, verbose_name="Supplier"
+                    ),
+                ),
+                (
+                    "pc_reference",
+                    models.CharField(
+                        default="", max_length=300, verbose_name="PC Reference"
+                    ),
+                ),
+                (
+                    "analysis2_code",
+                    models.CharField(max_length=50, verbose_name="Contract Code"),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Market (Analysis 2)',
-                'verbose_name_plural': 'HistoricMarkets (Analysis 2)',
-                'ordering': ['financial_year', 'analysis2_code'],
+                "verbose_name": "Historic Market (Analysis 2)",
+                "verbose_name_plural": "HistoricMarkets (Analysis 2)",
+                "ordering": ["financial_year", "analysis2_code"],
             },
         ),
     ]

@@ -5,33 +5,41 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0031_historicalnaturalcode'),
-    ]
+    dependencies = [("chartofaccountDIT", "0031_historicalnaturalcode")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='historicalnaturalcode',
-            options={'ordering': ['financial_year', 'natural_account_code'], 'verbose_name': 'Historical Natural Account Code (NAC)', 'verbose_name_plural': 'Historical Natural Account Codes (NAC)'},
+            name="historicalnaturalcode",
+            options={
+                "ordering": ["financial_year", "natural_account_code"],
+                "verbose_name": "Historical Natural Account Code (NAC)",
+                "verbose_name_plural": "Historical Natural Account Codes (NAC)",
+            },
         ),
         migrations.AddField(
-            model_name='historicalnaturalcode',
-            name='active',
+            model_name="historicalnaturalcode",
+            name="active",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='historicalnaturalcode',
-            name='NAC_category',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Budget Grouping'),
+            model_name="historicalnaturalcode",
+            name="NAC_category",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Budget Grouping"
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalnaturalcode',
-            name='economic_budget_code',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Expenditure Type'),
+            model_name="historicalnaturalcode",
+            name="economic_budget_code",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Expenditure Type"
+            ),
         ),
         migrations.AlterField(
-            model_name='historicalnaturalcode',
-            name='expenditure_category',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Budget Category'),
+            model_name="historicalnaturalcode",
+            name="expenditure_category",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Budget Category"
+            ),
         ),
     ]

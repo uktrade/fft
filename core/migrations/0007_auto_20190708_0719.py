@@ -5,19 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0006_merge_20190708_0719'),
-    ]
+    dependencies = [("core", "0006_merge_20190708_0719")]
 
     operations = [
         migrations.RenameField(
-            model_name='financialyear',
-            old_name='in_use',
-            new_name='current',
+            model_name="financialyear", old_name="in_use", new_name="current"
         ),
         migrations.AlterField(
-            model_name='admininfo',
-            name='current_financial_year',
+            model_name="admininfo",
+            name="current_financial_year",
             field=models.IntegerField(),
         ),
     ]

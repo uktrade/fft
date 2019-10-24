@@ -4,19 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0017_auto_20181212_1048'),
-    ]
+    dependencies = [("gifthospitality", "0017_auto_20181212_1048")]
 
     operations = [
         migrations.AddField(
-            model_name='giftandhospitality',
-            name='old_id',
+            model_name="giftandhospitality",
+            name="old_id",
             field=models.IntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='entered_date_stamp',
-            field=models.DateTimeField(verbose_name='Date entered'),
+            model_name="giftandhospitality",
+            name="entered_date_stamp",
+            field=models.DateTimeField(verbose_name="Date entered"),
         ),
     ]

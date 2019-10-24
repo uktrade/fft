@@ -1,8 +1,14 @@
 from behave import use_fixture
-from core.behave_fixtures import django_test_runner, django_test_case
+
 from selenium import webdriver
-from django.conf import settings
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from django.conf import settings
+
+from core.behave_fixtures import (
+    django_test_runner,
+    django_test_case,
+)
 
 
 def before_all(context):
@@ -23,8 +29,10 @@ def stop_local():
 
 def before_feature(context, feature):
     context.browser = webdriver.Remote(
-        command_executor='http://{}:4444/wd/hub'.format(settings.SELENIUM_ADDRESS),
-        desired_capabilities=DesiredCapabilities.CHROME
+        command_executor="http://{}:4444/wd/hub".format(
+            settings.SELENIUM_ADDRESS
+        ),
+        desired_capabilities=DesiredCapabilities.CHROME,
     )
     context.browser.implicitly_wait(5)
 

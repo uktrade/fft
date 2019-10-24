@@ -5,19 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('forecast', '0005_auto_20190206_1311'),
-    ]
+    dependencies = [("forecast", "0005_auto_20190206_1311")]
 
     operations = [
         migrations.AddField(
-            model_name='budget',
-            name='budget',
+            model_name="budget",
+            name="budget",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=18),
         ),
         migrations.AddField(
-            model_name='monthlyfigure',
-            name='amount',
+            model_name="monthlyfigure",
+            name="amount",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=18),
         ),
     ]

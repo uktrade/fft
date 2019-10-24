@@ -1,7 +1,12 @@
 import io
 
-from core.admin import AdminActiveField, AdminExport, \
-    AdminImportExport, AdminreadOnly, CsvImportForm
+from core.admin import (
+    AdminActiveField,
+    AdminExport,
+    AdminImportExport,
+    AdminReadOnly,
+    CsvImportForm,
+)
 from core.exportutils import generic_table_iterator
 
 from django.contrib import admin
@@ -10,54 +15,117 @@ from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from .exportcsv import _export_comm_cat_iterator, _export_exp_cat_iterator, _export_fco_mapping_iterator, \
-    _export_historical_comm_cat_iterator, _export_historical_exp_cat_iterator, _export_historical_fco_mapping_iterator, \
-    _export_historical_inter_entity_iterator, _export_historical_nac_iterator, \
-    _export_inter_entity_iterator, _export_inter_entity_l1_iterator, _export_nac_cat_iterator, \
-    _export_nac_iterator, _export_op_del_cat_iterator, _export_programme_iterator
-from .import_csv import import_NAC_DIT_class, import_NAC_category_class, import_NAC_class, \
-    import_a1_class, import_a2_class, \
-    import_comm_cat_class, import_expenditure_category_class, import_fco_mapping_class, \
-    import_inter_entity_class, import_op_del_category_class, import_prog_class
-from .models import Analysis1, Analysis2, CommercialCategory, ExpenditureCategory, FCOMapping, \
-    HistoricalAnalysis1, HistoricalAnalysis2, HistoricalCommercialCategory, HistoricalExpenditureCategory, \
-    HistoricalFCOMapping, HistoricalInterEntity, HistoricalNaturalCode, HistoricalProgrammeCode, HistoricalProjectCode, \
-    InterEntity, InterEntityL1, NACCategory, NaturalCode, OperatingDeliveryCategory, ProgrammeCode, ProjectCode, BudgetType
+from .exportcsv import (
+    _export_comm_cat_iterator,
+    _export_exp_cat_iterator,
+    _export_fco_mapping_iterator,
+    _export_historical_comm_cat_iterator,
+    _export_historical_exp_cat_iterator,
+    _export_historical_fco_mapping_iterator,
+    _export_historical_inter_entity_iterator,
+    _export_historical_nac_iterator,
+    _export_inter_entity_iterator,
+    _export_inter_entity_l1_iterator,
+    _export_nac_cat_iterator,
+    _export_nac_iterator,
+    _export_op_del_cat_iterator,
+    _export_programme_iterator,
+)
+from .import_csv import (
+    import_NAC_DIT_class,
+    import_NAC_category_class,
+    import_NAC_class,
+    import_a1_class,
+    import_a2_class,
+    import_comm_cat_class,
+    import_expenditure_category_class,
+    import_fco_mapping_class,
+    import_inter_entity_class,
+    import_op_del_category_class,
+    import_prog_class,
+)
+from .models import (
+    Analysis1,
+    Analysis2,
+    CommercialCategory,
+    ExpenditureCategory,
+    FCOMapping,
+    HistoricalAnalysis1,
+    HistoricalAnalysis2,
+    HistoricalCommercialCategory,
+    HistoricalExpenditureCategory,
+    HistoricalFCOMapping,
+    HistoricalInterEntity,
+    HistoricalNaturalCode,
+    HistoricalProgrammeCode,
+    HistoricalProjectCode,
+    InterEntity,
+    InterEntityL1,
+    NACCategory,
+    NaturalCode,
+    OperatingDeliveryCategory,
+    ProgrammeCode,
+    ProjectCode,
+    BudgetType,
+)
 
 
 class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
     """Define an extra import button, for the DIT specific fields"""
+
     change_list_template = "admin/m_import_changelist.html"
 
-    list_display = ('natural_account_code', 'natural_account_code_description', 'active')
+    list_display = (
+        "natural_account_code",
+        "natural_account_code_description",
+        "active",
+    )
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['natural_account_code', 'natural_account_code_description',
-                    'account_L5_code', 'created', 'updated']
+            return [
+                "natural_account_code",
+                "natural_account_code_description",
+                "account_L5_code",
+                "created",
+                "updated",
+            ]
         else:
-            return ['created', 'updated']
+            return ["created", "updated"]
 
     def get_fields(self, request, obj=None):
-        return ['natural_account_code', 'natural_account_code_description',
-                'account_L5_code', 'expenditure_category', 'account_L5_code_upload',
-                'commercial_category', 'used_for_budget', 'active', 'created', 'updated']
+        return [
+            "natural_account_code",
+            "natural_account_code_description",
+            "account_L5_code",
+            "expenditure_category",
+            "account_L5_code_upload",
+            "commercial_category",
+            "used_for_budget",
+            "active",
+            "created",
+            "updated",
+        ]
 
-    search_fields = ['natural_account_code', 'natural_account_code_description']
-    list_filter = ('active',
-                   'used_for_budget',
-                   ('expenditure_category__NAC_category', RelatedDropdownFilter),
-                   ('expenditure_category', RelatedDropdownFilter))
+    search_fields = ["natural_account_code", "natural_account_code_description"]
+    list_filter = (
+        "active",
+        "used_for_budget",
+        ("expenditure_category__NAC_category", RelatedDropdownFilter),
+        ("expenditure_category", RelatedDropdownFilter),
+    )
 
-    queryset_all = NaturalCode.objects.select_related('expenditure_category',
-                                                      'expenditure_category__NAC_category',
-                                                      'expenditure_category__linked_budget_code',
-                                                      'commercial_category',
-                                                      'account_L5_code',
-                                                      'account_L5_code__account_l4',
-                                                      'account_L5_code__account_l4__account_l3',
-                                                      'account_L5_code__account_l4__account_l3__account_l2',
-                                                      'account_L5_code__account_l4__account_l3__account_l2__account_l1')
+    queryset_all = NaturalCode.objects.select_related(
+        "expenditure_category",
+        "expenditure_category__NAC_category",
+        "expenditure_category__linked_budget_code",
+        "commercial_category",
+        "account_L5_code",
+        "account_L5_code__account_l4",
+        "account_L5_code__account_l4__account_l3",
+        "account_L5_code__account_l4__account_l3__account_l2",
+        "account_L5_code__account_l4__account_l3__account_l2__account_l1",
+    )
 
     @property
     def export_func(self):
@@ -69,9 +137,7 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
 
     def get_urls(self):
         urls = super().get_urls()
-        my_urls = [
-            path('import1-csv/', self.import1_csv),
-        ]
+        my_urls = [path("import1-csv/", self.import1_csv)]
         return my_urls + urls
 
     def import1_csv(self, request):
@@ -86,28 +152,35 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
                 # on which you can call decode().
                 # decode('cp1252') turns your bytes into a string, with known encoding.
                 # cp1252 is used to handle single quotes in the strings
-                t = io.StringIO(csv_file.read().decode('cp1252'))
+                t = io.StringIO(csv_file.read().decode("cp1252"))
                 import_func(t)
                 return redirect("..")
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}
-        return render(
-            request, "admin/csv_form.html", payload
-        )
+        return render(request, "admin/csv_form.html", payload)
 
 
-class HistoricalNaturalCodeAdmin(AdminreadOnly, AdminExport):
-    list_display = ('natural_account_code', 'natural_account_code_description', 'active')
+class HistoricalNaturalCodeAdmin(AdminReadOnly, AdminExport):
+    list_display = (
+        "natural_account_code",
+        "natural_account_code_description",
+        "active",
+    )
 
-    fields = ['natural_account_code', 'natural_account_code_description',
-              'account_L5_code', 'expenditure_category', 'account_L5_code_upload',
-              'commercial_category', 'used_for_budget', 'active']
+    fields = [
+        "natural_account_code",
+        "natural_account_code_description",
+        "account_L5_code",
+        "expenditure_category",
+        "account_L5_code_upload",
+        "commercial_category",
+        "used_for_budget",
+        "active",
+    ]
 
-    search_fields = ['natural_account_code', 'natural_account_code_description']
-    list_filter = ('active',
-                   'used_for_budget'
-                   )
+    search_fields = ["natural_account_code", "natural_account_code_description"]
+    list_filter = ("active", "used_for_budget")
 
     @property
     def export_func(self):
@@ -115,25 +188,40 @@ class HistoricalNaturalCodeAdmin(AdminreadOnly, AdminExport):
 
 
 class Analysis1Admin(AdminActiveField, AdminImportExport):
-    search_fields = ['analysis1_description', 'analysis1_code']
-    list_display = ('analysis1_code', 'analysis1_description', 'active')
+    search_fields = ["analysis1_description", "analysis1_code"]
+    list_display = ("analysis1_code", "analysis1_description", "active")
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['analysis1_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                "analysis1_code",
+                "created",
+                "updated",
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return ["created", "updated"]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['analysis1_code', 'analysis1_description',
-                    'supplier', 'pc_reference',
-                    'active', 'created', 'updated']
+            return [
+                "analysis1_code",
+                "analysis1_description",
+                "supplier",
+                "pc_reference",
+                "active",
+                "created",
+                "updated",
+            ]
         else:
-            return ['analysis1_code', 'analysis1_description',
-                    'supplier', 'pc_reference', 'active']
+            return [
+                "analysis1_code",
+                "analysis1_description",
+                "supplier",
+                "pc_reference",
+                "active",
+            ]
 
     @property
     def export_func(self):
@@ -144,12 +232,23 @@ class Analysis1Admin(AdminActiveField, AdminImportExport):
         return import_a1_class
 
 
-class HistoricalAnalysis1Admin(AdminreadOnly, AdminExport):
-    search_fields = ['analysis1_description', 'analysis1_code']
-    list_display = ('analysis1_code', 'analysis1_description', 'active', 'financial_year')
-    list_filter = ('active',
-                   ('financial_year', RelatedDropdownFilter))
-    fields = ('financial_year', 'analysis1_code', 'analysis1_description', 'supplier', 'pc_reference', 'active')
+class HistoricalAnalysis1Admin(AdminReadOnly, AdminExport):
+    search_fields = ["analysis1_description", "analysis1_code"]
+    list_display = (
+        "analysis1_code",
+        "analysis1_description",
+        "active",
+        "financial_year",
+    )
+    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
+    fields = (
+        "financial_year",
+        "analysis1_code",
+        "analysis1_description",
+        "supplier",
+        "pc_reference",
+        "active",
+    )
 
     @property
     def export_func(self):
@@ -157,23 +256,32 @@ class HistoricalAnalysis1Admin(AdminreadOnly, AdminExport):
 
 
 class Analysis2Admin(AdminActiveField, AdminImportExport):
-    search_fields = ['analysis2_description', 'analysis2_code']
-    list_display = ('analysis2_code', 'analysis2_description', 'active')
+    search_fields = ["analysis2_description", "analysis2_code"]
+    list_display = ("analysis2_code", "analysis2_description", "active")
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['analysis2_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                "analysis2_code",
+                "created",
+                "updated",
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return ["created", "updated"]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['analysis2_code', 'analysis2_description',
-                    'active', 'created', 'updated']
+            return [
+                "analysis2_code",
+                "analysis2_description",
+                "active",
+                "created",
+                "updated",
+            ]
         else:
-            return ['analysis2_code', 'analysis2_description', 'active']
+            return ["analysis2_code", "analysis2_description", "active"]
 
     @property
     def export_func(self):
@@ -184,12 +292,11 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
         return import_a2_class
 
 
-class HistoricalAnalysis2Admin(AdminreadOnly, AdminExport):
-    search_fields = ['analysis2_description', 'analysis2_code']
-    list_display = ('analysis2_code', 'analysis2_description', 'active')
-    list_filter = ('active',
-                   ('financial_year', RelatedDropdownFilter))
-    fields = ('financial_year', 'analysis2_code', 'analysis2_description', 'active')
+class HistoricalAnalysis2Admin(AdminReadOnly, AdminExport):
+    search_fields = ["analysis2_description", "analysis2_code"]
+    list_display = ("analysis2_code", "analysis2_description", "active")
+    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
+    fields = ("financial_year", "analysis2_code", "analysis2_description", "active")
 
     @property
     def export_func(self):
@@ -197,9 +304,15 @@ class HistoricalAnalysis2Admin(AdminreadOnly, AdminExport):
 
 
 class ExpenditureCategoryAdmin(AdminImportExport):
-    search_fields = ['grouping_description', 'description']
-    list_display = ['grouping_description', 'description', 'NAC_category', 'op_del_category', 'linked_budget_code']
-    list_filter = ('NAC_category',)
+    search_fields = ["grouping_description", "description"]
+    list_display = [
+        "grouping_description",
+        "description",
+        "NAC_category",
+        "op_del_category",
+        "linked_budget_code",
+    ]
+    list_filter = ("NAC_category",)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "linked_budget_code":
@@ -207,18 +320,28 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
-        return ['created', 'updated']
+        return ["created", "updated"]
 
     def get_fields(self, request, obj=None):
         if obj:
-            return ['grouping_description', 'description',
-                    'further_description', 'linked_budget_code',
-                    'NAC_category', 'op_del_category',
-                    'created', 'updated']
+            return [
+                "grouping_description",
+                "description",
+                "further_description",
+                "linked_budget_code",
+                "NAC_category",
+                "op_del_category",
+                "created",
+                "updated",
+            ]
         else:
-            return ['grouping_description', 'description',
-                    'further_description', 'linked_budget_code',
-                    'NAC_category']
+            return [
+                "grouping_description",
+                "description",
+                "further_description",
+                "linked_budget_code",
+                "NAC_category",
+            ]
 
     @property
     def export_func(self):
@@ -229,15 +352,26 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         return import_expenditure_category_class
 
 
-class HistoricalExpenditureCategoryAdmin(AdminreadOnly, AdminExport):
-    search_fields = ['grouping_description', 'description']
-    list_display = ['grouping_description', 'description', 'NAC_category', 'linked_budget_code']
-    list_filter = ('NAC_category', ('financial_year', RelatedDropdownFilter))
+class HistoricalExpenditureCategoryAdmin(AdminReadOnly, AdminExport):
+    search_fields = ["grouping_description", "description"]
+    list_display = [
+        "grouping_description",
+        "description",
+        "NAC_category",
+        "linked_budget_code",
+    ]
+    list_filter = ("NAC_category", ("financial_year", RelatedDropdownFilter))
 
-    fields = ('financial_year', 'grouping_description', 'description',
-              'further_description', 'linked_budget_code', 'linked_budget_code_description',
-              'NAC_category',
-              'archived')
+    fields = (
+        "financial_year",
+        "grouping_description",
+        "description",
+        "further_description",
+        "linked_budget_code",
+        "linked_budget_code_description",
+        "NAC_category",
+        "archived",
+    )
 
     @property
     def export_func(self):
@@ -245,8 +379,8 @@ class HistoricalExpenditureCategoryAdmin(AdminreadOnly, AdminExport):
 
 
 class CommercialCategoryAdmin(AdminImportExport):
-    search_fields = ['commercial_category', 'description']
-    list_display = ['commercial_category', 'description', 'commercial_category']
+    search_fields = ["commercial_category", "description"]
+    list_display = ["commercial_category", "description", "commercial_category"]
 
     @property
     def export_func(self):
@@ -257,13 +391,18 @@ class CommercialCategoryAdmin(AdminImportExport):
         return import_comm_cat_class
 
 
-class HistoricalCommercialCategoryAdmin(AdminreadOnly, AdminExport):
-    search_fields = ['commercial_category', 'description']
-    list_display = ['commercial_category', 'description']
-    list_filter = ('active', ('financial_year', RelatedDropdownFilter))
+class HistoricalCommercialCategoryAdmin(AdminReadOnly, AdminExport):
+    search_fields = ["commercial_category", "description"]
+    list_display = ["commercial_category", "description"]
+    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
 
-    fields = ('financial_year', 'commercial_category', 'description',
-              'active', 'archived')
+    fields = (
+        "financial_year",
+        "commercial_category",
+        "description",
+        "active",
+        "archived",
+    )
 
     @property
     def export_func(self):
@@ -271,8 +410,8 @@ class HistoricalCommercialCategoryAdmin(AdminreadOnly, AdminExport):
 
 
 class NACCategoryAdmin(AdminImportExport):
-    search_fields = ['NAC_category_description']
-    list_display = ['NAC_category_description']
+    search_fields = ["NAC_category_description"]
+    list_display = ["NAC_category_description"]
 
     @property
     def export_func(self):
@@ -284,17 +423,33 @@ class NACCategoryAdmin(AdminImportExport):
 
 
 class ProgrammeAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('programme_code', 'programme_description', 'budget_type_fk', 'active')
-    search_fields = ['programme_code', 'programme_description']
-    list_filter = ['budget_type_fk', 'active']
+    list_display = (
+        "programme_code",
+        "programme_description",
+        "budget_type_fk",
+        "active",
+    )
+    search_fields = ["programme_code", "programme_description"]
+    list_filter = ["budget_type_fk", "active"]
 
     def get_readonly_fields(self, request, obj=None):
-        return ['programme_code', 'programme_description', 'budget_type_fk', 'created',
-                'updated']  # don't allow to edit the code
+        return [
+            "programme_code",
+            "programme_description",
+            "budget_type_fk",
+            "created",
+            "updated",
+        ]  # don't allow to edit the code
 
     def get_fields(self, request, obj=None):
-        return ['programme_code', 'programme_description',
-                'budget_type_fk', 'active', 'created', 'updated']
+        return [
+            "programme_code",
+            "programme_description",
+            "budget_type_fk",
+            "active",
+            "created",
+            "updated",
+        ]
 
     @property
     def export_func(self):
@@ -305,12 +460,17 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
         return import_prog_class
 
 
-class HistoricalProgrammeAdmin(AdminreadOnly, AdminExport):
-    list_display = ('programme_code', 'programme_description', 'budget_type', 'active')
-    search_fields = ['programme_code', 'programme_description']
-    list_filter = ['budget_type', 'active', ('financial_year', RelatedDropdownFilter)]
-    fields = ('financial_year', 'programme_code', 'programme_description',
-              'budget_type', 'active')
+class HistoricalProgrammeAdmin(AdminReadOnly, AdminExport):
+    list_display = ("programme_code", "programme_description", "budget_type", "active")
+    search_fields = ["programme_code", "programme_description"]
+    list_filter = ["budget_type", "active", ("financial_year", RelatedDropdownFilter)]
+    fields = (
+        "financial_year",
+        "programme_code",
+        "programme_description",
+        "budget_type",
+        "active",
+    )
 
     @property
     def export_func(self):
@@ -318,7 +478,7 @@ class HistoricalProgrammeAdmin(AdminreadOnly, AdminExport):
 
 
 class InterEntityL1Admin(AdminActiveField, AdminExport):
-    search_fields = ['l1_value', 'l1_description']
+    search_fields = ["l1_value", "l1_description"]
 
     @property
     def export_func(self):
@@ -326,10 +486,9 @@ class InterEntityL1Admin(AdminActiveField, AdminExport):
 
 
 class InterEntityAdmin(AdminActiveField, AdminImportExport):
-    list_display = ('l2_value', 'l2_description', 'l1_value', 'active')
-    search_fields = ['l2_value', 'l2_description']
-    list_filter = ('active', 'l1_value'
-                   )
+    list_display = ("l2_value", "l2_description", "l1_value", "active")
+    search_fields = ["l2_value", "l2_description"]
+    list_filter = ("active", "l1_value")
 
     @property
     def export_func(self):
@@ -340,12 +499,18 @@ class InterEntityAdmin(AdminActiveField, AdminImportExport):
         return import_inter_entity_class
 
 
-class HistoricalInterEntityAdmin(AdminreadOnly, AdminExport):
-    list_display = ('l2_value', 'l2_description', 'l1_value', 'active')
-    search_fields = ['l2_value', 'l2_description']
-    list_filter = ['active', ('financial_year', RelatedDropdownFilter)]
-    fields = ('financial_year', 'l2_value', 'l2_description',
-              'l1_value', 'l1_description', 'active')
+class HistoricalInterEntityAdmin(AdminReadOnly, AdminExport):
+    list_display = ("l2_value", "l2_description", "l1_value", "active")
+    search_fields = ["l2_value", "l2_description"]
+    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
+    fields = (
+        "financial_year",
+        "l2_value",
+        "l2_description",
+        "l1_value",
+        "l1_description",
+        "active",
+    )
 
     @property
     def export_func(self):
@@ -353,23 +518,32 @@ class HistoricalInterEntityAdmin(AdminreadOnly, AdminExport):
 
 
 class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
-    search_fields = ['project_description', 'project_code']
-    list_display = ('project_code', 'project_description', 'active')
+    search_fields = ["project_description", "project_code"]
+    list_display = ("project_code", "project_description", "active")
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['project_code', 'created', 'updated']  # don't allow to edit the code
+            return [
+                "project_code",
+                "created",
+                "updated",
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return ["created", "updated"]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['project_code', 'project_description',
-                    'active', 'created', 'updated']
+            return [
+                "project_code",
+                "project_description",
+                "active",
+                "created",
+                "updated",
+            ]
         else:
-            return ['project_code', 'project_description', 'active']
+            return ["project_code", "project_description", "active"]
 
     @property
     def export_func(self):
@@ -380,26 +554,32 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
         return import_a2_class
 
 
-class HistoricalProjectCodeAdmin(AdminreadOnly, AdminExport):
-    search_fields = ['project_description', 'project_code']
-    list_display = ('project_code', 'project_description', 'active')
-    list_filter = ['active', ('financial_year', RelatedDropdownFilter)]
-    fields = ('financial_year', 'project_code', 'project_description', 'active')
+class HistoricalProjectCodeAdmin(AdminReadOnly, AdminExport):
+    search_fields = ["project_description", "project_code"]
+    list_display = ("project_code", "project_description", "active")
+    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
+    fields = ("financial_year", "project_code", "project_description", "active")
 
     @property
     def export_func(self):
         return generic_table_iterator
 
 
-class HistoricalFCOMappingAdmin(AdminreadOnly, AdminExport):
-    search_fields = ['fco_code', 'fco_description']
-    list_display = ('fco_code', 'fco_description', 'active')
-    list_filter = ['active', ('financial_year', RelatedDropdownFilter)]
-    fields = ('financial_year', 'fco_code', 'fco_description',
-              'account_L6_code', 'account_L6_description',
-              'nac_category_description', 'budget_description',
-              'economic_budget_code',
-              'active')
+class HistoricalFCOMappingAdmin(AdminReadOnly, AdminExport):
+    search_fields = ["fco_code", "fco_description"]
+    list_display = ("fco_code", "fco_description", "active")
+    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
+    fields = (
+        "financial_year",
+        "fco_code",
+        "fco_description",
+        "account_L6_code",
+        "account_L6_description",
+        "nac_category_description",
+        "budget_description",
+        "economic_budget_code",
+        "active",
+    )
 
     @property
     def export_func(self):
@@ -407,23 +587,34 @@ class HistoricalFCOMappingAdmin(AdminreadOnly, AdminExport):
 
 
 class FCOMappingAdmin(AdminActiveField, AdminImportExport):
-    search_fields = ['fco_code', 'fco_description']
-    list_display = ('fco_code', 'fco_description', 'active')
+    search_fields = ["fco_code", "fco_description"]
+    list_display = ("fco_code", "fco_description", "active")
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ['fco_code', 'fco_description', 'created', 'updated']  # don't allow to edit the code
+            return [
+                "fco_code",
+                "fco_description",
+                "created",
+                "updated",
+            ]  # don't allow to edit the code
         else:
-            return ['created', 'updated']
+            return ["created", "updated"]
 
     # different fields visible if updating or creating the object
     def get_fields(self, request, obj=None):
         if obj:
-            return ['fco_code', 'fco_description', 'account_L6_code_fk',
-                    'active', 'created', 'updated']
+            return [
+                "fco_code",
+                "fco_description",
+                "account_L6_code_fk",
+                "active",
+                "created",
+                "updated",
+            ]
         else:
-            return ['fco_code', 'fco_description', 'account_L6_code_fk', 'active']
+            return ["fco_code", "fco_description", "account_L6_code_fk", "active"]
 
     @property
     def export_func(self):
@@ -435,8 +626,8 @@ class FCOMappingAdmin(AdminActiveField, AdminImportExport):
 
 
 class OpDelCategoryAdmin(AdminImportExport):
-    search_fields = ['operating_delivery_description']
-    list_display = ['operating_delivery_description']
+    search_fields = ["operating_delivery_description"]
+    list_display = ["operating_delivery_description"]
 
     @property
     def export_func(self):

@@ -5,13 +5,15 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('payroll', '0003_auto_20181203_1524'),
-    ]
+    dependencies = [("payroll", "0003_auto_20181203_1524")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ditpeople',
-            options={'ordering': ['surname'], 'verbose_name': 'DIT People', 'verbose_name_plural': 'DIT People'},
-        ),
+            name="ditpeople",
+            options={
+                "ordering": ["surname"],
+                "verbose_name": "DIT People",
+                "verbose_name_plural": "DIT People",
+            },
+        )
     ]

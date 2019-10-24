@@ -4,21 +4,11 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0004_auto_20181123_0859'),
-    ]
+    dependencies = [("gifthospitality", "0004_auto_20181123_0859")]
 
     operations = [
-        migrations.DeleteModel(
-            name='GiftsAndHospitality',
-        ),
-        migrations.DeleteModel(
-            name='GiftsAndHospitalityCategory',
-        ),
-        migrations.DeleteModel(
-            name='GiftsAndHospitalityClassification',
-        ),
-        migrations.DeleteModel(
-            name='GiftsAndHospitalityCompany',
-        ),
+        migrations.DeleteModel(name="GiftsAndHospitality"),
+        migrations.DeleteModel(name="GiftsAndHospitalityCategory"),
+        migrations.DeleteModel(name="GiftsAndHospitalityClassification"),
+        migrations.DeleteModel(name="GiftsAndHospitalityCompany"),
     ]

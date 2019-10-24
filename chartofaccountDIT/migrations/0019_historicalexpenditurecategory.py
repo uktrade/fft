@@ -7,28 +7,61 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('chartofaccountDIT', '0018_auto_20190402_1648'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("chartofaccountDIT", "0018_auto_20190402_1648"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalExpenditureCategory',
+            name="HistoricalExpenditureCategory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('grouping_description', models.CharField(max_length=255, unique=True, verbose_name='Budget Category')),
-                ('description', models.CharField(blank=True, max_length=5000, null=True)),
-                ('further_description', models.CharField(blank=True, max_length=5000, null=True)),
-                ('linked_budget_code', models.IntegerField(verbose_name='Budget Code')),
-                ('linked_budget_code_description', models.CharField(max_length=200, verbose_name='Budget Description')),
-                ('NAC_category', models.CharField(max_length=255, unique=True, verbose_name='Budget Grouping')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "grouping_description",
+                    models.CharField(
+                        max_length=255, unique=True, verbose_name="Budget Category"
+                    ),
+                ),
+                (
+                    "description",
+                    models.CharField(blank=True, max_length=5000, null=True),
+                ),
+                (
+                    "further_description",
+                    models.CharField(blank=True, max_length=5000, null=True),
+                ),
+                ("linked_budget_code", models.IntegerField(verbose_name="Budget Code")),
+                (
+                    "linked_budget_code_description",
+                    models.CharField(max_length=200, verbose_name="Budget Description"),
+                ),
+                (
+                    "NAC_category",
+                    models.CharField(
+                        max_length=255, unique=True, verbose_name="Budget Grouping"
+                    ),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Budget Category',
-                'verbose_name_plural': 'Historic Budget Categories',
-                'ordering': ['financial_year', 'grouping_description'],
+                "verbose_name": "Historic Budget Category",
+                "verbose_name_plural": "Historic Budget Categories",
+                "ordering": ["financial_year", "grouping_description"],
             },
-        ),
+        )
     ]

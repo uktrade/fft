@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0041_programmecode_budget_type_fk'),
-        ('treasurySS', '0097_auto_20190621_1659'),
+        ("chartofaccountDIT", "0041_programmecode_budget_type_fk"),
+        ("treasurySS", "0097_auto_20190621_1659"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.BudgetType'),
-        ),
+            model_name="subsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.BudgetType",
+            ),
+        )
     ]

@@ -5,23 +5,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0001_initial'),
-    ]
+    dependencies = [("core", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Document',
+            name="Document",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('active', models.BooleanField(default=False)),
-                ('uploaded_at', models.DateTimeField(auto_now_add=True)),
-                ('upload', models.FileField(upload_to='')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("active", models.BooleanField(default=False)),
+                ("uploaded_at", models.DateTimeField(auto_now_add=True)),
+                ("upload", models.FileField(upload_to="")),
             ],
-            options={
-                'abstract': False,
-            },
-        ),
+            options={"abstract": False},
+        )
     ]

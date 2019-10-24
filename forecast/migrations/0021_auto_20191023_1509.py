@@ -7,18 +7,21 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0049_auto_20191003_1317'),
-        ('forecast', '0020_auto_20191014_0800'),
+        ("chartofaccountDIT", "0049_auto_20191003_1317"),
+        ("forecast", "0020_auto_20191014_0800"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='forecastexpendituretype',
-            name='programme_budget_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='chartofaccountDIT.BudgetType'),
+            model_name="forecastexpendituretype",
+            name="programme_budget_type",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to="chartofaccountDIT.BudgetType",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='forecastexpendituretype',
-            unique_together={('nac_economic_budget_code', 'programme_budget_type')},
+            name="forecastexpendituretype",
+            unique_together={("nac_economic_budget_code", "programme_budget_type")},
         ),
     ]
