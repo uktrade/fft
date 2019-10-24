@@ -1,17 +1,15 @@
 from openpyxl import load_workbook
 
-from chartofaccountDIT.models import (
+from fido.chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
     NaturalCode,
     ProgrammeCode,
     ProjectCode
 )
-
-from core.import_csv import get_fk
-from costcentre.models import CostCentre
+from fido.core.import_csv import get_fk
+from fido.costcentre.models import CostCentre
 from .models import MonthlyFigure
-
 
 CHART_OF_ACCOUNT_COL = 'D'
 MONTHLY_FIGURE_COL = 'F'
