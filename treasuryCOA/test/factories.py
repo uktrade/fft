@@ -1,3 +1,5 @@
+import factory
+
 from treasuryCOA.models import (
     HistoricL5Account,
     L1Account,
@@ -6,8 +8,6 @@ from treasuryCOA.models import (
     L4Account,
     L5Account,
 )
-
-import factory
 
 
 class L1AccountFactory(factory.DjangoModelFactory):

@@ -1,11 +1,22 @@
-from core.admin import AdminActiveField, AdminImportExport
-
 from django.contrib import admin
 
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from django_admin_listfilter_dropdown.filters import (
+    RelatedDropdownFilter,
+)
 
-from .import_csv import import_HR_class, import_grade_class
-from .models import DITPeople, Grade
+from core.admin import (
+    AdminActiveField,
+    AdminImportExport,
+)
+
+from payroll.import_csv import (
+    import_HR_class,
+    import_grade_class,
+)
+from payroll.models import (
+    DITPeople,
+    Grade,
+)
 
 
 def _export_people_iterator(queryset):

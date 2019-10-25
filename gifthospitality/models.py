@@ -1,6 +1,9 @@
-from core.metamodels import LogChangeModel, TimeStampedModel
-
 from django.db import models
+
+from core.metamodels import (
+    LogChangeModel,
+    TimeStampedModel,
+)
 
 from payroll.models import DITPeople, Grade
 

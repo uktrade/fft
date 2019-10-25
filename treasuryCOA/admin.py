@@ -1,8 +1,6 @@
-from core.admin import AdminExport, AdminImportExport, AdminReadOnly
-
 from django.contrib import admin
 
-from .export_csv import (
+from treasuryCOA.export_csv import (
     _export_L1_iterator,
     _export_L2_iterator,
     _export_L3_iterator,
@@ -10,8 +8,8 @@ from .export_csv import (
     _export_L5_iterator,
     _export_historic_L5_iterator,
 )
-from .import_csv import import_L5_class
-from .models import (
+from treasuryCOA.import_csv import import_L5_class
+from treasuryCOA.models import (
     HistoricL5Account,
     L1Account,
     L2Account,
@@ -19,6 +17,8 @@ from .models import (
     L4Account,
     L5Account,
 )
+
+from core.admin import AdminExport, AdminImportExport, AdminReadOnly
 
 
 class L5AccountAdmin(AdminReadOnly, AdminImportExport):

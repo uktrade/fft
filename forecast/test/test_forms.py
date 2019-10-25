@@ -1,7 +1,5 @@
 from django.test import TestCase
 
-from forecast.forms import AddForecastRowForm
-from costcentre.test.factories import CostCentreFactory
 from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     NaturalCodeFactory,
@@ -9,6 +7,10 @@ from chartofaccountDIT.test.factories import (
     Analysis2Factory,
     ProjectCodeFactory,
 )
+
+from costcentre.test.factories import CostCentreFactory
+
+from forecast.forms import AddForecastRowForm
 
 
 class TestAddForecastRowForm(TestCase):

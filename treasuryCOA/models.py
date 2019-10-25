@@ -1,6 +1,9 @@
-from core.metamodels import ArchivedModel, TimeStampedModel
-
 from django.db import models
+
+from core.metamodels import (
+    ArchivedModel,
+    TimeStampedModel,
+)
 
 
 # Account codes from Treasury

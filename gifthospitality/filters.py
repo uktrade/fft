@@ -1,10 +1,17 @@
 from bootstrap_datepicker_plus import DatePickerInput
 
+from django_filters import (
+    DateFilter,
+    ModelChoiceFilter,
+    NumberFilter,
+)
+
 from core.filters import MyFilterSet
 
-from django_filters import DateFilter, ModelChoiceFilter, NumberFilter
-
-from .models import GiftAndHospitality, GiftAndHospitalityCompany
+from gifthospitality.models import (
+    GiftAndHospitality,
+    GiftAndHospitalityCompany,
+)
 
 
 class GiftHospitalityFilter(MyFilterSet):

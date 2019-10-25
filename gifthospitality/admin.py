@@ -1,7 +1,7 @@
+from django.contrib import admin
+
 from core.admin import AdminActiveField, AdminImportExport
 from core.exportutils import generic_table_iterator
-
-from django.contrib import admin
 
 from gifthospitality.export_csv import _export_gh_iterator
 from gifthospitality.import_csv import (
@@ -10,7 +10,7 @@ from gifthospitality.import_csv import (
     import_gh_classification_class,
     import_gh_company_class,
 )
-from .models import (
+from gifthospitality.models import (
     GiftAndHospitality,
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,

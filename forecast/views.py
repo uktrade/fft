@@ -1,21 +1,36 @@
 import json
 
-from django.core.serializers.json import DjangoJSONEncoder
-from django.shortcuts import redirect
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import (
+    redirect,
+    render,
+)
 from django.urls import reverse_lazy
-from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from django_tables2 import MultiTableMixin, SingleTableView, RequestConfig
+from django_tables2 import (
+    MultiTableMixin,
+    RequestConfig,
+    SingleTableView,
+)
+
+from core.views import FidoExportMixin
 
 from costcentre.models import CostCentre
-from forecast.models import MonthlyFigure, FinancialPeriod
+
+from forecast.forms import (
+    AddForecastRowForm,
+    EditForm,
+)
+from forecast.models import (
+    FinancialPeriod,
+    MonthlyFigure,
+)
 from forecast.tables import ForecastSubTotalTable, ForecastTable
-from forecast.forms import EditForm, AddForecastRowForm
-from core.views import FidoExportMixin
+
 
 # programme__budget_type_fk__budget_type_display
 # indicates if DEL, AME, ADMIN used in every view

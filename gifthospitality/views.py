@@ -1,18 +1,20 @@
-# gifthospitality/views.py
 from json import dumps
-
-from core.utils import today_string
-from core.views import FAdminFilteredView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from .filters import GiftHospitalityFilter
-from .forms import GiftAndHospitalityOfferedForm, GiftAndHospitalityReceivedForm
-from .models import GiftAndHospitalityClassification
-from .tables import GiftHospitalityTable
+from core.utils import today_string
+from core.views import FAdminFilteredView
+
+from gifthospitality.filters import GiftHospitalityFilter
+from gifthospitality.forms import (
+    GiftAndHospitalityOfferedForm,
+    GiftAndHospitalityReceivedForm,
+)
+from gifthospitality.models import GiftAndHospitalityClassification
+from gifthospitality.tables import GiftHospitalityTable
 
 
 class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
@@ -35,7 +37,9 @@ class GiftHospitalityReceivedView(FormView):
     success_name = "gifthospitality:received-done"
 
     def get_success_url(self):
-        success_url = reverse_lazy(self.success_name, kwargs={"gift_id": self.new_id})
+        success_url = reverse_lazy(
+            self.success_name, kwargs={"gift_id": self.new_id}
+        )
         return success_url
 
     def form_valid(self, form):

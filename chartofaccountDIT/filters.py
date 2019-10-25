@@ -146,9 +146,13 @@ class ExpenditureCategoryFilter(MyFilterSet):
 
 
 class HistoricalExpenditureCategoryFilter(MyFilterSet):
-    """Provide filter definition for Historical Expenditure Category.
-    It cannot inherit from the current Historical Expenditure Category filter class because the
-    historical table is denormalised, and the fields are different."""
+    """Provide filter definition for
+    Historical Expenditure Category.
+    It cannot inherit from the current
+    Historical Expenditure Category
+    filter class because the historical
+    table is denormalised, and the
+    fields are different."""
 
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
@@ -204,7 +208,9 @@ class CommercialCategoryFilter(MyFilterSet):
 
 
 class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
-    """Provide the filter definition for Historical Commercial Category. Inherit from current one,
+    """Provide the filter definition
+    for Historical Commercial
+    Category. Inherit from current one,
     because the fields are identical."""
 
     class Meta(CommercialCategoryFilter.Meta):
@@ -415,15 +421,15 @@ class FCOMappingtFilter(MyFilterSet):
             Q(fco_code__icontains=value)
             | Q(fco_description__icontains=value)
             | Q(account_L6_code_fk__natural_account_code__icontains=value)
-            | Q(account_L6_code_fk__natural_account_code_description__icontains=value)
+            | Q(account_L6_code_fk__natural_account_code_description__icontains=value)  # noqa
             | Q(
-                account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value
+                account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value  # noqa
             )
             | Q(
-                account_L6_code_fk__expenditure_category__grouping_description__icontains=value
+                account_L6_code_fk__expenditure_category__grouping_description__icontains=value  # noqa
             )
             | Q(
-                account_L6_code_fk__account_L5_code__economic_budget_code__icontains=value
+                account_L6_code_fk__account_L5_code__economic_budget_code__icontains=value  # noqa
             )
         )
 

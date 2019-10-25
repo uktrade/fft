@@ -6,13 +6,15 @@ from core.import_csv import (
     IMPORT_CSV_PK_NAME_KEY,
     ImportInfo,
 )
-from payroll.models import Grade
+
 from gifthospitality.models import (
     GiftAndHospitality,
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
     GiftAndHospitalityCompany,
 )
+
+from payroll.models import Grade
 
 
 GH_CLASSIF_KEY = {
@@ -81,7 +83,7 @@ GH_KEY = {
         GiftAndHospitality.value.field_name: "Estimate value of offer",
         GiftAndHospitality.rep.field_name: "DIT representative offered to/from",
         GiftAndHospitality.offer.field_name: "Offer",
-        GiftAndHospitality.company_rep.field_name: "Company representative offered to/from",
+        GiftAndHospitality.company_rep.field_name: "Company representative offered to/from",  # noqa
         GiftAndHospitality.company.field_name: "Company offered to/from",
         GiftAndHospitality.action_taken.field_name: "Action taken",
         GiftAndHospitality.entered_by.field_name: "Entered By",

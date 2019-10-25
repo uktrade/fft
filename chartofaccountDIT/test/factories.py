@@ -1,7 +1,5 @@
 import factory
 
-from core.test.factories import UserFactory
-
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -26,6 +24,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+
 from treasuryCOA.test.factories import L5AccountFactory
 
 
