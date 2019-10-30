@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand
-import core
+
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 
 from core.models import FinancialYear
 
-from costcentre.models import CostCentre, DepartmentalGroup, Directorate
-from chartofaccountDIT.models import NaturalCode, ProgrammeCode
+from costcentre.models import CostCentre
+
 from forecast.models import FinancialPeriod, MonthlyFigure
 
 
@@ -41,11 +42,6 @@ def monthly_figures_create():
             actual.actual_loaded = True
             actual.save()
 
-        # for i in range(13,15):
-        #     actual = FinancialPeriod.objects.get(financial_period_code=i)
-        #     actual.display_figure = False
-        #     actual.save()
-
 
 class Command(BaseCommand):
     help = "Create stub forecast data. Use --delete to clear the data"
@@ -67,5 +63,9 @@ class Command(BaseCommand):
             monthly_figures_create()
             msg = "created"
         self.stdout.write(
-            self.style.SUCCESS("Successfully {} stub forecast data.".format(msg))
+            self.style.SUCCESS(
+                "Successfully {} stub forecast data.".format(
+                    msg
+                )
+            )
         )

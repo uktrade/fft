@@ -1,7 +1,5 @@
 from django.core.management.base import BaseCommand
-import core
 
-from costcentre.models import CostCentre, DepartmentalGroup, Directorate
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -12,7 +10,22 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Account
+
+import core
+
+from costcentre.models import (
+    CostCentre,
+    DepartmentalGroup,
+    Directorate,
+)
+
+from treasuryCOA.models import (
+    L1Account,
+    L2Account,
+    L3Account,
+    L4Account,
+    L5Account,
+)
 
 
 class CostHierarchy:
@@ -62,7 +75,8 @@ class CostHierarchy:
         DepartmentalGroup.objects.all().delete()
 
     def create(self):
-        """Clear the Cost Centre, Directorate and Group tables, and create the stub data"""
+        """Clear the Cost Centre, Directorate
+        and Group tables, and create the stub data"""
         self.clear()
         self.create_departmental_group("8888AA", 1, 1)
         # self.create_departmental_group('8123AA', 5, 3)
@@ -113,19 +127,24 @@ class Analysis1Codes:
     def create(self):
         self.clear()
         Analysis1.objects.create(
-            active=True, analysis1_code="10001", analysis1_description="Analysis 1 - 0"
+            active=True, analysis1_code="10001",
+            analysis1_description="Analysis 1 - 0",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10002", analysis1_description="Analysis 1 - 1"
+            active=True, analysis1_code="10002",
+            analysis1_description="Analysis 1 - 1",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10004", analysis1_description="Analysis 1 - 2"
+            active=True, analysis1_code="10004",
+            analysis1_description="Analysis 1 - 2",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10005", analysis1_description="Analysis 1 - 3"
+            active=True, analysis1_code="10005",
+            analysis1_description="Analysis 1 - 3",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10006", analysis1_description="Analysis 1 - 4"
+            active=True, analysis1_code="10006",
+            analysis1_description="Analysis 1 - 4",
         )
 
 
@@ -138,19 +157,24 @@ class Analysis2Codes:
     def create(self):
         self.clear()
         Analysis2.objects.create(
-            active=True, analysis2_code="40001", analysis2_description="Analysis 2 - 0"
+            active=True, analysis2_code="40001",
+            analysis2_description="Analysis 2 - 0",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40002", analysis2_description="Analysis 2 - 1"
+            active=True, analysis2_code="40002",
+            analysis2_description="Analysis 2 - 1",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40004", analysis2_description="Analysis 2 - 2"
+            active=True, analysis2_code="40004",
+            analysis2_description="Analysis 2 - 2",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40005", analysis2_description="Analysis 2 - 3"
+            active=True, analysis2_code="40005",
+            analysis2_description="Analysis 2 - 3",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40006", analysis2_description="Analysis 2 - 4"
+            active=True, analysis2_code="40006",
+            analysis2_description="Analysis 2 - 4",
         )
 
 
@@ -163,19 +187,24 @@ class ProjectCodes:
     def create(self):
         self.clear()
         ProjectCode.objects.create(
-            active=True, project_code=5000, project_description="Project 1"
+            active=True, project_code=5000,
+            project_description="Project 1",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5001, project_description="Project 2"
+            active=True, project_code=5001,
+            project_description="Project 2",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5002, project_description="Project 3"
+            active=True, project_code=5002,
+            project_description="Project 3",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5003, project_description="Project 4"
+            active=True, project_code=5003,
+            project_description="Project 4",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5004, project_description="Project 5"
+            active=True, project_code=5004,
+            project_description="Project 5",
         )
 
 
@@ -185,7 +214,9 @@ class NaturalAccountCodes:
     name = "Natural Account Codes"
 
     def clear(self):
-        # clear the NAC budget field in expenditure codes before clearing the natural account codes
+        # clear the NAC budget field in
+        # expenditure codes before clearing
+        # the natural account codes
         q = ExpenditureCategory.objects.all()
         for q1 in q:
             q1.linked_budget_code = None
@@ -212,7 +243,9 @@ class NaturalAccountCodes:
         natural_account_code = NaturalCode.objects.create(
             active=True,
             natural_account_code=nac_base,
-            natural_account_code_description="NAC  {} - budget".format(cat_description),
+            natural_account_code_description="NAC  {} - budget".format(
+                cat_description
+            ),
             used_for_budget=True,
             account_L5_code=l5,
             expenditure_category=expenditure_category,
@@ -224,7 +257,10 @@ class NaturalAccountCodes:
             NaturalCode.objects.create(
                 active=True,
                 natural_account_code=nac_base,
-                natural_account_code_description="NAC {} {}".format(cat_description, x),
+                natural_account_code_description="NAC {} {}".format(
+                    cat_description,
+                    x,
+                ),
                 used_for_budget=False,
                 account_L5_code=l5,
                 expenditure_category=expenditure_category,
@@ -278,34 +314,59 @@ class NaturalAccountCodes:
             active=True, NAC_category_description="Pay"
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_resource, "Contractors (Pay)", 71111000, 5
+            nac_category,
+            l5_account_resource,
+            "Contractors (Pay)",
+            71111000,
+            5,
         )
 
         nac_category = NACCategory.objects.create(
-            active=True, NAC_category_description="NonCash"
+            active=True,
+            NAC_category_description="NonCash",
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_resource, "Provisions", 71112000, 2
+            nac_category,
+            l5_account_resource,
+            "Provisions",
+            71112000,
+            2,
         )
 
         nac_category = NACCategory.objects.create(
             active=True, NAC_category_description="NonPay"
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_resource, "Staff Welfare", 71113000, 2
+            nac_category,
+            l5_account_resource,
+            "Staff Welfare",
+            71113000,
+            2,
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_resource, "Estates", 71114000, 1
+            nac_category,
+            l5_account_resource,
+            "Estates",
+            71114000,
+            1,
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_resource, "Grant", 71115000, 4
+            nac_category,
+            l5_account_resource,
+            "Grant",
+            71115000,
+            4,
         )
 
         nac_category = NACCategory.objects.create(
             active=True, NAC_category_description="Capital"
         )
         self.create_natural_account_code_expenditure_group(
-            nac_category, l5_account_capital, "Estates (Capital)", 71121000, 4
+            nac_category,
+            l5_account_capital,
+            "Estates (Capital)",
+            71121000,
+            4,
         )
 
 
@@ -319,7 +380,9 @@ class Command(BaseCommand):
         "Project": ProjectCodes,
     }
 
-    help = "Create stub data. Allowed types are - All - " + " - ".join(TEST_TYPE.keys())
+    help = "Create stub data. Allowed types are - All - {}".format(
+        " - ".join(TEST_TYPE.keys())
+    )
     arg_name = "what"
 
     def add_arguments(self, parser):
@@ -343,7 +406,9 @@ class Command(BaseCommand):
         del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
-                "Successfully completed stub data creation for {}.".format(p.name)
+                "Successfully completed stub data creation for {}.".format(
+                    p.name
+                )
             )
         )
 
@@ -353,7 +418,11 @@ class Command(BaseCommand):
         p.clear()
         del core._called_from_test
         self.stdout.write(
-            self.style.SUCCESS("Successfully cleared stub data for {}.".format(p.name))
+            self.style.SUCCESS(
+                "Successfully cleared stub data for {}.".format(
+                    p.name
+                )
+            )
         )
 
     def handle(self, *args, **options):

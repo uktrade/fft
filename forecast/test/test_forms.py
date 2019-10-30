@@ -1,10 +1,10 @@
 from django.test import TestCase
 
 from chartofaccountDIT.test.factories import (
-    ProgrammeCodeFactory,
-    NaturalCodeFactory,
     Analysis1Factory,
     Analysis2Factory,
+    NaturalCodeFactory,
+    ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
 

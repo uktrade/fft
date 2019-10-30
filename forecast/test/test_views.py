@@ -1,17 +1,17 @@
 from bs4 import BeautifulSoup
 
-from guardian.shortcuts import assign_perm
-
+from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
-from costcentre.test.factories import CostCentreFactory
+from guardian.shortcuts import assign_perm
 
 from chartofaccountDIT.test.factories import (
-    ProgrammeCodeFactory,
     NaturalCodeFactory,
+    ProgrammeCodeFactory,
 )
+
+from costcentre.test.factories import CostCentreFactory
 
 from forecast.views import EditForecastView
 
@@ -20,7 +20,7 @@ class ViewPermissionsTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = 109076
         self.test_user_email = "test@test.com"
         self.test_password = "test_password"
 
@@ -67,7 +67,7 @@ class AddForecastRowTest(TestCase):
         self.programme = ProgrammeCodeFactory.create()
         self.nac = NaturalCodeFactory.create(natural_account_code=999999)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = 109076
         self.test_user_email = "test@test.com"
         self.test_password = "test_password"
 
@@ -127,6 +127,7 @@ class ViewCostCentreDashboard(TestCase):
         self.programme = ProgrammeCodeFactory.create()
         self.nac = NaturalCodeFactory.create(natural_account_code=999999)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = 109076
+
     def testView(self):
         pass

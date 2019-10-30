@@ -29,10 +29,13 @@ from forecast.models import (
     FinancialPeriod,
     MonthlyFigure,
 )
-from forecast.tables import ForecastSubTotalTable, ForecastTable
+from forecast.tables import (
+    ForecastSubTotalTable,
+    ForecastTable,
+)
 
-TEST_COST_CENTRE = 109076 # real cost centre
-# TEST_COST_CENTRE = 888812
+
+TEST_COST_CENTRE = 109076
 
 TEST_FINANCIAL_YEAR = 2019
 
@@ -112,7 +115,7 @@ class CostClassView(FidoExportMixin, SingleTableView):
             "project_code__project_code": "Project Code",
             "project_code__project_description": "Project Description",
             "programme__budget_type_fk__budget_type_display": "Budget Type",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",  # noqa
         # noqa
             "natural_account_code__expenditure_category__grouping_description": "Budget Category",  # noqa
             "natural_account_code__account_L5_code__economic_budget_code": "Expenditure Type",  # noqa
@@ -178,7 +181,7 @@ class MultiForecastView(MultiTableMixin, TemplateView):
         )
         order_list_nac = [
             "programme__budget_type_fk__budget_type_display_order",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_description"
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
         ]
 
         q3 = MonthlyFigure.pivot.subtotal_data(

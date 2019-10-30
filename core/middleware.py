@@ -22,7 +22,8 @@ class ThreadLocalMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        # Save the user into the local thread, so it can be used when saving/modifing a model
+        # Save the user into the local thread, so it
+        # can be used when saving/modifying a model
 
         setattr(_thread_locals, "user_id", request.user.id)
         return self.get_response(request)

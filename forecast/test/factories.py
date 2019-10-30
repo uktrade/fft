@@ -1,10 +1,11 @@
+import factory
+
 from forecast.models import (
     Budget,
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
 )
-
-import factory
 
 
 class FinancialPeriodFactory(factory.DjangoModelFactory):
@@ -41,12 +42,3 @@ class MonthlyFigureFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = MonthlyFigure
-
-
-class FinancialCodeFactory(factory.DjangoModelFactory):
-    """
-    Define FinancialCode Factory
-    """
-
-    class Meta:
-        model = FinancialCode

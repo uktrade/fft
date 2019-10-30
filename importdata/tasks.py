@@ -1,8 +1,8 @@
-from celery import shared_task
-
 from datetime import datetime
 
-from .models import AsyncImportLog
+from celery import shared_task
+
+from importdata.models import AsyncImportLog
 
 
 @shared_task

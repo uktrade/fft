@@ -2,7 +2,6 @@ from django.db.models import Q
 
 import django_filters
 
-from core.filters import MyFilterSet
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -23,6 +22,8 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+
+from core.filters import MyFilterSet
 
 
 class NACFilter(MyFilterSet):

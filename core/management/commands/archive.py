@@ -1,3 +1,5 @@
+from django.core.management.base import BaseCommand
+
 from chartofaccountDIT.archive import (
     archive_all,
     archive_analysis_1,
@@ -12,8 +14,6 @@ from chartofaccountDIT.archive import (
 )
 
 from costcentre.archive import archive_cost_centre
-
-from django.core.management.base import BaseCommand
 
 from treasuryCOA.archive import archive_treasury_l5
 

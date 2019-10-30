@@ -1,6 +1,5 @@
 import django_tables2 as tables
 
-from core.tables import FadminTable
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -21,6 +20,8 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+
+from core.tables import FadminTable
 
 
 class ProgrammeTable(FadminTable):

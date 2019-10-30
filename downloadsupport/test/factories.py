@@ -1,6 +1,6 @@
-from downloadsupport.models import DownloadLog
-
 import factory
+
+from downloadsupport.models import DownloadLog
 
 
 class DownloadLogFactory(factory.DjangoModelFactory):

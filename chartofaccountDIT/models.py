@@ -5,6 +5,7 @@ from core.metamodels import (
     LogChangeModel,
     TimeStampedModel,
 )
+
 from treasuryCOA.models import L5Account
 
 
@@ -98,7 +99,10 @@ class HistoricalAnalysis2(Analysis2Abstract, ArchivedModel):
     active = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}{}".format(super().__str__(), self.financial_year.financial_year_display)
+        return "{}{}".format(
+            super().__str__(),
+            self.financial_year.financial_year_display,
+        )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):

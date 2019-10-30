@@ -1,14 +1,18 @@
 import csv
 
-from core.utils import today_string
-
 from django.db import models
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
 import openpyxl
 
-from .import_csv import IMPORT_CSV_MODEL_KEY, get_col_from_obj_key, get_field_name
+from core.utils import today_string
+
+from .import_csv import (
+    IMPORT_CSV_MODEL_KEY,
+    get_col_from_obj_key,
+    get_field_name,
+)
 
 # The max lenght for an Excel tab name is 31. So truncate the name, if needed
 EXC_TAB_NAME_LEN = 31
@@ -34,7 +38,9 @@ def is_number(s):
 
 
 def display_yes_no(row):
-    """It takes a row generated for export and change boolean to string 'Yes' or 'No' instead of True/False"""
+    """It takes a row generated for export
+    and change boolean to string 'Yes' or 'No'
+    instead of True/False"""
     for ind, item in enumerate(row):
         if isinstance(item, bool):
             if item:
@@ -46,8 +52,11 @@ def display_yes_no(row):
 
 # NOT USED
 class SmartExport:
-    """ return lists with the header name and the objects from a queryset
-        it only follows one level of foreign key, while I would like to follow at lower levels
+    """ return lists with the header
+    name and the objects from a queryset
+    it only follows one level of
+    foreign key, while I would like
+    to follow at lower levels
     """
 
     def __init__(self, mydata_qs):
@@ -134,9 +143,6 @@ def generic_export_to_csv(queryset):
 
 
 EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-
-# '           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 
 def export_to_excel(queryset, f, title=""):

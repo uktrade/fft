@@ -1,3 +1,5 @@
+from django.core.management.base import BaseCommand
+
 from chartofaccountDIT.import_csv import (
     import_Analysis1,
     import_Analysis2,
@@ -11,8 +13,6 @@ from chartofaccountDIT.import_csv import (
 )
 
 from costcentre.import_csv import import_cc
-
-from django.core.management.base import BaseCommand
 
 from forecast.import_csv import import_adi_file, import_unpivot_actual
 

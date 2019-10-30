@@ -15,6 +15,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+
 from core.import_csv import (
     IMPORT_CSV_FIELDLIST_KEY,
     IMPORT_CSV_IS_FK,
@@ -26,6 +27,7 @@ from core.import_csv import (
     import_list_obj,
     import_obj,
 )
+
 from treasuryCOA.models import L5Account
 
 
@@ -103,9 +105,15 @@ def import_NAC(csvfile):
 
 
 def fix_L5_ref():
-    """When importing the NAC from the flat file provided by BEIS, there are references to non existing (obsolete)
-     L5 code. If there is an alternative L5 code in Oscar Upload field, use it. This avoids having NAC without a
-     budget type (Resource, Capital), as it is derived from the L5
+    """When importing the NAC from
+    the flat file provided by BEIS,
+    there are references to non
+    existing (obsolete) L5 code. If
+    there is an alternative L5 code
+    in Oscar Upload field, use it.
+    This avoids having NAC without a
+    budget type (Resource, Capital),
+    as it is derived from the L5
     """
     q = NaturalCode.objects.exclude(account_L5_code_upload=None).filter(
         account_L5_code=None
@@ -166,7 +174,7 @@ import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
 OP_DEL_CATEGORY_KEY = {
     IMPORT_CSV_MODEL_KEY: OperatingDeliveryCategory,
     IMPORT_CSV_PK_KEY: "Operating Delivery Category",
-    IMPORT_CSV_PK_NAME_KEY: OperatingDeliveryCategory.operating_delivery_description.field_name,
+    IMPORT_CSV_PK_NAME_KEY: OperatingDeliveryCategory.operating_delivery_description.field_name,  # noqa
     IMPORT_CSV_FIELDLIST_KEY: {},
 }
 
@@ -174,8 +182,9 @@ import_op_del_category_class = ImportInfo(OP_DEL_CATEGORY_KEY)
 
 
 def import_expenditure_category(csvfile):
-    """Special function to import Expenditure category, because I need to change the NAC code
-    during the import"""
+    """Special function to import Expenditure
+    category, because I need to change the
+    NAC code during the import"""
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csv_header_to_dict(next(reader))

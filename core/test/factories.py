@@ -1,7 +1,8 @@
-import factory
-from faker import Faker
-
 from django.contrib.auth import get_user_model
+
+import factory
+
+from faker import Faker
 
 from core.models import Document, EventLog, FinancialYear
 

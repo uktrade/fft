@@ -1,7 +1,8 @@
-from core.admin import AdminReadOnly
 from django.contrib import admin
 
-from .models import AsyncImportLog
+from core.admin import AdminReadOnly
+
+from importdata.models import AsyncImportLog
 
 
 class AsyncImportLogAdmin(AdminReadOnly):

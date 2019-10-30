@@ -1,9 +1,19 @@
-from core.admin import AdminEditOnly, AdminImportExport, AdminReadOnly
-
 from django.contrib import admin
 
-from .import_csv import import_SS_class
-from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
+from core.admin import (
+    AdminEditOnly,
+    AdminImportExport,
+    AdminReadOnly,
+)
+
+from treasurySS.import_csv import import_SS_class
+from treasurySS.models import (
+    EstimateRow,
+    Segment,
+    SegmentGrandParent,
+    SegmentParent,
+    SubSegment,
+)
 
 
 class SegmentAdmin(AdminReadOnly):

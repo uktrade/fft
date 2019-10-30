@@ -1,8 +1,8 @@
-from core.middleware import get_current_user
-
 from django.contrib.admin.models import ADDITION, CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+
+from core.middleware import get_current_user
 
 
 class SimpleTimeStampedModel(models.Model):
@@ -28,20 +28,20 @@ class TimeStampedModel(SimpleTimeStampedModel):
 
 class LogChangeModel(models.Model):
     """An abstract base class that saves the changes to a log table.
-    https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed
+    https://stackoverflow.com/questions/1355150/django-when-saving-how-can-you-check-if-a-field-has-changed  # noqa
     """
 
-    excludelist = ["created", "updated"]
+    exclude_list = ["created", "updated"]
     _original_values = {}
 
     @classmethod
     def from_db(cls, db, field_names, values):
         # https://docs.djangoproject.com/en/2.0/ref/models/instances/
-        instance = super(LogChangeModel, cls).from_db(db, field_names, values)  #
+        instance = super(LogChangeModel, cls).from_db(db, field_names, values)
         # customization to store the original field values on the instance
         d = dict(zip(field_names, values))
         instance._original_values = {
-            f: v for f, v in d.items() if f not in instance.excludelist
+            f: v for f, v in d.items() if f not in instance.exclude_list
         }
         return instance
 
@@ -58,8 +58,8 @@ class LogChangeModel(models.Model):
         else:
             flag = CHANGE
             for k, v in self._original_values.items():
-                newvalue = getattr(self, k)
-                if newvalue != v:
+                new_value = getattr(self, k)
+                if new_value != v:
                     message = (
                         message
                         + " "
@@ -67,14 +67,16 @@ class LogChangeModel(models.Model):
                         + ' changed from "'
                         + str(v)
                         + '" to "'
-                        + str(newvalue)
+                        + str(new_value)
                         + '";'
                     )
-                    self._original_values[k] = newvalue
+                    self._original_values[k] = new_value
                     changed = True
         if changed:
-            # If you have been called from a test, the userid does not exists, and the save of changes will fail.
-            if hasattr(core, "_called_from_test") == False:
+            # If you have been called from a
+            # test, the userid does not exists,
+            # and the save of changes will fail.
+            if not hasattr(core, "_called_from_test"):
                 # write to the Admin history log the list of changes
                 message = (
                     "<"

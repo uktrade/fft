@@ -12,8 +12,6 @@ from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import escape
 
-from importdata.tasks import import_task
-
 from core.exportutils import (
     export_csv_from_import,
     export_to_excel,
@@ -30,7 +28,9 @@ class LogEntryAdmin(admin.ModelAdmin):
     # make everything readonly
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
+            self.readonly_fields = [
+                field.name for field in obj.__class__._meta.fields
+            ]
         return self.readonly_fields
 
     list_filter = ["user", "content_type", "action_flag"]
@@ -83,7 +83,8 @@ admin.site.register(FinancialYear)
 
 
 class AdminActiveField(admin.ModelAdmin):
-    """Admin class including the handling for the active flag """
+    """Admin class including the
+    handling for the active flag """
 
     def change_active_flag(self, request, queryset, new_active_value):
         if new_active_value is True:
@@ -122,12 +123,6 @@ class AdminActiveField(admin.ModelAdmin):
     make_active.short_description = u"Activate the selected object(s)"
     actions = [make_inactive, make_active]
     list_filter = ("active",)
-    # # Add export to the list of actions
-    # def get_actions(self, request):
-    #     actions = super().get_actions(request)
-    #     actions['make_inactive'] = (self.make_inactive, self.make_inactive.short_description)
-    #     actions['make_active'] = (self.make_active, self.make_active.short_description)
-    #     return actions
 
 
 class AdminEditOnly(admin.ModelAdmin):
@@ -154,12 +149,16 @@ class AdminEditOnly(admin.ModelAdmin):
 
 
 class AdminReadOnly(AdminEditOnly):
-    """Admin class removing create/edit/delete on the model useful for structures created elsewhere
-    and not changeable by DIT, like Treasury """
+    """Admin class removing create/edit/delete
+    on the model useful for structures
+    created elsewhere and not changeable
+    by DIT, like the Treasury """
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
+            self.readonly_fields = [
+                field.name for field in obj.__class__._meta.fields
+            ]
         return self.readonly_fields
 
 
@@ -180,8 +179,11 @@ class AdminExport(admin.ModelAdmin):
         return export_to_excel(queryset, self.export_func)
 
     def export_selection_xlsx(self, _, request, queryset):
-        # _ is required because the function get called with self passed in twice.
-        # Something to do with adding the action in 'get_actions'
+        # _ is required because the
+        # function get called with
+        # self passed in twice.
+        # Something to do with adding
+        # the action in 'get_actions'
         return export_to_excel(queryset, self.export_func)
 
     # Add export to the list of actions
@@ -210,7 +212,7 @@ class CsvImportForm(forms.Form):
         # form title.
         self.header_list = header_list
         self.form_title = form_title
-        super(CsvImportForm, self).__init__(*args, **kwargs)  # call base class
+        super(CsvImportForm, self).__init__(*args, **kwargs)
 
     csv_file = forms.FileField()
 
@@ -241,13 +243,21 @@ class AdminImportExport(AdminExport):
         form_title = self.import_info.form_title
         check_headers = self.import_info.my_check_headers
         if request.method == "POST":
-            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
+            form = CsvImportForm(
+                header_list,
+                form_title,
+                request.POST,
+                request.FILES,
+            )
             if form.is_valid():
                 import_file = request.FILES["csv_file"]
-                # read() gives you the file contents as a bytes object,
+                # read() gives you the file
+                # contents as a bytes object,
                 # on which you can call decode().
-                # decode('cp1252') turns your bytes into a string, with known encoding.
-                # cp1252 is used to handle single quotes in the strings
+                # decode('cp1252') turns your
+                # bytes into a string, with known
+                # encoding. cp1252 is used to
+                # handle single quotes in the strings
                 t = io.StringIO(import_file.read().decode("cp1252"))
                 success, message = check_headers(t)
                 if success:
@@ -278,21 +288,30 @@ class AdminAsyncImportExport(AdminImportExport):
             )
             if form.is_valid():
                 import_file = request.FILES["csv_file"]
-                # read() gives you the file contents as a bytes object,
+                # read() gives you the file
+                # contents as a bytes object,
                 # on which you can call decode().
-                # decode('cp1252') turns your bytes into a string, with known encoding.
-                # cp1252 is used to handle single quotes in the strings
+                # decode('cp1252') turns your
+                # bytes into a string, with
+                # known encoding. cp1252 is used
+                # to handle single quotes in the strings
                 t = io.StringIO(import_file.read().decode("cp1252"))
                 success, message = check_headers(t)
                 if success:
                     t.seek(0)
-                    task = import_task.delay("TEST", 1, "test1", "test2")
                     success, message = import_func(t)
                     if success:
                         return redirect("..")
 
                 messages.error(request, "Error: " + message)
         else:
-            form = CsvImportForm(header_list, form_title)
-        payload = {"form": form}
+            form = CsvImportForm(
+                header_list,
+                form_title,
+            )
+
+        payload = {
+            "form": form
+        }
+
         return render(request, "admin/csv_form.html", payload)

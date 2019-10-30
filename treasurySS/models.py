@@ -1,8 +1,8 @@
+from django.db import models
+
 from chartofaccountDIT.models import BudgetType
 
 from core.metamodels import TimeStampedModel
-
-from django.db import models
 
 
 # Treasury data

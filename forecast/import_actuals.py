@@ -43,7 +43,8 @@ ANALYSIS2_INDEX = 6
 PROJECT_INDEX = 7
 CHART_ACCOUNT_SEPARATOR = "-"
 
-# TODO Read the value from the database. It should be possible for the business to change it. # noqa
+# TODO Read the value from the database. It should be
+# possible for the business to change it.
 GENERIC_PROGRAMME_CODE = 310940
 
 
@@ -109,14 +110,20 @@ def save_row(chart_of_account, value, period_obj, year_obj):
     error_message += message
     programme_obj, message = get_fk(ProgrammeCode, programme_code)
     error_message += message
-    analysis1_obj, message = get_chart_account_obj(Analysis1,
-                                                   chart_account_list[ANALYSIS1_INDEX])
+    analysis1_obj, message = get_chart_account_obj(
+        Analysis1,
+        chart_account_list[ANALYSIS1_INDEX],
+    )
     error_message += message
-    analysis2_obj, message = get_chart_account_obj(Analysis2,
-                                                   chart_account_list[ANALYSIS2_INDEX])
+    analysis2_obj, message = get_chart_account_obj(
+        Analysis2,
+        chart_account_list[ANALYSIS2_INDEX],
+    )
     error_message += message
-    project_obj, message = get_chart_account_obj(ProjectCode,
-                                                 chart_account_list[PROJECT_INDEX])
+    project_obj, message = get_chart_account_obj(
+        ProjectCode,
+        chart_account_list[PROJECT_INDEX],
+    )
     error_message += message
 
     if error_message == "":
@@ -131,7 +138,8 @@ def save_row(chart_of_account, value, period_obj, year_obj):
             financial_period=period_obj,
         )
         if created:
-            # to avoid problems with precision, we store the figures in pence
+            # to avoid problems with precision,
+            # we store the figures in pence
             monthly_figure_obj.amount = value * 100
         else:
             monthly_figure_obj.amount += value * 100
@@ -148,15 +156,19 @@ def upload_trial_balance_report(path, month_number, year):
     if not check_trial_balance_format(ws, month_number, year):
         wb.close
         return
-    """TODO Use transactions, so it can rollback if there is an error in the file"""
+    """TODO Use transactions, so it can rollback if there is an error in the file"""  # noqa
     year_obj, msg = get_fk(FinancialYear, year)
     period_obj, msg = get_fk_from_field(
         FinancialPeriod,
         "period_calendar_code",
         month_number)
     # Delete the existing actuals.
-    # There are multiple lines in the Trial Balance for the same combination of Chart-of-Account,
-    # so we need to add the figures when we save them. This means that we need to start with a clean slate.
+    # There are multiple lines in the Trial
+    # Balance for the same combination of
+    # Chart-of-Account, so we need to add
+    # the figures when we save them. This
+    # means that we need to start with a
+    # clean slate.
     MonthlyFigure.objects.filter(
         financial_year=year,
         financial_period=period_obj).delete()
