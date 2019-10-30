@@ -120,3 +120,13 @@ class AddForecastRowTest(TestCase):
 
         # Now we should have 3 rows (header, footer and new row)
         assert len(table_rows) == 3
+
+
+class ViewCostCentreDashboard(TestCase):
+    def setUp(self):
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(natural_account_code=999999)
+
+        self.cost_centre_code = 888812
+    def testView(self):
+        pass

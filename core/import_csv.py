@@ -224,12 +224,12 @@ class ImportInfo:
         key={},
         title="",
         h_list=[],
-        my_import_func=None,
+        special_import_func=None,
         filter=[],
         extra_func=None,
     ):
         self.key = key
-        self.special_func = my_import_func
+        self.special_func = special_import_func
         if bool(key):
             self.header_list = get_col_from_obj_key(key)
         else:
@@ -253,7 +253,7 @@ class ImportInfo:
         # empty references to a valid value
         self.extra_func = extra_func
 
-    def my_import_func(self, c):
+    def import_func(self, c):
         if bool(self.key):
             if self.op:
                 success, message = import_obj(

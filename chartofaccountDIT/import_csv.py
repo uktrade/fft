@@ -214,7 +214,7 @@ import_expenditure_category_class = ImportInfo(
         "Budget NAC",
         "Operating Delivery Plan",
     ],
-    my_import_func=import_expenditure_category,
+    special_import_func=import_expenditure_category,
 )
 
 

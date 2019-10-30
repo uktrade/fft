@@ -167,7 +167,7 @@ class CostCentreAdmin(GuardedModelAdmin, AdminActiveField, AdminImportExport):
 
     def import1_csv(self, request):
         header_list = import_cc_dit_specific_class.header_list
-        import_func = import_cc_dit_specific_class.my_import_func
+        import_func = import_cc_dit_specific_class.import_func
         form_title = import_cc_dit_specific_class.form_title
         if request.method == "POST":
             form = CsvImportForm(header_list, form_title, request.POST, request.FILES)

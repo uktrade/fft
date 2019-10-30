@@ -81,24 +81,24 @@ class ProgrammeCodes:
         budget_type_code = "AME"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code="338888",
-            programme_description="Programme ({})".format(budget_type_code),
+            programme_code='338888',
+            programme_description='Programme {}'.format(budget_type_code),
             active=True,
             budget_type_fk=budget_type,
         )
         budget_type_code = "DEL"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code="338889",
-            programme_description="Programme ({})".format(budget_type_code),
+            programme_code='338889',
+            programme_description='Programme {}'.format(budget_type_code),
             active=True,
             budget_type_fk=budget_type,
         )
         budget_type_code = "ADMIN"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code="338887",
-            programme_description="Programme ({})".format(budget_type_code),
+            programme_code='338887',
+            programme_description='Admin DEL',
             active=True,
             budget_type_fk=budget_type,
         )

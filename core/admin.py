@@ -237,7 +237,7 @@ class AdminImportExport(AdminExport):
 
     def import_csv(self, request):
         header_list = self.import_info.header_list
-        import_func = self.import_info.my_import_func
+        import_func = self.import_info.import_func
         form_title = self.import_info.form_title
         check_headers = self.import_info.my_check_headers
         if request.method == "POST":
@@ -266,7 +266,7 @@ class AdminImportExport(AdminExport):
 class AdminAsyncImportExport(AdminImportExport):
     def import_csv(self, request):
         header_list = self.import_info.header_list
-        import_func = self.import_info.my_import_func
+        import_func = self.import_info.import_func
         form_title = self.import_info.form_title + " ASYNC"
         check_headers = self.import_info.my_check_headers
         if request.method == "POST":
