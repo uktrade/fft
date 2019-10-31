@@ -1,0 +1,10 @@
+{% extends "wide_content.html" %}
+
+{% load chart_of_account %}
+
+{% block content %}
+    <span class="govuk-caption-xl">{% financial_year year %}</span>
+    <h1 class="govuk-heading-xl">Chart of account</h1>
+
+    {% include "core/quick_links.html" with quick_links=quick_links %}
+{% endblock %}

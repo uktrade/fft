@@ -1,0 +1,20 @@
+{% extends "wide_content.html" %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Chart of account</h1>
+
+    <nav role="navigation" aria-labelledby="subsection-title">
+      <ul class="govuk-list govuk-!-font-size-16">
+        <li>
+          <a class="govuk-link" href="{% url 'chart_of_account_quick_links' year=2019 %}">
+            2019-20 Chart of Account
+          </a>
+        </li>
+        <li>
+          <a class="govuk-link" href="{% url 'chart_of_account_quick_links' year=2018 %}">
+            2018-19 Chart of Account
+          </a>
+        </li>
+      </ul>
+    </nav>
+{% endblock %}

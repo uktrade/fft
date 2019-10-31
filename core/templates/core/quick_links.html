@@ -1,0 +1,14 @@
+<dl class="govuk-summary-list">
+  {% for quick_link in quick_links %}
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          {{ quick_link.title }}
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <a class="govuk-link" href="{% url quick_link.url %}">
+             {{ quick_link.text }}
+          </a>
+        </dd>
+      </div>
+  {% endfor %}
+</dl>

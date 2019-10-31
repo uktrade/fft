@@ -1,6 +1,7 @@
 from json import dumps
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -99,3 +100,25 @@ class GiftHospitalityReceivedDoneView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["section_name"] = "Completed Gift/Hospitality Received"
         return context
+
+
+def quick_links(request):
+    return render(request, 'gifthospitality/quick_links.html', {
+        "quick_links": [
+            {
+                "title": "Add Gift/Hosp Received",
+                "text": "TODO",
+                "url": "gifts_hospitality:gift-received",
+            },
+            {
+                "title": "Add Gift/Hosp Offered",
+                "text": "TODO",
+                "url": "gifts_hospitality:gift-offered",
+            },
+            {
+                "title": "Search Records",
+                "text": "TODO",
+                "url": "gifts_hospitality:gift-search",
+            },
+        ]
+    })

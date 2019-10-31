@@ -60,23 +60,23 @@
             <nav>
                 <ul id="navigation" class="govuk-header__navigation " aria-label="Top Level Navigation">
                     <li class="govuk-header__navigation-item {% if request.path == '/forecast/costcentre/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="/forecast/costcentre/">
-                            Cost Centre
+                        <a class="govuk-header__link" href="{% url 'chart_of_account_choose_year' %}">
+                            Chart of Account
+                        </a>
+                    </li>
+                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivotmulti/' %}govuk-header__navigation-item--active{% endif %}">
+                        <a class="govuk-header__link" href="/forecast/pivotmulti/">
+                            Forecast
+                        </a>
+                    </li>
+                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/edit/' %}govuk-header__navigation-item--active{% endif %}">
+                        <a class="govuk-header__link" href="{% url 'gifts_hospitality:quick_links' %}">
+                            Gifts & Hospitality Register
                         </a>
                     </li>
                     <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivot/' %}govuk-header__navigation-item--active{% endif %}">
                         <a class="govuk-header__link" href="/forecast/pivot/">
                             Pivot
-                        </a>
-                    </li>
-                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivotmulti/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="/forecast/pivotmulti/">
-                            Multi-pivot
-                        </a>
-                    </li>
-                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/edit/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="/forecast/edit/">
-                            Edit
                         </a>
                     </li>
                 </ul>

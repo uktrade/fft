@@ -1,6 +1,6 @@
-from django.urls import path
+from django.urls import path, register_converter
 
-from .views import (
+from chartofaccountDIT.views import (
     FilteredAnalysis1ListView,
     FilteredAnalysis2ListView,
     FilteredCommercialCategoryListView,
@@ -19,74 +19,92 @@ from .views import (
     HistoricalFilteredNACListView,
     HistoricalFilteredProgrammeView,
     HistoricalFilteredProjectView,
+    choose_year,
+    quick_links,
 )
 
+from core.myutils import GetValidYear
+
+
+register_converter(GetValidYear, 'yyyy')
+
+
 urlpatterns = [
-    path("naturalcode/", FilteredNACListView.as_view(), name="naturalcode"),
+    path("naturalcode/", FilteredNACListView.as_view(), name="natural_code"),
     path(
         "financecategory/",
         FilteredExpenditureCategoryListView.as_view(),
-        name="financecategory",
+        name="finance_category",
     ),
     path(
         "commercialcategory/",
         FilteredCommercialCategoryListView.as_view(),
-        name="commercialcategory",
+        name="commercial_category",
     ),
-    path("analysis1/", FilteredAnalysis1ListView.as_view(), name="analysis1"),
-    path("analysis2/", FilteredAnalysis2ListView.as_view(), name="analysis2"),
-    path("programmefilter/", FilteredProgrammeView.as_view(), name="programmefilter"),
+    path("analysis1/", FilteredAnalysis1ListView.as_view(), name="analysis_1"),
+    path("analysis2/", FilteredAnalysis2ListView.as_view(), name="analysis_2"),
+    path("programmefilter/", FilteredProgrammeView.as_view(), name="programme_filter"),
     path(
         "interentityfilter/",
         FilteredInterEntityView.as_view(),
-        name="interentityfilter",
+        name="inter_entity_filter",
     ),
-    path("projectfilter/", FilteredProjectView.as_view(), name="projectfilter"),
-    path("fcofilter/", FilteredFCOMappingView.as_view(), name="fcofilter"),
+    path("projectfilter/", FilteredProjectView.as_view(), name="project_filter"),
+    path("fcofilter/", FilteredFCOMappingView.as_view(), name="fco_filter"),
     # Historical data
     path(
         "historicalnaturalcode/",
         HistoricalFilteredNACListView.as_view(),
-        name="historicalnaturalcode",
+        name="historical_natural_code",
     ),
     path(
         "historicalfinancecategory/",
         HistoricalFilteredExpenditureCategoryListView.as_view(),
-        name="historicalfinancecategory",
+        name="historical_finance_category",
     ),
     path(
         "historicalcommercialcategory/",
         HistoricalFilteredCommercialCategoryListView.as_view(),
-        name="historicalcommercialcategory",
+        name="historical_commercial_category",
     ),
     path(
         "historicalanalysis1/",
         HistoricalFilteredAnalysis1ListView.as_view(),
-        name="historicalanalysis1",
+        name="historical_analysis_1",
     ),
     path(
         "historicalanalysis2/",
         HistoricalFilteredAnalysis2ListView.as_view(),
-        name="historicalanalysis2",
+        name="historical_analysis_2",
     ),
     path(
         "historicalprogrammefilter/",
         HistoricalFilteredProgrammeView.as_view(),
-        name="historicalprogrammefilter",
+        name="historical_programme_filter",
     ),
     path(
         "historicalinterentityfilter/",
         HistoricalFilteredInterEntityView.as_view(),
-        name="historicalinterentityfilter",
+        name="historical_inter_entity_filter",
     ),
     path(
         "historicalprojectfilter/",
         HistoricalFilteredProjectView.as_view(),
-        name="historicalprojectfilter",
+        name="historical_project_filter",
     ),
     path(
         "historicalfcofilter/",
         HistoricalFilteredFCOMappingView.as_view(),
-        name="historicalfcofilter",
+        name="historical_fco_filter",
+    ),
+    path(
+        "choose-year/",
+        choose_year,
+        name="chart_of_account_choose_year",
+    ),
+    path(
+        "quick-links/<yyyy:year>/",
+        quick_links,
+        name="chart_of_account_quick_links",
     ),
 ]

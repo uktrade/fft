@@ -28,3 +28,13 @@ def get_current_financial_year():
             )
 
     return current_financial_year
+
+
+class GetValidYear:
+    regex = '2018|2019'
+
+    def to_python(self, value):
+        return int(value)
+
+    def to_url(self, value):
+        return '%04d' % value

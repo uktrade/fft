@@ -14,7 +14,7 @@ class SimpleTest(unittest.TestCase):
 
     def test_details(self):
         # Issue a GET request.
-        response = self.client.get(reverse("costcentrefilter"))
+        response = self.client.get(reverse("cost_centre_filter"))
         # if redirecting, check that we are sending to a login page
         if response.status_code == 302:
             self.assertIn("login", response.url)

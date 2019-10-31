@@ -6,9 +6,10 @@ from .views import (
     GiftHospitalityOfferedView,
     GiftHospitalityReceivedDoneView,
     GiftHospitalityReceivedView,
+    quick_links,
 )
 
-app_name = "gifthospitality"
+app_name = "gifts_hospitality"
 urlpatterns = [
     path("receive/", GiftHospitalityReceivedView.as_view(), name="gift-received"),
     path("offer/", GiftHospitalityOfferedView.as_view(), name="gift-offered"),
@@ -22,5 +23,10 @@ urlpatterns = [
         r"<int:gift_id>/offered/",
         GiftHospitalityOfferedDoneView.as_view(),
         name="offered-done",
+    ),
+    path(
+        "quick-links/",
+        quick_links,
+        name="quick_links",
     ),
 ]
