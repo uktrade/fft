@@ -36,6 +36,8 @@ class Analysis1Factory(factory.DjangoModelFactory):
     class Meta:
         model = Analysis1
 
+    active = True
+
 
 class HistoricalAnalysis1Factory(factory.DjangoModelFactory):
     """
@@ -53,6 +55,8 @@ class Analysis2Factory(factory.DjangoModelFactory):
 
     class Meta:
         model = Analysis2
+
+    active = True
 
 
 class HistoricalAnalysis2Factory(factory.DjangoModelFactory):
@@ -128,6 +132,7 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
     class Meta:
         model = NaturalCode
 
+    active = True
     natural_account_code = 999999
     natural_account_code_description = "NAC description"
     used_for_budget = False
@@ -151,6 +156,7 @@ class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProgrammeCode
 
+    active = True
     programme_code = "Test"
     programme_description = "Test description"
     budget_type_fk = factory.Iterator(BudgetType.objects.all())
@@ -200,6 +206,7 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
     class Meta:
         model = ProjectCode
 
+    active = True
     project_code = "5000"
 
 

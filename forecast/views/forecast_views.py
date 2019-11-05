@@ -1,13 +1,11 @@
 import json
 
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import (
-    redirect,
     render,
+    reverse,
 )
-from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
@@ -33,10 +31,12 @@ from forecast.tables import (
     ForecastSubTotalTable,
     ForecastTable,
 )
+from forecast.views.base import (
+    ForecastBaseView,
+    NoCostCentreCodeInURLError,
+)
 
-
-TEST_COST_CENTRE = 109076
-
+TEST_COST_CENTRE = 888812
 TEST_FINANCIAL_YEAR = 2019
 
 # programme__budget_type_fk__budget_type_display
@@ -218,19 +218,45 @@ def pivot_test1(request):
 class AddRowView(FormView):
     template_name = "forecast/add.html"
     form_class = AddForecastRowForm
-    success_url = reverse_lazy("edit_forecast")
-    cost_centre_code = TEST_COST_CENTRE
     financial_year_id = TEST_FINANCIAL_YEAR
+    cost_centre_code = None
+
+    def get_cost_centre(self):
+        if self.cost_centre_code is not None:
+            return
+
+        if 'cost_centre_code' not in self.kwargs:
+            raise NoCostCentreCodeInURLError(
+                "No cost centre code provided in URL"
+            )
+
+        self.cost_centre_code = self.kwargs["cost_centre_code"]
+
+    def get_success_url(self):
+        self.get_cost_centre()
+
+        return reverse(
+            "edit_forecast",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
 
     def cost_centre_details(self):
+        self.get_cost_centre()
+
+        cost_centre = CostCentre.objects.get(
+            cost_centre_code=self.cost_centre_code,
+        )
         return {
-            "group": "Test group",
-            "directorate": "Test directorate",
-            "cost_centre_name": "Test cost centre name",
-            "cost_centre_num": self.cost_centre_code,
+            "group": cost_centre.directorate.group.group_name,
+            "directorate": cost_centre.directorate.directorate_name,
+            "cost_centre_name": cost_centre.cost_centre_name,
+            "cost_centre_num": cost_centre.cost_centre_code,
         }
 
     def form_valid(self, form):
+        self.get_cost_centre()
         data = form.cleaned_data
         for financial_period in range(1, 13):
             monthly_figure = MonthlyFigure(
@@ -239,8 +265,8 @@ class AddRowView(FormView):
                 cost_centre_id=self.cost_centre_code,
                 programme=data["programme"],
                 natural_account_code=data["natural_account_code"],
-                analysis1_code_id=data["analysis1_code"],
-                analysis2_code_id=data["analysis2_code"],
+                analysis1_code=data["analysis1_code"],
+                analysis2_code=data["analysis2_code"],
                 project_code=data["project_code"],
                 amount=0,
             )
@@ -249,21 +275,8 @@ class AddRowView(FormView):
         return super().form_valid(form)
 
 
-class EditForecastView(UserPassesTestMixin, TemplateView):
+class EditForecastView(ForecastBaseView):
     template_name = "forecast/edit.html"
-    cost_centre_code = TEST_COST_CENTRE
-
-    def test_func(self):
-        cost_centre = CostCentre.objects.get(
-            cost_centre_code=self.cost_centre_code
-        )
-
-        return self.request.user.has_perm(
-            "view_costcentre", cost_centre
-        ) and self.request.user.has_perm("change_costcentre", cost_centre)
-
-    def handle_no_permission(self):
-        return redirect("costcentre")
 
     def cost_centre_details(self):
         return {

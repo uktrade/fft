@@ -139,8 +139,15 @@ class CostCentre(TimeStampedModel, LogChangeModel):
     )
     used_for_travel = models.BooleanField("Used for Travel", default="True")
 
+    @property
+    def full_name(self):
+        return "{} - {}".format(
+            self.cost_centre_code,
+            self.cost_centre_name,
+        )
+
     def __str__(self):
-        return str(self.cost_centre_code) + " - " + str(self.cost_centre_name)
+        return self.full_name
 
     class Meta:
         verbose_name = "Cost Centre"
