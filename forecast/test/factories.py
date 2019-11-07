@@ -1,29 +1,19 @@
 import factory
 
+from chartofaccountDIT.test.factories import (
+    NaturalCodeFactory,
+    ProgrammeCodeFactory,
+)
+
+from core.models import FinancialYear
+
+from costcentre.test.factories import CostCentreFactory
+
 from forecast.models import (
     Budget,
-    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
 )
-
-
-class FinancialPeriodFactory(factory.DjangoModelFactory):
-    """
-    Define FinancialPeriod Factory
-    """
-
-    class Meta:
-        model = FinancialPeriod
-
-
-class FinancialCodeFactory(factory.DjangoModelFactory):
-    """
-    Define FinancialCode Factory
-    """
-
-    class Meta:
-        model = FinancialCode
 
 
 class BudgetFactory(factory.DjangoModelFactory):
@@ -39,6 +29,12 @@ class MonthlyFigureFactory(factory.DjangoModelFactory):
     """
     Define MonthlyFigure Factory
     """
+    programme = factory.SubFactory(ProgrammeCodeFactory)
+    cost_centre = factory.SubFactory(CostCentreFactory)
+    natural_account_code = factory.SubFactory(NaturalCodeFactory)
+    financial_year = factory.Iterator(FinancialYear.objects.all())
+    financial_period = factory.Iterator(FinancialPeriod.objects.all())
+    amount = 123456
 
     class Meta:
         model = MonthlyFigure

@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 
 from django.contrib.auth import get_user_model
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
@@ -16,9 +17,12 @@ from chartofaccountDIT.test.factories import (
 
 from costcentre.test.factories import CostCentreFactory
 
-from forecast.models import MonthlyFigure
+from forecast.models import (
+    FinancialPeriod,
+    MonthlyFigure,
+)
+from forecast.test.factories import MonthlyFigureFactory
 from forecast.views.forecast_views import EditForecastView
-
 
 # Nb. we're using RequestFactory here
 # because SSO does not fully support
@@ -277,11 +281,41 @@ class ChooseCostCentreTest(TestCase):
 
 
 class ViewCostCentreDashboard(TestCase):
+    cost_centre_code = 109076
+    amount = 9876543
+
     def setUp(self):
-        self.programme = ProgrammeCodeFactory.create()
-        self.nac = NaturalCodeFactory.create(natural_account_code=999999)
+        self.apr_amount = MonthlyFigureFactory.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            cost_centre=CostCentreFactory.create(
+                cost_centre_code=self.cost_centre_code
+            ),
+            amount=self.amount,
+        )
 
-        self.cost_centre_code = 109076
+    def test_view_cost_centre_dashboard(self):
+        resp = self.client.get(reverse("pivotmulti"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "govuk-table")
 
-    def testView(self):
-        pass
+        soup = BeautifulSoup(resp.content, features="html.parser")
+        # Check that there are 3 tables on the page
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 3
+
+        # Check that the first table displays the cost centre code
+        rows = tables[0].find_all("tr")
+        cols = rows[1].find_all("td")
+        assert int(cols[2].get_text()) == self.cost_centre_code
+        # Check the April value
+        assert cols[4].get_text() == intcomma(self.amount)
+        # Check the total for the year
+        assert cols[-3].get_text() == intcomma(self.amount)
+        
+        # Check the difference between budget and year total
+        assert cols[-2].get_text() == intcomma(-self.amount)
+        # Check that all the subtotals exist
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 14
