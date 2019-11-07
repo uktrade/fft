@@ -131,12 +131,12 @@ node_modules
 
 !bin/
 
+# Local upload folder
+uploaded/*
+
 # Fixture with real data
 fido_db_test_all.json
 
 # Reports with real data
 *.xlsx
 *.csv
-
-
-

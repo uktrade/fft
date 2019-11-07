@@ -24,6 +24,7 @@ from forecast.models import (
 from forecast.test.factories import MonthlyFigureFactory
 from forecast.views.forecast_views import EditForecastView
 
+
 # Nb. we're using RequestFactory here
 # because SSO does not fully support
 # the test client's user object
@@ -281,7 +282,7 @@ class ChooseCostCentreTest(TestCase):
 
 
 class ViewCostCentreDashboard(TestCase):
-    cost_centre_code = 109076
+    cost_centre_code = 888812
     amount = 9876543
 
     def setUp(self):
@@ -301,6 +302,7 @@ class ViewCostCentreDashboard(TestCase):
         self.assertContains(resp, "govuk-table")
 
         soup = BeautifulSoup(resp.content, features="html.parser")
+
         # Check that there are 3 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 3
@@ -309,13 +311,16 @@ class ViewCostCentreDashboard(TestCase):
         rows = tables[0].find_all("tr")
         cols = rows[1].find_all("td")
         assert int(cols[2].get_text()) == self.cost_centre_code
+
         # Check the April value
         assert cols[4].get_text() == intcomma(self.amount)
+
         # Check the total for the year
         assert cols[-3].get_text() == intcomma(self.amount)
-        
+
         # Check the difference between budget and year total
         assert cols[-2].get_text() == intcomma(-self.amount)
+
         # Check that all the subtotals exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 14
