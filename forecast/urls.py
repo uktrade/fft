@@ -1,17 +1,22 @@
 from django.urls import path
 
-from forecast.views.cost_centre_views import (
-    ChooseCostCentreView,
-)
-from forecast.views.forecast_views import (
+from forecast.views.edit_forecast import (
     AddRowView,
-    CostClassView,
+    ChooseCostCentreView,
     EditForecastView,
+    edit_forecast_prototype,
+)
+from forecast.views.view_forecast import (
+    CostCentreView,
+    CostClassView,  # Legacy
+    DITView,
+    DirectorateView,
+    GroupView,
     MultiForecastView,
     PivotClassView,
-    edit_forecast_prototype,
     pivot_test1,
 )
+
 
 urlpatterns = [
     path("pivot/", PivotClassView.as_view(), name="pivot"),
@@ -35,5 +40,25 @@ urlpatterns = [
         "choose-cost-centre/",
         ChooseCostCentreView.as_view(),
         name="choose_cost_centre",
+    ),
+    path(
+        "dit/",
+        DITView.as_view(),
+        name="forecast_dit",
+    ),
+    path(
+        "group/<group_code>/",
+        GroupView.as_view(),
+        name="forecast_group",
+    ),
+    path(
+        "directorate/<directorate_code>/",
+        DirectorateView.as_view(),
+        name="forecast_directorate",
+    ),
+    path(
+        "cost-centre/<cost_centre_code>/",
+        CostCentreView.as_view(),
+        name="forecast_cost_centre",
     )
 ]

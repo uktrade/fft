@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
-from django.views.generic.base import TemplateView
 
 from costcentre.models import CostCentre
 
@@ -9,7 +8,7 @@ class NoCostCentreCodeInURLError(Exception):
     pass
 
 
-class ForecastBaseView(UserPassesTestMixin, TemplateView):
+class ForecastPermissionTest(UserPassesTestMixin):
     cost_centre_code = None
 
     def test_func(self):

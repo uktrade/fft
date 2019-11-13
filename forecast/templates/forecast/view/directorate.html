@@ -1,0 +1,34 @@
+{% extends "wide_content.html" %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id %}
+    {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">{{ view.directorate.directorate_name }}</h1>
+      </div>
+
+      <div class="govuk-grid-column-one-third directorate-cc-form">
+          <h2 class="govuk-heading-s">Cost centres in directorate</h2>
+        <form method="post" action ="">
+            {% csrf_token %}
+            {% include "core/govt_uk_form.html" with form=view.cost_centres_form %}
+            <input type="submit" value="Choose" class="govuk-button" data-module="govuk-button"/>
+        </form>
+      </div>
+    </div>
+
+    {% for table in tables %}
+        <div class="tables-container">
+            {% render_table table %}
+        </div>
+    {% endfor %}
+{% endblock %}

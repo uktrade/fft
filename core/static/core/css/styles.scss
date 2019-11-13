@@ -50,3 +50,21 @@ input.cell-input {
     background-color: #00ad93 !important;
   }
 }
+
+.directorate-cc-form {
+  label {
+    display: none;
+  }
+
+  .govuk-form-group {
+    float: left;
+  }
+
+  select, input {
+    display: inline;
+  }
+
+  input {
+    margin-left: 10px;
+  }
+}

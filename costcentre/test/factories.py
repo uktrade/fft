@@ -15,6 +15,8 @@ class DepartmentalGroupFactory(factory.DjangoModelFactory):
     class Meta:
         model = DepartmentalGroup
 
+    active = True
+
 
 class DirectorateFactory(factory.DjangoModelFactory):
     """
@@ -25,6 +27,7 @@ class DirectorateFactory(factory.DjangoModelFactory):
         model = Directorate
 
     group = factory.SubFactory(DepartmentalGroupFactory)
+    active = True
 
 
 class CostCentreFactory(factory.DjangoModelFactory):
