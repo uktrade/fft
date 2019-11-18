@@ -9,7 +9,6 @@ STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-fron
 # for debug_toolbar, to activate it only on localhost
 INTERNAL_IPS = ["127.0.0.1"]
 
-
 SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 MIDDLEWARE = [
@@ -27,3 +26,11 @@ MIDDLEWARE = [
 ]
 
 SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
+
+ASYNC_FILE_UPLOAD = True
+
+IGNORE_ANTI_VIRUS = False
+
+CLAM_AV_USERNAME = "app1"
+CLAM_AV_PASSWORD = "letmein"
+CLAM_AV_URL = "http://docker.for.mac.localhost:8090/v2/scan"

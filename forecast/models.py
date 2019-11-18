@@ -13,7 +13,9 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.metamodels import TimeStampedModel
+from core.metamodels import (
+    TimeStampedModel,
+)
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
@@ -136,7 +138,7 @@ class FinancialCode(models.Model):
         if self.pk is None:
             # calculate the forecast_expenditure_type
             nac_economic_budget_code = (
-                self.natural_account_code.account_L5_code.economic_budget_code
+                self.natural_account_code.economic_budget_code
             )
             programme_budget_type = self.programme.budget_type_fk
 
@@ -202,11 +204,15 @@ class SubTotalForecast():
 
     def add_row_to_subtotal(self, row_from, sub_total):
         for period in self.period_list:
+            val = None
             if row_from[period]:
                 val = row_from[period]
             else:
                 val = 0
-            sub_total[period] += val
+            if sub_total[period]:
+                sub_total[period] += val
+            else:
+                sub_total[period] = val
 
     def clear_row(self, row):
         for period in self.period_list:
@@ -341,7 +347,8 @@ class PivotManager(models.Manager):
         "cost_centre__cost_centre_code": "Cost Centre Code",
         "cost_centre__cost_centre_name": "Cost Centre Description",
         "natural_account_code__natural_account_code": "Natural Account Code",
-        "natural_account_code__natural_account_code_description": "Natural Account Code Description",  # noqa
+        "natural_account_code__natural_account_code_description":
+            "Natural Account Code Description",
         "programme__programme_code": "Programme Code",
         "programme__programme_description": "Programme Description",
         "project_code__project_code": "Project Code",
@@ -439,6 +446,35 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
             self.project_code,
             self.financial_year,
             self.financial_period,
+        )
+
+
+class UploadingActuals(FinancialCode):
+    """Used to upload the actuals.
+    When the upload is successfully completed, they get copied to the Monthly figures.
+    This allow to achieve a all-or-nothing upload."""
+    id = models.AutoField("Row ID", primary_key=True)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
+    financial_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+    )
+    amount = models.BigIntegerField(default=0)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = (
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+            "financial_year",
+            "financial_period",
         )
 
 

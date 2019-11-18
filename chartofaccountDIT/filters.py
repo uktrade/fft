@@ -35,7 +35,7 @@ class NACFilter(MyFilterSet):
 
     def search_all_filter(selfself, queryset, name, value):
         return queryset.filter(
-            Q(account_L5_code__economic_budget_code__icontains=value)
+            Q(economic_budget_code__icontains=value)
             | Q(
                 expenditure_category__NAC_category__NAC_category_description__icontains=value  # noqa
             )
@@ -65,7 +65,7 @@ class NACFilter(MyFilterSet):
             .select_related("expenditure_category")
             .select_related("commercial_category")
             .order_by(
-                "-account_L5_code__economic_budget_code",
+                "-economic_budget_code",
                 "-expenditure_category__NAC_category__NAC_category_description",
                 # noqa: E501
                 "-expenditure_category__grouping_description",
@@ -430,7 +430,7 @@ class FCOMappingtFilter(MyFilterSet):
                 account_L6_code_fk__expenditure_category__grouping_description__icontains=value  # noqa
             )
             | Q(
-                account_L6_code_fk__account_L5_code__economic_budget_code__icontains=value  # noqa
+                account_L6_code_fk___economic_budget_code__icontains=value  # noqa
             )
         )
 

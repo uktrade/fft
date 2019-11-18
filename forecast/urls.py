@@ -4,6 +4,7 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
+    UploadActualsView,
     edit_forecast_prototype,
 )
 from forecast.views.view_forecast import (
@@ -25,7 +26,8 @@ urlpatterns = [
     path("pivot1/", pivot_test1, name="pivot1"),
     path(
         "edit/<int:cost_centre_code>/",
-        EditForecastView.as_view(), name="edit_forecast"),
+        EditForecastView.as_view(), name="edit_forecast"
+    ),
     path(
         "add/<int:cost_centre_code>/",
         AddRowView.as_view(),
@@ -40,6 +42,11 @@ urlpatterns = [
         "choose-cost-centre/",
         ChooseCostCentreView.as_view(),
         name="choose_cost_centre",
+    ),
+    path(
+        "upload-file/",
+        UploadActualsView.as_view(),
+        name="upload_actuals_file"
     ),
     path(
         "dit/",

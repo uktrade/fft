@@ -94,6 +94,7 @@ NAC_KEY = {
     IMPORT_CSV_PK_KEY: "L6",
     IMPORT_CSV_FIELDLIST_KEY: {
         NaturalCode.natural_account_code_description.field_name: "L6_NAME",  # noqa: E501
+        NaturalCode.economic_budget_code.field_name: "DFF-Economic Budget",  # noqa: E501
         NaturalCode.account_L5_code.field.name: L5_FK_KEY,
         NaturalCode.account_L5_code_upload.field.name: OSCAR_FK_KEY,
     },

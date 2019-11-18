@@ -1,0 +1,19 @@
+{% extends "wide_content.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Uploaded files" "uploaded_files" %}
+    {% breadcrumb "Upload file" "upload_file" %}
+{% endblock %}
+
+{% block content %}
+    <div class="app-pane__content">
+        <h1 class="govuk-heading-xl">Upload actuals file</h1>
+        <form method="post" enctype="multipart/form-data" action="">
+            {% csrf_token %}
+            {% include "core/govt_uk_form.html" %}
+            <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button"/>
+        </form>
+    </div>
+{% endblock %}

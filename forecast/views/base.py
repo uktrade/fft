@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
+from django.urls import reverse
 
 from costcentre.models import CostCentre
 
@@ -31,4 +32,11 @@ class ForecastPermissionTest(UserPassesTestMixin):
         )
 
     def handle_no_permission(self):
-        return redirect("costcentre")
+        return redirect(
+            reverse(
+                "forecast_cost_centre",
+                kwargs={
+                    "cost_centre_code": self.cost_centre_code
+                }
+            )
+        )

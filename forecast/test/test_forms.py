@@ -1,3 +1,6 @@
+from unittest.mock import MagicMock
+
+from django.core.files import File
 from django.test import TestCase
 
 from chartofaccountDIT.test.factories import (
@@ -10,8 +13,13 @@ from chartofaccountDIT.test.factories import (
 
 from costcentre.test.factories import CostCentreFactory
 
-from forecast.forms import AddForecastRowForm
-from forecast.models import MonthlyFigure
+from forecast.forms import (
+    AddForecastRowForm,
+    UploadActualsForm,
+)
+from forecast.models import (
+    MonthlyFigure,
+)
 
 
 class TestAddForecastRowForm(TestCase):
@@ -121,3 +129,37 @@ class TestAddForecastRowForm(TestCase):
         )
 
         self.assertTrue(form.is_valid())
+
+
+class TestAddUploadActualsForm(TestCase):
+    def setUp(self):
+        self.financial_period_code = 1
+        self.financial_year_id = 2019
+
+        self.file_mock = MagicMock(spec=File)
+        self.file_mock.name = 'test.txt'
+
+    def test_valid_data(self):
+        form = UploadActualsForm(
+            data={
+                "period": self.financial_period_code,
+                "year": self.financial_year_id,
+            },
+            files={
+                'file': self.file_mock,
+            }
+        )
+
+        self.assertTrue(form.is_valid())
+
+    def test_blank_data(self):
+        form = UploadActualsForm({})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(
+            form.errors,
+            {
+                "file": ["This field is required."],
+                "period": ["This field is required."],
+                "year": ["This field is required."],
+            },
+        )

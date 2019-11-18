@@ -8,9 +8,15 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.myutils import get_current_financial_year
+from core.models import FinancialYear
+from core.myutils import (
+    get_current_financial_year,
+)
 
-from forecast.models import MonthlyFigure
+from forecast.models import (
+    FinancialPeriod,
+    MonthlyFigure,
+)
 
 
 class EditForm(forms.Form):
@@ -103,5 +109,37 @@ class AddForecastRowForm(forms.Form):
         {
             "class": "govuk-select",
             "aria-describedby": "project_code-hint project_code-error",
+        }
+    )
+
+
+class UploadActualsForm(forms.Form):
+    file = forms.FileField()
+    file.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "file-hint file-error",
+        }
+    )
+
+    period = forms.ModelChoiceField(
+        queryset=FinancialPeriod.objects.all(),
+        empty_label="",
+    )
+    period.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "period-hint period-error",
+        }
+    )
+
+    year = forms.ModelChoiceField(
+        queryset=FinancialYear.objects.all(),
+        empty_label="",
+    )
+    year.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "year-hint year-error",
         }
     )

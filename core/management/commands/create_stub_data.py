@@ -19,13 +19,7 @@ from costcentre.models import (
     Directorate,
 )
 
-from treasuryCOA.models import (
-    L1Account,
-    L2Account,
-    L3Account,
-    L4Account,
-    L5Account,
-)
+from forecast.models import MonthlyFigure
 
 
 class CostHierarchy:
@@ -70,6 +64,7 @@ class CostHierarchy:
             self.counter += 1
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         CostCentre.objects.all().delete()
         Directorate.objects.all().delete()
         DepartmentalGroup.objects.all().delete()
@@ -88,6 +83,7 @@ class ProgrammeCodes:
     name = "Programme Codes"
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         ProgrammeCode.objects.all().delete()
 
     def create(self):
@@ -122,6 +118,7 @@ class Analysis1Codes:
     name = "Analysis 1 Codes"
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         Analysis1.objects.all().delete()
 
     def create(self):
@@ -152,6 +149,7 @@ class Analysis2Codes:
     name = "Analysis 2 codes"
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         Analysis2.objects.all().delete()
 
     def create(self):
@@ -182,6 +180,7 @@ class ProjectCodes:
     name = "Project codes"
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         ProjectCode.objects.all().delete()
 
     def create(self):
@@ -214,6 +213,7 @@ class NaturalAccountCodes:
     name = "Natural Account Codes"
 
     def clear(self):
+        MonthlyFigure.objects.all().delete()
         # clear the NAC budget field in
         # expenditure codes before clearing
         # the natural account codes
@@ -224,14 +224,9 @@ class NaturalAccountCodes:
         NaturalCode.objects.all().delete()
         ExpenditureCategory.objects.all().delete()
         NACCategory.objects.all().delete()
-        L5Account.objects.all().delete()
-        L4Account.objects.all().delete()
-        L3Account.objects.all().delete()
-        L2Account.objects.all().delete()
-        L1Account.objects.all().delete()
 
     def create_natural_account_code_expenditure_group(
-        self, nac_category, l5, cat_description, nac_base, howmany
+        self, nac_category, economic_budget_code, cat_description, nac_base, howmany
     ):
         expenditure_category = ExpenditureCategory.objects.create(
             active=True,
@@ -247,7 +242,7 @@ class NaturalAccountCodes:
                 cat_description
             ),
             used_for_budget=True,
-            account_L5_code=l5,
+            economic_budget_code=economic_budget_code,
             expenditure_category=expenditure_category,
         )
         expenditure_category.linked_budget_code = natural_account_code
@@ -262,60 +257,19 @@ class NaturalAccountCodes:
                     x,
                 ),
                 used_for_budget=False,
-                account_L5_code=l5,
+                economic_budget_code=economic_budget_code,
                 expenditure_category=expenditure_category,
             )
 
-    # TODO change model name L1Account to Level1Account
     def create(self):
         self.clear()
-        # Create the dummy treasury structures
-        l1_account = L1Account.objects.create(
-            active=True,
-            account_l1_code=90000000,
-            account_l1_long_name="L1 account",
-            account_code="AI",
-            account_l0_code="AI",
-        )
-        l2_account = L2Account.objects.create(
-            active=True,
-            account_l2_code=71000000,
-            account_l2_long_name="L2 account",
-            account_l1=l1_account,
-        )
-        l3_account = L3Account.objects.create(
-            active=True,
-            account_l3_code=71100000,
-            account_l3_long_name="L3 account",
-            account_l2=l2_account,
-        )
-        l4_account = L4Account.objects.create(
-            active=True,
-            account_l4_code=71110000,
-            account_l4_long_name="L4 account",
-            account_l3=l3_account,
-        )
-        l5_account_resource = L5Account.objects.create(
-            active=True,
-            account_l5_code=71111000,
-            account_l5_long_name="L5 account",
-            account_l4=l4_account,
-            economic_budget_code="RESOURCE",
-        )
-        l5_account_capital = L5Account.objects.create(
-            active=True,
-            account_l5_code=71112000,
-            account_l5_long_name="L5 account",
-            account_l4=l4_account,
-            economic_budget_code="CAPITAL",
-        )
         # use real values for NAC categories. Easier than inventing some
         nac_category = NACCategory.objects.create(
             active=True, NAC_category_description="Pay"
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_resource,
+            "RESOURCE",
             "Contractors (Pay)",
             71111000,
             5,
@@ -327,7 +281,7 @@ class NaturalAccountCodes:
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_resource,
+            "RESOURCE",
             "Provisions",
             71112000,
             2,
@@ -338,21 +292,21 @@ class NaturalAccountCodes:
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_resource,
+            "RESOURCE",
             "Staff Welfare",
             71113000,
             2,
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_resource,
+            "RESOURCE",
             "Estates",
             71114000,
             1,
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_resource,
+            "RESOURCE",
             "Grant",
             71115000,
             4,
@@ -363,7 +317,7 @@ class NaturalAccountCodes:
         )
         self.create_natural_account_code_expenditure_group(
             nac_category,
-            l5_account_capital,
+            "CAPITAL",
             "Estates (Capital)",
             71121000,
             4,

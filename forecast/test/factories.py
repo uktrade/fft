@@ -16,6 +16,17 @@ from forecast.models import (
 )
 
 
+class FinancialPeriodFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = FinancialPeriod
+
+    financial_period_code = 1
+    period_long_name = "April"
+    period_short_name = "apr"
+    period_calendar_code = 4
+
+
 class BudgetFactory(factory.DjangoModelFactory):
     """
     Define Budget Factory

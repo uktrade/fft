@@ -18,3 +18,9 @@ STATICFILES_DIRS = ("/app/front_end/build/static",)
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+CLAM_AV_USERNAME = "TODO"
+CLAM_AV_PASSWORD = "TODO"
+CLAM_AV_URL = "https:clamav.london.cloudapps.digital/v2/scan"
+
+IGNORE_ANTI_VIRUS = False

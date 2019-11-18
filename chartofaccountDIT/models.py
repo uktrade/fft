@@ -317,6 +317,13 @@ class NaturalCodeAbstract(models.Model):
     )
     used_for_budget = models.BooleanField(default=False)
 
+    economic_budget_code = models.CharField(
+        max_length=255,
+        verbose_name="Expenditure Type",
+        blank=True,
+        null=True,
+    )
+
     def __str__(self):
         return "{} - {}".format(
             self.natural_account_code, self.natural_account_code_description
@@ -380,12 +387,6 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
     account_L5_code_upload = models.BigIntegerField(
         verbose_name="L5 for OSCAR upload", blank=True, null=True
     )
-    economic_budget_code = models.CharField(
-        max_length=255,
-        verbose_name="Expenditure Type",
-        blank=True,
-        null=True,
-    )
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -416,11 +417,11 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
         if obj.account_L5_code:
             account_L5_code_val = obj.account_L5_code.account_l5_code
             account_L5_description_val = obj.account_L5_code.account_l5_long_name
-            economic_budget_code_val = obj.account_L5_code.economic_budget_code
+            # economic_budget_code_val = obj.account_L5_code.economic_budget_code
         else:
             account_L5_code_val = None
             account_L5_description_val = None
-            economic_budget_code_val = None
+            # economic_budget_code_val = None
         obj_hist = cls(
             natural_account_code_description=obj.natural_account_code_description
             + suffix,
@@ -433,7 +434,7 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
             account_L5_code=account_L5_code_val,
             account_L5_description=account_L5_description_val,
             account_L5_code_upload=account_L5_code_upload_val,
-            economic_budget_code=economic_budget_code_val,
+            economic_budget_code=obj.economic_budget_code,
             financial_year=year_obj,
             active=obj.active,
         )
@@ -727,12 +728,6 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
         else:
             category = None
             budget_desc = None
-        if obj.account_L6_code_fk.account_L5_code:
-            economic_budget_code = (
-                obj.account_L6_code_fk.account_L5_code.economic_budget_code
-            )
-        else:
-            economic_budget_code = None
         obj_hist = cls(
             fco_description=obj.fco_description + suffix,
             fco_code=obj.fco_code,
@@ -740,7 +735,7 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
             account_L6_description=obj.account_L6_code_fk.natural_account_code_description,  # noqa
             nac_category_description=category,
             budget_description=budget_desc,
-            economic_budget_code=economic_budget_code,
+            economic_budget_code=obj.account_L6_code_fk.economic_budget_code,
             active=obj.active,
             financial_year=year_obj,
         )

@@ -1,3 +1,5 @@
 ---
 applications:
   - buildpack: https://github.com/cloudfoundry/multi-buildpack
+  - name: FIDO
+     instances: 2 # Extra instance for file processing using celery

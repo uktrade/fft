@@ -18,19 +18,21 @@ services:
      - "0.0.0.0:8000:8000"
    depends_on:
      - db
-   environment:
-     DEBUG: 'True'
-     DATABASE_URL: psql://postgres:postgres@db:5432/fido
-     SECRET_KEY: do_not_use_this_in_production
-     ALLOWED_HOSTS: '*'
-     AUTHBROKER_SCOPES: 'read write'
-     AUTHBROKER_URL: 'https://sso.trade.gov.uk/'
-     GIT_COMMIT: 'test'
-     DJANGO_SETTINGS_MODULE: config.settings.dev
-     AUTHBROKER_CLIENT_ID: ${AUTHBROKER_CLIENT_ID}
-     AUTHBROKER_CLIENT_SECRET: ${AUTHBROKER_CLIENT_SECRET}
-     BROWSERSTACK_USERNAME: ${BROWSERSTACK_USERNAME}
-     BROWSERSTACK_ACCESS_KEY: ${BROWSERSTACK_ACCESS_KEY}
+ celery:
+   build:
+      context: .
+      dockerfile: "docker/Dockerfile.dev"
+   env_file: .env
+   command: celery -A config worker -l info
+   volumes:
+     - .:/app
+   depends_on:
+     - db
+     - redis
+ redis:
+   image: redis:buster
+   ports:
+     - "6379:6379"
  selenium-hub:
     image: selenium/hub:3.141.59-vanadium
     container_name: selenium-hub

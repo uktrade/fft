@@ -87,3 +87,4 @@ libsass
 django-webpack-loader
 django-bootstrap-breadcrumbs
 django-guardian
+redis

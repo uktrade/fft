@@ -26,7 +26,7 @@ You can add forecast data if you are developing forecast related functions:
 docker-compose run fido python manage.py create_stub_forecast_data
 ```
 
-Now access any page within the site and log in with your single sign on credentails.
+Now access any page within the site and log in with your single sign on credentials.
 
 You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
 

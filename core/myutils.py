@@ -1,6 +1,10 @@
 # Collection of useful functions and classes
 import datetime
 
+from django.conf import settings
+
+import requests
+
 from .models import FinancialYear
 
 
@@ -38,3 +42,22 @@ class GetValidYear:
 
     def to_url(self, value):
         return '%04d' % value
+
+
+def run_anti_virus(file):
+    # Check file with AV web service
+    if settings.IGNORE_ANTI_VIRUS:
+        return {'malware': False}
+
+    files = {"file": file}
+    auth = (
+        settings.CLAM_AV_USERNAME,
+        settings.CLAM_AV_PASSWORD,
+    )
+    response = requests.post(
+        settings.CLAM_AV_URL,
+        auth=auth,
+        files=files,
+    )
+
+    return response.json()

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "treasurySS.apps.TreasurySSConfig",
     "core.apps.CoreConfig",
     "importdata.apps.ImportDataConfig",
+    "upload_file.apps.UploadFileConfig",
     "django_extensions",
     "django_tables2",
     "django_filters",
@@ -190,28 +191,20 @@ WEBPACK_LOADER = {
     }
 }
 
-# Your Amazon Web Services secret access key, as a string.
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 
-# AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
-
-AWS_ACCESS_KEY_ID = ""
-AWS_SECRET_ACCESS_KEY = ""
-
-
-AWS_STORAGE_BUCKET_NAME = "secchiello1234546a"
-
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-
-# AWS_S3_REGION_NAME='eu-west-2'
+AWS_STORAGE_BUCKET_NAME = "fido-dev"  # Need to check this with GDS bucket
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME  # Need to check this with GDS bucket
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}  # Need to check this with GDS bucket
+AWS_S3_REGION_NAME = 'eu-west-2'  # Need to check this with GDS bucket
 #
-AWS_DEFAULT_ACL = None
+AWS_DEFAULT_ACL = None  # Need to check this with GDS bucket
 #
 
 # celery
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default=None)
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 

@@ -61,10 +61,6 @@ class NaturalCodeTable(FadminTable):
         verbose_name="Budget/Forecast NAC",
         accessor="expenditure_category.linked_budget_code.natural_account_code",
     )  # noqa: E501
-    account_L5_code__economic_budget_code = tables.Column(
-        verbose_name="Expenditure Type",
-        accessor="account_L5_code.economic_budget_code"
-    )
     natural_account_code = tables.Column(verbose_name="PO/Actuals NAC")
     natural_account_code_description = tables.Column(verbose_name="NAC Description")
     op_delivery_plan = tables.Column(
@@ -75,7 +71,7 @@ class NaturalCodeTable(FadminTable):
     class Meta(FadminTable.Meta):
         model = NaturalCode
         fields = (
-            "account_L5_code__economic_budget_code",
+            "economic_budget_code",
             "nac_category_description",
             "budget_description",
             "commercial_category",
@@ -245,7 +241,7 @@ class FCOMappingTable(FadminTable):
     )
     economic_budget_code = tables.Column(
         verbose_name="Expenditure Type",
-        accessor="account_L6_code_fk.account_L5_code.economic_budget_code",
+        accessor="account_L6_code_fk.economic_budget_code",
     )
 
     class Meta(FadminTable.Meta):

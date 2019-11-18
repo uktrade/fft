@@ -29,6 +29,7 @@ urlpatterns = [
     path("forecast-prototype/", include("forecast_prototype.urls")),
     path("gifthospitality/", include("gifthospitality.urls")),
     path("payroll/", include("payroll.urls")),
+    path("upload/", include("upload_file.urls")),
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
     path(

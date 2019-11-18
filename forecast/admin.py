@@ -6,7 +6,10 @@ from core.admin import (
 )
 
 from forecast.import_csv import import_adi_file_class
-from forecast.models import FinancialPeriod, MonthlyFigure
+from forecast.models import (
+    FinancialPeriod,
+    MonthlyFigure,
+)
 
 
 class MonthlyFigureAdmin(AdminImportExport, AdminReadOnly):
