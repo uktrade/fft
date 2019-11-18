@@ -18,7 +18,7 @@ from forecast.forms import (
     UploadActualsForm,
 )
 from forecast.models import (
-    ForecastActualBudgetFigure,
+    MonthlyFigure,
 )
 
 
@@ -70,7 +70,7 @@ class TestAddForecastRowForm(TestCase):
         )
 
     def test_duplicate_row_invalid(self):
-        monthly_figure = ForecastActualBudgetFigure(
+        monthly_figure = MonthlyFigure(
             financial_year_id=2019,
             financial_period_id=1,
             cost_centre_id=self.cost_centre_code,
@@ -105,7 +105,7 @@ class TestAddForecastRowForm(TestCase):
         )
 
     def test_same_values_for_programme_and_natural_account_code_valid(self):
-        monthly_figure = ForecastActualBudgetFigure(
+        monthly_figure = MonthlyFigure(
             financial_year_id=2019,
             financial_period_id=1,
             cost_centre_id=self.cost_centre_code,

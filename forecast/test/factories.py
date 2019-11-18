@@ -10,15 +10,36 @@ from core.models import FinancialYear
 from costcentre.test.factories import CostCentreFactory
 
 from forecast.models import (
+    Budget,
     FinancialPeriod,
-    ForecastActualBudgetFigure,
     ForecastPermission,
+    MonthlyFigure,
 )
 
 
-class ForecastActualBudgetFigureFactory(factory.DjangoModelFactory):
+class FinancialPeriodFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = FinancialPeriod
+
+    financial_period_code = 1
+    period_long_name = "April"
+    period_short_name = "apr"
+    period_calendar_code = 4
+
+
+class BudgetFactory(factory.DjangoModelFactory):
     """
-    Define ForecastActualBudgetFigure Factory
+    Define Budget Factory
+    """
+
+    class Meta:
+        model = Budget
+
+
+class MonthlyFigureFactory(factory.DjangoModelFactory):
+    """
+    Define MonthlyFigure Factory
     """
     programme = factory.SubFactory(ProgrammeCodeFactory)
     cost_centre = factory.SubFactory(CostCentreFactory)
@@ -28,7 +49,7 @@ class ForecastActualBudgetFigureFactory(factory.DjangoModelFactory):
     amount = 123456
 
     class Meta:
-        model = ForecastActualBudgetFigure
+        model = MonthlyFigure
 
 
 class ForecastPermissionFactory(factory.DjangoModelFactory):

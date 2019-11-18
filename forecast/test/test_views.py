@@ -27,13 +27,13 @@ from costcentre.test.factories import (
 
 from forecast.models import (
     FinancialPeriod,
-    ForecastActualBudgetFigure,
     ForecastPermission,
+    MonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import (
-    ForecastActualBudgetFigureFactory,
     ForecastPermissionFactory,
+    MonthlyFigureFactory,
 )
 from forecast.views.edit_forecast import (
     AddRowView,
@@ -243,7 +243,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(ForecastActualBudgetFigure.objects.count(), 12)
+        self.assertEqual(MonthlyFigure.objects.count(), 12)
 
         response_2 = self.add_row_post_response(
             reverse(
@@ -266,7 +266,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
         assert "govuk-list govuk-error-summary__list" in str(
             response_2.rendered_content,
         )
-        self.assertEqual(ForecastActualBudgetFigure.objects.count(), 12)
+        self.assertEqual(MonthlyFigure.objects.count(), 12)
 
 
 class ChooseCostCentreTest(TestCase, RequestFactoryBase):
@@ -323,7 +323,7 @@ class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
 
-        self.apr_amount = ForecastActualBudgetFigureFactory.create(
+        self.apr_amount = MonthlyFigureFactory.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),

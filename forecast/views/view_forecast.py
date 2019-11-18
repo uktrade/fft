@@ -24,7 +24,7 @@ from costcentre.models import (
 from costcentre.models import DepartmentalGroup
 
 from forecast.models import (
-    ForecastActualBudgetFigure,
+    MonthlyFigure,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -84,7 +84,7 @@ class PivotClassView(
             "cost_centre__directorate__group": "Group",
             "cost_centre__directorate__group__group_name": "Name",
         }
-        q = ForecastActualBudgetFigure.pivot.pivot_data(d1.keys())
+        q = MonthlyFigure.pivot.pivot_data(d1.keys())
         self.queryset = q
         self.column_dict = d1
         super().__init__(*args, **kwargs)
@@ -127,7 +127,7 @@ class CostClassView(
         }
         cost_centre_code = TEST_COST_CENTRE
         pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
-        q = ForecastActualBudgetFigure.pivot.pivot_data(columns.keys(), pivot_filter)
+        q = MonthlyFigure.pivot.pivot_data(columns.keys(), pivot_filter)
         self.queryset = q
         self.column_dict = columns
         super().__init__(*args, **kwargs)
@@ -143,7 +143,7 @@ def get_forecast_table():
 
     sub_total_type = ["programme__budget_type_fk__budget_type_display"]
     display_sub_total_column = "cost_centre__cost_centre_name"
-    q1 = ForecastActualBudgetFigure.pivot.subtotal_data(
+    q1 = MonthlyFigure.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_type,
         budget_type_columns.keys(),
@@ -162,7 +162,7 @@ def get_forecast_table():
     ]
     display_sub_total_column = "programme__programme_description"
 
-    q2 = ForecastActualBudgetFigure.pivot.subtotal_data(
+    q2 = MonthlyFigure.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_prog,
         programme_columns.keys(),
@@ -182,7 +182,7 @@ def get_forecast_table():
         "natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
     ]
 
-    q3 = ForecastActualBudgetFigure.pivot.subtotal_data(
+    q3 = MonthlyFigure.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_nac,
         natural_account_columns.keys(),
@@ -221,7 +221,7 @@ def pivot_test1(request):
         "natural_account_code": "NAC",
     }
 
-    q1 = ForecastActualBudgetFigure.pivot.pivot_data(
+    q1 = MonthlyFigure.pivot.pivot_data(
         field_dict.keys(), {"cost_centre__directorate__group": "1090AA"}
     )
     table = ForecastTable(field_dict, q1)
