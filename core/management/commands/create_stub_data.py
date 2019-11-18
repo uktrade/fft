@@ -19,7 +19,7 @@ from costcentre.models import (
     Directorate,
 )
 
-from forecast.models import MonthlyFigure
+from forecast.models import ForecastActualBudgetFigure
 
 
 class CostHierarchy:
@@ -64,7 +64,7 @@ class CostHierarchy:
             self.counter += 1
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         CostCentre.objects.all().delete()
         Directorate.objects.all().delete()
         DepartmentalGroup.objects.all().delete()
@@ -83,7 +83,7 @@ class ProgrammeCodes:
     name = "Programme Codes"
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         ProgrammeCode.objects.all().delete()
 
     def create(self):
@@ -118,7 +118,7 @@ class Analysis1Codes:
     name = "Analysis 1 Codes"
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         Analysis1.objects.all().delete()
 
     def create(self):
@@ -149,7 +149,7 @@ class Analysis2Codes:
     name = "Analysis 2 codes"
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         Analysis2.objects.all().delete()
 
     def create(self):
@@ -180,7 +180,7 @@ class ProjectCodes:
     name = "Project codes"
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         ProjectCode.objects.all().delete()
 
     def create(self):
@@ -213,7 +213,7 @@ class NaturalAccountCodes:
     name = "Natural Account Codes"
 
     def clear(self):
-        MonthlyFigure.objects.all().delete()
+        ForecastActualBudgetFigure.objects.all().delete()
         # clear the NAC budget field in
         # expenditure codes before clearing
         # the natural account codes

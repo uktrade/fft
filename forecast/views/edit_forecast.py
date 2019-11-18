@@ -22,7 +22,7 @@ from forecast.forms import (
 )
 from forecast.models import (
     FinancialPeriod,
-    MonthlyFigure,
+    ForecastActualBudgetFigure,
 )
 from forecast.permission_shortcuts import (
     NoForecastViewPermission,
@@ -120,7 +120,7 @@ class AddRowView(CostCentrePermissionTest, FormView):
         self.get_cost_centre()
         data = form.cleaned_data
         for financial_period in range(1, 13):
-            monthly_figure = MonthlyFigure(
+            monthly_figure = ForecastActualBudgetFigure(
                 financial_year_id=self.financial_year_id,
                 financial_period_id=financial_period,
                 cost_centre_id=self.cost_centre_code,
@@ -155,7 +155,7 @@ class EditForecastView(CostCentrePermissionTest, TemplateView):
             "cost_centre": self.cost_centre_code,
         }
 
-        q1 = MonthlyFigure.pivot.pivot_data(
+        q1 = ForecastActualBudgetFigure.pivot.pivot_data(
             field_dict.keys(), {"cost_centre": self.cost_centre_code}
         )
 
@@ -176,7 +176,7 @@ def edit_forecast_prototype(request):
 
             for key, cell in cell_data.items():
                 if cell["editable"]:
-                    monthly_figure = MonthlyFigure.objects.filter(
+                    monthly_figure = ForecastActualBudgetFigure.objects.filter(
                         cost_centre__cost_centre_code=cost_centre_code,
                         financial_year__financial_year=financial_year,
                         financial_period__period_short_name__iexact=cell["key"],
@@ -195,7 +195,7 @@ def edit_forecast_prototype(request):
             }
         )
     pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
-    monthly_figures = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
+    monthly_figures = ForecastActualBudgetFigure.pivot.pivot_data({}, pivot_filter)
 
     # TODO - Luisella to restrict to financial year
     editable_periods = list(FinancialPeriod.objects.filter(actual_loaded=False).all())

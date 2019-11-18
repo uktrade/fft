@@ -37,7 +37,7 @@ from forecast.import_actuals import (
 )
 from forecast.models import (
     FinancialPeriod,
-    MonthlyFigure,
+    ForecastActualBudgetFigure,
     UploadingActuals,
 )
 
@@ -274,7 +274,7 @@ class ImportActualsTest(TestCase):
             )
 
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -303,7 +303,7 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             0,
@@ -318,7 +318,7 @@ class ImportActualsTest(TestCase):
 
         copy_actuals_to_monthly_figure(self.period_obj, self.test_year)
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             1,
@@ -357,7 +357,7 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             1,
@@ -379,19 +379,19 @@ class ImportActualsTest(TestCase):
         )
         # Check that existing figures for the same period have been deleted
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             0,
         )
         # Check for existence of monthly figures
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastActualBudgetFigure.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             4,
         )
-        result = MonthlyFigure.objects.filter(
+        result = ForecastActualBudgetFigure.objects.filter(
             cost_centre=self.cost_centre_code
         ).aggregate(total=Sum('amount'))
 

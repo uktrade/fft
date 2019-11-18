@@ -17,12 +17,12 @@ from core.import_csv import (
 
 from costcentre.models import CostCentre
 
-from forecast.models import FinancialPeriod, FinancialYear, MonthlyFigure
+from forecast.models import FinancialPeriod, FinancialYear, ForecastActualBudgetFigure
 
 
 def get_month_dict():
     """Link the column names in the ADI file with
-    the foreign key used in the MonthlyFigure to
+    the foreign key used in the ForecastActualBudgetFigure to
     identify the period"""
     q = FinancialPeriod.objects.filter(period_calendar_code__gt=0).values(
         "period_short_name"
@@ -37,13 +37,13 @@ def get_month_dict():
 
 
 def import_adi_file(csvfile):
-    """Read the ADI file and unpivot it to enter the MonthlyFigure data
+    """Read the ADI file and unpivot it to enter the ForecastActualBudgetFigure data
     Hard coded the year because it is a temporary solution....
     The information is used to create the OSCAR report to be uploaded to Treasury"""
     fin_year = 2019
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
-    MonthlyFigure.objects.filter(financial_year=fin_year).delete()
+    ForecastActualBudgetFigure.objects.filter(financial_year=fin_year).delete()
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
     line = 1
@@ -67,7 +67,7 @@ def import_adi_file(csvfile):
         if err_msg == "":
             for month, per_obj in month_dict.items():
                 period_amount = int(row[col_key[month.lower()]])
-                adi_obj, created = MonthlyFigure.objects.get_or_create(
+                adi_obj, created = ForecastActualBudgetFigure.objects.get_or_create(
                     financial_year=fin_obj,
                     programme=prog_obj,
                     cost_centre=cc_obj,
@@ -147,7 +147,7 @@ def import_unpivot_actual(csv_file, fin_year):
         proj_obj, msg = get_fk(ProjectCode, row[col_key["spare2"]].strip())
         period_amount = int(row[col_key["amount"]])
         if err_msg == "":
-            adi_obj, created = MonthlyFigure.objects.get_or_create(
+            adi_obj, created = ForecastActualBudgetFigure.objects.get_or_create(
                 financial_year=fin_obj,
                 programme=prog_obj,
                 cost_centre=cc_obj,

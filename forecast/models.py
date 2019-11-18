@@ -110,7 +110,7 @@ class FinancialPeriod(models.Model):
         return self.period_long_name
 
 
-class FinancialCode(models.Model):
+class ChartOfAccountFullCode(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
 
     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
@@ -150,40 +150,15 @@ class FinancialCode(models.Model):
 
             self.forecast_expenditure_type = forecast_type.first()
 
-        super(FinancialCode, self).save(*args, **kwargs)
-
-    class Meta:
-        abstract = True
-
-
-class Budget(FinancialCode, TimeStampedModel):
-    """Used to store the budgets
-    for the financial year. The
-    data is not profiled"""
-
-    id = models.AutoField("Budget ID", primary_key=True)
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    budget = models.BigIntegerField(default=0)
-
-    class Meta:
-        unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
-            "financial_year",
-        )
+        super(ChartOfAccountFullCode, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}--{}".format(
+        return "{}--{}--{}--{}--{}".format(
             self.programme,
             self.natural_account_code,
             self.analysis1_code,
             self.analysis2_code,
             self.project_code,
-            self.financial_year,
         )
 
 
@@ -405,11 +380,13 @@ class PivotManager(models.Manager):
         return pivot(q1, columns, "financial_period__period_short_name", "amount")
 
 
-class MonthlyFigure(FinancialCode, TimeStampedModel):
+class ForecastActualBudgetFigure(TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
-
-    id = models.AutoField("Monthly ID", primary_key=True)
+    chart_of_account_code = models.ForeignKey(
+        ChartOfAccountFullCode,
+        on_delete=models.PROTECT,
+    )
     financial_year = models.ForeignKey(
         FinancialYear,
         on_delete=models.PROTECT,
@@ -427,34 +404,28 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
 
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "chart_of_account_code",
             "financial_year",
             "financial_period",
         )
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}--{}--{}".format(
-            self.cost_centre,
-            self.programme,
-            self.natural_account_code,
-            self.analysis1_code,
-            self.analysis2_code,
-            self.project_code,
+        return "{}--{}--{}".format(
+            self.chart_of_account_code,
             self.financial_year,
             self.financial_period,
         )
 
 
-class UploadingActuals(FinancialCode):
+class UploadingActuals(models.Model):
     """Used to upload the actuals.
     When the upload is successfully completed, they get copied to the Monthly figures.
     This allow to achieve a all-or-nothing upload."""
     id = models.AutoField("Row ID", primary_key=True)
+    chart_of_account_code = models.ForeignKey(
+        ChartOfAccountFullCode,
+        on_delete=models.PROTECT,
+    )
     financial_year = models.ForeignKey(
         FinancialYear,
         on_delete=models.PROTECT,
@@ -464,16 +435,10 @@ class UploadingActuals(FinancialCode):
         on_delete=models.PROTECT,
     )
     amount = models.BigIntegerField(default=0)
-    active = models.BooleanField(default=True)
 
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "chart_of_account_code",
             "financial_year",
             "financial_period",
         )

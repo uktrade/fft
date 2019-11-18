@@ -19,7 +19,7 @@ from costcentre.models import CostCentre
 
 from forecast.models import (
     FinancialPeriod,
-    MonthlyFigure,
+    ForecastActualBudgetFigure,
     UploadingActuals,
 )
 
@@ -91,7 +91,7 @@ class TrialBalanceError(Exception):
 
 def copy_actuals_to_monthly_figure(period_obj, year):
     # Now copy the newly uploaded actuals to the monthly figure table
-    MonthlyFigure.objects.filter(
+    ForecastActualBudgetFigure.objects.filter(
         financial_year=year,
         financial_period=period_obj,
     ).delete()
@@ -271,7 +271,7 @@ def upload_trial_balance_report(file_upload, month_number, year):
         month_number)
     # Clear the table used to upload the actuals.
     # The actuals are uploaded to to a temporary storage, and copied
-    # to the MonthlyFigure when the upload is completed successfully.
+    # to the ForecastActualBudgetFigure when the upload is completed successfully.
     # This means that we always have a full upload.
 
     UploadingActuals.objects.filter(
