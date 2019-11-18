@@ -30,6 +30,7 @@ from forecast.tables import (
     ForecastSubTotalTable,
     ForecastTable,
 )
+from forecast.views.base import ForecastViewPermissionMixin
 
 
 TEST_COST_CENTRE = 888812
@@ -58,7 +59,11 @@ natural_account_columns = {
 }
 
 
-class PivotClassView(FidoExportMixin, SingleTableView):
+class PivotClassView(
+    ForecastViewPermissionMixin,
+    FidoExportMixin,
+    SingleTableView,
+):
     template_name = "forecast/forecast.html"
     sheet_name = "Forecast"
     filterset_class = None
@@ -85,7 +90,11 @@ class PivotClassView(FidoExportMixin, SingleTableView):
         super().__init__(*args, **kwargs)
 
 
-class CostClassView(FidoExportMixin, SingleTableView):
+class CostClassView(
+    ForecastViewPermissionMixin,
+    FidoExportMixin,
+    SingleTableView,
+):
     template_name = "forecast/forecast.html"
     sheet_name = "Forecast"
     filterset_class = None
@@ -187,7 +196,11 @@ def get_forecast_table():
     ]
 
 
-class MultiForecastView(MultiTableMixin, TemplateView):
+class MultiForecastView(
+    ForecastViewPermissionMixin,
+    MultiTableMixin,
+    TemplateView,
+):
     template_name = "forecast/forecastmulti.html"
 
     # table_pagination = {
@@ -200,6 +213,7 @@ class MultiForecastView(MultiTableMixin, TemplateView):
         super().__init__(*args, **kwargs)
 
 
+# TODO - secure view (presumably this will be removed LS?)
 def pivot_test1(request):
     field_dict = {
         "cost_centre__directorate": "Directorate",
@@ -215,7 +229,11 @@ def pivot_test1(request):
     return render(request, "forecast/forecast.html", {"table": table})
 
 
-class DITView(MultiTableMixin, TemplateView):
+class DITView(
+    ForecastViewPermissionMixin,
+    MultiTableMixin,
+    TemplateView,
+):
     template_name = "forecast/view/dit.html"
     table_pagination = False
 
@@ -229,7 +247,11 @@ class DITView(MultiTableMixin, TemplateView):
         super().__init__(*args, **kwargs)
 
 
-class GroupView(MultiTableMixin, TemplateView):
+class GroupView(
+    ForecastViewPermissionMixin,
+    MultiTableMixin,
+    TemplateView,
+):
     template_name = "forecast/view/group.html"
     table_pagination = False
 
@@ -250,7 +272,11 @@ class GroupView(MultiTableMixin, TemplateView):
         super().__init__(*args, **kwargs)
 
 
-class DirectorateView(MultiTableMixin, TemplateView):
+class DirectorateView(
+    ForecastViewPermissionMixin,
+    MultiTableMixin,
+    TemplateView,
+):
     template_name = "forecast/view/directorate.html"
     table_pagination = False
 
@@ -285,7 +311,11 @@ class DirectorateView(MultiTableMixin, TemplateView):
         super().__init__(*args, **kwargs)
 
 
-class CostCentreView(MultiTableMixin, TemplateView):
+class CostCentreView(
+    ForecastViewPermissionMixin,
+    MultiTableMixin,
+    TemplateView,
+):
     template_name = "forecast/view/cost_centre.html"
     table_pagination = False
 

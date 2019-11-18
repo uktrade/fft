@@ -3,6 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
+from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import (
     render,
@@ -10,8 +11,6 @@ from django.shortcuts import (
 from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
-
-from guardian.shortcuts import get_objects_for_user
 
 from costcentre.forms import (
     MyCostCentresForm,
@@ -27,12 +26,16 @@ from forecast.models import (
     FinancialPeriod,
     MonthlyFigure,
 )
+from forecast.permission_shortcuts import (
+    NoForecastViewPermission,
+    get_objects_for_user,
+)
 from forecast.tables import (
     ForecastTable,
 )
 from forecast.tasks import process_uploaded_file
 from forecast.views.base import (
-    ForecastPermissionTest,
+    CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
 )
 
@@ -49,10 +52,13 @@ class ChooseCostCentreView(UserPassesTestMixin, FormView):
     cost_centre = None
 
     def test_func(self):
-        cost_centres = get_objects_for_user(
-            self.request.user,
-            "costcentre.change_costcentre",
-        )
+        try:
+            cost_centres = get_objects_for_user(
+                self.request.user,
+                "costcentre.change_costcentre",
+            )
+        except NoForecastViewPermission:
+            raise PermissionDenied()
 
         # If user has permission on
         # one or more CCs then let them view
@@ -76,7 +82,7 @@ class ChooseCostCentreView(UserPassesTestMixin, FormView):
         )
 
 
-class AddRowView(ForecastPermissionTest, FormView):
+class AddRowView(CostCentrePermissionTest, FormView):
     template_name = "forecast/edit/add.html"
     form_class = AddForecastRowForm
     financial_year_id = TEST_FINANCIAL_YEAR
@@ -136,7 +142,7 @@ class AddRowView(ForecastPermissionTest, FormView):
         return super().form_valid(form)
 
 
-class EditForecastView(ForecastPermissionTest, TemplateView):
+class EditForecastView(CostCentrePermissionTest, TemplateView):
     template_name = "forecast/edit/edit.html"
 
     def cost_centre_details(self):

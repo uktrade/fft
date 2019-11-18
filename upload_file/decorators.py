@@ -1,15 +1,15 @@
 from django.core.exceptions import PermissionDenied
 
-from upload_file.models import UploadPermission
+from forecast.models import ForecastPermission
 
 
 def has_upload_permission(function):
     def wrap(view_func, *args, **kwargs):
-        upload_permissions = UploadPermission.objects.filter(
+        forecast_permissions = ForecastPermission.objects.filter(
             user=view_func.request.user,
         ).first()
 
-        if upload_permissions is not None:
+        if forecast_permissions and forecast_permissions.can_upload:
             return function(view_func, *args, **kwargs)
         else:
             raise PermissionDenied

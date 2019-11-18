@@ -71,15 +71,3 @@ class FileUpload(SimpleTimeStampedModel):
             self.document_type,
             self.status,
         )
-
-
-class UploadPermission(models.Model):
-    user = models.OneToOneField(
-        get_user_model(),
-        on_delete=models.CASCADE,
-    )
-
-    def __str__(self):
-        return "{}".format(
-            self.user,
-        )

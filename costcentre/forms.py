@@ -1,9 +1,9 @@
 from django import forms
 from django.forms import Select
 
-from guardian.shortcuts import get_objects_for_user
-
 from costcentre.models import CostCentre
+
+from forecast.permission_shortcuts import get_objects_for_user
 
 
 class CostCentreViewModeForm(forms.Form):

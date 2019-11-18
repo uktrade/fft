@@ -53,6 +53,15 @@ https://www.techiediaries.com/django-react-rest/
 docker-compose run --service-ports
 ```
 
+### Important notes on design
+
+We use Django Guardian for model instance level permissions https://github.com/django-guardian/django-guardian
+
+Django Guardian **should not be used directly**. There is a set of wrapper functions in *forecast.permission_shortcuts*
+
+These add an additional permission check for the user being able to view forecasts at all.
+
+
 ## TODO
 Try increasing size of container machine and see if npm start will work
 Add setup steps to make file and amend readme

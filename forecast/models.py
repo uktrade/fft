@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Max
 
@@ -534,3 +535,19 @@ WHERE "core_financialyear"."current" = TRUE
 GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
 "treasurySS_subsegment"."sub_segment_code" ;
 """  # noqa
+
+
+class ForecastPermission(models.Model):
+    user = models.OneToOneField(
+        get_user_model(),
+        on_delete=models.CASCADE,
+    )
+    can_upload = models.BooleanField(
+        default=False,
+    )
+
+    def __str__(self):
+        return "Forecast user: {}, can upload: {}".format(
+            self.user,
+            self.can_upload,
+        )

@@ -1,17 +1,18 @@
 from django import template
 
-from upload_file.models import UploadPermission
+from forecast.models import ForecastPermission
+
 
 register = template.Library()
 
 
 @register.simple_tag
 def has_upload_permission(user):
-    upload_permissions = UploadPermission.objects.filter(
+    forecast_permission = ForecastPermission.objects.filter(
         user=user,
     ).first()
 
-    if upload_permissions is not None:
+    if forecast_permission and forecast_permission.can_upload:
         return True
 
     return False

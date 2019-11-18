@@ -8,12 +8,12 @@ from django.urls import reverse
 
 from core.test.test_base import RequestFactoryBase
 
-from upload_file.models import (
-    UploadPermission,
-)
+
+from forecast.models import ForecastPermission
+from forecast.test.factories import ForecastPermissionFactory
+
 from upload_file.test.factories import (
     FileUploadFactory,
-    UploadPermissionFactory,
 )
 from upload_file.views import UploadedView
 
@@ -31,8 +31,8 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
         )
 
     def test_upload_view(self):
-        upload_permission_count = UploadPermission.objects.all().count()
-        self.assertEqual(upload_permission_count, 0)
+        forecast_permission_count = ForecastPermission.objects.all().count()
+        self.assertEqual(forecast_permission_count, 0)
 
         uploaded_files_url = reverse(
             "uploaded_files",
@@ -45,8 +45,9 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
                 UploadedView,
             )
 
-        UploadPermissionFactory.create(
+        ForecastPermissionFactory.create(
             user=self.test_user,
+            can_upload=True,
         )
 
         resp = self.factory_get(

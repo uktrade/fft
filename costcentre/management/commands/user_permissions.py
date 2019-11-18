@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from guardian.shortcuts import get_objects_for_user
+from forecast.permission_shortcuts import get_objects_for_user
 
 
 class Command(BaseCommand):

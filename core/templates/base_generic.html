@@ -29,7 +29,6 @@
 <body class="govuk-template__body ">
 <script>
     document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-
 </script>
 
 <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
@@ -71,26 +70,29 @@
                             Gifts & Hospitality Register
                         </a>
                     </li>
-                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivotmulti/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="/forecast/dit/">
-                            Forecast
-                        </a>
-                    </li>
-                    {% has_edit_permission user as has_edit_permission %}
-                    {% if has_edit_permission == True %}
-                        <li class="govuk-header__navigation-item {% if request.path == '/forecast/choose-cost-centre/' %}govuk-header__navigation-item--active{% endif %}">
-                            <a class="govuk-header__link" href="/forecast/choose-cost-centre/">
-                                Edit forecast
+                    {% is_forecast_user user as is_forecast_user %}
+                    {% if is_forecast_user == True %}
+                        <li class="govuk-header__navigation-item {% if request.path == '/forecast/pivotmulti/' %}govuk-header__navigation-item--active{% endif %}">
+                            <a class="govuk-header__link" href="/forecast/dit/">
+                                Forecast
                             </a>
                         </li>
-                    {% endif %}
-                    {% has_upload_permission user as has_upload_permission %}
-                    {% if has_upload_permission == True %}
-                    <li class="govuk-header__navigation-item {% if request.path == '/upload/files/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="/upload/files/">
-                            Uploaded files
-                        </a>
-                    </li>
+                        {% has_edit_permission user as has_edit_permission %}
+                        {% if has_edit_permission == True %}
+                            <li class="govuk-header__navigation-item {% if request.path == '/forecast/choose-cost-centre/' %}govuk-header__navigation-item--active{% endif %}">
+                                <a class="govuk-header__link" href="/forecast/choose-cost-centre/">
+                                    Edit forecast
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% has_upload_permission user as has_upload_permission %}
+                        {% if has_upload_permission == True %}
+                        <li class="govuk-header__navigation-item {% if request.path == '/upload/files/' %}govuk-header__navigation-item--active{% endif %}">
+                            <a class="govuk-header__link" href="/upload/files/">
+                                Uploaded files
+                            </a>
+                        </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </nav>
