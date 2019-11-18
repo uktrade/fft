@@ -2,15 +2,12 @@ from celery import shared_task
 
 from core.myutils import run_anti_virus
 
-from forecast.import_actuals import (
-    upload_trial_balance_report,
-)
 
 from upload_file.models import FileUpload
 
 
 @shared_task
-def process_uploaded_file(month, year):
+def process_uploaded_file(upload_func, *args):
     latest_unprocessed = FileUpload.objects.filter(
         status=FileUpload.UNPROCESSED,
     ).order_by('-created').first()
@@ -33,10 +30,9 @@ def process_uploaded_file(month, year):
             latest_unprocessed.status = FileUpload.PROCESSING
             latest_unprocessed.save()
 
-            upload_trial_balance_report(
+            upload_func(
                 latest_unprocessed,
-                month,
-                year,
+                *args
             )
             # Process file here
 

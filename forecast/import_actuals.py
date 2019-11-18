@@ -112,47 +112,41 @@ def get_optional_chart_account_obj(model, chart_of_account_item):
     return obj, message
 
 
-def save_row(chart_of_account, value, period_obj, year_obj):
-    """Parse the long strings containing the
-    chart of account information. Return errors
-    if the elements of the chart of account are missing from database."""
-    chart_account_list = chart_of_account.split(CHART_ACCOUNT_SEPARATOR)
-    programme_code = chart_account_list[PROGRAMME_INDEX]
-    # TODO put GENERIC_PROGRAMME_CODE in database
-    # Handle lines without programme code
-    if not int(programme_code):
-        if value:
-            programme_code = GENERIC_PROGRAMME_CODE
-        else:
-            return True, ""
-
+def save_monthly_figure(value, period_obj, year_obj, cost_centre, programme_code, nac,
+                        analisys1='', analisys2='', project_code=''):
     error_message = ""
-    nac_obj, message = get_fk(NaturalCode, chart_account_list[NAC_INDEX])
+    analysis1_obj = None
+    analysis2_obj = None
+    project_obj = None
+    nac_obj, message = get_fk(NaturalCode, nac)
     error_message += message
     if nac_obj:
         #  Check that the NAC is resource or capital
         if not nac_obj.economic_budget_code or \
                 nac_obj.economic_budget_code.upper() not in VALID_ECONOMIC_CODE_LIST:
             return True, ""
-    cc_obj, message = get_fk(CostCentre, chart_account_list[CC_INDEX])
+    cc_obj, message = get_fk(CostCentre, cost_centre)
     error_message += message
     programme_obj, message = get_fk(ProgrammeCode, programme_code)
     error_message += message
-    analysis1_obj, message = get_optional_chart_account_obj(
-        Analysis1,
-        chart_account_list[ANALYSIS1_INDEX],
-    )
-    error_message += message
-    analysis2_obj, message = get_optional_chart_account_obj(
-        Analysis2,
-        chart_account_list[ANALYSIS2_INDEX],
-    )
-    error_message += message
-    project_obj, message = get_optional_chart_account_obj(
-        ProjectCode,
-        chart_account_list[PROJECT_INDEX],
-    )
-    error_message += message
+    if analisys1:
+        analysis1_obj, message = get_optional_chart_account_obj(
+            Analysis1,
+            analisys1,
+        )
+        error_message += message
+    if analisys2:
+        analysis2_obj, message = get_optional_chart_account_obj(
+            Analysis2,
+            analisys2,
+        )
+        error_message += message
+    if project_code:
+        project_obj, message = get_optional_chart_account_obj(
+            ProjectCode,
+            project_code,
+        )
+        error_message += message
     if error_message:
         raise TrialBalanceError(
             error_message
@@ -176,8 +170,36 @@ def save_row(chart_of_account, value, period_obj, year_obj):
         actuals_obj.amount += value * 100
 
     actuals_obj.save()
-
     return True
+
+
+def save_tb_row(chart_of_account, value, period_obj, year_obj):
+    """Parse the long strings containing the
+    chart of account information. Return errors
+    if the elements of the chart of account are missing from database."""
+    chart_account_list = chart_of_account.split(CHART_ACCOUNT_SEPARATOR)
+    programme_code = chart_account_list[PROGRAMME_INDEX]
+    # TODO put GENERIC_PROGRAMME_CODE in database
+    # Handle lines without programme code
+    if not int(programme_code):
+        if value:
+            programme_code = GENERIC_PROGRAMME_CODE
+        else:
+            return True, ""
+    cost_centre = chart_account_list[CC_INDEX]
+    nac = chart_account_list[NAC_INDEX]
+    analisys1 = chart_account_list[ANALYSIS1_INDEX]
+    analisys2 = chart_account_list[ANALYSIS2_INDEX]
+    project_code = chart_account_list[PROJECT_INDEX]
+    return save_monthly_figure(value,
+                               period_obj,
+                               year_obj,
+                               cost_centre,
+                               programme_code,
+                               nac,
+                               analisys1,
+                               analisys2,
+                               project_code)
 
 
 def check_trial_balance_format(ws, period, year):
@@ -269,7 +291,7 @@ def upload_trial_balance_report(file_upload, month_number, year):
             # before starting the upload
             if actual:
                 try:
-                    save_row(chart_of_account, actual, period_obj, year_obj)
+                    save_tb_row(chart_of_account, actual, period_obj, year_obj)
                 except TrialBalanceError as ex:
                     wb.close
                     msg = 'Error at row {}: {}'. \

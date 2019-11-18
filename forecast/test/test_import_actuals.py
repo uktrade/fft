@@ -32,7 +32,7 @@ from forecast.import_actuals import (
     VALID_ECONOMIC_CODE_LIST,
     check_trial_balance_format,
     copy_actuals_to_monthly_figure,
-    save_row,
+    save_tb_row,
     upload_trial_balance_report,
 )
 from forecast.models import (
@@ -128,7 +128,7 @@ class ImportActualsTest(TestCase):
                 self.programme_code
             )
 
-        save_row(
+        save_tb_row(
             chart_of_account_line_correct,
             self.test_amount,
             self.period_obj,
@@ -145,7 +145,7 @@ class ImportActualsTest(TestCase):
             self.test_amount * 100,
         )
 
-        save_row(
+        save_tb_row(
             chart_of_account_line_correct,
             self.test_amount * 2,
             self.period_obj,
@@ -175,7 +175,7 @@ class ImportActualsTest(TestCase):
                 self.valid_natural_account_code,
             )
 
-        save_row(
+        save_tb_row(
             chart_of_account_line_no_programme,
             0,
             self.period_obj,
@@ -186,7 +186,7 @@ class ImportActualsTest(TestCase):
             UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
-        save_row(
+        save_tb_row(
             chart_of_account_line_no_programme,
             self.test_amount,
             self.period_obj,
@@ -210,7 +210,7 @@ class ImportActualsTest(TestCase):
             ).count(),
             0,
         )
-        save_row(
+        save_tb_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 self.cost_centre_code,
                 self.not_valid_natural_account_code,
@@ -228,7 +228,7 @@ class ImportActualsTest(TestCase):
         )
 
         with self.assertRaises(TrialBalanceError):
-            save_row(
+            save_tb_row(
                 '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234'.format(
                     '123456',
                     self.not_valid_natural_account_code,
@@ -291,7 +291,7 @@ class ImportActualsTest(TestCase):
             directorate=self.directorate_obj
         )
         # Prepare to upload data. Create some data that will be deleted
-        save_row(
+        save_tb_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 cost_centre_code_1,
                 self.valid_natural_account_code,

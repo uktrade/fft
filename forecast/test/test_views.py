@@ -40,6 +40,8 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastView,
     TEST_COST_CENTRE,
+)
+from forecast.views.upload_figures import (
     UploadActualsView,
 )
 from forecast.views.view_forecast import (
@@ -468,7 +470,7 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         self.file_mock.name = 'test.txt'
 
     @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.edit_forecast.process_uploaded_file')
+    @patch('forecast.views.upload_figures.process_uploaded_file')
     def test_upload_actuals_view(self, mock_process_uploaded_file):
         forecast_permission_count = ForecastPermission.objects.all().count()
         self.assertEqual(forecast_permission_count, 0)

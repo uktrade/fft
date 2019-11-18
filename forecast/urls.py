@@ -4,8 +4,10 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
-    UploadActualsView,
     edit_forecast_prototype,
+)
+from forecast.views.upload_figures import (
+    UploadActualsView,
 )
 from forecast.views.view_forecast import (
     CostCentreView,
