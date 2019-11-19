@@ -143,3 +143,24 @@ class UploadActualsForm(forms.Form):
             "aria-describedby": "year-hint year-error",
         }
     )
+
+
+class UploadBudgetsForm(forms.Form):
+    file = forms.FileField()
+    file.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "file-hint file-error",
+        }
+    )
+
+    year = forms.ModelChoiceField(
+        queryset=FinancialYear.objects.all(),
+        empty_label="",
+    )
+    year.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "year-hint year-error",
+        }
+    )

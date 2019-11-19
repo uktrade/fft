@@ -323,5 +323,5 @@ def upload_trial_balance_report(file_upload, month_number, year):
     return True
 
 
-def upload_budget():
+def upload_budget(file_upload, year):
     pass
