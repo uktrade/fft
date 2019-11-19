@@ -25,6 +25,12 @@ class UploadActualsView(FormView):
     def dispatch(self, *args, **kwargs):
         return super(UploadActualsView, self).dispatch(*args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["section_name"] = "Hello!"
+        return context
+
+
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -65,6 +71,11 @@ class UploadBudgetView(FormView):
     @has_upload_permission
     def dispatch(self, *args, **kwargs):
         return super(UploadBudgetView, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["section_name"] = "Upload Actuals"
+        return context
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
