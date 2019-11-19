@@ -317,7 +317,6 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
 
 
 class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
-    cost_centre_code = 888812
     amount = 9876543
 
     def setUp(self):
@@ -328,7 +327,7 @@ class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
                 financial_period_code=1
             ),
             cost_centre=CostCentreFactory.create(
-                cost_centre_code=self.cost_centre_code
+                cost_centre_code=TEST_COST_CENTRE
             ),
             amount=self.amount,
         )
@@ -354,7 +353,7 @@ class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
         # Check that the first table displays the cost centre code
         rows = tables[0].find_all("tr")
         cols = rows[1].find_all("td")
-        assert int(cols[2].get_text()) == self.cost_centre_code
+        assert int(cols[2].get_text()) == TEST_COST_CENTRE
 
         # Check the April value
         assert cols[4].get_text() == intcomma(self.amount)
@@ -379,7 +378,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 888888
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code,

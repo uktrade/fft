@@ -36,7 +36,7 @@ from forecast.views.base import (
     NoCostCentreCodeInURLError,
 )
 
-TEST_COST_CENTRE = 888812
+TEST_COST_CENTRE = 109076
 TEST_FINANCIAL_YEAR = 2019
 
 
@@ -159,8 +159,7 @@ class EditForecastView(CostCentrePermissionTest, TemplateView):
             field_dict.keys(), {"cost_centre": self.cost_centre_code}
         )
 
-        return \
-            (field_dict, q1)
+        return ForecastTable(field_dict, q1)
 
 
 def edit_forecast_prototype(request):
