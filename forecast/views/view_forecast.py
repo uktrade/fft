@@ -33,7 +33,7 @@ from forecast.tables import (
 from forecast.views.base import ForecastViewPermissionMixin
 
 
-TEST_COST_CENTRE = 888812
+TEST_COST_CENTRE = 109076
 TEST_FINANCIAL_YEAR = 2019
 
 # programme__budget_type_fk__budget_type_display

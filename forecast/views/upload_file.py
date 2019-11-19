@@ -5,7 +5,7 @@ from django.views.generic.edit import FormView
 from forecast.forms import (
     UploadActualsForm,
 )
-from forecast.import_actuals import (
+from forecast.import_data import (
     upload_trial_balance_report,
 )
 from forecast.tasks import process_uploaded_file

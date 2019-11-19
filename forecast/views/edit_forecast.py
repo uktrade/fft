@@ -159,7 +159,8 @@ class EditForecastView(CostCentrePermissionTest, TemplateView):
             field_dict.keys(), {"cost_centre": self.cost_centre_code}
         )
 
-        return ForecastTable(field_dict, q1)
+        return \
+            (field_dict, q1)
 
 
 def edit_forecast_prototype(request):

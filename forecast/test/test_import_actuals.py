@@ -22,9 +22,9 @@ from costcentre.test.factories import (
     DirectorateFactory,
 )
 
-from forecast.import_actuals import (
+from forecast.import_data import (
     CORRECT_TITLE,
-    CORRECT_WS_TITLE,
+    CORRECT_ACTUAL_TITLE,
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
     TITLE_CELL,
@@ -409,7 +409,7 @@ class ImportActualsTest(TestCase):
 
     def test_check_trial_balance_format(self):
         fake_work_sheet = FakeWorkSheet()
-        fake_work_sheet.title = CORRECT_WS_TITLE
+        fake_work_sheet.title = CORRECT_ACTUAL_TITLE
         fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TITLE)
         fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, 8, 1))
         # wrong month

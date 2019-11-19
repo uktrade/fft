@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from forecast.import_actuals import upload_trial_balance_report
+from forecast.import_data import upload_trial_balance_report
 
 
 class Command(BaseCommand):

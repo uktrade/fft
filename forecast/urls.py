@@ -6,7 +6,7 @@ from forecast.views.edit_forecast import (
     EditForecastView,
     edit_forecast_prototype,
 )
-from forecast.views.upload_figures import (
+from forecast.views.upload_file import (
     UploadActualsView,
 )
 from forecast.views.view_forecast import (
