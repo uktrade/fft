@@ -27,7 +27,7 @@ class UploadActualsView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Hello!"
+        context["section_name"] = "Upload Actuals"
         return context
 
 
@@ -41,6 +41,7 @@ class UploadActualsView(FormView):
             file_upload = FileUpload(
                 document_file=request.FILES['file'],
                 uploading_user=request.user,
+                document_type=FileUpload.ACTUALS,
             )
             file_upload.save()
             # Process file async
@@ -74,7 +75,7 @@ class UploadBudgetView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Upload Actuals"
+        context["section_name"] = "Upload Budgets"
         return context
 
     def post(self, request, *args, **kwargs):
@@ -87,6 +88,7 @@ class UploadBudgetView(FormView):
             file_upload = FileUpload(
                 document_file=request.FILES['file'],
                 uploading_user=request.user,
+                document_type=FileUpload.BUDGET,
             )
             file_upload.save()
             # Process file async

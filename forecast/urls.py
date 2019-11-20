@@ -8,6 +8,7 @@ from forecast.views.edit_forecast import (
 )
 from forecast.views.upload_file import (
     UploadActualsView,
+    UploadBudgetView,
 )
 from forecast.views.view_forecast import (
     CostCentreView,
@@ -46,9 +47,14 @@ urlpatterns = [
         name="choose_cost_centre",
     ),
     path(
-        "upload-file/",
+        "upload-actuals/",
         UploadActualsView.as_view(),
         name="upload_actuals_file"
+    ),
+    path(
+        "upload-budgets/",
+        UploadBudgetView.as_view(),
+        name="upload_budget_file"
     ),
     path(
         "dit/",
