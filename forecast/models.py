@@ -482,6 +482,8 @@ class UploadingActuals(FinancialCode):
             "financial_period",
         )
 
+class UploadingBudgets(UploadingActuals):
+    pass
 
 class OSCARReturn(models.Model):
     """Used for downloading the Oscar return.

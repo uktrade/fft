@@ -32,7 +32,6 @@ from forecast.tables import (
 )
 from forecast.views.base import ForecastViewPermissionMixin
 
-
 TEST_COST_CENTRE = 109076
 TEST_FINANCIAL_YEAR = 2019
 
@@ -54,8 +53,8 @@ programme_columns = {
 
 natural_account_columns = {
     "programme__budget_type_fk__budget_type_display": "Hidden",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",  # noqa
-    "natural_account_code__expenditure_category__grouping_description": "Budget Category",  # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping", # noqa
+    "natural_account_code__expenditure_category__grouping_description": "Budget Category", # noqa
 }
 
 
@@ -114,16 +113,15 @@ class CostClassView(
             "cost_centre__cost_centre_code": "Cost Centre Code",
             "cost_centre__cost_centre_name": "Cost Centre Description",
             "natural_account_code__natural_account_code": "Natural Account Code",
-            "natural_account_code__natural_account_code_description": "Natural Account Code Description",  # noqa
+            "natural_account_code__natural_account_code_description": "Natural Account Code Description", # noqa
             "programme__programme_code": "Programme Code",
             "programme__programme_description": "Programme Description",
             "project_code__project_code": "Project Code",
             "project_code__project_description": "Project Description",
             "programme__budget_type_fk__budget_type_display": "Budget Type",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",  # noqa
-        # noqa
-            "natural_account_code__expenditure_category__grouping_description": "Budget Category",  # noqa
-            "natural_account_code__account_L5_code__economic_budget_code": "Expenditure Type",  # noqa
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",   # noqa
+            "natural_account_code__expenditure_category__grouping_description": "Budget Category",   # noqa
+            "natural_account_code__account_L5_code__economic_budget_code": "Expenditure Type",   # noqa
         }
         cost_centre_code = TEST_COST_CENTRE
         pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
@@ -172,14 +170,14 @@ def get_forecast_table():
 
     sub_total_nac = [
         "programme__budget_type_fk__budget_type_display",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
     ]
     display_sub_total_column = (
         "natural_account_code__expenditure_category__grouping_description"
     )
     order_list_nac = [
         "programme__budget_type_fk__budget_type_display_order",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
     ]
 
     q3 = MonthlyFigure.pivot.subtotal_data(

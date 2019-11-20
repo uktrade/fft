@@ -27,13 +27,13 @@ def get_month_dict():
     q = FinancialPeriod.objects.filter(period_calendar_code__gt=0).values(
         "period_short_name"
     )
-    my_dict = {}
+    period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
             FinancialPeriod, "period_short_name", e["period_short_name"]
         )
-        my_dict[e["period_short_name"].lower()] = per_obj
-    return my_dict
+        period_dict[e["period_short_name"].lower()] = per_obj
+    return period_dict
 
 
 def import_adi_file(csvfile):

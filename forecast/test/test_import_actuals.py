@@ -23,8 +23,8 @@ from costcentre.test.factories import (
 )
 
 from forecast.import_data import (
-    CORRECT_TITLE,
     CORRECT_ACTUAL_TITLE,
+    CORRECT_ACTUAL_WS_NAME,
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
     TITLE_CELL,
@@ -409,8 +409,8 @@ class ImportActualsTest(TestCase):
 
     def test_check_trial_balance_format(self):
         fake_work_sheet = FakeWorkSheet()
-        fake_work_sheet.title = CORRECT_ACTUAL_TITLE
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TITLE)
+        fake_work_sheet.title = CORRECT_ACTUAL_WS_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_ACTUAL_TITLE)
         fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, 8, 1))
         # wrong month
         with self.assertRaises(TrialBalanceError):
@@ -436,7 +436,7 @@ class ImportActualsTest(TestCase):
             )
         # wrong worksheet title
         fake_work_sheet.title = 'Unknown'
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TITLE)
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_ACTUAL_TITLE)
         with self.assertRaises(TrialBalanceError):
             check_trial_balance_format(
                 fake_work_sheet,

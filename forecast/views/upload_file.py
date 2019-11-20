@@ -3,12 +3,8 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
 from forecast.forms import (
-    UploadBudgetsForm,
     UploadActualsForm,
-)
-from forecast.import_data import (
-    upload_budget,
-    upload_trial_balance_report,
+    UploadBudgetsForm,
 )
 from forecast.tasks import process_uploaded_file
 
@@ -30,7 +26,6 @@ class UploadActualsView(FormView):
         context["section_name"] = "Upload Actuals"
         return context
 
-
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -48,13 +43,11 @@ class UploadActualsView(FormView):
 
             if settings.ASYNC_FILE_UPLOAD:
                 process_uploaded_file.delay(
-                    upload_trial_balance_report,
                     data['period'].period_calendar_code,
                     data['year'].financial_year,
                 )
             else:
                 process_uploaded_file(
-                    upload_trial_balance_report,
                     data['period'].period_calendar_code,
                     data['year'].financial_year,
                 )
@@ -95,12 +88,10 @@ class UploadBudgetView(FormView):
 
             if settings.ASYNC_FILE_UPLOAD:
                 process_uploaded_file.delay(
-                    upload_budget,
                     data['year'].financial_year,
                 )
             else:
                 process_uploaded_file(
-                    upload_budget,
                     data['year'].financial_year,
                 )
 

@@ -21,6 +21,7 @@ from forecast.models import (
     FinancialPeriod,
     MonthlyFigure,
     UploadingActuals,
+    UploadingBudgets,
 )
 
 from upload_file.utils import set_file_upload_error
@@ -33,8 +34,8 @@ FIRST_DATA_ROW = 13
 
 MONTH_CELL = "B2"
 TITLE_CELL = "B1"
-CORRECT_TITLE = "Detail Trial Balance"
-CORRECT_ACTUAL_TITLE = "FNDWRR"
+CORRECT_ACTUAL_TITLE = "Detail Trial Balance"
+CORRECT_ACTUAL_WS_NAME = "FNDWRR"
 
 # Sample chart of account entry
 # '3000-30000-109189-52191003-310940-00000-00000-0000-0000-0000' # noqa
@@ -112,8 +113,25 @@ def get_optional_chart_account_obj(model, chart_of_account_item):
     return obj, message
 
 
-def save_monthly_figure(value, period_obj, year_obj, cost_centre, programme_code, nac,
-                        analisys1='', analisys2='', project_code=''):
+def save_tb_row(chart_of_account, value, period_obj, year_obj):
+    """Parse the long strings containing the
+    chart of account information. Return errors
+    if the elements of the chart of account are missing from database."""
+    chart_account_list = chart_of_account.split(CHART_ACCOUNT_SEPARATOR)
+    programme_code = chart_account_list[PROGRAMME_INDEX]
+    # TODO put GENERIC_PROGRAMME_CODE in database
+    # Handle lines without programme code
+    if not int(programme_code):
+        if value:
+            programme_code = GENERIC_PROGRAMME_CODE
+        else:
+            return True, ""
+    cost_centre = chart_account_list[CC_INDEX]
+    nac = chart_account_list[NAC_INDEX]
+    analisys1 = chart_account_list[ANALYSIS1_INDEX]
+    analisys2 = chart_account_list[ANALYSIS2_INDEX]
+    project_code = chart_account_list[PROJECT_INDEX]
+
     error_message = ""
     analysis1_obj = None
     analysis2_obj = None
@@ -173,40 +191,11 @@ def save_monthly_figure(value, period_obj, year_obj, cost_centre, programme_code
     return True
 
 
-def save_tb_row(chart_of_account, value, period_obj, year_obj):
-    """Parse the long strings containing the
-    chart of account information. Return errors
-    if the elements of the chart of account are missing from database."""
-    chart_account_list = chart_of_account.split(CHART_ACCOUNT_SEPARATOR)
-    programme_code = chart_account_list[PROGRAMME_INDEX]
-    # TODO put GENERIC_PROGRAMME_CODE in database
-    # Handle lines without programme code
-    if not int(programme_code):
-        if value:
-            programme_code = GENERIC_PROGRAMME_CODE
-        else:
-            return True, ""
-    cost_centre = chart_account_list[CC_INDEX]
-    nac = chart_account_list[NAC_INDEX]
-    analisys1 = chart_account_list[ANALYSIS1_INDEX]
-    analisys2 = chart_account_list[ANALYSIS2_INDEX]
-    project_code = chart_account_list[PROJECT_INDEX]
-    return save_monthly_figure(value,
-                               period_obj,
-                               year_obj,
-                               cost_centre,
-                               programme_code,
-                               nac,
-                               analisys1,
-                               analisys2,
-                               project_code)
-
-
 def check_trial_balance_format(ws, period, year):
     """Check that the file is really the trial
     balance and it is the correct period"""
 
-    if ws[TITLE_CELL].value != CORRECT_TITLE:
+    if ws[TITLE_CELL].value != CORRECT_ACTUAL_TITLE:
         # wrong file
         raise TrialBalanceError(
             "This file appears to be corrupt (title is incorrect)"
@@ -254,7 +243,7 @@ def validate_excel_file(file_upload, ws_title):
 
 def upload_trial_balance_report(file_upload, month_number, year):
     try:
-        wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_TITLE)
+        wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_WS_NAME)
     except TrialBalanceError as ex:
         set_file_upload_error(
             file_upload,
@@ -279,11 +268,11 @@ def upload_trial_balance_report(file_upload, month_number, year):
         FinancialPeriod,
         "period_calendar_code",
         month_number)
+
     # Clear the table used to upload the actuals.
     # The actuals are uploaded to to a temporary storage, and copied
     # to the MonthlyFigure when the upload is completed successfully.
     # This means that we always have a full upload.
-
     UploadingActuals.objects.filter(
         financial_year=year,
         financial_period=period_obj,
@@ -323,5 +312,38 @@ def upload_trial_balance_report(file_upload, month_number, year):
     return True
 
 
+def check_budget_format(ws):
+    return True
+
+
 def upload_budget(file_upload, year):
-    pass
+    try:
+        wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_WS_NAME)
+    except TrialBalanceError as ex:
+        set_file_upload_error(
+            file_upload,
+            str(ex),
+            str(ex),
+        )
+        raise ex
+
+    try:
+        check_budget_format(ws)
+    except TrialBalanceError as ex:
+        set_file_upload_error(
+            file_upload,
+            str(ex),
+            str(ex),
+        )
+        wb.close
+        raise ex
+
+    year_obj, msg = get_fk(FinancialYear, year)
+    # Clear the table used to upload the budgets.
+    # The budgets are uploaded to to a temporary storage, and copied
+    # when the upload is completed successfully.
+    # This means that we always have a full upload.
+    UploadingBudgets.objects.filter(
+        financial_year=year,
+    ).delete()
+
