@@ -429,6 +429,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
+    # TODO don't save to month that have actuals
     class Meta:
         unique_together = (
             "programme",
@@ -455,8 +456,9 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
 
 
 class UploadingActuals(FinancialCode):
-    """Used to upload the actuals.
-    When the upload is successfully completed, they get copied to the Monthly figures.
+    """Used as temporary storage for  uploading the actuals.
+    When the upload is successfully completed,
+    they get copied to the Monthly figures.
     This allow to achieve a all-or-nothing upload."""
     id = models.AutoField("Row ID", primary_key=True)
     financial_year = models.ForeignKey(
@@ -482,8 +484,11 @@ class UploadingActuals(FinancialCode):
             "financial_period",
         )
 
+
 class UploadingBudgets(UploadingActuals):
+    """Used as temporary storage for  uploading the actuals."""
     pass
+
 
 class OSCARReturn(models.Model):
     """Used for downloading the Oscar return.

@@ -12,7 +12,7 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.import_csv import get_fk, get_fk_from_field
+from core.import_csv import get_fk, get_fk_from_field, xslx_header_to_dict
 from core.models import FinancialYear
 
 from costcentre.models import CostCentre
@@ -86,7 +86,11 @@ COPY_DATA_SQL = 'INSERT INTO forecast_monthlyfigure(' \
                 ' FROM forecast_uploadingactuals;'
 
 
-class TrialBalanceError(Exception):
+class UploadFileFormatError(Exception):
+    pass
+
+
+class UploadFileDataError(Exception):
     pass
 
 
@@ -166,7 +170,7 @@ def save_tb_row(chart_of_account, value, period_obj, year_obj):
         )
         error_message += message
     if error_message:
-        raise TrialBalanceError(
+        raise UploadFileDataError(
             error_message
         )
 
@@ -197,20 +201,20 @@ def check_trial_balance_format(ws, period, year):
 
     if ws[TITLE_CELL].value != CORRECT_ACTUAL_TITLE:
         # wrong file
-        raise TrialBalanceError(
+        raise UploadFileFormatError(
             "This file appears to be corrupt (title is incorrect)"
         )
 
     report_date = ws[MONTH_CELL].value
     if report_date.year != year:
         # wrong date
-        raise TrialBalanceError(
+        raise UploadFileFormatError(
             "File is for wrong year"
         )
 
     if report_date.month != period:
         # wrong date
-        raise TrialBalanceError(
+        raise UploadFileFormatError(
             "File is for wrong period"
         )
 
@@ -234,7 +238,7 @@ def validate_excel_file(file_upload, ws_title):
     ws = wb.worksheets[0]
     if ws.title != ws_title:
         # wrong file
-        raise TrialBalanceError(
+        raise UploadFileFormatError(
             "File appears to be incorrect: worksheet name is '{}', "
             "expected name is '{}".format(ws.title, ws_title)
         )
@@ -244,7 +248,7 @@ def validate_excel_file(file_upload, ws_title):
 def upload_trial_balance_report(file_upload, month_number, year):
     try:
         wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_WS_NAME)
-    except TrialBalanceError as ex:
+    except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
@@ -254,7 +258,7 @@ def upload_trial_balance_report(file_upload, month_number, year):
 
     try:
         check_trial_balance_format(ws, month_number, year)
-    except TrialBalanceError as ex:
+    except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
@@ -291,7 +295,7 @@ def upload_trial_balance_report(file_upload, month_number, year):
             if actual:
                 try:
                     save_tb_row(chart_of_account, actual, period_obj, year_obj)
-                except TrialBalanceError as ex:
+                except UploadFileDataError as ex:
                     wb.close
                     msg = 'Error at row {}: {}'. \
                         format(row, str(ex))
@@ -307,29 +311,74 @@ def upload_trial_balance_report(file_upload, month_number, year):
     # Now copy the newly uploaded actuals to the monthly figure table
     copy_actuals_to_monthly_figure(period_obj, year)
     period_obj.actual_loaded = True
+    # TODO set all previous month to be Actual Loaded
     period_obj.save()
     wb.close
     return True
 
 
-def check_budget_format(ws):
+EXPECTED_BUDGET_HEADERS = ['cost centre',
+                           'natural account',
+                           'programme',
+                           'analysis',
+                           'analysis2',
+                           'project',
+                           'apr',
+                           'may',
+                           'jun',
+                           'jul',
+                           'aug',
+                           'sep',
+                           'oct',
+                           'nov',
+                           'dec',
+                           'jan',
+                           'feb',
+                           'mar']
+
+
+def check_budget_header(header_dict, correct_header):
+    if not all(elem in [*header_dict] for elem in correct_header):
+        raise UploadFileFormatError(
+            "Missing or wrong headers: expected {}, found {}".
+                format(correct_header, *header_dict)
+        )
     return True
+
+
+def get_forecast_month_dict():
+    """Link the column names in the ADI file with
+    the foreign key used in the MonthlyFigure to
+    identify the period"""
+    q = FinancialPeriod.objects. \
+        filter(period_calendar_code__gt=0,
+               period_calendar_code__lt=15,
+               actual_loaded=False).values(
+        "period_short_name"
+    )
+    period_dict = {}
+    for e in q:
+        per_obj, msg = get_fk_from_field(
+            FinancialPeriod, "period_short_name", e["period_short_name"]
+        )
+        period_dict[e["period_short_name"].lower()] = per_obj
+    return period_dict
 
 
 def upload_budget(file_upload, year):
     try:
         wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_WS_NAME)
-    except TrialBalanceError as ex:
+    except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
             str(ex),
         )
         raise ex
-
+    header_dict = xslx_header_to_dict(ws[1])
     try:
-        check_budget_format(ws)
-    except TrialBalanceError as ex:
+        check_budget_header(header_dict)
+    except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
@@ -339,6 +388,7 @@ def upload_budget(file_upload, year):
         raise ex
 
     year_obj, msg = get_fk(FinancialYear, year)
+    month_dict = get_forecast_month_dict()
     # Clear the table used to upload the budgets.
     # The budgets are uploaded to to a temporary storage, and copied
     # when the upload is completed successfully.
@@ -346,4 +396,66 @@ def upload_budget(file_upload, year):
     UploadingBudgets.objects.filter(
         financial_year=year,
     ).delete()
+    for row in range(2, ws.max_row):
+        cost_centre = ws["{}{}".format(header_dict["cost centre"], row)].value
+        programme_code = ws["{}{}".format(header_dict["programme"], row)].value
+        nac = ws["{}{}".format(header_dict["natural account"], row)].value
+        analisys1 = ws["{}{}".format(header_dict["analysis"], row)].value
+        analisys2 = ws["{}{}".format(header_dict["analysis2"], row)].value
+        project_code = ws["{}{}".format(header_dict["project"], row)].value
 
+        error_message = ""
+        analysis1_obj = None
+        analysis2_obj = None
+        project_obj = None
+        nac_obj, message = get_fk(NaturalCode, nac)
+        error_message += message
+        cc_obj, message = get_fk(CostCentre, cost_centre)
+        error_message += message
+        programme_obj, message = get_fk(ProgrammeCode, programme_code)
+        error_message += message
+        if analisys1:
+            analysis1_obj, message = get_optional_chart_account_obj(
+                Analysis1,
+                analisys1,
+            )
+        error_message += message
+        if analisys2:
+            analysis2_obj, message = get_optional_chart_account_obj(
+                Analysis2,
+                analisys2,
+            )
+            error_message += message
+        if project_code:
+            project_obj, message = get_optional_chart_account_obj(
+                ProjectCode,
+                project_code,
+            )
+            error_message += message
+        if error_message:
+            UploadingBudgets.objects.filter(
+                financial_year=year,
+            ).delete()
+            raise UploadFileDataError(
+                error_message
+            )
+
+        for month, period_obj in month_dict.items():
+            period_budget = ws["{}{}".format(header_dict[month.lower()], row)].value
+            budget_obj, created = UploadingBudgets.objects.get_or_create(
+                financial_year=year_obj,
+                programme=programme_obj,
+                cost_centre=cc_obj,
+                natural_account_code=nac_obj,
+                analysis1_code=analysis1_obj,
+                analysis2_code=analysis2_obj,
+                project_code=project_obj,
+                financial_period=period_obj,
+            )
+            if created:
+                # to avoid problems with precision,
+                # we store the figures in pence
+                budget_obj.amount = period_budget * 100
+            else:
+                budget_obj.amount += period_budget * 100
+            budget_obj.save()

@@ -24,9 +24,9 @@ def get_month_dict():
     """Link the column names in the ADI file with
     the foreign key used in the MonthlyFigure to
     identify the period"""
-    q = FinancialPeriod.objects.filter(period_calendar_code__gt=0).values(
-        "period_short_name"
-    )
+    q = FinancialPeriod.objects.\
+        filter(period_calendar_code__gt=0,
+               period_calendar_code__lt=15).values("period_short_name")
     period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(

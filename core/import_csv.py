@@ -38,6 +38,16 @@ def csv_header_to_dict(row):
     return d
 
 
+# build the dict from the header row
+# make everything lower case to make
+# it case insensitive
+def xslx_header_to_dict(row):
+    d = {}
+    for c in row:
+        d[c.value.lower()] = c.column
+    return d
+
+
 def add_position(d, h):
     """It substitute the header title with
     the column number in the dictionary
@@ -175,11 +185,11 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
     # Before starting to read, check that all the expected columns exists
     if not all(elem in header for elem in l1):
         msg = (
-            "Missing/wrong headers: expected "
-            + ", ".join(l1)
-            + ". The file has: "
-            + ", ".join(header.keys())
-            + "."
+                "Missing/wrong headers: expected "
+                + ", ".join(l1)
+                + ". The file has: "
+                + ", ".join(header.keys())
+                + "."
         )
         return False, msg
 
@@ -223,13 +233,13 @@ class ImportInfo:
     # when the import is completed successfully
 
     def __init__(
-        self,
-        key={},
-        title="",
-        h_list=[],
-        special_import_func=None,
-        filter=[],
-        extra_func=None,
+            self,
+            key={},
+            title="",
+            h_list=[],
+            special_import_func=None,
+            filter=[],
+            extra_func=None,
     ):
         self.key = key
         self.special_func = special_import_func
@@ -278,11 +288,11 @@ class ImportInfo:
         # Before starting to read, check that all the expected columns exists
         if not all(elem in header for elem in l1):
             msg = (
-                "Missing/wrong headers: expected "
-                + ", ".join(l1)
-                + ". The file has: "
-                + ", ".join(header.keys())
-                + "."
+                    "Missing/wrong headers: expected "
+                    + ", ".join(l1)
+                    + ". The file has: "
+                    + ", ".join(header.keys())
+                    + "."
             )
             return False, msg
 

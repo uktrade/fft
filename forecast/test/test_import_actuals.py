@@ -28,7 +28,8 @@ from forecast.import_data import (
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
     TITLE_CELL,
-    TrialBalanceError,
+    UploadFileDataError,
+    UploadFileFormatError,
     VALID_ECONOMIC_CODE_LIST,
     check_trial_balance_format,
     copy_actuals_to_monthly_figure,
@@ -227,13 +228,9 @@ class ImportActualsTest(TestCase):
             0,
         )
 
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileDataError):
             save_tb_row(
-                '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234'.format(
-                    '123456',
-                    self.not_valid_natural_account_code,
-                    self.programme_code
-                ),
+                '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234',
                 10,
                 self.period_obj,
                 self.year_obj,
@@ -266,7 +263,7 @@ class ImportActualsTest(TestCase):
         )
         bad_title_file_upload.save()
 
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             upload_trial_balance_report(
                 bad_title_file_upload,
                 self.test_period,
@@ -343,7 +340,7 @@ class ImportActualsTest(TestCase):
         )
         bad_file_upload.save()
 
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileDataError):
             upload_trial_balance_report(
                 bad_file_upload,
                 self.test_period,
@@ -413,14 +410,14 @@ class ImportActualsTest(TestCase):
         fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_ACTUAL_TITLE)
         fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, 8, 1))
         # wrong month
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 9,
                 2019,
             )
         #   wrong year
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 8,
@@ -428,16 +425,7 @@ class ImportActualsTest(TestCase):
             )
         # Wrong title
         fake_work_sheet[TITLE_CELL] = FakeCell('Wrong Title')
-        with self.assertRaises(TrialBalanceError):
-            check_trial_balance_format(
-                fake_work_sheet,
-                8,
-                2019,
-            )
-        # wrong worksheet title
-        fake_work_sheet.title = 'Unknown'
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_ACTUAL_TITLE)
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 8,
