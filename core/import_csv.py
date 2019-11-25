@@ -184,13 +184,8 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
 
     # Before starting to read, check that all the expected columns exists
     if not all(elem in header for elem in l1):
-        msg = (
-                "Missing/wrong headers: expected "
-                + ", ".join(l1)
-                + ". The file has: "
-                + ", ".join(header.keys())
-                + "."
-        )
+        msg = "Missing/wrong headers: expected {}, the file has: {}." \
+            .format(''.join(l1), ''.join(header.keys()))
         return False, msg
 
     d = add_position(obj_key, header)
@@ -287,13 +282,9 @@ class ImportInfo:
         l1 = [x.lower() for x in [x.lower() for x in self.header_list]]
         # Before starting to read, check that all the expected columns exists
         if not all(elem in header for elem in l1):
-            msg = (
-                    "Missing/wrong headers: expected "
-                    + ", ".join(l1)
-                    + ". The file has: "
-                    + ", ".join(header.keys())
-                    + "."
-            )
+            msg = "Missing/wrong headers: expected {}, the file has: {}."\
+                .format(''.join(l1), ''.join(header.keys()))
+
             return False, msg
 
         return True, ""
