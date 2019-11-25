@@ -31,18 +31,18 @@ def process_uploaded_file(*args):
             latest_unprocessed.status = FileUpload.PROCESSING
             latest_unprocessed.save()
             if latest_unprocessed.document_type == FileUpload.ACTUALS:
-                upload_trial_balance_report(
+                success = upload_trial_balance_report(
                     latest_unprocessed,
                     *args
                 )
             if latest_unprocessed.document_type == FileUpload.BUDGET:
-                upload_budget(
+                success = upload_budget(
                     latest_unprocessed,
                     *args
                 )
 
             # Process file here
-
-            latest_unprocessed.status = FileUpload.PROCESSED
-            latest_unprocessed.save()
+            if success:
+                latest_unprocessed.status = FileUpload.PROCESSED
+                latest_unprocessed.save()
             print("Saved file...")

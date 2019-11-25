@@ -163,6 +163,10 @@ class Budget(FinancialCode, TimeStampedModel):
 
     id = models.AutoField("Budget ID", primary_key=True)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
+    financial_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+    )
     budget = models.BigIntegerField(default=0)
 
     class Meta:
@@ -455,7 +459,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
         )
 
 
-class UploadingActuals(FinancialCode):
+class UploadingData(FinancialCode):
     """Used as temporary storage for  uploading the actuals.
     When the upload is successfully completed,
     they get copied to the Monthly figures.
@@ -473,6 +477,7 @@ class UploadingActuals(FinancialCode):
     active = models.BooleanField(default=True)
 
     class Meta:
+        abstract = True
         unique_together = (
             "programme",
             "cost_centre",
@@ -485,7 +490,12 @@ class UploadingActuals(FinancialCode):
         )
 
 
-class UploadingBudgets(UploadingActuals):
+class UploadingActuals(UploadingData):
+    """Used as temporary storage for  uploading the actuals."""
+    pass
+
+
+class UploadingBudgets(UploadingData):
     """Used as temporary storage for  uploading the actuals."""
     pass
 
