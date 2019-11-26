@@ -2,7 +2,7 @@ from celery import shared_task
 
 from core.myutils import run_anti_virus
 
-from forecast.import_data import upload_budget, upload_trial_balance_report
+from forecast.import_actuals import upload_budget, upload_trial_balance_report
 
 from upload_file.models import FileUpload
 

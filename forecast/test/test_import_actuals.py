@@ -22,7 +22,7 @@ from costcentre.test.factories import (
     DirectorateFactory,
 )
 
-from forecast.import_data import (
+from forecast.import_actuals import (
     CORRECT_ACTUAL_TITLE,
     CORRECT_ACTUAL_WS_NAME,
     GENERIC_PROGRAMME_CODE,
