@@ -112,6 +112,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+if 'VCAP_SERVICES' in os.environ:
+    services = json.loads(os.getenv('VCAP_SERVICES'))
+    DATABASE_URL = services['postgres'][0]['credentials']['uri']
+else:
+    DATABASE_URL = os.getenv('DATABASE_URL')
+
 DATABASES = {
     "default": env.db()
 }
