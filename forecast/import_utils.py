@@ -27,8 +27,8 @@ class UploadFileDataError(Exception):
 
 
 def get_project_obj(code):
-    project_code = get_id(code, 4)
-    if project_code:
+    if int(code):
+        project_code = get_id(code, 4)
         obj, message = get_fk(ProjectCode, project_code)
     else:
         obj = None
@@ -37,8 +37,8 @@ def get_project_obj(code):
 
 
 def get_analysys1_obj(code):
-    analysis1_code = get_id(code, 6)
-    if analysis1_code:
+    if int(code):
+        analysis1_code = get_id(code, 6)
         obj, message = get_fk(Analysis1, analysis1_code)
     else:
         obj = None
@@ -47,8 +47,8 @@ def get_analysys1_obj(code):
 
 
 def get_analysys2_obj(code):
-    analysis2_code = get_id(code, 6)
-    if analysis2_code:
+    if int(code):
+        analysis2_code = get_id(code, 6)
         obj, message = get_fk(Analysis2, analysis2_code)
     else:
         obj = None

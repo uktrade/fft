@@ -59,7 +59,7 @@ def check_budget_header(header_dict, correct_header):
         raise UploadFileFormatError(error_msg)
 
 
-def copy_budget_to_monthly_figure(year, month_dict):
+def copy_uploaded_budget(year, month_dict):
     # Now copy the newly uploaded actuals to the monthly figure table
     for month, period_obj in month_dict.items():
         Budget.objects.filter(
@@ -86,29 +86,12 @@ def get_primary_nac_obj(code):
     return nac_obj, message
 
 
-def upload_budget(file_upload, year):
-    try:
-        wb, ws = validate_excel_file(file_upload, "Budgets")
-    except UploadFileFormatError as ex:
-        set_file_upload_error(
-            file_upload,
-            str(ex),
-            str(ex),
-        )
-        raise ex
-    header_dict = xslx_header_to_dict(ws[1])
-    try:
-        check_budget_header(header_dict, EXPECTED_BUDGET_HEADERS)
-    except UploadFileFormatError as ex:
-        set_file_upload_error(
-            file_upload,
-            str(ex),
-            str(ex),
-        )
-        wb.close
-        return False
+def upload_budget(ws, year, header_dict):
+    year_obj, created = FinancialYear.objects.get_or_create(financial_year=year)
+    if created:
+        year_obj.financial_year_display = f'{year}/{year - 1999}'
+        year_obj.save()
 
-    year_obj, msg = get_fk(FinancialYear, year)
     month_dict = get_forecast_month_dict()
     # Clear the table used to upload the budgets.
     # The budgets are uploaded to to a temporary storage, and copied
@@ -164,5 +147,29 @@ def upload_budget(file_upload, year):
             else:
                 budget_obj.amount += period_budget * 100
             budget_obj.save()
-    copy_budget_to_monthly_figure(year, month_dict)
+    copy_uploaded_budget(year, month_dict)
     return True
+
+
+def upload_budget_from_file(file_upload, year):
+    try:
+        wb, ws = validate_excel_file(file_upload, "Budgets")
+    except UploadFileFormatError as ex:
+        set_file_upload_error(
+            file_upload,
+            str(ex),
+            str(ex),
+        )
+        raise ex
+    header_dict = xslx_header_to_dict(ws[1])
+    try:
+        check_budget_header(header_dict, EXPECTED_BUDGET_HEADERS)
+    except UploadFileFormatError as ex:
+        set_file_upload_error(
+            file_upload,
+            str(ex),
+            str(ex),
+        )
+        wb.close
+        return False
+    return upload_budget(ws, year, header_dict)

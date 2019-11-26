@@ -2,7 +2,8 @@ from celery import shared_task
 
 from core.myutils import run_anti_virus
 
-from forecast.import_actuals import upload_budget, upload_trial_balance_report
+from forecast.import_actuals import upload_trial_balance_report
+from forecast.import_budgets import upload_budget_from_file
 
 from upload_file.models import FileUpload
 
@@ -36,7 +37,7 @@ def process_uploaded_file(*args):
                     *args
                 )
             if latest_unprocessed.document_type == FileUpload.BUDGET:
-                success = upload_budget(
+                success = upload_budget_from_file(
                     latest_unprocessed,
                     *args
                 )

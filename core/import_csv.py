@@ -43,10 +43,8 @@ def csv_header_to_dict(row):
 # it case insensitive
 # it will break if the header row is over row 9
 def xslx_header_to_dict(row):
-    print(row)
     d = {}
     for cell in row:
-        print(cell)
         # save the letter part of the cell coordinates
         if cell.value:
             d[cell.value.lower()] = cell.coordinate[:-1]
