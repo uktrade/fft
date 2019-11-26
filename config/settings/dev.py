@@ -30,7 +30,3 @@ SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
 ASYNC_FILE_UPLOAD = True
 
 IGNORE_ANTI_VIRUS = False
-
-CLAM_AV_USERNAME = "app1"
-CLAM_AV_PASSWORD = "letmein"
-CLAM_AV_URL = "http://docker.for.mac.localhost:8090/v2/scan"
