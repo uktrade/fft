@@ -139,3 +139,5 @@ fido_db_test_all.json
 
 # Generated static files
 config/staticfiles/
+
+backup.sql
