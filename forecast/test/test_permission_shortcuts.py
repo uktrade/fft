@@ -17,20 +17,19 @@ from forecast.permission_shortcuts import (
     get_objects_for_user,
 )
 from forecast.test.factories import ForecastPermissionFactory
-from forecast.views.edit_forecast import (
-    TEST_COST_CENTRE,
-)
 
 
 class PermissionShortcutsTest(
     TestCase,
 ):
     def setUp(self):
+        test_cost_centre = 888812
+
         self.test_user, _ = get_user_model().objects.get_or_create(
             email="test@test.com"
         )
         self.cost_centre = CostCentreFactory.create(
-            cost_centre_code=TEST_COST_CENTRE
+            cost_centre_code=test_cost_centre
         )
 
     def test_assign_perm(self):

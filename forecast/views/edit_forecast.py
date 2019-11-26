@@ -1,16 +1,18 @@
 import json
+import re
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
-from django.shortcuts import (
-    render,
-)
+from django.http import JsonResponse
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
+
+from core.myutils import get_current_financial_year
 
 from costcentre.forms import (
     MyCostCentresForm,
@@ -20,6 +22,7 @@ from costcentre.models import CostCentre
 from forecast.forms import (
     AddForecastRowForm,
     EditForm,
+    PasteForecastForm,
     UploadActualsForm,
 )
 from forecast.models import (
@@ -30,10 +33,16 @@ from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     get_objects_for_user,
 )
-from forecast.tables import (
-    ForecastTable,
-)
 from forecast.tasks import process_uploaded_file
+from forecast.utils import (
+    CannotFindMonthlyFigureException,
+    ColMatchException,
+    RowMatchException,
+    check_cols_match,
+    check_row_match,
+    get_forecast_monthly_figures_pivot,
+    get_monthly_figures,
+)
 from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
@@ -41,9 +50,6 @@ from forecast.views.base import (
 
 from upload_file.decorators import has_upload_permission
 from upload_file.models import FileUpload
-
-TEST_COST_CENTRE = 888812
-TEST_FINANCIAL_YEAR = 2019
 
 
 class ChooseCostCentreView(UserPassesTestMixin, FormView):
@@ -85,7 +91,6 @@ class ChooseCostCentreView(UserPassesTestMixin, FormView):
 class AddRowView(CostCentrePermissionTest, FormView):
     template_name = "forecast/edit/add.html"
     form_class = AddForecastRowForm
-    financial_year_id = TEST_FINANCIAL_YEAR
     cost_centre_code = None
 
     def get_cost_centre(self):
@@ -119,15 +124,18 @@ class AddRowView(CostCentrePermissionTest, FormView):
             "group": cost_centre.directorate.group.group_name,
             "directorate": cost_centre.directorate.directorate_name,
             "cost_centre_name": cost_centre.cost_centre_name,
-            "cost_centre_num": cost_centre.cost_centre_code,
+            "cost_centre_code": cost_centre.cost_centre_code,
         }
 
     def form_valid(self, form):
         self.get_cost_centre()
         data = form.cleaned_data
+
+        # TODO - investigate the following statement -
+        # "Don't add months that are actuals"
         for financial_period in range(1, 13):
             monthly_figure = MonthlyFigure(
-                financial_year_id=self.financial_year_id,
+                financial_year_id=get_current_financial_year(),
                 financial_period_id=financial_period,
                 cost_centre_id=self.cost_centre_code,
                 programme=data["programme"],
@@ -140,32 +148,6 @@ class AddRowView(CostCentrePermissionTest, FormView):
             monthly_figure.save()
 
         return super().form_valid(form)
-
-
-class EditForecastView(CostCentrePermissionTest, TemplateView):
-    template_name = "forecast/edit/edit.html"
-
-    def cost_centre_details(self):
-        return {
-            "group": "Test group",
-            "directorate": "Test directorate",
-            "cost_centre_name": "Test cost centre name",
-            "cost_centre_num": self.cost_centre_code,
-        }
-
-    def table(self):
-        field_dict = {
-            "cost_centre__directorate": "Directorate",
-            "cost_centre__directorate__directorate_name": "Name",
-            "natural_account_code": "NAC",
-            "cost_centre": self.cost_centre_code,
-        }
-
-        q1 = MonthlyFigure.pivot.pivot_data(
-            field_dict.keys(), {"cost_centre": self.cost_centre_code}
-        )
-
-        return ForecastTable(field_dict, q1)
 
 
 class UploadActualsView(FormView):
@@ -207,12 +189,130 @@ class UploadActualsView(FormView):
             return self.form_invalid(form)
 
 
-def edit_forecast_prototype(request):
-    financial_year = TEST_FINANCIAL_YEAR
-    cost_centre_code = TEST_COST_CENTRE
+# TODO permission decorator
+@require_http_methods(["POST", ])
+def pasted_forecast_content(request, cost_centre_code):
+    form = PasteForecastForm(
+        request.POST,
+    )
+    if form.is_valid():
+        # TODO check user has permission on cost centre
+        paste_content = form.cleaned_data['paste_content']
+        pasted_at_row = form.cleaned_data.get('pasted_at_row', None)
+        all_selected = form.cleaned_data.get('all_selected', False)
 
-    if request.method == "POST":
-        form = EditForm(request.POST)
+        forecast_dump = get_forecast_monthly_figures_pivot(
+            cost_centre_code
+        )
+
+        rows = paste_content.splitlines()
+
+        if all_selected and len(forecast_dump) != len(rows):
+            return JsonResponse({
+                'error': 'Your pasted data does not match the selected rows.'
+            },
+                status=400,
+            )
+
+        # Check for header row
+        start_row = 0
+        if rows[0] == "Natural Account Code":
+            start_row = 1
+
+        monthly_figures = []
+
+        try:
+            for index, row in enumerate(rows, start=start_row):
+                cell_data = re.split(r'\t', row.rstrip('\t'))
+
+                # Check that pasted at content and desired first row match
+                check_row_match(
+                    index,
+                    pasted_at_row,
+                    cell_data,
+                )
+
+                # Check cell data length against expected number of cols
+                check_cols_match(cell_data)
+
+                row_monthly_figures = get_monthly_figures(
+                    cost_centre_code,
+                    cell_data,
+                )
+
+                monthly_figures.extend(row_monthly_figures)
+        except (
+                ColMatchException,
+                RowMatchException,
+                CannotFindMonthlyFigureException,
+        ) as ex:
+            return JsonResponse({
+                'error': str(ex)
+            },
+                status=400,
+            )
+
+        # Update monthly figures
+        for monthly_figure in monthly_figures:
+            monthly_figure.save()
+
+        forecast_dump = get_forecast_monthly_figures_pivot(
+            cost_centre_code
+        )
+
+        return JsonResponse(forecast_dump, safe=False)
+    else:
+        return JsonResponse({
+            'error': 'There was a problem with your '
+                     'submission, please contact support'
+        },
+            status=400,
+        )
+
+
+class EditForecastView(
+    CostCentrePermissionTest,
+    TemplateView,
+):
+    template_name = "forecast/edit/edit.html"
+
+    def cost_centre_details(self):
+        return {
+            "group": "Test group",
+            "directorate": "Test directorate",
+            "cost_centre_name": "Test cost centre name",
+            "cost_centre_code": self.cost_centre_code,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        form = EditForm(
+            initial={
+                "financial_year": get_current_financial_year(),
+                "cost_centre_code": self.cost_centre_code,
+            }
+        )
+
+        pivot_filter = {"cost_centre__cost_centre_code": "{}".format(
+            self.cost_centre_code
+        )}
+        monthly_figures = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
+
+        # TODO - Luisella to restrict to financial year
+        actuals_periods = list(FinancialPeriod.objects.filter(actual_loaded=True).all())
+        actuals_periods_dump = serializers.serialize("json", actuals_periods)
+        forecast_dump = json.dumps(list(monthly_figures), cls=DjangoJSONEncoder)
+        paste_form = PasteForecastForm()
+
+        context["form"] = form
+        context["paste_form"] = paste_form
+        context["actuals_periods_dump"] = actuals_periods_dump
+        context["forecast_dump"] = forecast_dump
+        return context
+
+    def post(self):
+        form = EditForm(self.request.POST)
         if form.is_valid():
             cost_centre_code = form.cleaned_data["cost_centre_code"]
             financial_year = form.cleaned_data["financial_year"]
@@ -232,29 +332,3 @@ def edit_forecast_prototype(request):
                     ).first()
                     monthly_figure.amount = int(float(cell["value"]))
                     monthly_figure.save()
-    else:
-        form = EditForm(
-            initial={
-                "financial_year": financial_year,
-                "cost_centre_code": cost_centre_code,
-            }
-        )
-    pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
-    monthly_figures = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
-
-    # TODO - Luisella to restrict to financial year
-    editable_periods = list(FinancialPeriod.objects.filter(actual_loaded=False).all())
-
-    editable_periods_dump = serializers.serialize("json", editable_periods)
-
-    forecast_dump = json.dumps(list(monthly_figures), cls=DjangoJSONEncoder)
-
-    return render(
-        request,
-        "forecast/edit/edit_prototype.html",
-        {
-            "form": form,
-            "editable_periods_dump": editable_periods_dump,
-            "forecast_dump": forecast_dump,
-        },
-    )

@@ -352,6 +352,10 @@ class PivotManager(models.Manager):
             "Natural Account Code Description",
         "programme__programme_code": "Programme Code",
         "programme__programme_description": "Programme Description",
+        "analysis1_code__analysis1_code": "Contract Code",
+        "analysis1_code__analysis1_description": "Contract Description",
+        "analysis2_code__analysis2_code": "Market Code",
+        "analysis2_code__analysis2_description": "Market Description",
         "project_code__project_code": "Project Code",
         "project_code__project_description": "Project Description",
     }

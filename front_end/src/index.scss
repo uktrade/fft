@@ -1,3 +1,6 @@
+$govuk-page-width: 1800px;
+@import "../../node_modules/govuk-frontend/govuk/all";
+
 body {
   margin: 50px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -49,19 +52,10 @@ td {
   text-align: right;
 }
 
-
-td {
-   cursor: crosshair;
-   //min-width: 120px;
-
-    user-select: none; /* supported by Chrome and Opera */
-   -webkit-user-select: none; /* Safari */
-   -khtml-user-select: none; /* Konqueror HTML */
-   -moz-user-select: none; /* Firefox */
-   -ms-user-select: none; /* Internet Explorer/Edge */
-
-   //font-size: 14px;
+.not-editable {
+  background-color: $govuk-border-colour;
 }
+
 
 .no-select {
     user-select: none; /* supported by Chrome and Opera */
@@ -77,6 +71,14 @@ td {
   border: 1px solid ForestGreen;
   display: block;
   pointer-events: none;
+}
+
+.selected {
+  background-color: $govuk-focus-colour;
+}
+
+.hidden {
+  display: none;
 }
 
 .edit-control {

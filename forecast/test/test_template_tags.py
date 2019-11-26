@@ -11,12 +11,12 @@ from forecast.templatetags.forecast_permissions import (
     is_forecast_user,
 )
 from forecast.test.factories import ForecastPermissionFactory
-from forecast.views.edit_forecast import (
-    TEST_COST_CENTRE,
-)
 
 
 class EditPermissionTest(TestCase):
+    def setUp(self):
+        self.test_cost_centre = 888812
+
     def test_is_forecast_user(self):
         test_user, _ = get_user_model().objects.get_or_create(
             email="test@test.com"
@@ -42,7 +42,7 @@ class EditPermissionTest(TestCase):
         )
 
         cost_centre = CostCentreFactory.create(
-            cost_centre_code=TEST_COST_CENTRE
+            cost_centre_code=self.test_cost_centre
         )
 
         assert not has_edit_permission(test_user)

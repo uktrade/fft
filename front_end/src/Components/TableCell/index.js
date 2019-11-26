@@ -1,66 +1,49 @@
-import React, {Fragment, useState, useEffect, useRef, memo } from 'react';
-import { useDispatch } from 'react-redux';
-import { SET_EDIT_CELL } from '../../Reducers/Edit'
+import React, {Fragment, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { SET_EDITING_CELL } from '../../Reducers/Edit'
 
-const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, row, col, mouseOverCell, mouseUpOnCell, setRect}) => {
+
+const TableCell = ({cell, isHidden}) => {
     const dispatch = useDispatch();
 
-    let cellRef = React.createRef();
-    const inputRef = useRef(null);
-    const [value, setValue] = useState(initialValue);
+    const [value, setValue] = useState(cell.value);
+    const editCellId = useSelector(state => state.edit.cellId);
 
-    //const [rect, setRect] = useState(null);
-
-    // console.log("Re-rendering...");
-
-    // const selectCell = () => {
-    //     if (window.mouseDown) {
-    //         dispatch(
-    //             SELECT_CELL({
-    //                 id: cellId
-    //             })
-    //         );
-
-    //         dispatch(
-    //             SET_LAST_CELL({
-    //                 id: cellId
-    //             })
-    //         );
-    //     }
-    // }
-
-    useEffect(() => {
-        setRect(cellId, row, cellRef.current.getBoundingClientRect())
-    }, [])
-
-    // useEffect(() => {
-    //     if (inputRef && inputRef.current) {
-    //         inputRef.current.focus();
-    //     }
-    // });
+    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const allSelected = useSelector(state => state.selected.all);
 
     const isSelected = () => {
-        // let cellData = thisCell;
+        if (allSelected) {
+            return true
+        }
 
-        // if (cellData && cellData.selected) {
-        //     return true;
-        // }
+        return selectedRow === cell.rowIndex
+    }
 
-        // return false
+    const getClasses = () => {
+        let hiddenResult = '';
+        let editable = '';
 
-        return false
+        if (isHidden) {
+            hiddenResult = isHidden(cell.key) ? ' hidden' : ''
+        }
+
+        if (!cell.editable) {
+            editable = ' not-editable';
+        }
+
+        return "govuk-table__cell " + (isSelected() ? 'selected' : '') + hiddenResult + editable
     }
 
     const handleKeyPress = (event) => {
-        // if(event.key === 'Enter'){
-        //     dispatch({
-        //         type: SET_EDIT_CELL,
-        //         cellId: null
-        //     });
-        // }
+        if(event.key === 'Enter'){
+            dispatch(
+                SET_EDITING_CELL({
+                    "cellId": null
+                })
+            );
+        }
     }
-
-    //console.log("re-render cell")
 
     const setContentState = (value) => {
         if (!parseInt(value)) {
@@ -70,39 +53,33 @@ const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, ro
         setValue(value)
     }
 
-    //sconsole.log("Cell ids: ",editCellId, cellId)
-
     return (
         <Fragment>
             <td
-                className={selected ? 'highlight govuk-table__cell' : 'no-select govuk-table__cell'}
-                ref={cellRef}
+                className={getClasses()}
+
                 onDoubleClick={ () => {
-                    console.log("cellId", cellId)
-                    dispatch(
-                        SET_EDIT_CELL({
-                            rect: cellRef.current.getBoundingClientRect(),
-                            content: value
-                        })
-                    )
+                    if (cell.isEditable) {
+                        dispatch(
+                            SET_EDITING_CELL({
+                                "cellId": cell.id
+                            })
+                        );
+                    }
                 }}
 
                 onMouseOver={ () => {
-                    mouseOverCell(cellId, row, col, cellRef.current.getBoundingClientRect())
+                    console.log(value)
+
                 }}
 
                 onMouseUp={ () => {
-                    mouseUpOnCell(cellId, row, col)
-                }}
 
-                onMouseDown={ () => {
-                    selectInitialCell(cellId, row, col, cellRef.current.getBoundingClientRect())
                 }}
             >
-                {1 == 2 ? (
+                {editCellId === cell.id ? (
                     <input
                         className="cell-input"
-                        ref={inputRef}
                         type="text"
                         value={value}
                         onChange={e => setContentState(e.target.value)}
@@ -118,11 +95,4 @@ const TableCell = ({index, cellId, initialValue, selected, selectInitialCell, ro
     );
 }
 
-const comparisonFn = function(prevProps, nextProps) {
-    return (
-        prevProps.editing === nextProps.editing &&
-        prevProps.selected === nextProps.selected
-    )
-};
-
-export default memo(TableCell, comparisonFn);
+export default TableCell

@@ -16,3 +16,10 @@ def today_string():
 
 SUB_TOTAL_CLASS = "sub-total"
 GRAN_TOTAL_CLASS = "gran-total"
+
+
+def check_empty(value):
+    if value is not None and value != '':
+        return value
+
+    return None

@@ -1,7 +1,6 @@
 {% extends "forecast/forecast_base.html" %}
 
-{% load render_table from django_tables2 %}
-{% load querystring from django_tables2 %}
+{% load render_bundle from webpack_loader %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
@@ -15,10 +14,10 @@
         <div class="govuk-grid-column-one-half">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
-                    <p>AREA FOR DATA SELECTION</p>
+                    <p>AREA FOR DATE/PERIOD SELECTION</p>
                 </div>
                 <div class="govuk-grid-column-one-third">
-                    <a href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_num %}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <a href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code %}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
                       Add a new row
                     </a>
                 </div>
@@ -30,7 +29,27 @@
             </div>
         </div>
     </div>
-    <div class="tables-container">
-        {% render_table view.table %}
-    </div>
+    <div id="root"></div>
+    <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
+        {% csrf_token %}
+        {{ form }}
+        <input class="govuk-button" data-module="govuk-button" type="submit" value="Save changes" >
+    </form>
+    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
+        {% csrf_token %}
+        {{ paste_form }}
+    </form>
+{% endblock %}
+{% block scripts %}
+    {% render_bundle 'vendors' %}
+    {% render_bundle 'main' %}
+    {% render_bundle 'runtime~main' %}
+    <script>
+        function setData() {
+            document.getElementById("id_cell_data").value = JSON.stringify(window.cell_data);
+        }
+        window.actuals_periods = {{ actuals_periods_dump|safe }};
+        window.table_data = {{ forecast_dump|safe }};
+        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
+    </script>
 {% endblock %}
