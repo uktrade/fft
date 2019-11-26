@@ -68,12 +68,14 @@ class UploadFileDataError(Exception):
 
 def sql_for_data_copy(data_type):
     if data_type == FileUpload.ACTUALS:
-        temp_data_file = 'UploadingActuals'
-        target = 'forecast_MonthlyFigure'
+        temp_data_file = 'forecast_uploadingactuals'
+        target = 'forecast_monthlyfigure'
+        what = 'amount'
     else:
         if data_type == FileUpload.BUDGET:
-            temp_data_file = 'UploadingBudgets'
-            target = 'Budget'
+            temp_data_file = 'forecast_uploadingbudgets'
+            target = 'forecast_budget'
+            what = 'budget'
         else:
             raise UploadFileDataError(
                 'Unknown upload type.'
@@ -91,7 +93,7 @@ def sql_for_data_copy(data_type):
            'natural_account_code_id, ' \
            'programme_id, ' \
            'project_code_id, ' \
-           'amount, ' \
+           '{}, ' \
            'forecast_expenditure_type_id)' \
            ' SELECT  ' \
            'now(), ' \
@@ -107,7 +109,7 @@ def sql_for_data_copy(data_type):
            'project_code_id, ' \
            'amount, ' \
            'forecast_expenditure_type_id ' \
-           ' FROM {};'.format(target, temp_data_file)
+           ' FROM {};'.format(target, what, temp_data_file)
 
 
 def copy_actuals_to_monthly_figure(period_obj, year):
@@ -371,6 +373,8 @@ def copy_budget_to_monthly_figure(year, month_dict):
             financial_year=year,
             financial_period=period_obj,
         ).delete()
+    sql = sql_for_data_copy(FileUpload.BUDGET)
+    print(sql)
     with connection.cursor() as cursor:
         cursor.execute(sql_for_data_copy(FileUpload.BUDGET))
     UploadingBudgets.objects.filter(
