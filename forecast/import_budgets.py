@@ -54,9 +54,9 @@ def check_budget_header(header_dict, correct_header):
     for elem in correct_header:
         if elem not in header_dict:
             correct = False
-            error_msg += f'Header {elem} not found.'
+            error_msg += f"'{elem}' not found. "
     if not correct:
-        raise UploadFileFormatError(error_msg)
+        raise UploadFileFormatError(f'Error in the header: {error_msg}')
 
 
 def copy_uploaded_budget(year, month_dict):
@@ -100,7 +100,7 @@ def upload_budget(ws, year, header_dict):
     UploadingBudgets.objects.filter(
         financial_year=year,
     ).delete()
-    for row in range(2, ws.max_row):
+    for row in range(2, ws.max_row + 1):
         cost_centre = ws["{}{}".format(header_dict["cost centre"], row)].value
         if not cost_centre:
             break
@@ -125,30 +125,31 @@ def upload_budget(ws, year, header_dict):
         error_message += message
         if error_message:
             raise UploadFileDataError(
-                error_message
+                f'Error at row {row}: {error_message}.'
             )
 
         for month, period_obj in month_dict.items():
             period_budget = ws["{}{}".format(header_dict[month.lower()], row)].value
-            budget_obj, created = UploadingBudgets.objects.get_or_create(
-                financial_year=year_obj,
-                programme=programme_obj,
-                cost_centre=cc_obj,
-                natural_account_code=nac_obj,
-                analysis1_code=analysis1_obj,
-                analysis2_code=analysis2_obj,
-                project_code=project_obj,
-                financial_period=period_obj,
-            )
-            if created:
-                # to avoid problems with precision,
-                # we store the figures in pence
-                budget_obj.amount = period_budget * 100
-            else:
-                budget_obj.amount += period_budget * 100
-            budget_obj.save()
+            if period_budget:
+                budget_obj, created = UploadingBudgets.objects.get_or_create(
+                    financial_year=year_obj,
+                    programme=programme_obj,
+                    cost_centre=cc_obj,
+                    natural_account_code=nac_obj,
+                    analysis1_code=analysis1_obj,
+                    analysis2_code=analysis2_obj,
+                    project_code=project_obj,
+                    financial_period=period_obj,
+                )
+                if created:
+                    # to avoid problems with precision,
+                    # we store the figures in pence
+                    budget_obj.amount = period_budget * 100
+                else:
+                    budget_obj.amount += period_budget * 100
+                budget_obj.save()
+
     copy_uploaded_budget(year, month_dict)
-    return True
 
 
 def upload_budget_from_file(file_upload, year):
@@ -171,5 +172,16 @@ def upload_budget_from_file(file_upload, year):
             str(ex),
         )
         wb.close
-        return False
-    return upload_budget(ws, year, header_dict)
+        raise ex
+    try:
+        upload_budget(ws, year, header_dict)
+    except UploadFileDataError as ex:
+        set_file_upload_error(
+            file_upload,
+            str(ex),
+            str(ex),
+        )
+        wb.close
+        raise ex
+    wb.close
+    return True

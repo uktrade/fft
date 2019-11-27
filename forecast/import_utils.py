@@ -140,8 +140,9 @@ def get_forecast_month_dict():
     """Link the column names in the ADI file with
     the foreign key used in the MonthlyFigure to
     identify the period"""
+    actual_month = FinancialPeriod.financial_period_info.actual_month()
     q = FinancialPeriod.objects. \
-        filter(period_calendar_code__gt=0,
+        filter(period_calendar_code__gt=actual_month,
                period_calendar_code__lt=15,
                actual_loaded=False).values("period_short_name")
     period_dict = {}

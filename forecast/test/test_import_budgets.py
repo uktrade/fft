@@ -29,6 +29,7 @@ from forecast.import_budgets import (
 from forecast.import_utils import (
     UploadFileDataError,
     UploadFileFormatError,
+    get_forecast_month_dict,
 )
 from forecast.models import (
     Budget,
@@ -87,20 +88,8 @@ class ImportBudgetsTest(TestCase):
 
         self.test_user.set_password(self.test_password)
 
-    def test_upload_budget_invalid_nac(self):
-        self.assertEqual(
-            UploadingBudgets.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
-            0,
-        )
-        self.assertEqual(
-            UploadingBudgets.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
-            0,
-        )
-
+    def test_get_forecast_month_dict(self):
+        pass
 
     def test_upload_budget_report(self):
         # Check that BadZipFile is raised on
@@ -119,18 +108,33 @@ class ImportBudgetsTest(TestCase):
                 self.test_year,
             )
 
-        bad_title_file_upload = FileUpload(
+        bad_header_file_upload = FileUpload(
             document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/budget_upload_bad_header.xlsx',
             ),
             uploading_user=self.test_user,
         )
-        bad_title_file_upload.save()
+        bad_header_file_upload.save()
 
         with self.assertRaises(UploadFileFormatError):
             upload_budget_from_file(
-                bad_title_file_upload,
+                bad_header_file_upload,
+                self.test_year,
+            )
+
+        bad_file_upload = FileUpload(
+            document_file=os.path.join(
+                os.path.dirname(__file__),
+                'test_assets/budget_upload_bad_data.xlsx',
+            ),
+            uploading_user=self.test_user,
+        )
+        bad_file_upload.save()
+
+        with self.assertRaises(UploadFileDataError):
+            upload_budget_from_file(
+                bad_file_upload,
                 self.test_year,
             )
 
@@ -146,39 +150,17 @@ class ImportBudgetsTest(TestCase):
             ).count(),
             0,
         )
+
         cost_centre_code_1 = 888888
         CostCentreFactory.create(
             cost_centre_code=cost_centre_code_1,
             directorate=self.directorate_obj
         )
 
-
-        bad_file_upload = FileUpload(
-            document_file=os.path.join(
-                os.path.dirname(__file__),
-                'test_assets/upload_bad_data.xlsx',
-            ),
-            uploading_user=self.test_user,
-        )
-        bad_file_upload.save()
-
-        with self.assertRaises(UploadFileDataError):
-            upload_budget_from_file(
-                bad_file_upload,
-                self.test_year,
-            )
-
-        self.assertEqual(
-            Budget.objects.filter(
-                cost_centre=cost_centre_code_1
-            ).count(),
-            1,
-        )
-
         good_file_upload = FileUpload(
             document_file=os.path.join(
                 os.path.dirname(__file__),
-                'test_assets/upload_test.xlsx',
+                'test_assets/budget_upload_test.xlsx',
             ),
             uploading_user=self.test_user,
         )
@@ -188,33 +170,54 @@ class ImportBudgetsTest(TestCase):
             good_file_upload,
             self.test_year,
         )
-        # Check that existing figures for the same period have been deleted
+
+        # # Check that existing figures for the same period have been deleted
         self.assertEqual(
             Budget.objects.filter(
-                cost_centre=cost_centre_code_1
+                financial_year=self.test_year
             ).count(),
-            0,
+            24,
         )
-        # Check for existence of monthly figures
+        # # Check that existing figures for the same period have been deleted
         self.assertEqual(
             Budget.objects.filter(
+                financial_year=self.test_year,
                 cost_centre=self.cost_centre_code
             ).count(),
-            4,
+            12,
         )
-        result = Budget.objects.filter(
-            cost_centre=self.cost_centre_code
-        ).aggregate(total=Sum('amount'))
-
-        # Check that figures have correct values
+        # Check that figures for same budgets are added together
         self.assertEqual(
-            result['total'],
-            1000000,
+            Budget.objects.filter(
+                financial_year=self.test_year,
+                cost_centre=self.cost_centre_code,
+                financial_period=1,
+            ).first().budget,
+            1100,
+        )
+        self.assertEqual(
+            Budget.objects.filter(
+                financial_year=self.test_year,
+                cost_centre=self.cost_centre_code,
+                financial_period=12,
+            ).first().budget,
+            2200,
         )
 
-        self.assertTrue(
-            FinancialPeriod.objects.get(
-                period_calendar_code=self.test_period
-            ).actual_loaded
-        )
-
+        # # Check for existence of monthly figures
+        # self.assertEqual(
+        #     Budget.objects.filter(
+        #         cost_centre=self.cost_centre_code
+        #     ).count(),
+        #     4,
+        # )
+        # result = Budget.objects.filter(
+        #     cost_centre=self.cost_centre_code
+        # ).aggregate(total=Sum('amount'))
+        #
+        # # Check that figures have correct values
+        # self.assertEqual(
+        #     result['total'],
+        #     1000000,
+        # )
+        #

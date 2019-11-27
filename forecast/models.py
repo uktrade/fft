@@ -83,6 +83,11 @@ class FinancialPeriodManager(models.Manager):
                 .values_list("period_short_name", "period_long_name")
         )
 
+    def reset_actuals(self):
+        self.get_queryset().\
+            filter(actual_loaded=True).\
+            update(actual_loaded=False)
+
 
 class FinancialPeriod(models.Model):
     """Financial periods: correspond
@@ -178,16 +183,18 @@ class Budget(FinancialCode, TimeStampedModel):
             "analysis2_code",
             "project_code",
             "financial_year",
+            "financial_period",
         )
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}--{}".format(
+        return "{}--{}--{}--{}--{}:{} {}".format(
             self.programme,
             self.natural_account_code,
             self.analysis1_code,
             self.analysis2_code,
             self.project_code,
             self.financial_year,
+            self.financial_period,
         )
 
 
