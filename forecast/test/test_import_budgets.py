@@ -1,12 +1,7 @@
 import os
-from typing import (
-    Dict,
-    TypeVar,
-)
 from zipfile import BadZipFile
 
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from django.test import RequestFactory, TestCase
 
 from chartofaccountDIT.test.factories import (
@@ -22,19 +17,15 @@ from costcentre.test.factories import (
 )
 
 from forecast.import_budgets import (
-    EXPECTED_BUDGET_HEADERS,
-    copy_uploaded_budget,
     upload_budget_from_file,
 )
 from forecast.import_utils import (
     UploadFileDataError,
     UploadFileFormatError,
-    get_forecast_month_dict,
 )
 from forecast.models import (
     Budget,
     FinancialPeriod,
-    UploadingBudgets,
 )
 
 from upload_file.models import FileUpload
@@ -52,6 +43,7 @@ class ImportBudgetsTest(TestCase):
 
         self.factory = RequestFactory()
         self.cost_centre_code = TEST_COST_CENTRE
+        self.cost_centre_code_1 = 888888
         self.valid_natural_account_code = TEST_VALID_NATURAL_ACCOUNT_CODE
         self.not_valid_natural_account_code = TEST_NOT_VALID_NATURAL_ACCOUNT_CODE
         self.programme_code = TEST_PROGRAMME_CODE
@@ -63,6 +55,11 @@ class ImportBudgetsTest(TestCase):
             cost_centre_code=self.cost_centre_code,
             directorate=self.directorate_obj
         )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code_1,
+            directorate=self.directorate_obj
+        )
+
         NaturalCodeFactory.create(
             natural_account_code=self.valid_natural_account_code,
             used_for_budget=True
@@ -87,9 +84,6 @@ class ImportBudgetsTest(TestCase):
         )
 
         self.test_user.set_password(self.test_password)
-
-    def test_get_forecast_month_dict(self):
-        pass
 
     def test_upload_budget_report(self):
         # Check that BadZipFile is raised on
@@ -122,7 +116,7 @@ class ImportBudgetsTest(TestCase):
                 bad_header_file_upload,
                 self.test_year,
             )
-
+        # Check that the error is raised, and no data is uploaded
         bad_file_upload = FileUpload(
             document_file=os.path.join(
                 os.path.dirname(__file__),
@@ -132,29 +126,18 @@ class ImportBudgetsTest(TestCase):
         )
         bad_file_upload.save()
 
+        self.assertEqual(
+            Budget.objects.all().count(),
+            0,
+        )
         with self.assertRaises(UploadFileDataError):
             upload_budget_from_file(
                 bad_file_upload,
                 self.test_year,
             )
-
         self.assertEqual(
-            Budget.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            Budget.objects.all().count(),
             0,
-        )
-        self.assertEqual(
-            UploadingBudgets.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
-            0,
-        )
-
-        cost_centre_code_1 = 888888
-        CostCentreFactory.create(
-            cost_centre_code=cost_centre_code_1,
-            directorate=self.directorate_obj
         )
 
         good_file_upload = FileUpload(
@@ -204,20 +187,61 @@ class ImportBudgetsTest(TestCase):
             2200,
         )
 
-        # # Check for existence of monthly figures
-        # self.assertEqual(
-        #     Budget.objects.filter(
-        #         cost_centre=self.cost_centre_code
-        #     ).count(),
-        #     4,
-        # )
-        # result = Budget.objects.filter(
-        #     cost_centre=self.cost_centre_code
-        # ).aggregate(total=Sum('amount'))
-        #
-        # # Check that figures have correct values
-        # self.assertEqual(
-        #     result['total'],
-        #     1000000,
-        # )
-        #
+    def test_upload_budget_with_actuals(self):
+        self.assertEqual(
+            Budget.objects.filter(
+                cost_centre=self.cost_centre_code
+            ).count(),
+            0,
+        )
+
+        actual_month = 4
+        FinancialPeriod.objects.filter(financial_period_code=actual_month). \
+            update(actual_loaded=True)
+
+        good_file_upload = FileUpload(
+            document_file=os.path.join(
+                os.path.dirname(__file__),
+                'test_assets/budget_upload_test.xlsx',
+            ),
+            uploading_user=self.test_user,
+        )
+        good_file_upload.save()
+
+        upload_budget_from_file(
+            good_file_upload,
+            self.test_year,
+        )
+
+        self.assertEqual(
+            Budget.objects.filter(
+                financial_year=self.test_year
+            ).count(),
+            16,
+        )
+        # # Check that existing figures for the same period have been deleted
+        self.assertEqual(
+            Budget.objects.filter(
+                financial_year=self.test_year,
+                cost_centre=self.cost_centre_code
+            ).count(),
+            8,
+        )
+        # Check that there are no entry for the actual periods
+        for period in range(1, actual_month + 1):
+            self.assertEqual(
+                Budget.objects.filter(
+                    financial_year=self.test_year,
+                    cost_centre=self.cost_centre_code,
+                    financial_period=period,
+                ).first(),
+                None,
+            )
+        self.assertEqual(
+            Budget.objects.filter(
+                financial_year=self.test_year,
+                cost_centre=self.cost_centre_code,
+                financial_period=12,
+            ).first().budget,
+            2200,
+        )

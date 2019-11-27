@@ -187,7 +187,8 @@ class Budget(FinancialCode, TimeStampedModel):
         )
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}:{} {}".format(
+        return "{}--{}--{}--{}--{}--{}:{} {}".format(
+            self.cost_centre,
             self.programme,
             self.natural_account_code,
             self.analysis1_code,

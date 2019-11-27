@@ -142,13 +142,13 @@ def get_forecast_month_dict():
     identify the period"""
     actual_month = FinancialPeriod.financial_period_info.actual_month()
     q = FinancialPeriod.objects. \
-        filter(period_calendar_code__gt=actual_month,
-               period_calendar_code__lt=15,
-               actual_loaded=False).values("period_short_name")
+        filter(financial_period_code__gt=actual_month,
+               financial_period_code__lt=13).values("period_short_name")
     period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
             FinancialPeriod, "period_short_name", e["period_short_name"]
         )
         period_dict[e["period_short_name"].lower()] = per_obj
+
     return period_dict
