@@ -167,7 +167,7 @@ class UploadBudgetsForm(forms.Form):
         }
     )
 
-    
+
 class PasteForecastForm(forms.Form):
     all_selected = forms.BooleanField(
         widget=forms.HiddenInput(),
@@ -194,4 +194,3 @@ class PasteForecastForm(forms.Form):
             raise forms.ValidationError("Invalid row data supplied")
 
         return json_data
-

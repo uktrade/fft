@@ -6,7 +6,7 @@ from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -22,7 +22,6 @@ from forecast.forms import (
     AddForecastRowForm,
     EditForm,
     PasteForecastForm,
-    UploadActualsForm,
 )
 from forecast.models import (
     FinancialPeriod,
@@ -32,8 +31,6 @@ from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     get_objects_for_user,
 )
-
-from forecast.tasks import process_uploaded_file
 from forecast.utils import (
     CannotFindMonthlyFigureException,
     ColMatchException,
@@ -47,10 +44,6 @@ from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
 )
-
-
-from upload_file.decorators import has_upload_permission
-from upload_file.models import FileUpload
 
 
 class ChooseCostCentreView(UserPassesTestMixin, FormView):
@@ -151,7 +144,6 @@ class AddRowView(CostCentrePermissionTest, FormView):
         return super().form_valid(form)
 
 
-
 # TODO permission decorator
 @require_http_methods(["POST", ])
 def pasted_forecast_content(request, cost_centre_code):
@@ -237,7 +229,6 @@ class EditForecastView(
     CostCentrePermissionTest,
     TemplateView,
 ):
-
     template_name = "forecast/edit/edit.html"
 
     def cost_centre_details(self):
@@ -250,7 +241,6 @@ class EditForecastView(
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
 
         form = EditForm(
             initial={

@@ -39,7 +39,6 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
-    TEST_COST_CENTRE,
 )
 from forecast.views.upload_file import (
     UploadActualsView,
@@ -50,6 +49,8 @@ from forecast.views.view_forecast import (
     DirectorateView,
     GroupView,
     MultiForecastView,
+    TEST_COST_CENTRE,
+
 )
 
 
