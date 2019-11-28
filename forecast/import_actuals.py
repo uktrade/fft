@@ -32,12 +32,12 @@ CHART_OF_ACCOUNT_COL = "D"
 ACTUAL_FIGURE_COL = "F"
 NAC_COL = "A"
 
-TB_FIRST_DATA_ROW = 13
+TRIAL_BALANCE_FIRST_DATA_ROW = 13
 
 MONTH_CELL = "B2"
 TITLE_CELL = "B1"
-CORRECT_ACTUAL_TITLE = "Detail Trial Balance"
-CORRECT_ACTUAL_WS_NAME = "FNDWRR"
+CORRECT_TRIAL_BALANCE_TITLE = "Detail Trial Balance"
+CORRECT_TRIAL_BALANCE_WORKSHEET_NAME = "FNDWRR"
 
 # Sample chart of account entry
 # '3000-30000-109189-52191003-310940-00000-00000-0000-0000-0000' # noqa
@@ -72,7 +72,7 @@ def copy_actuals_to_monthly_figure(period_obj, year):
     ).delete()
 
 
-def save_tb_row(chart_of_account, value, period_obj, year_obj):
+def save_trial_balance_row(chart_of_account, value, period_obj, year_obj):
     """Parse the long strings containing the
     chart of account information. Return errors
     if the elements of the chart of account are missing from database."""
@@ -87,8 +87,8 @@ def save_tb_row(chart_of_account, value, period_obj, year_obj):
             return True, ""
     cost_centre = chart_account_list[CC_INDEX]
     nac = chart_account_list[NAC_INDEX]
-    analisys1 = chart_account_list[ANALYSIS1_INDEX]
-    analisys2 = chart_account_list[ANALYSIS2_INDEX]
+    analysis1 = chart_account_list[ANALYSIS1_INDEX]
+    analysis2 = chart_account_list[ANALYSIS2_INDEX]
     project_code = chart_account_list[PROJECT_INDEX]
 
     error_message = ""
@@ -103,9 +103,9 @@ def save_tb_row(chart_of_account, value, period_obj, year_obj):
     error_message += message
     programme_obj, message = get_fk(ProgrammeCode, programme_code)
     error_message += message
-    analysis1_obj, message = get_analysys1_obj(analisys1)
+    analysis1_obj, message = get_analysys1_obj(analysis1)
     error_message += message
-    analysis2_obj, message = get_analysys2_obj(analisys2)
+    analysis2_obj, message = get_analysys2_obj(analysis2)
     error_message += message
     project_obj, message = get_project_obj(project_code)
     error_message += message
@@ -135,17 +135,17 @@ def save_tb_row(chart_of_account, value, period_obj, year_obj):
     return True
 
 
-def check_trial_balance_format(ws, period, year):
+def check_trial_balance_format(worksheet, period, year):
     """Check that the file is really the trial
     balance and it is the correct period"""
 
-    if ws[TITLE_CELL].value != CORRECT_ACTUAL_TITLE:
+    if worksheet[TITLE_CELL].value != CORRECT_TRIAL_BALANCE_TITLE:
         # wrong file
         raise UploadFileFormatError(
             "This file appears to be corrupt (title is incorrect)"
         )
 
-    report_date = ws[MONTH_CELL].value
+    report_date = worksheet[MONTH_CELL].value
     if report_date.year != year:
         # wrong date
         raise UploadFileFormatError(
@@ -163,7 +163,8 @@ def check_trial_balance_format(ws, period, year):
 
 def upload_trial_balance_report(file_upload, month_number, year):
     try:
-        wb, ws = validate_excel_file(file_upload, CORRECT_ACTUAL_WS_NAME)
+        workbook, worksheet = \
+            validate_excel_file(file_upload, CORRECT_TRIAL_BALANCE_WORKSHEET_NAME)
     except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
@@ -173,14 +174,14 @@ def upload_trial_balance_report(file_upload, month_number, year):
         raise ex
 
     try:
-        check_trial_balance_format(ws, month_number, year)
+        check_trial_balance_format(worksheet, month_number, year)
     except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
             str(ex),
         )
-        wb.close
+        workbook.close
         raise ex
 
     year_obj, msg = get_fk(FinancialYear, year)
@@ -198,21 +199,24 @@ def upload_trial_balance_report(file_upload, month_number, year):
         financial_period=period_obj,
     ).delete()
 
-    for row in range(TB_FIRST_DATA_ROW, ws.max_row + 1):
+    for row in range(TRIAL_BALANCE_FIRST_DATA_ROW, worksheet.max_row + 1):
         # don't delete this comment: useful for debugging, but it gives a
         # 'too complex error'
         # if not row % 100:
         #     print(row)
-        chart_of_account = ws["{}{}".format(CHART_OF_ACCOUNT_COL, row)].value
+        chart_of_account = worksheet["{}{}".format(CHART_OF_ACCOUNT_COL, row)].value
         if chart_of_account:
-            actual = ws["{}{}".format(ACTUAL_FIGURE_COL, row)].value
+            actual = worksheet["{}{}".format(ACTUAL_FIGURE_COL, row)].value
             # No need to save 0 values, because the data has been cleared
             # before starting the upload
             if actual:
                 try:
-                    save_tb_row(chart_of_account, actual, period_obj, year_obj)
+                    save_trial_balance_row(chart_of_account,
+                                           actual,
+                                           period_obj,
+                                           year_obj)
                 except UploadFileDataError as ex:
-                    wb.close
+                    workbook.close
                     msg = 'Error at row {}: {}'. \
                         format(row, str(ex))
                     set_file_upload_error(
@@ -229,5 +233,5 @@ def upload_trial_balance_report(file_upload, month_number, year):
     period_obj.actual_loaded = True
     # TODO set all previous month to be Actual Loaded
     period_obj.save()
-    wb.close
+    workbook.close
     return True

@@ -102,9 +102,9 @@ def sql_for_data_copy(data_type):
            ' FROM {};'.format(target, what, temp_data_file)
 
 
-def validate_excel_file(file_upload, ws_title):
+def validate_excel_file(file_upload, worksheet_title):
     try:
-        wb = load_workbook(
+        workbook = load_workbook(
             file_upload.document_file,
             read_only=True,
         )
@@ -116,14 +116,14 @@ def validate_excel_file(file_upload, ws_title):
         )
         raise ex
 
-    ws = wb.worksheets[0]
-    if ws.title != ws_title:
+    worksheet = workbook.worksheets[0]
+    if worksheet.title != worksheet_title:
         # wrong file
         raise UploadFileFormatError(
             "File appears to be incorrect: worksheet name is '{}', "
-            "expected name is '{}".format(ws.title, ws_title)
+            "expected name is '{}".format(worksheet.title, worksheet_title)
         )
-    return wb, ws
+    return workbook, worksheet
 
 
 def get_id(value, length=0):

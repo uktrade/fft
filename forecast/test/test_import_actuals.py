@@ -23,8 +23,8 @@ from costcentre.test.factories import (
 )
 
 from forecast.import_actuals import (
-    CORRECT_ACTUAL_TITLE,
-    CORRECT_ACTUAL_WS_NAME,
+    CORRECT_TRIAL_BALANCE_TITLE,
+    CORRECT_TRIAL_BALANCE_WORKSHEET_NAME,
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
     TITLE_CELL,
@@ -33,7 +33,7 @@ from forecast.import_actuals import (
     VALID_ECONOMIC_CODE_LIST,
     check_trial_balance_format,
     copy_actuals_to_monthly_figure,
-    save_tb_row,
+    save_trial_balance_row,
     upload_trial_balance_report,
 )
 from forecast.models import (
@@ -129,7 +129,7 @@ class ImportActualsTest(TestCase):
                 self.programme_code
             )
 
-        save_tb_row(
+        save_trial_balance_row(
             chart_of_account_line_correct,
             self.test_amount,
             self.period_obj,
@@ -146,7 +146,7 @@ class ImportActualsTest(TestCase):
             self.test_amount * 100,
         )
 
-        save_tb_row(
+        save_trial_balance_row(
             chart_of_account_line_correct,
             self.test_amount * 2,
             self.period_obj,
@@ -176,7 +176,7 @@ class ImportActualsTest(TestCase):
                 self.valid_natural_account_code,
             )
 
-        save_tb_row(
+        save_trial_balance_row(
             chart_of_account_line_no_programme,
             0,
             self.period_obj,
@@ -187,7 +187,7 @@ class ImportActualsTest(TestCase):
             UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
-        save_tb_row(
+        save_trial_balance_row(
             chart_of_account_line_no_programme,
             self.test_amount,
             self.period_obj,
@@ -211,7 +211,7 @@ class ImportActualsTest(TestCase):
             ).count(),
             0,
         )
-        save_tb_row(
+        save_trial_balance_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 self.cost_centre_code,
                 self.not_valid_natural_account_code,
@@ -229,7 +229,7 @@ class ImportActualsTest(TestCase):
         )
 
         with self.assertRaises(UploadFileDataError):
-            save_tb_row(
+            save_trial_balance_row(
                 '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234',
                 10,
                 self.period_obj,
@@ -288,7 +288,7 @@ class ImportActualsTest(TestCase):
             directorate=self.directorate_obj
         )
         # Prepare to upload data. Create some data that will be deleted
-        save_tb_row(
+        save_trial_balance_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 cost_centre_code_1,
                 self.valid_natural_account_code,
@@ -406,8 +406,8 @@ class ImportActualsTest(TestCase):
 
     def test_check_trial_balance_format(self):
         fake_work_sheet = FakeWorkSheet()
-        fake_work_sheet.title = CORRECT_ACTUAL_WS_NAME
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_ACTUAL_TITLE)
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
         fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, 8, 1))
         # wrong month
         with self.assertRaises(UploadFileFormatError):

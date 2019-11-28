@@ -86,7 +86,7 @@ def get_primary_nac_obj(code):
     return nac_obj, message
 
 
-def upload_budget(ws, year, header_dict):
+def upload_budget(worksheet, year, header_dict):
     year_obj, created = FinancialYear.objects.get_or_create(financial_year=year)
     if created:
         year_obj.financial_year_display = f'{year}/{year - 1999}'
@@ -100,16 +100,16 @@ def upload_budget(ws, year, header_dict):
     UploadingBudgets.objects.filter(
         financial_year=year,
     ).delete()
-    for row in range(2, ws.max_row + 1):
-        cost_centre = ws["{}{}".format(header_dict["cost centre"], row)].value
+    for row in range(2, worksheet.max_row + 1):
+        cost_centre = worksheet[f"{header_dict['cost centre']}{row}"].value
         if not cost_centre:
             break
         error_message = ''
-        nac = ws["{}{}".format(header_dict["natural account"], row)].value
-        programme_code = ws["{}{}".format(header_dict["programme"], row)].value
-        analisys1 = ws["{}{}".format(header_dict["analysis"], row)].value
-        analisys2 = ws["{}{}".format(header_dict["analysis2"], row)].value
-        project_code = ws["{}{}".format(header_dict["project"], row)].value
+        nac = worksheet[f"{header_dict['natural account']}{row}"].value
+        programme_code = worksheet[f"{header_dict['programme']}{row}"].value
+        analysis1 = worksheet[f"{header_dict['analysis']}{row}"].value
+        analysis2 = worksheet[f"{header_dict['analysis2']}{row}"].value
+        project_code = worksheet[f"{header_dict['project']}{row}"].value
 
         nac_obj, message = get_primary_nac_obj(nac)
         error_message += message
@@ -117,9 +117,9 @@ def upload_budget(ws, year, header_dict):
         error_message += message
         programme_obj, message = get_fk(ProgrammeCode, programme_code)
         error_message += message
-        analysis1_obj, message = get_analysys1_obj(analisys1)
+        analysis1_obj, message = get_analysys1_obj(analysis1)
         error_message += message
-        analysis2_obj, message = get_analysys2_obj(analisys2)
+        analysis2_obj, message = get_analysys2_obj(analysis2)
         error_message += message
         project_obj, message = get_project_obj(project_code)
         error_message += message
@@ -129,7 +129,7 @@ def upload_budget(ws, year, header_dict):
             )
 
         for month, period_obj in month_dict.items():
-            period_budget = ws["{}{}".format(header_dict[month.lower()], row)].value
+            period_budget = worksheet[f"{header_dict[month.lower()]}{row}"].value
             if period_budget:
                 budget_obj, created = UploadingBudgets.objects.get_or_create(
                     financial_year=year_obj,
@@ -154,7 +154,7 @@ def upload_budget(ws, year, header_dict):
 
 def upload_budget_from_file(file_upload, year):
     try:
-        wb, ws = validate_excel_file(file_upload, "Budgets")
+        workbook, worksheet = validate_excel_file(file_upload, "Budgets")
     except UploadFileFormatError as ex:
         set_file_upload_error(
             file_upload,
@@ -162,7 +162,7 @@ def upload_budget_from_file(file_upload, year):
             str(ex),
         )
         raise ex
-    header_dict = xslx_header_to_dict(ws[1])
+    header_dict = xslx_header_to_dict(worksheet[1])
     try:
         check_budget_header(header_dict, EXPECTED_BUDGET_HEADERS)
     except UploadFileFormatError as ex:
@@ -171,17 +171,17 @@ def upload_budget_from_file(file_upload, year):
             str(ex),
             str(ex),
         )
-        wb.close
+        workbook.close
         raise ex
     try:
-        upload_budget(ws, year, header_dict)
+        upload_budget(worksheet, year, header_dict)
     except UploadFileDataError as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
             str(ex),
         )
-        wb.close
+        workbook.close
         raise ex
-    wb.close
+    workbook.close
     return True
