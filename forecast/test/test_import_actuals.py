@@ -6,7 +6,6 @@ from typing import (
 )
 from zipfile import BadZipFile
 
-from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.test import RequestFactory, TestCase
 
@@ -16,6 +15,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -63,8 +63,10 @@ class FakeCell:
         self.value = value
 
 
-class ImportActualsTest(TestCase):
+class ImportActualsTest(TestCase, RequestFactoryBase):
     def setUp(self):
+        RequestFactoryBase.__init__(self)
+
         self.test_year = 2019
         self.test_period = 9
 
@@ -106,14 +108,6 @@ class ImportActualsTest(TestCase):
             period_calendar_code=self.test_period
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
-
-        self.test_user_email = "test@test.com"
-        self.test_password = "password"
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=self.test_user_email,
-        )
-
-        self.test_user.set_password(self.test_password)
 
     def test_save_row(self):
         self.assertEqual(

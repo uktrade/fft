@@ -1,7 +1,6 @@
 import os
 from zipfile import BadZipFile
 
-from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 
 from chartofaccountDIT.test.factories import (
@@ -10,6 +9,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -36,8 +36,9 @@ TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = '310940'
 
 
-class ImportBudgetsTest(TestCase):
+class ImportBudgetsTest(TestCase, RequestFactoryBase):
     def setUp(self):
+        RequestFactoryBase.__init__(self)
         self.test_year = 2019
         self.test_period = 9
 
@@ -76,14 +77,6 @@ class ImportBudgetsTest(TestCase):
         )
 
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
-
-        self.test_user_email = "test@test.com"
-        self.test_password = "password"
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=self.test_user_email,
-        )
-
-        self.test_user.set_password(self.test_password)
 
     def test_upload_budget_report(self):
         # Check that BadZipFile is raised on
