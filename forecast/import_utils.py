@@ -58,14 +58,12 @@ def get_analysys2_obj(code):
 
 def sql_for_data_copy(data_type):
     if data_type == FileUpload.ACTUALS:
-        temp_data_file = 'forecast_uploadingactuals'
+        temp_data_file = 'forecast_ActualsTemporaryStore'
         target = 'forecast_monthlyfigure'
-        what = 'amount'
     else:
         if data_type == FileUpload.BUDGET:
-            temp_data_file = 'forecast_uploadingbudgets'
+            temp_data_file = 'forecast_BudgetsTemporaryStore'
             target = 'forecast_budget'
-            what = 'budget'
         else:
             raise UploadFileDataError(
                 'Unknown upload type.'
@@ -83,7 +81,7 @@ def sql_for_data_copy(data_type):
            'natural_account_code_id, ' \
            'programme_id, ' \
            'project_code_id, ' \
-           '{}, ' \
+           'amount, ' \
            'forecast_expenditure_type_id)' \
            ' SELECT  ' \
            'now(), ' \
@@ -99,7 +97,7 @@ def sql_for_data_copy(data_type):
            'project_code_id, ' \
            'amount, ' \
            'forecast_expenditure_type_id ' \
-           ' FROM {};'.format(target, what, temp_data_file)
+           ' FROM {};'.format(target, temp_data_file)
 
 
 def validate_excel_file(file_upload, worksheet_title):

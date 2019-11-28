@@ -174,7 +174,7 @@ class Budget(FinancialCode, TimeStampedModel):
         FinancialPeriod,
         on_delete=models.PROTECT,
     )
-    budget = models.BigIntegerField(default=0)
+    amount = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = (
@@ -464,7 +464,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
                "{self.financial_period}"
 
 
-class UploadingData(FinancialCode):
+class DataTemporaryStore(FinancialCode):
     """Used as temporary storage for  uploading the actuals.
     When the upload is successfully completed,
     they get copied to the Monthly figures.
@@ -495,12 +495,12 @@ class UploadingData(FinancialCode):
         )
 
 
-class UploadingActuals(UploadingData):
+class ActualsTemporaryStore(DataTemporaryStore):
     """Used as temporary storage for  uploading the actuals."""
     pass
 
 
-class UploadingBudgets(UploadingData):
+class BudgetsTemporaryStore(DataTemporaryStore):
     """Used as temporary storage for  uploading the actuals."""
     pass
 

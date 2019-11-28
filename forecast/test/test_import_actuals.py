@@ -37,9 +37,9 @@ from forecast.import_actuals import (
     upload_trial_balance_report,
 )
 from forecast.models import (
+    ActualsTemporaryStore,
     FinancialPeriod,
     MonthlyFigure,
-    UploadingActuals,
 )
 
 from upload_file.models import FileUpload
@@ -117,7 +117,7 @@ class ImportActualsTest(TestCase):
 
     def test_save_row(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -137,10 +137,11 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             1,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
         self.assertEqual(
             q.amount,
             self.test_amount * 100,
@@ -154,10 +155,11 @@ class ImportActualsTest(TestCase):
         )
         # check that lines with the same chart of account are added together
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             1,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
         self.assertEqual(
             q.amount,
             self.test_amount * 100 * 3,
@@ -165,7 +167,7 @@ class ImportActualsTest(TestCase):
 
     def test_save_row_no_programme(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -184,7 +186,8 @@ class ImportActualsTest(TestCase):
         )
         # Lines with 0 programme and 0 amount are not saved
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             0,
         )
         save_trial_balance_row(
@@ -193,7 +196,7 @@ class ImportActualsTest(TestCase):
             self.period_obj,
             self.year_obj,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
 
         self.assertEqual(
             q.amount,
@@ -206,7 +209,7 @@ class ImportActualsTest(TestCase):
 
     def test_save_row_invalid_nac(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -222,7 +225,7 @@ class ImportActualsTest(TestCase):
             self.year_obj,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -277,7 +280,7 @@ class ImportActualsTest(TestCase):
             0,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -307,7 +310,7 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             1,
@@ -321,7 +324,7 @@ class ImportActualsTest(TestCase):
             1,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             0,

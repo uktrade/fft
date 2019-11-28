@@ -20,9 +20,9 @@ from forecast.import_utils import (
     validate_excel_file,
 )
 from forecast.models import (
+    ActualsTemporaryStore,
     FinancialPeriod,
     MonthlyFigure,
-    UploadingActuals,
 )
 
 from upload_file.models import FileUpload
@@ -66,7 +66,7 @@ def copy_actuals_to_monthly_figure(period_obj, year):
     ).delete()
     with connection.cursor() as cursor:
         cursor.execute(sql_for_data_copy(FileUpload.ACTUALS))
-    UploadingActuals.objects.filter(
+    ActualsTemporaryStore.objects.filter(
         financial_year=year,
         financial_period=period_obj,
     ).delete()
@@ -114,7 +114,7 @@ def save_trial_balance_row(chart_of_account, value, period_obj, year_obj):
             error_message
         )
 
-    actuals_obj, created = UploadingActuals.objects.get_or_create(
+    actuals_obj, created = ActualsTemporaryStore.objects.get_or_create(
         financial_year=year_obj,
         programme=programme_obj,
         cost_centre=cc_obj,
@@ -194,7 +194,7 @@ def upload_trial_balance_report(file_upload, month_number, year):
     # The actuals are uploaded to to a temporary storage, and copied
     # to the MonthlyFigure when the upload is completed successfully.
     # This means that we always have a full upload.
-    UploadingActuals.objects.filter(
+    ActualsTemporaryStore.objects.filter(
         financial_year=year,
         financial_period=period_obj,
     ).delete()

@@ -22,7 +22,7 @@ from forecast.import_utils import (
 )
 from forecast.models import (
     Budget,
-    UploadingBudgets,
+    BudgetsTemporaryStore,
 )
 
 from upload_file.models import FileUpload
@@ -68,7 +68,7 @@ def copy_uploaded_budget(year, month_dict):
         ).delete()
     with connection.cursor() as cursor:
         cursor.execute(sql_for_data_copy(FileUpload.BUDGET))
-    UploadingBudgets.objects.filter(
+    BudgetsTemporaryStore.objects.filter(
         financial_year=year,
     ).delete()
 
@@ -97,7 +97,7 @@ def upload_budget(worksheet, year, header_dict):
     # The budgets are uploaded to to a temporary storage, and copied
     # when the upload is completed successfully.
     # This means that we always have a full upload.
-    UploadingBudgets.objects.filter(
+    BudgetsTemporaryStore.objects.filter(
         financial_year=year,
     ).delete()
     for row in range(2, worksheet.max_row + 1):
@@ -131,7 +131,7 @@ def upload_budget(worksheet, year, header_dict):
         for month, period_obj in month_dict.items():
             period_budget = worksheet[f"{header_dict[month.lower()]}{row}"].value
             if period_budget:
-                budget_obj, created = UploadingBudgets.objects.get_or_create(
+                budget_obj, created = BudgetsTemporaryStore.objects.get_or_create(
                     financial_year=year_obj,
                     programme=programme_obj,
                     cost_centre=cc_obj,
