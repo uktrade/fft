@@ -15,6 +15,7 @@ from forecast.import_utils import (
     UploadFileFormatError,
     get_analysys1_obj,
     get_analysys2_obj,
+    get_error_from_list,
     get_project_obj,
     sql_for_data_copy,
     validate_excel_file,
@@ -91,24 +92,25 @@ def save_trial_balance_row(chart_of_account, value, period_obj, year_obj):
     analysis2 = chart_account_list[ANALYSIS2_INDEX]
     project_code = chart_account_list[PROJECT_INDEX]
 
-    error_message = ""
+    error_list = []
     nac_obj, message = get_fk(NaturalCode, nac)
-    error_message += message
+    error_list.append(message)
     if nac_obj:
         #  Check that the NAC is resource or capital
         if not nac_obj.economic_budget_code or \
                 nac_obj.economic_budget_code.upper() not in VALID_ECONOMIC_CODE_LIST:
             return True, ""
     cc_obj, message = get_fk(CostCentre, cost_centre)
-    error_message += message
+    error_list.append(message)
     programme_obj, message = get_fk(ProgrammeCode, programme_code)
-    error_message += message
+    error_list.append(message)
     analysis1_obj, message = get_analysys1_obj(analysis1)
-    error_message += message
+    error_list.append(message)
     analysis2_obj, message = get_analysys2_obj(analysis2)
-    error_message += message
+    error_list.append(message)
     project_obj, message = get_project_obj(project_code)
-    error_message += message
+    error_list.append(message)
+    error_message = get_error_from_list(error_list)
     if error_message:
         raise UploadFileDataError(
             error_message

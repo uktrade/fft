@@ -91,7 +91,7 @@ def get_fk(m, pk_value):
     try:
         obj = m.objects.get(pk=pk_value)
     except m.DoesNotExist:
-        msg = f'{get_pk_verbose_name(m)} "{pk_value}" does not exist. \n'
+        msg = f'{get_pk_verbose_name(m)} "{pk_value}"'
         obj = None
     except ValueError:
         msg = f'{get_pk_verbose_name(m)} "{pk_value}" is the wrong type. \n'
@@ -108,7 +108,7 @@ def get_fk_from_field(m, f_name, f_value):
         obj = m.objects.get(**{f_name: f_value})
 
     except m.DoesNotExist:
-        msg = f'{f_name} "{f_value}" does not exist. \n'
+        msg = f'{f_name} "{f_value}"'
         obj = None
     except ValueError:
         msg = f'{f_name} "{f_value}": wrong type. \n'

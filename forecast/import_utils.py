@@ -135,13 +135,17 @@ def get_id(value, length=0):
 
 
 def get_forecast_month_dict():
-    """Link the column names in the ADI file with
-    the foreign key used in the MonthlyFigure to
-    identify the period"""
+    """Link the column names in the budget file to
+    the foreign key used in the budget model to
+    identify the period.
+    Exclude months were actuals have been uploaded."""
     actual_month = FinancialPeriod.financial_period_info.actual_month()
-    q = FinancialPeriod.objects. \
-        filter(financial_period_code__gt=actual_month,
-               financial_period_code__lt=13).values("period_short_name")
+    q = FinancialPeriod.objects.filter(
+        financial_period_code__gt=actual_month,
+        financial_period_code__lt=13
+    ).values(
+        "period_short_name"
+    )
     period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
@@ -150,3 +154,13 @@ def get_forecast_month_dict():
         period_dict[e["period_short_name"].lower()] = per_obj
 
     return period_dict
+
+
+def get_error_from_list(error_list):
+    error_message = ''
+    for item in error_list:
+        if item and item != '':
+            error_message = f'{error_message}, {item}'
+    if error_message != '':
+        error_message = error_message[:-1]
+    return error_message

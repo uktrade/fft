@@ -15,6 +15,7 @@ from forecast.import_utils import (
     UploadFileFormatError,
     get_analysys1_obj,
     get_analysys2_obj,
+    get_error_from_list,
     get_forecast_month_dict,
     get_project_obj,
     sql_for_data_copy,
@@ -28,24 +29,26 @@ from forecast.models import (
 from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_error
 
-EXPECTED_BUDGET_HEADERS = ['cost centre',
-                           'natural account',
-                           'programme',
-                           'analysis',
-                           'analysis2',
-                           'project',
-                           'apr',
-                           'may',
-                           'jun',
-                           'jul',
-                           'aug',
-                           'sep',
-                           'oct',
-                           'nov',
-                           'dec',
-                           'jan',
-                           'feb',
-                           'mar']
+EXPECTED_BUDGET_HEADERS = [
+    'cost centre',
+    'natural account',
+    'programme',
+    'analysis',
+    'analysis2',
+    'project',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec',
+    'jan',
+    'feb',
+    'mar',
+]
 
 
 def check_budget_header(header_dict, correct_header):
@@ -104,28 +107,28 @@ def upload_budget(worksheet, year, header_dict):
         cost_centre = worksheet[f"{header_dict['cost centre']}{row}"].value
         if not cost_centre:
             break
-        error_message = ''
         nac = worksheet[f"{header_dict['natural account']}{row}"].value
         programme_code = worksheet[f"{header_dict['programme']}{row}"].value
         analysis1 = worksheet[f"{header_dict['analysis']}{row}"].value
         analysis2 = worksheet[f"{header_dict['analysis2']}{row}"].value
         project_code = worksheet[f"{header_dict['project']}{row}"].value
-
+        error_list = []
         nac_obj, message = get_primary_nac_obj(nac)
-        error_message += message
+        error_list.append(message)
         cc_obj, message = get_fk(CostCentre, cost_centre)
-        error_message += message
+        error_list.append(message)
         programme_obj, message = get_fk(ProgrammeCode, programme_code)
-        error_message += message
+        error_list.append(message)
         analysis1_obj, message = get_analysys1_obj(analysis1)
-        error_message += message
+        error_list.append(message)
         analysis2_obj, message = get_analysys2_obj(analysis2)
-        error_message += message
+        error_list.append(message)
         project_obj, message = get_project_obj(project_code)
-        error_message += message
+        error_list.append(message)
+        error_message = get_error_from_list(error_list)
         if error_message:
             raise UploadFileDataError(
-                f'Error at row {row}: {error_message}.'
+                f'Row {row}: {error_message} not valid.'
             )
 
         for month, period_obj in month_dict.items():
@@ -175,7 +178,7 @@ def upload_budget_from_file(file_upload, year):
         raise ex
     try:
         upload_budget(worksheet, year, header_dict)
-    except UploadFileDataError as ex:
+    except (UploadFileDataError) as ex:
         set_file_upload_error(
             file_upload,
             str(ex),
