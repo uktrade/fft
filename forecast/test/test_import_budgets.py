@@ -175,7 +175,7 @@ class ImportBudgetsTest(TestCase):
                 financial_year=self.test_year,
                 cost_centre=self.cost_centre_code,
                 financial_period=1,
-            ).first().budget,
+            ).first().amount,
             1100,
         )
         self.assertEqual(
@@ -183,7 +183,7 @@ class ImportBudgetsTest(TestCase):
                 financial_year=self.test_year,
                 cost_centre=self.cost_centre_code,
                 financial_period=12,
-            ).first().budget,
+            ).first().amount,
             2200,
         )
 
@@ -242,6 +242,6 @@ class ImportBudgetsTest(TestCase):
                 financial_year=self.test_year,
                 cost_centre=self.cost_centre_code,
                 financial_period=12,
-            ).first().budget,
+            ).first().amount,
             2200,
         )

@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
         ('costcentre', '0029_auto_20190703_0751'),
         ('chartofaccountDIT', '0051_auto_20191106_1235'),
         ('core', '0013_delete_admininfo'),
-        ('forecast', '0031_delete_uploadingbudgets'),
+        ('forecast', '0029_forecastpermission'),
     ]
 
     operations = [
