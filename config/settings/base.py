@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 import os
 import environ
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -111,6 +112,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+
+if 'VCAP_SERVICES' in os.environ:
+    services = json.loads(os.getenv('VCAP_SERVICES'))
+    DATABASE_URL = services['postgres'][0]['credentials']['uri']
+else:
+    DATABASE_URL = os.getenv('DATABASE_URL')
+
 DATABASES = {
     "default": env.db()
 }
@@ -202,9 +210,21 @@ AWS_S3_REGION_NAME = 'eu-west-2'  # Need to check this with GDS bucket
 AWS_DEFAULT_ACL = None  # Need to check this with GDS bucket
 #
 
+# Redis
+if 'VCAP_SERVICES' in os.environ:
+    services = json.loads(os.getenv('VCAP_SERVICES'))
+    credentials = services['redis'][0]['credentials']
+    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=CERT_REQUIRED".format(
+        credentials['password'],
+        credentials['host'],
+        credentials['port']
+    )
+else:
+    REDIS_URL = env("CELERY_BROKER_URL", default=None)
+
 # celery
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
-CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND", default=None)
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 
@@ -215,3 +235,9 @@ STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
     "sass_processor.finders.CssFinder",
 ]
+
+NUM_META_COLS = 5
+
+CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
+CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
+CLAM_AV_URL = env("CLAM_AV_URL", default=None)

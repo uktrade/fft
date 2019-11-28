@@ -2,27 +2,19 @@ import { createSlice } from 'redux-starter-kit';
 // Use of this lib guarentees no state mutatation
 
 const edit = createSlice({
-    slice: 'select',
+    slice: 'edit',
     initialState: {
-        rect:{
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0
-        },
-        content: ""
+        cellId: null
     },
     reducers: {
-        SET_EDIT_CELL: (state, action) => {
-            //console.log(action.payload.rect)
-            state.rect = action.payload.rect
-            state.content = action.payload.content
+        SET_EDITING_CELL: (state, action) => {
+            state.cellId = action.payload.cellId
         },
     }
 });
 
 export const {
-    SET_EDIT_CELL,
+    SET_EDITING_CELL,
 } = edit.actions;
 
 export default edit.reducer;
