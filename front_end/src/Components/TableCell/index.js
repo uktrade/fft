@@ -57,7 +57,7 @@ const TableCell = ({cell, isHidden}) => {
         <Fragment>
             <td
                 className={getClasses()}
-
+                id={cell.id}
                 onDoubleClick={ () => {
                     if (cell.isEditable) {
                         dispatch(

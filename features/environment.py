@@ -1,30 +1,30 @@
-from behave import use_fixture
-
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from django.conf import settings
 
-from core.behave_fixtures import (
-    django_test_runner,
-    django_test_case,
-)
+from django.contrib.auth import get_user_model
 
 
-def before_all(context):
-    use_fixture(django_test_runner, context)
+# def django_ready(context, scenario):
+#     # This function is run inside the transaction
+#     test_user_email = "test@test.com"
+#     test_password = "test_password"
+#
+#     test_user, _ = get_user_model().objects.get_or_create(
+#         email=test_user_email
+#     )
+#     test_user.set_password(test_password)
+#     test_user.save()
+#
+#     context.user = test_user
+from behave_django.testcase import BehaviorDrivenTestCase
 
 
 def before_scenario(context, scenario):
-    use_fixture(django_test_case, context)
-
-
-def start_local():
-    pass
-
-
-def stop_local():
-    pass
+    #BehaviorDrivenTestCase.port = 8801
+    BehaviorDrivenTestCase.host = 'fido'
+    #context.test.port = 8001
 
 
 def before_feature(context, feature):
@@ -35,12 +35,6 @@ def before_feature(context, feature):
         desired_capabilities=DesiredCapabilities.CHROME,
     )
     context.browser.implicitly_wait(5)
-
-    # self.firefox = webdriver.Remote(
-    #     command_executor='http://selenium_hub:4444/wd/hub',
-    #     desired_capabilities=DesiredCapabilities.FIREFOX
-    # )
-    # self.firefox.implicitly_wait(10)
 
 
 def after_feature(context, feature):

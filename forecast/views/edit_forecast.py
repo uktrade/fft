@@ -207,6 +207,13 @@ def pasted_forecast_content(request, cost_centre_code):
 
         rows = paste_content.splitlines()
 
+        if len(rows) == 0:
+            return JsonResponse({
+                'error': 'Your pasted data is not formatted correctly.'
+            },
+                status=400,
+            )
+
         if all_selected and len(forecast_dump) != len(rows):
             return JsonResponse({
                 'error': 'Your pasted data does not match the selected rows.'

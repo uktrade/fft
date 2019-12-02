@@ -45,7 +45,7 @@ function Table({rowData}) {
                 <caption className="govuk-table__caption">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
-                        <td className="handle govuk-table__cell indicate-action"
+                        <td id="select-all" className="handle govuk-table__cell indicate-action"
                             onClick={() => { 
                                 dispatch(
                                     SELECT_ALL()
@@ -76,7 +76,7 @@ function Table({rowData}) {
                 <tbody className="govuk-table__body">
                     {rowData.map((cells, rowIndex) => {
                         return <tr key={rowIndex} index={(rowIndex + 1)}>
-                            <td className="handle govuk-table__cell indicate-action"
+                            <td id={"select_" + rowIndex}  className="handle govuk-table__cell indicate-action"
                                 onClick={() => { 
                                     console.log(rowIndex)
                                     dispatch(

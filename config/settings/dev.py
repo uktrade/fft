@@ -2,7 +2,7 @@ from .base import *  # noqa
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
-INSTALLED_APPS += ("forecast_prototype",)
+INSTALLED_APPS += ("forecast_prototype", "behave_django")
 
 STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 
@@ -21,8 +21,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.middleware.ThreadLocalMiddleware",
-    #'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "authbroker_client.backends.AuthbrokerBackend",
+    "guardian.backends.ObjectPermissionBackend",
 ]
 
 SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")

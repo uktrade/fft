@@ -61,6 +61,8 @@ Django Guardian **should not be used directly**. There is a set of wrapper funct
 
 These add an additional permission check for the user being able to view forecasts at all.
 
+### Running manage.py on an app droplet
+/home/vcap/deps/1/bin/python3.6 ~/app/manage.py
 
 ## TODO
 Try increasing size of container machine and see if npm start will work

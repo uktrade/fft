@@ -348,4 +348,5 @@ class CostCentreView(
 
     def __init__(self, *args, **kwargs):
         self.tables = get_forecast_table()
+
         super().__init__(*args, **kwargs)
