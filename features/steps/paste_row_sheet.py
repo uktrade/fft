@@ -230,19 +230,14 @@ def step_impl(context):
     # )
 
 
-@given(u'the user pastes into the edit forecast table')
+@when(u'the user pastes valid data')
 def step_impl(context):
     no_error_paste_text = "999999	Test	1111111	2222222	3000	1000	0	0	0	0	0	0	0	0	0	0	0"
     copy_text(context, no_error_paste_text)
     paste(context)
 
 
-@when(u'the user checks the forecast table')
-def step_impl(context):
-    pass
-
-
-@then(u'the clipboard data is displayed')
+@then(u'the clipboard data is displayed in the forecast table')
 def step_impl(context):
     april_value = context.browser.find_element_by_id(
         "id_Apr_0"
