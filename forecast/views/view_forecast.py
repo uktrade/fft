@@ -113,15 +113,15 @@ class CostClassView(
             "cost_centre__cost_centre_code": "Cost Centre Code",
             "cost_centre__cost_centre_name": "Cost Centre Description",
             "natural_account_code__natural_account_code": "Natural Account Code",
-            "natural_account_code__natural_account_code_description": "Natural Account Code Description", # noqa
+            "natural_account_code__natural_account_code_description": "Natural Account Code Description",  # noqa
             "programme__programme_code": "Programme Code",
             "programme__programme_description": "Programme Description",
             "project_code__project_code": "Project Code",
             "project_code__project_description": "Project Description",
             "programme__budget_type_fk__budget_type_display": "Budget Type",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",   # noqa
-            "natural_account_code__expenditure_category__grouping_description": "Budget Category",   # noqa
-            "natural_account_code__account_L5_code__economic_budget_code": "Expenditure Type",   # noqa
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",  # noqa
+            "natural_account_code__expenditure_category__grouping_description": "Budget Category", # noqa
+            "natural_account_code__account_L5_code__economic_budget_code": "Expenditure Type", # noqa
         }
         cost_centre_code = TEST_COST_CENTRE
         pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
@@ -129,6 +129,73 @@ class CostClassView(
         self.queryset = q
         self.column_dict = columns
         super().__init__(*args, **kwargs)
+
+
+class ForecastTables(MultiTableMixin):
+    order_list = ["programme__budget_type_fk__budget_type_display_order"]
+
+    sub_total_type = ["programme__budget_type_fk__budget_type_display"]
+    display_sub_total_column_cost_centre = "cost_centre__cost_centre_name"
+
+    # programme data
+    order_list_prog = [
+        "programme__budget_type_fk__budget_type_display_order",
+        "forecast_expenditure_type__forecast_expenditure_type_display_order",
+    ]
+    sub_total_prog = [
+        "programme__budget_type_fk__budget_type_display",
+        "forecast_expenditure_type__forecast_expenditure_type_description",
+    ]
+    display_sub_total_column_prog = "programme__programme_description"
+
+    # NAC data
+    sub_total_nac = [
+        "programme__budget_type_fk__budget_type_display",
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+    ]
+    display_sub_total_column_nac = (
+        "natural_account_code__expenditure_category__grouping_description"
+    )
+    order_list_nac = [
+        "programme__budget_type_fk__budget_type_display_order",
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+    ]
+
+    def get_tables(self):
+        """
+         Return an array of table instances containing data.
+        """
+        cost_centre_code = self.kwargs['cost_centre_code']
+        self.pivot_filter = {
+            "cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
+        hierachy_data = MonthlyFigure.pivot.subtotal_data(
+            self.display_sub_total_column_cost_centre,
+            self.sub_total_type,
+            budget_type_columns.keys(),
+            self.pivot_filter,
+            order_list=self.order_list,
+        )
+        programme_data = MonthlyFigure.pivot.subtotal_data(
+            self.display_sub_total_column_prog,
+            self.sub_total_prog,
+            programme_columns.keys(),
+            self.pivot_filter,
+            order_list=self.order_list_prog,
+        )
+
+        expenditure_data = MonthlyFigure.pivot.subtotal_data(
+            self.display_sub_total_column_nac,
+            self.sub_total_nac,
+            natural_account_columns.keys(),
+            self.pivot_filter,
+            order_list=self.order_list_nac,
+        )
+        self.tables = [
+            ForecastSubTotalTable(budget_type_columns, hierachy_data),
+            ForecastSubTotalTable(programme_columns, programme_data),
+            ForecastSubTotalTable(natural_account_columns, expenditure_data),
+        ]
+        return self.tables
 
 
 def get_forecast_table():
@@ -170,14 +237,14 @@ def get_forecast_table():
 
     sub_total_nac = [
         "programme__budget_type_fk__budget_type_display",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
     ]
     display_sub_total_column = (
         "natural_account_code__expenditure_category__grouping_description"
     )
     order_list_nac = [
         "programme__budget_type_fk__budget_type_display_order",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+        "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
     ]
 
     q3 = MonthlyFigure.pivot.subtotal_data(
@@ -311,7 +378,7 @@ class DirectorateView(
 
 class CostCentreView(
     ForecastViewPermissionMixin,
-    MultiTableMixin,
+    ForecastTables,
     TemplateView,
 ):
     template_name = "forecast/view/cost_centre.html"
@@ -343,7 +410,3 @@ class CostCentreView(
             )
         else:
             raise Http404("Cost Centre not found")
-
-    def __init__(self, *args, **kwargs):
-        self.tables = get_forecast_table()
-        super().__init__(*args, **kwargs)

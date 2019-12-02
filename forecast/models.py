@@ -337,7 +337,7 @@ class SubTotalForecast():
             level = self.subtotal_columns.index(column)
             caption = f"Total {self.previous_values[column]}"
             for out_total in self.subtotal_columns[level + 1:]:
-                caption = "{caption} {self.previous_values[out_total]}"
+                caption = f"{caption} {self.previous_values[out_total]}"
             self.subtotals[column][self.display_total_column] = caption
             self.output_row_to_table(
                 self.subtotals[column],
@@ -385,12 +385,21 @@ class PivotManager(models.Manager):
         if not subtotal_columns:
             raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
 
-        if not all(elem in [*data_columns] for elem in subtotal_columns):
-            raise SubTotalFieldDoesNotExistError("Sub-total column does not exist")
+        correct = True
+        error_msg = ''
+        for elem in subtotal_columns:
+            if elem not in [*data_columns]:
+                correct = False
+                error_msg += f"'{elem}', "
+        if not correct:
+            raise SubTotalFieldDoesNotExistError(
+                "Sub-total column(s) {error_msg} not found."
+            )
 
         if display_total_column not in [*data_columns]:
             raise SubTotalFieldDoesNotExistError(
-                "Display sub-total column does not exist"
+                f"Display sub-total column '{display_total_column}' "
+                f"does not exist in provided columns: '{[*data_columns]}'."
             )
 
         data_returned = self.pivot_data(data_columns, filter_dict, year, order_list)
