@@ -73,7 +73,6 @@ project_columns = {
 
 order_list_project = [
     "programme__budget_type_fk__budget_type_display_order",
-    "project_code__project_code",
 ]
 sub_total_project = [
     "programme__budget_type_fk__budget_type_display",
@@ -96,7 +95,7 @@ filter_selectors = [
 ]
 
 
-hierarchy_query = [
+hierarchy_columns = [
     budget_type_cost_group_columns,
     budget_type_cost_directorate_columns,
     budget_type_cost_centre_columns,
