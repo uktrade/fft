@@ -19,6 +19,13 @@ budget_type_cost_group_columns = {
     "cost_centre__directorate__group__group_name": "Departmental Group Code",
 }
 
+
+order_list_hierarchy = ["programme__budget_type_fk__budget_type_display_order"]
+
+sub_total_hierarchy = ["programme__budget_type_fk__budget_type_display"]
+# display_sub_total_column_cost_centre = "cost_centre__cost_centre_name"
+
+# programme data
 programme_columns = {
     "programme__budget_type_fk__budget_type_display": "Hidden",
     "forecast_expenditure_type__forecast_expenditure_type_description": "Hidden",
@@ -27,19 +34,6 @@ programme_columns = {
     "programme__programme_code": "Programme Code",
 }
 
-natural_account_columns = {
-    "programme__budget_type_fk__budget_type_display": "Hidden",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping", # noqa
-    "natural_account_code__expenditure_category__grouping_description":
-        "Budget Category",
-}
-
-order_list_hierarchy = ["programme__budget_type_fk__budget_type_display_order"]
-
-sub_total_hierarchy = ["programme__budget_type_fk__budget_type_display"]
-display_sub_total_column_cost_centre = "cost_centre__cost_centre_name"
-
-# programme data
 order_list_prog = [
     "programme__budget_type_fk__budget_type_display_order",
     "forecast_expenditure_type__forecast_expenditure_type_display_order",
@@ -51,6 +45,13 @@ sub_total_prog = [
 display_sub_total_column_prog = "programme__programme_description"
 
 # NAC data
+natural_account_columns = {
+    "programme__budget_type_fk__budget_type_display": "Hidden",
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping", # noqa
+    "natural_account_code__expenditure_category__grouping_description":
+        "Budget Category",
+}
+
 sub_total_nac = [
     "programme__budget_type_fk__budget_type_display",
     "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
@@ -62,6 +63,23 @@ order_list_nac = [
     "programme__budget_type_fk__budget_type_display_order",
     "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
 ]
+
+# Project data
+project_columns = {
+    "programme__budget_type_fk__budget_type_display": 'Type',
+    "project_code__project_description": "Project Description",
+    "project_code__project_code": "Project Code",
+}
+
+order_list_project = [
+    "programme__budget_type_fk__budget_type_display_order",
+    "project_code__project_code",
+]
+sub_total_project = [
+    "programme__budget_type_fk__budget_type_display",
+]
+display_sub_total_column_project = "project_code__project_description"
+
 
 SHOW_DIT = 0
 SHOW_GROUP = 1

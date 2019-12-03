@@ -32,17 +32,22 @@ from forecast.views.view_forecast_queries import (
     SHOW_GROUP,
     display_sub_total_column_nac,
     display_sub_total_column_prog,
-    filter_codes, filter_selectors,
+    display_sub_total_column_project,
+    filter_codes,
+    filter_selectors,
     hierarchy_query,
     hierarchy_sub_total_column,
     natural_account_columns,
     order_list_hierarchy,
     order_list_nac,
     order_list_prog,
+    order_list_project,
     programme_columns,
+    project_columns,
     sub_total_hierarchy,
     sub_total_nac,
-    sub_total_prog
+    sub_total_prog,
+    sub_total_project,
 )
 
 
@@ -81,10 +86,19 @@ class ForecastMultiTableMixin(MultiTableMixin):
             pivot_filter,
             order_list=order_list_nac,
         )
+
+        project_data = MonthlyFigure.pivot.subtotal_data(
+            display_sub_total_column_project,
+            sub_total_project,
+            project_columns.keys(),
+            pivot_filter,
+            order_list=order_list_project,
+        )
         self.tables = [
             ForecastSubTotalTable(hierarchy_query[self.hierarchy_type], hierarchy_data),
             ForecastSubTotalTable(programme_columns, programme_data),
             ForecastSubTotalTable(natural_account_columns, expenditure_data),
+            ForecastSubTotalTable(project_columns, project_data),
         ]
         return self.tables
 
