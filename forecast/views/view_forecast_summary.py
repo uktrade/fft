@@ -1,18 +1,13 @@
 from django.http import Http404
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import (
-    render,
     reverse,
 )
 from django.views.generic.base import TemplateView
 
 from django_tables2 import (
     MultiTableMixin,
-    RequestConfig,
-    SingleTableView,
 )
-
-from core.views import FidoExportMixin
 
 from costcentre.forms import (
     DirectorateCostCentresForm,
@@ -28,36 +23,32 @@ from forecast.models import (
 )
 from forecast.tables import (
     ForecastSubTotalTable,
-    ForecastTable,
 )
 from forecast.views.base import ForecastViewPermissionMixin
 from forecast.views.view_forecast_queries import (
+    SHOW_COSTCENTRE,
+    SHOW_DIRECTORATE,
     SHOW_DIT,
     SHOW_GROUP,
-    SHOW_DIRECTORATE,
-    SHOW_COSTCENTRE,
-    budget_type_cost_centre_columns,
-    budget_type_cost_directorate_columns,
-    budget_type_cost_group_columns,
-    programme_columns,
-    natural_account_columns,
-    display_sub_total_column_cost_centre,
-    sub_total_hierarchy,
-    order_list_hierarchy,
-    display_sub_total_column_prog,
-    sub_total_prog,
     display_sub_total_column_nac,
-    sub_total_nac,
+    display_sub_total_column_prog,
+    filter_codes, filter_selectors,
     hierarchy_query,
-    filter_codes,
-    filter_selectors,
-    order_list_prog,
-    order_list_nac,
     hierarchy_sub_total_column,
+    natural_account_columns,
+    order_list_hierarchy,
+    order_list_nac,
+    order_list_prog,
+    programme_columns,
+    sub_total_hierarchy,
+    sub_total_nac,
+    sub_total_prog
 )
+
 
 class ForecastMultiTableMixin(MultiTableMixin):
     hierarchy_type = -1
+
     def get_tables(self):
         """
          Return an array of table instances containing data.
@@ -135,7 +126,6 @@ class GroupView(
         )
 
 
-
 class DirectorateView(
     ForecastViewPermissionMixin,
     ForecastMultiTableMixin,
@@ -172,7 +162,6 @@ class DirectorateView(
             raise Http404("Cost Centre not found")
 
 
-
 class CostCentreView(
     ForecastViewPermissionMixin,
     ForecastMultiTableMixin,
@@ -181,6 +170,7 @@ class CostCentreView(
     template_name = "forecast/view/cost_centre.html"
     table_pagination = False
     hierarchy_type = SHOW_COSTCENTRE
+
     def cost_centre(self):
         return CostCentre.objects.get(
             cost_centre_code=self.kwargs['cost_centre_code'],

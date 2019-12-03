@@ -1,5 +1,6 @@
 # programme__budget_type_fk__budget_type_display
-# indicates if DEL, AME, ADMIN used in every view
+# indicates if DEL, AME, ADMIN
+# It is used in every view
 budget_type_cost_centre_columns = {
     "programme__budget_type_fk__budget_type_display": "Budget_type",
     "cost_centre__cost_centre_name": "Cost Centre Description",
@@ -18,9 +19,6 @@ budget_type_cost_group_columns = {
     "cost_centre__directorate__group__group_name": "Departmental Group Code",
 }
 
-# directorate_filter = {'cost_centre__directorate__directorate_code': '10921F'}
-# group_filter = {'cost_centre__directorate__group__group_code': '1090HT'}
-# cc_filter = {"cost_centre__cost_centre_code": f"{cost_centre_code}"}
 programme_columns = {
     "programme__budget_type_fk__budget_type_display": "Hidden",
     "forecast_expenditure_type__forecast_expenditure_type_description": "Hidden",
@@ -32,7 +30,8 @@ programme_columns = {
 natural_account_columns = {
     "programme__budget_type_fk__budget_type_display": "Hidden",
     "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping", # noqa
-    "natural_account_code__expenditure_category__grouping_description": "Budget Category", # noqa
+    "natural_account_code__expenditure_category__grouping_description":
+        "Budget Category",
 }
 
 order_list_hierarchy = ["programme__budget_type_fk__budget_type_display_order"]
@@ -54,16 +53,14 @@ display_sub_total_column_prog = "programme__programme_description"
 # NAC data
 sub_total_nac = [
     "programme__budget_type_fk__budget_type_display",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description",
-    # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
 ]
 display_sub_total_column_nac = (
     "natural_account_code__expenditure_category__grouping_description"
 )
 order_list_nac = [
     "programme__budget_type_fk__budget_type_display_order",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description",
-    # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
 ]
 
 SHOW_DIT = 0
@@ -94,7 +91,3 @@ hierarchy_sub_total_column = [
     'cost_centre__cost_centre_name',
     'cost_centre__cost_centre_name',
 ]
-
-# directorate_filter = {'cost_centre__directorate__directorate_code': '10921F'}
-# group_filter = {'cost_centre__directorate__group__group_code': '1090HT'}
-# cc_filter = {"cost_centre__cost_centre_code": f"{cost_centre_code}"}
