@@ -11,7 +11,6 @@ from forecast.views.upload_file import (
     UploadBudgetView,
 )
 from forecast.views.view_forecast import (
-    CostCentreView,
     CostClassView,  # Legacy
     DITView,
     DirectorateView,
@@ -20,7 +19,9 @@ from forecast.views.view_forecast import (
     PivotClassView,
     pivot_test1,
 )
-
+from forecast.views.report_forecast import (
+    CostCentreView,
+)
 
 urlpatterns = [
     path("pivot/", PivotClassView.as_view(), name="pivot"),
