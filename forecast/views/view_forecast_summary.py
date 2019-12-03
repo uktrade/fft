@@ -115,13 +115,13 @@ class GroupView(
 
     def group(self):
         return DepartmentalGroup.objects.get(
-            group_code=self.kwargs['group_code'],
+            group_code=self.kwargs[filter_codes[self.hierarchy_type]],
             active=True,
         )
 
     def directorates(self):
         return Directorate.objects.filter(
-            group__group_code=self.kwargs['group_code'],
+            group__group_code=self.kwargs[filter_codes[self.hierarchy_type]],
             active=True,
         )
 
@@ -137,13 +137,13 @@ class DirectorateView(
 
     def directorate(self):
         return Directorate.objects.get(
-            directorate_code=self.kwargs['directorate_code'],
+            directorate_code=self.kwargs[filter_codes[self.hierarchy_type]],
             active=True,
         )
 
     def cost_centres_form(self):
         return DirectorateCostCentresForm(
-            directorate_code=self.kwargs['directorate_code']
+            directorate_code=self.kwargs[filter_codes[self.hierarchy_type]]
         )
 
     def post(self, request, *args, **kwargs):
@@ -173,7 +173,7 @@ class CostCentreView(
 
     def cost_centre(self):
         return CostCentre.objects.get(
-            cost_centre_code=self.kwargs['cost_centre_code'],
+            cost_centre_code=self.kwargs[filter_codes[self.hierarchy_type]],
         )
 
     def cost_centres_form(self):
@@ -185,7 +185,7 @@ class CostCentreView(
 
     def post(self, request, *args, **kwargs):
         cost_centre_code = request.POST.get(
-            'cost_centre',
+            filter_codes[self.hierarchy_type],
             None,
         )
         if cost_centre_code:
