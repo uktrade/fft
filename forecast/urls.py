@@ -12,15 +12,15 @@ from forecast.views.upload_file import (
 )
 from forecast.views.view_forecast import (
     CostClassView,  # Legacy
-    DITView,
-    DirectorateView,
-    GroupView,
     MultiForecastView,
     PivotClassView,
     pivot_test1,
 )
-from forecast.views.report_forecast import (
+from forecast.views.view_forecast_summary import (
     CostCentreView,
+    DirectorateView,
+    DITView,
+    GroupView,
 )
 
 urlpatterns = [
