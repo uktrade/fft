@@ -14,6 +14,10 @@ function Table({rowData}) {
     // const analysis2 = useSelector(state => state.showHideCols.analysis2);
     const projectCode = useSelector(state => state.showHideCols.projectCode);
 
+    const rows = useSelector(state => state.allCells.cells);
+
+    console.log("rows", rows)
+
     const isHidden = (key) => {
         if (!nac && key === "cost_centre__cost_centre_code") {
             return true
@@ -74,7 +78,7 @@ function Table({rowData}) {
                     </tr>
                 </thead>
                 <tbody className="govuk-table__body">
-                    {rowData.map((cells, rowIndex) => {
+                    {rows.map((cells, rowIndex) => {
                         return <tr key={rowIndex} index={(rowIndex + 1)}>
                             <td id={"select_" + rowIndex}  className="handle govuk-table__cell indicate-action"
                                 onClick={() => { 
@@ -88,23 +92,23 @@ function Table({rowData}) {
                             }>
                                 select
                             </td>
-                            <TableCell isHidden={isHidden} cell={cells["natural_account_code__natural_account_code"]} />
-                            <TableCell isHidden={isHidden} cell={cells["programme__programme_code"]} />
-                            <TableCell isHidden={isHidden} cell={cells["analysis1_code__analysis1_code"]} />
-                            <TableCell isHidden={isHidden} cell={cells["analysis2_code__analysis2_code"]} />
-                            <TableCell isHidden={isHidden} cell={cells["project_code__project_code"]} />
-                            <TableCell cell={cells["Apr"]} />
-                            <TableCell cell={cells["May"]} />
-                            <TableCell cell={cells["Jun"]} />
-                            <TableCell cell={cells["Jul"]} />
-                            <TableCell cell={cells["Aug"]} />
-                            <TableCell cell={cells["Sep"]} />
-                            <TableCell cell={cells["Oct"]} />
-                            <TableCell cell={cells["Nov"]} />
-                            <TableCell cell={cells["Dec"]} />
-                            <TableCell cell={cells["Jan"]} />
-                            <TableCell cell={cells["Feb"]} />
-                            <TableCell cell={cells["Mar"]} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code__natural_account_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme__programme_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code__analysis1_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code__analysis2_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code__project_code"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Apr"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"May"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Jun"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Jul"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Aug"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Sep"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Oct"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Nov"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Dec"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Jan"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Feb"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"Mar"} />
                         </tr>
                     })}
                 </tbody>

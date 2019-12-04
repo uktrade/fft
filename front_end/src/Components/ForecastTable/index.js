@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Table from '../../Components/Table/index'
 import { TOGGLE_NAC, TOGGLE_PROG } from '../../Reducers/ShowHideCols'
 import { SET_ERROR } from '../../Reducers/Error'
+
+import { SET_CELLS } from '../../Reducers/Cells'
+
 import {
     postData,
     processForecastData
@@ -17,12 +20,20 @@ function ForecastTable() {
     const selectedRow = useSelector(state => state.selected.selectedRow)
     const allSelected = useSelector(state => state.selected.all)
 
+    const cells = useSelector(state => state.allCells.cells);
+
     useEffect(() => {
         const timer = () => {
                 setTimeout(() => {
                 if (window.table_data) {
                     let rows = processForecastData(window.table_data)
-                    setRowData(rows)
+
+                    console.log(rows)
+                      dispatch({
+                        type: SET_CELLS,
+                        cells: rows
+                      })
+
                 } else {
                     timer()
                 }
@@ -54,13 +65,10 @@ function ForecastTable() {
             if (allSelected) {
                 payload.append("all_selected", allSelected)
             } else {
-
                 if (selectedRow > -1) {
-                    payload.append("pasted_at_row", JSON.stringify(rowData[selectedRow]))
+                    payload.append("pasted_at_row", JSON.stringify(cells[selectedRow]))
                 }
             }
-
-            setRowData([])
 
             postData(
                 `/forecast/paste-forecast/${window.cost_centre}/`,
@@ -68,14 +76,16 @@ function ForecastTable() {
             ).then((response) => {
                 if (response.status === 200) {
                     let rows = processForecastData(response.data)
-                    setRowData(rows)
+                      dispatch({
+                        type: SET_CELLS,
+                        cells: rows
+                      })
                 } else {
                     dispatch(
                         SET_ERROR({
                             errorMessage: response.data.error
                         })
                     );
-                    setRowData(window.rowCache)
                 }
             })
         }
@@ -132,7 +142,7 @@ function ForecastTable() {
                     }}
                 >Toggle programme</button>
             </p>
-            <Table rowData={rowData} />
+            <Table />
         </Fragment>
     );
 }

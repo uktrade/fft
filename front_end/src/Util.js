@@ -115,7 +115,5 @@ export const processForecastData = (forecastData) => {
         rows.push(cells)
     });
 
-    window.rowCache = rows;
-
     return rows;
 }

@@ -77,12 +77,20 @@ td {
   background-color: $govuk-focus-colour;
 }
 
+.selected.edited {
+  background-color: green;
+}
+
 .hidden {
   display: none;
 }
 
 .edit-control {
   position: absolute;
+}
+
+.edited {
+  background-color: red;
 }
 
 //input[type=submit] {

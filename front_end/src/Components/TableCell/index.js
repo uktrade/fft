@@ -1,16 +1,19 @@
-import React, {Fragment, useState } from 'react'
+import React, {Fragment, useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 
 
-const TableCell = ({cell, isHidden}) => {
+const TableCell = ({isHidden, rowIndex, cellKey}) => {
     const dispatch = useDispatch();
 
-    const [value, setValue] = useState(cell.value);
+    const [edited, setEdited] = useState(false);
+
     const editCellId = useSelector(state => state.edit.cellId);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
+
+    const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
 
     const isSelected = () => {
         if (allSelected) {
@@ -21,18 +24,18 @@ const TableCell = ({cell, isHidden}) => {
     }
 
     const getClasses = () => {
-        let hiddenResult = '';
-        let editable = '';
+        let hiddenResult = ''
+        let editable = ''
 
         if (isHidden) {
-            hiddenResult = isHidden(cell.key) ? ' hidden' : ''
+            hiddenResult = isHidden(cellKey) ? ' hidden' : ''
         }
 
         if (!cell.editable) {
             editable = ' not-editable';
         }
 
-        return "govuk-table__cell " + (isSelected() ? 'selected' : '') + hiddenResult + editable
+        return "govuk-table__cell " + (edited ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable
     }
 
     const handleKeyPress = (event) => {
@@ -50,8 +53,19 @@ const TableCell = ({cell, isHidden}) => {
             return
         }
 
-        setValue(value)
+        console.log(value)
     }
+
+    const isMounted = useRef(false);
+    useEffect(() => {
+        if (isMounted.current) {
+            setEdited(true)
+        }
+
+        if (cell.value) {
+            isMounted.current = true;
+        }
+    }, [cell.value]);
 
     return (
         <Fragment>
@@ -69,7 +83,7 @@ const TableCell = ({cell, isHidden}) => {
                 }}
 
                 onMouseOver={ () => {
-                    console.log(value)
+                    //console.log(value)
 
                 }}
 
@@ -81,13 +95,13 @@ const TableCell = ({cell, isHidden}) => {
                     <input
                         className="cell-input"
                         type="text"
-                        value={value}
+                        value={cell.value}
                         onChange={e => setContentState(e.target.value)}
                         onKeyPress={handleKeyPress}
                     />
                 ) : (
                     <Fragment>
-                        {value}
+                        {cell.value}
                     </Fragment>
                 )}
             </td>
