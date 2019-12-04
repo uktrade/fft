@@ -11,6 +11,7 @@ jobs:
           ALLOWED_HOSTS: "*"
           SELENIUM_ADDRESS: localhost
           SELENIUM_HOST: localhost
+          PUBLIC_PATH: localhost
 
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
@@ -55,6 +56,8 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
+            python manage.py collectstatic
+            npm run bdd
             python manage.py behave --settings=config.settings.bdd
       - run:
           name: Run Flake8
