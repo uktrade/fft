@@ -237,8 +237,6 @@ class SubTotalForecast():
             if row[period]:
                 has_values = True
                 break
-        if not has_values:
-            print(row)
         return has_values
 
     def do_output_subtotal(self, current_row):
@@ -293,8 +291,13 @@ class SubTotalForecast():
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
-
+        # Find the first rows with values
+        # while True:
+        #     first_row = pivot_data.pop(0)
+        #     if self.row_has_values(first_row):
+        #         break
         first_row = pivot_data.pop(0)
+
         self.output_row_to_table(first_row, "")
         # remove missing periods (like Adj1,
         # etc from the list used to add the

@@ -1,5 +1,3 @@
-import os
-
 from bs4 import BeautifulSoup
 
 from django.contrib.humanize.templatetags.humanize import intcomma
@@ -518,5 +516,3 @@ class ViewCostCentreReport(TestCase, RequestFactoryBase):
         # Check that all the subtotals exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 14
-
-
