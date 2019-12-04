@@ -70,7 +70,7 @@ These add an additional permission check for the user being able to view forecas
 docker exec -it [container id] /bin/bash
 
 ## Run BDD tests
-python manage.py behave --settings=config.settings.bdd
+python _manage.py behave --settings=config.settings.bdd_
 
 ## TODO
 Try increasing size of container machine and see if npm start will work
