@@ -10,9 +10,6 @@ from forecast.views.upload_file import (
     UploadActualsView,
     UploadBudgetView,
 )
-from forecast.views.view_forecast import (
-    MultiForecastView,
-)
 from forecast.views.view_forecast_summary import (
     CostCentreView,
     DITView,
@@ -21,7 +18,6 @@ from forecast.views.view_forecast_summary import (
 )
 
 urlpatterns = [
-    path("pivotmulti/", MultiForecastView.as_view(), name="pivotmulti"),
     path(
         "edit/<int:cost_centre_code>/",
         EditForecastView.as_view(), name="edit_forecast"
