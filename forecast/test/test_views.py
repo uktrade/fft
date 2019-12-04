@@ -1,12 +1,10 @@
 import os
-from unittest.mock import MagicMock, patch
 
 from bs4 import BeautifulSoup
 
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import PermissionDenied
-from django.core.files import File
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -27,7 +25,6 @@ from costcentre.test.factories import (
 
 from forecast.models import (
     FinancialPeriod,
-    ForecastPermission,
     MonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
@@ -39,9 +36,6 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
-)
-from forecast.views.upload_file import (
-    UploadActualsView,
 )
 from forecast.views.view_forecast import (
     MultiForecastView,
@@ -503,9 +497,9 @@ class ViewCostCentreReport(TestCase, RequestFactoryBase):
 
         soup = BeautifulSoup(resp.content, features="html.parser")
 
-        # Check that there are 3 tables on the page
+        # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
-        assert len(tables) == 3
+        assert len(tables) == 4
 
         # Check that the first table displays the cost centre code
         rows = tables[0].find_all("tr")
@@ -526,66 +520,3 @@ class ViewCostCentreReport(TestCase, RequestFactoryBase):
         assert len(table_rows) == 14
 
 
-class UploadActualsTest(TestCase, RequestFactoryBase):
-    def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.financial_period_code = 1
-        self.financial_year_id = 2019
-
-        self.file_mock = MagicMock(spec=File)
-        self.file_mock.name = 'test.txt'
-
-    @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.upload_file.process_uploaded_file')
-    def test_upload_actuals_view(self, mock_process_uploaded_file):
-        forecast_permission_count = ForecastPermission.objects.all().count()
-        self.assertEqual(forecast_permission_count, 0)
-
-        uploaded_actuals_url = reverse(
-            "upload_actuals_file",
-        )
-
-        # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                uploaded_actuals_url,
-                UploadActualsView,
-            )
-
-        ForecastPermissionFactory.create(
-            user=self.test_user,
-            can_upload=True,
-        )
-
-        resp = self.factory_get(
-            uploaded_actuals_url,
-            UploadActualsView,
-        )
-
-        # Should have been permission now
-        self.assertEqual(resp.status_code, 200)
-
-        resp = self.factory_post(
-            uploaded_actuals_url,
-            {
-                "period": self.financial_period_code,
-                "year": self.financial_year_id,
-                'file': self.file_mock,
-            },
-            UploadActualsView,
-        )
-
-        # Make sure upload was process was kicked off
-        assert mock_process_uploaded_file.called
-
-        # Should have been redirected to document upload  page
-        self.assertEqual(resp.status_code, 302)
-        assert resp.url == '/upload/files/'
-
-        # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
-        if os.path.exists(file_path):
-            os.remove(file_path)
