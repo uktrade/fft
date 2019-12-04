@@ -401,12 +401,10 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
 
 class ViewCostCentreReport(TestCase, RequestFactoryBase):
-    amount = 9876543
-    test_cost_centre = 109076
-
     def setUp(self):
         RequestFactoryBase.__init__(self)
-
+        self.amount = 9876543
+        self.test_cost_centre = 109076
         self.apr_amount = MonthlyFigureFactory.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1

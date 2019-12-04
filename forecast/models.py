@@ -239,6 +239,22 @@ class SubTotalForecast():
                 break
         return has_values
 
+    def remove_empty_rows(self, pivot_data):
+        # remove missing periods (like Adj1,
+        # etc from the list used to add the
+        # periods together.
+        # period_list has to be initialised before we can check if the row
+        # has values different from 0
+        self.period_list = [
+            value for value in self.full_list if value in pivot_data[0].keys()
+        ]
+        howmany_row = len(pivot_data) - 1
+        for i in range(howmany_row, -1, -1):
+            row = pivot_data[i]
+            if not self.row_has_values(row):
+                print(f'Deleted {i}')
+                del(pivot_data[i])
+
     def do_output_subtotal(self, current_row):
         new_flag = False
         # Check the subtotals, from the outer subtotal to the inner one.
@@ -291,21 +307,11 @@ class SubTotalForecast():
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
-        # Find the first rows with values
-        # while True:
-        #     first_row = pivot_data.pop(0)
-        #     if self.row_has_values(first_row):
-        #         break
+
+        self.remove_empty_rows(pivot_data)
         first_row = pivot_data.pop(0)
 
         self.output_row_to_table(first_row, "")
-        # remove missing periods (like Adj1,
-        # etc from the list used to add the
-        # periods together.
-        self.period_list = [
-            value for value in self.full_list if value in first_row.keys()
-        ]
-
         # Initialise the structure required
         # a dictionary with the previous
         # value of the columns to be
@@ -342,9 +348,6 @@ class SubTotalForecast():
                 self.do_output_subtotal(current_row)
             for k, totals in self.subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
-            # Don't output row that are all 0
-            if self.row_has_values(current_row):
-                self.output_row_to_table(current_row)
 
         # output all the subtotals, because it is finished
         for column in self.subtotal_columns:
