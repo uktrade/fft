@@ -14,13 +14,12 @@ from features.environment import (
     paste,
 )
 
-from forecast.test.factories import (
-    ForecastPermissionFactory,
-)
-
 from forecast.models import (
     FinancialPeriod,
-    MonthlyFigure,
+)
+
+from forecast.test.factories import (
+    ForecastPermissionFactory,
 )
 
 

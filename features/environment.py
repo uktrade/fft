@@ -4,20 +4,20 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
-from django.conf import settings
-
-from django.test import TestCase, modify_settings
+from behave_django.testcase import BehaviorDrivenTestCase
 
 from django.conf import settings
 from django.contrib.auth import (
-    SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY,
-    get_user_model
+    SESSION_KEY,
+    BACKEND_SESSION_KEY,
+    HASH_SESSION_KEY,
 )
+from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.db import SessionStore
 
-from django.contrib.auth import get_user_model
-
 from core.models import FinancialYear
+from core.myutils import get_current_financial_year
+from core.test.factories import FinancialYearFactory
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -36,14 +36,7 @@ from forecast.models import (
     FinancialPeriod,
     MonthlyFigure,
 )
-
 from forecast.test.factories import FinancialPeriodFactory
-
-from core.test.factories import FinancialYearFactory
-from core.myutils import get_current_financial_year
-
-
-from behave_django.testcase import BehaviorDrivenTestCase
 
 
 def set_up_test_objects(context):
@@ -187,8 +180,7 @@ def copy_text(context, text):
 
 
 def before_scenario(context, scenario):
-    #BehaviorDrivenTestCase.port = 8801
-    BehaviorDrivenTestCase.host = 'fido'
+    BehaviorDrivenTestCase.host = settings.SELENIUM_HOST
     set_up_test_objects(context)
 
 

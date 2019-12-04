@@ -31,8 +31,6 @@ AUTHENTICATION_BACKENDS = [
     "guardian.backends.ObjectPermissionBackend",
 ]
 
-SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
-
 ASYNC_FILE_UPLOAD = True
 
 IGNORE_ANTI_VIRUS = False
