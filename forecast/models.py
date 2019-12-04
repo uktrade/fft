@@ -190,13 +190,13 @@ class Budget(FinancialCode, TimeStampedModel):
 
     def __str__(self):
         return f"{self.cost_centre}" \
-               "--{self.programme}" \
-               "--{self.natural_account_code}" \
-               "--{self.analysis1_code}" \
-               "--{self.analysis2_code}" \
-               "--{self.project_code}:" \
-               "{self.financial_year} " \
-               "{self.financial_period}"
+               f"--{self.programme}" \
+               f"--{self.natural_account_code}" \
+               f"--{self.analysis1_code}" \
+               f"--{self.analysis2_code}" \
+               f"--{self.project_code}:" \
+               f"{self.financial_year} " \
+               f"{self.financial_period}"
 
 
 class SubTotalForecast():
@@ -479,13 +479,13 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
 
     def __str__(self):
         return f"{self.cost_centre}" \
-               "--{self.programme}" \
-               "--{self.natural_account_code}" \
-               "--{self.analysis1_code}" \
-               "--{self.analysis2_code}" \
-               "--{self.project_code}:" \
-               "{self.financial_year} " \
-               "{self.financial_period}"
+               f"--{self.programme}" \
+               f"--{self.natural_account_code}" \
+               f"--{self.analysis1_code}" \
+               f"--{self.analysis2_code}" \
+               f"--{self.project_code}:" \
+               f"{self.financial_year} " \
+               f"{self.financial_period}"
 
 
 class DataTemporaryStore(FinancialCode):

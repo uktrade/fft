@@ -334,6 +334,14 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             directorate=self.directorate,
             cost_centre_code=self.cost_centre_code,
         )
+        self.amount = 9876543
+        self.apr_amount = MonthlyFigureFactory.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            cost_centre=self.cost_centre,
+            amount=self.amount,
+        )
 
         # Assign forecast view permission
         ForecastPermissionFactory(
@@ -388,7 +396,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code
                 },
             ),
             CostCentreView,
@@ -399,40 +407,24 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-
-class ViewCostCentreReport(TestCase, RequestFactoryBase):
-    def setUp(self):
-        RequestFactoryBase.__init__(self)
-        self.amount = 9876543
-        self.test_cost_centre = 109076
-        self.apr_amount = MonthlyFigureFactory.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
-            cost_centre=CostCentreFactory.create(
-                cost_centre_code=self.test_cost_centre
-            ),
-            amount=self.amount,
-        )
-        # Assign forecast view permission
-        ForecastPermissionFactory(
-            user=self.test_user,
-        )
-
-    def test_view_cost_centre_dashboard(self):
+    def test_view_cost_centre_summary(self):
         resp = self.factory_get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.test_cost_centre
+                    'cost_centre_code': self.cost_centre_code
                 },
             ),
             CostCentreView,
-            cost_centre_code=self.test_cost_centre,
+            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
+
+        import pdb;
+        pdb.set_trace()
+
         soup = BeautifulSoup(resp.content, features="html.parser")
 
         # Check that there are 4 tables on the page
@@ -442,7 +434,7 @@ class ViewCostCentreReport(TestCase, RequestFactoryBase):
         # Check that the first table displays the cost centre code
         rows = tables[0].find_all("tr")
         cols = rows[1].find_all("td")
-        assert int(cols[2].get_text()) == self.test_cost_centre
+        assert int(cols[2].get_text()) == self.cost_centre_code
 
         # Check the April value
         assert cols[4].get_text() == intcomma(self.amount)
