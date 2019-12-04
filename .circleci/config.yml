@@ -11,7 +11,7 @@ jobs:
           ALLOWED_HOSTS: "*"
           SELENIUM_ADDRESS: localhost
           SELENIUM_HOST: localhost
-          PUBLIC_PATH: localhost
+          PUBLIC_PATH: localhost:3000/
 
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
@@ -53,10 +53,21 @@ jobs:
             . venv/bin/activate
             python manage.py test
       - run:
-          name: Run tests
+          name: Run node BDD
+          command: |
+            npm run bdd
+          background: true
+      # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
+      # so override the shell and have the last command be the : { null } command to force exit code 0.
+      - run:
+          shell: /bin/sh
+          command: |
+            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:3000
+            :
+      - run:
+          name: Run BDD tests
           command: |
             . venv/bin/activate
-            npm run bdd
             python manage.py behave --settings=config.settings.bdd
       - run:
           name: Run Flake8
