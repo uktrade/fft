@@ -2,8 +2,6 @@ from .base import *  # noqa
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
-INSTALLED_APPS += ("forecast_prototype", "behave_django")
-
 STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 
 # for debug_toolbar, to activate it only on localhost
