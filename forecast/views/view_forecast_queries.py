@@ -1,29 +1,25 @@
 # programme__budget_type_fk__budget_type_display
 # indicates if DEL, AME, ADMIN
 # It is used in every view
-budget_type_cost_centre_columns = {
-    "programme__budget_type_fk__budget_type_display": "Budget_type",
+cost_centre_columns = {
+    "programme__budget_type_fk__budget_type_display": "Budget Type",
     "cost_centre__cost_centre_name": "Cost Centre Description",
     "cost_centre__cost_centre_code": "Cost Centre Code",
 }
 
-budget_type_cost_directorate_columns = {
-    "programme__budget_type_fk__budget_type_display": "Budget_type",
+directorate_columns = {
+    "programme__budget_type_fk__budget_type_display": "Budget Type",
     "cost_centre__directorate__directorate_name": "Directorate Description",
     "cost_centre__directorate__directorate_code": "Directorate Code",
 }
 
-budget_type_cost_group_columns = {
-    "programme__budget_type_fk__budget_type_display": "Budget_type",
+group_columns = {
+    "programme__budget_type_fk__budget_type_display": "Budget Type",
     "cost_centre__directorate__group__group_code": "Departmental Group Description",
     "cost_centre__directorate__group__group_name": "Departmental Group Code",
 }
-
-
-order_list_hierarchy = ["programme__budget_type_fk__budget_type_display_order"]
-
-sub_total_hierarchy = ["programme__budget_type_fk__budget_type_display"]
-# display_sub_total_column_cost_centre = "cost_centre__cost_centre_name"
+hierarchy_order_list = ["programme__budget_type_fk__budget_type_display_order"]
+hierarchy_sub_total = ["programme__budget_type_fk__budget_type_display"]
 
 # programme data
 programme_columns = {
@@ -33,58 +29,53 @@ programme_columns = {
     "programme__programme_description": "Programme Description",
     "programme__programme_code": "Programme Code",
 }
-
-order_list_prog = [
+programme_order_list = [
     "programme__budget_type_fk__budget_type_display_order",
     "forecast_expenditure_type__forecast_expenditure_type_display_order",
 ]
-sub_total_prog = [
+programme_sub_total = [
     "programme__budget_type_fk__budget_type_display",
     "forecast_expenditure_type__forecast_expenditure_type_description",
 ]
-display_sub_total_column_prog = "programme__programme_description"
+programme_display_sub_total_column = "programme__programme_description"
 
-# NAC data
-natural_account_columns = {
+# Expenditure data
+expenditure_columns = {
     "programme__budget_type_fk__budget_type_display": "Hidden",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping", # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description": "Budget Grouping",  # noqa
     "natural_account_code__expenditure_category__grouping_description":
         "Budget Category",
 }
-
-sub_total_nac = [
+expenditure_sub_total = [
     "programme__budget_type_fk__budget_type_display",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
 ]
-display_sub_total_column_nac = (
+expenditure_display_sub_total_column = (
     "natural_account_code__expenditure_category__grouping_description"
 )
-order_list_nac = [
+expenditure_order_list = [
     "programme__budget_type_fk__budget_type_display_order",
-    "natural_account_code__expenditure_category__NAC_category__NAC_category_description", # noqa
+    "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
 ]
 
 # Project data
 project_columns = {
-    "programme__budget_type_fk__budget_type_display": 'Type',
+    "programme__budget_type_fk__budget_type_display": 'Budget Type',
     "project_code__project_description": "Project Description",
     "project_code__project_code": "Project Code",
 }
-
-order_list_project = [
+project_order_list = [
     "programme__budget_type_fk__budget_type_display_order",
 ]
-sub_total_project = [
+project_sub_total = [
     "programme__budget_type_fk__budget_type_display",
 ]
-display_sub_total_column_project = "project_code__project_description"
-
+project_display_sub_total_column = "project_code__project_description"
 
 SHOW_DIT = 0
 SHOW_GROUP = 1
 SHOW_DIRECTORATE = 2
 SHOW_COSTCENTRE = 3
-
 
 filter_codes = ['', 'group_code', 'directorate_code', 'cost_centre_code']
 filter_selectors = [
@@ -94,12 +85,11 @@ filter_selectors = [
     'cost_centre__cost_centre_code',
 ]
 
-
 hierarchy_columns = [
-    budget_type_cost_group_columns,
-    budget_type_cost_directorate_columns,
-    budget_type_cost_centre_columns,
-    budget_type_cost_centre_columns,
+    group_columns,
+    directorate_columns,
+    cost_centre_columns,
+    cost_centre_columns,
 ]
 
 hierarchy_sub_total_column = [

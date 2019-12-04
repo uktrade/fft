@@ -12,8 +12,8 @@ from forecast.tables import (
 )
 from forecast.views.base import ForecastViewPermissionMixin
 from forecast.views.view_forecast_queries import (
-    budget_type_cost_centre_columns,
-    natural_account_columns,
+    cost_centre_columns,
+    expenditure_columns,
     programme_columns,
 )
 
@@ -34,7 +34,7 @@ def get_forecast_table():
     q1 = MonthlyFigure.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_type,
-        budget_type_cost_centre_columns.keys(),
+        cost_centre_columns.keys(),
         pivot_filter,
         order_list=order_list,
     )
@@ -73,14 +73,14 @@ def get_forecast_table():
     q3 = MonthlyFigure.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_nac,
-        natural_account_columns.keys(),
+        expenditure_columns.keys(),
         pivot_filter,
         order_list=order_list_nac,
     )
     return [
-        ForecastSubTotalTable(budget_type_cost_centre_columns, q1),
+        ForecastSubTotalTable(cost_centre_columns, q1),
         ForecastSubTotalTable(programme_columns, q2),
-        ForecastSubTotalTable(natural_account_columns, q3),
+        ForecastSubTotalTable(expenditure_columns, q3),
     ]
 
 

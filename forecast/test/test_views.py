@@ -46,7 +46,6 @@ from forecast.views.upload_file import (
 from forecast.views.view_forecast import (
     MultiForecastView,
     TEST_COST_CENTRE,
-
 )
 from forecast.views.view_forecast_summary import (
     CostCentreView,
@@ -496,7 +495,7 @@ class ViewCostCentreReport(TestCase, RequestFactoryBase):
                 },
             ),
             CostCentreView,
-            cost_centre_code= TEST_COST_CENTRE,
+            cost_centre_code=TEST_COST_CENTRE,
         )
 
         self.assertEqual(resp.status_code, 200)

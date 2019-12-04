@@ -30,24 +30,23 @@ from forecast.views.view_forecast_queries import (
     SHOW_DIRECTORATE,
     SHOW_DIT,
     SHOW_GROUP,
-    display_sub_total_column_nac,
-    display_sub_total_column_prog,
-    display_sub_total_column_project,
-    filter_codes,
+    expenditure_columns,
+    expenditure_display_sub_total_column,
+    expenditure_order_list,
+    expenditure_sub_total, filter_codes,
     filter_selectors,
     hierarchy_columns,
+    hierarchy_order_list,
+    hierarchy_sub_total,
     hierarchy_sub_total_column,
-    natural_account_columns,
-    order_list_hierarchy,
-    order_list_nac,
-    order_list_prog,
-    order_list_project,
     programme_columns,
+    programme_display_sub_total_column,
+    programme_order_list,
+    programme_sub_total,
     project_columns,
-    sub_total_hierarchy,
-    sub_total_nac,
-    sub_total_prog,
-    sub_total_project,
+    project_display_sub_total_column,
+    project_order_list,
+    project_sub_total,
 )
 
 
@@ -66,43 +65,45 @@ class ForecastMultiTableMixin(MultiTableMixin):
             pivot_filter = {}
         hierarchy_data = MonthlyFigure.pivot.subtotal_data(
             hierarchy_sub_total_column[self.hierarchy_type],
-            sub_total_hierarchy,
+            hierarchy_sub_total,
             hierarchy_columns[self.hierarchy_type].keys(),
             pivot_filter,
-            order_list=order_list_hierarchy,
+            order_list=hierarchy_order_list,
         )
         programme_data = MonthlyFigure.pivot.subtotal_data(
-            display_sub_total_column_prog,
-            sub_total_prog,
+            programme_display_sub_total_column,
+            programme_sub_total,
             programme_columns.keys(),
             pivot_filter,
-            order_list=order_list_prog,
+            order_list=programme_order_list,
         )
 
         expenditure_data = MonthlyFigure.pivot.subtotal_data(
-            display_sub_total_column_nac,
-            sub_total_nac,
-            natural_account_columns.keys(),
+            expenditure_display_sub_total_column,
+            expenditure_sub_total,
+            expenditure_columns.keys(),
             pivot_filter,
-            order_list=order_list_nac,
+            order_list=expenditure_order_list,
         )
 
         project_data = MonthlyFigure.pivot.subtotal_data(
-            display_sub_total_column_project,
-            sub_total_project,
+            project_display_sub_total_column,
+            project_sub_total,
             project_columns.keys(),
             pivot_filter,
-            order_list=order_list_project,
+            order_list=project_order_list,
         )
         programme_table = ForecastSubTotalTable(programme_columns, programme_data)
         programme_table.attrs['caption'] = "Programme Report"
-        expenditure_table = ForecastSubTotalTable(natural_account_columns, expenditure_data)
+        expenditure_table = ForecastSubTotalTable(expenditure_columns, expenditure_data)
         expenditure_table.attrs['caption'] = "Expenditure Report"
         project_table = ForecastSubTotalTable(project_columns, project_data)
         project_table.attrs['caption'] = "Project Report"
 
         self.tables = [
-            ForecastSubTotalTable(hierarchy_columns[self.hierarchy_type], hierarchy_data),
+            ForecastSubTotalTable(
+                hierarchy_columns[self.hierarchy_type],
+                hierarchy_data),
             programme_table,
             expenditure_table,
             project_table,

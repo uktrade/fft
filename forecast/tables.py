@@ -105,6 +105,7 @@ class ForecastTable(tables.Table):
     """Define the month columns format and their footer.
     Used every time we need to display a forecast"""
     display_footer = True
+
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
             ("budg", SummingFooterCol(self.display_footer, "Budget", empty_values=()))
