@@ -207,6 +207,9 @@ class SubTotalForecast():
     previous_values = []
     display_total_column = ''
 
+    def __init__(self, data):
+        self.display_data = data
+
     def output_row_to_table(self, row, style_name=""):
         #     Add the stile entry to the dictionary
         #     add the resulting dictionary to the list
@@ -239,21 +242,21 @@ class SubTotalForecast():
                 break
         return has_values
 
-    def remove_empty_rows(self, pivot_data):
+    def remove_empty_rows(self):
         # remove missing periods (like Adj1,
         # etc from the list used to add the
         # periods together.
         # period_list has to be initialised before we can check if the row
         # has values different from 0
         self.period_list = [
-            value for value in self.full_list if value in pivot_data[0].keys()
+            value for value in self.full_list if value in self.display_data[0].keys()
         ]
-        howmany_row = len(pivot_data) - 1
+        howmany_row = len(self.display_data) - 1
         for i in range(howmany_row, -1, -1):
-            row = pivot_data[i]
+            row = self.display_data[i]
             if not self.row_has_values(row):
                 print(f'Deleted {i}')
-                del(pivot_data[i])
+                del(self.display_data[i])
 
     def do_output_subtotal(self, current_row):
         new_flag = False
@@ -291,7 +294,6 @@ class SubTotalForecast():
             self,
             display_total_column,
             subtotal_columns_arg,
-            pivot_data,
     ):
         # The self.subtotals are passed in from
         # the outer totals for calculation,
@@ -307,10 +309,8 @@ class SubTotalForecast():
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
-
-        self.remove_empty_rows(pivot_data)
-        first_row = pivot_data.pop(0)
-
+        self.remove_empty_rows()
+        first_row = self.display_data.pop(0)
         self.output_row_to_table(first_row, "")
         # Initialise the structure required
         # a dictionary with the previous
@@ -336,7 +336,7 @@ class SubTotalForecast():
         self.output_subtotal = {
             field_name: False for field_name in self.subtotal_columns
         }
-        for current_row in pivot_data:
+        for current_row in self.display_data:
             subtotal_time = False
             # check if we need a subtotal.
             # we check from the inner subtotal
@@ -423,13 +423,11 @@ class PivotManager(models.Manager):
         pivot_data = list(data_returned)
         if not pivot_data:
             return []
-        r = SubTotalForecast()
-        result_table = r.subtotal_data(
+        r = SubTotalForecast(pivot_data)
+        return r.subtotal_data(
             display_total_column,
             subtotal_columns,
-            pivot_data,
         )
-        return result_table
 
     def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
         if year == 0:
