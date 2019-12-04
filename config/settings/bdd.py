@@ -2,7 +2,7 @@ from .base import *  # noqa
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
-INSTALLED_APPS += ("behave_django")
+INSTALLED_APPS += ("behave_django",)
 
 STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 
