@@ -64,6 +64,14 @@ These add an additional permission check for the user being able to view forecas
 ### Running manage.py on an app droplet
 /home/vcap/deps/1/bin/python3.6 ~/app/manage.py
 
+### Running BDD tests
+
+## SSH into web container
+docker exec -it [container id] /bin/bash
+
+## Run BDD tests
+python manage.py behave --settings=config.settings.test
+
 ## TODO
 Try increasing size of container machine and see if npm start will work
 Add setup steps to make file and amend readme
@@ -71,7 +79,6 @@ Add setup steps to make file and amend readme
 ### Questions
 
 Have we used any indexes in the database?
-
 
 
 ### Notes

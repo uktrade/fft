@@ -17,6 +17,8 @@ from django.contrib.sessions.backends.db import SessionStore
 
 from django.contrib.auth import get_user_model
 
+from core.models import FinancialYear
+
 from costcentre.test.factories import (
     CostCentreFactory,
 )
@@ -31,6 +33,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from forecast.models import (
+    FinancialPeriod,
     MonthlyFigure,
 )
 
@@ -43,14 +46,17 @@ from core.myutils import get_current_financial_year
 from behave_django.testcase import BehaviorDrivenTestCase
 
 
-def set_up_test_objects():
+def set_up_test_objects(context):
     cost_centre_code = 888812
     nac_code = 999999
     analysis_1_code = "1111111"
     analysis_2_code = "2222222"
     project_code_value = "3000"
 
-    FinancialYearFactory()
+    financial_year = FinancialYear.objects.first()
+
+    if not financial_year:
+        FinancialYearFactory()
 
     if BudgetType.objects.count() == 0:
         BudgetType.objects.create(
@@ -90,12 +96,17 @@ def set_up_test_objects():
             ).strftime('%B')
         )[1]
 
-        FinancialPeriodFactory(
-            financial_period_code=financial_period,
-            period_long_name=month_name,
-            period_short_name=month_name[0:3],
-            period_calendar_code=financial_month
-        )
+        financial_period_count = FinancialPeriod.objects.filter(
+            financial_period_code=financial_period
+        ).count()
+
+        if financial_period_count == 0:
+            FinancialPeriodFactory(
+                financial_period_code=financial_period,
+                period_long_name=month_name,
+                period_short_name=month_name[0:3],
+                period_calendar_code=financial_month
+            )
 
         monthly_figure = MonthlyFigure(
             financial_year_id=get_current_financial_year(),
@@ -174,10 +185,11 @@ def copy_text(context, text):
         """.format(text)
     )
 
+
 def before_scenario(context, scenario):
     #BehaviorDrivenTestCase.port = 8801
     BehaviorDrivenTestCase.host = 'fido'
-    set_up_test_objects()
+    set_up_test_objects(context)
 
 
 def before_feature(context, feature):
