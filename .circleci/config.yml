@@ -56,7 +56,6 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            python manage.py collectstatic
             npm run bdd
             python manage.py behave --settings=config.settings.bdd
       - run:
