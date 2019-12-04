@@ -231,6 +231,16 @@ class SubTotalForecast():
         for period in self.period_list:
             row[period] = 0
 
+    def row_has_values(self, row):
+        has_values = False
+        for period in self.period_list:
+            if row[period]:
+                has_values = True
+                break
+        if not has_values:
+            print(row)
+        return has_values
+
     def do_output_subtotal(self, current_row):
         new_flag = False
         # Check the subtotals, from the outer subtotal to the inner one.
@@ -280,11 +290,11 @@ class SubTotalForecast():
         self.output_subtotal = []
         self.previous_values = []
 
-        first_row = pivot_data.pop(0)
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
 
+        first_row = pivot_data.pop(0)
         self.output_row_to_table(first_row, "")
         # remove missing periods (like Adj1,
         # etc from the list used to add the
@@ -329,8 +339,9 @@ class SubTotalForecast():
                 self.do_output_subtotal(current_row)
             for k, totals in self.subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
-
-            self.output_row_to_table(current_row)
+            # Don't output row that are all 0
+            if self.row_has_values(current_row):
+                self.output_row_to_table(current_row)
 
         # output all the subtotals, because it is finished
         for column in self.subtotal_columns:
