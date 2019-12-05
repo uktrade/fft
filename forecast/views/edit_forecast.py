@@ -40,6 +40,7 @@ from forecast.utils import (
     RowMatchException,
     check_cols_match,
     check_row_match,
+    forecast_encoder,
     get_forecast_monthly_figures_pivot,
     get_monthly_figures,
 )
@@ -309,7 +310,7 @@ class EditForecastView(
         # TODO - Luisella to restrict to financial year
         actuals_periods = list(FinancialPeriod.objects.filter(actual_loaded=True).all())
         actuals_periods_dump = serializers.serialize("json", actuals_periods)
-        forecast_dump = json.dumps(list(monthly_figures), cls=DjangoJSONEncoder)
+        forecast_dump = json.dumps(list(monthly_figures), default=forecast_encoder)
         paste_form = PasteForecastForm()
 
         context["form"] = form

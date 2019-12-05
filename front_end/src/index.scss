@@ -81,6 +81,14 @@ td {
   background-color: green;
 }
 
+.selected.not-editable {
+  background-color: blue;
+}
+
+.selected.edited {
+  background-color: green;
+}
+
 .hidden {
   display: none;
 }

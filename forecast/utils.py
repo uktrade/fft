@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 
 from core.myutils import get_current_financial_year
@@ -100,3 +102,12 @@ def check_row_match(index, pasted_at_row, cell_data):
         raise RowMatchException(
             "Your pasted data is not in the correct format"
         )
+
+
+def forecast_encoder(obj):
+    print("WooWoo! Called!", obj)
+
+    if isinstance(obj, int):
+        return "{0:.2f}".format(obj)
+    else:
+        return obj
