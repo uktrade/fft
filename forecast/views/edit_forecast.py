@@ -1,5 +1,6 @@
 import json
 import re
+import reversion
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -134,19 +135,24 @@ class AddRowView(CostCentrePermissionTest, FormView):
 
         # TODO - investigate the following statement -
         # "Don't add months that are actuals"
-        for financial_period in range(1, 13):
-            monthly_figure = MonthlyFigure(
-                financial_year_id=get_current_financial_year(),
-                financial_period_id=financial_period,
-                cost_centre_id=self.cost_centre_code,
-                programme=data["programme"],
-                natural_account_code=data["natural_account_code"],
-                analysis1_code=data["analysis1_code"],
-                analysis2_code=data["analysis2_code"],
-                project_code=data["project_code"],
-                amount=0,
-            )
-            monthly_figure.save()
+        with reversion.create_revision():
+            for financial_period in range(1, 13):
+                monthly_figure = MonthlyFigure(
+                    financial_year_id=get_current_financial_year(),
+                    financial_period_id=financial_period,
+                    cost_centre_id=self.cost_centre_code,
+                    programme=data["programme"],
+                    natural_account_code=data["natural_account_code"],
+                    analysis1_code=data["analysis1_code"],
+                    analysis2_code=data["analysis2_code"],
+                    project_code=data["project_code"],
+                    amount=0,
+                )
+                #monthly_figure.name = "add: draft"
+                monthly_figure.save()
+
+            reversion.set_user(self.request.user)
+            #reversion.set_comment("Created revision 1")
 
         return super().form_valid(form)
 
@@ -329,14 +335,17 @@ class EditForecastView(
 
             for key, cell in cell_data.items():
                 if cell["editable"]:
-                    monthly_figure = MonthlyFigure.objects.filter(
-                        cost_centre__cost_centre_code=cost_centre_code,
-                        financial_year__financial_year=financial_year,
-                        financial_period__period_short_name__iexact=cell["key"],
-                        programme__programme_code=cell["programmeCode"],
-                        natural_account_code__natural_account_code=cell[
-                            "naturalAccountCode"
-                        ],
-                    ).first()
-                    monthly_figure.amount = int(float(cell["value"]))
-                    monthly_figure.save()
+                    with reversion.create_revision():
+                        monthly_figure = MonthlyFigure.objects.filter(
+                            cost_centre__cost_centre_code=cost_centre_code,
+                            financial_year__financial_year=financial_year,
+                            financial_period__period_short_name__iexact=cell["key"],
+                            programme__programme_code=cell["programmeCode"],
+                            natural_account_code__natural_account_code=cell[
+                                "naturalAccountCode"
+                            ],
+                        ).first()
+                        monthly_figure.amount = int(float(cell["value"]))
+                        monthly_figure.save()
+
+                        reversion.set_user(self.request.user)

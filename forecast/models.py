@@ -1,3 +1,5 @@
+import reversion
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Max
@@ -409,6 +411,7 @@ class PivotManager(models.Manager):
         return pivot(q1, columns, "financial_period__period_short_name", "amount")
 
 
+@reversion.register()
 class MonthlyFigure(FinancialCode, TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
