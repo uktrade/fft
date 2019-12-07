@@ -443,7 +443,7 @@ class PivotManager(models.Manager):
                 .order_by(*order_list)
         )
         pivot_data = pivot(q1, columns, "financial_period__period_short_name", "amount")
-        print(pivot_data.query)
+        # print(pivot_data.query)
         return pivot_data
 
 

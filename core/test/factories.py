@@ -26,18 +26,6 @@ class EventLogFactory(factory.DjangoModelFactory):
         model = EventLog
 
 
-class FinancialYearFactory(factory.DjangoModelFactory):
-    """
-    Define FinancialYear Factory
-    """
-    financial_year = 2019
-    financial_year_display = "2019"
-    current = True
-
-    class Meta:
-        model = FinancialYear
-
-
 class DocumentFactory(factory.DjangoModelFactory):
     """
     Define Document Factory
