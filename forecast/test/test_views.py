@@ -14,6 +14,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import (
@@ -335,10 +336,11 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             directorate=self.directorate,
             cost_centre_code=self.cost_centre_code,
         )
+        current_year = get_current_financial_year()
         self.amount_apr = 9876543
         programme_obj = ProgrammeCodeFactory()
         nac_obj = NaturalCodeFactory()
-        year_obj = FinancialYear.objects.get(financial_year=2019)
+        year_obj = FinancialYear.objects.get(financial_year=current_year)
 
         a = MonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
@@ -368,7 +370,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             user=self.test_user,
         )
 
-    def aaa_test_dit_view(self):
+    def test_dit_view(self):
         response = self.factory_get(
             reverse("forecast_dit"),
             DITView,
@@ -379,7 +381,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check group is shown
         assert self.group_name in str(response.rendered_content)
 
-    def aaa_test_group_view(self):
+    def test_group_view(self):
         response = self.factory_get(
             reverse(
                 "forecast_group",
@@ -395,7 +397,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert self.directorate_name in str(response.rendered_content)
 
-    def aaa_test_directorate_view(self):
+    def test_directorate_view(self):
         response = self.factory_get(
             reverse(
                 "forecast_directorate",
@@ -411,7 +413,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-    def aaa_test_cost_centre_view(self):
+    def test_cost_centre_view(self):
         response = self.factory_get(
             reverse(
                 "forecast_cost_centre",
@@ -428,11 +430,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
     def test_view_cost_centre_summary(self):
-        print('============================')
-        q = MonthlyFigure.pivot.pivot_data()
-        print(q)
-        print(q.query)
-
         resp = self.factory_get(
             reverse(
                 "forecast_cost_centre",
