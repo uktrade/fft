@@ -30,7 +30,6 @@ from forecast.models import (
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import (
     ForecastPermissionFactory,
-    MonthlyFigureFactory,
 )
 from forecast.views.edit_forecast import (
     AddRowView,
@@ -341,15 +340,16 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         programme_obj = ProgrammeCodeFactory()
         nac_obj = NaturalCodeFactory()
         year_obj = FinancialYear.objects.get(financial_year=current_year)
-
+        # If you use the MonthlyFigureFactory the test fails.
+        # I cannot work out why, it may be due to using a random year....
         a = MonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
-            financial_year = year_obj,
-            programme = programme_obj,
+            financial_year=year_obj,
+            programme=programme_obj,
             cost_centre=self.cost_centre,
-            natural_account_code = nac_obj,
+            natural_account_code=nac_obj,
             amount=self.amount_apr,
         )
         a.save
@@ -359,9 +359,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                 financial_period_code=4
             ),
             cost_centre=self.cost_centre,
-            financial_year = year_obj,
-            programme = programme_obj,
-            natural_account_code = nac_obj,
+            financial_year=year_obj,
+            programme=programme_obj,
+            natural_account_code=nac_obj,
             amount=self.amount_may,
         )
         m.save
@@ -458,10 +458,10 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert cols[4].get_text() == intcomma(self.amount_apr)
 
         # Check the total for the year
-        assert cols[-3].get_text() == intcomma(self.amount_apr+self.amount_may)
+        assert cols[-3].get_text() == intcomma(self.amount_apr + self.amount_may)
 
         # Check the difference between budget and year total
-        assert cols[-2].get_text() == intcomma(-self.amount_apr-self.amount_may)
+        assert cols[-2].get_text() == intcomma(-self.amount_apr - self.amount_may)
 
         # Check that all the subtotals exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")

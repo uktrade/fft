@@ -4,7 +4,7 @@ import factory
 
 from faker import Faker
 
-from core.models import Document, EventLog, FinancialYear
+from core.models import Document, EventLog
 
 fake = Faker()
 
