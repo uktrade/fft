@@ -251,6 +251,7 @@ class SubTotalForecast():
         self.period_list = [
             value for value in self.full_list if value in self.display_data[0].keys()
         ]
+        return
         howmany_row = len(self.display_data) - 1
         for i in range(howmany_row, -1, -1):
             row = self.display_data[i]
@@ -337,6 +338,7 @@ class SubTotalForecast():
             field_name: False for field_name in self.subtotal_columns
         }
         for current_row in self.display_data:
+            self.output_row_to_table(current_row, "")
             subtotal_time = False
             # check if we need a subtotal.
             # we check from the inner subtotal
@@ -440,8 +442,9 @@ class PivotManager(models.Manager):
                 .filter(financial_year=year, **filter_dict)
                 .order_by(*order_list)
         )
-
-        return pivot(q1, columns, "financial_period__period_short_name", "amount")
+        pivot_data = pivot(q1, columns, "financial_period__period_short_name", "amount")
+        print(pivot_data.query)
+        return pivot_data
 
 
 class MonthlyFigure(FinancialCode, TimeStampedModel):

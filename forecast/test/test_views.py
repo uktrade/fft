@@ -334,13 +334,28 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             directorate=self.directorate,
             cost_centre_code=self.cost_centre_code,
         )
-        self.amount = 9876543
-        self.apr_amount = MonthlyFigureFactory.create(
+        self.amount_apr = 9876543
+        programme_obj = ProgrammeCodeFactory()
+        nac_obj = NaturalCodeFactory()
+
+        MonthlyFigureFactory.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
+            programme = programme_obj,
             cost_centre=self.cost_centre,
-            amount=self.amount,
+            natural_account_code = nac_obj,
+            amount=self.amount_apr,
+        )
+        self.amount_may = 1234567
+        MonthlyFigureFactory.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2
+            ),
+            cost_centre=self.cost_centre,
+            programme = programme_obj,
+            natural_account_code = nac_obj,
+            amount=self.amount_may,
         )
 
         # Assign forecast view permission
@@ -408,6 +423,11 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
     def test_view_cost_centre_summary(self):
+
+        q = MonthlyFigure.pivot.pivot_data()
+        print(q)
+        print(q.query)
+
         resp = self.factory_get(
             reverse(
                 "forecast_cost_centre",
@@ -421,10 +441,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
-
-        import pdb;
-        pdb.set_trace()
-
         soup = BeautifulSoup(resp.content, features="html.parser")
 
         # Check that there are 4 tables on the page
@@ -437,13 +453,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert int(cols[2].get_text()) == self.cost_centre_code
 
         # Check the April value
-        assert cols[4].get_text() == intcomma(self.amount)
+        assert cols[4].get_text() == intcomma(self.amount_apr)
 
         # Check the total for the year
-        assert cols[-3].get_text() == intcomma(self.amount)
+        assert cols[-3].get_text() == intcomma(self.amount_apr)
 
         # Check the difference between budget and year total
-        assert cols[-2].get_text() == intcomma(-self.amount)
+        assert cols[-2].get_text() == intcomma(-self.amount_apr)
 
         # Check that all the subtotals exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
