@@ -6,9 +6,22 @@ from .models import (
 )
 
 
+class MonthlyFigureAmountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MonthlyFigure
+        fields = [
+            'amount',
+            'version',
+        ]
+
+
 class MonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
+    amount = MonthlyFigureAmountSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta:
         model = MonthlyFigure

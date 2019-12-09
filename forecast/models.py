@@ -447,14 +447,9 @@ class MonthlyFigure(TimeStampedModel):
         FinancialPeriod,
         on_delete=models.PROTECT,
     )
-    # The figures are stored ar pence, to avoid rounding problems.
-    # Some formatting will take care of displaying the figures as pounds only
-    amount = models.BigIntegerField(default=0)
 
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
-
-    version = models.IntegerField(default=1)
 
     financial_code = models.ForeignKey(
         FinancialCode,
@@ -467,7 +462,6 @@ class MonthlyFigure(TimeStampedModel):
             "financial_code",
             "financial_year",
             "financial_period",
-            "version",
         )
 
     def __str__(self):
@@ -481,6 +475,19 @@ class MonthlyFigure(TimeStampedModel):
             self.financial_year,
             self.financial_period,
         )
+
+
+class MonthlyFigureAmount(TimeStampedModel):
+    # The figures are stored ar pence, to avoid rounding problems.
+    # Some formatting will take care of displaying the figures as pounds only
+    amount = models.BigIntegerField(default=0)
+    version = models.IntegerField(default=1)
+
+    monthly_figure = models.ForeignKey(
+        MonthlyFigure,
+        on_delete=models.CASCADE,
+        related_name="monthly_figure_amounts",
+    )
 
 
 class UploadingActuals:

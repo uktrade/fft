@@ -10,6 +10,7 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 
 
@@ -39,12 +40,17 @@ def monthly_figures_create():
             financial_code.save()
 
             for f in financial_periods:
-                MonthlyFigure.objects.create(
+                monthly_figure = MonthlyFigure.objects.create(
                     financial_year=current_financial_year,
                     financial_period=f,
                     financial_code=financial_code,
-                    amount=monthly_amount,
                 )
+
+                MonthlyFigureAmount.objects.create(
+                    amount=monthly_amount,
+                    monthly_figure=monthly_figure,
+                )
+
                 monthly_amount += 1
 
         for i in range(1, 3):

@@ -4,6 +4,7 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
+    PublishView,
     UploadActualsView,
     pasted_forecast_content,
 )
@@ -32,6 +33,11 @@ urlpatterns = [
         "add/<int:cost_centre_code>/",
         AddRowView.as_view(),
         name="add_forecast_row",
+    ),
+    path(
+        "publish/",
+        PublishView.as_view(),
+        name="publish_forecast",
     ),
     path(
         "choose-cost-centre/",

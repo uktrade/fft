@@ -30,7 +30,7 @@
         </div>
     </div>
     <div id="root"></div>
-    <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
+    <form id="table-data-submission" onsubmit="setData()" action="{% url 'publish_forecast' %}" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ form }}
         <input class="govuk-button" data-module="govuk-button" type="submit" value="Publish changes" >

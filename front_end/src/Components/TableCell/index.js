@@ -6,14 +6,16 @@ import { SET_EDITING_CELL } from '../../Reducers/Edit'
 const TableCell = ({isHidden, rowIndex, cellKey}) => {
     const dispatch = useDispatch();
 
-    const [edited, setEdited] = useState(false);
+    const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
+
+    const [edited, setEdited] = useState(cell.version > 1);
 
     const editCellId = useSelector(state => state.edit.cellId);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
 
-    const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
+
 
     const isSelected = () => {
         if (allSelected) {

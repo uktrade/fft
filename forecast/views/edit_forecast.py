@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.db.models import Max
+from django.db.models import Max, Subquery, OuterRef
 from django.http import JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
@@ -27,8 +27,8 @@ from forecast.forms import (
 )
 from forecast.models import (
     FinancialCode,
-    FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.permission_shortcuts import (
     NoForecastViewPermission,
@@ -136,19 +136,27 @@ class AddRowView(CostCentrePermissionTest, FormView):
 
         # TODO - investigate the following statement -
         # "Don't add months that are actuals"
+        financial_code = FinancialCode.objects.filter(
+            cost_centre_id=self.cost_centre_code,
+            programme=data["programme"],
+            natural_account_code=data["natural_account_code"],
+            analysis1_code=data["analysis1_code"],
+            analysis2_code=data["analysis2_code"],
+            project_code=data["project_code"],
+        )
+
         for financial_period in range(1, 13):
-            monthly_figure = MonthlyFigure(
+            monthly_figure = MonthlyFigure.objects.create(
                 financial_year_id=get_current_financial_year(),
                 financial_period_id=financial_period,
-                cost_centre_id=self.cost_centre_code,
-                programme=data["programme"],
-                natural_account_code=data["natural_account_code"],
-                analysis1_code=data["analysis1_code"],
-                analysis2_code=data["analysis2_code"],
-                project_code=data["project_code"],
-                amount=0,
+                financial_code=financial_code,
+
             )
-            monthly_figure.save()
+
+            MonthlyFigureAmount.objects.create(
+                amount=0,
+                monthly_figure=monthly_figure,
+            )
 
         return super().form_valid(form)
 
@@ -264,14 +272,24 @@ def pasted_forecast_content(request, cost_centre_code):
 
         # Update monthly figures
         for monthly_figure in monthly_figures:
-            monthly_figure.version = monthly_figure.version + 1
-            monthly_figure.save()
+            monthly_figure_amount = MonthlyFigureAmount.objects.filter(
+                monthly_figure=monthly_figure,
+            ).order_by(
+                "-version"
+            ).first()
+            monthly_figure_amount.version = monthly_figure_amount.version + 1
+            monthly_figure_amount.save()
 
-        forecast_dump = get_forecast_monthly_figures_pivot(
-            cost_centre_code
+        financial_code = FinancialCode.objects.filter(
+            cost_centre_id=cost_centre_code,
         )
 
-        return JsonResponse(forecast_dump, safe=False)
+        financial_code_serialiser = FinancialCodeSerializer(
+            financial_code,
+            many=True,
+        )
+
+        return JsonResponse(financial_code_serialiser.data, safe=False)
     else:
         return JsonResponse({
             'error': 'There was a problem with your '
@@ -321,21 +339,48 @@ class EditForecastView(
         context["forecast_dump"] = forecast_dump
         return context
 
-    def post(self):
-        form = PublishForm(self.request.POST)
-        if form.is_valid():
-            cost_centre_code = form.cleaned_data["cost_centre_code"]
 
-            draft_figures = MonthlyFigure.objects.filter(
-                cost_centre_id=cost_centre_code,
-            ).aggregate(Max('version'))
+# TODO - check permissions
+class PublishView(
+    FormView,
+):
+    form_class = PublishForm
 
-            figures_to_delete = MonthlyFigure.objects.filter(
-                cost_centre_id=cost_centre_code,
-            ).exclude(pk__in=draft_figures)
+    def get_success_url(self):
+        return reverse_lazy(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code
+            }
+        )
 
-            figures_to_delete.delete()
+    def form_valid(self, form):
+        self.cost_centre_code = form.cleaned_data["cost_centre_code"]
 
-            for monthly_figure in draft_figures:
-                monthly_figure.version = 1
-                monthly_figure.save()
+        financial_code = FinancialCode.objects.filter(
+            cost_centre_id=self.cost_centre_code,
+        ).first()
+
+        latest_version = Subquery(
+            MonthlyFigure.objects.filter(
+                financial_code=financial_code,
+                id=OuterRef('id'),
+            ).order_by('-version').values('id')[:1]
+        )
+
+        latest = MonthlyFigure.objects.filter(
+            id__in=latest_version,
+            financial_code=financial_code,
+        )
+
+        figures_to_delete = MonthlyFigure.objects.filter(
+            financial_code=financial_code,
+        ).exclude(pk__in=latest)
+
+        figures_to_delete.delete()
+
+        for monthly_figure in latest:
+            monthly_figure.version = 1
+            monthly_figure.save()
+
+        return super(PublishView, self).form_valid(form)

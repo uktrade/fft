@@ -6,6 +6,7 @@ from core.myutils import get_current_financial_year
 from core.utils import check_empty
 
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
 )
@@ -24,7 +25,8 @@ class ColMatchException(Exception):
 
 
 def get_forecast_monthly_figures_pivot(cost_centre_code):
-    pivot_filter = {"cost_centre__cost_centre_code": "{}".format(
+
+    pivot_filter = {"financial_code__cost_centre__cost_centre_code": "{}".format(
         cost_centre_code
     )}
     output = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
@@ -44,16 +46,20 @@ def get_monthly_figures(cost_centre_code, cell_data):
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
     monthly_figures = []
 
+    financial_code = FinancialCode.objects.filter(
+        cost_centre__cost_centre_code=cost_centre_code,
+        programme__programme_code=check_empty(cell_data[1]),
+        natural_account_code__natural_account_code=cell_data[0],
+        analysis1_code=check_empty(cell_data[2]),
+        analysis2_code=check_empty(cell_data[3]),
+        project_code=check_empty(cell_data[4]),
+    ).first()
+
     for financial_period in range(start_period, 13):
         monthly_figure = MonthlyFigure.objects.filter(
-            cost_centre__cost_centre_code=cost_centre_code,
             financial_year__financial_year=get_current_financial_year(),
             financial_period__financial_period_code=financial_period,
-            programme__programme_code=check_empty(cell_data[1]),
-            natural_account_code__natural_account_code=cell_data[0],
-            analysis1_code=check_empty(cell_data[2]),
-            analysis2_code=check_empty(cell_data[3]),
-            project_code=check_empty(cell_data[4]),
+            financial_code=financial_code,
         ).first()
 
         if not monthly_figure:
@@ -81,19 +87,19 @@ def check_row_match(index, pasted_at_row, cell_data):
 
         if (
             pasted_at_row[
-                "natural_account_code__natural_account_code"
+                "natural_account_code"
             ]["value"] != int(cell_data[0]) or
             pasted_at_row[
-                "programme__programme_code"
+                "programme"
             ]["value"] != cell_data[1] or
             pasted_at_row[
-                "analysis1_code__analysis1_code"
+                "analysis1_code"
             ]["value"] != check_empty(cell_data[2]) or
             pasted_at_row[
-                "analysis2_code__analysis2_code"
+                "analysis2_code"
             ]["value"] != check_empty(cell_data[3]) or
             pasted_at_row[
-                "project_code__project_code"
+                "project_code"
             ]["value"] != check_empty(cell_data[4])
         ):
             raise RowMatchException(

@@ -76,44 +76,46 @@ export const processForecastData = (forecastData) => {
     let cellIndex = 0;
     let rows = [];
 
+    let financialCodeCols = [
+        "analysis1_code",
+        "analysis2_code",
+        "cost_centre",
+        "natural_account_code",
+        "programme",
+        "project_code"
+    ]
+
     forecastData.forEach(function (rowData, rowIndex) {
         let cells = {}
         let colIndex = 0
 
-        console.log("rowData", rowData)
-
-        // eslint-disable-next-line
-        for (let key in rowData) {
-
-            let editable = false;
-
-            if (months.indexOf(key.toLowerCase()) > 0) {
-                editable = true
-            }
-
-            for (let i = 0; i < window.actuals_periods.length; i++) {
-                let shortName = window.actuals_periods[i]["fields"]["period_short_name"];
-
-                if (shortName === key) {
-                    editable = false;
-                    break;
-                }
-            }
-
-            cells[key] = {
-                id: getCellId(key, rowIndex),
-                index: cellIndex,
+        for (const financialCodeCol of financialCodeCols) {
+            cells[financialCodeCol] = {
+                id: getCellId(financialCodeCol, rowIndex),
                 rowIndex: rowIndex,
                 colIndex: colIndex,
-                editable: editable,
-                key: key,
-                value: rowData[key],
-                isEditable: editable
+                key: financialCodeCol,
+                value: rowData[financialCodeCol],
+                isEditable: false
             }
 
-            cellIndex++
             colIndex++
         }
+
+        for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
+            cells[monthlyFigure.month] = {
+                id: getCellId(monthlyFigure.month, rowIndex),
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: monthlyFigure.month,
+                value: monthlyFigure.amount,
+                version: monthlyFigure.version,
+                isEditable: !monthlyFigure.actual
+            }
+
+            colIndex++
+        }
+
         rows.push(cells)
     });
 

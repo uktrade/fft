@@ -58,11 +58,11 @@ function Table({rowData}) {
                         }>
                             select all
                         </td>
-                        <TableHeader isHidden={isHidden} headerType="natural_account_code__natural_account_code">Natural Account Code</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="programme__programme_code">Programme</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="a1">Analysis Code Sector</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="a2">Analysis Code Market</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="project_code__project_code">Project Code</TableHeader>
+                        <TableHeader isHidden={isHidden} headerType="natural_account_code">Natural Account Code</TableHeader>
+                        <TableHeader isHidden={isHidden} headerType="programme">Programme</TableHeader>
+                        <TableHeader isHidden={isHidden} headerType="analysis1_code">Analysis Code Sector</TableHeader>
+                        <TableHeader isHidden={isHidden} headerType="analysis2_code">Analysis Code Market</TableHeader>
+                        <TableHeader isHidden={isHidden} headerType="project_code">Project Code</TableHeader>
                         <th className="govuk-table__header">Apr</th>
                         <th className="govuk-table__header">May</th>
                         <th className="govuk-table__header">Jun</th>
@@ -92,23 +92,23 @@ function Table({rowData}) {
                             }>
                                 select
                             </td>
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code__natural_account_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme__programme_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code__analysis1_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code__analysis2_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code__project_code"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Apr"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"May"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Jun"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Jul"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Aug"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Sep"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Oct"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Nov"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Dec"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Jan"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Feb"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"Mar"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code"} />
+                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"apr"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"may"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"jun"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"jul"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"aug"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"sep"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"oct"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"nov"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"dec"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"jan"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"feb"} />
+                            <TableCell rowIndex={rowIndex} cellKey={"mar"} />
                         </tr>
                     })}
                 </tbody>
