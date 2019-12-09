@@ -33,7 +33,7 @@
     <form onsubmit="setData()" id="table-data-submission" action="" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ form }}
-        <input class="govuk-button" data-module="govuk-button" type="submit" value="Save changes" >
+        <input class="govuk-button" data-module="govuk-button" type="submit" value="Publish changes" >
     </form>
     <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
         {% csrf_token %}
@@ -48,7 +48,6 @@
         function setData() {
             document.getElementById("id_cell_data").value = JSON.stringify(window.cell_data);
         }
-        window.actuals_periods = {{ actuals_periods_dump|safe }};
         window.table_data = {{ forecast_dump|safe }};
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
     </script>

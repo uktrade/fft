@@ -89,3 +89,4 @@ django-bootstrap-breadcrumbs
 django-guardian
 redis
 marshmallow
+djangorestframework

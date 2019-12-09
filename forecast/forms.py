@@ -21,10 +21,8 @@ from forecast.models import (
 )
 
 
-class EditForm(forms.Form):
-    cell_data = forms.CharField(widget=forms.Textarea)
+class PublishForm(forms.Form):
     cost_centre_code = forms.IntegerField(widget=forms.HiddenInput(), initial=123)
-    financial_year = forms.IntegerField(widget=forms.HiddenInput(), initial=123)
 
 
 class AddForecastRowForm(forms.Form):

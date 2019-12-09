@@ -6,11 +6,16 @@ from core.models import FinancialYear
 
 from costcentre.models import CostCentre
 
-from forecast.models import FinancialPeriod, MonthlyFigure
+from forecast.models import (
+    FinancialCode,
+    FinancialPeriod,
+    MonthlyFigure,
+)
 
 
 def monthly_figures_clear():
     MonthlyFigure.objects.all().delete()
+    FinancialCode.objects.all().delete()
 
 
 def monthly_figures_create():
@@ -26,14 +31,19 @@ def monthly_figures_create():
     for programme_fk in programme_list:
         monthly_amount += 10
         for natural_account_code_fk in natural_account_list:
+            financial_code = FinancialCode.objects.create(
+                programme=programme_fk,
+                cost_centre=cost_centre_fk,
+                natural_account_code=natural_account_code_fk,
+            )
+            financial_code.save()
+
             for f in financial_periods:
                 MonthlyFigure.objects.create(
                     financial_year=current_financial_year,
                     financial_period=f,
-                    programme=programme_fk,
-                    cost_centre=cost_centre_fk,
+                    financial_code=financial_code,
                     amount=monthly_amount,
-                    natural_account_code=natural_account_code_fk,
                 )
                 monthly_amount += 1
 

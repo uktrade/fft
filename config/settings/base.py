@@ -76,6 +76,8 @@ INSTALLED_APPS = [
     "webpack_loader",
     "django_bootstrap_breadcrumbs",
     "guardian",
+    "reversion",
+    "rest_framework",
 ]
 
 ROOT_URLCONF = "config.urls"

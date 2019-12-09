@@ -114,7 +114,6 @@ class FinancialPeriod(models.Model):
 
 class FinancialCode(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
-
     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
@@ -136,6 +135,16 @@ class FinancialCode(models.Model):
         null=True
     )
 
+    class Meta:
+        unique_together = (
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+        )
+
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
         if self.pk is None:
@@ -154,11 +163,8 @@ class FinancialCode(models.Model):
 
         super(FinancialCode, self).save(*args, **kwargs)
 
-    class Meta:
-        abstract = True
 
-
-class Budget(FinancialCode, TimeStampedModel):
+class Budget(TimeStampedModel):
     """Used to store the budgets
     for the financial year. The
     data is not profiled"""
@@ -166,30 +172,32 @@ class Budget(FinancialCode, TimeStampedModel):
     id = models.AutoField("Budget ID", primary_key=True)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
     budget = models.BigIntegerField(default=0)
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="budget_financial_code",
+    )
+
+    # TODO LS - add financial period
 
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
         )
 
     def __str__(self):
         return "{}--{}--{}--{}--{}--{}".format(
-            self.programme,
-            self.natural_account_code,
-            self.analysis1_code,
-            self.analysis2_code,
-            self.project_code,
+            self.financial_code.programme,
+            self.financial_code.natural_account_code,
+            self.financial_code.analysis1_code,
+            self.financial_code.analysis2_code,
+            self.financial_code.project_code,
             self.financial_year,
         )
 
 
-class SubTotalForecast():
+class SubTotalForecast:
     result_table = []
     period_list = []
     full_list = []
@@ -255,10 +263,10 @@ class SubTotalForecast():
                 break
 
     def subtotal_data(
-            self,
-            display_total_column,
-            subtotal_columns_arg,
-            pivot_data,
+        self,
+        display_total_column,
+        subtotal_columns_arg,
+        pivot_data,
     ):
         # The self.subtotals are passed in from
         # the outer totals for calculation,
@@ -347,29 +355,29 @@ class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
     default_columns = {
-        "cost_centre__cost_centre_code": "Cost Centre Code",
-        "cost_centre__cost_centre_name": "Cost Centre Description",
-        "natural_account_code__natural_account_code": "Natural Account Code",
-        "natural_account_code__natural_account_code_description":
+        "financial_code__cost_centre__cost_centre_code": "Cost Centre Code",
+        "financial_code__cost_centre__cost_centre_name": "Cost Centre Description",
+        "financial_code__natural_account_code__natural_account_code": "Natural Account Code",
+        "financial_code__natural_account_code__natural_account_code_description":
             "Natural Account Code Description",
-        "programme__programme_code": "Programme Code",
-        "programme__programme_description": "Programme Description",
-        "analysis1_code__analysis1_code": "Contract Code",
-        "analysis1_code__analysis1_description": "Contract Description",
-        "analysis2_code__analysis2_code": "Market Code",
-        "analysis2_code__analysis2_description": "Market Description",
-        "project_code__project_code": "Project Code",
-        "project_code__project_description": "Project Description",
+        "financial_code__programme__programme_code": "Programme Code",
+        "financial_code__programme__programme_description": "Programme Description",
+        "financial_code__analysis1_code__analysis1_code": "Contract Code",
+        "financial_code__analysis1_code__analysis1_description": "Contract Description",
+        "financial_code__analysis2_code__analysis2_code": "Market Code",
+        "financial_code__analysis2_code__analysis2_description": "Market Description",
+        "financial_code__project_code__project_code": "Project Code",
+        "financial_code__project_code__project_description": "Project Description",
     }
 
     def subtotal_data(
-            self,
-            display_total_column,
-            subtotal_columns,
-            data_columns,
-            filter_dict={},
-            year=0,
-            order_list=[],
+        self,
+        display_total_column,
+        subtotal_columns,
+        data_columns,
+        filter_dict={},
+        year=0,
+        order_list=[],
     ):
         # If requesting a subtotal, the
         # list of columns must be specified
@@ -384,10 +392,16 @@ class PivotManager(models.Manager):
                 "Display sub-total column does not exist"
             )
 
-        data_returned = self.pivot_data(data_columns, filter_dict, year, order_list)
+        data_returned = self.pivot_data(
+            data_columns,
+            filter_dict,
+            year,
+            order_list,
+        )
         pivot_data = list(data_returned)
         if not pivot_data:
             return []
+
         r = SubTotalForecast()
         result_table = r.subtotal_data(
             display_total_column,
@@ -396,23 +410,31 @@ class PivotManager(models.Manager):
         )
         return result_table
 
-    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[], published=True):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
 
+        if published:
+            self.get_queryset().filter(
+                version=1,
+            )
+        else:
+            self.get_queryset().aggregate(Max('version'))
+
         q1 = (
             self.get_queryset()
-                .filter(financial_year=year, **filter_dict)
-                .order_by(*order_list)
+                .filter(
+                    financial_year=year,
+                    **filter_dict,
+                ).order_by(*order_list)
         )
 
         return pivot(q1, columns, "financial_period__period_short_name", "amount")
 
 
-@reversion.register()
-class MonthlyFigure(FinancialCode, TimeStampedModel):
+class MonthlyFigure(TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
 
@@ -432,32 +454,36 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
+    version = models.IntegerField(default=1)
+
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="monthly_figures",
+    )
+
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
             "financial_period",
+            "version",
         )
 
     def __str__(self):
         return "{}--{}--{}--{}--{}--{}--{}".format(
-            self.cost_centre,
-            self.programme,
-            self.natural_account_code,
-            self.analysis1_code,
-            self.analysis2_code,
-            self.project_code,
+            self.financial_code.cost_centre,
+            self.financial_code.programme,
+            self.financial_code.natural_account_code,
+            self.financial_code.analysis1_code,
+            self.financial_code.analysis2_code,
+            self.financial_code.project_code,
             self.financial_year,
             self.financial_period,
         )
 
 
-class UploadingActuals(FinancialCode):
+class UploadingActuals:
     """Used to upload the actuals.
     When the upload is successfully completed, they get copied to the Monthly figures.
     This allow to achieve a all-or-nothing upload."""
@@ -473,14 +499,15 @@ class UploadingActuals(FinancialCode):
     amount = models.BigIntegerField(default=0)
     active = models.BooleanField(default=True)
 
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="uploading_actuals_financial_code",
+    )
+
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
             "financial_period",
         )

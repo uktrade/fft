@@ -1,12 +1,11 @@
 import json
 import re
-import reversion
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
-from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Max
 from django.http import JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.http import require_http_methods
@@ -22,11 +21,12 @@ from costcentre.models import CostCentre
 
 from forecast.forms import (
     AddForecastRowForm,
-    EditForm,
+    PublishForm,
     PasteForecastForm,
     UploadActualsForm,
 )
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
 )
@@ -34,6 +34,7 @@ from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     get_objects_for_user,
 )
+from forecast.serialisers import FinancialCodeSerializer
 from forecast.tasks import process_uploaded_file
 from forecast.utils import (
     CannotFindMonthlyFigureException,
@@ -135,24 +136,19 @@ class AddRowView(CostCentrePermissionTest, FormView):
 
         # TODO - investigate the following statement -
         # "Don't add months that are actuals"
-        with reversion.create_revision():
-            for financial_period in range(1, 13):
-                monthly_figure = MonthlyFigure(
-                    financial_year_id=get_current_financial_year(),
-                    financial_period_id=financial_period,
-                    cost_centre_id=self.cost_centre_code,
-                    programme=data["programme"],
-                    natural_account_code=data["natural_account_code"],
-                    analysis1_code=data["analysis1_code"],
-                    analysis2_code=data["analysis2_code"],
-                    project_code=data["project_code"],
-                    amount=0,
-                )
-                #monthly_figure.name = "add: draft"
-                monthly_figure.save()
-
-            reversion.set_user(self.request.user)
-            #reversion.set_comment("Created revision 1")
+        for financial_period in range(1, 13):
+            monthly_figure = MonthlyFigure(
+                financial_year_id=get_current_financial_year(),
+                financial_period_id=financial_period,
+                cost_centre_id=self.cost_centre_code,
+                programme=data["programme"],
+                natural_account_code=data["natural_account_code"],
+                analysis1_code=data["analysis1_code"],
+                analysis2_code=data["analysis2_code"],
+                project_code=data["project_code"],
+                amount=0,
+            )
+            monthly_figure.save()
 
         return super().form_valid(form)
 
@@ -268,6 +264,7 @@ def pasted_forecast_content(request, cost_centre_code):
 
         # Update monthly figures
         for monthly_figure in monthly_figures:
+            monthly_figure.version = monthly_figure.version + 1
             monthly_figure.save()
 
         forecast_dump = get_forecast_monthly_figures_pivot(
@@ -301,51 +298,44 @@ class EditForecastView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        form = EditForm(
+        form = PublishForm(
             initial={
-                "financial_year": get_current_financial_year(),
                 "cost_centre_code": self.cost_centre_code,
             }
         )
 
-        pivot_filter = {"cost_centre__cost_centre_code": "{}".format(
-            self.cost_centre_code
-        )}
-        monthly_figures = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
+        financial_code = FinancialCode.objects.filter(
+            cost_centre_id=self.cost_centre_code,
+        )
 
-        # TODO - Luisella to restrict to financial year
-        actuals_periods = list(FinancialPeriod.objects.filter(actual_loaded=True).all())
-        actuals_periods_dump = serializers.serialize("json", actuals_periods)
-        forecast_dump = json.dumps(list(monthly_figures), default=forecast_encoder)
+        financial_code_serialiser = FinancialCodeSerializer(
+            financial_code,
+            many=True,
+        )
+
+        forecast_dump = json.dumps(financial_code_serialiser.data)
         paste_form = PasteForecastForm()
 
         context["form"] = form
         context["paste_form"] = paste_form
-        context["actuals_periods_dump"] = actuals_periods_dump
         context["forecast_dump"] = forecast_dump
         return context
 
     def post(self):
-        form = EditForm(self.request.POST)
+        form = PublishForm(self.request.POST)
         if form.is_valid():
             cost_centre_code = form.cleaned_data["cost_centre_code"]
-            financial_year = form.cleaned_data["financial_year"]
 
-            cell_data = json.loads(form.cleaned_data["cell_data"])
+            draft_figures = MonthlyFigure.objects.filter(
+                cost_centre_id=cost_centre_code,
+            ).aggregate(Max('version'))
 
-            for key, cell in cell_data.items():
-                if cell["editable"]:
-                    with reversion.create_revision():
-                        monthly_figure = MonthlyFigure.objects.filter(
-                            cost_centre__cost_centre_code=cost_centre_code,
-                            financial_year__financial_year=financial_year,
-                            financial_period__period_short_name__iexact=cell["key"],
-                            programme__programme_code=cell["programmeCode"],
-                            natural_account_code__natural_account_code=cell[
-                                "naturalAccountCode"
-                            ],
-                        ).first()
-                        monthly_figure.amount = int(float(cell["value"]))
-                        monthly_figure.save()
+            figures_to_delete = MonthlyFigure.objects.filter(
+                cost_centre_id=cost_centre_code,
+            ).exclude(pk__in=draft_figures)
 
-                        reversion.set_user(self.request.user)
+            figures_to_delete.delete()
+
+            for monthly_figure in draft_figures:
+                monthly_figure.version = 1
+                monthly_figure.save()

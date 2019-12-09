@@ -19,7 +19,10 @@ from costcentre.models import (
     Directorate,
 )
 
-from forecast.models import MonthlyFigure
+from forecast.models import (
+    FinancialCode,
+    MonthlyFigure,
+)
 
 
 class CostHierarchy:
@@ -65,6 +68,7 @@ class CostHierarchy:
 
     def clear(self):
         MonthlyFigure.objects.all().delete()
+        FinancialCode.objects.all().delete()
         CostCentre.objects.all().delete()
         Directorate.objects.all().delete()
         DepartmentalGroup.objects.all().delete()

@@ -80,6 +80,8 @@ export const processForecastData = (forecastData) => {
         let cells = {}
         let colIndex = 0
 
+        console.log("rowData", rowData)
+
         // eslint-disable-next-line
         for (let key in rowData) {
 

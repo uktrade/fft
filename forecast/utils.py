@@ -64,8 +64,9 @@ def get_monthly_figures(cost_centre_code, cell_data):
         new_value = int(cell_data[
             (settings.NUM_META_COLS + financial_period) - 1
         ])
-        monthly_figure.amount = new_value
-        monthly_figures.append(monthly_figure)
+        if new_value != monthly_figure.amount:
+            monthly_figure.amount = new_value
+            monthly_figures.append(monthly_figure)
 
     return monthly_figures
 
