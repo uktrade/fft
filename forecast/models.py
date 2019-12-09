@@ -17,6 +17,7 @@ from chartofaccountDIT.models import (
 from core.metamodels import (
     TimeStampedModel,
 )
+
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
@@ -140,7 +141,15 @@ class FinancialCode(models.Model):
         blank=True,
         null=True
     )
-
+    class Meta:
+        unique_together = (
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+        )
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
         if self.pk is None:
@@ -159,14 +168,11 @@ class FinancialCode(models.Model):
 
         super(FinancialCode, self).save(*args, **kwargs)
 
-    class Meta:
-        abstract = True
 
 
-class Budget(FinancialCode, TimeStampedModel):
+class Budget(TimeStampedModel):
     """Used to store the budgets
-    for the financial year. The
-    data is not profiled"""
+    for the financial year."""
 
     id = models.AutoField("Budget ID", primary_key=True)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
@@ -175,31 +181,31 @@ class Budget(FinancialCode, TimeStampedModel):
         on_delete=models.PROTECT,
     )
     amount = models.BigIntegerField(default=0)
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="budget_financial_code",
+    )
 
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
             "financial_period",
         )
 
     def __str__(self):
-        return f"{self.cost_centre}" \
-               f"--{self.programme}" \
-               f"--{self.natural_account_code}" \
-               f"--{self.analysis1_code}" \
-               f"--{self.analysis2_code}" \
-               f"--{self.project_code}:" \
+        return f"{self.financial_code__cost_centre}" \
+               f"--{self.financial_code__programme}" \
+               f"--{self.financial_code__natural_account_code}" \
+               f"--{self.financial_code__analysis1_code}" \
+               f"--{self.financial_code__analysis2_code}" \
+               f"--{self.financial_code__project_code}:" \
                f"{self.financial_year} " \
                f"{self.financial_period}"
 
 
-class SubTotalForecast():
+class SubTotalForecast:
     result_table = []
     period_list = []
     full_list = []
@@ -375,19 +381,19 @@ class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
     default_columns = {
-        "cost_centre__cost_centre_code": "Cost Centre Code",
-        "cost_centre__cost_centre_name": "Cost Centre Description",
-        "natural_account_code__natural_account_code": "Natural Account Code",
-        "natural_account_code__natural_account_code_description":
+        "financial_code__cost_centre__cost_centre_code": "Cost Centre Code",
+        "financial_code__cost_centre__cost_centre_name": "Cost Centre Description",
+        "financial_code__natural_account_code__natural_account_code": "Natural Account Code",
+        "financial_code__natural_account_code__natural_account_code_description":
             "Natural Account Code Description",
-        "programme__programme_code": "Programme Code",
-        "programme__programme_description": "Programme Description",
-        "analysis1_code__analysis1_code": "Contract Code",
-        "analysis1_code__analysis1_description": "Contract Description",
-        "analysis2_code__analysis2_code": "Market Code",
-        "analysis2_code__analysis2_description": "Market Description",
-        "project_code__project_code": "Project Code",
-        "project_code__project_description": "Project Description",
+        "financial_code__programme__programme_code": "Programme Code",
+        "financial_code__programme__programme_description": "Programme Description",
+        "financial_code__analysis1_code__analysis1_code": "Contract Code",
+        "financial_code__analysis1_code__analysis1_description": "Contract Description",
+        "financial_code__analysis2_code__analysis2_code": "Market Code",
+        "financial_code__analysis2_code__analysis2_description": "Market Description",
+        "financial_code__project_code__project_code": "Project Code",
+        "financial_code__project_code__project_description": "Project Description",
     }
 
     def subtotal_data(
@@ -431,11 +437,18 @@ class PivotManager(models.Manager):
             subtotal_columns,
         )
 
-    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[], published=True):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
+
+        if published:
+            self.get_queryset().filter(
+                version=1,
+            )
+        else:
+            self.get_queryset().aggregate(Max('version'))
 
         q1 = (
             self.get_queryset()
@@ -447,7 +460,7 @@ class PivotManager(models.Manager):
         return pivot_data
 
 
-class MonthlyFigure(FinancialCode, TimeStampedModel):
+class MonthlyFigure(TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
 
@@ -467,31 +480,35 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
+    version = models.IntegerField(default=1)
+
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="monthly_figures",
+    )
+
     # TODO don't save to month that have actuals
     class Meta:
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
             "financial_period",
+            "version",
         )
 
     def __str__(self):
-        return f"{self.cost_centre}" \
-               f"--{self.programme}" \
-               f"--{self.natural_account_code}" \
-               f"--{self.analysis1_code}" \
-               f"--{self.analysis2_code}" \
-               f"--{self.project_code}:" \
+        return f"{self.financial_code__cost_centre}" \
+               f"--{self.financial_code__programme}" \
+               f"--{self.financial_code__natural_account_code}" \
+               f"--{self.financial_code__analysis1_code}" \
+               f"--{self.financial_code__analysis2_code}" \
+               f"--{self.financial_code__project_code}:" \
                f"{self.financial_year} " \
                f"{self.financial_period}"
 
 
-class DataTemporaryStore(FinancialCode):
+class DataTemporaryStore(models.Model):
     """Used as temporary storage for  uploading the actuals.
     When the upload is successfully completed,
     they get copied to the Monthly figures.
@@ -508,15 +525,15 @@ class DataTemporaryStore(FinancialCode):
     amount = models.BigIntegerField(default=0)
     active = models.BooleanField(default=True)
 
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT
+    )
+
     class Meta:
         abstract = True
         unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
+            "financial_code",
             "financial_year",
             "financial_period",
         )
@@ -569,6 +586,7 @@ class OSCARReturn(models.Model):
 
 
 """
+TODO fix it to use new structure in Monthly period
 Query created in the database to return the info for the OSCAR return
 DROP VIEW "forecast_oscarreturn";
 CREATE VIEW "forecast_oscarreturn" as
@@ -600,4 +618,7 @@ class ForecastPermission(models.Model):
     )
 
     def __str__(self):
-        return f"Forecast user: {self.user}, can upload: {self.can_upload}"
+        return "Forecast user: {}, can upload: {}".format(
+            self.user,
+            self.can_upload,
+        )
