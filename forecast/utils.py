@@ -9,6 +9,7 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 
 
@@ -70,8 +71,17 @@ def get_monthly_figures(cost_centre_code, cell_data):
         new_value = int(cell_data[
             (settings.NUM_META_COLS + financial_period) - 1
         ])
-        if new_value != monthly_figure.amount:
-            monthly_figure.amount = new_value
+
+        monthly_figure_amount = MonthlyFigureAmount.objects.filter(
+            monthly_figure=monthly_figures,
+        ).order_by("-version").first()
+
+        if new_value != monthly_figure_amount.amount:
+            MonthlyFigureAmount.objects.create(
+                amount=new_value,
+                monthly_figure=monthly_figures,
+                version=monthly_figure_amount.version + 1
+            )
             monthly_figures.append(monthly_figure)
 
     return monthly_figures

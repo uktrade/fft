@@ -8,14 +8,22 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
 
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
 
-    const [edited, setEdited] = useState(cell.version > 1);
+    let wasEdited = false
+
+    if (
+        cell.versions &&
+        cell.versions[cell.versions.length - 1].version > 1 &&
+        cell.versions[cell.versions.length - 1].amount != cell.versions[0].amount
+    ) {
+        wasEdited = true
+    }
+
+    const [edited, setEdited] = useState(wasEdited);
 
     const editCellId = useSelector(state => state.edit.cellId);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
-
-
 
     const isSelected = () => {
         if (allSelected) {
@@ -103,7 +111,11 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                     />
                 ) : (
                     <Fragment>
-                        {cell.value}
+                        {cell.versions ? (
+                            <Fragment>{cell.versions[0].amount}</Fragment>
+                        ) : (
+                            <Fragment>{cell.value}</Fragment>
+                        )}
                     </Fragment>
                 )}
             </td>

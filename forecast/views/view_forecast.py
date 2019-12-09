@@ -25,6 +25,7 @@ from costcentre.models import DepartmentalGroup
 
 from forecast.models import (
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -138,12 +139,12 @@ def get_forecast_table():
     # TODO the filter will be set from the request
 
     cost_centre_code = TEST_COST_CENTRE
-    order_list = ["programme__budget_type_fk__budget_type_display_order"]
-    pivot_filter = {"cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
+    order_list = ["financial_code__programme__budget_type_fk__budget_type_display_order"]
+    pivot_filter = {"financial_code__cost_centre__cost_centre_code": "{}".format(cost_centre_code)}
 
-    sub_total_type = ["programme__budget_type_fk__budget_type_display"]
-    display_sub_total_column = "cost_centre__cost_centre_name"
-    q1 = MonthlyFigure.pivot.subtotal_data(
+    sub_total_type = ["financial_code__programme__budget_type_fk__budget_type_display"]
+    display_sub_total_column = "financial_code__cost_centre__cost_centre_name"
+    q1 = MonthlyFigureAmount.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_type,
         budget_type_columns.keys(),
@@ -153,16 +154,16 @@ def get_forecast_table():
 
     # subtotal_data
     order_list_prog = [
-        "programme__budget_type_fk__budget_type_display_order",
-        "forecast_expenditure_type__forecast_expenditure_type_display_order",
+        "financial_code__programme__budget_type_fk__budget_type_display_order",
+        "financial_code__forecast_expenditure_type__forecast_expenditure_type_display_order",
     ]
     sub_total_prog = [
-        "programme__budget_type_fk__budget_type_display",
-        "forecast_expenditure_type__forecast_expenditure_type_description",
+        "financial_code__programme__budget_type_fk__budget_type_display",
+        "financial_code__forecast_expenditure_type__forecast_expenditure_type_description",
     ]
-    display_sub_total_column = "programme__programme_description"
+    display_sub_total_column = "financial_code__programme__programme_description"
 
-    q2 = MonthlyFigure.pivot.subtotal_data(
+    q2 = MonthlyFigureAmount.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_prog,
         programme_columns.keys(),
@@ -171,18 +172,18 @@ def get_forecast_table():
     )
 
     sub_total_nac = [
-        "programme__budget_type_fk__budget_type_display",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
+        "financial_code__programme__budget_type_fk__budget_type_display",
+        "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description",  # noqa
     ]
     display_sub_total_column = (
-        "natural_account_code__expenditure_category__grouping_description"
+        "financial_code__natural_account_code__expenditure_category__grouping_description"
     )
     order_list_nac = [
-        "programme__budget_type_fk__budget_type_display_order",
-        "natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
+        "financial_code__programme__budget_type_fk__budget_type_display_order",
+        "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
     ]
 
-    q3 = MonthlyFigure.pivot.subtotal_data(
+    q3 = MonthlyFigureAmount.pivot.subtotal_data(
         display_sub_total_column,
         sub_total_nac,
         natural_account_columns.keys(),
@@ -221,7 +222,7 @@ def pivot_test1(request):
         "natural_account_code": "NAC",
     }
 
-    q1 = MonthlyFigure.pivot.pivot_data(
+    q1 = MonthlyFigureAmount.pivot.pivot_data(
         field_dict.keys(), {"cost_centre__directorate__group": "1090AA"}
     )
     table = ForecastTable(field_dict, q1)

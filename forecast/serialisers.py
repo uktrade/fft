@@ -3,12 +3,13 @@ from rest_framework import serializers
 from .models import (
     FinancialCode,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 
 
 class MonthlyFigureAmountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MonthlyFigure
+        model = MonthlyFigureAmount
         fields = [
             'amount',
             'version',
@@ -18,7 +19,7 @@ class MonthlyFigureAmountSerializer(serializers.ModelSerializer):
 class MonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
-    amount = MonthlyFigureAmountSerializer(
+    monthly_figure_amounts = MonthlyFigureAmountSerializer(
         many=True,
         read_only=True,
     )
@@ -28,8 +29,7 @@ class MonthlyFigureSerializer(serializers.ModelSerializer):
         fields = [
             'actual',
             'month',
-            'amount',
-            'version',
+            'monthly_figure_amounts',
         ]
 
     def get_month(self, obj):
