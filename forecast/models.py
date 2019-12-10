@@ -381,19 +381,19 @@ class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
     default_columns = {
-        "financial_code__cost_centre__cost_centre_code": "Cost Centre Code",
-        "financial_code__cost_centre__cost_centre_name": "Cost Centre Description",
-        "financial_code__natural_account_code__natural_account_code": "Natural Account Code",
-        "financial_code__natural_account_code__natural_account_code_description":
+        "monthly_figure__financial_code__cost_centre__cost_centre_code": "Cost Centre Code",
+        "monthly_figure__financial_code__cost_centre__cost_centre_name": "Cost Centre Description",
+        "monthly_figure__financial_code__natural_account_code__natural_account_code": "Natural Account Code",
+        "monthly_figure__financial_code__natural_account_code__natural_account_code_description":
             "Natural Account Code Description",
-        "financial_code__programme__programme_code": "Programme Code",
-        "financial_code__programme__programme_description": "Programme Description",
-        "financial_code__analysis1_code__analysis1_code": "Contract Code",
-        "financial_code__analysis1_code__analysis1_description": "Contract Description",
-        "financial_code__analysis2_code__analysis2_code": "Market Code",
-        "financial_code__analysis2_code__analysis2_description": "Market Description",
-        "financial_code__project_code__project_code": "Project Code",
-        "financial_code__project_code__project_description": "Project Description",
+        "monthly_figure__financial_code__programme__programme_code": "Programme Code",
+        "monthly_figure__financial_code__programme__programme_description": "Programme Description",
+        "monthly_figure__financial_code__analysis1_code__analysis1_code": "Contract Code",
+        "monthly_figure__financial_code__analysis1_code__analysis1_description": "Contract Description",
+        "monthly_figure__financial_code__analysis2_code__analysis2_code": "Market Code",
+        "monthly_figure__financial_code__analysis2_code__analysis2_description": "Market Description",
+        "monthly_figure__financial_code__project_code__project_code": "Project Code",
+        "monthly_figure__financial_code__project_code__project_description": "Project Description",
     }
 
     def subtotal_data(
@@ -437,25 +437,18 @@ class PivotManager(models.Manager):
             subtotal_columns,
         )
 
-    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[], published=True):
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
 
-        if published:
-            self.get_queryset().filter(
-                version=1,
-            )
-        else:
-            self.get_queryset().aggregate(Max('version'))
-
         q1 = (
             self.get_queryset()
-                .filter(financial_year=year, **filter_dict)
+                .filter(monthly_figure__financial_year=year, version=1, **filter_dict)
                 .order_by(*order_list)
         )
-        pivot_data = pivot(q1, columns, "financial_period__period_short_name", "amount")
+        pivot_data = pivot(q1, columns, "monthly_figure__financial_period__period_short_name", "amount")
         # print(pivot_data.query)
         return pivot_data
 
@@ -473,14 +466,6 @@ class MonthlyFigure(TimeStampedModel):
         FinancialPeriod,
         on_delete=models.PROTECT,
     )
-    # The figures are stored ar pence, to avoid rounding problems.
-    # Some formatting will take care of displaying the figures as pounds only
-    amount = models.BigIntegerField(default=0)
-
-    objects = models.Manager()  # The default manager.
-    pivot = PivotManager()
-
-    version = models.IntegerField(default=1)
 
     financial_code = models.ForeignKey(
         FinancialCode,
@@ -494,7 +479,6 @@ class MonthlyFigure(TimeStampedModel):
             "financial_code",
             "financial_year",
             "financial_period",
-            "version",
         )
 
     def __str__(self):
@@ -506,6 +490,28 @@ class MonthlyFigure(TimeStampedModel):
                f"--{self.financial_code__project_code}:" \
                f"{self.financial_year} " \
                f"{self.financial_period}"
+
+
+class MonthlyFigureAmount(TimeStampedModel):
+    # The figures are stored ar pence, to avoid rounding problems.
+    # Some formatting will take care of displaying the figures as pounds only
+    amount = models.BigIntegerField(default=0)
+    version = models.IntegerField(default=1)
+
+    monthly_figure = models.ForeignKey(
+        MonthlyFigure,
+        on_delete=models.CASCADE,
+        related_name="monthly_figure_amounts",
+    )
+
+    objects = models.Manager()  # The default manager.
+    pivot = PivotManager()
+
+    class Meta:
+        unique_together = (
+            "monthly_figure",
+            "version",
+        )
 
 
 class DataTemporaryStore(models.Model):

@@ -19,7 +19,7 @@ from costcentre.models import (
 from costcentre.models import DepartmentalGroup
 
 from forecast.models import (
-    MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -63,14 +63,14 @@ class ForecastMultiTableMixin(MultiTableMixin):
             pivot_filter = {filter_selectors[self.hierarchy_type]: f"{filter_code}"}
         else:
             pivot_filter = {}
-        hierarchy_data = MonthlyFigure.pivot.subtotal_data(
+        hierarchy_data = MonthlyFigureAmount.pivot.subtotal_data(
             hierarchy_sub_total_column[self.hierarchy_type],
             hierarchy_sub_total,
             hierarchy_columns[self.hierarchy_type].keys(),
             pivot_filter,
             order_list=hierarchy_order_list,
         )
-        programme_data = MonthlyFigure.pivot.subtotal_data(
+        programme_data = MonthlyFigureAmount.pivot.subtotal_data(
             programme_display_sub_total_column,
             programme_sub_total,
             programme_columns.keys(),
@@ -78,7 +78,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=programme_order_list,
         )
 
-        expenditure_data = MonthlyFigure.pivot.subtotal_data(
+        expenditure_data = MonthlyFigureAmount.pivot.subtotal_data(
             expenditure_display_sub_total_column,
             expenditure_sub_total,
             expenditure_columns.keys(),
@@ -86,7 +86,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=expenditure_order_list,
         )
 
-        project_data = MonthlyFigure.pivot.subtotal_data(
+        project_data = MonthlyFigureAmount.pivot.subtotal_data(
             project_display_sub_total_column,
             project_sub_total,
             project_columns.keys(),

@@ -22,7 +22,7 @@ class ColMatchException(Exception):
 
 
 def get_forecast_monthly_figures_pivot(cost_centre_code):
-    pivot_filter = {"cost_centre__cost_centre_code": "{}".format(
+    pivot_filter = {"financial_code__cost_centre__cost_centre_code": "{}".format(
         cost_centre_code
     )}
     output = MonthlyFigure.pivot.pivot_data({}, pivot_filter)
@@ -44,14 +44,14 @@ def get_monthly_figures(cost_centre_code, cell_data):
 
     for financial_period in range(start_period, 13):
         monthly_figure = MonthlyFigure.objects.filter(
-            cost_centre__cost_centre_code=cost_centre_code,
+            financial_code__cost_centre__cost_centre_code=cost_centre_code,
             financial_year__financial_year=get_current_financial_year(),
             financial_period__financial_period_code=financial_period,
-            programme__programme_code=check_empty(cell_data[1]),
-            natural_account_code__natural_account_code=cell_data[0],
-            analysis1_code=check_empty(cell_data[2]),
-            analysis2_code=check_empty(cell_data[3]),
-            project_code=check_empty(cell_data[4]),
+            financial_code__programme__programme_code=check_empty(cell_data[1]),
+            financial_code__natural_account_code__natural_account_code=cell_data[0],
+            financial_code__analysis1_code=check_empty(cell_data[2]),
+            financial_code__analysis2_code=check_empty(cell_data[3]),
+            financial_code__project_code=check_empty(cell_data[4]),
         ).first()
 
         if not monthly_figure:

@@ -73,30 +73,20 @@ def sql_for_data_copy(data_type):
            'created, ' \
            'updated, ' \
            'active,  ' \
-           'analysis1_code_id, ' \
-           'analysis2_code_id, ' \
-           'cost_centre_id, ' \
            'financial_period_id, ' \
            'financial_year_id, ' \
-           'natural_account_code_id, ' \
-           'programme_id, ' \
-           'project_code_id, ' \
            'amount, ' \
-           'forecast_expenditure_type_id)' \
+           'financial_code_id,' \
+           'version' \
            ' SELECT  ' \
            'now(), ' \
            'now(), ' \
            'active,  ' \
-           'analysis1_code_id, ' \
-           'analysis2_code_id, ' \
-           'cost_centre_id, ' \
            'financial_period_id, ' \
            'financial_year_id, ' \
-           'natural_account_code_id, ' \
-           'programme_id, ' \
-           'project_code_id, ' \
-           'amount, ' \
-           'forecast_expenditure_type_id ' \
+           'amount ' \
+           'financial_code_id,' \
+           '1' \
            ' FROM {};'.format(target, temp_data_file)
 
 
