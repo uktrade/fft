@@ -18,6 +18,7 @@ from forecast.forms import (
     UploadActualsForm,
 )
 from forecast.models import (
+    FinancialCode,
     MonthlyFigure,
 )
 
@@ -70,16 +71,19 @@ class TestAddForecastRowForm(TestCase):
         )
 
     def test_duplicate_row_invalid(self):
-        monthly_figure = MonthlyFigure(
-            financial_year_id=2019,
-            financial_period_id=1,
+        financial_code = FinancialCode.objects.create(
             cost_centre_id=self.cost_centre_code,
             programme=self.programme,
             natural_account_code=self.cost_centre,
             analysis1_code=self.analysis_1,
             analysis2_code=self.analysis_2,
             project_code=self.project,
-            amount=0,
+        )
+
+        monthly_figure = MonthlyFigure(
+            financial_year_id=2019,
+            financial_period_id=1,
+            financial_code=financial_code,
         )
         monthly_figure.save()
 
@@ -105,16 +109,19 @@ class TestAddForecastRowForm(TestCase):
         )
 
     def test_same_values_for_programme_and_natural_account_code_valid(self):
-        monthly_figure = MonthlyFigure(
-            financial_year_id=2019,
-            financial_period_id=1,
+        financial_code = FinancialCode.objects.create(
             cost_centre_id=self.cost_centre_code,
             programme=self.programme,
             natural_account_code=self.cost_centre,
             analysis1_code=self.analysis_1,
             analysis2_code=self.analysis_2,
             project_code=self.project,
-            amount=0,
+        )
+
+        monthly_figure = MonthlyFigure(
+            financial_year_id=2019,
+            financial_period_id=1,
+            financial_code=financial_code,
         )
         monthly_figure.save()
 

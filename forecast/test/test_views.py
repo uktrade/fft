@@ -38,7 +38,7 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastView,
 )
-from forecast.views.view_forecast_summary import (
+from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
     DITView,
     DirectorateView,
