@@ -147,6 +147,27 @@ class UploadActualsForm(forms.Form):
     )
 
 
+class UploadBudgetsForm(forms.Form):
+    file = forms.FileField()
+    file.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "file-hint file-error",
+        }
+    )
+
+    year = forms.ModelChoiceField(
+        queryset=FinancialYear.objects.all(),
+        empty_label="",
+    )
+    year.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "year-hint year-error",
+        }
+    )
+
+
 class PasteForecastForm(forms.Form):
     all_selected = forms.BooleanField(
         widget=forms.HiddenInput(),

@@ -1,13 +1,12 @@
 import json
 import re
 
-from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core import serializers
 from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -23,7 +22,6 @@ from forecast.forms import (
     AddForecastRowForm,
     EditForm,
     PasteForecastForm,
-    UploadActualsForm,
 )
 from forecast.models import (
     FinancialPeriod,
@@ -33,7 +31,6 @@ from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     get_objects_for_user,
 )
-from forecast.tasks import process_uploaded_file
 from forecast.utils import (
     CannotFindMonthlyFigureException,
     ColMatchException,
@@ -47,9 +44,6 @@ from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
 )
-
-from upload_file.decorators import has_upload_permission
-from upload_file.models import FileUpload
 
 
 class ChooseCostCentreView(UserPassesTestMixin, FormView):
@@ -148,45 +142,6 @@ class AddRowView(CostCentrePermissionTest, FormView):
             monthly_figure.save()
 
         return super().form_valid(form)
-
-
-class UploadActualsView(FormView):
-    template_name = "forecast/file_upload.html"
-    form_class = UploadActualsForm
-    success_url = reverse_lazy("uploaded_files")
-
-    @has_upload_permission
-    def dispatch(self, *args, **kwargs):
-        return super(UploadActualsView, self).dispatch(*args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-
-        if form.is_valid():
-            data = form.cleaned_data
-
-            file_upload = FileUpload(
-                document_file=request.FILES['file'],
-                uploading_user=request.user,
-            )
-            file_upload.save()
-            # Process file async
-
-            if settings.ASYNC_FILE_UPLOAD:
-                process_uploaded_file.delay(
-                    data['period'].period_calendar_code,
-                    data['year'].financial_year,
-                )
-            else:
-                process_uploaded_file(
-                    data['period'].period_calendar_code,
-                    data['year'].financial_year,
-                )
-
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
 
 
 # TODO permission decorator

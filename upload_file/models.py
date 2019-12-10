@@ -45,7 +45,7 @@ class FileUpload(SimpleTimeStampedModel):
         default=UNPROCESSED,
     )
     user_error_message = models.CharField(
-        max_length=100,
+        max_length=1000,
         null=True,
         blank=True,
     )

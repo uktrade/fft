@@ -83,6 +83,13 @@ class FinancialPeriodManager(models.Manager):
                 .values_list("period_short_name", "period_long_name")
         )
 
+    def reset_actuals(self):
+        self.get_queryset().filter(
+            actual_loaded=True,
+        ).update(
+            actual_loaded=False,
+        )
+
 
 class FinancialPeriod(models.Model):
     """Financial periods: correspond
@@ -163,7 +170,11 @@ class Budget(FinancialCode, TimeStampedModel):
 
     id = models.AutoField("Budget ID", primary_key=True)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    budget = models.BigIntegerField(default=0)
+    financial_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+    )
+    amount = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = (
@@ -174,17 +185,18 @@ class Budget(FinancialCode, TimeStampedModel):
             "analysis2_code",
             "project_code",
             "financial_year",
+            "financial_period",
         )
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}--{}".format(
-            self.programme,
-            self.natural_account_code,
-            self.analysis1_code,
-            self.analysis2_code,
-            self.project_code,
-            self.financial_year,
-        )
+        return f"{self.cost_centre}" \
+               "--{self.programme}" \
+               "--{self.natural_account_code}" \
+               "--{self.analysis1_code}" \
+               "--{self.analysis2_code}" \
+               "--{self.project_code}:" \
+               "{self.financial_year} " \
+               "{self.financial_period}"
 
 
 class SubTotalForecast():
@@ -234,14 +246,13 @@ class SubTotalForecast():
             if self.output_subtotal[column]:
                 subtotal_row = self.subtotals[column].copy()
                 level = self.subtotal_columns.index(column)
-                subtotal_row[self.display_total_column] = "Total {}".format(
-                    self.previous_values[column]
-                )
+                subtotal_row[self.display_total_column] = \
+                    f"Total {self.previous_values[column]}"
+
                 for out_total in self.subtotal_columns[level + 1:]:
-                    subtotal_row[self.display_total_column] = "{} {}".format(
-                        subtotal_row[self.display_total_column],
-                        self.previous_values[out_total],
-                    )
+                    subtotal_row[self.display_total_column] = \
+                        f"{subtotal_row[self.display_total_column]} " \
+                        f"{self.previous_values[out_total]}"
                 self.output_row_to_table(
                     subtotal_row,
                     SUB_TOTAL_CLASS,
@@ -324,9 +335,9 @@ class SubTotalForecast():
         # output all the subtotals, because it is finished
         for column in self.subtotal_columns:
             level = self.subtotal_columns.index(column)
-            caption = "Total {}".format(self.previous_values[column])
+            caption = f"Total {self.previous_values[column]}"
             for out_total in self.subtotal_columns[level + 1:]:
-                caption = "{} {}".format(caption, self.previous_values[out_total])
+                caption = "{caption} {self.previous_values[out_total]}"
             self.subtotals[column][self.display_total_column] = caption
             self.output_row_to_table(
                 self.subtotals[column],
@@ -429,6 +440,7 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
+    # TODO don't save to month that have actuals
     class Meta:
         unique_together = (
             "programme",
@@ -442,21 +454,20 @@ class MonthlyFigure(FinancialCode, TimeStampedModel):
         )
 
     def __str__(self):
-        return "{}--{}--{}--{}--{}--{}--{}".format(
-            self.cost_centre,
-            self.programme,
-            self.natural_account_code,
-            self.analysis1_code,
-            self.analysis2_code,
-            self.project_code,
-            self.financial_year,
-            self.financial_period,
-        )
+        return f"{self.cost_centre}" \
+               "--{self.programme}" \
+               "--{self.natural_account_code}" \
+               "--{self.analysis1_code}" \
+               "--{self.analysis2_code}" \
+               "--{self.project_code}:" \
+               "{self.financial_year} " \
+               "{self.financial_period}"
 
 
-class UploadingActuals(FinancialCode):
-    """Used to upload the actuals.
-    When the upload is successfully completed, they get copied to the Monthly figures.
+class DataTemporaryStore(FinancialCode):
+    """Used as temporary storage for  uploading the actuals.
+    When the upload is successfully completed,
+    they get copied to the Monthly figures.
     This allow to achieve a all-or-nothing upload."""
     id = models.AutoField("Row ID", primary_key=True)
     financial_year = models.ForeignKey(
@@ -471,6 +482,7 @@ class UploadingActuals(FinancialCode):
     active = models.BooleanField(default=True)
 
     class Meta:
+        abstract = True
         unique_together = (
             "programme",
             "cost_centre",
@@ -481,6 +493,16 @@ class UploadingActuals(FinancialCode):
             "financial_year",
             "financial_period",
         )
+
+
+class ActualsTemporaryStore(DataTemporaryStore):
+    """Used as temporary storage for  uploading the actuals."""
+    pass
+
+
+class BudgetsTemporaryStore(DataTemporaryStore):
+    """Used as temporary storage for  uploading the actuals."""
+    pass
 
 
 class OSCARReturn(models.Model):
@@ -551,7 +573,4 @@ class ForecastPermission(models.Model):
     )
 
     def __str__(self):
-        return "Forecast user: {}, can upload: {}".format(
-            self.user,
-            self.can_upload,
-        )
+        return f"Forecast user: {self.user}, can upload: {self.can_upload}"

@@ -38,6 +38,19 @@ def csv_header_to_dict(row):
     return d
 
 
+# build the dict from the header row
+# make everything lower case to make
+# it case insensitive
+# it will break if the header row is over row 9
+def xslx_header_to_dict(row):
+    d = {}
+    for cell in row:
+        # save the letter part of the cell coordinates
+        if cell.value:
+            d[cell.value.lower()] = cell.coordinate[:-1]
+    return d
+
+
 def add_position(d, h):
     """It substitute the header title with
     the column number in the dictionary
@@ -78,10 +91,10 @@ def get_fk(m, pk_value):
     try:
         obj = m.objects.get(pk=pk_value)
     except m.DoesNotExist:
-        msg = '{} "{}" does not exist. \n'.format(get_pk_verbose_name(m), str(pk_value))
+        msg = f'{get_pk_verbose_name(m)} "{pk_value}"'
         obj = None
     except ValueError:
-        msg = '{} "{}": wrong type. \n'.format(get_pk_verbose_name(m), str(pk_value))
+        msg = f'{get_pk_verbose_name(m)} "{pk_value}" is the wrong type. \n'
         obj = None
     return obj, msg
 
@@ -95,10 +108,10 @@ def get_fk_from_field(m, f_name, f_value):
         obj = m.objects.get(**{f_name: f_value})
 
     except m.DoesNotExist:
-        msg = '{} "{}" does not exist. \n'.format(f_name, f_value)
+        msg = f'{f_name} "{f_value}"'
         obj = None
     except ValueError:
-        msg = '{} "{}": wrong type. \n'.format(f_name, f_value)
+        msg = f'{f_name} "{f_value}": wrong type. \n'
         obj = None
     return obj, msg
 
@@ -174,13 +187,7 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
 
     # Before starting to read, check that all the expected columns exists
     if not all(elem in header for elem in l1):
-        msg = (
-            "Missing/wrong headers: expected "
-            + ", ".join(l1)
-            + ". The file has: "
-            + ", ".join(header.keys())
-            + "."
-        )
+        msg = "Missing/wrong headers: expected {l1}, the file has: {header.keys()}."
         return False, msg
 
     d = add_position(obj_key, header)
@@ -277,13 +284,8 @@ class ImportInfo:
         l1 = [x.lower() for x in [x.lower() for x in self.header_list]]
         # Before starting to read, check that all the expected columns exists
         if not all(elem in header for elem in l1):
-            msg = (
-                "Missing/wrong headers: expected "
-                + ", ".join(l1)
-                + ". The file has: "
-                + ", ".join(header.keys())
-                + "."
-            )
+            msg = "Missing/wrong headers: expected {l1}, the file has: {header.keys()}."
+
             return False, msg
 
         return True, ""

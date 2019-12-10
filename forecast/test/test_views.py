@@ -39,6 +39,8 @@ from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
+)
+from forecast.views.upload_file import (
     UploadActualsView,
 )
 from forecast.views.view_forecast import (
@@ -47,6 +49,8 @@ from forecast.views.view_forecast import (
     DirectorateView,
     GroupView,
     MultiForecastView,
+    TEST_COST_CENTRE,
+
 )
 
 
@@ -303,7 +307,6 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
 
 
 class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
-    cost_centre_code = 888812
     amount = 9876543
 
     def setUp(self):
@@ -314,7 +317,7 @@ class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
                 financial_period_code=1
             ),
             cost_centre=CostCentreFactory.create(
-                cost_centre_code=self.cost_centre_code
+                cost_centre_code=TEST_COST_CENTRE
             ),
             amount=self.amount,
         )
@@ -340,7 +343,7 @@ class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
         # Check that the first table displays the cost centre code
         rows = tables[0].find_all("tr")
         cols = rows[1].find_all("td")
-        assert int(cols[2].get_text()) == self.cost_centre_code
+        assert int(cols[2].get_text()) == TEST_COST_CENTRE
 
         # Check the April value
         assert cols[4].get_text() == intcomma(self.amount)
@@ -365,7 +368,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 888888
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code,
@@ -457,7 +460,7 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         self.file_mock.name = 'test.txt'
 
     @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.edit_forecast.process_uploaded_file')
+    @patch('forecast.views.upload_file.process_uploaded_file')
     def test_upload_actuals_view(self, mock_process_uploaded_file):
         forecast_permission_count = ForecastPermission.objects.all().count()
         self.assertEqual(forecast_permission_count, 0)
