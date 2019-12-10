@@ -1,18 +1,15 @@
 from .base import *  # noqa
-#import environ
-#
-# SASS_PROCESSOR_INCLUDE_DIRS = [
-#     os.path.join(env('NODE_PATH'), '/govuk-frontend/govuk/all'),
-# ]
 
-# WEBPACK_LOADER = {
-#     "DEFAULT": {
-#         "CACHE": not DEBUG,
-#         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-#         "STATS_FILE": "/app/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
-#     }
-# }
-#env = environ.Env()
+CAN_ELEVATE_SSO_USER_PERMISSIONS = True
+
+INSTALLED_APPS += ("behave_django",)
+
+STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
+
+# for debug_toolbar, to activate it only on localhost
+INTERNAL_IPS = ["127.0.0.1"]
+
+SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -24,20 +21,17 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.middleware.ThreadLocalMiddleware",
-    "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "authbroker_client.backends.AuthbrokerBackend",
     "guardian.backends.ObjectPermissionBackend",
 ]
 
-STATICFILES_DIRS = ("/app/front_end/build/static",)
+SELENIUM_HOST = env("SELENIUM_HOST", default="fido")
+SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+ASYNC_FILE_UPLOAD = True
 
 IGNORE_ANTI_VIRUS = False

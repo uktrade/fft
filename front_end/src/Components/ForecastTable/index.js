@@ -105,8 +105,8 @@ function ForecastTable() {
                   </h2>
                   <div className="govuk-error-summary__body">
                     <ul className="govuk-list govuk-error-summary__list">
-                      <li>
-                        <a href="#passport-issued-error">{errorMessage}</a>
+                      <li id="paste_error_msg">
+                        {errorMessage}
                       </li>
                     </ul>
                   </div>

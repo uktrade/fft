@@ -2,8 +2,6 @@ from .base import *  # noqa
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
-INSTALLED_APPS += ("forecast_prototype",)
-
 STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 
 # for debug_toolbar, to activate it only on localhost
@@ -21,11 +19,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.middleware.ThreadLocalMiddleware",
-    #'authbroker_client.middleware.ProtectAllViewsMiddleware',
+    "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
-SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "authbroker_client.backends.AuthbrokerBackend",
+    "guardian.backends.ObjectPermissionBackend",
+]
 
 ASYNC_FILE_UPLOAD = True
 

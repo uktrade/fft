@@ -165,58 +165,42 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code,
         )
 
-    # TODO reinstate with edit tests
-    # def test_view_add_row(self):
-    #     assign_perm("change_costcentre", self.test_user, self.cost_centre)
-    #     assign_perm("view_costcentre", self.test_user, self.cost_centre)
-    #
-    #     edit_response = self.edit_row_get_response()
-    #     self.assertEqual(edit_response.status_code, 200)
-    #
-    #     soup = BeautifulSoup(
-    #         edit_response.rendered_content,
-    #         features="html.parser",
-    #     )
-    #     table_rows = soup.find_all("tr", class_="govuk-table__row")
-    #
-    #     # There should only be 2 rows (for the header and footer)
-    #     assert len(table_rows) == 2
-    #
-    #     add_resp = self.add_row_get_response(
-    #         reverse(
-    #             "add_forecast_row",
-    #             kwargs={
-    #                 'cost_centre_code': self.cost_centre_code
-    #             },
-    #         )
-    #     )
-    #
-    #     self.assertEqual(add_resp.status_code, 200)
-    #
-    #     # add_forecast_row
-    #     add_row_resp = self.add_row_post_response(
-    #         reverse(
-    #             "add_forecast_row",
-    #             kwargs={
-    #                 'cost_centre_code': self.cost_centre_code
-    #             },
-    #         ),
-    #         {
-    #             "programme": self.programme.programme_code,
-    #             "natural_account_code": self.nac.natural_account_code,
-    #         }
-    #     )
-    #
-    #     self.assertEqual(add_row_resp.status_code, 302)
-    #
-    #     edit_response = self.edit_row_get_response()
-    #     self.assertEqual(edit_response.status_code, 200)
-    #
-    #     soup = BeautifulSoup(edit_response.rendered_content, features="html.parser")
-    #     table_rows = soup.find_all("tr", class_="govuk-table__row")
-    #
-    #     # Now we should have 3 rows (header, footer and new row)
-    #     assert len(table_rows) == 3
+    def test_view_add_row(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+        assign_perm("view_costcentre", self.test_user, self.cost_centre)
+
+        monthly_figures = MonthlyFigure.objects.all()
+
+        assert monthly_figures.count() == 0
+
+        add_resp = self.add_row_get_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            )
+        )
+
+        self.assertEqual(add_resp.status_code, 200)
+
+        # add_forecast_row
+        add_row_resp = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+            }
+        )
+
+        self.assertEqual(add_row_resp.status_code, 302)
+
+        assert monthly_figures.count() == 12
 
     def test_duplicate_values_invalid(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)

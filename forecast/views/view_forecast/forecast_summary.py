@@ -25,7 +25,7 @@ from forecast.tables import (
     ForecastSubTotalTable,
 )
 from forecast.views.base import ForecastViewPermissionMixin
-from forecast.views.view_forecast_queries import (
+from forecast.utils.query_fields import (
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,

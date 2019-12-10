@@ -23,6 +23,12 @@ $govuk-page-width: 1800px;
   overflow-x: scroll;
 }
 
+.govuk-error-summary__list li {
+  color: #d4351c;
+  font-weight: 700;
+}
+
+
 input {
     @include govuk-font($size: 19);
 }

@@ -10,7 +10,7 @@ from forecast.views.upload_file import (
     UploadActualsView,
     UploadBudgetView,
 )
-from forecast.views.view_forecast_summary import (
+from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
     DITView,
     DirectorateView,

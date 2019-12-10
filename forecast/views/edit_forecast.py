@@ -31,7 +31,7 @@ from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     get_objects_for_user,
 )
-from forecast.utils import (
+from forecast.utils.edit_helpers import (
     CannotFindMonthlyFigureException,
     ColMatchException,
     RowMatchException,
@@ -161,6 +161,13 @@ def pasted_forecast_content(request, cost_centre_code):
         )
 
         rows = paste_content.splitlines()
+
+        if len(rows) == 0:
+            return JsonResponse({
+                'error': 'Your pasted data is not formatted correctly.'
+            },
+                status=400,
+            )
 
         if all_selected and len(forecast_dump) != len(rows):
             return JsonResponse({

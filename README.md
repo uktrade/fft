@@ -2,8 +2,6 @@
 
 ## The Project
 
-
-
 ## Set up
 
 A database called "fido" will be automatically created.
@@ -61,16 +59,30 @@ Django Guardian **should not be used directly**. There is a set of wrapper funct
 
 These add an additional permission check for the user being able to view forecasts at all.
 
+### Running manage.py on an app droplet
+```
+/home/vcap/deps/1/bin/python3.6 ~/app/manage.py
+```
+
+### Running BDD tests
+
+## Run BDD front end from host machine
+```
+npm run bdd
+```
+
+## SSH into web container
+```
+docker exec -it [container id] /bin/bash
+```
+
+## Run BDD tests
+```
+python manage.py behave --settings=config.settings.bdd
+```
 
 ## TODO
-Try increasing size of container machine and see if npm start will work
 Add setup steps to make file and amend readme
-
-### Questions
-
-Have we used any indexes in the database?
-
-
 
 ### Notes
 In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html

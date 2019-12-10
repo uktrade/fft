@@ -69,29 +69,34 @@ def get_monthly_figures(cost_centre_code, cell_data):
 
 
 def check_row_match(index, pasted_at_row, cell_data):
-    if index != 0:
-        return
+    try:
+        if index != 0:
+            return
 
-    if not pasted_at_row:
-        return
+        if not pasted_at_row:
+            return
 
-    if (
-        pasted_at_row[
-            "natural_account_code__natural_account_code"
-        ]["value"] != int(cell_data[0]) or
-        pasted_at_row[
-            "programme__programme_code"
-        ]["value"] != cell_data[1] or
-        pasted_at_row[
-            "analysis1_code__analysis1_code"
-        ]["value"] != check_empty(cell_data[2]) or
-        pasted_at_row[
-            "analysis2_code__analysis2_code"
-        ]["value"] != check_empty(cell_data[3]) or
-        pasted_at_row[
-            "project_code__project_code"
-        ]["value"] != check_empty(cell_data[4])
-    ):
+        if (
+            pasted_at_row[
+                "natural_account_code__natural_account_code"
+            ]["value"] != int(cell_data[0]) or
+            pasted_at_row[
+                "programme__programme_code"
+            ]["value"] != cell_data[1] or
+            pasted_at_row[
+                "analysis1_code__analysis1_code"
+            ]["value"] != check_empty(cell_data[2]) or
+            pasted_at_row[
+                "analysis2_code__analysis2_code"
+            ]["value"] != check_empty(cell_data[3]) or
+            pasted_at_row[
+                "project_code__project_code"
+            ]["value"] != check_empty(cell_data[4])
+        ):
+            raise RowMatchException(
+                "Your pasted data does not match your selected row"
+            )
+    except Exception:
         raise RowMatchException(
-            "Your pasted data does not match your selected row"
+            "Your pasted data is not in the correct format"
         )

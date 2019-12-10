@@ -16,6 +16,7 @@ services:
      - ./:/app/
    ports:
      - "0.0.0.0:8000:8000"
+     - "0.0.0.0:8801:8801"
    depends_on:
      - db
  celery:
@@ -44,6 +45,7 @@ services:
       - /dev/shm:/dev/shm
     depends_on:
       - selenium-hub
+      - fido
     environment:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444

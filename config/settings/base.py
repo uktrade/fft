@@ -59,8 +59,6 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_filters",
     "django_admin_listfilter_dropdown",
-    "dal",
-    "dal_select2",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -69,6 +67,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "debug_toolbar",
     "bootstrap4",
+    "dal",
+    "dal_select2",
     "bootstrap_datepicker_plus",  # https://pypi.org/project/django-bootstrap-datepicker-plus/  # noqa
     "custom_usermodel",
     "storages",
@@ -76,20 +76,6 @@ INSTALLED_APPS = [
     "webpack_loader",
     "django_bootstrap_breadcrumbs",
     "guardian",
-]
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "core.middleware.ThreadLocalMiddleware",
-    "authbroker_client.middleware.ProtectAllViewsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -111,7 +97,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
 
 if 'VCAP_SERVICES' in os.environ:
     services = json.loads(os.getenv('VCAP_SERVICES'))
@@ -176,16 +161,9 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
 AUTHBROKER_SCOPES = "read write"
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "authbroker_client.backends.AuthbrokerBackend",
-    "guardian.backends.ObjectPermissionBackend",
-]
-
-
-GIT_COMMIT = env("GIT_COMMIT", default=None)
 LOGIN_URL = "/auth/login"
 LOGIN_REDIRECT_URL = "index"
+GIT_COMMIT = env("GIT_COMMIT", default=None)
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
