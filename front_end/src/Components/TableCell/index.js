@@ -112,7 +112,7 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                 ) : (
                     <Fragment>
                         {cell.versions ? (
-                            <Fragment>{cell.versions[0].amount}</Fragment>
+                            <Fragment>{cell.versions[0].amount.toFixed(2)}</Fragment>
                         ) : (
                             <Fragment>{cell.value}</Fragment>
                         )}

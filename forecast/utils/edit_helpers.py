@@ -1,3 +1,5 @@
+from decimal import *
+
 from django.conf import settings
 
 from core.myutils import get_current_financial_year
@@ -52,9 +54,8 @@ def get_monthly_figures(cost_centre_code, cell_data):
                 "Cannot find monthly figure"
             )
 
-        new_value = int(cell_data[
-            (settings.NUM_META_COLS + financial_period) - 1
-        ])
+        col = (settings.NUM_META_COLS + financial_period) - 1
+        new_value = convert_forecast_amount(cell_data[col])
 
         monthly_figure_amount = MonthlyFigureAmount.objects.filter(
             monthly_figure=monthly_figure,
@@ -112,3 +113,7 @@ def forecast_encoder(obj):
         return "{0:.2f}".format(obj)
     else:
         return obj
+
+
+def convert_forecast_amount(amount):
+    return round(Decimal(amount), 2) * 100
