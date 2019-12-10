@@ -38,7 +38,7 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastView,
 )
-from forecast.views.view_forecast_summary import (
+from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
     DITView,
     DirectorateView,
@@ -327,6 +327,10 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         nac_obj = NaturalCodeFactory()
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
+        apr_period = FinancialPeriod.objects.get(financial_period_code=1)
+        apr_period.actual_loaded = True
+        apr_period.save()
+
         # If you use the MonthlyFigureFactory the test fails.
         # I cannot work out why, it may be due to using a random year....
         financial_code_obj = FinancialCode.objects.create(
@@ -461,6 +465,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         # Check the difference between budget and year total
         assert cols[-2].get_text() == intcomma(-self.amount_apr - self.amount_may)
+
+        # Check the spend to date
+        assert cols[-4].get_text() == intcomma(self.amount_apr)
 
         # Check that all the subtotals exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")

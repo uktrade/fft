@@ -22,8 +22,10 @@ from forecast.import_utils import (
 )
 from forecast.models import (
     ActualsTemporaryStore,
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 
 from upload_file.models import FileUpload
@@ -61,16 +63,16 @@ GENERIC_PROGRAMME_CODE = 310940
 
 def copy_actuals_to_monthly_figure(period_obj, year):
     # Now copy the newly uploaded actuals to the monthly figure table
-    MonthlyFigure.objects.filter(
-        financial_year=year,
-        financial_period=period_obj,
+    MonthlyFigureAmount.objects.filter(
+        monthly_figure__financial_year=year,
+        monthly_figure__financial_period=period_obj,
+        version__gte = MonthlyFigureAmount.CURRENT_VERSION
     ).delete()
-    with connection.cursor() as cursor:
-        cursor.execute(sql_for_data_copy(FileUpload.ACTUALS))
-    ActualsTemporaryStore.objects.filter(
-        financial_year=year,
-        financial_period=period_obj,
-    ).delete()
+    MonthlyFigureAmount.objects.filter(
+        monthly_figure__financial_year=year,
+        monthly_figure__financial_period=period_obj,
+        version=MonthlyFigureAmount.TEMPORARY_VERSION
+    ).update(version=MonthlyFigureAmount.CURRENT_VERSION)
 
 
 def save_trial_balance_row(chart_of_account, value, period_obj, year_obj):
@@ -115,25 +117,33 @@ def save_trial_balance_row(chart_of_account, value, period_obj, year_obj):
         raise UploadFileDataError(
             error_message
         )
-
-    actuals_obj, created = ActualsTemporaryStore.objects.get_or_create(
-        financial_year=year_obj,
+    financialcode_obj, created = FinancialCode.objects.get_or_create(
         programme=programme_obj,
         cost_centre=cc_obj,
         natural_account_code=nac_obj,
         analysis1_code=analysis1_obj,
         analysis2_code=analysis2_obj,
         project_code=project_obj,
+    )
+    financialcode_obj.save()
+    monthlyfigure_obj, created = MonthlyFigure.objects.get_or_create(
+        financial_year=year_obj,
+        financial_code=financialcode_obj,
         financial_period=period_obj,
+    )
+    monthlyfigure_obj.save()
+    amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
+        monthly_figure=monthlyfigure_obj,
+        version=MonthlyFigureAmount.TEMPORARY_VERSION,
     )
     if created:
         # to avoid problems with precision,
         # we store the figures in pence
-        actuals_obj.amount = value * 100
+        amount_obj.amount = value * 100
     else:
-        actuals_obj.amount += value * 100
+        amount_obj.amount += value * 100
 
-    actuals_obj.save()
+    amount_obj.save()
     return True
 
 
@@ -196,9 +206,10 @@ def upload_trial_balance_report(file_upload, month_number, year):
     # The actuals are uploaded to to a temporary storage, and copied
     # to the MonthlyFigure when the upload is completed successfully.
     # This means that we always have a full upload.
-    ActualsTemporaryStore.objects.filter(
-        financial_year=year,
-        financial_period=period_obj,
+    MonthlyFigureAmount.objects.filter(
+        monthly_figure__financial_year=year,
+        monthly_figure__financial_period=period_obj,
+        version=MonthlyFigureAmount.TEMPORARY_VERSION
     ).delete()
 
     for row in range(TRIAL_BALANCE_FIRST_DATA_ROW, worksheet.max_row + 1):

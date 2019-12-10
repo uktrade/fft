@@ -497,7 +497,9 @@ class MonthlyFigureAmount(TimeStampedModel):
     # The figures are stored ar pence, to avoid rounding problems.
     # Some formatting will take care of displaying the figures as pounds only
     amount = models.BigIntegerField(default=0)
-    version = models.IntegerField(default=1)
+    CURRENT_VERSION = 1
+    TEMPORARY_VERSION = -1
+    version = models.IntegerField(default=CURRENT_VERSION)
 
     monthly_figure = models.ForeignKey(
         MonthlyFigure,
