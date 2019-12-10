@@ -22,6 +22,7 @@ from forecast.models import (
     FinancialPeriod,
     FinancialYear,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 
 
@@ -85,16 +86,22 @@ def import_adi_file(csvfile):
 
             for month, per_obj in month_dict.items():
                 period_amount = int(row[col_key[month.lower()]])
-                adi_obj, created = MonthlyFigure.objects.get_or_create(
+                month_figure_obj, created = MonthlyFigure.objects.get_or_create(
                     financial_year=fin_obj,
                     financial_period=per_obj,
                     financial_code=financial_code,
                 )
+                month_figure_obj.save
+                amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
+                    version = 1,
+                    monthly_figure=month_figure_obj,
+                    financial_code=financial_code,
+                )
                 if created:
-                    adi_obj.amount = period_amount
+                    amount_obj.amount = period_amount
                 else:
-                    adi_obj.amount += period_amount
-                adi_obj.save()
+                    amount_obj.amount += period_amount
+                amount_obj.save()
         else:
             print(line, err_msg)
 

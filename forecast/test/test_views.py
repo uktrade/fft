@@ -24,8 +24,10 @@ from costcentre.test.factories import (
 )
 
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import (
@@ -340,31 +342,44 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         programme_obj = ProgrammeCodeFactory()
         nac_obj = NaturalCodeFactory()
         year_obj = FinancialYear.objects.get(financial_year=current_year)
+
         # If you use the MonthlyFigureFactory the test fails.
         # I cannot work out why, it may be due to using a random year....
-        a = MonthlyFigure.objects.create(
+        financial_code_obj = FinancialCode.objects.create(
+            programme=programme_obj,
+            cost_centre=self.cost_centre,
+            natural_account_code=nac_obj,
+        )
+        financial_code_obj.save
+        apr_figure = MonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
-            financial_year=year_obj,
-            programme=programme_obj,
-            cost_centre=self.cost_centre,
-            natural_account_code=nac_obj,
-            amount=self.amount_apr,
+            financial_code = financial_code_obj,
+            financial_year = year_obj
         )
-        a.save
+        apr_figure.save
+        apr_amount = MonthlyFigureAmount.objects.create(
+            version = 1,
+            monthly_figure = apr_figure,
+            amount = self.amount_apr
+        )
+        apr_amount.save()
         self.amount_may = 1234567
-        m = MonthlyFigure.objects.create(
+        may_figure = MonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=4
             ),
-            cost_centre=self.cost_centre,
-            financial_year=year_obj,
-            programme=programme_obj,
-            natural_account_code=nac_obj,
-            amount=self.amount_may,
+            financial_code = financial_code_obj,
+            financial_year = year_obj
         )
-        m.save
+        may_figure.save
+        may_amount = MonthlyFigureAmount.objects.create(
+            version = 1,
+            monthly_figure = may_figure,
+            amount = self.amount_may
+        )
+        may_amount.save()
         # Assign forecast view permission
         ForecastPermissionFactory(
             user=self.test_user,
