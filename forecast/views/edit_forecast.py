@@ -134,14 +134,23 @@ class AddRowView(CostCentrePermissionTest, FormView):
             analysis1_code=data["analysis1_code"],
             analysis2_code=data["analysis2_code"],
             project_code=data["project_code"],
-        )
+        ).first()
+
+        if not financial_code:
+            financial_code = FinancialCode.objects.create(
+                cost_centre_id=self.cost_centre_code,
+                programme=data["programme"],
+                natural_account_code=data["natural_account_code"],
+                analysis1_code=data["analysis1_code"],
+                analysis2_code=data["analysis2_code"],
+                project_code=data["project_code"],
+            )
 
         for financial_period in range(1, 13):
             monthly_figure = MonthlyFigure.objects.create(
                 financial_year_id=get_current_financial_year(),
                 financial_period_id=financial_period,
                 financial_code=financial_code,
-
             )
 
             MonthlyFigureAmount.objects.create(
@@ -309,30 +318,27 @@ class PublishView(
     def form_valid(self, form):
         self.cost_centre_code = form.cleaned_data["cost_centre_code"]
 
-        financial_code = FinancialCode.objects.filter(
+        financial_codes = FinancialCode.objects.filter(
             cost_centre_id=self.cost_centre_code,
-        ).first()
+        )
 
-        latest_version = Subquery(
-            MonthlyFigure.objects.filter(
+        for financial_code in financial_codes:
+            monthly_figures = MonthlyFigure.objects.filter(
                 financial_code=financial_code,
-                id=OuterRef('id'),
-            ).order_by('-version').values('id')[:1]
-        )
+            )
 
-        latest = MonthlyFigure.objects.filter(
-            id__in=latest_version,
-            financial_code=financial_code,
-        )
+            for monthly_figure in monthly_figures:
+                latest_amount = MonthlyFigureAmount.objects.filter(
+                    monthly_figure=monthly_figure,
+                ).order_by("-version").first()
 
-        figures_to_delete = MonthlyFigure.objects.filter(
-            financial_code=financial_code,
-        ).exclude(pk__in=latest)
+                amounts_to_delete = MonthlyFigureAmount.objects.filter(
+                    monthly_figure=monthly_figure,
+                ).exclude(pk=latest_amount.pk)
 
-        figures_to_delete.delete()
+                amounts_to_delete.delete()
 
-        for monthly_figure in latest:
-            monthly_figure.version = 1
-            monthly_figure.save()
+                latest_amount.version = 1
+                latest_amount.save()
 
         return super(PublishView, self).form_valid(form)
