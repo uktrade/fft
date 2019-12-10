@@ -8,18 +8,6 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
 
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
 
-    let wasEdited = false
-
-    if (
-        cell.versions &&
-        cell.versions[cell.versions.length - 1].version > 1 &&
-        cell.versions[cell.versions.length - 1].amount != cell.versions[0].amount
-    ) {
-        wasEdited = true
-    }
-
-    const [edited, setEdited] = useState(wasEdited);
-
     const editCellId = useSelector(state => state.edit.cellId);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
@@ -31,6 +19,18 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         }
 
         return selectedRow === cell.rowIndex
+    }
+
+    const wasEdited = () => {
+        if (
+            cell.versions &&
+            cell.versions[0].version > 1 &&
+            cell.versions[0].amount != cell.versions[cell.versions.length - 1].amount
+        ) {
+            return true
+        }
+
+        return false
     }
 
     const getClasses = () => {
@@ -45,7 +45,7 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
             editable = ' not-editable';
         }
 
-        return "govuk-table__cell " + (edited ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable
+        return "govuk-table__cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable
     }
 
     const handleKeyPress = (event) => {
@@ -66,16 +66,16 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         console.log(value)
     }
 
-    const isMounted = useRef(false);
-    useEffect(() => {
-        if (isMounted.current) {
-            setEdited(true)
-        }
+    // const isMounted = useRef(false);
+    // useEffect(() => {
+    //     if (isMounted.current) {
+    //         setEdited(true)
+    //     }
 
-        if (cell.value) {
-            isMounted.current = true;
-        }
-    }, [cell.value]);
+    //     if (cell.value) {
+    //         isMounted.current = true;
+    //     }
+    // }, [cell.value]);
 
     return (
         <Fragment>

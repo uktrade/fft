@@ -212,9 +212,9 @@ def pasted_forecast_content(request, cost_centre_code):
         pasted_at_row = form.cleaned_data.get('pasted_at_row', None)
         all_selected = form.cleaned_data.get('all_selected', False)
 
-        forecast_dump = get_forecast_monthly_figures_pivot(
-            cost_centre_code
-        )
+        column_count = MonthlyFigure.objects.filter(
+            financial_code__cost_centre_id=cost_centre_code,
+        ).count()
 
         rows = paste_content.splitlines()
 
@@ -225,7 +225,7 @@ def pasted_forecast_content(request, cost_centre_code):
                 status=400,
             )
 
-        if all_selected and len(forecast_dump) != len(rows):
+        if all_selected and column_count != len(rows):
             return JsonResponse({
                 'error': 'Your pasted data does not match the selected rows.'
             },

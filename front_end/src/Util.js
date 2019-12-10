@@ -108,7 +108,7 @@ export const processForecastData = (forecastData) => {
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: monthlyFigure.month,
-                versions: monthlyFigure.monthly_figure_amounts.sort(function(a, b){return a - b}),
+                versions: monthlyFigure.monthly_figure_amounts.sort(function(a, b){return a.version < b.version}),
                 isEditable: !monthlyFigure.actual
             }
 

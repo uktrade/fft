@@ -73,13 +73,13 @@ def get_monthly_figures(cost_centre_code, cell_data):
         ])
 
         monthly_figure_amount = MonthlyFigureAmount.objects.filter(
-            monthly_figure=monthly_figures,
+            monthly_figure=monthly_figure,
         ).order_by("-version").first()
 
         if new_value != monthly_figure_amount.amount:
             MonthlyFigureAmount.objects.create(
                 amount=new_value,
-                monthly_figure=monthly_figures,
+                monthly_figure=monthly_figure,
                 version=monthly_figure_amount.version + 1
             )
             monthly_figures.append(monthly_figure)
