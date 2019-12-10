@@ -104,7 +104,6 @@ class PercentageCol(SummingFooterCol):
 class ForecastTable(tables.Table):
     """Define the month columns format and their footer.
     Used every time we need to display a forecast"""
-
     display_footer = True
 
     def __init__(self, column_dict={}, *args, **kwargs):
@@ -191,7 +190,6 @@ class ForecastTable(tables.Table):
         empty_text = ""
         attrs = {
             "class": "govuk-table",
-            "caption": "Financial Report",
             "thead": {"class": "govuk-table__head"},
             "tbody": {"class": "govuk-table__body"},
             "th": {"class": "govuk-table__header"},

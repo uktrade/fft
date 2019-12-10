@@ -5,26 +5,20 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastView,
     PublishView,
-    UploadActualsView,
     pasted_forecast_content,
 )
-from forecast.views.view_forecast import (
+from forecast.views.upload_file import (
+    UploadActualsView,
+    UploadBudgetView,
+)
+from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
-    CostClassView,  # Legacy
     DITView,
     DirectorateView,
     GroupView,
-    MultiForecastView,
-    PivotClassView,
-    pivot_test1,
 )
 
-
 urlpatterns = [
-    path("pivot/", PivotClassView.as_view(), name="pivot"),
-    path("costcentre/", CostClassView.as_view(), name="costcentre"),
-    path("pivotmulti/", MultiForecastView.as_view(), name="pivotmulti"),
-    path("pivot1/", pivot_test1, name="pivot1"),
     path(
         "edit/<int:cost_centre_code>/",
         EditForecastView.as_view(), name="edit_forecast"
@@ -45,9 +39,14 @@ urlpatterns = [
         name="choose_cost_centre",
     ),
     path(
-        "upload-file/",
+        "upload-actuals/",
         UploadActualsView.as_view(),
         name="upload_actuals_file"
+    ),
+    path(
+        "upload-budgets/",
+        UploadBudgetView.as_view(),
+        name="upload_budget_file"
     ),
     path(
         "dit/",

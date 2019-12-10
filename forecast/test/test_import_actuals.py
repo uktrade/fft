@@ -4,11 +4,18 @@ from typing import (
     Dict,
     TypeVar,
 )
+from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
-from django.contrib.auth import get_user_model
+from django.core.exceptions import PermissionDenied
+from django.core.files import File
 from django.db.models import Sum
-from django.test import RequestFactory, TestCase
+from django.test import (
+    RequestFactory,
+    TestCase,
+    override_settings,
+)
+from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
@@ -16,6 +23,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -23,22 +31,30 @@ from costcentre.test.factories import (
 )
 
 from forecast.import_actuals import (
-    CORRECT_TITLE,
-    CORRECT_WS_TITLE,
+    CORRECT_TRIAL_BALANCE_TITLE,
+    CORRECT_TRIAL_BALANCE_WORKSHEET_NAME,
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
     TITLE_CELL,
-    TrialBalanceError,
+    UploadFileDataError,
+    UploadFileFormatError,
     VALID_ECONOMIC_CODE_LIST,
     check_trial_balance_format,
     copy_actuals_to_monthly_figure,
-    save_row,
+    save_trial_balance_row,
     upload_trial_balance_report,
 )
 from forecast.models import (
+    ActualsTemporaryStore,
     FinancialPeriod,
+    ForecastPermission,
     MonthlyFigure,
-    UploadingActuals,
+)
+from forecast.test.factories import (
+    ForecastPermissionFactory,
+)
+from forecast.views.upload_file import (
+    UploadActualsView,
 )
 
 from upload_file.models import FileUpload
@@ -62,8 +78,10 @@ class FakeCell:
         self.value = value
 
 
-class ImportActualsTest(TestCase):
+class ImportActualsTest(TestCase, RequestFactoryBase):
     def setUp(self):
+        RequestFactoryBase.__init__(self)
+
         self.test_year = 2019
         self.test_period = 9
 
@@ -106,17 +124,9 @@ class ImportActualsTest(TestCase):
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
 
-        self.test_user_email = "test@test.com"
-        self.test_password = "password"
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=self.test_user_email,
-        )
-
-        self.test_user.set_password(self.test_password)
-
     def test_save_row(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -128,7 +138,7 @@ class ImportActualsTest(TestCase):
                 self.programme_code
             )
 
-        save_row(
+        save_trial_balance_row(
             chart_of_account_line_correct,
             self.test_amount,
             self.period_obj,
@@ -136,16 +146,17 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             1,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
         self.assertEqual(
             q.amount,
             self.test_amount * 100,
         )
 
-        save_row(
+        save_trial_balance_row(
             chart_of_account_line_correct,
             self.test_amount * 2,
             self.period_obj,
@@ -153,10 +164,11 @@ class ImportActualsTest(TestCase):
         )
         # check that lines with the same chart of account are added together
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             1,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
         self.assertEqual(
             q.amount,
             self.test_amount * 100 * 3,
@@ -164,7 +176,7 @@ class ImportActualsTest(TestCase):
 
     def test_save_row_no_programme(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -175,7 +187,7 @@ class ImportActualsTest(TestCase):
                 self.valid_natural_account_code,
             )
 
-        save_row(
+        save_trial_balance_row(
             chart_of_account_line_no_programme,
             0,
             self.period_obj,
@@ -183,16 +195,17 @@ class ImportActualsTest(TestCase):
         )
         # Lines with 0 programme and 0 amount are not saved
         self.assertEqual(
-            UploadingActuals.objects.filter(cost_centre=self.cost_centre_code).count(),
+            ActualsTemporaryStore.objects.filter(
+                cost_centre=self.cost_centre_code).count(),
             0,
         )
-        save_row(
+        save_trial_balance_row(
             chart_of_account_line_no_programme,
             self.test_amount,
             self.period_obj,
             self.year_obj,
         )
-        q = UploadingActuals.objects.get(cost_centre=self.cost_centre_code)
+        q = ActualsTemporaryStore.objects.get(cost_centre=self.cost_centre_code)
 
         self.assertEqual(
             q.amount,
@@ -205,12 +218,12 @@ class ImportActualsTest(TestCase):
 
     def test_save_row_invalid_nac(self):
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
         )
-        save_row(
+        save_trial_balance_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 self.cost_centre_code,
                 self.not_valid_natural_account_code,
@@ -221,19 +234,15 @@ class ImportActualsTest(TestCase):
             self.year_obj,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
         )
 
-        with self.assertRaises(TrialBalanceError):
-            save_row(
-                '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234'.format(
-                    '123456',
-                    self.not_valid_natural_account_code,
-                    self.programme_code
-                ),
+        with self.assertRaises(UploadFileDataError):
+            save_trial_balance_row(
+                '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234',
                 10,
                 self.period_obj,
                 self.year_obj,
@@ -266,7 +275,7 @@ class ImportActualsTest(TestCase):
         )
         bad_title_file_upload.save()
 
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             upload_trial_balance_report(
                 bad_title_file_upload,
                 self.test_period,
@@ -280,7 +289,7 @@ class ImportActualsTest(TestCase):
             0,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -291,7 +300,7 @@ class ImportActualsTest(TestCase):
             directorate=self.directorate_obj
         )
         # Prepare to upload data. Create some data that will be deleted
-        save_row(
+        save_trial_balance_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 cost_centre_code_1,
                 self.valid_natural_account_code,
@@ -310,7 +319,7 @@ class ImportActualsTest(TestCase):
         )
 
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             1,
@@ -324,7 +333,7 @@ class ImportActualsTest(TestCase):
             1,
         )
         self.assertEqual(
-            UploadingActuals.objects.filter(
+            ActualsTemporaryStore.objects.filter(
                 cost_centre=cost_centre_code_1
             ).count(),
             0,
@@ -343,7 +352,7 @@ class ImportActualsTest(TestCase):
         )
         bad_file_upload.save()
 
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileDataError):
             upload_trial_balance_report(
                 bad_file_upload,
                 self.test_period,
@@ -409,18 +418,18 @@ class ImportActualsTest(TestCase):
 
     def test_check_trial_balance_format(self):
         fake_work_sheet = FakeWorkSheet()
-        fake_work_sheet.title = CORRECT_WS_TITLE
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TITLE)
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
         fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, 8, 1))
         # wrong month
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 9,
                 2019,
             )
         #   wrong year
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 8,
@@ -428,18 +437,74 @@ class ImportActualsTest(TestCase):
             )
         # Wrong title
         fake_work_sheet[TITLE_CELL] = FakeCell('Wrong Title')
-        with self.assertRaises(TrialBalanceError):
+        with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
                 8,
                 2019,
             )
-        # wrong worksheet title
-        fake_work_sheet.title = 'Unknown'
-        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TITLE)
-        with self.assertRaises(TrialBalanceError):
-            check_trial_balance_format(
-                fake_work_sheet,
-                8,
-                2019,
+
+
+class UploadActualsTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.financial_period_code = 1
+        self.financial_year_id = 2019
+
+        self.file_mock = MagicMock(spec=File)
+        self.file_mock.name = 'test.txt'
+
+    @override_settings(ASYNC_FILE_UPLOAD=False)
+    @patch('forecast.views.upload_file.process_uploaded_file')
+    def test_upload_actuals_view(self, mock_process_uploaded_file):
+        forecast_permission_count = ForecastPermission.objects.all().count()
+        self.assertEqual(forecast_permission_count, 0)
+
+        uploaded_actuals_url = reverse(
+            "upload_actuals_file",
+        )
+
+        # Should have been redirected (no permission)
+        with self.assertRaises(PermissionDenied):
+            self.factory_get(
+                uploaded_actuals_url,
+                UploadActualsView,
             )
+
+        ForecastPermissionFactory.create(
+            user=self.test_user,
+            can_upload=True,
+        )
+
+        resp = self.factory_get(
+            uploaded_actuals_url,
+            UploadActualsView,
+        )
+
+        # Should have been permission now
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.factory_post(
+            uploaded_actuals_url,
+            {
+                "period": self.financial_period_code,
+                "year": self.financial_year_id,
+                'file': self.file_mock,
+            },
+            UploadActualsView,
+        )
+
+        # Make sure upload was process was kicked off
+        assert mock_process_uploaded_file.called
+
+        # Should have been redirected to document upload  page
+        self.assertEqual(resp.status_code, 302)
+        assert resp.url == '/upload/files/'
+
+        # Clean up file
+        file_path = 'uploaded/actuals/{}'.format(
+            self.file_mock.name
+        )
+        if os.path.exists(file_path):
+            os.remove(file_path)

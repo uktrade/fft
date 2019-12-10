@@ -1,12 +1,8 @@
-import os
-from unittest.mock import MagicMock, patch
-
 from bs4 import BeautifulSoup
 
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import PermissionDenied
-from django.core.files import File
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -17,6 +13,8 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
+from core.models import FinancialYear
+from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import (
@@ -26,27 +24,25 @@ from costcentre.test.factories import (
 )
 
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
-    ForecastPermission,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import (
     ForecastPermissionFactory,
-    MonthlyFigureFactory,
 )
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
     EditForecastView,
-    UploadActualsView,
 )
-from forecast.views.view_forecast import (
+from forecast.views.view_forecast_summary import (
     CostCentreView,
     DITView,
     DirectorateView,
     GroupView,
-    MultiForecastView,
 )
 
 
@@ -302,70 +298,15 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         assert "/forecast/edit/" in response.url
 
 
-class ViewCostCentreDashboard(TestCase, RequestFactoryBase):
-    cost_centre_code = 888812
-    amount = 9876543
-
-    def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.apr_amount = MonthlyFigureFactory.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
-            cost_centre=CostCentreFactory.create(
-                cost_centre_code=self.cost_centre_code
-            ),
-            amount=self.amount,
-        )
-        # Assign forecast view permission
-        ForecastPermissionFactory(
-            user=self.test_user,
-        )
-
-    def test_view_cost_centre_dashboard(self):
-        resp = self.factory_get(
-            reverse("pivotmulti"),
-            MultiForecastView,
-        )
-        self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "govuk-table")
-
-        soup = BeautifulSoup(resp.content, features="html.parser")
-
-        # Check that there are 3 tables on the page
-        tables = soup.find_all("table", class_="govuk-table")
-        assert len(tables) == 3
-
-        # Check that the first table displays the cost centre code
-        rows = tables[0].find_all("tr")
-        cols = rows[1].find_all("td")
-        assert int(cols[2].get_text()) == self.cost_centre_code
-
-        # Check the April value
-        assert cols[4].get_text() == intcomma(self.amount)
-
-        # Check the total for the year
-        assert cols[-3].get_text() == intcomma(self.amount)
-
-        # Check the difference between budget and year total
-        assert cols[-2].get_text() == intcomma(-self.amount)
-
-        # Check that all the subtotals exist
-        table_rows = soup.find_all("tr", class_="govuk-table__row")
-        assert len(table_rows) == 14
-
-
 class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
-
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 888888
+        self.cost_centre_code = 109076
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code,
@@ -380,7 +321,49 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             directorate=self.directorate,
             cost_centre_code=self.cost_centre_code,
         )
+        current_year = get_current_financial_year()
+        self.amount_apr = 9876543
+        programme_obj = ProgrammeCodeFactory()
+        nac_obj = NaturalCodeFactory()
+        year_obj = FinancialYear.objects.get(financial_year=current_year)
 
+        # If you use the MonthlyFigureFactory the test fails.
+        # I cannot work out why, it may be due to using a random year....
+        financial_code_obj = FinancialCode.objects.create(
+            programme=programme_obj,
+            cost_centre=self.cost_centre,
+            natural_account_code=nac_obj,
+        )
+        financial_code_obj.save
+        apr_figure = MonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            financial_code = financial_code_obj,
+            financial_year = year_obj
+        )
+        apr_figure.save
+        apr_amount = MonthlyFigureAmount.objects.create(
+            version = 1,
+            monthly_figure = apr_figure,
+            amount = self.amount_apr
+        )
+        apr_amount.save()
+        self.amount_may = 1234567
+        may_figure = MonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=4
+            ),
+            financial_code = financial_code_obj,
+            financial_year = year_obj
+        )
+        may_figure.save
+        may_amount = MonthlyFigureAmount.objects.create(
+            version = 1,
+            monthly_figure = may_figure,
+            amount = self.amount_may
+        )
+        may_amount.save()
         # Assign forecast view permission
         ForecastPermissionFactory(
             user=self.test_user,
@@ -434,7 +417,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code
                 },
             ),
             CostCentreView,
@@ -445,67 +428,40 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-
-class UploadActualsTest(TestCase, RequestFactoryBase):
-    def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.financial_period_code = 1
-        self.financial_year_id = 2019
-
-        self.file_mock = MagicMock(spec=File)
-        self.file_mock.name = 'test.txt'
-
-    @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.edit_forecast.process_uploaded_file')
-    def test_upload_actuals_view(self, mock_process_uploaded_file):
-        forecast_permission_count = ForecastPermission.objects.all().count()
-        self.assertEqual(forecast_permission_count, 0)
-
-        uploaded_actuals_url = reverse(
-            "upload_actuals_file",
-        )
-
-        # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                uploaded_actuals_url,
-                UploadActualsView,
-            )
-
-        ForecastPermissionFactory.create(
-            user=self.test_user,
-            can_upload=True,
-        )
-
+    def test_view_cost_centre_summary(self):
         resp = self.factory_get(
-            uploaded_actuals_url,
-            UploadActualsView,
+            reverse(
+                "forecast_cost_centre",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            CostCentreView,
+            cost_centre_code=self.cost_centre_code,
         )
 
-        # Should have been permission now
         self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "govuk-table")
+        soup = BeautifulSoup(resp.content, features="html.parser")
 
-        resp = self.factory_post(
-            uploaded_actuals_url,
-            {
-                "period": self.financial_period_code,
-                "year": self.financial_year_id,
-                'file': self.file_mock,
-            },
-            UploadActualsView,
-        )
+        # Check that there are 4 tables on the page
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 4
 
-        # Make sure upload was process was kicked off
-        assert mock_process_uploaded_file.called
+        # Check that the first table displays the cost centre code
+        rows = tables[0].find_all("tr")
+        cols = rows[1].find_all("td")
+        assert int(cols[2].get_text()) == self.cost_centre_code
 
-        # Should have been redirected to document upload  page
-        self.assertEqual(resp.status_code, 302)
-        assert resp.url == '/upload/files/'
+        # Check the April value
+        assert cols[4].get_text() == intcomma(self.amount_apr)
 
-        # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
-        if os.path.exists(file_path):
-            os.remove(file_path)
+        # Check the total for the year
+        assert cols[-3].get_text() == intcomma(self.amount_apr + self.amount_may)
+
+        # Check the difference between budget and year total
+        assert cols[-2].get_text() == intcomma(-self.amount_apr - self.amount_may)
+
+        # Check that all the subtotals exist
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 18

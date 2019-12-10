@@ -17,23 +17,32 @@ from core.import_csv import (
 
 from costcentre.models import CostCentre
 
-from forecast.models import FinancialPeriod, FinancialYear, MonthlyFigure
+from forecast.models import (
+    FinancialCode,
+    FinancialPeriod,
+    FinancialYear,
+    MonthlyFigure,
+    MonthlyFigureAmount,
+)
 
 
 def get_month_dict():
     """Link the column names in the ADI file with
     the foreign key used in the MonthlyFigure to
     identify the period"""
-    q = FinancialPeriod.objects.filter(period_calendar_code__gt=0).values(
+    q = FinancialPeriod.objects.filter(
+        period_calendar_code__gt=0,
+        period_calendar_code__lt=15
+    ).values(
         "period_short_name"
     )
-    my_dict = {}
+    period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
             FinancialPeriod, "period_short_name", e["period_short_name"]
         )
-        my_dict[e["period_short_name"].lower()] = per_obj
-    return my_dict
+        period_dict[e["period_short_name"].lower()] = per_obj
+    return period_dict
 
 
 def import_adi_file(csvfile):
@@ -65,23 +74,34 @@ def import_adi_file(csvfile):
         proj_obj, msg = get_fk(ProjectCode, row[col_key["spare2"]].strip())
         # Now read the twelve month values into a dict
         if err_msg == "":
+            financial_code = FinancialCode.objects.create(
+                programme=prog_obj,
+                cost_centre=cc_obj,
+                natural_account_code=nac_obj,
+                analysis1_code=an1_obj,
+                analysis2_code=an2_obj,
+                project_code=proj_obj,
+            )
+            financial_code.save()
+
             for month, per_obj in month_dict.items():
                 period_amount = int(row[col_key[month.lower()]])
-                adi_obj, created = MonthlyFigure.objects.get_or_create(
+                month_figure_obj, created = MonthlyFigure.objects.get_or_create(
                     financial_year=fin_obj,
-                    programme=prog_obj,
-                    cost_centre=cc_obj,
-                    natural_account_code=nac_obj,
-                    analysis1_code=an1_obj,
-                    analysis2_code=an2_obj,
-                    project_code=proj_obj,
                     financial_period=per_obj,
+                    financial_code=financial_code,
+                )
+                month_figure_obj.save
+                amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
+                    version = 1,
+                    monthly_figure=month_figure_obj,
+                    financial_code=financial_code,
                 )
                 if created:
-                    adi_obj.amount = period_amount
+                    amount_obj.amount = period_amount
                 else:
-                    adi_obj.amount += period_amount
-                adi_obj.save()
+                    amount_obj.amount += period_amount
+                amount_obj.save()
         else:
             print(line, err_msg)
 
@@ -116,50 +136,3 @@ import_adi_file_class = ImportInfo(
     h_list,
     import_adi_file,
 )
-
-
-def import_unpivot_actual(csv_file, fin_year):
-    reader = csv.reader(csv_file)
-    col_key = csv_header_to_dict(next(reader))
-    print(col_key)
-    line = 2
-    fin_obj, msg = get_fk(FinancialYear, fin_year)
-    csv_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
-    for row in csv_reader:
-        line += 1
-        err_msg = ""
-        cc_obj, msg = get_fk(CostCentre, row[col_key["cost centre"]].strip())
-        err_msg += msg
-        nac_obj, msg = get_fk(NaturalCode, row[col_key["natural account"]].strip())
-        err_msg += msg
-        prog = row[col_key["programme"]].strip()
-        if prog == 0:
-            prog = 310801
-        prog_obj, msg = get_fk(ProgrammeCode, prog)
-        err_msg += msg
-        per_obj, msg = get_fk_from_field(
-            FinancialPeriod, "period_short_name", row[col_key["period"]].strip()
-        )
-        err_msg += msg
-
-        an1_obj, msg = get_fk(Analysis1, int(row[col_key["analysis"]]))
-        an2_obj, msg = get_fk(Analysis2, int(row[col_key["analysis2"]]))
-        proj_obj, msg = get_fk(ProjectCode, row[col_key["spare2"]].strip())
-        period_amount = int(row[col_key["amount"]])
-        if err_msg == "":
-            adi_obj, created = MonthlyFigure.objects.get_or_create(
-                financial_year=fin_obj,
-                programme=prog_obj,
-                cost_centre=cc_obj,
-                natural_account_code=nac_obj,
-                analysis1_code=an1_obj,
-                analysis2_code=an2_obj,
-                project_code=proj_obj,
-                financial_period=per_obj,
-            )
-            adi_obj.amount = period_amount
-            adi_obj.save()
-            if not line % 1000:
-                print(line)
-        else:
-            print("Error at line ", line, err_msg)
