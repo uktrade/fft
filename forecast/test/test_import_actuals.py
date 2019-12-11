@@ -45,7 +45,6 @@ from forecast.import_actuals import (
     upload_trial_balance_report,
 )
 from forecast.models import (
-    ActualsTemporaryStore,
     FinancialCode,
     FinancialPeriod,
     ForecastPermission,

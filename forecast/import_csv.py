@@ -93,9 +93,8 @@ def import_adi_file(csvfile):
                 )
                 month_figure_obj.save
                 amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
-                    version = 1,
+                    version=1,
                     monthly_figure=month_figure_obj,
-                    financial_code=financial_code,
                 )
                 if created:
                     amount_obj.amount = period_amount

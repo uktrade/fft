@@ -205,6 +205,7 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
 
     active = True
     project_code = "5000"
+    project_description = "Project Description"
 
 
 class HistoricalProjectCodeFactory(factory.DjangoModelFactory):

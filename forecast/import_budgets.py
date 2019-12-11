@@ -1,5 +1,3 @@
-from django.db import connection
-
 from chartofaccountDIT.models import (
     NaturalCode,
     ProgrammeCode,
@@ -18,15 +16,14 @@ from forecast.import_utils import (
     get_error_from_list,
     get_forecast_month_dict,
     get_project_obj,
-    sql_for_data_copy,
     validate_excel_file,
 )
 from forecast.models import (
     Budget,
-    BudgetsTemporaryStore,
+    BudgetAmount,
+    FinancialCode,
 )
 
-from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_error
 
 EXPECTED_BUDGET_HEADERS = [
@@ -65,15 +62,16 @@ def check_budget_header(header_dict, correct_header):
 def copy_uploaded_budget(year, month_dict):
     # Now copy the newly uploaded actuals to the monthly figure table
     for month, period_obj in month_dict.items():
-        Budget.objects.filter(
-            financial_year=year,
-            financial_period=period_obj,
+        BudgetAmount.objects.filter(
+            budget_figure__financial_year=year,
+            budget_figure__financial_period=period_obj,
+            version__gte=BudgetAmount.CURRENT_VERSION
         ).delete()
-    with connection.cursor() as cursor:
-        cursor.execute(sql_for_data_copy(FileUpload.BUDGET))
-    BudgetsTemporaryStore.objects.filter(
-        financial_year=year,
-    ).delete()
+        BudgetAmount.objects.filter(
+            budget_figure__financial_year=year,
+            budget_figure__financial_period=period_obj,
+            version=BudgetAmount.TEMPORARY_VERSION
+        ).update(version=BudgetAmount.CURRENT_VERSION)
 
 
 def get_primary_nac_obj(code):
@@ -100,8 +98,9 @@ def upload_budget(worksheet, year, header_dict):
     # The budgets are uploaded to to a temporary storage, and copied
     # when the upload is completed successfully.
     # This means that we always have a full upload.
-    BudgetsTemporaryStore.objects.filter(
-        financial_year=year,
+    BudgetAmount.objects.filter(
+        budget_figure__financial_year=year,
+        version=BudgetAmount.TEMPORARY_VERSION
     ).delete()
     for row in range(2, worksheet.max_row + 1):
         cost_centre = worksheet[f"{header_dict['cost centre']}{row}"].value
@@ -134,23 +133,34 @@ def upload_budget(worksheet, year, header_dict):
         for month, period_obj in month_dict.items():
             period_budget = worksheet[f"{header_dict[month.lower()]}{row}"].value
             if period_budget:
-                budget_obj, created = BudgetsTemporaryStore.objects.get_or_create(
-                    financial_year=year_obj,
+                financialcode_obj, created = FinancialCode.objects.get_or_create(
                     programme=programme_obj,
                     cost_centre=cc_obj,
                     natural_account_code=nac_obj,
                     analysis1_code=analysis1_obj,
                     analysis2_code=analysis2_obj,
                     project_code=project_obj,
+                )
+                financialcode_obj.save()
+
+                budget_obj, created = Budget.objects.get_or_create(
+                    financial_year=year_obj,
+                    financial_code=financialcode_obj,
                     financial_period=period_obj,
                 )
+                budget_obj.save()
+                amount_obj, created = BudgetAmount.objects.get_or_create(
+                    budget_figure=budget_obj,
+                    version=BudgetAmount.TEMPORARY_VERSION,
+                )
+
                 if created:
                     # to avoid problems with precision,
                     # we store the figures in pence
-                    budget_obj.amount = period_budget * 100
+                    amount_obj.amount = period_budget * 100
                 else:
-                    budget_obj.amount += period_budget * 100
-                budget_obj.save()
+                    amount_obj.amount += period_budget * 100
+                amount_obj.save()
 
     copy_uploaded_budget(year, month_dict)
 
