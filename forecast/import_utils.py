@@ -14,7 +14,6 @@ from forecast.models import (
     FinancialPeriod,
 )
 
-from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_error
 
 
@@ -54,40 +53,6 @@ def get_analysys2_obj(code):
         obj = None
         message = ""
     return obj, message
-
-
-def sql_for_data_copy(data_type):
-    if data_type == FileUpload.ACTUALS:
-        temp_data_file = 'forecast_ActualsTemporaryStore'
-        target = 'forecast_monthlyfigure'
-    else:
-        if data_type == FileUpload.BUDGET:
-            temp_data_file = 'forecast_BudgetsTemporaryStore'
-            target = 'forecast_budget'
-        else:
-            raise UploadFileDataError(
-                'Unknown upload type.'
-            )
-
-    return 'INSERT INTO {}(' \
-           'created, ' \
-           'updated, ' \
-           'active,  ' \
-           'financial_period_id, ' \
-           'financial_year_id, ' \
-           'amount, ' \
-           'financial_code_id,' \
-           'version' \
-           ' SELECT  ' \
-           'now(), ' \
-           'now(), ' \
-           'active,  ' \
-           'financial_period_id, ' \
-           'financial_year_id, ' \
-           'amount ' \
-           'financial_code_id,' \
-           '1' \
-           ' FROM {};'.format(target, temp_data_file)
 
 
 def validate_excel_file(file_upload, worksheet_title):

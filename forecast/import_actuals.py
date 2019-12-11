@@ -1,5 +1,3 @@
-from django.db import connection
-
 from chartofaccountDIT.models import (
     NaturalCode,
     ProgrammeCode,
@@ -17,18 +15,15 @@ from forecast.import_utils import (
     get_analysys2_obj,
     get_error_from_list,
     get_project_obj,
-    sql_for_data_copy,
     validate_excel_file,
 )
 from forecast.models import (
-    ActualsTemporaryStore,
     FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
     MonthlyFigureAmount,
 )
 
-from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_error
 
 CHART_OF_ACCOUNT_COL = "D"
@@ -66,7 +61,7 @@ def copy_actuals_to_monthly_figure(period_obj, year):
     MonthlyFigureAmount.objects.filter(
         monthly_figure__financial_year=year,
         monthly_figure__financial_period=period_obj,
-        version__gte = MonthlyFigureAmount.CURRENT_VERSION
+        version__gte=MonthlyFigureAmount.CURRENT_VERSION
     ).delete()
     MonthlyFigureAmount.objects.filter(
         monthly_figure__financial_year=year,

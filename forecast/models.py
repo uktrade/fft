@@ -17,7 +17,6 @@ from chartofaccountDIT.models import (
 from core.metamodels import (
     TimeStampedModel,
 )
-
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
@@ -185,7 +184,7 @@ class Budget(TimeStampedModel):
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
-        related_name="budget_financial_code",
+        related_name="budgets",
     )
 
     class Meta:
@@ -196,12 +195,12 @@ class Budget(TimeStampedModel):
         )
 
     def __str__(self):
-        return f"{self.financial_code__cost_centre}" \
-               f"--{self.financial_code__programme}" \
-               f"--{self.financial_code__natural_account_code}" \
-               f"--{self.financial_code__analysis1_code}" \
-               f"--{self.financial_code__analysis2_code}" \
-               f"--{self.financial_code__project_code}:" \
+        return f"{self.financial_code.cost_centre}" \
+               f"--{self.financial_code.programme}" \
+               f"--{self.financial_code.natural_account_code}" \
+               f"--{self.financial_code.analysis1_code}" \
+               f"--{self.financial_code.analysis2_code}" \
+               f"--{self.financial_code.project_code}:" \
                f"{self.financial_year} " \
                f"{self.financial_period}"
 
@@ -264,7 +263,7 @@ class SubTotalForecast:
             row = self.display_data[i]
             if not self.row_has_values(row):
                 print(f'Deleted {i}')
-                del(self.display_data[i])
+                del (self.display_data[i])
 
     def do_output_subtotal(self, current_row):
         new_flag = False
@@ -299,9 +298,9 @@ class SubTotalForecast:
                 break
 
     def subtotal_data(
-        self,
-        display_total_column,
-        subtotal_columns_arg,
+            self,
+            display_total_column,
+            subtotal_columns_arg,
     ):
         # The self.subtotals are passed in from
         # the outer totals for calculation,
@@ -382,19 +381,28 @@ class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
     default_columns = {
-        "monthly_figure__financial_code__cost_centre__cost_centre_code": "Cost Centre Code",
-        "monthly_figure__financial_code__cost_centre__cost_centre_name": "Cost Centre Description",
-        "monthly_figure__financial_code__natural_account_code__natural_account_code": "Natural Account Code",
-        "monthly_figure__financial_code__natural_account_code__natural_account_code_description":
+        "monthly_figure__financial_code__cost_centre__cost_centre_code":
+            "Cost Centre Code",
+        "monthly_figure__financial_code__cost_centre__cost_centre_name":
+            "Cost Centre Description",
+        "monthly_figure__financial_code__natural_account_code__natural_account_code":
+            "Natural Account Code",
+        "monthly_figure__financial_code__natural_account_code__natural_account_code_description": # noqa
             "Natural Account Code Description",
         "monthly_figure__financial_code__programme__programme_code": "Programme Code",
-        "monthly_figure__financial_code__programme__programme_description": "Programme Description",
-        "monthly_figure__financial_code__analysis1_code__analysis1_code": "Contract Code",
-        "monthly_figure__financial_code__analysis1_code__analysis1_description": "Contract Description",
-        "monthly_figure__financial_code__analysis2_code__analysis2_code": "Market Code",
-        "monthly_figure__financial_code__analysis2_code__analysis2_description": "Market Description",
+        "monthly_figure__financial_code__programme__programme_description":
+            "Programme Description",
+        "monthly_figure__financial_code__analysis1_code__analysis1_code":
+            "Contract Code",
+        "monthly_figure__financial_code__analysis1_code__analysis1_description":
+            "Contract Description",
+        "monthly_figure__financial_code__analysis2_code__analysis2_code":
+            "Market Code",
+        "monthly_figure__financial_code__analysis2_code__analysis2_description":
+            "Market Description",
         "monthly_figure__financial_code__project_code__project_code": "Project Code",
-        "monthly_figure__financial_code__project_code__project_description": "Project Description",
+        "monthly_figure__financial_code__project_code__project_description":
+            "Project Description",
     }
 
     def subtotal_data(
@@ -449,7 +457,9 @@ class PivotManager(models.Manager):
                 .filter(monthly_figure__financial_year=year, version=1, **filter_dict)
                 .order_by(*order_list)
         )
-        pivot_data = pivot(q1, columns, "monthly_figure__financial_period__period_short_name", "amount")
+        pivot_data = pivot(q1, columns,
+                           "monthly_figure__financial_period__period_short_name",
+                           "amount")
         # print(pivot_data.query)
         return pivot_data
 
@@ -474,7 +484,6 @@ class MonthlyFigure(TimeStampedModel):
         related_name="monthly_figures",
     )
 
-    # TODO don't save to month that have actuals
     class Meta:
         unique_together = (
             "financial_code",
@@ -483,24 +492,30 @@ class MonthlyFigure(TimeStampedModel):
         )
 
     def __str__(self):
-        return f"{self.financial_code__cost_centre}" \
-               f"--{self.financial_code__programme}" \
-               f"--{self.financial_code__natural_account_code}" \
-               f"--{self.financial_code__analysis1_code}" \
-               f"--{self.financial_code__analysis2_code}" \
-               f"--{self.financial_code__project_code}:" \
+        return f"{self.financial_code.cost_centre}" \
+               f"--{self.financial_code.programme}" \
+               f"--{self.financial_code.natural_account_code}" \
+               f"--{self.financial_code.analysis1_code}" \
+               f"--{self.financial_code.analysis2_code}" \
+               f"--{self.financial_code.project_code}:" \
                f"{self.financial_year} " \
                f"{self.financial_period}"
 
 
-class MonthlyFigureAmount(TimeStampedModel):
+class Amount(TimeStampedModel):
     # The figures are stored ar pence, to avoid rounding problems.
     # Some formatting will take care of displaying the figures as pounds only
     amount = models.BigIntegerField(default=0)
     CURRENT_VERSION = 1
     TEMPORARY_VERSION = -1
     version = models.IntegerField(default=CURRENT_VERSION)
+    # TODO don't save to month that have actuals
 
+    class Meta:
+        abstract = True
+
+
+class MonthlyFigureAmount(Amount):
     monthly_figure = models.ForeignKey(
         MonthlyFigure,
         on_delete=models.CASCADE,
@@ -517,45 +532,18 @@ class MonthlyFigureAmount(TimeStampedModel):
         )
 
 
-class DataTemporaryStore(models.Model):
-    """Used as temporary storage for  uploading the actuals.
-    When the upload is successfully completed,
-    they get copied to the Monthly figures.
-    This allow to achieve a all-or-nothing upload."""
-    id = models.AutoField("Row ID", primary_key=True)
-    financial_year = models.ForeignKey(
-        FinancialYear,
-        on_delete=models.PROTECT,
-    )
-    financial_period = models.ForeignKey(
-        FinancialPeriod,
-        on_delete=models.PROTECT,
-    )
-    amount = models.BigIntegerField(default=0)
-    active = models.BooleanField(default=True)
-
-    financial_code = models.ForeignKey(
-        FinancialCode,
-        on_delete=models.PROTECT
+class BudgetAmount(Amount):
+    budget_figure = models.ForeignKey(
+        Budget,
+        on_delete=models.CASCADE,
+        related_name="budget_amounts",
     )
 
     class Meta:
-        abstract = True
         unique_together = (
-            "financial_code",
-            "financial_year",
-            "financial_period",
+            "budget_figure",
+            "version",
         )
-
-
-class ActualsTemporaryStore(DataTemporaryStore):
-    """Used as temporary storage for  uploading the actuals."""
-    pass
-
-
-class BudgetsTemporaryStore(DataTemporaryStore):
-    """Used as temporary storage for  uploading the actuals."""
-    pass
 
 
 class OSCARReturn(models.Model):

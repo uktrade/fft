@@ -24,7 +24,6 @@ from forecast.models import (
 from forecast.tables import (
     ForecastSubTotalTable,
 )
-from forecast.views.base import ForecastViewPermissionMixin
 from forecast.utils.query_fields import (
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
@@ -48,6 +47,7 @@ from forecast.utils.query_fields import (
     project_order_list,
     project_sub_total,
 )
+from forecast.views.base import ForecastViewPermissionMixin
 
 
 class ForecastMultiTableMixin(MultiTableMixin):

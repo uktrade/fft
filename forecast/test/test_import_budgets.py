@@ -25,6 +25,7 @@ from forecast.import_utils import (
 )
 from forecast.models import (
     Budget,
+    BudgetAmount,
     FinancialPeriod,
 )
 
@@ -158,24 +159,24 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         self.assertEqual(
             Budget.objects.filter(
                 financial_year=self.test_year,
-                cost_centre=self.cost_centre_code
+                financial_code__cost_centre=self.cost_centre_code
             ).count(),
             12,
         )
         # Check that figures for same budgets are added together
         self.assertEqual(
-            Budget.objects.filter(
-                financial_year=self.test_year,
-                cost_centre=self.cost_centre_code,
-                financial_period=1,
+            BudgetAmount.objects.filter(
+                budget_figure__financial_year=self.test_year,
+                budget_figure__financial_code__cost_centre=self.cost_centre_code,
+                budget_figure__financial_period=1,
             ).first().amount,
             1100,
         )
         self.assertEqual(
-            Budget.objects.filter(
-                financial_year=self.test_year,
-                cost_centre=self.cost_centre_code,
-                financial_period=12,
+            BudgetAmount.objects.filter(
+                budget_figure__financial_year=self.test_year,
+                budget_figure__financial_code__cost_centre=self.cost_centre_code,
+                budget_figure__financial_period=12,
             ).first().amount,
             2200,
         )
@@ -183,7 +184,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
     def test_upload_budget_with_actuals(self):
         self.assertEqual(
             Budget.objects.filter(
-                cost_centre=self.cost_centre_code
+                financial_code__cost_centre=self.cost_centre_code
             ).count(),
             0,
         )
@@ -216,7 +217,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         self.assertEqual(
             Budget.objects.filter(
                 financial_year=self.test_year,
-                cost_centre=self.cost_centre_code
+                financial_code__cost_centre=self.cost_centre_code
             ).count(),
             8,
         )
@@ -225,16 +226,16 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
             self.assertEqual(
                 Budget.objects.filter(
                     financial_year=self.test_year,
-                    cost_centre=self.cost_centre_code,
+                    financial_code__cost_centre=self.cost_centre_code,
                     financial_period=period,
                 ).first(),
                 None,
             )
         self.assertEqual(
-            Budget.objects.filter(
-                financial_year=self.test_year,
-                cost_centre=self.cost_centre_code,
-                financial_period=12,
+            BudgetAmount.objects.filter(
+                budget_figure__financial_year=self.test_year,
+                budget_figure__financial_code__cost_centre=self.cost_centre_code,
+                budget_figure__financial_period=12,
             ).first().amount,
             2200,
         )
