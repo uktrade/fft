@@ -105,12 +105,7 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                 ) : (
                     <Fragment>
                         {cell.versions ? (
-<<<<<<< HEAD
-                            <Fragment>{cell.versions[0].amount.toFixed(2)}</Fragment>
-=======
-                            <Fragment>{formatValue(cell.versions[0].amount)}
-                            </Fragment>
->>>>>>> 5cb3478246dc2f6c0d94a65fa958a7eac68115b5
+                            <Fragment>{formatValue(cell.versions[0].amount)}</Fragment>
                         ) : (
                             <Fragment>{cell.value}</Fragment>
                         )}
