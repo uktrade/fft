@@ -3,9 +3,8 @@ import re
 
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Subquery, OuterRef
 from django.http import JsonResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.decorators.http import require_http_methods
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
@@ -19,8 +18,8 @@ from costcentre.models import CostCentre
 
 from forecast.forms import (
     AddForecastRowForm,
-    PublishForm,
     PasteForecastForm,
+    PublishForm,
 )
 from forecast.models import (
     FinancialCode,
@@ -33,9 +32,11 @@ from forecast.permission_shortcuts import (
 )
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.edit_helpers import (
+    BadFormatException,
     CannotFindMonthlyFigureException,
-    ColMatchException,
+    NotEnoughMatchException,
     RowMatchException,
+    TooManyMatchException,
     check_cols_match,
     check_row_match,
     get_monthly_figures,
@@ -173,9 +174,11 @@ def pasted_forecast_content(request, cost_centre_code):
         pasted_at_row = form.cleaned_data.get('pasted_at_row', None)
         all_selected = form.cleaned_data.get('all_selected', False)
 
-        column_count = MonthlyFigure.objects.filter(
+        figure_count = MonthlyFigure.objects.filter(
             financial_code__cost_centre_id=cost_centre_code,
         ).count()
+
+        row_count = figure_count / 12
 
         rows = paste_content.splitlines()
 
@@ -186,9 +189,22 @@ def pasted_forecast_content(request, cost_centre_code):
                 status=400,
             )
 
-        if all_selected and column_count != len(rows):
+        if all_selected and row_count < len(rows):
             return JsonResponse({
-                'error': 'Your pasted data does not match the selected rows.'
+                'error': (
+                    'You have selected all forecast rows '
+                    'but the pasted data has too many rows.'
+                )
+            },
+                status=400,
+            )
+
+        if all_selected and row_count > len(rows):
+            return JsonResponse({
+                'error': (
+                    'You have selected all forecast rows '
+                    'but the pasted data has too few rows.'
+                )
             },
                 status=400,
             )
@@ -221,7 +237,9 @@ def pasted_forecast_content(request, cost_centre_code):
 
                 monthly_figures.extend(row_monthly_figures)
         except (
-                ColMatchException,
+                BadFormatException,
+                TooManyMatchException,
+                NotEnoughMatchException,
                 RowMatchException,
                 CannotFindMonthlyFigureException,
         ) as ex:
@@ -299,46 +317,3 @@ class EditForecastView(
         context["paste_form"] = paste_form
         context["forecast_dump"] = forecast_dump
         return context
-
-
-# TODO - check permissions
-class PublishView(
-    FormView,
-):
-    form_class = PublishForm
-
-    def get_success_url(self):
-        return reverse_lazy(
-            "edit_forecast",
-            kwargs={
-                "cost_centre_code": self.cost_centre_code
-            }
-        )
-
-    def form_valid(self, form):
-        self.cost_centre_code = form.cleaned_data["cost_centre_code"]
-
-        financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=self.cost_centre_code,
-        )
-
-        for financial_code in financial_codes:
-            monthly_figures = MonthlyFigure.objects.filter(
-                financial_code=financial_code,
-            )
-
-            for monthly_figure in monthly_figures:
-                latest_amount = MonthlyFigureAmount.objects.filter(
-                    monthly_figure=monthly_figure,
-                ).order_by("-version").first()
-
-                amounts_to_delete = MonthlyFigureAmount.objects.filter(
-                    monthly_figure=monthly_figure,
-                ).exclude(pk=latest_amount.pk)
-
-                amounts_to_delete.delete()
-
-                latest_amount.version = 1
-                latest_amount.save()
-
-        return super(PublishView, self).form_valid(form)

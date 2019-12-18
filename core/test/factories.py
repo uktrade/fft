@@ -4,9 +4,16 @@ import factory
 
 from faker import Faker
 
-from core.models import Document, EventLog
+from core.models import Document, EventLog, FinancialYear
 
 fake = Faker()
+
+
+class FinancialYearFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = FinancialYear
+
+    financial_year = 2019
 
 
 class UserFactory(factory.django.DjangoModelFactory):

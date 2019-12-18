@@ -12,6 +12,7 @@ jobs:
           SELENIUM_ADDRESS: localhost
           SELENIUM_HOST: localhost
           PUBLIC_PATH: localhost:3000/
+          USE_SELENIUM_HUB: False
 
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
@@ -55,7 +56,7 @@ jobs:
       - run:
           name: Run node BDD
           command: |
-            npm run bdd
+            npm start
           background: true
       # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
       # so override the shell and have the last command be the : { null } command to force exit code 0.

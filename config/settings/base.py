@@ -175,7 +175,7 @@ WEBPACK_LOADER = {
     "DEFAULT": {
         "CACHE": not DEBUG,
         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": "/app/front_end/config/webpack-stats.json",
+        "STATS_FILE": os.path.join(BASE_DIR, "../front_end/config/webpack-stats.json"),
     }
 }
 
