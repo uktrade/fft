@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 
-from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
@@ -53,6 +52,10 @@ HIERARCHY_TABLE_INDEX = 0
 PROGRAMME_TABLE_INDEX = 1
 EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
+
+
+def format_forecast_figure(value):
+    return f'{round(value):,d}'
 
 
 class ViewPermissionsTest(TestCase, RequestFactoryBase):
@@ -331,7 +334,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
-        self.amount_apr = 9876543
+        self.amount_apr = -9876543
         self.programme_obj = ProgrammeCodeFactory()
         nac_obj = NaturalCodeFactory()
         self.project_obj = ProjectCodeFactory()
@@ -454,13 +457,17 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_programme_cols[TOTAL_COLUMN].get_text() == intcomma(self.year_total)
+        assert last_programme_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
+            self.year_total / 100
+        )
         # Check the difference between budget and year total
-        assert last_programme_cols[UNDERSPEND_COLUMN].get_text() == intcomma(
-            self.underspend_total)
+        assert last_programme_cols[
+            UNDERSPEND_COLUMN
+        ].get_text() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text() == intcomma(
-            self.spend_to_date_total)
+        assert last_programme_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_expenditure_table(self, table):
         expenditure_rows = table.find_all("tr")
@@ -469,14 +476,17 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_expenditure_cols[TOTAL_COLUMN].get_text() == intcomma(
-            self.year_total)
+        assert last_expenditure_cols[
+            TOTAL_COLUMN
+        ].get_text() == format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text() == intcomma(
-            self.underspend_total)
+        assert last_expenditure_cols[
+            UNDERSPEND_COLUMN
+        ].get_text() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text() == intcomma(
-            self.spend_to_date_total)
+        assert last_expenditure_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
@@ -486,13 +496,17 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_project_cols[TOTAL_COLUMN].get_text() == intcomma(self.year_total)
+        assert last_project_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
+            self.year_total / 100
+        )
         # Check the difference between budget and year total
-        assert last_project_cols[UNDERSPEND_COLUMN].get_text() == intcomma(
-            self.underspend_total)
+        assert last_project_cols[
+            UNDERSPEND_COLUMN
+        ].get_text() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text() == intcomma(
-            self.spend_to_date_total)
+        assert last_project_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_hierarchy_table(self, table, hierarchy_element):
         hierarchy_rows = table.find_all("tr")
@@ -500,17 +514,26 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         assert first_hierarchy_cols[1].get_text() == hierarchy_element
         # Check the April value
-        assert first_hierarchy_cols[4].get_text() == intcomma(self.amount_apr)
-
+        assert first_hierarchy_cols[4].get_text() == format_forecast_figure(
+            self.amount_apr / 100
+        )
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == intcomma(self.year_total)
+        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
+            self.year_total / 100
+        )
         # Check the difference between budget and year total
-        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text() == intcomma(
-            self.underspend_total)
+        assert last_hierarchy_cols[
+            UNDERSPEND_COLUMN
+        ].get_text() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text() == intcomma(
-            self.spend_to_date_total)
+        assert last_hierarchy_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text() == format_forecast_figure(self.spend_to_date_total / 100)
+
+    def check_negative_value_formatted(self, soup):
+        negative_values = soup.find_all("span", class_="negative")
+        assert len(negative_values) == 42
 
     def test_view_cost_centre_summary(self):
         resp = self.factory_get(
@@ -537,6 +560,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 18
+
+        self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.cost_centre.cost_centre_name)
@@ -575,6 +600,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 18
 
+        self.check_negative_value_formatted(soup)
+
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.cost_centre.cost_centre_name)
         # Check that the second table displays the programme and the correct totals
@@ -612,6 +639,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 18
 
+        self.check_negative_value_formatted(soup)
+
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.directorate.directorate_name)
         # Check that the second table displays the programme and the correct totals
@@ -642,6 +671,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 18
+
+        self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.group_name)

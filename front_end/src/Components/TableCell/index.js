@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect, useRef } from 'react'
+import React, {Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 
@@ -22,30 +22,28 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
     }
 
     const wasEdited = () => {
-        if (
-            cell.versions &&
-            cell.versions[0].version > 1 &&
-            cell.versions[0].amount != cell.versions[cell.versions.length - 1].amount
-        ) {
-            return true
-        }
-
+        // TODO - add function after "previous months" story
         return false
     }
 
     const getClasses = () => {
         let hiddenResult = ''
         let editable = ''
+        let negative = ''
 
         if (isHidden) {
             hiddenResult = isHidden(cellKey) ? ' hidden' : ''
         }
 
-        if (!cell.editable) {
+        if (!cell.isEditable) {
             editable = ' not-editable';
         }
 
-        return "govuk-table__cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable
+        if (cell.versions && cell.versions[0].amount < 0) {
+            negative = " negative"
+        }
+
+        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable + negative
     }
 
     const handleKeyPress = (event) => {
@@ -66,16 +64,11 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         console.log(value)
     }
 
-    // const isMounted = useRef(false);
-    // useEffect(() => {
-    //     if (isMounted.current) {
-    //         setEdited(true)
-    //     }
-
-    //     if (cell.value) {
-    //         isMounted.current = true;
-    //     }
-    // }, [cell.value]);
+    const formatValue = (value) => {
+        let nfObject = new Intl.NumberFormat('en-GB'); 
+        let pounds = Math.round(value / 100)
+        return nfObject.format(pounds); 
+    }
 
     return (
         <Fragment>
@@ -112,7 +105,8 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                 ) : (
                     <Fragment>
                         {cell.versions ? (
-                            <Fragment>{cell.versions[0].amount}</Fragment>
+                            <Fragment>{formatValue(cell.versions[0].amount)}
+                            </Fragment>
                         ) : (
                             <Fragment>{cell.value}</Fragment>
                         )}

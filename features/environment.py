@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -33,15 +34,17 @@ from chartofaccountDIT.test.factories import (
 )
 
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
     MonthlyFigure,
+    MonthlyFigureAmount,
 )
 from forecast.test.factories import FinancialPeriodFactory
 
 
 def set_up_test_objects(context):
     cost_centre_code = 888812
-    nac_code = 999999
+    nac_codes = [111111, 999999, ]
     analysis_1_code = "1111111"
     analysis_2_code = "2222222"
     project_code_value = "3000"
@@ -70,49 +73,69 @@ def set_up_test_objects(context):
     )
 
     programme = ProgrammeCodeFactory.create()
-    nac_code = NaturalCodeFactory.create(natural_account_code=nac_code)
     project_code = ProjectCodeFactory.create(project_code=project_code_value)
     analysis_1 = Analysis1Factory.create(analysis1_code=analysis_1_code)
     analysis_2 = Analysis2Factory.create(analysis2_code=analysis_2_code)
 
-    for financial_period in range(1, 13):
-        financial_month = financial_period + 3
+    for nac_code in nac_codes:
+        nac_code = NaturalCodeFactory.create(
+            natural_account_code=nac_code,
+        )
+        for financial_period in range(1, 13):
+            financial_month = financial_period + 3
 
-        if financial_month > 12:
-            financial_month = financial_month - 12
+            if financial_month > 12:
+                financial_month = financial_month - 12
 
-        month_name = (
-            financial_period,
-            datetime.date(
-                get_current_financial_year(),
-                financial_month, 1
-            ).strftime('%B')
-        )[1]
+            month_name = (
+                financial_period,
+                datetime.date(
+                    get_current_financial_year(),
+                    financial_month, 1
+                ).strftime('%B')
+            )[1]
 
-        financial_period_count = FinancialPeriod.objects.filter(
-            financial_period_code=financial_period
-        ).count()
+            financial_period_count = FinancialPeriod.objects.filter(
+                financial_period_code=financial_period
+            ).count()
 
-        if financial_period_count == 0:
-            FinancialPeriodFactory(
-                financial_period_code=financial_period,
-                period_long_name=month_name,
-                period_short_name=month_name[0:3],
-                period_calendar_code=financial_month
+            if financial_period_count == 0:
+                FinancialPeriodFactory(
+                    financial_period_code=financial_period,
+                    period_long_name=month_name,
+                    period_short_name=month_name[0:3],
+                    period_calendar_code=financial_month
+                )
+
+            financial_code = FinancialCode.objects.filter(
+                cost_centre_id=cost_centre_code,
+                programme=programme,
+                natural_account_code=nac_code,
+                analysis1_code=analysis_1,
+                analysis2_code=analysis_2,
+                project_code=project_code,
+            ).first()
+
+            if not financial_code:
+                financial_code = FinancialCode.objects.create(
+                    cost_centre_id=cost_centre_code,
+                    programme=programme,
+                    natural_account_code=nac_code,
+                    analysis1_code=analysis_1,
+                    analysis2_code=analysis_2,
+                    project_code=project_code,
+                )
+
+            monthly_figure = MonthlyFigure.objects.create(
+                financial_year_id=get_current_financial_year(),
+                financial_period_id=financial_period,
+                financial_code=financial_code,
             )
 
-        monthly_figure = MonthlyFigure(
-            financial_year_id=get_current_financial_year(),
-            financial_period_id=financial_period,
-            cost_centre_id=cost_centre_code,
-            programme=programme,
-            natural_account_code=nac_code,
-            analysis1_code=analysis_1,
-            analysis2_code=analysis_2,
-            project_code=project_code,
-            amount=0,
-        )
-        monthly_figure.save()
+            MonthlyFigureAmount.objects.create(
+                monthly_figure=monthly_figure,
+                amount=0,
+            )
 
 
 def create_test_user(context):
@@ -161,17 +184,21 @@ def paste(context):
     first_select = context.browser.find_element_by_id("clipboard-test")
     first_select.send_keys(Keys.CONTROL, "v")
 
+    # Wait for UI to update
+    time.sleep(2)
+
 
 def copy_text(context, text):
     context.browser.execute_script(
         """function copyToClipboard() {{
-        const input = document.createElement('input');
+        const input = document.createElement('textarea');
         document.body.appendChild(input);
         input.value = "{}";
         input.id = "clipboard-test"
         input.focus();
         input.select();
         const isSuccessful = document.execCommand('copy');
+        console.log(isSuccessful);
         input.blur();
         }}
         copyToClipboard()
@@ -185,13 +212,16 @@ def before_scenario(context, scenario):
 
 
 def before_feature(context, feature):
-    context.browser = webdriver.Remote(
-        command_executor="http://{}:4444/wd/hub".format(
-            settings.SELENIUM_ADDRESS
-        ),
-        desired_capabilities=DesiredCapabilities.CHROME,
-    )
-    context.browser.implicitly_wait(5)
+    if settings.USE_SELENIUM_HUB:
+        context.browser = webdriver.Remote(
+            command_executor="http://{}:4444/wd/hub".format(
+                settings.SELENIUM_ADDRESS
+            ),
+            desired_capabilities=DesiredCapabilities.CHROME,
+        )
+        context.browser.implicitly_wait(5)
+    else:
+        context.browser = webdriver.Chrome()
 
 
 def after_feature(context, feature):

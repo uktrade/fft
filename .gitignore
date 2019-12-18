@@ -141,3 +141,8 @@ fido_db_test_all.json
 config/staticfiles/
 
 backup.sql
+
+test-reports/*
+fidovenv/*
+selenium-server-standalone-3.5.3.jar
+chromedriver

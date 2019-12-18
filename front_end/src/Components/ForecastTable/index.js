@@ -1,4 +1,4 @@
-import React, {Fragment, useState, useEffect } from 'react';
+import React, {Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Table from '../../Components/Table/index'
 import { TOGGLE_NAC, TOGGLE_PROG } from '../../Reducers/ShowHideCols'
@@ -15,7 +15,6 @@ import {
 function ForecastTable() {
     const dispatch = useDispatch();
 
-    const [rowData, setRowData] = useState([]);
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
     const allSelected = useSelector(state => state.selected.all)
@@ -41,7 +40,7 @@ function ForecastTable() {
         }
 
         timer()
-    }, []);
+    }, [dispatch]);
 
     useEffect(() => {
         const capturePaste = (event) => {
@@ -104,7 +103,7 @@ function ForecastTable() {
             // window.removeEventListener("keydown", handleKeyDown);
             // window.removeEventListener("copy", setClipBoardContent);
         };
-    }, [dispatch, rowData, selectedRow, allSelected]);
+    }, [dispatch, cells, selectedRow, allSelected]);
 
     return (
         <Fragment>

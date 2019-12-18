@@ -56,5 +56,3 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             'project_code',
             'monthly_figures',
         ]
-
-

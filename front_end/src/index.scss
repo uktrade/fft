@@ -19,32 +19,7 @@ code {
     display: none;
 }
 
-.handle {
-    //background-color:black;
-    //color: white;
-    //font-weight: bold;
-    ///width: 20px;
-    //padding: 0 2px;
-    //text-align: center;
-    //overflow:none;
-}
-
-.column-header {
-    //background-color:black;
-    //color: white;
-}
-
-table {
-  //border-collapse: collapse;
-  //table-layout: fixed;
-}
-
-table {
-  //border-collapse: collapse;
-}
-
 table, td, th {
-  //border: 1px solid #d4d5d4;
   white-space: nowrap;
 }
 
@@ -53,7 +28,7 @@ td {
 }
 
 .not-editable {
-  background-color: $govuk-border-colour;
+  background-color: govuk-colour("light-grey");
 }
 
 
@@ -74,7 +49,7 @@ td {
 }
 
 .selected {
-  background-color: $govuk-focus-colour;
+  background-color: govuk-colour("yellow");
 }
 
 .selected.edited {
@@ -82,11 +57,13 @@ td {
 }
 
 .selected.not-editable {
-  background-color: blue;
+  background-color: govuk-colour("dark-grey");
+  color:white;
 }
 
 .selected.edited {
-  background-color: green;
+  background-color: govuk-colour("blue");
+  color: white;
 }
 
 .hidden {
@@ -98,17 +75,6 @@ td {
 }
 
 .edited {
-  background-color: red;
+  background-color: govuk-colour("light-blue");
+  color: white;
 }
-
-//input[type=submit] {
-//  width:200px;
-//  height:50px;
-//  background-color: #4CAF50;
-//  border: none;
-//  color: white;
-//  padding: 16px 32px;
-//  text-decoration: none;
-//  margin: 4px 2px;
-//  cursor: pointer;
-//}

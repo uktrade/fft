@@ -73,7 +73,6 @@ export async function postData(url = '', data = {}) {
 }
 
 export const processForecastData = (forecastData) => {
-    let cellIndex = 0;
     let rows = [];
 
     let financialCodeCols = [
@@ -89,6 +88,7 @@ export const processForecastData = (forecastData) => {
         let cells = {}
         let colIndex = 0
 
+        // eslint-disable-next-line
         for (const financialCodeCol of financialCodeCols) {
             cells[financialCodeCol] = {
                 id: getCellId(financialCodeCol, rowIndex),
@@ -102,13 +102,14 @@ export const processForecastData = (forecastData) => {
             colIndex++
         }
 
+        // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
             cells[monthlyFigure.month] = {
                 id: getCellId(monthlyFigure.month, rowIndex),
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: monthlyFigure.month,
-                versions: monthlyFigure.monthly_figure_amounts.sort(function(a, b){return a.version < b.version}),
+                versions: monthlyFigure.monthly_figure_amounts.sort((a, b) => (a.version < b.version) ? 1 : -1),
                 isEditable: !monthlyFigure.actual
             }
 

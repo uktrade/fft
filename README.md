@@ -73,7 +73,7 @@ npm run bdd
 
 ## SSH into web container
 ```
-docker exec -it [container id] /bin/bash
+docker-compose exec fido bash
 ```
 
 ## Run BDD tests
