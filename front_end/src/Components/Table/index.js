@@ -10,8 +10,8 @@ function Table({rowData}) {
 
     const nac = useSelector(state => state.showHideCols.nac);
     const programme = useSelector(state => state.showHideCols.programme);
-    // const analysis1 = useSelector(state => state.showHideCols.analysis1);
-    // const analysis2 = useSelector(state => state.showHideCols.analysis2);
+    const analysis1 = useSelector(state => state.showHideCols.analysis1);
+    const analysis2 = useSelector(state => state.showHideCols.analysis2);
     const projectCode = useSelector(state => state.showHideCols.projectCode);
 
     const rows = useSelector(state => state.allCells.cells);
@@ -19,23 +19,23 @@ function Table({rowData}) {
     console.log("rows", rows)
 
     const isHidden = (key) => {
-        if (!nac && key === "cost_centre__cost_centre_code") {
+        if (!nac && key === "natural_account_code") {
             return true
         }
 
-        if (!programme && key === "programme__programme_code") {
+        if (!programme && key === "programme") {
             return true
         }
 
-        // if (!analysis1 && key === "cost_centre__cost_centre_code") {
-        //     return true
-        // }
+        if (!analysis1 && key === "analysis1_code") {
+            return true
+        }
 
-        // if (!analysis2 && key === "cost_centre__cost_centre_code") {
-        //     return true
-        // }
+        if (!analysis2 && key === "analysis2_code") {
+            return true
+        }
 
-        if (!projectCode && key === "project_code__project_code") {
+        if (!projectCode && key === "project_code") {
             return true
         }
 
@@ -58,7 +58,7 @@ function Table({rowData}) {
                         }>
                             select all
                         </td>
-                        <TableHeader isHidden={isHidden} headerType="natural_account_code">Natural Account Code</TableHeader>
+                        <TableHeader isHidden={isHidden} id="natural_account_code_header" headerType="natural_account_code">Natural Account Code</TableHeader>
                         <TableHeader isHidden={isHidden} headerType="programme">Programme</TableHeader>
                         <TableHeader isHidden={isHidden} headerType="analysis1_code">Analysis Code Sector</TableHeader>
                         <TableHeader isHidden={isHidden} headerType="analysis2_code">Analysis Code Market</TableHeader>

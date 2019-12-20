@@ -1,7 +1,14 @@
 import React, {Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Table from '../../Components/Table/index'
-import { TOGGLE_NAC, TOGGLE_PROG } from '../../Reducers/ShowHideCols'
+import { 
+    TOGGLE_NAC,
+    TOGGLE_PROG, 
+    TOGGLE_AN1,
+    TOGGLE_AN2,
+    TOGGLE_PROJ_CODE,
+
+} from '../../Reducers/ShowHideCols'
 import { SET_ERROR } from '../../Reducers/Error'
 
 import { SET_CELLS } from '../../Reducers/Cells'
@@ -14,6 +21,12 @@ import {
 
 function ForecastTable() {
     const dispatch = useDispatch();
+
+    const nac = useSelector(state => state.showHideCols.nac);
+    const programme = useSelector(state => state.showHideCols.programme);
+    const analysis1 = useSelector(state => state.showHideCols.analysis1);
+    const analysis2 = useSelector(state => state.showHideCols.analysis2);
+    const projectCode = useSelector(state => state.showHideCols.projectCode);
 
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
@@ -121,26 +134,68 @@ function ForecastTable() {
                   </div>
                 </div>
             }
-            <p>
-                <button
+            <div className="toggle-links">
+                <button id="show_hide_nac"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_NAC()
                         );
                         e.preventDefault()
                     }}
-                >Toggle NAC</button>
-            </p>
-            <p>
-                <button
+                >{nac ? (
+                        <Fragment>Hide</Fragment>
+                    ) : (
+                        <Fragment>Show</Fragment>
+                    )} NAC</button>
+                <button id="show_hide_prog"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_PROG()
                         );
                         e.preventDefault()
                     }}
-                >Toggle programme</button>
-            </p>
+                >{programme ? (
+                        <Fragment>Hide</Fragment>
+                    ) : (
+                        <Fragment>Show</Fragment>
+                    )} programme</button>
+                <button id="show_hide_a1"
+                    onClick={(e) => {
+                        dispatch(
+                            TOGGLE_AN1()
+                        );
+                        e.preventDefault()
+                    }}
+                >{analysis1 ? (
+                        <Fragment>Hide</Fragment>
+                    ) : (
+                        <Fragment>Show</Fragment>
+                    )} analysis code sector</button>
+                <button id="show_hide_a2"
+                    onClick={(e) => {
+                        dispatch(
+                            TOGGLE_AN2()
+                        );
+                        e.preventDefault()
+                    }}
+                >{analysis2 ? (
+                        <Fragment>Hide</Fragment>
+                    ) : (
+                        <Fragment>Show</Fragment>
+                    )} analysis code market</button>
+                <button id="show_hide_proj"
+                    onClick={(e) => {
+                        dispatch(
+                            TOGGLE_PROJ_CODE()
+                        );
+                        e.preventDefault()
+                    }}
+                >{projectCode ? (
+                        <Fragment>Hide</Fragment>
+                    ) : (
+                        <Fragment>Show</Fragment>
+                    )} project code</button>
+            </div>            
             <Table />
         </Fragment>
     );

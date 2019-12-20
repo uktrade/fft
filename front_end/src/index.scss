@@ -78,3 +78,23 @@ td {
   background-color: govuk-colour("light-blue");
   color: white;
 }
+
+.toggle-links {
+  width:900px;
+  display:flex;
+      align-self:stretch;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom:20px;
+}
+
+.toggle-links button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-size:19px;
+  font-family: "GDS Transport", Arial, sans-serif;
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}

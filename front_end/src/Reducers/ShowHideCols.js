@@ -18,13 +18,13 @@ const showHideCols = createSlice({
             state.programme = !state.programme
         },
         TOGGLE_AN1: (state, action) => {
-            state.analysis1 = action.payload.show
+            state.analysis1 = !state.analysis1
         },
         TOGGLE_AN2: (state, action) => {
-            state.analysis2 = action.payload.show
+            state.analysis2 = !state.analysis2
         },
         TOGGLE_PROJ_CODE: (state, action) => {
-            state.projectCode = action.payload.show
+            state.projectCode = !state.projectCode
         }
     }
 });
