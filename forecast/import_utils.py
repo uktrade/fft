@@ -37,7 +37,7 @@ def get_project_obj(code):
 
 def get_analysys1_obj(code):
     if int(code):
-        analysis1_code = get_id(code, 6)
+        analysis1_code = get_id(code, 5)
         obj, message = get_fk(Analysis1, analysis1_code)
     else:
         obj = None
@@ -47,7 +47,7 @@ def get_analysys1_obj(code):
 
 def get_analysys2_obj(code):
     if int(code):
-        analysis2_code = get_id(code, 6)
+        analysis2_code = get_id(code, 5)
         obj, message = get_fk(Analysis2, analysis2_code)
     else:
         obj = None

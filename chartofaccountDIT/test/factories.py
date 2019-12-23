@@ -91,6 +91,8 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
     Define ExpenditureCategory Factory
     """
 
+    grouping_description = 'Test Budget Category'
+
     class Meta:
         model = ExpenditureCategory
 

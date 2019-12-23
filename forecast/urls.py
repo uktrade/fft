@@ -10,6 +10,12 @@ from forecast.views.upload_file import (
     UploadActualsView,
     UploadBudgetView,
 )
+from forecast.views.view_forecast.expenditure_details import (
+    CostCentreExpenditureDetailsView,
+    DITExpenditureDetailsView,
+    DirectorateExpenditureDetailsView,
+    GroupExpenditureDetailsView,
+)
 from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
     DITView,
@@ -61,6 +67,26 @@ urlpatterns = [
         "cost-centre/<cost_centre_code>/",
         CostCentreView.as_view(),
         name="forecast_cost_centre",
+    ),
+    path(
+        "dit/<expenditure_category>/<budget_type>/",
+        DITExpenditureDetailsView.as_view(),
+        name="expenditure_details_dit",
+    ),
+    path(
+        "group/<group_code>/<expenditure_category>/<budget_type>/",
+        GroupExpenditureDetailsView.as_view(),
+        name="expenditure_details_group",
+    ),
+    path(
+        "directorate/<directorate_code>/<expenditure_category>/<budget_type>/",
+        DirectorateExpenditureDetailsView.as_view(),
+        name="expenditure_details_directorate",
+    ),
+    path(
+        "cost-centre/<cost_centre_code>/<expenditure_category>/<budget_type>/",
+        CostCentreExpenditureDetailsView.as_view(),
+        name="expenditure_details_cost_centre",
     ),
     path(
         "paste-forecast/<cost_centre_code>/",

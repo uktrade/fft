@@ -231,7 +231,7 @@ class HistoricalExpenditureCategory(
             description=obj.description,
             further_description=obj.further_description,
             linked_budget_code=obj.linked_budget_code.natural_account_code,
-            linked_budget_code_description=obj.linked_budget_code.natural_account_code_description,  # noqa
+            linked_budget_code_description=obj.linked_budget_code.natural_account_code_description, # noqa
         )
         obj_hist.save()
         return obj_hist
@@ -359,6 +359,22 @@ class NaturalCode(NaturalCodeAbstract, TimeStampedModel, LogChangeModel):
         null=True,
     )
 
+    def save(self, *args, **kwargs):
+        # Override save to copy the economic budget code, for convenience.
+        link_l5_code = None
+        if self.account_L5_code:
+            link_l5_code = self.account_L5_code.account_l5_code
+        else:
+            if self.account_L5_code_upload:
+                link_l5_code = self.account_L5_code_upload.account_l5_code
+
+        if link_l5_code:
+            l5_linked = L5Account.objects.get(
+                account_l5_code=link_l5_code,
+            )
+            self.economic_budget_code = l5_linked.economic_budget_code
+        super(NaturalCode, self).save(*args, **kwargs)
+
 
 class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
     """It includes the fields displayed on the FIDO interface,
@@ -417,14 +433,11 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
         if obj.account_L5_code:
             account_L5_code_val = obj.account_L5_code.account_l5_code
             account_L5_description_val = obj.account_L5_code.account_l5_long_name
-            # economic_budget_code_val = obj.account_L5_code.economic_budget_code
         else:
             account_L5_code_val = None
             account_L5_description_val = None
-            # economic_budget_code_val = None
         obj_hist = cls(
-            natural_account_code_description=obj.natural_account_code_description
-            + suffix,
+            natural_account_code_description=obj.natural_account_code_description + suffix, # noqa
             natural_account_code=obj.natural_account_code,
             used_for_budget=obj.used_for_budget,
             expenditure_category=expenditure_category_value,
@@ -720,7 +733,7 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
     def archive_year(cls, obj, year_obj, suffix=""):
         if obj.account_L6_code_fk.expenditure_category:
             category = (
-                obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description  # noqa
+                obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description # noqa
             )
             budget_desc = (
                 obj.account_L6_code_fk.expenditure_category.grouping_description
@@ -732,7 +745,7 @@ class HistoricalFCOMapping(FCOMappingAbstract, ArchivedModel):
             fco_description=obj.fco_description + suffix,
             fco_code=obj.fco_code,
             account_L6_code=obj.account_L6_code_fk.natural_account_code,
-            account_L6_description=obj.account_L6_code_fk.natural_account_code_description,  # noqa
+            account_L6_description=obj.account_L6_code_fk.natural_account_code_description, # noqa
             nac_category_description=category,
             budget_description=budget_desc,
             economic_budget_code=obj.account_L6_code_fk.economic_budget_code,

@@ -5,6 +5,14 @@ import django_tables2 as tables
 from forecast.models import FinancialPeriod
 
 
+class ForecastLinkCol(tables.Column):
+
+    def render(self, value):
+        if f'{value}'.strip():
+            return 'View'
+        return ''
+
+
 class ForecastFigureCol(tables.Column):
     # display 0 for null value instead of a dash
     default = 0
@@ -103,6 +111,7 @@ class ForecastTable(tables.Table):
     """Define the month columns format and their footer.
     Used every time we need to display a forecast"""
     display_footer = True
+    display_view_details = False
 
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
@@ -126,11 +135,19 @@ class ForecastTable(tables.Table):
         #  but they are not required
         #  in the displayed table.
         column_dict = {k: v for k, v in column_dict.items() if v != "Hidden"}
+
         extra_column_to_display = [
             (k, tables.Column(v)) for (k, v) in column_dict.items()
         ]
+        column_list = list(column_dict.keys())
+        if self.display_view_details:
+            extra_column_to_display.extend(
+                [("Link",
+                  self.link_col,
+                  )]
+            )
+            column_list.insert(0, "Link")
 
-        column_list = column_dict.keys()
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
 
         extra_column_to_display.extend(
@@ -193,6 +210,7 @@ class ForecastTable(tables.Table):
             "th": {"class": "govuk-table__header"},
             "td": {"class": "govuk-table__cell"},
             "tf": {"class": "govuk-table__cell"},
+            "a": {"class": "govuk-link"},
         }
         orderable = False
         row_attrs = {"class": "govuk-table__row"}
@@ -205,3 +223,25 @@ class ForecastSubTotalTable(ForecastTable, tables.Table):
         row_attrs = {
             "class": lambda record: "govuk-table__row {}".format(record["row_type"])
         }
+
+
+class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
+    display_view_details = True
+
+    def __init__(self, viewname, arg_link, code='', *args, **kwargs):
+
+        link_args = []
+        if code:
+            link_args.append(code)
+
+        for item in arg_link:
+            link_args.append(tables.A(item))
+
+        self.link_col = ForecastLinkCol('', arg_link[0],
+                                        linkify={"viewname": viewname,
+                                                 "args": link_args})
+
+        super().__init__(*args, **kwargs)
+
+    class Meta(ForecastSubTotalTable.Meta):
+        pass

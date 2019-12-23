@@ -243,21 +243,14 @@ class SubTotalForecast:
     def row_has_values(self, row):
         has_values = False
         for period in self.period_list:
-            if row[period]:
+            if row[period] and (row[period] > 50 or row[period] < -50):
                 has_values = True
                 break
         return has_values
 
     def remove_empty_rows(self):
-        # remove missing periods (like Adj1,
-        # etc from the list used to add the
-        # periods together.
         # period_list has to be initialised before we can check if the row
         # has values different from 0
-        self.period_list = [
-            value for value in self.full_list if value in self.display_data[0].keys()
-        ]
-        return
         how_many_row = len(self.display_data) - 1
         for i in range(how_many_row, -1, -1):
             row = self.display_data[i]
@@ -301,6 +294,7 @@ class SubTotalForecast:
             self,
             display_total_column,
             subtotal_columns_arg,
+            show_grand_total,
     ):
         # The self.subtotals are passed in from
         # the outer totals for calculation,
@@ -316,6 +310,12 @@ class SubTotalForecast:
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
+        # remove missing periods (like Adj1,
+        # etc from the list used to add the
+        # periods together.
+        self.period_list = [
+            value for value in self.full_list if value in self.display_data[0].keys()
+        ]
         self.remove_empty_rows()
         first_row = self.display_data.pop(0)
         self.output_row_to_table(first_row, "")
@@ -344,7 +344,6 @@ class SubTotalForecast:
             field_name: False for field_name in self.subtotal_columns
         }
         for current_row in self.display_data:
-            self.output_row_to_table(current_row, "")
             subtotal_time = False
             # check if we need a subtotal.
             # we check from the inner subtotal
@@ -356,6 +355,7 @@ class SubTotalForecast:
                 self.do_output_subtotal(current_row)
             for k, totals in self.subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
+            self.output_row_to_table(current_row, "")
 
         # output all the subtotals, because it is finished
         for column in self.subtotal_columns:
@@ -368,11 +368,12 @@ class SubTotalForecast:
                 self.subtotals[column],
                 SUB_TOTAL_CLASS,
             )
-        self.subtotals["Gran_Total"][self.display_total_column] = \
-            "Total Managed Expenditure"
-        self.output_row_to_table(
-            self.subtotals["Gran_Total"], GRAN_TOTAL_CLASS
-        )
+        if show_grand_total:
+            self.subtotals["Gran_Total"][self.display_total_column] = \
+                "Total Managed Expenditure"
+            self.output_row_to_table(
+                self.subtotals["Gran_Total"], GRAN_TOTAL_CLASS
+            )
 
         return self.result_table
 
@@ -387,7 +388,7 @@ class PivotManager(models.Manager):
             "Cost Centre Description",
         "monthly_figure__financial_code__natural_account_code__natural_account_code":
             "Natural Account Code",
-        "monthly_figure__financial_code__natural_account_code__natural_account_code_description": # noqa
+        "monthly_figure__financial_code__natural_account_code__natural_account_code_description":  # noqa
             "Natural Account Code Description",
         "monthly_figure__financial_code__programme__programme_code": "Programme Code",
         "monthly_figure__financial_code__programme__programme_description":
@@ -413,6 +414,7 @@ class PivotManager(models.Manager):
             filter_dict={},
             year=0,
             order_list=[],
+            show_grand_total=True
     ):
         # If requesting a subtotal, the
         # list of columns must be specified
@@ -427,7 +429,7 @@ class PivotManager(models.Manager):
                 error_msg += f"'{elem}', "
         if not correct:
             raise SubTotalFieldDoesNotExistError(
-                "Sub-total column(s) {error_msg} not found."
+                f"Sub-total column(s) {error_msg} not found."
             )
 
         if display_total_column not in [*data_columns]:
@@ -444,6 +446,7 @@ class PivotManager(models.Manager):
         return r.subtotal_data(
             display_total_column,
             subtotal_columns,
+            show_grand_total,
         )
 
     def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
@@ -509,6 +512,7 @@ class Amount(TimeStampedModel):
     CURRENT_VERSION = 1
     TEMPORARY_VERSION = -1
     version = models.IntegerField(default=CURRENT_VERSION)
+
     # TODO don't save to month that have actuals
 
     class Meta:

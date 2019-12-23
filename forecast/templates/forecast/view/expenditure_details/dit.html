@@ -1,0 +1,11 @@
+{% extends "forecast/view/expenditure_details/expenditure_details_base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb view.expenditure_category.grouping_description "expenditure_details_cost_centre"  %}
+{% endblock %}
+
+{% block view_hierarchy_title %}
+    <h1 class="govuk-heading-xl">DIT</h1>
+{% endblock %}

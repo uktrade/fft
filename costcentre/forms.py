@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import Select
 
+from chartofaccountDIT.models import ExpenditureCategory
+
 from costcentre.models import CostCentre
 
 from forecast.permission_shortcuts import get_objects_for_user
@@ -83,6 +85,20 @@ class MyCostCentresForm(forms.Form):
     )
 
     cost_centre.widget.attrs.update(
+        {
+            "class": "govuk-select",
+            "aria-describedby": "cost_centre-hint cost_centre-error",
+        }
+    )
+
+
+class ExpenditureTypeForm(forms.Form):
+    expenditure_category = forms.ModelChoiceField(
+        queryset=ExpenditureCategory.objects.all(),
+        widget=Select(),
+    )
+    # TO ASK cost_centre-hint cost_centre-error
+    expenditure_category.widget.attrs.update(
         {
             "class": "govuk-select",
             "aria-describedby": "cost_centre-hint cost_centre-error",
