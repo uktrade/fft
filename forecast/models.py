@@ -19,9 +19,13 @@ from core.metamodels import (
 )
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
-from core.utils import GRAN_TOTAL_CLASS, SUB_TOTAL_CLASS
+from core.utils import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS
 
 from costcentre.models import CostCentre
+
+from forecast.utils.query_fields import DEFAULT_PIVOT_COLUMNS
+
+GRAND_TOTAL_ROW = "grand_total"
 
 
 class SubTotalFieldDoesNotExistError(Exception):
@@ -339,7 +343,7 @@ class SubTotalForecast:
             field_name: sub_total_row.copy() for field_name in self.subtotal_columns
         }
 
-        self.subtotals["Gran_Total"] = sub_total_row.copy()
+        self.subtotals[GRAND_TOTAL_ROW] = sub_total_row.copy()
         self.output_subtotal = {
             field_name: False for field_name in self.subtotal_columns
         }
@@ -369,10 +373,10 @@ class SubTotalForecast:
                 SUB_TOTAL_CLASS,
             )
         if show_grand_total:
-            self.subtotals["Gran_Total"][self.display_total_column] = \
+            self.subtotals[GRAND_TOTAL_ROW][self.display_total_column] = \
                 "Total Managed Expenditure"
             self.output_row_to_table(
-                self.subtotals["Gran_Total"], GRAN_TOTAL_CLASS
+                self.subtotals[GRAND_TOTAL_ROW], GRAND_TOTAL_CLASS
             )
 
         return self.result_table
@@ -381,30 +385,7 @@ class SubTotalForecast:
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    default_columns = {
-        "monthly_figure__financial_code__cost_centre__cost_centre_code":
-            "Cost Centre Code",
-        "monthly_figure__financial_code__cost_centre__cost_centre_name":
-            "Cost Centre Description",
-        "monthly_figure__financial_code__natural_account_code__natural_account_code":
-            "Natural Account Code",
-        "monthly_figure__financial_code__natural_account_code__natural_account_code_description":  # noqa
-            "Natural Account Code Description",
-        "monthly_figure__financial_code__programme__programme_code": "Programme Code",
-        "monthly_figure__financial_code__programme__programme_description":
-            "Programme Description",
-        "monthly_figure__financial_code__analysis1_code__analysis1_code":
-            "Contract Code",
-        "monthly_figure__financial_code__analysis1_code__analysis1_description":
-            "Contract Description",
-        "monthly_figure__financial_code__analysis2_code__analysis2_code":
-            "Market Code",
-        "monthly_figure__financial_code__analysis2_code__analysis2_description":
-            "Market Description",
-        "monthly_figure__financial_code__project_code__project_code": "Project Code",
-        "monthly_figure__financial_code__project_code__project_description":
-            "Project Description",
-    }
+    default_columns = DEFAULT_PIVOT_COLUMNS
 
     def subtotal_data(
             self,

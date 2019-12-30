@@ -1,0 +1,11 @@
+{% extends "forecast/view/programme_details/programme_details_base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb view.programme_code.programme_description "programme_details_dit"  %}
+{% endblock %}
+
+{% block view_hierarchy_title %}
+    <h1 class="govuk-heading-xl">DIT</h1>
+{% endblock %}

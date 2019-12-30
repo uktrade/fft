@@ -26,8 +26,10 @@ from forecast.tables import (
     ForecastWithLinkTable,
 )
 from forecast.utils.query_fields import (
+    BUDGET_CATEGORY_ID,
     BUDGET_TYPE,
-    EXPENDITURE_TYPE_ID,
+    FORECAST_EXPENDITURE_TYPE_ID,
+    PROGRAMME_CODE,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -44,6 +46,7 @@ from forecast.utils.query_fields import (
     hierarchy_sub_total,
     hierarchy_sub_total_column,
     programme_columns,
+    programme_detail_view,
     programme_display_sub_total_column,
     programme_order_list,
     programme_sub_total,
@@ -99,10 +102,19 @@ class ForecastMultiTableMixin(MultiTableMixin):
             pivot_filter,
             order_list=project_order_list,
         )
-        programme_table = ForecastSubTotalTable(programme_columns, programme_data)
+        if self.hierarchy_type == SHOW_COSTCENTRE:
+            programme_table = ForecastSubTotalTable(programme_columns, programme_data)
+        else:
+            programme_table = ForecastWithLinkTable(
+                programme_detail_view[self.hierarchy_type],
+                [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_ID],
+                filter_code,
+                programme_columns,
+                programme_data)
+
         programme_table.attrs['caption'] = "Programme Report"
         expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
-                                                  [EXPENDITURE_TYPE_ID, BUDGET_TYPE],
+                                                  [BUDGET_CATEGORY_ID, BUDGET_TYPE],
                                                   filter_code,
                                                   expenditure_columns,
                                                   expenditure_data)

@@ -17,6 +17,12 @@ from forecast.models import (
 from upload_file.utils import set_file_upload_error
 
 
+# When the following codes are used, they must be a fixed length and padded with "0"
+ANALYSIS1_CODE_LENGTH = 5
+ANALYSIS2_CODE_LENGTH = 5
+PROJECT_CODE_LENGTH = 4
+
+
 class UploadFileFormatError(Exception):
     pass
 
@@ -27,7 +33,7 @@ class UploadFileDataError(Exception):
 
 def get_project_obj(code):
     if int(code):
-        project_code = get_id(code, 4)
+        project_code = get_id(code, PROJECT_CODE_LENGTH)
         obj, message = get_fk(ProjectCode, project_code)
     else:
         obj = None
@@ -37,7 +43,7 @@ def get_project_obj(code):
 
 def get_analysys1_obj(code):
     if int(code):
-        analysis1_code = get_id(code, 5)
+        analysis1_code = get_id(code, ANALYSIS1_CODE_LENGTH)
         obj, message = get_fk(Analysis1, analysis1_code)
     else:
         obj = None
@@ -47,7 +53,7 @@ def get_analysys1_obj(code):
 
 def get_analysys2_obj(code):
     if int(code):
-        analysis2_code = get_id(code, 5)
+        analysis2_code = get_id(code, ANALYSIS2_CODE_LENGTH)
         obj, message = get_fk(Analysis2, analysis2_code)
     else:
         obj = None

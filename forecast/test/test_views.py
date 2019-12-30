@@ -50,6 +50,11 @@ from forecast.views.view_forecast.forecast_summary import (
     DirectorateView,
     GroupView,
 )
+from forecast.views.view_forecast.programme_details import (
+    DITProgrammeDetailsView,
+    DirectorateProgrammeDetailsView,
+    GroupProgrammeDetailsView,
+)
 
 TOTAL_COLUMN = -3
 SPEND_TO_DATE_COLUMN = -4
@@ -456,17 +461,18 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-    def check_programme_table(self, table):
+    def check_programme_table(self, table, prog_index=2):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[1].find_all("td")
-        assert first_prog_cols[1].get_text() == self.programme_obj.programme_description
-        assert first_prog_cols[2].get_text() == self.programme_obj.programme_code
+        assert first_prog_cols[prog_index].get_text() == \
+            self.programme_obj.programme_description
+        assert first_prog_cols[prog_index + 1].get_text() == \
+            self.programme_obj.programme_code
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_programme_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
-            self.year_total / 100
-        )
+        assert last_programme_cols[TOTAL_COLUMN].get_text() == \
+            format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
         assert last_programme_cols[UNDERSPEND_COLUMN].get_text() == \
             format_forecast_figure(self.underspend_total / 100)
@@ -498,9 +504,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_project_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
-            self.year_total / 100
-        )
+        assert last_project_cols[TOTAL_COLUMN].get_text() == \
+            format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
         assert last_project_cols[UNDERSPEND_COLUMN].get_text() == \
             format_forecast_figure(self.underspend_total / 100)
@@ -519,17 +524,14 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         )
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == format_forecast_figure(
-            self.year_total / 100
-        )
+        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == \
+            format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_hierarchy_cols[
-            UNDERSPEND_COLUMN
-        ].get_text() == format_forecast_figure(self.underspend_total / 100)
+        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text() == \
+            format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_hierarchy_cols[
-            SPEND_TO_DATE_COLUMN
-        ].get_text() == format_forecast_figure(self.spend_to_date_total / 100)
+        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+            format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup):
         negative_values = soup.find_all("span", class_="negative")
@@ -566,7 +568,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.cost_centre.cost_centre_name)
         # Check that the second table displays the programme and the correct totals
-        self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
+        # The programme table in the cost centre does not show the 'View'
+        # so the programme is displayed in a different column
+        self.check_programme_table(tables[PROGRAMME_TABLE_INDEX], 1)
 
         # Check that the third table displays the expenditure and the correct totals
         self.check_expenditure_table(tables[EXPENDITURE_TABLE_INDEX])
@@ -712,6 +716,7 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         current_year = get_current_financial_year()
         self.amount1_apr = -9876543
         self.amount2_apr = 1000000
+
         programme_obj = ProgrammeCodeFactory()
         self.budget_type = programme_obj.budget_type_fk.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
@@ -899,4 +904,181 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
             budget_type=self.budget_type
         )
 
+        self.check_response(resp)
+
+
+class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.group_name = "Test Group"
+        self.group_code = "TestGG"
+        self.directorate_name = "Test Directorate"
+        self.directorate_code = "TestDD"
+        self.cost_centre_code = 109076
+
+        group = DepartmentalGroupFactory(
+            group_code=self.group_code,
+            group_name=self.group_name,
+        )
+        self.directorate = DirectorateFactory(
+            directorate_code=self.directorate_code,
+            directorate_name=self.directorate_name,
+            group=group,
+        )
+        self.cost_centre = CostCentreFactory(
+            directorate=self.directorate,
+            cost_centre_code=self.cost_centre_code,
+        )
+        current_year = get_current_financial_year()
+        amount_apr = -9876543
+        self.programme_obj = ProgrammeCodeFactory()
+
+        expenditure_obj = ExpenditureCategoryFactory()
+        self.expenditure_id = expenditure_obj.id
+        nac_obj = NaturalCodeFactory(natural_account_code=12345678,
+                                     expenditure_category=expenditure_obj,
+                                     economic_budget_code='RESOURCE'
+                                     )
+
+        year_obj = FinancialYear.objects.get(financial_year=current_year)
+
+        apr_period = FinancialPeriod.objects.get(financial_period_code=1)
+        apr_period.actual_loaded = True
+        apr_period.save()
+
+        # If you use the MonthlyFigureFactory the test fails.
+        # I cannot work out why, it may be due to using a random year....
+        financial_code_obj = FinancialCode.objects.create(
+            programme=self.programme_obj,
+            cost_centre=self.cost_centre,
+            natural_account_code=nac_obj,
+        )
+        financial_code_obj.save
+        self.forecast_expenditure_type_id = \
+            financial_code_obj.forecast_expenditure_type_id
+        apr_figure = MonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            financial_code=financial_code_obj,
+            financial_year=year_obj
+        )
+        apr_figure.save
+
+        apr_amount = MonthlyFigureAmount.objects.create(
+            version=1,
+            monthly_figure=apr_figure,
+            amount=amount_apr
+        )
+        apr_amount.save()
+
+        self.amount_may = 1234567
+        may_figure = MonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=4
+            ),
+            financial_code=financial_code_obj,
+            financial_year=year_obj
+        )
+        may_figure.save
+
+        may_amount = MonthlyFigureAmount.objects.create(
+            version=1,
+            monthly_figure=may_figure,
+            amount=self.amount_may
+        )
+        may_amount.save()
+        # Assign forecast view permission
+        ForecastPermissionFactory(
+            user=self.test_user,
+        )
+        self.year_total = amount_apr + self.amount_may
+        self.underspend_total = -amount_apr - self.amount_may
+        self.spend_to_date_total = amount_apr
+
+    def check_programme_details_table(self, table):
+        details_rows = table.find_all("tr")
+
+        last_details_cols = details_rows[-1].find_all("td")
+        # Check the total for the year
+        assert last_details_cols[TOTAL_COLUMN].get_text() == \
+            format_forecast_figure(self.year_total / 100)
+        # Check the difference between budget and year total
+        assert last_details_cols[UNDERSPEND_COLUMN].get_text() == \
+            format_forecast_figure(self.underspend_total / 100)
+        # Check the spend to date
+        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+            format_forecast_figure(self.spend_to_date_total / 100)
+
+    def check_negative_value_formatted(self, soup, lenght):
+        negative_values = soup.find_all("span", class_="negative")
+        assert len(negative_values) == lenght
+
+    def check_response(self, resp):
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "govuk-table")
+
+        soup = BeautifulSoup(resp.content, features="html.parser")
+
+        # Check that there is 1 table
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 1
+
+        # Check that all the subtotal hierachy_rows exist
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 3
+        self.check_negative_value_formatted(soup, 6)
+
+        # Check that the only table displays  the correct totals
+        self.check_programme_details_table(tables[0])
+
+    def test_view_directory_programme_details(self):
+        resp = self.factory_get(
+            reverse(
+                "programme_details_directorate",
+                kwargs={
+                    'directorate_code': self.directorate.directorate_code,
+                    'programme_code': self.programme_obj.programme_code,
+                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                },
+            ),
+            DirectorateProgrammeDetailsView,
+            directorate_code=self.directorate.directorate_code,
+            programme_code=self.programme_obj.programme_code,
+            forecast_expenditure_type=self.forecast_expenditure_type_id
+        )
+        self.check_response(resp)
+
+    def test_view_group_programme_details(self):
+        resp = self.factory_get(
+            reverse(
+                "programme_details_group",
+                kwargs={
+                    'group_code': self.group_code,
+                    'programme_code': self.programme_obj.programme_code,
+                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                },
+            ),
+            GroupProgrammeDetailsView,
+            group_code=self.group_code,
+            programme_code=self.programme_obj.programme_code,
+            forecast_expenditure_type=self.forecast_expenditure_type_id
+        )
+
+        self.check_response(resp)
+
+    def test_view_dit_programme_details(self):
+        resp = self.factory_get(
+            reverse(
+                "programme_details_dit",
+                kwargs={
+                    'programme_code': self.programme_obj.programme_code,
+                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                },
+            ),
+            DITProgrammeDetailsView,
+            programme_code=self.programme_obj.programme_code,
+            forecast_expenditure_type=self.forecast_expenditure_type_id
+        )
         self.check_response(resp)

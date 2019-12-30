@@ -1,0 +1,12 @@
+{% extends "forecast/view/programme_details/programme_details_base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb view.group.group_name "forecast_group" view.group.group_code %}
+    {% breadcrumb view.programme_code.programme_description "programme_details_group"  %}
+{% endblock %}
+
+{% block view_hierarchy_title %}
+            <h1 class="govuk-heading-xl">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+{% endblock %}

@@ -15,7 +15,7 @@ def today_string():
 
 
 SUB_TOTAL_CLASS = "sub-total"
-GRAN_TOTAL_CLASS = "gran-total"
+GRAND_TOTAL_CLASS = "grand-total"
 
 
 def check_empty(value):

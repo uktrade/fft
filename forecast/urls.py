@@ -22,6 +22,11 @@ from forecast.views.view_forecast.forecast_summary import (
     DirectorateView,
     GroupView,
 )
+from forecast.views.view_forecast.programme_details import (
+    DITProgrammeDetailsView,
+    DirectorateProgrammeDetailsView,
+    GroupProgrammeDetailsView,
+)
 
 urlpatterns = [
     path(
@@ -37,16 +42,6 @@ urlpatterns = [
         "choose-cost-centre/",
         ChooseCostCentreView.as_view(),
         name="choose_cost_centre",
-    ),
-    path(
-        "upload-actuals/",
-        UploadActualsView.as_view(),
-        name="upload_actuals_file"
-    ),
-    path(
-        "upload-budgets/",
-        UploadBudgetView.as_view(),
-        name="upload_budget_file"
     ),
     path(
         "dit/",
@@ -87,6 +82,38 @@ urlpatterns = [
         "cost-centre/<cost_centre_code>/<expenditure_category>/<budget_type>/",
         CostCentreExpenditureDetailsView.as_view(),
         name="expenditure_details_cost_centre",
+    ),
+
+    #         dit-programme/310530/6/
+    path(
+        "dit-programme/<programme_code>/<forecast_expenditure_type>/",
+        DITProgrammeDetailsView.as_view(),
+        name="programme_details_dit",
+    ),
+
+    #  group-programme/1090HT/310530/6/
+    path(
+        "group-programme/<group_code>/<programme_code>/<forecast_expenditure_type>/",
+        GroupProgrammeDetailsView.as_view(),
+        name="programme_details_group",
+    ),
+
+    #  directorate-programme/10907T/310530/6/
+    path(
+        "directorate-programme/<directorate_code>/<programme_code>/<forecast_expenditure_type>/",  # noqa
+        DirectorateProgrammeDetailsView.as_view(),
+        name="programme_details_directorate",
+    ),
+
+    path(
+        "upload-actuals/",
+        UploadActualsView.as_view(),
+        name="upload_actuals_file"
+    ),
+    path(
+        "upload-budgets/",
+        UploadBudgetView.as_view(),
+        name="upload_budget_file"
     ),
     path(
         "paste-forecast/<cost_centre_code>/",

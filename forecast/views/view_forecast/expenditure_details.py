@@ -9,11 +9,11 @@ from django_tables2 import (
     MultiTableMixin,
 )
 
-from chartofaccountDIT.models import ExpenditureCategory
-
-from costcentre.forms import (
+from chartofaccountDIT.forms import (
     ExpenditureTypeForm,
 )
+from chartofaccountDIT.models import ExpenditureCategory
+
 from costcentre.models import (
     CostCentre,
     Directorate,
@@ -27,8 +27,8 @@ from forecast.tables import (
     ForecastSubTotalTable,
 )
 from forecast.utils.query_fields import (
+    BUDGET_CATEGORY_ID,
     BUDGET_TYPE,
-    EXPENDITURE_TYPE_ID,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -65,7 +65,7 @@ class ForecastExpenditureDetailsMixin(MultiTableMixin):
         budget_type_id = self.kwargs['budget_type']
         expenditure_category_id = self.kwargs['expenditure_category']
         pivot_filter = {
-            EXPENDITURE_TYPE_ID: f"{expenditure_category_id}",
+            BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
             BUDGET_TYPE: f"{budget_type_id}",
         }
         arg_name = filter_codes[self.hierarchy_type]

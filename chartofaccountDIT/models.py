@@ -437,7 +437,7 @@ class HistoricalNaturalCode(NaturalCodeAbstract, ArchivedModel):
             account_L5_code_val = None
             account_L5_description_val = None
         obj_hist = cls(
-            natural_account_code_description=obj.natural_account_code_description + suffix, # noqa
+            natural_account_code_description=obj.natural_account_code_description + suffix,  # noqa
             natural_account_code=obj.natural_account_code,
             used_for_budget=obj.used_for_budget,
             expenditure_category=expenditure_category_value,
