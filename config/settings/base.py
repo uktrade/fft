@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     "guardian",
     "reversion",
     "rest_framework",
+    "simple_history",
 ]
 
 ROOT_URLCONF = "config.urls"

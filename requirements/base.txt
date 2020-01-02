@@ -88,5 +88,5 @@ django-webpack-loader
 django-bootstrap-breadcrumbs
 django-guardian
 redis
-marshmallow
 djangorestframework
+django-simple-history

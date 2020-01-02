@@ -41,9 +41,10 @@ from forecast.models import (
 )
 from forecast.test.factories import FinancialPeriodFactory
 
+TEST_COST_CENTRE_CODE = 888812
+
 
 def set_up_test_objects(context):
-    cost_centre_code = 888812
     nac_codes = [111111, 999999, ]
     analysis_1_code = "1111111"
     analysis_2_code = "2222222"
@@ -69,7 +70,7 @@ def set_up_test_objects(context):
         )
 
     CostCentreFactory.create(
-        cost_centre_code=cost_centre_code
+        cost_centre_code=TEST_COST_CENTRE_CODE,
     )
 
     programme = ProgrammeCodeFactory.create()
@@ -108,7 +109,7 @@ def set_up_test_objects(context):
                 )
 
             financial_code = FinancialCode.objects.filter(
-                cost_centre_id=cost_centre_code,
+                cost_centre_id=TEST_COST_CENTRE_CODE,
                 programme=programme,
                 natural_account_code=nac_code,
                 analysis1_code=analysis_1,
@@ -118,7 +119,7 @@ def set_up_test_objects(context):
 
             if not financial_code:
                 financial_code = FinancialCode.objects.create(
-                    cost_centre_id=cost_centre_code,
+                    cost_centre_id=TEST_COST_CENTRE_CODE,
                     programme=programme,
                     natural_account_code=nac_code,
                     analysis1_code=analysis_1,

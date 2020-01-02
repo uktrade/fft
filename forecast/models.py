@@ -1,9 +1,10 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Max
 
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py # noqa
 from django_pivot.pivot import pivot
+
+from simple_history.models import HistoricalRecords
 
 from chartofaccountDIT.models import (
     Analysis1,
@@ -123,6 +124,19 @@ class FinancialPeriod(models.Model):
 
 class FinancialCode(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
+    class Meta:
+        unique_together = (
+            "programme",
+            "cost_centre",
+            "natural_account_code",
+            "analysis1_code",
+            "analysis2_code",
+            "project_code",
+        )
+        permissions = [
+            ("can_view_forecasts", "Can view forecast"),
+            ("can_upload_files", "Can upload files"),
+        ]
 
     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
@@ -144,16 +158,7 @@ class FinancialCode(models.Model):
         blank=True,
         null=True
     )
-
-    class Meta:
-        unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
-        )
+    history = HistoricalRecords()
 
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
@@ -451,7 +456,6 @@ class PivotManager(models.Manager):
 class MonthlyFigure(TimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
-
     id = models.AutoField("Monthly ID", primary_key=True)
     financial_year = models.ForeignKey(
         FinancialYear,
@@ -460,6 +464,7 @@ class MonthlyFigure(TimeStampedModel):
     financial_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
+        related_name="financial_periods"
     )
 
     financial_code = models.ForeignKey(
@@ -467,6 +472,7 @@ class MonthlyFigure(TimeStampedModel):
         on_delete=models.PROTECT,
         related_name="monthly_figures",
     )
+    history = HistoricalRecords()
 
     class Meta:
         unique_together = (
@@ -506,6 +512,7 @@ class MonthlyFigureAmount(Amount):
         on_delete=models.CASCADE,
         related_name="monthly_figure_amounts",
     )
+    history = HistoricalRecords()
 
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
@@ -588,19 +595,3 @@ WHERE "core_financialyear"."current" = TRUE
 GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
 "treasurySS_subsegment"."sub_segment_code" ;
 """  # noqa
-
-
-class ForecastPermission(models.Model):
-    user = models.OneToOneField(
-        get_user_model(),
-        on_delete=models.CASCADE,
-    )
-    can_upload = models.BooleanField(
-        default=False,
-    )
-
-    def __str__(self):
-        return "Forecast user: {}, can upload: {}".format(
-            self.user,
-            self.can_upload,
-        )

@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase
 
 from guardian.shortcuts import (
@@ -10,13 +11,11 @@ from costcentre.test.factories import (
     CostCentreFactory,
 )
 
-from forecast.models import ForecastPermission
 from forecast.permission_shortcuts import (
     NoForecastViewPermission,
     assign_perm,
     get_objects_for_user,
 )
-from forecast.test.factories import ForecastPermissionFactory
 
 
 class PermissionShortcutsTest(
@@ -38,14 +37,15 @@ class PermissionShortcutsTest(
             self.test_user,
             self.cost_centre,
         )
-        # check that forecast permission assigned
-        forecast_permission = ForecastPermission.objects.filter(
-            user=self.test_user,
-        ).first()
 
-        assert forecast_permission is not None
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email="test@test.com"
+        )
+
+        assert self.test_user.has_perm("forecast.can_view_forecasts")
+
         # check guardian permissions created
-
         cost_centres = guardian_get_objects_for_user(
             self.test_user,
             "costcentre.change_costcentre",
@@ -60,8 +60,15 @@ class PermissionShortcutsTest(
                 "costcentre.change_costcentre",
             )
 
-        ForecastPermissionFactory(
-            user=self.test_user,
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email="test@test.com"
         )
 
         guardian_assign_perm(

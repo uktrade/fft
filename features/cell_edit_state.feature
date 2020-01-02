@@ -1,6 +1,21 @@
-Feature: Paste data to row
+Feature: Edit cell value
 
-  Scenario: Pasting a valid row into the edit forecast table
-    Given the user selects a row in the edit forecast table
-     When the user pastes valid row data
-     Then the clipboard data is displayed in the forecast table
+  Scenario: Double click puts cell into editing mode
+    Given the user wants to edit a cell value
+     When the user double clicks an editable cell in the edit forecast table
+     Then the cell becomes editable
+
+  Scenario: Tabbing puts cell into editing mode
+    Given the user wants to edit a cell value
+     When the user tabs to a cell
+     Then the cell becomes editable
+
+  Scenario: Tabbing to new cell after making edit saves value
+    Given the user edits a cell value
+     When the user tabs to a new cell
+     Then the value is changed
+
+  Scenario: Shift tabbing from editing cell, makes previous cell editable
+    Given the user edits a cell value
+     When the user shift tabs to the previous cell
+     Then the previous cell is in edit mode

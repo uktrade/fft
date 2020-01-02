@@ -5,6 +5,7 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastView,
     pasted_forecast_content,
+    update_forecast_figure,
 )
 from forecast.views.upload_file import (
     UploadActualsView,
@@ -119,5 +120,10 @@ urlpatterns = [
         "paste-forecast/<cost_centre_code>/",
         pasted_forecast_content,
         name="paste_forecast"
+    ),
+    path(
+        "update-forecast/<cost_centre_code>/",
+        update_forecast_figure,
+        name="update_forecast_figure"
     ),
 ]

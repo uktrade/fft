@@ -7,7 +7,6 @@ const cellsInitial = {
 export const allCells = (state = cellsInitial, action) => {
     switch (action.type) {
         case SET_CELLS:
-            console.log(action)
             return Object.assign({}, state, {
                 cells: action.cells
             });

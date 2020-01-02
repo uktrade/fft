@@ -7,6 +7,7 @@ from typing import (
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
+from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db.models import Sum
@@ -47,12 +48,8 @@ from forecast.import_actuals import (
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    ForecastPermission,
     MonthlyFigure,
     MonthlyFigureAmount,
-)
-from forecast.test.factories import (
-    ForecastPermissionFactory,
 )
 from forecast.views.upload_file import (
     UploadActualsView,
@@ -478,8 +475,7 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
     @override_settings(ASYNC_FILE_UPLOAD=False)
     @patch('forecast.views.upload_file.process_uploaded_file')
     def test_upload_actuals_view(self, mock_process_uploaded_file):
-        forecast_permission_count = ForecastPermission.objects.all().count()
-        self.assertEqual(forecast_permission_count, 0)
+        assert not self.test_user.has_perm("forecast.can_view_forecasts")
 
         uploaded_actuals_url = reverse(
             "upload_actuals_file",
@@ -492,10 +488,11 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
                 UploadActualsView,
             )
 
-        ForecastPermissionFactory.create(
-            user=self.test_user,
-            can_upload=True,
+        can_upload_files = Permission.objects.get(
+            codename='can_upload_files'
         )
+        self.test_user.user_permissions.add(can_upload_files)
+        self.test_user.save()
 
         resp = self.factory_get(
             uploaded_actuals_url,

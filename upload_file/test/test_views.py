@@ -1,16 +1,13 @@
 import os
 from unittest.mock import MagicMock
 
+from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.test import TestCase
 from django.urls import reverse
 
 from core.test.test_base import RequestFactoryBase
-
-
-from forecast.models import ForecastPermission
-from forecast.test.factories import ForecastPermissionFactory
 
 from upload_file.test.factories import (
     FileUploadFactory,
@@ -31,8 +28,7 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
         )
 
     def test_upload_view(self):
-        forecast_permission_count = ForecastPermission.objects.all().count()
-        self.assertEqual(forecast_permission_count, 0)
+        assert not self.test_user.has_perm("forecast.can_upload_files")
 
         uploaded_files_url = reverse(
             "uploaded_files",
@@ -45,10 +41,11 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
                 UploadedView,
             )
 
-        ForecastPermissionFactory.create(
-            user=self.test_user,
-            can_upload=True,
+        can_upload_files = Permission.objects.get(
+            codename='can_upload_files',
         )
+        self.test_user.user_permissions.add(can_upload_files)
+        self.test_user.save()
 
         resp = self.factory_get(
             uploaded_files_url,

@@ -198,3 +198,23 @@ class PasteForecastForm(forms.Form):
             raise forms.ValidationError("Invalid row data supplied")
 
         return json_data
+
+
+class EditForecastFigureForm(forms.Form):
+    month = forms.IntegerField()
+    amount = forms.IntegerField()
+    natural_account_code = forms.IntegerField()
+    programme_code = forms.CharField()
+    project_code = forms.CharField(required=False)
+    analysis_1_code = forms.CharField(required=False)
+    analysis_2_code = forms.CharField(required=False)
+
+    def clean_project_code(self):
+        # Had to add this to prevent null coming through
+        # as string - looks like a bug in Django
+        project_code = self.cleaned_data['project_code']
+
+        if project_code == "null" or project_code == "":
+            return None
+
+        return project_code

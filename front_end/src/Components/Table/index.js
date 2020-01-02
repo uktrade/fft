@@ -16,8 +16,6 @@ function Table({rowData}) {
 
     const rows = useSelector(state => state.allCells.cells);
 
-    console.log("rows", rows)
-
     const isHidden = (key) => {
         if (!nac && key === "natural_account_code") {
             return true
@@ -49,14 +47,15 @@ function Table({rowData}) {
                 <caption className="govuk-table__caption">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
-                        <td id="select_all" className="handle govuk-table__cell indicate-action"
-                            onClick={() => { 
-                                dispatch(
-                                    SELECT_ALL()
-                                );
-                            }
-                        }>
-                            select all
+                        <td className="handle govuk-table__cell indicate-action">
+                            <button className="link-button"
+                                id="select_all"                          
+                                onClick={() => { 
+                                    dispatch(
+                                        SELECT_ALL()
+                                    );
+                                }
+                            }>select all</button>
                         </td>
                         <TableHeader isHidden={isHidden} id="natural_account_code_header" headerType="natural_account_code">Natural Account Code</TableHeader>
                         <TableHeader isHidden={isHidden} headerType="programme">Programme</TableHeader>
@@ -80,35 +79,36 @@ function Table({rowData}) {
                 <tbody className="govuk-table__body">
                     {rows.map((cells, rowIndex) => {
                         return <tr key={rowIndex} index={(rowIndex + 1)}>
-                            <td id={"select_" + rowIndex}  className="handle govuk-table__cell indicate-action"
-                                onClick={() => { 
-                                    console.log(rowIndex)
-                                    dispatch(
-                                        SET_SELECTED_ROW({
-                                            selectedRow: rowIndex
-                                        })
-                                    );
-                                }
-                            }>
-                                select
+                            <td id={"select_" + rowIndex} className="handle govuk-table__cell indicate-action">
+                                <button
+                                    className="select_row_btn link-button"
+                                    id={"select_row_" + rowIndex}
+                                    onClick={() => { 
+                                        dispatch(
+                                            SET_SELECTED_ROW({
+                                                selectedRow: rowIndex
+                                            })
+                                        );
+                                    }
+                                }>select</button>
                             </td>
                             <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code"} />
                             <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme"} />
                             <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code"} />
                             <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code"} />
                             <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"apr"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"may"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"jun"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"jul"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"aug"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"sep"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"oct"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"nov"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"dec"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"jan"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"feb"} />
-                            <TableCell rowIndex={rowIndex} cellKey={"mar"} />
+                            <TableCell rowIndex={rowIndex} cellKey={4} />
+                            <TableCell rowIndex={rowIndex} cellKey={5} />
+                            <TableCell rowIndex={rowIndex} cellKey={6} />
+                            <TableCell rowIndex={rowIndex} cellKey={7} />
+                            <TableCell rowIndex={rowIndex} cellKey={8} />
+                            <TableCell rowIndex={rowIndex} cellKey={9} />
+                            <TableCell rowIndex={rowIndex} cellKey={10} />
+                            <TableCell rowIndex={rowIndex} cellKey={11} />
+                            <TableCell rowIndex={rowIndex} cellKey={12} />
+                            <TableCell rowIndex={rowIndex} cellKey={1} />
+                            <TableCell rowIndex={rowIndex} cellKey={2} />
+                            <TableCell rowIndex={rowIndex} cellKey={3} />
                         </tr>
                     })}
                 </tbody>

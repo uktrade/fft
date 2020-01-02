@@ -5,8 +5,6 @@ from django.urls import reverse
 
 from costcentre.models import CostCentre
 
-from forecast.models import ForecastPermission
-
 
 class NoCostCentreCodeInURLError(Exception):
     pass
@@ -16,14 +14,9 @@ class ForecastViewPermissionMixin(UserPassesTestMixin):
     cost_centre_code = None
 
     def test_func(self):
-        forecast_permission = ForecastPermission.objects.filter(
-            user=self.request.user,
-        ).first()
-
-        if forecast_permission:
-            return True
-
-        return False
+        return self.request.user.has_perm(
+            "forecast.can_view_forecasts"
+        )
 
     def handle_no_permission(self):
         return redirect(
@@ -37,11 +30,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
     cost_centre_code = None
 
     def test_func(self):
-        forecast_permission = ForecastPermission.objects.filter(
-            user=self.request.user,
-        ).first()
-
-        if not forecast_permission:
+        if not self.request.user.has_perm("forecast.can_view_forecasts"):
             raise PermissionDenied()
 
         if 'cost_centre_code' not in self.kwargs:

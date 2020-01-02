@@ -32,6 +32,10 @@ class NotEnoughMatchException(Exception):
     pass
 
 
+class NoFinancialCodeForEditedValue(Exception):
+    pass
+
+
 def check_cols_match(cell_data):
     if len(cell_data) > 12 + settings.NUM_META_COLS:
         raise TooManyMatchException(

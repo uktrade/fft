@@ -41,7 +41,8 @@ input.cell-input {
     padding:0px;
     outline: 2px solid #FF0000 !important;
     outline: 5px auto #FF0000 !important;
-    width:100%;
+    width:100px;
+    text-align: right;
 }
 
 .indicate-action {
@@ -90,4 +91,84 @@ input.cell-input {
 .forecast-month-cell {
   padding-left:8px!important;
   text-align: right!important;
+}
+
+table, td, th {
+  white-space: nowrap;
+}
+
+td {
+  text-align: right;
+}
+
+.not-editable {
+  background-color: govuk-colour("light-grey");
+}
+
+
+.no-select {
+    user-select: none; /* supported by Chrome and Opera */
+   -webkit-user-select: none; /* Safari */
+   -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.selection {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid ForestGreen;
+  display: block;
+  pointer-events: none;
+}
+
+.selected {
+  background-color: govuk-colour("yellow");
+}
+
+.selected.edited {
+  background-color: green;
+}
+
+.selected.not-editable {
+  background-color: govuk-colour("dark-grey");
+  color:white;
+}
+
+.selected.edited {
+  background-color: govuk-colour("blue");
+  color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.edit-control {
+  position: absolute;
+}
+
+.edited {
+  background-color: govuk-colour("light-blue");
+  color: white;
+}
+
+.toggle-links {
+  width:900px;
+  display:flex;
+  align-self:stretch;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom:20px;
+}
+
+.link-button {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-size:19px;
+  font-family: "GDS Transport", Arial, sans-serif;
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
 }

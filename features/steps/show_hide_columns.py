@@ -10,24 +10,15 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import NoSuchElementException
 
 from features.environment import (
+    TEST_COST_CENTRE_CODE,
     create_test_user,
-)
-
-from forecast.test.factories import (
-    ForecastPermissionFactory,
 )
 
 
 @given(u'the user wants to hide the NAC column')
 def step_impl(context):
     create_test_user(context)
-
-    # Add forecast view permission
-    ForecastPermissionFactory(
-        user=context.user,
-    )
-
-    context.browser.get(f'{context.base_url}/forecast/edit/{888812}/')
+    context.browser.get(f'{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/')
 
 
 @when(u'the user clicks the hide NAC column')

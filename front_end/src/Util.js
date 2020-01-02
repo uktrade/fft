@@ -72,6 +72,8 @@ export async function postData(url = '', data = {}) {
     }
 }
 
+window.actuals = []
+
 export const processForecastData = (forecastData) => {
     let rows = [];
 
@@ -111,6 +113,12 @@ export const processForecastData = (forecastData) => {
                 key: monthlyFigure.month,
                 versions: monthlyFigure.monthly_figure_amounts.sort((a, b) => (a.version < b.version) ? 1 : -1),
                 isEditable: !monthlyFigure.actual
+            }
+
+            if (monthlyFigure.actual) {
+                if (window.actuals.indexOf(monthlyFigure.month) < 0) {
+                    window.actuals.push(monthlyFigure.month)
+                }
             }
 
             colIndex++
