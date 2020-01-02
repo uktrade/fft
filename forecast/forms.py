@@ -206,8 +206,8 @@ class EditForecastFigureForm(forms.Form):
     natural_account_code = forms.IntegerField()
     programme_code = forms.CharField()
     project_code = forms.CharField(required=False)
-    analysis_1_code = forms.CharField(required=False)
-    analysis_2_code = forms.CharField(required=False)
+    analysis1_code = forms.CharField(required=False)
+    analysis2_code = forms.CharField(required=False)
 
     def clean_project_code(self):
         # Had to add this to prevent null coming through
@@ -218,3 +218,4 @@ class EditForecastFigureForm(forms.Form):
             return None
 
         return project_code
+

@@ -13,7 +13,7 @@ Feature: Edit cell value
   Scenario: Tabbing to new cell after making edit saves value
     Given the user edits a cell value
      When the user tabs to a new cell
-     Then the value is changed
+     Then the value is changed and has the correct format
 
   Scenario: Shift tabbing from editing cell, makes previous cell editable
     Given the user edits a cell value

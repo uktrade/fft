@@ -141,11 +141,19 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         }
     }
 
+    const getId = () => {
+        if (isUpdating) {
+            return cell.id + "_updating"
+        }
+
+        return cell.id
+    }
+
     return (
         <Fragment>
             <td
                 className={getClasses()}
-                id={cell.id}
+                id={getId()}
                 onDoubleClick={ () => {
                     if (cell.isEditable) {
                         dispatch(
