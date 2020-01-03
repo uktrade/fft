@@ -603,7 +603,7 @@ SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Sep' THEN "forec
 FROM "forecast_monthlyfigureamount"
     INNER JOIN
      "forecast_monthlyfigure" on (forecast_monthlyfigureamount.monthly_figure_id = forecast_monthlyfigure.id)
-    INNER JOIN "forecast_financialcode" on (forecast_monthlyfigure.financial_period_id = forecast_financialcode.ID)
+    INNER JOIN "forecast_financialcode" on (forecast_monthlyfigure.financial_code_id = forecast_financialcode.id)
 LEFT OUTER JOIN "chartofaccountDIT_naturalcode"
 ON ("forecast_financialcode"."natural_account_code_id" = "chartofaccountDIT_naturalcode"."natural_account_code")
 INNER JOIN "costcentre_costcentre"
