@@ -52,6 +52,7 @@ def import_adi_file(csvfile):
     fin_year = 2019
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
+    MonthlyFigureAmount.objects.filter(monthly_figure__financial_year=fin_year).delete()
     MonthlyFigure.objects.filter(financial_year=fin_year).delete()
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
@@ -86,21 +87,22 @@ def import_adi_file(csvfile):
 
             for month, per_obj in month_dict.items():
                 period_amount = int(row[col_key[month.lower()]])
-                month_figure_obj, created = MonthlyFigure.objects.get_or_create(
-                    financial_year=fin_obj,
-                    financial_period=per_obj,
-                    financial_code=financial_code,
-                )
-                month_figure_obj.save
-                amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
-                    version=1,
-                    monthly_figure=month_figure_obj,
-                )
-                if created:
-                    amount_obj.amount = period_amount
-                else:
-                    amount_obj.amount += period_amount
-                amount_obj.save()
+                if period_amount:
+                    month_figure_obj, created = MonthlyFigure.objects.get_or_create(
+                        financial_year=fin_obj,
+                        financial_period=per_obj,
+                        financial_code=financial_code,
+                    )
+                    month_figure_obj.save
+                    amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
+                        version=1,
+                        monthly_figure=month_figure_obj,
+                    )
+                    if created:
+                        amount_obj.amount = period_amount
+                    else:
+                        amount_obj.amount += period_amount
+                    amount_obj.save()
         else:
             print(line, err_msg)
 
