@@ -50,7 +50,7 @@ function Table({rowData}) {
                         <td className="handle govuk-table__cell indicate-action">
                             <button className="link-button"
                                 id="select_all"                          
-                                onClick={() => { 
+                                onMouseDown={() => { 
                                     dispatch(
                                         SELECT_ALL()
                                     );
@@ -83,7 +83,7 @@ function Table({rowData}) {
                                 <button
                                     className="select_row_btn link-button"
                                     id={"select_row_" + rowIndex}
-                                    onClick={() => { 
+                                    onMouseDown={() => { 
                                         dispatch(
                                             SET_SELECTED_ROW({
                                                 selectedRow: rowIndex

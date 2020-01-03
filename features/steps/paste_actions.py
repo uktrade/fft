@@ -51,11 +51,10 @@ def step_impl(context):
 
     assert april_value == "0"
 
-    WebDriverWait(context.browser, 5000).until(
+    first_select = WebDriverWait(context.browser, 5000).until(
         ec.presence_of_element_located((By.ID, "select_all"))
     )
 
-    first_select = context.browser.find_element_by_id("select_all")
     first_select.click()
 
 

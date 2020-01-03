@@ -1,7 +1,10 @@
 import datetime
 import time
 
+import pyperclip
+
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
@@ -182,29 +185,37 @@ def create_test_user(context):
 
 
 def paste(context):
-    first_select = context.browser.find_element_by_id("clipboard-test")
-    first_select.send_keys(Keys.CONTROL, "v")
+    try:
+        pyperclip.paste()
+        action_chains = ActionChains(context.browser)
+        action_chains.key_down(Keys.SHIFT).key_down(Keys.INSERT).perform()
+    except pyperclip.PyperclipException:
+        first_select = context.browser.find_element_by_id("clipboard-test")
+        first_select.send_keys(Keys.CONTROL, "v")
 
     # Wait for UI to update
     time.sleep(2)
 
 
 def copy_text(context, text):
-    context.browser.execute_script(
-        """function copyToClipboard() {{
-        const input = document.createElement('textarea');
-        document.body.appendChild(input);
-        input.value = "{}";
-        input.id = "clipboard-test"
-        input.focus();
-        input.select();
-        const isSuccessful = document.execCommand('copy');
-        console.log(isSuccessful);
-        input.blur();
-        }}
-        copyToClipboard()
-        """.format(text)
-    )
+    try:
+        pyperclip.copy(text.replace("\\n", "\n"))
+    except pyperclip.PyperclipException:
+        context.browser.execute_script(
+            """function copyToClipboard() {{
+            const input = document.createElement('textarea');
+            document.body.appendChild(input);
+            input.value = "{}";
+            input.id = "clipboard-test"
+            input.focus();
+            input.select();
+            const isSuccessful = document.execCommand('copy');
+            console.log(isSuccessful);
+            input.blur();
+            }}
+            copyToClipboard()
+            """.format(text)
+        )
 
 
 def before_scenario(context, scenario):
