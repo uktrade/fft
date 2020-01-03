@@ -14,7 +14,7 @@ from chartofaccountDIT.import_csv import (
 
 from costcentre.import_csv import import_cc
 
-from forecast.import_csv import import_adi_file, import_unpivot_actual
+from forecast.import_csv import import_adi_file
 
 from payroll.import_csv import import_HR_Report
 
@@ -57,9 +57,5 @@ class Command(BaseCommand):
         importtype = options.get("type")
         # Windows-1252 or CP-1252, used because of a back quote
         csvfile = open(path, newline="", encoding="cp1252")
-        if importtype == "UnPivotActuals":
-            financialyear = options.get("year")
-            import_unpivot_actual(csvfile, financialyear)
-        else:
-            IMPORT_TYPE[importtype](csvfile)
+        IMPORT_TYPE[importtype](csvfile)
         csvfile.close()
