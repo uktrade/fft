@@ -218,4 +218,3 @@ class EditForecastFigureForm(forms.Form):
             return None
 
         return project_code
-

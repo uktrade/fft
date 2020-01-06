@@ -38,19 +38,21 @@ def step_impl(context):
 
 @when(u'the user tabs to a cell')
 def step_impl(context):
-    for _ in range(21):
-        action_chains = ActionChains(context.browser)
-        action_chains.key_down(Keys.TAB).perform()
+    may_cell = WebDriverWait(context.browser, 5000).until(
+        ec.presence_of_element_located((By.ID, "id_5_0"))
+    )
+
+    action_chains = ActionChains(context.browser)
+    action_chains.double_click(may_cell).perform()
+
+    action_chains = ActionChains(context.browser)
+    action_chains.key_down(Keys.TAB).perform()
 
 
 @then(u'the cell becomes editable')
 def step_impl(context):
-    WebDriverWait(context.browser, 5000).until(
+    june_cell_input_value = WebDriverWait(context.browser, 5000).until(
         ec.presence_of_element_located((By.ID, "id_6_0_input"))
-    )
-
-    june_cell_input_value = context.browser.find_element_by_id(
-        "id_6_0_input"
     ).get_attribute(
         'value'
     )
