@@ -544,9 +544,6 @@ class OSCARReturn(models.Model):
     the query is too complex"""
 
     # The view is created by the migration 0016_recreate_oscar_view.py
-    # TODO Change the database view to return
-    #  figures in thousands. At the moment the
-    #  figures are in pence.
     row_number = models.BigIntegerField()
     account_l5_code = models.ForeignKey(
         "treasuryCOA.L5Account",
