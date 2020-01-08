@@ -32,6 +32,7 @@ You now need to elevate your user permissions in order to access the admin tool.
 docker-compose run fido python manage.py elevate_sso_user_permissions
 ```
 
+
 ### Environment variables
 
 You need to populate the .env file in the project root folder with the following variables:
@@ -46,10 +47,17 @@ These can be provided by a member of the team.
 The process described in this post was followed: 
 https://www.techiediaries.com/django-react-rest/
 
+To enable the forecast edit interface:
+```
+npm start
+```
+
+
 ### Running docker-compose run with port access
 ```
 docker-compose run --service-ports
 ```
+
 
 ### Important notes on design
 
