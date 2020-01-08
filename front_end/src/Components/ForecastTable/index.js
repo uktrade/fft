@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect } from 'react';
+import React, {Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Table from '../../Components/Table/index'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
@@ -36,6 +36,8 @@ function ForecastTable() {
 
     const cells = useSelector(state => state.allCells.cells);
     const editCellId = useSelector(state => state.edit.cellId);
+
+    const [sheetUpdating, setSheetUpdating] = useState(false)
 
     useEffect(() => {
         const timer = () => {
@@ -83,17 +85,21 @@ function ForecastTable() {
                 }
             }
 
+            setSheetUpdating(true)
+
             postData(
                 `/forecast/paste-forecast/${window.cost_centre}/`,
                 payload
             ).then((response) => {
                 if (response.status === 200) {
+                    setSheetUpdating(false)
                     let rows = processForecastData(response.data)
                       dispatch({
                         type: SET_CELLS,
                         cells: rows
                       })
                 } else {
+                    setSheetUpdating(false)
                     dispatch(
                         SET_ERROR({
                             errorMessage: response.data.error
@@ -298,7 +304,7 @@ function ForecastTable() {
                         <Fragment>Show</Fragment>
                     )} project code</button>
             </div>            
-            <Table />
+            <Table sheetUpdating={sheetUpdating} />
         </Fragment>
     );
 }

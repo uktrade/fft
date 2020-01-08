@@ -5,7 +5,7 @@ import TableHeader from '../../Components/TableHeader/index'
 import { SET_SELECTED_ROW, SELECT_ALL } from '../../Reducers/Selected'
 
 
-function Table({rowData}) {
+function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
 
     const nac = useSelector(state => state.showHideCols.nac);
@@ -92,23 +92,23 @@ function Table({rowData}) {
                                     }
                                 }>select</button>
                             </td>
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code"} />
-                            <TableCell rowIndex={rowIndex} cellKey={4} />
-                            <TableCell rowIndex={rowIndex} cellKey={5} />
-                            <TableCell rowIndex={rowIndex} cellKey={6} />
-                            <TableCell rowIndex={rowIndex} cellKey={7} />
-                            <TableCell rowIndex={rowIndex} cellKey={8} />
-                            <TableCell rowIndex={rowIndex} cellKey={9} />
-                            <TableCell rowIndex={rowIndex} cellKey={10} />
-                            <TableCell rowIndex={rowIndex} cellKey={11} />
-                            <TableCell rowIndex={rowIndex} cellKey={12} />
-                            <TableCell rowIndex={rowIndex} cellKey={1} />
-                            <TableCell rowIndex={rowIndex} cellKey={2} />
-                            <TableCell rowIndex={rowIndex} cellKey={3} />
+                            <TableCell sheetUpdating={false} rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code"} />
+                            <TableCell sheetUpdating={false} rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme"} />
+                            <TableCell sheetUpdating={false} rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code"} />
+                            <TableCell sheetUpdating={false} rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code"} />
+                            <TableCell sheetUpdating={false} rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code"} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={4} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={5} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={6} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={7} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={8} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={9} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={10} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={11} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={12} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={1} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={2} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={3} />
                         </tr>
                     })}
                 </tbody>

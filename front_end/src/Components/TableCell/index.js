@@ -8,7 +8,7 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({isHidden, rowIndex, cellKey}) => {
+const TableCell = ({isHidden, rowIndex, cellKey, sheetUpdating}) => {
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
@@ -149,6 +149,17 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         return cell.id
     }
 
+    const isCellUpdating = () => {
+        if (isUpdating)
+            return true
+
+        if (sheetUpdating && isSelected()) {
+            return true
+        }
+
+        return false
+    }
+
     return (
         <Fragment>
             <td
@@ -164,9 +175,9 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                     }
                 }}
             >
-                {isUpdating ? (
+                {isCellUpdating() ? (
                     <Fragment>
-                        UPDATING...
+                        <span className="updaing">UPDATING...</span>
                     </Fragment>
                 ) : (
                     <Fragment>
