@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "importdata.apps.ImportDataConfig",
     "upload_file.apps.UploadFileConfig",
+    "pingdom.apps.PingdomConfig",
     "django_extensions",
     "django_tables2",
     "django_filters",

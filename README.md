@@ -105,3 +105,12 @@ https://fido.trade.gov.uk/core/
  * user_permissions
  
 The names of the management commands denote their function.
+
+### Permissions within the system
+#### Any logged in SSO user
+ * Access Chart of Account Gifts and Hospitality Register
+#### Specific permissions
+ * Upload budget and Oracle actuals file
+ * Download Oscar report file
+ * View forecast (permission to view all forecast data)
+ * Edit 1 - n cost centres (specific user can edit cost centre data)
