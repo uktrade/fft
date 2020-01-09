@@ -8,14 +8,14 @@ from core.metamodels import (
 )
 
 
-class FileUpload(SimpleTimeStampedModel):
+class FileDownload(SimpleTimeStampedModel):
     UNPROCESSED = 'unprocessed'
-    DOWNLOADED = 'processed'
+    DOWNLOADED = 'downloaded'
     ERROR = 'error'
 
     STATUS_CHOICES = [
         (UNPROCESSED, 'Unprocessed'),
-        (DOWNLOADED, 'Processing'),
+        (DOWNLOADED, 'Downloaded'),
         (ERROR, 'Error'),
     ]
 
@@ -32,9 +32,6 @@ class FileUpload(SimpleTimeStampedModel):
         choices=DOWNLOAD_TYPE_CHOICES,
         default=FORECAST_REPORT,
     )
-    document_file = models.FileField(
-        upload_to='uploaded/actuals/'
-    )
     status = models.CharField(
         max_length=11,
         choices=STATUS_CHOICES,
@@ -50,15 +47,14 @@ class FileUpload(SimpleTimeStampedModel):
         null=True,
         blank=True,
     )
-    uploading_user = models.ForeignKey(
+    downloading_user = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
     )
 
 
     def __str__(self):
-        return "{} {} {}".format(
-            self.document_file,
+        return "{} {}".format(
             self.document_type,
             self.status,
         )
