@@ -1,6 +1,6 @@
 from django.urls import path
 
-from upload_file.views import (
+from download_file.views.view_oscar_report import (
     UploadedView,
 )
 
