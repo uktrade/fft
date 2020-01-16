@@ -46,10 +46,10 @@ from forecast.import_actuals import (
     upload_trial_balance_report,
 )
 from forecast.models import (
+    ActualUploadMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 from forecast.views.upload_file import (
     UploadActualsView,
@@ -130,7 +130,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             0,
         )
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -155,9 +155,8 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             ).count(),
             1
         )
-        q = MonthlyFigureAmount.objects.get(
-            monthly_figure__financial_code__cost_centre=self.cost_centre_code,
-            version=MonthlyFigureAmount.TEMPORARY_VERSION
+        q = ActualUploadMonthlyFigure.objects.get(
+            financial_code__cost_centre=self.cost_centre_code,
         )
 
         self.assertEqual(
@@ -173,15 +172,13 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         # check that lines with the same chart of account are added together
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=self.cost_centre_code,
-                version=MonthlyFigureAmount.TEMPORARY_VERSION
+            ActualUploadMonthlyFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code,
             ).count(),
             1,
         )
-        q = MonthlyFigureAmount.objects.get(
-            monthly_figure__financial_code__cost_centre=self.cost_centre_code,
-            version=MonthlyFigureAmount.TEMPORARY_VERSION
+        q = ActualUploadMonthlyFigure.objects.get(
+            financial_code__cost_centre=self.cost_centre_code,
         )
         self.assertEqual(
             q.amount,
@@ -190,7 +187,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
 
     def test_save_row_no_programme(self):
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ActualUploadMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code).count(),
             0,
         )
@@ -208,7 +205,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         # Lines with 0 programme and 0 amount are not saved
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ActualUploadMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code).count(),
             0,
         )
@@ -228,7 +225,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             GENERIC_PROGRAMME_CODE
         )
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ActualUploadMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code).count(),
             1,
         )
@@ -323,34 +320,30 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=cost_centre_code_1,
-                version=MonthlyFigureAmount.CURRENT_VERSION
+            ForecastMonthlyFigure.objects.filter(
+                financial_code__cost_centre=cost_centre_code_1,
             ).count(),
             0,
         )
 
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=cost_centre_code_1,
-                version=MonthlyFigureAmount.TEMPORARY_VERSION
+            ActualUploadMonthlyFigure.objects.filter(
+                financial_code__cost_centre=cost_centre_code_1,
             ).count(),
             1,
         )
 
         copy_actuals_to_monthly_figure(self.period_obj, self.test_year)
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=cost_centre_code_1,
-                version=MonthlyFigureAmount.CURRENT_VERSION
+            ForecastMonthlyFigure.objects.filter(
+                financial_code__cost_centre=cost_centre_code_1,
             ).count(),
             1,
         )
 
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=cost_centre_code_1,
-                version=MonthlyFigureAmount.TEMPORARY_VERSION
+            ActualUploadMonthlyFigure.objects.filter(
+                financial_code__cost_centre=cost_centre_code_1,
             ).count(),
             0,
         )
@@ -383,7 +376,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre=cost_centre_code_1
             ).count(),
             1,
@@ -405,20 +398,20 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         # Check that existing figures for the same period have been deleted
         self.assertEqual(
-            MonthlyFigureAmount.objects.filter(
-                monthly_figure__financial_code__cost_centre=cost_centre_code_1
+            ForecastMonthlyFigure.objects.filter(
+                financial_code__cost_centre=cost_centre_code_1
             ).count(),
             0,
         )
         # Check for existence of monthly figures
         self.assertEqual(
-            MonthlyFigure.objects.filter(
+            ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
             4,
         )
-        result = MonthlyFigureAmount.objects.filter(
-            monthly_figure__financial_code__cost_centre=self.cost_centre_code
+        result = ForecastMonthlyFigure.objects.filter(
+            financial_code__cost_centre=self.cost_centre_code
         ).aggregate(total=Sum('amount'))
 
         # Check that figures have correct values

@@ -9,10 +9,9 @@ from core.admin import (
 
 from forecast.import_csv import import_adi_file_class
 from forecast.models import (
-    Budget,
+    BudgetMonthlyFigure,
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 
 
@@ -46,7 +45,6 @@ class FinancialPeriodAdmin(AdminReadOnly):
             ]
 
 
-admin.site.register(MonthlyFigureAmount, SimpleHistoryAdmin)
-admin.site.register(MonthlyFigure, MonthlyFigureAdmin)
+admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
-admin.site.register(Budget, BudgetAdmin)
+admin.site.register(BudgetMonthlyFigure, BudgetAdmin)

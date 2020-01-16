@@ -20,7 +20,7 @@ from costcentre.models import (
 )
 
 from forecast.models import (
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -72,7 +72,7 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
             pivot_filter[filter_selectors[self.hierarchy_type]] = f"{filter_code}"
 
         columns = programme_details_hierarchy_columns[self.hierarchy_type]
-        programme_details_data = MonthlyFigureAmount.pivot.subtotal_data(
+        programme_details_data = ForecastMonthlyFigure.pivot.subtotal_data(
             programme_details_display_sub_total_column,
             programme_details_sub_total,
             columns.keys(),

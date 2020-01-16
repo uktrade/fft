@@ -7,8 +7,7 @@ from core.utils import check_empty
 
 from forecast.models import (
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 
 
@@ -53,10 +52,9 @@ def check_cols_match(cell_data):
 
 def get_monthly_figures(cost_centre_code, cell_data):
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
-    monthly_figures = []
 
     for financial_period in range(start_period, 13):
-        monthly_figure = MonthlyFigure.objects.filter(
+        monthly_figure = ForecastMonthlyFigure.objects.filter(
             financial_code__cost_centre__cost_centre_code=cost_centre_code,
             financial_year__financial_year=get_current_financial_year(),
             financial_period__financial_period_code=financial_period,
@@ -76,19 +74,9 @@ def get_monthly_figures(cost_centre_code, cell_data):
         col = (settings.NUM_META_COLS + financial_period) - 1
         new_value = convert_forecast_amount(cell_data[col])
 
-        monthly_figure_amount = MonthlyFigureAmount.objects.filter(
-            monthly_figure=monthly_figure,
-        ).order_by("-version").first()
-
-        if new_value != monthly_figure_amount.amount:
-            MonthlyFigureAmount.objects.create(
-                amount=new_value,
-                monthly_figure=monthly_figure,
-                version=monthly_figure_amount.version + 1
-            )
-            monthly_figures.append(monthly_figure)
-
-    return monthly_figures
+        if new_value != monthly_figure.amount:
+            monthly_figure.amount = new_value
+            monthly_figure.save()
 
 
 def check_row_match(index, pasted_at_row, cell_data):  # noqa C901
@@ -128,4 +116,4 @@ def check_row_match(index, pasted_at_row, cell_data):  # noqa C901
 
 
 def convert_forecast_amount(amount):
-    return round(Decimal(amount.replace(",", ""))) * 100
+    return Decimal(amount.replace(",", "")) * 100

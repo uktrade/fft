@@ -28,10 +28,10 @@ def step_impl(context):
 @when(u'the user double clicks an editable cell in the edit forecast table')
 def step_impl(context):
     WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_6_0"))
+        ec.presence_of_element_located((By.ID, "id_0_6"))
     )
 
-    june_cell = context.browser.find_element_by_id("id_6_0")
+    june_cell = context.browser.find_element_by_id("id_0_6")
     action_chains = ActionChains(context.browser)
     action_chains.double_click(june_cell).perform()
 
@@ -39,7 +39,7 @@ def step_impl(context):
 @when(u'the user tabs to a cell')
 def step_impl(context):
     may_cell = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_5_0"))
+        ec.presence_of_element_located((By.ID, "id_0_5"))
     )
 
     action_chains = ActionChains(context.browser)
@@ -52,7 +52,7 @@ def step_impl(context):
 @then(u'the cell becomes editable')
 def step_impl(context):
     june_cell_input_value = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_6_0_input"))
+        ec.presence_of_element_located((By.ID, "id_0_6_input"))
     ).get_attribute(
         'value'
     )
@@ -66,15 +66,15 @@ def step_impl(context):
     context.browser.get(f'{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/')
 
     WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_6_0"))
+        ec.presence_of_element_located((By.ID, "id_0_6"))
     )
 
-    june_cell = context.browser.find_element_by_id("id_6_0")
+    june_cell = context.browser.find_element_by_id("id_0_6")
     action_chains = ActionChains(context.browser)
     action_chains.double_click(june_cell).perform()
 
     june_input = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_6_0_input"))
+        ec.presence_of_element_located((By.ID, "id_0_6_input"))
     )
 
     action_chains = ActionChains(context.browser)
@@ -96,7 +96,7 @@ def step_impl(context):
 @then(u'the value is changed and has the correct format')
 def step_impl(context):
     june_cell = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_6_0"))
+        ec.presence_of_element_located((By.ID, "id_0_6"))
     )
 
     cell_value = june_cell.get_attribute(
@@ -115,5 +115,5 @@ def step_impl(context):
 @then(u'the previous cell is in edit mode')
 def step_impl(context):
     WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_5_0_input"))
+        ec.presence_of_element_located((By.ID, "id_0_5_input"))
     )

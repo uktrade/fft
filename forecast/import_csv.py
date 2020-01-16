@@ -21,8 +21,7 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     FinancialYear,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 
 
@@ -52,8 +51,7 @@ def import_adi_file(csvfile):
     fin_year = 2019
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
-    MonthlyFigureAmount.objects.filter(monthly_figure__financial_year=fin_year).delete()
-    MonthlyFigure.objects.filter(financial_year=fin_year).delete()
+    ForecastMonthlyFigure.objects.filter(financial_year=fin_year).delete()
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
     line = 1
@@ -75,7 +73,7 @@ def import_adi_file(csvfile):
         proj_obj, msg = get_fk(ProjectCode, row[col_key["spare2"]].strip())
         # Now read the twelve month values into a dict
         if err_msg == "":
-            financial_code = FinancialCode.objects.create(
+            financial_code, created = FinancialCode.objects.get_or_create(
                 programme=prog_obj,
                 cost_centre=cc_obj,
                 natural_account_code=nac_obj,
@@ -83,26 +81,24 @@ def import_adi_file(csvfile):
                 analysis2_code=an2_obj,
                 project_code=proj_obj,
             )
-            financial_code.save()
+            if created:
+                financial_code.save()
 
             for month, per_obj in month_dict.items():
                 period_amount = int(row[col_key[month.lower()]])
                 if period_amount:
-                    month_figure_obj, created = MonthlyFigure.objects.get_or_create(
-                        financial_year=fin_obj,
-                        financial_period=per_obj,
-                        financial_code=financial_code,
-                    )
-                    month_figure_obj.save
-                    amount_obj, created = MonthlyFigureAmount.objects.get_or_create(
-                        version=1,
-                        monthly_figure=month_figure_obj,
-                    )
+                    month_figure_obj, created = \
+                        ForecastMonthlyFigure.objects.get_or_create(
+                            financial_year=fin_obj,
+                            financial_period=per_obj,
+                            financial_code=financial_code,
+                        )
                     if created:
-                        amount_obj.amount = period_amount
+                        month_figure_obj.amount = period_amount
                     else:
-                        amount_obj.amount += period_amount
-                    amount_obj.save()
+                        month_figure_obj.amount += period_amount
+                    month_figure_obj.current_amount = month_figure_obj.amount
+                    month_figure_obj.save()
         else:
             print(line, err_msg)
 

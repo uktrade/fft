@@ -2,49 +2,35 @@ from rest_framework import serializers
 
 from .models import (
     FinancialCode,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 
 
-class MonthlyFigureAmountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MonthlyFigureAmount
-        fields = [
-            'amount',
-            'version',
-        ]
-        read_only_fields = fields
-
-
-class MonthlyFigureSerializer(serializers.ModelSerializer):
+class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
-    monthly_figure_amounts = MonthlyFigureAmountSerializer(
-        many=True,
-        read_only=True,
-    )
 
     class Meta:
-        model = MonthlyFigure
+        model = ForecastMonthlyFigure
         fields = [
             'actual',
             'month',
-            'monthly_figure_amounts',
+            'amount',
         ]
         read_only_fields = fields
 
     def get_month(self, obj):
-        return obj.financial_period.period_calendar_code
+        return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
         return obj.financial_period.actual_loaded
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
-    monthly_figures = MonthlyFigureSerializer(
+    monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
+        source='forecast_forecastmonthlyfigures',
     )
 
     class Meta:

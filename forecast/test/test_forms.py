@@ -19,7 +19,7 @@ from forecast.forms import (
 )
 from forecast.models import (
     FinancialCode,
-    MonthlyFigure,
+    ForecastMonthlyFigure,
 )
 
 
@@ -80,7 +80,7 @@ class TestAddForecastRowForm(TestCase):
             project_code=self.project,
         )
 
-        monthly_figure = MonthlyFigure(
+        monthly_figure = ForecastMonthlyFigure(
             financial_year_id=2019,
             financial_period_id=1,
             financial_code=financial_code,
@@ -118,7 +118,7 @@ class TestAddForecastRowForm(TestCase):
             project_code=self.project,
         )
 
-        monthly_figure = MonthlyFigure(
+        monthly_figure = ForecastMonthlyFigure(
             financial_year_id=2019,
             financial_period_id=1,
             financial_code=financial_code,

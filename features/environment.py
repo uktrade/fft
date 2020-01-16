@@ -39,8 +39,7 @@ from chartofaccountDIT.test.factories import (
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 from forecast.test.factories import FinancialPeriodFactory
 
@@ -130,14 +129,10 @@ def set_up_test_objects(context):
                     project_code=project_code,
                 )
 
-            monthly_figure = MonthlyFigure.objects.create(
+            monthly_figure = ForecastMonthlyFigure.objects.create(
                 financial_year_id=get_current_financial_year(),
                 financial_period_id=financial_period,
                 financial_code=financial_code,
-            )
-
-            MonthlyFigureAmount.objects.create(
-                monthly_figure=monthly_figure,
                 amount=0,
             )
 

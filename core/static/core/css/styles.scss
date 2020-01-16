@@ -2,8 +2,7 @@ $govuk-page-width: 1800px;
 @import "./node_modules/govuk-frontend/govuk/all";
 
 .actual-month {
-  background-color: $govuk-secondary-text-colour;
-  color: white;
+  background-color: rgba(177, 180, 182, 0.75);
 }
 
 .main-content {
@@ -50,10 +49,10 @@ input.cell-input {
 }
 
 .sub-total {
-  background-color: $govuk-brand-colour;
+  background-color: rgba(86, 148, 202, 0.75);
   color: $govuk-body-background-colour;
   .actual-month {
-    background-color: #00ad93 !important;
+    background-color: rgba(86, 148, 202, 1) !important;
   }
 }
 
@@ -171,4 +170,27 @@ td {
   color: #069;
   text-decoration: underline;
   cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+  .wide-table {
+    display: inline-block!important;
+
+    .govuk-header__logo {
+      max-width: 508px;
+    }
+
+    .govuk-width-container {
+      max-width: none!important;
+      margin: 0 20px 0 50px;
+    }
+
+    .govuk-grid-column-two-thirds {
+      width: 66vw;
+    }
+
+    .govuk-table {
+      width:1%;
+    }
+  }
 }

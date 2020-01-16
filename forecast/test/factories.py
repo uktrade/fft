@@ -10,9 +10,9 @@ from core.models import FinancialYear
 from costcentre.test.factories import CostCentreFactory
 
 from forecast.models import (
-    Budget,
+    BudgetMonthlyFigure,
     FinancialPeriod,
-    MonthlyFigure,
+    ForecastMonthlyFigure,
 )
 
 
@@ -33,7 +33,7 @@ class BudgetFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        model = Budget
+        model = BudgetMonthlyFigure
 
 
 class MonthlyFigureFactory(factory.DjangoModelFactory):
@@ -48,4 +48,4 @@ class MonthlyFigureFactory(factory.DjangoModelFactory):
     amount = 123456
 
     class Meta:
-        model = MonthlyFigure
+        model = ForecastMonthlyFigure

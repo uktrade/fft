@@ -19,7 +19,7 @@ from costcentre.models import (
 from costcentre.models import DepartmentalGroup
 
 from forecast.models import (
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -61,6 +61,9 @@ from forecast.views.base import ForecastViewPermissionMixin
 class ForecastMultiTableMixin(MultiTableMixin):
     hierarchy_type = -1
 
+    def class_name(self):
+        return "wide-table"
+
     def get_tables(self):
         """
          Return an array of table instances containing data.
@@ -72,14 +75,14 @@ class ForecastMultiTableMixin(MultiTableMixin):
             filter_code = self.kwargs[arg_name]
             pivot_filter = {filter_selectors[self.hierarchy_type]: f"{filter_code}"}
 
-        hierarchy_data = MonthlyFigureAmount.pivot.subtotal_data(
+        hierarchy_data = ForecastMonthlyFigure.pivot.subtotal_data(
             hierarchy_sub_total_column[self.hierarchy_type],
             hierarchy_sub_total,
             hierarchy_columns[self.hierarchy_type].keys(),
             pivot_filter,
             order_list=hierarchy_order_list,
         )
-        programme_data = MonthlyFigureAmount.pivot.subtotal_data(
+        programme_data = ForecastMonthlyFigure.pivot.subtotal_data(
             programme_display_sub_total_column,
             programme_sub_total,
             programme_columns.keys(),
@@ -87,7 +90,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=programme_order_list,
         )
 
-        expenditure_data = MonthlyFigureAmount.pivot.subtotal_data(
+        expenditure_data = ForecastMonthlyFigure.pivot.subtotal_data(
             expenditure_display_sub_total_column,
             expenditure_sub_total,
             expenditure_columns.keys(),
@@ -95,7 +98,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=expenditure_order_list,
         )
 
-        project_data = MonthlyFigureAmount.pivot.subtotal_data(
+        project_data = ForecastMonthlyFigure.pivot.subtotal_data(
             project_display_sub_total_column,
             project_sub_total,
             project_columns.keys(),

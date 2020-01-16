@@ -11,14 +11,10 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
-from core.myutils import (
-    get_current_financial_year,
-)
 
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    MonthlyFigure,
 )
 
 
@@ -44,16 +40,10 @@ class AddForecastRowForm(forms.Form):
         ).first()
 
         if financial_code:
-            existing_row_count = MonthlyFigure.objects.filter(
-                financial_year_id=get_current_financial_year(),
-                financial_code=financial_code,
-            ).count()
-
-            if existing_row_count > 0:
-                raise forms.ValidationError(
-                    "A row already exists with these details, "
-                    "please amend the values you are supplying"
-                )
+            raise forms.ValidationError(
+                "A row already exists with these details, "
+                "please amend the values you are supplying"
+            )
 
     programme = forms.ModelChoiceField(
         queryset=ProgrammeCode.objects.filter(
@@ -218,3 +208,23 @@ class EditForecastFigureForm(forms.Form):
             return None
 
         return project_code
+
+    def clean_analysis1_code(self):
+        # Had to add this to prevent null coming through
+        # as string - looks like a bug in Django
+        analysis1_code = self.cleaned_data['analysis1_code']
+
+        if analysis1_code == "null" or analysis1_code == "":
+            return None
+
+        return analysis1_code
+
+    def clean_analysis2_code(self):
+        # Had to add this to prevent null coming through
+        # as string - looks like a bug in Django
+        analysis2_code = self.cleaned_data['analysis2_code']
+
+        if analysis2_code == "null" or analysis2_code == "":
+            return None
+
+        return analysis2_code
