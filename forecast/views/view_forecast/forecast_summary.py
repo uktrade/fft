@@ -28,7 +28,7 @@ from forecast.tables import (
 from forecast.utils.query_fields import (
     BUDGET_CATEGORY_ID,
     BUDGET_TYPE,
-    FORECAST_EXPENDITURE_TYPE_ID,
+    FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
@@ -110,7 +110,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
         else:
             programme_table = ForecastWithLinkTable(
                 programme_detail_view[self.hierarchy_type],
-                [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_ID],
+                [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_NAME],
                 filter_code,
                 programme_columns,
                 programme_data)

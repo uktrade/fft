@@ -7,9 +7,8 @@ BUDGET_CATEGORY_ID = "financial_code__natural_account_code__expenditure_category
 BUDGET_CATEGORY_NAME = "financial_code__natural_account_code__expenditure_category__grouping_description"   # noqa
 
 # Admin, Capital or Programme
-FORECAST_EXPENDITURE_TYPE_CODE = "financial_code__forecast_expenditure_type__forecast_expenditure_type_name"  # noqa
-FORECAST_EXPENDITURE_TYPE_ID = "financial_code__forecast_expenditure_type__id"  # noqa
-FORECAST_EXPENDITURE_TYPE_NAME = "financial_code__forecast_expenditure_type__forecast_expenditure_type_description"  # noqa
+FORECAST_EXPENDITURE_TYPE_NAME = "financial_code__forecast_expenditure_type__forecast_expenditure_type_name"  # noqa
+FORECAST_EXPENDITURE_TYPE_DESCRIPTION = "financial_code__forecast_expenditure_type__forecast_expenditure_type_description"  # noqa
 FORECAST_EXPENDITURE_TYPE_ORDER = "financial_code__forecast_expenditure_type__forecast_expenditure_type_display_order"   # noqa
 
 PROGRAMME_CODE = "financial_code__programme__programme_code"
@@ -48,19 +47,19 @@ SHOW_COSTCENTRE = 3
 cost_centre_columns = {
     BUDGET_TYPE: "Budget Type",
     COST_CENTRE_NAME: "Cost Centre Description",
-    COST_CENTRE_CODE: "Cost Centre Code",
+    COST_CENTRE_CODE: "Code",
 }
 
 directorate_columns = {
     BUDGET_TYPE: "Budget Type",
     DIRECTORATE_NAME: "Directorate Description",
-    DIRECTORATE_CODE: "Directorate Code",
+    DIRECTORATE_CODE: "Code",
 }
 
 group_columns = {
     BUDGET_TYPE: "Budget Type",
-    GROUP_NAME: "Departmental Group Code",
-    GROUP_CODE: "Departmental Group Description",
+    GROUP_NAME: "Departmental Group Description",
+    GROUP_CODE: "Code",
 }
 hierarchy_order_list = [BUDGET_TYPE_ORDER]
 hierarchy_sub_total = [BUDGET_TYPE]
@@ -68,19 +67,19 @@ hierarchy_sub_total = [BUDGET_TYPE]
 # programme data
 programme_columns = {
     BUDGET_TYPE: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_ID: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_NAME: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_CODE: "Expenditure Type",
+    FORECAST_EXPENDITURE_TYPE_DESCRIPTION: "Hidden",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure Type",
     PROGRAMME_NAME: "Programme Description",
     PROGRAMME_CODE: "Programme Code",
 }
+
 programme_order_list = [
     BUDGET_TYPE_ORDER,
     FORECAST_EXPENDITURE_TYPE_ORDER,
 ]
 programme_sub_total = [
     BUDGET_TYPE,
-    FORECAST_EXPENDITURE_TYPE_NAME,
+    FORECAST_EXPENDITURE_TYPE_DESCRIPTION,
 ]
 programme_display_sub_total_column = PROGRAMME_NAME
 
@@ -89,7 +88,6 @@ programme_detail_view = [
     'programme_details_group',
     'programme_details_directorate',
 ]
-
 
 # Expenditure data
 expenditure_columns = {
@@ -113,7 +111,7 @@ expenditure_order_list = [
 project_columns = {
     BUDGET_TYPE: 'Budget Type',
     PROJECT_NAME: "Project Description",
-    PROJECT_CODE: "Project Code",
+    PROJECT_CODE: "Code",
 }
 project_order_list = [
     BUDGET_TYPE_ORDER,
@@ -169,27 +167,27 @@ nac_order_list = [
 # programme details data
 programme_details_dit_columns = {
     PROGRAMME_NAME: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_CODE: "Expenditure Type",
-    GROUP_NAME: "Departmental Group Code",
-    GROUP_CODE: "Departmental Group Description",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure Type",
+    GROUP_NAME: "Departmental Group Description",
+    GROUP_CODE: "Code",
 }
 programme_details_group_columns = {
     PROGRAMME_NAME: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_CODE: "Expenditure Type",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure Type",
     DIRECTORATE_NAME: "Directorate Description",
-    DIRECTORATE_CODE: "Directorate Code",
+    DIRECTORATE_CODE: "Code",
 }
 programme_details_directorate_columns = {
     PROGRAMME_NAME: "Hidden",
-    FORECAST_EXPENDITURE_TYPE_CODE: "Expenditure Type",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure Type",
     COST_CENTRE_NAME: "Cost Centre Description",
-    COST_CENTRE_CODE: "Cost Centre Code",
+    COST_CENTRE_CODE: "Code",
 }
 programme_details_sub_total = [
     PROGRAMME_NAME,
 ]
 
-programme_details_display_sub_total_column = FORECAST_EXPENDITURE_TYPE_CODE
+programme_details_display_sub_total_column = FORECAST_EXPENDITURE_TYPE_NAME
 
 programme_details_dit_order_list = [
     GROUP_NAME,
