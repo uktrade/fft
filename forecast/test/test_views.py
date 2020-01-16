@@ -976,7 +976,7 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
         )
         financial_code_obj.save
         self.forecast_expenditure_type_id = \
-            financial_code_obj.forecast_expenditure_type_id
+            financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name
         apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
