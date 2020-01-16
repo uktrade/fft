@@ -6,6 +6,7 @@ from core.myutils import get_current_financial_year
 from core.utils import check_empty
 
 from forecast.models import (
+    FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
@@ -53,11 +54,11 @@ def check_cols_match(cell_data):
 def get_monthly_figures(cost_centre_code, cell_data):
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
 
-    for financial_period in range(start_period, 13):
+    for financial_period_month in range(start_period, 13):
         monthly_figure = ForecastMonthlyFigure.objects.filter(
             financial_code__cost_centre__cost_centre_code=cost_centre_code,
             financial_year__financial_year=get_current_financial_year(),
-            financial_period__financial_period_code=financial_period,
+            financial_period__financial_period_code=financial_period_month,
             financial_code__programme__programme_code=check_empty(cell_data[1]),
             financial_code__natural_account_code__natural_account_code=cell_data[0],
             financial_code__analysis1_code=check_empty(cell_data[2]),
@@ -65,14 +66,25 @@ def get_monthly_figures(cost_centre_code, cell_data):
             financial_code__project_code=check_empty(cell_data[4]),
         ).first()
 
-        if not monthly_figure:
-            raise CannotFindMonthlyFigureException(
-                "Cannot one of the forecast figures, please contact"
-                " a site administrator and include this text in your message"
-            )
-
-        col = (settings.NUM_META_COLS + financial_period) - 1
+        col = (settings.NUM_META_COLS + financial_period_month) - 1
         new_value = convert_forecast_amount(cell_data[col])
+
+        if new_value != 0 and not monthly_figure:
+            financial_code = FinancialCode.objects.get(
+                programme__programme_code=check_empty(cell_data[1]),
+                natural_account_code__natural_account_code=cell_data[0],
+                analysis1_code=check_empty(cell_data[2]),
+                analysis2_code=check_empty(cell_data[3]),
+                project_code=check_empty(cell_data[4]),
+            )
+            financial_period = FinancialPeriod.objects.get(
+                financial_period_code=financial_period_month,
+            )
+            monthly_figure = ForecastMonthlyFigure.objects.create(
+                financial_year_id=get_current_financial_year(),
+                financial_period=financial_period,
+                financial_code=financial_code,
+            )
 
         if new_value != monthly_figure.amount:
             monthly_figure.amount = new_value
