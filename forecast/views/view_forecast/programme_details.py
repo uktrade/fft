@@ -26,7 +26,7 @@ from forecast.tables import (
     ForecastSubTotalTable,
 )
 from forecast.utils.query_fields import (
-    FORECAST_EXPENDITURE_TYPE_ID,
+    FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -60,11 +60,11 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
         """
          Return an array of table instances containing data.
         """
-        forecast_expenditure_type_id = self.kwargs['forecast_expenditure_type']
+        forecast_expenditure_type_name = self.kwargs['forecast_expenditure_type']
         programme_code_id = self.kwargs['programme_code']
         pivot_filter = {
             PROGRAMME_CODE: f"{programme_code_id}",
-            FORECAST_EXPENDITURE_TYPE_ID: f"{forecast_expenditure_type_id}",
+            FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
         }
         arg_name = filter_codes[self.hierarchy_type]
         if arg_name:
