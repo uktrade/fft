@@ -45,7 +45,7 @@ function Table({rowData, sheetUpdating}) {
         <Fragment>
             <table
                 className="govuk-table" id="forecast-table">
-                <caption className="govuk-table__caption">Edit forecast</caption>
+                <caption className="govuk-table__caption govuk-!-font-size-27">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
                         <td className="handle govuk-table__cell indicate-action">

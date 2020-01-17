@@ -2,7 +2,7 @@ $govuk-page-width: 1800px;
 @import "./node_modules/govuk-frontend/govuk/all";
 
 .actual-month {
-  background-color: rgba(177, 180, 182, 0.75);
+  background-color: rgba(177, 180, 182, 0.5);
 }
 
 .main-content {
@@ -15,10 +15,6 @@ $govuk-page-width: 1800px;
 
 .govuk-table__header {
   white-space: nowrap;
-}
-
-.tables-container {
-  overflow-x: scroll;
 }
 
 .govuk-error-summary__list li {
@@ -193,4 +189,8 @@ td {
       width:1%;
     }
   }
+}
+
+.govuk-table__caption {
+  margin: 20px 0;
 }
