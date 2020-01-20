@@ -32,8 +32,8 @@ PROJECT_NAME = "financial_code__project_code__project_description"
 ANALYSIS1_CODE = "financial_code__analysis1_code__analysis1_code"
 ANALYSIS1_NAME = "financial_code__analysis1_code__analysis1_description"
 
-ANALYSIS2_CODE = "financial_code__analysis2_code__analysis1_code"
-ANALYSIS2_NAME = "financial_code__analysis2_code__analysis1_description"
+ANALYSIS2_CODE = "financial_code__analysis2_code__analysis2_code"
+ANALYSIS2_NAME = "financial_code__analysis2_code__analysis2_description"
 
 # PAY, NON-PAY, CAPITAL, NON-CASH
 BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa

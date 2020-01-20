@@ -26,6 +26,7 @@ from costcentre.test.factories import (
 )
 
 from forecast.models import (
+    BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
@@ -355,6 +356,42 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         assert "/forecast/edit/" in response.url
 
 
+def create_budget(financial_code_obj, year_obj):
+    budget_apr = 1000000
+    budget_may = -1234567
+    budget_july = 1234567
+    budget_total = budget_apr + budget_may + budget_july
+    # Save several months, and check that the toal is displayed
+    apr_budget = BudgetMonthlyFigure.objects.create(
+        financial_period=FinancialPeriod.objects.get(
+            financial_period_code=1
+        ),
+        financial_code=financial_code_obj,
+        financial_year=year_obj,
+        amount=budget_apr
+    )
+    apr_budget.save
+    may_budget = BudgetMonthlyFigure.objects.create(
+        financial_period=FinancialPeriod.objects.get(
+            financial_period_code=2,
+        ),
+        amount=budget_may,
+        financial_code=financial_code_obj,
+        financial_year=year_obj
+    )
+    may_budget.save
+    july_budget = BudgetMonthlyFigure.objects.create(
+        financial_period=FinancialPeriod.objects.get(
+            financial_period_code=4,
+        ),
+        amount=budget_july,
+        financial_code=financial_code_obj,
+        financial_year=year_obj
+    )
+    july_budget.save
+    return budget_total
+
+
 class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
@@ -410,7 +447,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
-                financial_period_code=4,
+                financial_period_code=2,
             ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
@@ -424,8 +461,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
+        self.budget = create_budget(financial_code_obj, year_obj)
         self.year_total = self.amount_apr + self.amount_may
-        self.underspend_total = -self.amount_apr - self.amount_may
+        self.underspend_total = self.budget - self.amount_apr - self.amount_may
         self.spend_to_date_total = self.amount_apr
 
     def test_dit_view(self):
@@ -510,6 +548,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         expenditure_rows = table.find_all("tr")
         first_expenditure_cols = expenditure_rows[1].find_all("td")
         assert (first_expenditure_cols[1].get_text() == '—')
+        assert first_expenditure_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
@@ -527,6 +568,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         first_project_cols = project_rows[1].find_all("td")
         assert first_project_cols[1].get_text() == self.project_obj.project_description
         assert first_project_cols[2].get_text() == self.project_obj.project_code
+        assert first_project_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
@@ -542,12 +586,15 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_hierarchy_table(self, table, hierarchy_element):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[1].find_all("td")
-
         assert first_hierarchy_cols[1].get_text() == hierarchy_element
-        # Check the April value
+
+        assert first_hierarchy_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
         assert first_hierarchy_cols[4].get_text() == format_forecast_figure(
             self.amount_apr / 100
         )
+
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
         assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == \
@@ -578,7 +625,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
         soup = BeautifulSoup(resp.content, features="html.parser")
-
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
@@ -814,8 +860,10 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
+        self.budget = create_budget(financial_code2_obj, year_obj)
         self.year_total = self.amount1_apr + self.amount2_apr + self.amount_may
-        self.underspend_total = -self.amount1_apr - self.amount_may - self.amount2_apr
+        self.underspend_total = \
+            self.budget - self.amount1_apr - self.amount_may - self.amount2_apr
         self.spend_to_date_total = self.amount1_apr + self.amount2_apr
 
     def check_nac_table(self, table):
@@ -823,6 +871,10 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         first_nac_cols = nac_rows[1].find_all("td")
         assert (first_nac_cols[0].get_text() ==
                 self.nac2_obj.natural_account_code_description)
+
+        assert first_nac_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
@@ -853,7 +905,7 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 4
 
-        self.check_negative_value_formatted(soup, 7)
+        self.check_negative_value_formatted(soup, 6)
 
         # Check that the only table displays the nac and the correct totals
         self.check_nac_table(tables[0])
@@ -1010,8 +1062,9 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
+        self.budget = create_budget(financial_code_obj, year_obj)
         self.year_total = amount_apr + self.amount_may
-        self.underspend_total = -amount_apr - self.amount_may
+        self.underspend_total = self.budget - amount_apr - self.amount_may
         self.spend_to_date_total = amount_apr
 
     def check_programme_details_table(self, table):

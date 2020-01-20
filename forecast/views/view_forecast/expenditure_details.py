@@ -21,7 +21,7 @@ from costcentre.models import (
 from costcentre.models import DepartmentalGroup
 
 from forecast.models import (
-    ForecastMonthlyFigure,
+    ForecastBudgetDataView,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -73,7 +73,7 @@ class ForecastExpenditureDetailsMixin(MultiTableMixin):
             filter_code = self.kwargs[arg_name]
             pivot_filter[filter_selectors[self.hierarchy_type]] = f"{filter_code}"
 
-        nac_data = ForecastMonthlyFigure.pivot.subtotal_data(
+        nac_data = ForecastBudgetDataView.sub_total.subtotal_data(
             nac_display_sub_total_column,
             nac_sub_total,
             nac_columns.keys(),
