@@ -467,7 +467,7 @@ class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
     default_columns = DEFAULT_PIVOT_COLUMNS
 
-    def old_pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
@@ -570,8 +570,7 @@ class ForecastBudgetDataView(models.Model):
     Mapped to a view in the database, because
     the query is too complex"""
     id = models.IntegerField(primary_key=True, )
-
-    # The view is created by  a migration
+    # The view is created by a migration. Its code is at the bottom of this file.
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
@@ -681,8 +680,6 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
     starting_amount = models.BigIntegerField(default=0)
     year_budget = YearTotalManager()
 
-
-# tot = BudgetMonthlyFigure.year_budget.all()
 
 class BudgetUploadMonthlyFigure(MonthlyFigureAbstract):
     pass

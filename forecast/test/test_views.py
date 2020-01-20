@@ -361,7 +361,7 @@ def create_budget(financial_code_obj, year_obj):
     budget_may = -1234567
     budget_july = 1234567
     budget_total = budget_apr + budget_may + budget_july
-    # Save several months, and check that the toal is displayed
+    # Save several months, and check that the total is displayed
     apr_budget = BudgetMonthlyFigure.objects.create(
         financial_period=FinancialPeriod.objects.get(
             financial_period_code=1
