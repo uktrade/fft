@@ -1,6 +1,13 @@
+from django.db.models import (
+    Sum,
+)
+
 from rest_framework import serializers
 
+from core.myutils import get_current_financial_year
+
 from .models import (
+    BudgetMonthlyFigure,
     FinancialCode,
     ForecastMonthlyFigure,
 )
@@ -16,6 +23,7 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
             'actual',
             'month',
             'amount',
+            'starting_amount',
         ]
         read_only_fields = fields
 
@@ -27,6 +35,7 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
+    budget = serializers.SerializerMethodField('get_budget')
     monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
@@ -43,5 +52,22 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             'analysis2_code',
             'project_code',
             'monthly_figures',
+            'budget',
         ]
         read_only_fields = fields
+
+    def get_budget(self, obj):
+        budget = BudgetMonthlyFigure.objects.values(
+            'financial_code',
+            'financial_year',
+        ).filter(
+            financial_code=obj.id,
+            financial_year_id=get_current_financial_year(),
+        ).annotate(
+            yearly_amount=Sum('amount')
+        )
+
+        if budget and "yearly_amount" in budget[0]:
+            return budget[0]["yearly_amount"]
+        else:
+            return 0

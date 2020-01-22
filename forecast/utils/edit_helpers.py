@@ -71,6 +71,7 @@ def get_monthly_figures(cost_centre_code, cell_data):
 
         if new_value != 0 and not monthly_figure:
             financial_code = FinancialCode.objects.get(
+                cost_centre__cost_centre_code=cost_centre_code,
                 programme__programme_code=check_empty(cell_data[1]),
                 natural_account_code__natural_account_code=cell_data[0],
                 analysis1_code=check_empty(cell_data[2]),

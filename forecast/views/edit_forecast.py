@@ -307,6 +307,7 @@ def update_forecast_figure(request, cost_centre_code):
         financial_year = FinancialYear.objects.filter(current=True).first()
 
         financial_code = FinancialCode.objects.filter(
+            cost_centre=cost_centre,
             natural_account_code=form.cleaned_data['natural_account_code'],
             programme__programme_code=form.cleaned_data['programme_code'],
             analysis1_code__analysis1_code=form.cleaned_data.get(
@@ -381,10 +382,13 @@ class EditForecastView(
         return "wide-table"
 
     def cost_centre_details(self):
+        cost_centre = CostCentre.objects.get(
+            cost_centre_code=self.cost_centre_code,
+        )
         return {
-            "group": "Test group",
-            "directorate": "Test directorate",
-            "cost_centre_name": "Test cost centre name",
+            "group": cost_centre.directorate.group.group_name,
+            "directorate": cost_centre.directorate.directorate_name,
+            "cost_centre_name": cost_centre.cost_centre_name,
             "cost_centre_code": self.cost_centre_code,
         }
 

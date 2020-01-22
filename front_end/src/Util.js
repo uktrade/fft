@@ -32,6 +32,12 @@ function getCookie(name) {
     return cookieValue;
 }
 
+export const formatValue = (value) => {
+    let nfObject = new Intl.NumberFormat('en-GB'); 
+    let pounds = Math.round(value)
+    return nfObject.format(pounds); 
+}
+
 export async function postData(url = '', data = {}) {
     var csrftoken = getCookie('csrftoken');
 
@@ -83,7 +89,8 @@ export const processForecastData = (forecastData) => {
         "cost_centre",
         "natural_account_code",
         "programme",
-        "project_code"
+        "project_code",
+        "budget",
     ]
 
     forecastData.forEach(function (rowData, rowIndex) {
@@ -110,6 +117,7 @@ export const processForecastData = (forecastData) => {
                 colIndex: colIndex,
                 key: monthlyFigure.month,
                 amount: monthlyFigure.amount,
+                startingAmount: monthlyFigure.starting_amount,
                 isEditable: !monthlyFigure.actual
             }
 

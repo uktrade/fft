@@ -4,12 +4,13 @@ import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
     getCellId,
     postData,
-    processForecastData
+    processForecastData,
+    formatValue
 } from '../../Util'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({isHidden, rowIndex, cellKey, cellMonth, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
@@ -48,31 +49,28 @@ const TableCell = ({isHidden, rowIndex, cellKey, cellMonth, sheetUpdating}) => {
     }
 
     const wasEdited = () => {
-        // TODO - add function after "previous months" story
-        return false
+        if (!cell.isEditable)
+            return false
+
+        return cell.amount !== cell.startingAmount
     }
 
     const getClasses = () => {
         if (!cell)
             return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '')
 
-        let hiddenResult = ''
         let editable = ''
         let negative = ''
 
-        if (isHidden) {
-            hiddenResult = isHidden(cellKey) ? ' hidden' : ''
-        }
-
         if (!cell.isEditable) {
-            editable = ' not-editable';
+            editable = ' not-editable'
         }
 
         if (cell.amount < 0) {
             negative = " negative"
         }
 
-        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable + negative
+        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
     }
 
     const setContentState = (value) => {
@@ -85,11 +83,6 @@ const TableCell = ({isHidden, rowIndex, cellKey, cellMonth, sheetUpdating}) => {
         setValue(value)
     }
 
-    const formatValue = (value) => {
-        let nfObject = new Intl.NumberFormat('en-GB'); 
-        let pounds = Math.round(value)
-        return nfObject.format(pounds); 
-    }
 
     const updateValue = () => {
         let newAmount = parseInt(value * 100)
@@ -202,6 +195,7 @@ const TableCell = ({isHidden, rowIndex, cellKey, cellMonth, sheetUpdating}) => {
                     <Fragment>
                         {editCellId === cellId ? (
                             <input
+                                ref={input => input && input.focus() }
                                 id={cellId + "_input"}
                                 className="cell-input"
                                 type="text"

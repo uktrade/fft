@@ -4,13 +4,8 @@ import Table from '../../Components/Table/index'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { store } from '../../Store';
 import { 
-    TOGGLE_NAC,
-    TOGGLE_PROG, 
-    TOGGLE_AN1,
-    TOGGLE_AN2,
-    TOGGLE_PROJ_CODE,
-
-} from '../../Reducers/ShowHideCols'
+    TOGGLE_ITEM,
+} from '../../Reducers/HiddenCols'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
@@ -24,11 +19,7 @@ import {
 function ForecastTable() {
     const dispatch = useDispatch();
 
-    const nac = useSelector(state => state.showHideCols.nac);
-    const programme = useSelector(state => state.showHideCols.programme);
-    const analysis1 = useSelector(state => state.showHideCols.analysis1);
-    const analysis2 = useSelector(state => state.showHideCols.analysis2);
-    const projectCode = useSelector(state => state.showHideCols.projectCode);
+    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols)
 
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
@@ -262,11 +253,11 @@ function ForecastTable() {
                     className="link-button"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_NAC()
+                            TOGGLE_ITEM("natural_account_code")
                         );
                         e.preventDefault()
                     }}
-                >{nac ? (
+                >{hiddenCols.indexOf("natural_account_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
@@ -275,11 +266,11 @@ function ForecastTable() {
                     className="link-button"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_PROG()
+                            TOGGLE_ITEM("programme")
                         );
                         e.preventDefault()
                     }}
-                >{programme ? (
+                >{hiddenCols.indexOf("programme") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
@@ -288,11 +279,11 @@ function ForecastTable() {
                     className="link-button"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_AN1()
+                            TOGGLE_ITEM("analysis1_code")
                         );
                         e.preventDefault()
                     }}
-                >{analysis1 ? (
+                >{hiddenCols.indexOf("analysis1_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
@@ -301,11 +292,11 @@ function ForecastTable() {
                     className="link-button"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_AN2()
+                            TOGGLE_ITEM("analysis2_code")
                         );
                         e.preventDefault()
                     }}
-                >{analysis2 ? (
+                >{hiddenCols.indexOf("analysis2_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
@@ -314,11 +305,11 @@ function ForecastTable() {
                     className="link-button"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_PROJ_CODE()
+                            TOGGLE_ITEM("project_code")
                         );
                         e.preventDefault()
                     }}
-                >{projectCode ? (
+                >{hiddenCols.indexOf("project_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>

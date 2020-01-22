@@ -144,8 +144,7 @@ td {
 }
 
 .edited {
-  background-color: govuk-colour("light-blue");
-  color: white;
+  background-color: rgba(86, 148, 202, 0.25);
 }
 
 .toggle-links {
@@ -193,4 +192,17 @@ td {
 
 .govuk-table__caption {
   margin: 20px 0;
+}
+
+.total {
+  font-weight: bold;
+  padding:10px;
+}
+
+.govuk-summary-list {
+  display:inline-block;
+}
+
+.date-selection-download {
+  max-width: 1600px;
 }
