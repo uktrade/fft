@@ -115,10 +115,14 @@ function ForecastTable() {
             // This function puts editing cells into the tab order of the page
             let footerLink = document.getElementsByClassName("govuk-footer__link")[0]
 
-            let lowestMonth = 1
-            let highestActual = Math.max(...window.actuals)
-            if (highestActual) {
-                lowestMonth = highestActual
+            let lowestMonth = 0
+
+            if (window.actuals && window.actuals.length > 0) {
+                let highestActual = Math.max(...window.actuals)
+
+                if (highestActual) {
+                    lowestMonth = highestActual
+                }
             }
 
             const state = store.getState();
@@ -138,9 +142,30 @@ function ForecastTable() {
                     targetRow = parseInt(parts[2])
                 }
 
+                if (event.shiftKey && document.activeElement === footerLink) {
+                    targetRow = cells.length - 1
+                    targetMonth = 12
+
+                    nextId = getCellId(targetRow, targetMonth)
+                    event.preventDefault()
+                    document.activeElement.blur();
+
+                    dispatch(
+                        SET_EDITING_CELL({
+                            "cellId": nextId
+                        })
+                    );
+
+                    return
+                }
+
                 if (targetRow > -1) {
                     if (event.shiftKey) { // We're going backwards
-                        if (!targetMonth) { // See if we're on a select button
+                        if (document.activeElement === footerLink) {
+                            targetRow = cells.length
+                            targetMonth = 12
+                        }
+                        else if (!targetMonth) { // See if we're on a select button
                             if (targetRow === 0) { // See if we're at the start of the table
                                 dispatch(
                                     SET_EDITING_CELL({
@@ -177,7 +202,17 @@ function ForecastTable() {
                         // Jump to next row if we've reached the end of the current one
                         if (targetMonth > 12) {
                             targetRow++
-                            targetMonth = lowestMonth + 1
+                            // targetMonth = lowestMonth + 1
+
+                            let selectRowBtn = document.getElementById("select_row_" + targetRow)
+                            selectRowBtn.focus()
+                            event.preventDefault()
+                            dispatch(
+                                SET_EDITING_CELL({
+                                    "cellId": null
+                                })
+                            )
+                            return
                         }
 
                         if (targetMonth <= lowestMonth) {
