@@ -56,7 +56,6 @@ class EditPermissionTest(TestCase):
 
         assert not has_edit_permission(test_user)
 
-        assign_perm("view_costcentre", test_user, cost_centre)
         assign_perm("change_costcentre", test_user, cost_centre)
 
         assert has_edit_permission(test_user) is True

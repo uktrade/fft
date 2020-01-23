@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
 
@@ -29,6 +28,7 @@ from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
+    ForecastEditLock,
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
@@ -54,6 +54,7 @@ from forecast.views.view_forecast.programme_details import (
     DirectorateProgrammeDetailsView,
     GroupProgrammeDetailsView,
 )
+
 
 TOTAL_COLUMN = -3
 SPEND_TO_DATE_COLUMN = -4
@@ -87,13 +88,19 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
             }
         )
 
-        # Should 403 as they do not have permission
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                edit_forecast_url,
-                EditForecastView,
-                cost_centre_code=self.cost_centre_code,
-            )
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        assert resp.status_code == 302
+        assert resp.url == reverse(
+            "forecast_cost_centre",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code
+            }
+        )
 
     def test_edit_forecast_view(self):
         # Add forecast view permission
@@ -127,10 +134,8 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 302)
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         self.assertTrue(self.test_user.has_perm("change_costcentre", self.cost_centre))
-        self.assertTrue(self.test_user.has_perm("view_costcentre", self.cost_centre))
 
         resp = self.factory_get(
             edit_forecast_url,
@@ -192,7 +197,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
 
     def test_view_add_row(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         assert FinancialCode.objects.count() == 0
 
@@ -227,7 +231,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
 
     def test_view_add_row_with_period_actual(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         # financial period with actual
         financial_period = FinancialPeriod.objects.get(
@@ -262,7 +265,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
 
     def test_duplicate_values_invalid(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         # add forecast row
         response = self.add_row_post_response(
@@ -317,7 +319,6 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code
         )
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
     def test_choose_cost_centre(self):
         response = self.factory_get(
@@ -1152,3 +1153,71 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
             forecast_expenditure_type=self.forecast_expenditure_type_id
         )
         self.check_response(resp)
+
+
+class EditForecastLockTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.cost_centre_code = 888812
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_edit_forecast_view_permission(self):
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        # Should be allowed
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        # Lock forecast for editing
+        edit_lock = ForecastEditLock.objects.get()
+        edit_lock.locked = True
+        edit_lock.save()
+
+        # Should be redirected to lock page
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        assert resp.status_code == 302
+        assert resp.url == "/forecast/editing-locked/"
+
+        # Add edit whilst lock permission
+        can_edit_whilst_locked = Permission.objects.get(
+            codename='can_edit_whilst_locked'
+        )
+        self.test_user.user_permissions.add(can_edit_whilst_locked)
+        self.test_user.save()
+
+        # User should not be allowed to view page
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        # Should be allowed
+        self.assertEqual(resp.status_code, 200)

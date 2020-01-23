@@ -55,7 +55,6 @@ class Command(BaseCommand):
             return
 
         remove_perm("change_costcentre", user, cost_centre)
-        remove_perm("view_costcentre", user, cost_centre)
 
         self.stdout.write(
             self.style.SUCCESS(
