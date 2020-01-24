@@ -22,7 +22,6 @@ $govuk-page-width: 1800px;
   font-weight: 700;
 }
 
-
 input {
     @include govuk-font($size: 19);
 }
@@ -92,14 +91,15 @@ table, td, th {
   white-space: nowrap;
 }
 
-td {
-  text-align: right;
+.finance-table {
+  td {
+    text-align: right;
+  }
 }
 
 .not-editable {
   background-color: govuk-colour("light-grey");
 }
-
 
 .no-select {
     user-select: none; /* supported by Chrome and Opera */
@@ -170,6 +170,7 @@ td {
 @media (min-width: 1200px) {
   .wide-table {
     display: inline-block!important;
+    min-width: 100%;
 
     .govuk-header__logo {
       max-width: 508px;
@@ -177,15 +178,15 @@ td {
 
     .govuk-width-container {
       max-width: none!important;
-      margin: 0 20px 0 50px;
     }
 
     .govuk-grid-column-two-thirds {
-      width: 66vw;
+      max-width: 66vw;
     }
 
     .govuk-table {
-      width:1%;
+      //width:1%;
+      //min-width: 100%;
     }
   }
 }
@@ -196,7 +197,7 @@ td {
 
 .total {
   font-weight: bold;
-  padding:10px;
+  padding:10px 22px 10px 10px;
 }
 
 .govuk-summary-list {
@@ -205,4 +206,52 @@ td {
 
 .date-selection-download {
   max-width: 1600px;
+}
+
+// style django tables 2 filter as per govt front end
+@media (min-width: 40.0625em) {
+  #id_search_all {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+#id_search_all {
+    font-family: "GDS Transport",Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    height: 2.5rem;
+    margin-top: 0;
+    padding: 5px;
+    border: 2px solid #0b0c0c;
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    max-width: 23ex;
+    appearance: none;
+}
+
+.pagination {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+  li {
+    float: left;
+  }
+
+  li a {
+    display: block;
+    text-align: center;
+    padding: 16px;
+  }
 }

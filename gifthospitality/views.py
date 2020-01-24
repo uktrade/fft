@@ -18,7 +18,10 @@ from gifthospitality.models import GiftAndHospitalityClassification
 from gifthospitality.tables import GiftHospitalityTable
 
 
-class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
+class FilteredGiftHospitalityView(
+    LoginRequiredMixin,
+    FAdminFilteredView,
+):
     table_class = GiftHospitalityTable
     model = table_class.Meta.model
     filterset_class = GiftHospitalityFilter

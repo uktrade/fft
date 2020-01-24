@@ -11,7 +11,6 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-
 from core.exportutils import EXC_TAB_NAME_LEN
 from core.models import Document
 from core.utils import today_string
@@ -50,11 +49,32 @@ class FidoExportMixin(ExportMixin):
         return exporter.response(filename=self.get_export_filename(export_format))
 
 
-class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
+class FAdminFilteredView(
+    FidoExportMixin,
+    SingleTableMixin,
+    FilterView,
+):
     paginate_by = 200
     template_name = "core/table_filter_generic.html"
     strict = False
     name = "View"
+
+    def class_name(self):
+        return "wide-table"
+
+    def get_table_kwargs(self):
+        return {
+            "template_name": "django_tables_2_bootstrap.html",
+            "attrs": {
+                "class": "govuk-table",
+                "thead": {"class": "govuk-table__head"},
+                "tbody": {"class": "govuk-table__body"},
+                "th": {"class": "govuk-table__header"},
+                "td": {"class": "govuk-table__cell"},
+                "tf": {"class": "govuk-table__cell"},
+                "a": {"class": "govuk-link"},
+            }
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

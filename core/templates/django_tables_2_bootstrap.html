@@ -3,7 +3,7 @@
 {% load forecast_format %}
 {% block table-wrapper %}
 {% block table %}
-    <table {% render_attrs table.attrs class="table" %}>
+    <table {% render_attrs table.attrs class="govuk-table" %}>
         <caption class="govuk-table__caption govuk-!-font-size-27">{{ table.attrs.caption }}</caption>
         {% block table.thead %}
         {% if table.show_header %}
@@ -63,9 +63,9 @@
         {% if table.page.has_previous %}
             {% block pagination.previous %}
                 <li class="previous">
-                    <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
+                    <a class="govuk-link" href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
                         <span aria-hidden="true">&laquo;</span>
-                        {% trans 'previous' %}
+                        {% trans 'Go to previous page' %}
                     </a>
                 </li>
             {% endblock pagination.previous %}
@@ -77,8 +77,8 @@
                         {% if p == '...' %}
                             <a href="#">{{ p }}</a>
                         {% else %}
-                            <a href="{% querystring table.prefixed_page_field=p %}">
-                                {{ p }}
+                            <a class="govuk-link" href="{% querystring table.prefixed_page_field=p %}">
+                                Go to page {{ p }}
                             </a>
                         {% endif %}
                     </li>
@@ -89,8 +89,8 @@
         {% if table.page.has_next %}
             {% block pagination.next %}
             <li class="next">
-                <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
-                    {% trans 'next' %}
+                <a class="govuk-link" href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
+                    {% trans 'Go to next page' %}
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

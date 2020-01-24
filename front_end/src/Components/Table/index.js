@@ -21,7 +21,7 @@ function Table({rowData, sheetUpdating}) {
     return (
         <Fragment>
             <table
-                className="govuk-table" id="forecast-table">
+                className="govuk-table finance-table" id="forecast-table">
                 <caption className="govuk-table__caption govuk-!-font-size-27">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
