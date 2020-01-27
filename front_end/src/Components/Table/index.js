@@ -11,12 +11,15 @@ import TotalBudget from '../../Components/TotalBudget/index'
 import OverspendUnderspend from '../../Components/OverspendUnderspend/index'
 import TotalOverspendUnderspend from '../../Components/TotalOverspendUnderspend/index'
 
-import { SET_SELECTED_ROW, SELECT_ALL } from '../../Reducers/Selected'
+import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 
 
 function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
     const rows = useSelector(state => state.allCells.cells);
+
+    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const allSelected = useSelector(state => state.selected.all);
 
     return (
         <Fragment>
@@ -25,16 +28,28 @@ function Table({rowData, sheetUpdating}) {
                 <caption className="govuk-table__caption govuk-!-font-size-27">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
-                        <td className="handle govuk-table__cell indicate-action">
+                        <th className="handle govuk-table__cell indicate-action select-all">
                             <button className="link-button govuk-link"
                                 id="select_all"                          
-                                onMouseDown={() => { 
-                                    dispatch(
-                                        SELECT_ALL()
-                                    );
+                                onMouseDown={() => {
+                                    if (allSelected) {
+                                        dispatch(
+                                            UNSELECT_ALL()
+                                        )
+                                    } else {
+                                        dispatch(
+                                            SELECT_ALL()
+                                        )
+                                    }
                                 }
-                            }>select all</button>
-                        </td>
+                            }>
+                                {allSelected ? (
+                                    <Fragment>unselect</Fragment>
+                                ) : (
+                                    <Fragment>select all</Fragment>
+                                )}
+                            </button>
+                        </th>
                         <TableHeader id="natural_account_code_header" headerType="natural_account_code">NAC</TableHeader>
                         <TableHeader headerType="programme">Programme</TableHeader>
                         <TableHeader headerType="analysis1_code">Analysis Code Sector</TableHeader>
@@ -65,14 +80,28 @@ function Table({rowData, sheetUpdating}) {
                                 <button
                                     className="select_row_btn govuk-link link-button"
                                     id={"select_row_" + rowIndex}
-                                    onMouseDown={() => { 
-                                        dispatch(
-                                            SET_SELECTED_ROW({
-                                                selectedRow: rowIndex
-                                            })
-                                        );
+                                    onMouseDown={() => {
+                                        if (selectedRow === rowIndex) {
+                                            dispatch(
+                                                SET_SELECTED_ROW({
+                                                    selectedRow: null
+                                                })
+                                            )
+                                        } else {
+                                            dispatch(
+                                                SET_SELECTED_ROW({
+                                                    selectedRow: rowIndex
+                                                })
+                                            )
+                                        }
                                     }
-                                }>select</button>
+                                }>
+                                    {selectedRow === rowIndex ? (
+                                        <Fragment>unselect</Fragment>
+                                    ) : (
+                                        <Fragment>select</Fragment>
+                                    )}
+                                </button>
                             </td>
                             <InfoCell cellKey={"natural_account_code"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"natural_account_code"} />
