@@ -290,52 +290,52 @@ def quick_links(request, year):
         "quick_links": [
             {
                 "title": "Cost Centre Hierarchy",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}cost_centre_filter".format(historical),
             },
             {
                 "title": "Programme Codes",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}programme_filter".format(historical),
             },
             {
                 "title": "Natural Account",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}natural_code".format(historical),
             },
             {
                 "title": "Budget",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}finance_category".format(historical),
             },
             {
                 "title": "Commercial",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}commercial_category".format(historical),
             },
             {
                 "title": "Contract Reconciliation",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}analysis_1".format(historical),
             },
             {
                 "title": "Markets (Analysis 2)",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}analysis_2".format(historical),
             },
             {
                 "title": "Projects (Spare 1)",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}project_filter".format(historical),
             },
             {
                 "title": "Entity-Inter Entity",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}inter_entity_filter".format(historical),
             },
             {
                 "title": "FCO Mapping",
-                "text": "TODO",
+                "text": "view",
                 "url": "{}fco_filter".format(historical),
             },
         ]
