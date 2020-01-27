@@ -137,7 +137,7 @@ function ForecastTable() {
                     let parts = state.edit.cellId.split("_")
                     targetRow = parseInt(parts[1])
                     targetMonth = parseInt(parts[2])
-                } else if (document.activeElement.className === "select_row_btn link-button") {
+                } else if (document.activeElement.className === "select_row_btn govuk-link link-button") {
                     let parts = document.activeElement.id.split("_")
                     targetRow = parseInt(parts[2])
                 }
@@ -285,7 +285,7 @@ function ForecastTable() {
             }
             <div className="toggle-links">
                 <button id="show_hide_nac"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_ITEM("natural_account_code")
@@ -298,7 +298,7 @@ function ForecastTable() {
                         <Fragment>Show</Fragment>
                     )} NAC</button>
                 <button id="show_hide_prog"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_ITEM("programme")
@@ -311,7 +311,7 @@ function ForecastTable() {
                         <Fragment>Show</Fragment>
                     )} programme</button>
                 <button id="show_hide_a1"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_ITEM("analysis1_code")
@@ -324,7 +324,7 @@ function ForecastTable() {
                         <Fragment>Show</Fragment>
                     )} analysis code sector</button>
                 <button id="show_hide_a2"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_ITEM("analysis2_code")
@@ -337,7 +337,7 @@ function ForecastTable() {
                         <Fragment>Show</Fragment>
                     )} analysis code market</button>
                 <button id="show_hide_proj"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
                             TOGGLE_ITEM("project_code")

@@ -241,9 +241,17 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
         for item in arg_link:
             link_args.append(tables.A(item))
 
-        self.link_col = ForecastLinkCol('', arg_link[0],
-                                        linkify={"viewname": viewname,
-                                                 "args": link_args})
+        self.link_col = ForecastLinkCol(
+            '',
+            arg_link[0],
+            attrs={
+                "class": "govuk-link"
+            },
+            linkify={
+                "viewname": viewname,
+                "args": link_args,
+            }
+        )
 
         super().__init__(*args, **kwargs)
 

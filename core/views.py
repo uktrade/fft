@@ -69,9 +69,8 @@ class FAdminFilteredView(
                 "class": "govuk-table",
                 "thead": {"class": "govuk-table__head"},
                 "tbody": {"class": "govuk-table__body"},
-                "th": {"class": "govuk-table__header"},
-                "td": {"class": "govuk-table__cell"},
-                "tf": {"class": "govuk-table__cell"},
+                "th": {"class": "govuk-table__header", "a": {"class": "govuk-link"}},
+                "td": {"class": "govuk-table__cell", "a": {"class": "govuk-link"}},
                 "a": {"class": "govuk-link"},
             }
         }

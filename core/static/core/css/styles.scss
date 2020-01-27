@@ -76,10 +76,34 @@ input.cell-input {
   color: red;
 }
 
+.govuk-table__header {
+  a {
+    color: #1d70b8;
+    font-family: "GDS Transport", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a:visited {
+    color: #4c2c92;
+  }
+  a:focus{border-color:#fd0;color:#0b0c0c;background-color:#fd0;box-shadow:inset 0 0 0 1px #fd0}
+}
+
 .forecast-month {
   padding-left:8px!important;
   text-align: right;
   display: block;
+
+  a {
+    color: #1d70b8;
+    font-family: "GDS Transport", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a:visited {
+    color: #4c2c92;
+  }
+  a:focus{border-color:#fd0;color:#0b0c0c;background-color:#fd0;box-shadow:inset 0 0 0 1px #fd0}
 }
 
 .forecast-month-cell {
@@ -157,7 +181,6 @@ table, td, th {
 }
 
 .link-button {
-  background: none!important;
   border: none;
   padding: 0!important;
   font-size:19px;

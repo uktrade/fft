@@ -26,7 +26,7 @@ function Table({rowData, sheetUpdating}) {
                 <thead className="govuk-table__head">
                     <tr index="0">
                         <td className="handle govuk-table__cell indicate-action">
-                            <button className="link-button"
+                            <button className="link-button govuk-link"
                                 id="select_all"                          
                                 onMouseDown={() => { 
                                     dispatch(
@@ -63,7 +63,7 @@ function Table({rowData, sheetUpdating}) {
                         return <tr key={rowIndex} index={(rowIndex + 1)}>
                             <td id={"select_" + rowIndex} className="handle govuk-table__cell indicate-action">
                                 <button
-                                    className="select_row_btn link-button"
+                                    className="select_row_btn govuk-link link-button"
                                     id={"select_row_" + rowIndex}
                                     onMouseDown={() => { 
                                         dispatch(
