@@ -2,21 +2,6 @@ from .base import *  # noqa
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-#import environ
-#
-# SASS_PROCESSOR_INCLUDE_DIRS = [
-#     os.path.join(env('NODE_PATH'), '/govuk-frontend/govuk/all'),
-# ]
-
-# WEBPACK_LOADER = {
-#     "DEFAULT": {
-#         "CACHE": not DEBUG,
-#         "BUNDLE_DIR_NAME": "build/",  # must end with slash
-#         "STATS_FILE": "/app/front_end/config/webpack-stats.json"  #os.path.join(BASE_DIR, "front_end", "fido", "build", "webpack-stats.json"),
-#     }
-# }
-#env = environ.Env()
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,6 +43,22 @@ CACHES = {
         },
         'KEY_PREFIX': 'cache_'
     }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': env('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+    },
 }
 
 SENTRY_KEY = env("SENTRY_KEY", default=None)
