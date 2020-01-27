@@ -18,7 +18,7 @@ const AggregateValue = ({rowIndex, actualsOnly}) => {
     }
 
     if (total < 0) {
-        className='negative'
+        className +='negative'
     }
 
     return (

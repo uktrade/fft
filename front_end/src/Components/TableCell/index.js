@@ -186,7 +186,7 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
                 className={getClasses()}
                 id={getId()}
                 onDoubleClick={ () => {
-                    if (!cell || isEditable) {
+                    if (isEditable) {
                         dispatch(
                             SET_EDITING_CELL({
                                 "cellId": cellId

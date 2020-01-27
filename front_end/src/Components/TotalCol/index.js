@@ -8,7 +8,6 @@ const TotalCol = ({month}) => {
     const cells = useSelector(state => state.allCells.cells);
 
     let total = 0
-    let isEditable = false
 
     // eslint-disable-next-line
     for (const cell of cells) {
@@ -16,11 +15,10 @@ const TotalCol = ({month}) => {
             continue
 
         total += cell[month].amount
-        isEditable = cell[month].isEditable
     }
 
     const getClasses = () => {
-        return "govuk-table__cell forecast-month-cell " + (isEditable ? '' : 'not-editable ') + (total < 0 ? 'negative' : '')
+        return "govuk-table__cell total-figure forecast-month-cell not-editable " + (total < 0 ? 'negative' : '')
     }
 
     return (
