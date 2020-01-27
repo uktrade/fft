@@ -411,12 +411,15 @@ class EditForecastView(
             many=True,
         )
 
+        actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
+
         forecast_dump = json.dumps(financial_code_serialiser.data)
         paste_form = PasteForecastForm()
 
         context["form"] = form
         context["paste_form"] = paste_form
         context["forecast_dump"] = forecast_dump
+        context["actuals"] = actual_data
 
         return context
 

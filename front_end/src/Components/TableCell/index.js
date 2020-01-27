@@ -10,7 +10,7 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
@@ -23,6 +23,13 @@ const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
     const allSelected = useSelector(state => state.selected.all);
 
     const cellId = getCellId(rowIndex, cellKey)
+
+    let isEditable = true
+
+    // Check for actual
+    if (window.actuals.indexOf(cellKey) > -1) {
+        isEditable = false
+    }
 
     const getValue = () => {
         if (cell && cell.amount) {
@@ -49,22 +56,23 @@ const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
     }
 
     const wasEdited = () => {
-        if (!cell.isEditable)
+        if (!isEditable)
             return false
 
         return cell.amount !== cell.startingAmount
     }
 
     const getClasses = () => {
-        if (!cell)
-            return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '')
-
         let editable = ''
-        let negative = ''
 
-        if (!cell.isEditable) {
+        if (!isEditable) {
             editable = ' not-editable'
         }
+
+        if (!cell)
+            return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '') + editable
+
+        let negative = ''
 
         if (cell.amount < 0) {
             negative = " negative"
@@ -159,7 +167,7 @@ const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
     }
 
     const isCellUpdating = () => {
-        if (cell && !cell.isEditable)
+        if (cell && !isEditable)
             return false
 
         if (isUpdating)
@@ -178,7 +186,7 @@ const TableCell = ({rowIndex, cellKey, cellMonth, sheetUpdating}) => {
                 className={getClasses()}
                 id={getId()}
                 onDoubleClick={ () => {
-                    if (!cell || cell.isEditable) {
+                    if (!cell || isEditable) {
                         dispatch(
                             SET_EDITING_CELL({
                                 "cellId": cellId

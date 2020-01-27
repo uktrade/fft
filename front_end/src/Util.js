@@ -121,12 +121,6 @@ export const processForecastData = (forecastData) => {
                 isEditable: !monthlyFigure.actual
             }
 
-            if (monthlyFigure.actual) {
-                if (window.actuals.indexOf(monthlyFigure.month) < 0) {
-                    window.actuals.push(monthlyFigure.month)
-                }
-            }
-
             colIndex++
         }
 
