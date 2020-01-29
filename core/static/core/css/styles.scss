@@ -142,7 +142,7 @@ table, td, th {
 }
 
 .selected {
-  background-color: govuk-colour("yellow");
+  background-color: #fff5b7;  // 25% tint of govt yellow
 }
 
 .selected.edited {
@@ -150,12 +150,12 @@ table, td, th {
 }
 
 .selected.not-editable {
-  background-color: govuk-colour("dark-grey");
+  background-color: govuk-colour("mid-grey");
   color:white;
 }
 
 .selected.edited {
-  background-color: govuk-colour("blue");
+  background-color: govuk-colour("light-blue");
   color: white;
 }
 
