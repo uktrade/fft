@@ -25,13 +25,13 @@ from costcentre.test.factories import (
 )
 
 from forecast.models import (
-    BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
     ForecastEditLock,
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.test_utils import create_budget
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
@@ -355,42 +355,6 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
 
         # Check we've been forwarded to edit page
         assert "/forecast/edit/" in response.url
-
-
-def create_budget(financial_code_obj, year_obj):
-    budget_apr = 1000000
-    budget_may = -1234567
-    budget_july = 1234567
-    budget_total = budget_apr + budget_may + budget_july
-    # Save several months, and check that the total is displayed
-    apr_budget = BudgetMonthlyFigure.objects.create(
-        financial_period=FinancialPeriod.objects.get(
-            financial_period_code=1
-        ),
-        financial_code=financial_code_obj,
-        financial_year=year_obj,
-        amount=budget_apr
-    )
-    apr_budget.save
-    may_budget = BudgetMonthlyFigure.objects.create(
-        financial_period=FinancialPeriod.objects.get(
-            financial_period_code=2,
-        ),
-        amount=budget_may,
-        financial_code=financial_code_obj,
-        financial_year=year_obj
-    )
-    may_budget.save
-    july_budget = BudgetMonthlyFigure.objects.create(
-        financial_period=FinancialPeriod.objects.get(
-            financial_period_code=4,
-        ),
-        amount=budget_july,
-        financial_code=financial_code_obj,
-        financial_year=year_obj
-    )
-    july_budget.save
-    return budget_total
 
 
 class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):

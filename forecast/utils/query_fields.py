@@ -6,6 +6,11 @@ BUDGET_TYPE_ORDER =  "financial_code__programme__budget_type_fk__budget_type_dis
 BUDGET_CATEGORY_ID = "financial_code__natural_account_code__expenditure_category__id"  # noqa
 BUDGET_CATEGORY_NAME = "financial_code__natural_account_code__expenditure_category__grouping_description"   # noqa
 
+# PAY, NON-PAY, CAPITAL, NON-CASH
+BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
+BUDGET_NAC_CODE = "financial_code__natural_account_code__expenditure_category__linked_budget_code"  # noqa
+BUDGET_NAC_CODE_DESCRIPTION = "financial_code__natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
+
 # Admin, Capital or Programme
 FORECAST_EXPENDITURE_TYPE_NAME = "financial_code__forecast_expenditure_type__forecast_expenditure_type_name"  # noqa
 FORECAST_EXPENDITURE_TYPE_DESCRIPTION = "financial_code__forecast_expenditure_type__forecast_expenditure_type_description"  # noqa
@@ -25,6 +30,8 @@ GROUP_CODE = "financial_code__cost_centre__directorate__group__group_code"  # no
 
 NAC_CODE = "financial_code__natural_account_code__natural_account_code"
 NAC_NAME = "financial_code__natural_account_code__natural_account_code_description"  # noqa
+NAC_EXPENDITURE_TYPE = "financial_code__natural_account_code__economic_budget_code"  # noqa
+
 
 PROJECT_CODE = "financial_code__project_code__project_code"
 PROJECT_NAME = "financial_code__project_code__project_description"
@@ -34,9 +41,6 @@ ANALYSIS1_NAME = "financial_code__analysis1_code__analysis1_description"
 
 ANALYSIS2_CODE = "financial_code__analysis2_code__analysis2_code"
 ANALYSIS2_NAME = "financial_code__analysis2_code__analysis2_description"
-
-# PAY, NON-PAY, CAPITAL, NON-CASH
-BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
 
 SHOW_DIT = 0
 SHOW_GROUP = 1
@@ -232,5 +236,63 @@ DEFAULT_PIVOT_COLUMNS = {
     ANALYSIS2_CODE: "Market Code",
     ANALYSIS2_NAME: "Market Description",
     PROJECT_CODE: "Project Code",
+    PROJECT_NAME: "Project Description",
+}
+
+
+VIEW_FORECAST_DOWNLOAD_COLUMNS = {
+    GROUP_NAME: "Group Name",
+    GROUP_CODE: "Group Code",
+    DIRECTORATE_NAME: "Directorate Name",
+    DIRECTORATE_CODE: "Directorate Code",
+    COST_CENTRE_NAME: "Cost Centre Description",
+    COST_CENTRE_CODE: "Cost Centre Code",
+    BUDGET_GROUPING: "Budget Grouping",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Forecast Expenditure Type",
+    BUDGET_TYPE: "Budget Type",
+    BUDGET_CATEGORY_NAME: "Budget Category",
+    BUDGET_NAC_CODE: "Budget/Forecast NAC",
+    BUDGET_NAC_CODE_DESCRIPTION: "Budget/Forecast NAC Description",
+    NAC_CODE: "PO/Actual NAC",
+    NAC_NAME: "Natural Account Code Description",
+    NAC_EXPENDITURE_TYPE: "NAC Expenditure Type",
+    PROGRAMME_CODE: "Programme Code",
+    PROGRAMME_NAME: "Programme Description",
+    ANALYSIS1_CODE: "Contract Code",
+    ANALYSIS1_NAME: "Contract Description",
+    ANALYSIS2_CODE: "Market Code",
+    ANALYSIS2_NAME: "Market Description",
+    PROJECT_CODE: "Project Code",
+    PROJECT_NAME: "Project Description",
+}
+
+
+EDIT_KEYS_DOWNLOAD = {
+    NAC_CODE: 'Natural Account code',
+    PROGRAMME_CODE: 'Programme code',
+    ANALYSIS1_CODE: 'Contract Code',
+    ANALYSIS2_CODE: 'Market Code',
+    PROJECT_CODE: 'Project Code',
+}
+
+
+EDIT_FORECAST_DOWNLOAD_COLUMNS = {
+    GROUP_NAME: "Group Name",
+    GROUP_CODE: "Group Code",
+    DIRECTORATE_NAME: "Directorate Name",
+    DIRECTORATE_CODE: "Directorate Code",
+    COST_CENTRE_NAME: "Cost Centre Name",
+    COST_CENTRE_CODE: "Cost Centre Code",
+    BUDGET_GROUPING: "Budget Grouping",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Forecast Expenditure Type",
+    BUDGET_TYPE: "Budget Type",
+    BUDGET_CATEGORY_NAME: "Budget Category",
+    BUDGET_NAC_CODE: "Budget/Forecast NAC",
+    BUDGET_NAC_CODE_DESCRIPTION: "Budget/Forecast NAC Description",
+    NAC_NAME: "Natural Account Code Description",
+    NAC_EXPENDITURE_TYPE: "NAC Expenditure Type",
+    PROGRAMME_NAME: "Programme Description",
+    ANALYSIS1_NAME: "Contract Description",
+    ANALYSIS2_NAME: "Market Description",
     PROJECT_NAME: "Project Description",
 }

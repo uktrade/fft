@@ -1,3 +1,5 @@
+import inspect
+
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 
@@ -18,7 +20,7 @@ class RequestFactoryBase:
         self.test_user.set_password(self.test_password)
         self.test_user.save()
 
-    def factory_get(self, url, view_class, *args, **kwargs):
+    def factory_get(self, url, view_obj, *args, **kwargs):
         # Bust permissions cache (refresh_from_db does not work)
         self.test_user, _ = get_user_model().objects.get_or_create(
             email="test@test.com"
@@ -26,7 +28,10 @@ class RequestFactoryBase:
 
         request = self.factory.get(url)
         request.user = self.test_user
-        return view_class.as_view()(request, **kwargs)
+        if inspect.isclass(view_obj):
+            return view_obj.as_view()(request, **kwargs)
+        else:
+            return view_obj(request, **kwargs)
 
     def factory_post(self, url, post_content, view_class, *args, **kwargs):
         # Bust permissions cache (refresh_from_db does not work)

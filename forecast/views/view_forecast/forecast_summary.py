@@ -75,14 +75,14 @@ class ForecastMultiTableMixin(MultiTableMixin):
             filter_code = self.kwargs[arg_name]
             pivot_filter = {filter_selectors[self.hierarchy_type]: f"{filter_code}"}
 
-        hierarchy_data = ForecastBudgetDataView.sub_total.subtotal_data(
+        hierarchy_data = ForecastBudgetDataView.view_data.subtotal_data(
             hierarchy_sub_total_column[self.hierarchy_type],
             hierarchy_sub_total,
             hierarchy_columns[self.hierarchy_type].keys(),
             pivot_filter,
             order_list=hierarchy_order_list,
         )
-        programme_data = ForecastBudgetDataView.sub_total.subtotal_data(
+        programme_data = ForecastBudgetDataView.view_data.subtotal_data(
             programme_display_sub_total_column,
             programme_sub_total,
             programme_columns.keys(),
@@ -90,7 +90,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=programme_order_list,
         )
 
-        expenditure_data = ForecastBudgetDataView.sub_total.subtotal_data(
+        expenditure_data = ForecastBudgetDataView.view_data.subtotal_data(
             expenditure_display_sub_total_column,
             expenditure_sub_total,
             expenditure_columns.keys(),
@@ -98,7 +98,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             order_list=expenditure_order_list,
         )
 
-        project_data = ForecastBudgetDataView.sub_total.subtotal_data(
+        project_data = ForecastBudgetDataView.view_data.subtotal_data(
             project_display_sub_total_column,
             project_sub_total,
             project_columns.keys(),

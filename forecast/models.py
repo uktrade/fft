@@ -607,7 +607,7 @@ class ForecastBudgetDataView(models.Model):
     adj2 = models.BigIntegerField(default=0)
     adj3 = models.BigIntegerField(default=0)
     objects = models.Manager()  # The default manager.
-    sub_total = DisplaySubTotalManager()
+    view_data = DisplaySubTotalManager()
 
     class Meta:
         managed = False
