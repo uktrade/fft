@@ -1,4 +1,11 @@
-{% extends "standard_content.html" %}
+{% extends "wide_content.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Chart of account period" "chart_of_account_choose_year" %}
+    {% breadcrumb view.name "" %}
+{% endblock %}
 
 {% load render_table from django_tables2 %}
 {% load querystring from django_tables2 %}
@@ -7,26 +14,37 @@
     {% block top %}
         {{ block.super }}
     {% endblock %}
-    <h3>{{ section_name }}</h3>
-    <p>{{ section_description }}</p>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">{{ section_name }}</h1>
+            <p class="govuk-body">{{ section_description }}</p>
+        </div>
     {% if filter %}
-        <form action="" method="get" class="form form-inline">
-        <table>
-            {{ filter.form.as_table }}
-             </table>
-            <button type="submit">Search</button>
-
-
-        </form>
+        <div class="govuk-grid-column-one-third">
+            <form action="" method="get" class="form form-inline">
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="address-line-1">
+                        Search {{ view.name|lower }}
+                    </label>
+                    {{ filter.form }}
+                </div>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Search
+                </button>
+            </form>
+        </div>
     {% endif %}
+    </div>
     <!--<p>Record returned: {{ table.rows|length }}</p>-->
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <a class="govuk-button govuk-button--secondary" href="{% querystring '_export'='xlsx' %}">Download to Excel</a>
 
-
-    <p></p>
-    <a href="{% querystring '_export'='xlsx' %}">Download to Excel</a>
-
-    {% render_table table %}
-    {% block bottom %}
-        {{ block.super }}
-    {% endblock %}
+            {% render_table table %}
+            {% block bottom %}
+                {{ block.super }}
+            {% endblock %}
+        </div>
+    </div>
 {% endblock %}

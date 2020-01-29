@@ -1,34 +1,25 @@
-import React, {Fragment, useEffect } from 'react';
+import React, {Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Table from '../../Components/Table/index'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { store } from '../../Store';
 import { 
-    TOGGLE_NAC,
-    TOGGLE_PROG, 
-    TOGGLE_AN1,
-    TOGGLE_AN2,
-    TOGGLE_PROJ_CODE,
-
-} from '../../Reducers/ShowHideCols'
+    TOGGLE_ITEM,
+} from '../../Reducers/HiddenCols'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
 import {
     getCellId,
     postData,
-    processForecastData
+    processForecastData,
 } from '../../Util'
 
 
 function ForecastTable() {
     const dispatch = useDispatch();
 
-    const nac = useSelector(state => state.showHideCols.nac);
-    const programme = useSelector(state => state.showHideCols.programme);
-    const analysis1 = useSelector(state => state.showHideCols.analysis1);
-    const analysis2 = useSelector(state => state.showHideCols.analysis2);
-    const projectCode = useSelector(state => state.showHideCols.projectCode);
+    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols)
 
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
@@ -36,6 +27,8 @@ function ForecastTable() {
 
     const cells = useSelector(state => state.allCells.cells);
     const editCellId = useSelector(state => state.edit.cellId);
+
+    const [sheetUpdating, setSheetUpdating] = useState(false)
 
     useEffect(() => {
         const timer = () => {
@@ -83,17 +76,23 @@ function ForecastTable() {
                 }
             }
 
+            setSheetUpdating(true)
+
             postData(
                 `/forecast/paste-forecast/${window.cost_centre}/`,
                 payload
             ).then((response) => {
                 if (response.status === 200) {
+                    setSheetUpdating(false)
                     let rows = processForecastData(response.data)
+                    console.log("UPDATED")
                       dispatch({
                         type: SET_CELLS,
                         cells: rows
                       })
                 } else {
+                    setSheetUpdating(false)
+                    console.log("UPDATED ERROR")
                     dispatch(
                         SET_ERROR({
                             errorMessage: response.data.error
@@ -114,106 +113,159 @@ function ForecastTable() {
     useEffect(() => {
         const handleKeyDown = (event) => {
             // This function puts editing cells into the tab order of the page
-            let next_id = null
             let footerLink = document.getElementsByClassName("govuk-footer__link")[0]
 
+            let lowestMonth = 0
+
+            if (window.actuals && window.actuals.length > 0) {
+                let highestActual = Math.max(...window.actuals)
+
+                if (highestActual) {
+                    lowestMonth = highestActual
+                }
+            }
+
+            const state = store.getState();
+
             if (event.key === "Tab") {
-                console.log("document.activeElement.className", document.activeElement.className)
+                let targetRow = -1
+                let targetMonth = null
+                let nextId = null
 
-                if (document.activeElement.className === "select_row_btn link-button") {
+                // Check for select button
+                if (editCellId) {
+                    let parts = state.edit.cellId.split("_")
+                    targetRow = parseInt(parts[1])
+                    targetMonth = parseInt(parts[2])
+                } else if (document.activeElement.className === "select_row_btn govuk-link link-button") {
                     let parts = document.activeElement.id.split("_")
-                    let row = parseInt(parts[2])
+                    targetRow = parseInt(parts[2])
+                }
 
-                    if (event.shiftKey) {
-                        if (row === 0) {
-                            return
-                        } else {
-                            next_id = getCellId(3, (row - 1))
+                if (event.shiftKey && document.activeElement === footerLink) {
+                    targetRow = cells.length - 1
+                    targetMonth = 12
+
+                    nextId = getCellId(targetRow, targetMonth)
+                    event.preventDefault()
+                    document.activeElement.blur();
+
+                    dispatch(
+                        SET_EDITING_CELL({
+                            "cellId": nextId
+                        })
+                    );
+
+                    return
+                }
+
+                if (targetRow > -1) {
+                    if (event.shiftKey) { // We're going backwards
+                        if (document.activeElement === footerLink) {
+                            targetRow = cells.length
+                            targetMonth = 12
+                        }
+                        else if (!targetMonth) { // See if we're on a select button
+                            if (targetRow === 0) { // See if we're at the start of the table
+                                dispatch(
+                                    SET_EDITING_CELL({
+                                        "cellId": null
+                                    })
+                                )
+                                return
+                            } else {
+                                targetRow--
+                                targetMonth = 12
+                            }
+                        } else { // We're coming from a cell
+                            if (targetMonth === (lowestMonth + 1)) { // See if we need to jump to select link
+                                let selectRowBtn = document.getElementById("select_row_" + targetRow)
+                                selectRowBtn.focus()
+                                event.preventDefault()
+                                dispatch(
+                                    SET_EDITING_CELL({
+                                        "cellId": null
+                                    })
+                                )
+                                return
+                            } else {
+                                targetMonth--
+                            }
                         }
                     } else {
-                        next_id = getCellId(4 + window.actuals.length, row)
-                    }
+                        // Going forwards
+                        if (!targetMonth)
+                            targetMonth = lowestMonth
 
-                    document.activeElement.blur();
-                    event.preventDefault()
-                } else if (event.shiftKey && document.activeElement === footerLink) {
-                    next_id = getCellId(3, cells.length - 1)
-                    document.activeElement.blur();
-                    event.preventDefault()
-                } else {
-                    if (!editCellId)
-                        return
-                }
+                        targetMonth++
 
-                if (!next_id) {
-                    const state = store.getState();
+                        // Jump to next row if we've reached the end of the current one
+                        if (targetMonth > 12) {
+                            targetRow++
+                            // targetMonth = lowestMonth + 1
 
-                    if (!state.edit.cellId)
-                        return
-
-                    let idParts = state.edit.cellId.split("_")
-
-                    let month = parseInt(idParts[1])
-                    let rowIndex = parseInt(idParts[2])
-
-                    if (event.shiftKey) { // reverse tab
-                        // check for start of table
-                        if (rowIndex === 0 && month === (4 + window.actuals.length)) {
-                            let selectRowBtn = document.getElementById("select_row_0")
+                            let selectRowBtn = document.getElementById("select_row_" + targetRow)
                             selectRowBtn.focus()
-                            next_id = null
                             event.preventDefault()
-                        } else {
-                            // 4 is march and the end of the financial year
-                            if (month === (4 + window.actuals.length)) {
-                                let selectRowBtn = document.getElementById("select_row_" + rowIndex)
-                                selectRowBtn.focus()
-                                next_id = null
-                            } else if (month === 1) { // 1 is april, the start of fin year
-                                month = 13
-                                next_id = getCellId(month - 1, rowIndex)
-                            } else {
-                                next_id = getCellId(month - 1, rowIndex)
-                            }
-                            event.preventDefault()
+                            dispatch(
+                                SET_EDITING_CELL({
+                                    "cellId": null
+                                })
+                            )
+                            return
                         }
-                    } else { // tab
-                        // check for end of table
-                        if (rowIndex === (cells.length - 1) && month === 3) {
-                            next_id = null
+
+                        if (targetMonth <= lowestMonth) {
+                            targetMonth = lowestMonth
+                        }
+                        // Check for end of table
+                        if (targetRow > (cells.length - 1)) {
+                            dispatch(
+                                SET_EDITING_CELL({
+                                    "cellId": null
+                                })
+                            );
                             footerLink.focus()
                             event.preventDefault()
-                        } else {
-                            if (month === 12) { // allow for financial year
-                                month = 0
-                                next_id = getCellId(month + 1, rowIndex)
-                            } else if (month === 3) { // jump to select to btn if 3
-                                rowIndex++
-                                let selectRowBtn = document.getElementById("select_row_" + rowIndex)
-                                selectRowBtn.focus()
-                                next_id = null
-                            } else {
-                                next_id = getCellId(month + 1, rowIndex)
-                            }
-                            event.preventDefault()
+                            return
                         }
                     }
-                }
 
-                dispatch(
-                    SET_EDITING_CELL({
-                        "cellId": next_id
-                    })
-                );
+                    nextId = getCellId(targetRow, targetMonth)
+
+                    event.preventDefault()
+                    document.activeElement.blur();
+
+                    dispatch(
+                        SET_EDITING_CELL({
+                            "cellId": nextId
+                        })
+                    );
+                }
             }
         }
 
+        const handleMouseDn = (event) => {
+            if (event) {
+              //alert("You clicked outside of me!");
+            }
+            // dispatch(
+            //     SET_EDITING_CELL({
+            //         "cellId": null
+            //     })
+            // );
+        }
+
         window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("mousedown", handleMouseDn);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("mousedown", handleMouseDn);
         };
     }, [dispatch, cells, editCellId]);
+
+
 
     return (
         <Fragment>
@@ -233,72 +285,72 @@ function ForecastTable() {
             }
             <div className="toggle-links">
                 <button id="show_hide_nac"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_NAC()
+                            TOGGLE_ITEM("natural_account_code")
                         );
                         e.preventDefault()
                     }}
-                >{nac ? (
+                >{hiddenCols.indexOf("natural_account_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
                     )} NAC</button>
                 <button id="show_hide_prog"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_PROG()
+                            TOGGLE_ITEM("programme")
                         );
                         e.preventDefault()
                     }}
-                >{programme ? (
+                >{hiddenCols.indexOf("programme") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
                     )} programme</button>
                 <button id="show_hide_a1"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_AN1()
+                            TOGGLE_ITEM("analysis1_code")
                         );
                         e.preventDefault()
                     }}
-                >{analysis1 ? (
+                >{hiddenCols.indexOf("analysis1_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
                     )} analysis code sector</button>
                 <button id="show_hide_a2"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_AN2()
+                            TOGGLE_ITEM("analysis2_code")
                         );
                         e.preventDefault()
                     }}
-                >{analysis2 ? (
+                >{hiddenCols.indexOf("analysis2_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
                     )} analysis code market</button>
                 <button id="show_hide_proj"
-                    className="link-button"
+                    className="link-button govuk-link"
                     onClick={(e) => {
                         dispatch(
-                            TOGGLE_PROJ_CODE()
+                            TOGGLE_ITEM("project_code")
                         );
                         e.preventDefault()
                     }}
-                >{projectCode ? (
+                >{hiddenCols.indexOf("project_code") === -1 ? (
                         <Fragment>Hide</Fragment>
                     ) : (
                         <Fragment>Show</Fragment>
                     )} project code</button>
             </div>            
-            <Table />
+            <Table sheetUpdating={sheetUpdating} />
         </Fragment>
     );
 }

@@ -40,22 +40,21 @@ def step_impl(context):
     context.browser.get(f'{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/')
 
     WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_4_0"))
+        ec.presence_of_element_located((By.ID, "id_0_4"))
     )
 
     april_value = context.browser.find_element_by_id(
-        "id_4_0"
+        "id_0_1"
     ).get_attribute(
         'innerHTML'
     )
 
     assert april_value == "0"
 
-    WebDriverWait(context.browser, 5000).until(
+    first_select = WebDriverWait(context.browser, 5000).until(
         ec.presence_of_element_located((By.ID, "select_all"))
     )
 
-    first_select = context.browser.find_element_by_id("select_all")
     first_select.click()
 
 
@@ -70,7 +69,7 @@ def step_impl(context):
     )
 
     april_value = context.browser.find_element_by_id(
-        "id_4_0"
+        "id_0_1"
     ).get_attribute(
         'innerHTML'
     )
@@ -106,7 +105,7 @@ def step_impl(context):
 @then(u'the clipboard data is displayed in the forecast table')
 def step_impl(context):
     april_value = context.browser.find_element_by_id(
-        "id_4_0"
+        "id_0_1"
     ).get_attribute(
         'innerHTML'
     )
@@ -164,7 +163,7 @@ def step_impl(context):
 @then(u'the actuals data is unchanged')
 def step_impl(context):
     april_value = context.browser.find_element_by_id(
-        "id_4_0"
+        "id_0_1"
     ).get_attribute(
         'innerHTML'
     )

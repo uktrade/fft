@@ -32,6 +32,12 @@ function getCookie(name) {
     return cookieValue;
 }
 
+export const formatValue = (value) => {
+    let nfObject = new Intl.NumberFormat('en-GB'); 
+    let pounds = Math.round(value)
+    return nfObject.format(pounds); 
+}
+
 export async function postData(url = '', data = {}) {
     var csrftoken = getCookie('csrftoken');
 
@@ -83,7 +89,8 @@ export const processForecastData = (forecastData) => {
         "cost_centre",
         "natural_account_code",
         "programme",
-        "project_code"
+        "project_code",
+        "budget",
     ]
 
     forecastData.forEach(function (rowData, rowIndex) {
@@ -93,7 +100,6 @@ export const processForecastData = (forecastData) => {
         // eslint-disable-next-line
         for (const financialCodeCol of financialCodeCols) {
             cells[financialCodeCol] = {
-                id: getCellId(financialCodeCol, rowIndex),
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: financialCodeCol,
@@ -107,18 +113,12 @@ export const processForecastData = (forecastData) => {
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
             cells[monthlyFigure.month] = {
-                id: getCellId(monthlyFigure.month, rowIndex),
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: monthlyFigure.month,
-                versions: monthlyFigure.monthly_figure_amounts.sort((a, b) => (a.version < b.version) ? 1 : -1),
+                amount: monthlyFigure.amount,
+                startingAmount: monthlyFigure.starting_amount,
                 isEditable: !monthlyFigure.actual
-            }
-
-            if (monthlyFigure.actual) {
-                if (window.actuals.indexOf(monthlyFigure.month) < 0) {
-                    window.actuals.push(monthlyFigure.month)
-                }
             }
 
             colIndex++

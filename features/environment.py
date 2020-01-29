@@ -1,7 +1,10 @@
 import datetime
 import time
 
+import pyperclip
+
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
 
@@ -36,10 +39,13 @@ from chartofaccountDIT.test.factories import (
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastEditLock,
+    ForecastMonthlyFigure,
 )
-from forecast.test.factories import FinancialPeriodFactory
+from forecast.test.factories import (
+    FinancialPeriodFactory,
+    ForecastEditLockFactory,
+)
 
 TEST_COST_CENTRE_CODE = 888812
 
@@ -127,16 +133,15 @@ def set_up_test_objects(context):
                     project_code=project_code,
                 )
 
-            monthly_figure = MonthlyFigure.objects.create(
+            ForecastMonthlyFigure.objects.create(
                 financial_year_id=get_current_financial_year(),
                 financial_period_id=financial_period,
                 financial_code=financial_code,
-            )
-
-            MonthlyFigureAmount.objects.create(
-                monthly_figure=monthly_figure,
                 amount=0,
             )
+
+    if ForecastEditLock.objects.count() == 0:
+        ForecastEditLockFactory.create()
 
 
 def create_test_user(context):
@@ -182,29 +187,37 @@ def create_test_user(context):
 
 
 def paste(context):
-    first_select = context.browser.find_element_by_id("clipboard-test")
-    first_select.send_keys(Keys.CONTROL, "v")
+    try:
+        pyperclip.paste()
+        action_chains = ActionChains(context.browser)
+        action_chains.key_down(Keys.SHIFT).key_down(Keys.INSERT).perform()
+    except pyperclip.PyperclipException:
+        first_select = context.browser.find_element_by_id("clipboard-test")
+        first_select.send_keys(Keys.CONTROL, "v")
 
     # Wait for UI to update
     time.sleep(2)
 
 
 def copy_text(context, text):
-    context.browser.execute_script(
-        """function copyToClipboard() {{
-        const input = document.createElement('textarea');
-        document.body.appendChild(input);
-        input.value = "{}";
-        input.id = "clipboard-test"
-        input.focus();
-        input.select();
-        const isSuccessful = document.execCommand('copy');
-        console.log(isSuccessful);
-        input.blur();
-        }}
-        copyToClipboard()
-        """.format(text)
-    )
+    try:
+        pyperclip.copy(text.replace("\\n", "\n"))
+    except pyperclip.PyperclipException:
+        context.browser.execute_script(
+            """function copyToClipboard() {{
+            const input = document.createElement('textarea');
+            document.body.appendChild(input);
+            input.value = "{}";
+            input.id = "clipboard-test"
+            input.focus();
+            input.select();
+            const isSuccessful = document.execCommand('copy');
+            console.log(isSuccessful);
+            input.blur();
+            }}
+            copyToClipboard()
+            """.format(text)
+        )
 
 
 def before_scenario(context, scenario):

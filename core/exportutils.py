@@ -16,6 +16,7 @@ from .import_csv import (
 
 # The max lenght for an Excel tab name is 31. So truncate the name, if needed
 EXC_TAB_NAME_LEN = 31
+EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 def get_fk_value(obj, field, novalue="-"):
@@ -140,9 +141,6 @@ def export_to_csv(queryset, f, title=""):
 
 def generic_export_to_csv(queryset):
     return export_to_csv(queryset, generic_table_iterator)
-
-
-EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 def export_to_excel(queryset, f, title=""):

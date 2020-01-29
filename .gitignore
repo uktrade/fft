@@ -146,3 +146,6 @@ test-reports/*
 fidovenv/*
 selenium-server-standalone-3.5.3.jar
 chromedriver
+
+# Fixture data
+fixtures/*

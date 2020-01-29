@@ -26,7 +26,7 @@
     <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
 </head>
 
-<body class="govuk-template__body ">
+<body class="govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
 <script>
     document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
 </script>
@@ -65,16 +65,18 @@
                             Chart of Account
                         </a>
                     </li>
-                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/edit/' %}govuk-header__navigation-item--active{% endif %}">
-                        <a class="govuk-header__link" href="{% url 'gifts_hospitality:quick_links' %}">
-                            Gifts & Hospitality Register
-                        </a>
-                    </li>
+
+{#                    <li class="govuk-header__navigation-item {% if request.path == '/forecast/edit/' %}govuk-header__navigation-item--active{% endif %}">#}
+{#                        <a class="govuk-header__link" href="{% url 'gifts_hospitality:quick_links' %}">#}
+{#                            Gifts & Hospitality Register#}
+{#                        </a>#}
+{#                    </li>#}
+
                     {% is_forecast_user user as is_forecast_user %}
                     {% if is_forecast_user == True %}
                         <li class="govuk-header__navigation-item {% if request.path == '/forecast/dit/' %}govuk-header__navigation-item--active{% endif %}">
                             <a class="govuk-header__link" href="/forecast/dit/">
-                                Forecast
+                                View Forecast
                             </a>
                         </li>
                         {% has_edit_permission user as has_edit_permission %}

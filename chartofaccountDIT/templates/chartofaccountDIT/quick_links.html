@@ -1,6 +1,12 @@
 {% extends "wide_content.html" %}
-
 {% load chart_of_account %}
+
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Chart of account period" "chart_of_account_choose_year" %}
+{% endblock %}
 
 {% block content %}
     <span class="govuk-caption-xl">{% financial_year year %}</span>

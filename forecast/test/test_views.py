@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
 
@@ -28,10 +27,11 @@ from costcentre.test.factories import (
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastEditLock,
+    ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.test_utils import create_budget
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
@@ -54,6 +54,7 @@ from forecast.views.view_forecast.programme_details import (
     DirectorateProgrammeDetailsView,
     GroupProgrammeDetailsView,
 )
+
 
 TOTAL_COLUMN = -3
 SPEND_TO_DATE_COLUMN = -4
@@ -87,13 +88,19 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
             }
         )
 
-        # Should 403 as they do not have permission
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                edit_forecast_url,
-                EditForecastView,
-                cost_centre_code=self.cost_centre_code,
-            )
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        assert resp.status_code == 302
+        assert resp.url == reverse(
+            "forecast_cost_centre",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code
+            }
+        )
 
     def test_edit_forecast_view(self):
         # Add forecast view permission
@@ -127,10 +134,8 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 302)
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         self.assertTrue(self.test_user.has_perm("change_costcentre", self.cost_centre))
-        self.assertTrue(self.test_user.has_perm("view_costcentre", self.cost_centre))
 
         resp = self.factory_get(
             edit_forecast_url,
@@ -192,11 +197,8 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
 
     def test_view_add_row(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
-        monthly_figures = MonthlyFigure.objects.all()
-
-        assert monthly_figures.count() == 0
+        assert FinancialCode.objects.count() == 0
 
         add_resp = self.add_row_get_response(
             reverse(
@@ -225,11 +227,44 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
 
         self.assertEqual(add_row_resp.status_code, 302)
 
-        assert monthly_figures.count() == 12
+        assert FinancialCode.objects.count() == 1
+
+    def test_view_add_row_with_period_actual(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        # financial period with actual
+        financial_period = FinancialPeriod.objects.get(
+            financial_period_code=1,
+        )
+        financial_period.actual_loaded = True
+        financial_period.save()
+
+        assert ForecastMonthlyFigure.objects.count() == 0
+
+        # add_forecast_row
+        add_row_resp = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+            }
+        )
+
+        self.assertEqual(add_row_resp.status_code, 302)
+
+        assert ForecastMonthlyFigure.objects.count() == 1
+
+        monthly_figure = ForecastMonthlyFigure.objects.first()
+
+        assert monthly_figure.financial_period.financial_period_code == financial_period.financial_period_code  # noqa
 
     def test_duplicate_values_invalid(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
         # add forecast row
         response = self.add_row_post_response(
@@ -249,7 +284,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(MonthlyFigure.objects.count(), 12)
+        self.assertEqual(FinancialCode.objects.count(), 1)
 
         response_2 = self.add_row_post_response(
             reverse(
@@ -272,7 +307,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
         assert "govuk-list govuk-error-summary__list" in str(
             response_2.rendered_content,
         )
-        self.assertEqual(MonthlyFigure.objects.count(), 12)
+        self.assertEqual(FinancialCode.objects.count(), 1)
 
 
 class ChooseCostCentreTest(TestCase, RequestFactoryBase):
@@ -284,7 +319,6 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code
         )
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        assign_perm("view_costcentre", self.test_user, self.cost_centre)
 
     def test_choose_cost_centre(self):
         response = self.factory_get(
@@ -366,35 +400,25 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             project_code=self.project_obj
         )
         financial_code_obj.save
-        apr_figure = MonthlyFigure.objects.create(
+        apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
             financial_code=financial_code_obj,
-            financial_year=year_obj
-        )
-        apr_figure.save
-        apr_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=apr_figure,
+            financial_year=year_obj,
             amount=self.amount_apr
         )
-        apr_amount.save()
+        apr_figure.save
         self.amount_may = 1234567
-        may_figure = MonthlyFigure.objects.create(
+        may_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
-                financial_period_code=4
+                financial_period_code=2,
             ),
+            amount=self.amount_may,
             financial_code=financial_code_obj,
             financial_year=year_obj
         )
         may_figure.save
-        may_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=may_figure,
-            amount=self.amount_may
-        )
-        may_amount.save()
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(
             codename='can_view_forecasts'
@@ -402,8 +426,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
+        self.budget = create_budget(financial_code_obj, year_obj)
         self.year_total = self.amount_apr + self.amount_may
-        self.underspend_total = -self.amount_apr - self.amount_may
+        self.underspend_total = self.budget - self.amount_apr - self.amount_may
         self.spend_to_date_total = self.amount_apr
 
     def test_dit_view(self):
@@ -488,6 +513,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         expenditure_rows = table.find_all("tr")
         first_expenditure_cols = expenditure_rows[1].find_all("td")
         assert (first_expenditure_cols[1].get_text() == '—')
+        assert first_expenditure_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
@@ -505,6 +533,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         first_project_cols = project_rows[1].find_all("td")
         assert first_project_cols[1].get_text() == self.project_obj.project_description
         assert first_project_cols[2].get_text() == self.project_obj.project_code
+        assert first_project_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
@@ -520,12 +551,15 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_hierarchy_table(self, table, hierarchy_element):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[1].find_all("td")
-
         assert first_hierarchy_cols[1].get_text() == hierarchy_element
-        # Check the April value
+
+        assert first_hierarchy_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
         assert first_hierarchy_cols[4].get_text() == format_forecast_figure(
             self.amount_apr / 100
         )
+
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
         assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == \
@@ -556,7 +590,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
         soup = BeautifulSoup(resp.content, features="html.parser")
-
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
@@ -749,51 +782,36 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
             natural_account_code=self.nac2_obj,
         )
         financial_code2_obj.save
-        apr_figure = MonthlyFigure.objects.create(
+        apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
             financial_code=financial_code1_obj,
-            financial_year=year_obj
+            financial_year=year_obj,
+            amount=self.amount1_apr,
         )
         apr_figure.save
-        apr_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=apr_figure,
-            amount=self.amount1_apr
-        )
-        apr_amount.save()
 
-        apr_figure = MonthlyFigure.objects.create(
+        apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
             financial_code=financial_code2_obj,
-            financial_year=year_obj
-        )
-        apr_figure.save
-        apr_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=apr_figure,
+            financial_year=year_obj,
             amount=self.amount2_apr
         )
-        apr_amount.save()
+        apr_figure.save
 
         self.amount_may = 1234567
-        may_figure = MonthlyFigure.objects.create(
+        may_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=4
             ),
             financial_code=financial_code1_obj,
-            financial_year=year_obj
-        )
-        may_figure.save
-        may_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=may_figure,
+            financial_year=year_obj,
             amount=self.amount_may
         )
-        may_amount.save()
+        may_figure.save
 
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(
@@ -807,8 +825,10 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
+        self.budget = create_budget(financial_code2_obj, year_obj)
         self.year_total = self.amount1_apr + self.amount2_apr + self.amount_may
-        self.underspend_total = -self.amount1_apr - self.amount_may - self.amount2_apr
+        self.underspend_total = \
+            self.budget - self.amount1_apr - self.amount_may - self.amount2_apr
         self.spend_to_date_total = self.amount1_apr + self.amount2_apr
 
     def check_nac_table(self, table):
@@ -816,6 +836,10 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         first_nac_cols = nac_rows[1].find_all("td")
         assert (first_nac_cols[0].get_text() ==
                 self.nac2_obj.natural_account_code_description)
+
+        assert first_nac_cols[3].get_text() == format_forecast_figure(
+            self.budget / 100
+        )
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
@@ -846,7 +870,7 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 4
 
-        self.check_negative_value_formatted(soup, 7)
+        self.check_negative_value_formatted(soup, 6)
 
         # Check that the only table displays the nac and the correct totals
         self.check_nac_table(tables[0])
@@ -969,39 +993,27 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
         )
         financial_code_obj.save
         self.forecast_expenditure_type_id = \
-            financial_code_obj.forecast_expenditure_type_id
-        apr_figure = MonthlyFigure.objects.create(
+            financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name
+        apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
+            amount=amount_apr,
             financial_code=financial_code_obj,
             financial_year=year_obj
         )
         apr_figure.save
 
-        apr_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=apr_figure,
-            amount=amount_apr
-        )
-        apr_amount.save()
-
         self.amount_may = 1234567
-        may_figure = MonthlyFigure.objects.create(
+        may_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=4
             ),
             financial_code=financial_code_obj,
-            financial_year=year_obj
-        )
-        may_figure.save
-
-        may_amount = MonthlyFigureAmount.objects.create(
-            version=1,
-            monthly_figure=may_figure,
+            financial_year=year_obj,
             amount=self.amount_may
         )
-        may_amount.save()
+        may_figure.save
 
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(
@@ -1015,8 +1027,9 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
+        self.budget = create_budget(financial_code_obj, year_obj)
         self.year_total = amount_apr + self.amount_may
-        self.underspend_total = -amount_apr - self.amount_may
+        self.underspend_total = self.budget - amount_apr - self.amount_may
         self.spend_to_date_total = amount_apr
 
     def check_programme_details_table(self, table):
@@ -1104,3 +1117,71 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
             forecast_expenditure_type=self.forecast_expenditure_type_id
         )
         self.check_response(resp)
+
+
+class EditForecastLockTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.cost_centre_code = 888812
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_edit_forecast_view_permission(self):
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        # Should be allowed
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        # Lock forecast for editing
+        edit_lock = ForecastEditLock.objects.get()
+        edit_lock.locked = True
+        edit_lock.save()
+
+        # Should be redirected to lock page
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        assert resp.status_code == 302
+        assert resp.url == "/forecast/editing-locked/"
+
+        # Add edit whilst lock permission
+        can_edit_whilst_locked = Permission.objects.get(
+            codename='can_edit_whilst_locked'
+        )
+        self.test_user.user_permissions.add(can_edit_whilst_locked)
+        self.test_user.save()
+
+        # User should not be allowed to view page
+        resp = self.factory_get(
+            edit_forecast_url,
+            EditForecastView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        # Should be allowed
+        self.assertEqual(resp.status_code, 200)

@@ -1,5 +1,10 @@
 from django.db import models
-from django.db.models import Max
+from django.db.models import (
+    Max,
+    Q,
+    Sum,
+    UniqueConstraint,
+)
 
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py # noqa
 from django_pivot.pivot import pivot
@@ -16,7 +21,7 @@ from chartofaccountDIT.models import (
 )
 
 from core.metamodels import (
-    TimeStampedModel,
+    SimpleTimeStampedModel,
 )
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
@@ -35,6 +40,20 @@ class SubTotalFieldDoesNotExistError(Exception):
 
 class SubTotalFieldNotSpecifiedError(Exception):
     pass
+
+
+class ForecastEditLock(models.Model):
+    locked = models.BooleanField(default=False)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return 'Forecast edit lock'
+
+    class Meta:
+        permissions = [
+            ("can_set_edit_lock", "Can set edit lock"),
+            ("can_edit_whilst_locked", "Can edit forecasts whilst locked"),
+        ]
 
 
 class ForecastExpenditureType(models.Model):
@@ -68,6 +87,16 @@ class FinancialPeriodManager(models.Manager):
             self.get_queryset()
                 .filter(display_figure=True)
                 .values_list("period_short_name", flat=True)
+        )
+
+    def actual_period_code_list(self):
+        return list(
+            self.get_queryset().filter(
+                actual_loaded=True
+            ).values_list(
+                "financial_period_code",
+                flat=True,
+            )
         )
 
     def actual_month(self):
@@ -124,15 +153,109 @@ class FinancialPeriod(models.Model):
 
 class FinancialCode(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
+
     class Meta:
-        unique_together = (
-            "programme",
-            "cost_centre",
-            "natural_account_code",
-            "analysis1_code",
-            "analysis2_code",
-            "project_code",
-        )
+        # Several constraints required, to cover all the permutations of
+        # fields that can be Null
+        constraints = [
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis1_code",
+                        "analysis2_code",
+                        "project_code",
+                        ],
+                name="financial_row_unique_6",
+                condition=Q(analysis1_code__isnull=False)
+                & Q(analysis2_code__isnull=False)
+                & Q(project_code__isnull=False)
+            ),
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis2_code",
+                        "project_code",
+                        ],
+                name="financial_row_unique_5a",
+                condition=Q(analysis1_code__isnull=True)
+                & Q(analysis2_code__isnull=False)
+                & Q(project_code__isnull=False)
+            ),
+
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis1_code",
+                        "project_code",
+                        ],
+                name="financial_row_unique_5b",
+                condition=Q(analysis1_code__isnull=False)
+                & Q(analysis2_code__isnull=True)
+                & Q(project_code__isnull=False)
+            ),
+
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis1_code",
+                        "analysis2_code",
+                        ],
+                name="financial_row_unique_5c",
+                condition=Q(analysis1_code__isnull=False)
+                & Q(analysis2_code__isnull=False)
+                & Q(project_code__isnull=True)
+            ),
+
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "project_code",
+                        ],
+                name="financial_row_unique_4a",
+                condition=Q(analysis1_code__isnull=True)
+                & Q(analysis2_code__isnull=True)
+                & Q(project_code__isnull=False)
+            ),
+
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis1_code",
+                        ],
+                name="financial_row_unique_4b",
+                condition=Q(analysis1_code__isnull=False)
+                & Q(analysis2_code__isnull=True)
+                & Q(project_code__isnull=True)
+            ),
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        "analysis2_code",
+                        ],
+                name="financial_row_unique_4c",
+                condition=Q(analysis1_code__isnull=True)
+                & Q(analysis2_code__isnull=False)
+                & Q(project_code__isnull=True)
+            ),
+
+            UniqueConstraint(
+                fields=["programme",
+                        "cost_centre",
+                        "natural_account_code",
+                        ],
+                name="financial_row_unique_3",
+                condition=Q(analysis1_code__isnull=True)
+                & Q(analysis2_code__isnull=True)
+                & Q(project_code__isnull=True)
+            ),
+        ]
         permissions = [
             ("can_view_forecasts", "Can view forecast"),
             ("can_upload_files", "Can upload files"),
@@ -177,41 +300,6 @@ class FinancialCode(models.Model):
             self.forecast_expenditure_type = forecast_type.first()
 
         super(FinancialCode, self).save(*args, **kwargs)
-
-
-class Budget(TimeStampedModel):
-    """Used to store the budgets
-    for the financial year."""
-
-    id = models.AutoField("Budget ID", primary_key=True)
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    financial_period = models.ForeignKey(
-        FinancialPeriod,
-        on_delete=models.PROTECT,
-    )
-    amount = models.BigIntegerField(default=0)
-    financial_code = models.ForeignKey(
-        FinancialCode,
-        on_delete=models.PROTECT,
-        related_name="budgets",
-    )
-
-    class Meta:
-        unique_together = (
-            "financial_code",
-            "financial_year",
-            "financial_period",
-        )
-
-    def __str__(self):
-        return f"{self.financial_code.cost_centre}" \
-               f"--{self.financial_code.programme}" \
-               f"--{self.financial_code.natural_account_code}" \
-               f"--{self.financial_code.analysis1_code}" \
-               f"--{self.financial_code.analysis2_code}" \
-               f"--{self.financial_code.project_code}:" \
-               f"{self.financial_year} " \
-               f"{self.financial_period}"
 
 
 class SubTotalForecast:
@@ -319,12 +407,14 @@ class SubTotalForecast:
         self.full_list = list(
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
+
         # remove missing periods (like Adj1,
         # etc from the list used to add the
         # periods together.
         self.period_list = [
             value for value in self.full_list if value in self.display_data[0].keys()
         ]
+        self.period_list.append('Budget')
         self.remove_empty_rows()
         first_row = self.display_data.pop(0)
         self.output_row_to_table(first_row, "")
@@ -389,6 +479,32 @@ class SubTotalForecast:
 
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
+    default_columns = DEFAULT_PIVOT_COLUMNS
+
+    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+        if year == 0:
+            year = get_current_financial_year()
+        if columns == {}:
+            columns = self.default_columns
+
+        q1 = (
+            self.get_queryset()
+                .filter(financial_year=year, **filter_dict)
+                .order_by(*order_list)
+        )
+        pivot_data = pivot(
+            q1,
+            columns,
+            "financial_period__period_short_name",
+            "amount",
+        )
+        # print(pivot_data.query)
+        return pivot_data
+
+
+class DisplaySubTotalManager(models.Manager):
+    """Managers returning the actual/forecast/budget data
+    in a format suitable for display"""
 
     default_columns = DEFAULT_PIVOT_COLUMNS
 
@@ -424,39 +540,85 @@ class PivotManager(models.Manager):
                 f"does not exist in provided columns: '{[*data_columns]}'."
             )
 
-        data_returned = self.pivot_data(data_columns, filter_dict, year, order_list)
-        pivot_data = list(data_returned)
-        if not pivot_data:
+        data_returned = self.raw_data(data_columns, filter_dict, year, order_list)
+        raw_data = list(data_returned)
+        if not raw_data:
             return []
-        r = SubTotalForecast(pivot_data)
+        r = SubTotalForecast(raw_data)
         return r.subtotal_data(
             display_total_column,
             subtotal_columns,
             show_grand_total,
         )
 
-    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def raw_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
 
-        q1 = (
-            self.get_queryset()
-                .filter(monthly_figure__financial_year=year, version=1, **filter_dict)
-                .order_by(*order_list)
-        )
-        pivot_data = pivot(q1, columns,
-                           "monthly_figure__financial_period__period_short_name",
-                           "amount")
-        # print(pivot_data.query)
-        return pivot_data
+        annotations = {'Budget': Sum('budget'),
+                       'Apr': Sum('apr'),
+                       'May': Sum('may'),
+                       'Jun': Sum('jun'),
+                       'Jul': Sum('jul'),
+                       'Aug': Sum('aug'),
+                       'Sep': Sum('sep'),
+                       'Oct': Sum('oct'),
+                       'Nov': Sum('nov'),
+                       'Dec': Sum('dec'),
+                       'Jan': Sum('jan'),
+                       'Feb': Sum('feb'),
+                       'Mar': Sum('mar'),
+                       }
+        raw_data = (self.get_queryset().values(*columns)
+                    .filter(financial_year=year, **filter_dict)
+                    .annotate(**annotations)
+                    .order_by(*order_list)
+                    )
+        return raw_data
 
 
-class MonthlyFigure(TimeStampedModel):
+class ForecastBudgetDataView(models.Model):
+    """Used for joining budgets and forecast.
+    Mapped to a view in the database, because
+    the query is too complex"""
+    id = models.IntegerField(primary_key=True, )
+    # The view is created by a migration. Its code is at the bottom of this file.
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+    )
+    financial_year = models.IntegerField()
+    budget = models.BigIntegerField(default=0)
+    apr = models.BigIntegerField(default=0)
+    may = models.BigIntegerField(default=0)
+    jun = models.BigIntegerField(default=0)
+    jul = models.BigIntegerField(default=0)
+    aug = models.BigIntegerField(default=0)
+    sep = models.BigIntegerField(default=0)
+    oct = models.BigIntegerField(default=0)
+    nov = models.BigIntegerField(default=0)
+    dec = models.BigIntegerField(default=0)
+    jan = models.BigIntegerField(default=0)
+    feb = models.BigIntegerField(default=0)
+    mar = models.BigIntegerField(default=0)
+    adj1 = models.BigIntegerField(default=0)
+    adj2 = models.BigIntegerField(default=0)
+    adj3 = models.BigIntegerField(default=0)
+    objects = models.Manager()  # The default manager.
+    view_data = DisplaySubTotalManager()
+
+    class Meta:
+        managed = False
+        db_table = "forecast_forecast_budget_view"
+
+
+class MonthlyFigureAbstract(SimpleTimeStampedModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
-    id = models.AutoField("Monthly ID", primary_key=True)
+    amount = models.BigIntegerField(default=0)  # stored in pence
+    id = models.AutoField(primary_key=True)
     financial_year = models.ForeignKey(
         FinancialYear,
         on_delete=models.PROTECT,
@@ -464,17 +626,19 @@ class MonthlyFigure(TimeStampedModel):
     financial_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
-        related_name="financial_periods"
+        related_name="%(app_label)s_%(class)ss",
     )
-
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
-        related_name="monthly_figures",
+        related_name="%(app_label)s_%(class)ss",
     )
-    history = HistoricalRecords()
+    objects = models.Manager()  # The default manager.
+    pivot = PivotManager()
 
+    # TODO don't save to month that have actuals
     class Meta:
+        abstract = True
         unique_together = (
             "financial_code",
             "financial_year",
@@ -489,53 +653,42 @@ class MonthlyFigure(TimeStampedModel):
                f"--{self.financial_code.analysis2_code}" \
                f"--{self.financial_code.project_code}:" \
                f"{self.financial_year} " \
-               f"{self.financial_period}"
+               f"{self.financial_period} " \
+               f"{self.amount}"
 
 
-class Amount(TimeStampedModel):
-    # The figures are stored ar pence, to avoid rounding problems.
-    # Some formatting will take care of displaying the figures as pounds only
-    amount = models.BigIntegerField(default=0)
-    CURRENT_VERSION = 1
-    TEMPORARY_VERSION = -1
-    version = models.IntegerField(default=CURRENT_VERSION)
-
-    # TODO don't save to month that have actuals
-
-    class Meta:
-        abstract = True
-
-
-class MonthlyFigureAmount(Amount):
-    monthly_figure = models.ForeignKey(
-        MonthlyFigure,
-        on_delete=models.CASCADE,
-        related_name="monthly_figure_amounts",
-    )
+class ForecastMonthlyFigure(MonthlyFigureAbstract):
     history = HistoricalRecords()
-
-    objects = models.Manager()  # The default manager.
-    pivot = PivotManager()
-
-    class Meta:
-        unique_together = (
-            "monthly_figure",
-            "version",
-        )
+    starting_amount = models.BigIntegerField(default=0)
 
 
-class BudgetAmount(Amount):
-    budget_figure = models.ForeignKey(
-        Budget,
-        on_delete=models.CASCADE,
-        related_name="budget_amounts",
+class ArchivedForecastMonthlyFigure(MonthlyFigureAbstract):
+    is_actual = models.BooleanField(default=False)
+    forecast_month = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+        related_name='historical_forecast_monthly_figures'
+    )
+    forecast_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+        related_name='historical_forecast_monthly_figures'
     )
 
-    class Meta:
-        unique_together = (
-            "budget_figure",
-            "version",
-        )
+
+class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
+    pass
+
+
+class BudgetMonthlyFigure(MonthlyFigureAbstract):
+    """Used to store the budgets
+    for the financial year."""
+    history = HistoricalRecords()
+    starting_amount = models.BigIntegerField(default=0)
+
+
+class BudgetUploadMonthlyFigure(MonthlyFigureAbstract):
+    pass
 
 
 class OSCARReturn(models.Model):
@@ -543,7 +696,8 @@ class OSCARReturn(models.Model):
     Mapped to a view in the database, because
     the query is too complex"""
 
-    # The view is created by the migration 0038_auto_create_view_forecast_oscar_return.py
+    # The view is created by  migration 0038_auto_create_view_forecast_oscar_return.py
+
     row_number = models.BigIntegerField()
     # The Treasury Level 5 account returned by the query is the result of a coalesce.
     # It is easier to use it as a foreign key in django
@@ -577,6 +731,66 @@ class OSCARReturn(models.Model):
         ordering = ["sub_segment_code"]
 
 """
+<<<<<<< HEAD
+=======
+            DROP VIEW if exists forecast_forecast_budget_view ;
+            DROP VIEW if exists yearly_budget;
+            DROP VIEW if exists annual_forecast;
+            
+            CREATE VIEW annual_forecast as
+                SELECT financial_code_id, financial_year_id,
+                       SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END) AS apr,
+                       SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END) AS may,
+                       SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END) AS jun,
+                       SUM(CASE WHEN financial_period_id = 4 THEN amount ELSE NULL END) AS jul,
+                       SUM(CASE WHEN financial_period_id = 5 THEN amount ELSE NULL END) AS aug,
+                       SUM(CASE WHEN financial_period_id = 6 THEN amount ELSE NULL END) AS sep,
+                       SUM(CASE WHEN financial_period_id = 7 THEN amount ELSE NULL END) AS oct,
+                       SUM(CASE WHEN financial_period_id = 8 THEN amount ELSE NULL END) AS nov,
+                       SUM(CASE WHEN financial_period_id = 9 THEN amount ELSE NULL END) AS "dec",
+                       SUM(CASE WHEN financial_period_id = 10 THEN amount ELSE NULL END) AS jan,
+                       SUM(CASE WHEN financial_period_id = 11 THEN amount ELSE NULL END) AS feb,
+                       SUM(CASE WHEN financial_period_id = 12 THEN amount ELSE NULL END) AS mar,
+                       SUM(CASE WHEN financial_period_id = 13 THEN amount ELSE NULL END) AS adj1 ,
+                       SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END) AS adj2 ,
+                       SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END) AS adj3
+                FROM forecast_forecastmonthlyfigure
+                GROUP BY financial_code_id,  financial_year_id;
+                       
+            CREATE VIEW yearly_budget as
+                SELECT financial_code_id, financial_year_id, SUM(amount) AS budget
+                FROM forecast_budgetmonthlyfigure
+                GROUP BY financial_code_id, financial_year_id;
+                      
+            CREATE VIEW public.forecast_forecast_budget_view
+            as
+            SELECT coalesce(b.financial_code_id, f.financial_code_id) as financial_code_id,
+                    coalesce(b.financial_year_id, f.financial_year_id) as financial_year,
+                    coalesce(budget, 0) as budget,
+                    coalesce(apr, 0) as apr,
+                    coalesce(may, 0) as may,
+                    coalesce(jun, 0) as jun,
+                    coalesce(jul, 0) as jul,
+                    coalesce(aug, 0) as aug,
+                    coalesce(sep, 0) as sep,
+                    coalesce(oct, 0) as oct,
+                    coalesce(nov, 0) as nov,
+                    coalesce("dec", 0) as "dec",
+                    coalesce(jan, 0) as jan,
+                    coalesce(feb, 0) as feb,
+                    coalesce(mar, 0) as mar,
+                    coalesce(adj1, 0) as adj1,
+                    coalesce(adj2, 0) as adj2,
+                    coalesce(adj3, 0) as adj3
+            FROM annual_forecast f 
+                FULL OUTER JOIN yearly_budget b
+                    on b.financial_code_id = f.financial_code_id and b.financial_year_id = f.financial_year_id;                    
+
+
+""" # noqa
+
+"""
+>>>>>>> dev
 Query created in the database to return the info for the OSCAR return
 DROP VIEW  if exists "forecast_oscarreturn";
 CREATE VIEW "forecast_oscarreturn" as 
@@ -585,6 +799,7 @@ CREATE VIEW "forecast_oscarreturn" as
             account_l5_code,
             "treasurySS_subsegment"."sub_segment_code" ,
             "treasurySS_subsegment"."sub_segment_long_name" ,                    
+<<<<<<< HEAD
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Apr' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "apr",
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Aug' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "aug",
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Dec' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "dec",
@@ -597,6 +812,20 @@ CREATE VIEW "forecast_oscarreturn" as
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Nov' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "nov",
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Oct' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "oct",
             coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."period_short_name" = 'Sep' THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "sep"
+=======
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 1 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "apr",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 2 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "may",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 3 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jun",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 4 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jul",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 5 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "aug",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 6 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "sep",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 7 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "oct",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 8 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "nov",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 9 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "dec",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 10 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jan",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 11 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "feb",
+            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 12 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "mar"
+>>>>>>> dev
         FROM "forecast_monthlyfigureamount"
                 INNER JOIN
                  "forecast_monthlyfigure" on (forecast_monthlyfigureamount.monthly_figure_id = forecast_monthlyfigure.id)

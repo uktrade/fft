@@ -13,6 +13,7 @@ class FinancialYearFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FinancialYear
 
+    current = True
     financial_year = 2019
 
 

@@ -1,14 +1,16 @@
-import React, {Fragment, useState } from 'react'
+import React, {Fragment, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
+    getCellId,
     postData,
-    processForecastData
+    processForecastData,
+    formatValue
 } from '../../Util'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({isHidden, rowIndex, cellKey}) => {
+const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
@@ -20,45 +22,63 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
 
-    let initialValue = null
+    const cellId = getCellId(rowIndex, cellKey)
 
-    if (cell.versions && cell.versions.length > 0) {
-        initialValue = cell.versions[0].amount
+    let isEditable = true
+
+    // Check for actual
+    if (window.actuals.indexOf(cellKey) > -1) {
+        isEditable = false
     }
 
-    const [editValue, setEditValue] = useState((initialValue/100).toFixed(2))
+    const getValue = () => {
+        if (cell && cell.amount) {
+            return (cell.amount / 100).toFixed(2)
+        } else {
+            return "0.00"
+        }
+    }
+
+    const [value, setValue] = useState(getValue())
+
+    useEffect(() => {
+        if (cell) {
+            setValue((cell.amount / 100).toFixed(2))
+        }
+    }, [cell]);
 
     const isSelected = () => {
         if (allSelected) {
             return true
         }
 
-        return selectedRow === cell.rowIndex
+        return selectedRow === rowIndex
     }
 
     const wasEdited = () => {
-        // TODO - add function after "previous months" story
-        return false
+        if (!isEditable)
+            return false
+
+        return cell.amount !== cell.startingAmount
     }
 
     const getClasses = () => {
-        let hiddenResult = ''
         let editable = ''
+
+        if (!isEditable) {
+            editable = ' not-editable'
+        }
+
+        if (!cell)
+            return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '') + editable
+
         let negative = ''
 
-        if (isHidden) {
-            hiddenResult = isHidden(cellKey) ? ' hidden' : ''
-        }
-
-        if (!cell.isEditable) {
-            editable = ' not-editable';
-        }
-
-        if (cell.versions && cell.versions[0].amount < 0) {
+        if (cell.amount < 0) {
             negative = " negative"
         }
 
-        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '') + hiddenResult + editable + negative
+        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
     }
 
     const setContentState = (value) => {
@@ -68,33 +88,27 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
         if (!isValid) {
             return
         }
-        setEditValue(value)
+        setValue(value)
     }
 
-    const formatValue = (value) => {
-        let nfObject = new Intl.NumberFormat('en-GB'); 
-        let pounds = Math.round(value / 100)
-        return nfObject.format(pounds); 
-    }
 
     const updateValue = () => {
-        let newAmount = parseInt(editValue * 100)
+        let newAmount = parseInt(value * 100)
 
-        if (newAmount === cell.versions[0].amount) {
+        if (cell && newAmount === cell.amount) {
             return
         }
 
         setIsUpdating(true)
 
         let payload = new FormData()
-
         payload.append("natural_account_code", cells[rowIndex]["natural_account_code"].value)
         payload.append("programme_code", cells[rowIndex]["programme"].value)
         payload.append("project_code", cells[rowIndex]["project_code"].value)
         payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value)
         payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value)
 
-        payload.append("month", cell.key)
+        payload.append("month", cellKey)
         payload.append("amount", newAmount)
 
         postData(
@@ -142,11 +156,28 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
     }
 
     const getId = () => {
+        if (!cell)
+            return
+
         if (isUpdating) {
-            return cell.id + "_updating"
+            return cellId + "_updating"
         }
 
-        return cell.id
+        return cellId
+    }
+
+    const isCellUpdating = () => {
+        if (cell && !isEditable)
+            return false
+
+        if (isUpdating)
+            return true
+
+        if (sheetUpdating && isSelected()) {
+            return true
+        }
+
+        return false
     }
 
     return (
@@ -155,40 +186,35 @@ const TableCell = ({isHidden, rowIndex, cellKey}) => {
                 className={getClasses()}
                 id={getId()}
                 onDoubleClick={ () => {
-                    if (cell.isEditable) {
+                    if (isEditable) {
                         dispatch(
                             SET_EDITING_CELL({
-                                "cellId": cell.id
+                                "cellId": cellId
                             })
                         );
                     }
                 }}
             >
-                {isUpdating ? (
+                {isCellUpdating() ? (
                     <Fragment>
-                        UPDATING...
+                        <span className="updating">UPDATING...</span>
                     </Fragment>
                 ) : (
                     <Fragment>
-                        {editCellId === cell.id ? (
+                        {editCellId === cellId ? (
                             <input
-                                id={cell.id + "_input"}
+                                ref={input => input && input.focus() }
+                                id={cellId + "_input"}
                                 className="cell-input"
                                 type="text"
-                                value={editValue}
+                                value={value}
                                 onChange={e => setContentState(e.target.value)}
                                 onKeyPress={handleKeyPress}
                                 onKeyDown={handleKeyDown}
                                 onBlur={handleBlur}
                             />
                         ) : (
-                            <Fragment>
-                                {cell.versions && cell.versions.length > 0 ? (
-                                    <Fragment>{formatValue(cell.versions[0].amount)}</Fragment>
-                                ) : (
-                                    <Fragment>{cell.value}</Fragment>
-                                )}
-                            </Fragment>
+                            <Fragment>{formatValue(getValue())}</Fragment>
                         )}
                     </Fragment>
                 )}

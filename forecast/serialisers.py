@@ -1,50 +1,45 @@
+from django.db.models import (
+    Sum,
+)
+
 from rest_framework import serializers
 
+from core.myutils import get_current_financial_year
+
 from .models import (
+    BudgetMonthlyFigure,
     FinancialCode,
-    MonthlyFigure,
-    MonthlyFigureAmount,
+    ForecastMonthlyFigure,
 )
 
 
-class MonthlyFigureAmountSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MonthlyFigureAmount
-        fields = [
-            'amount',
-            'version',
-        ]
-        read_only_fields = fields
-
-
-class MonthlyFigureSerializer(serializers.ModelSerializer):
+class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
-    monthly_figure_amounts = MonthlyFigureAmountSerializer(
-        many=True,
-        read_only=True,
-    )
 
     class Meta:
-        model = MonthlyFigure
+        model = ForecastMonthlyFigure
         fields = [
             'actual',
             'month',
-            'monthly_figure_amounts',
+            'amount',
+            'starting_amount',
         ]
         read_only_fields = fields
 
     def get_month(self, obj):
-        return obj.financial_period.period_calendar_code
+        return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
         return obj.financial_period.actual_loaded
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
-    monthly_figures = MonthlyFigureSerializer(
+    budget = serializers.SerializerMethodField('get_budget')
+    monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
+        source='forecast_forecastmonthlyfigures',
     )
 
     class Meta:
@@ -57,5 +52,22 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             'analysis2_code',
             'project_code',
             'monthly_figures',
+            'budget',
         ]
         read_only_fields = fields
+
+    def get_budget(self, obj):
+        budget = BudgetMonthlyFigure.objects.values(
+            'financial_code',
+            'financial_year',
+        ).filter(
+            financial_code=obj.id,
+            financial_year_id=get_current_financial_year(),
+        ).annotate(
+            yearly_amount=Sum('amount')
+        )
+
+        if budget and "yearly_amount" in budget[0]:
+            return budget[0]["yearly_amount"]
+        else:
+            return 0

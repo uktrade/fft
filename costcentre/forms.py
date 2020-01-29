@@ -68,13 +68,14 @@ class MyCostCentresForm(forms.Form):
             *args,
             **kwargs,
         )
+
         self.base_fields['cost_centre'].queryset = get_objects_for_user(
             user,
             "costcentre.change_costcentre",
         )
 
     cost_centre = forms.ModelChoiceField(
-        queryset=None,
+        queryset=CostCentre.objects.all(),
         widget=Select(),
     )
 

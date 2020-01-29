@@ -1,67 +1,61 @@
 import React, {Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import TableCell from '../../Components/TableCell/index'
+import InfoCell from '../../Components/InfoCell/index'
+import CellValue from '../../Components/CellValue/index'
+import AggregateValue from '../../Components/AggregateValue/index'
 import TableHeader from '../../Components/TableHeader/index'
-import { SET_SELECTED_ROW, SELECT_ALL } from '../../Reducers/Selected'
+import TotalCol from '../../Components/TotalCol/index'
+import TotalAggregate from '../../Components/TotalAggregate/index'
+import TotalBudget from '../../Components/TotalBudget/index'
+import OverspendUnderspend from '../../Components/OverspendUnderspend/index'
+import TotalOverspendUnderspend from '../../Components/TotalOverspendUnderspend/index'
+
+import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 
 
-function Table({rowData}) {
+function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
-
-    const nac = useSelector(state => state.showHideCols.nac);
-    const programme = useSelector(state => state.showHideCols.programme);
-    const analysis1 = useSelector(state => state.showHideCols.analysis1);
-    const analysis2 = useSelector(state => state.showHideCols.analysis2);
-    const projectCode = useSelector(state => state.showHideCols.projectCode);
-
     const rows = useSelector(state => state.allCells.cells);
 
-    const isHidden = (key) => {
-        if (!nac && key === "natural_account_code") {
-            return true
-        }
-
-        if (!programme && key === "programme") {
-            return true
-        }
-
-        if (!analysis1 && key === "analysis1_code") {
-            return true
-        }
-
-        if (!analysis2 && key === "analysis2_code") {
-            return true
-        }
-
-        if (!projectCode && key === "project_code") {
-            return true
-        }
-
-        return false
-    }
+    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const allSelected = useSelector(state => state.selected.all);
 
     return (
         <Fragment>
             <table
-                className="govuk-table" id="forecast-table">
-                <caption className="govuk-table__caption">Edit forecast</caption>
+                className="govuk-table finance-table" id="forecast-table">
+                <caption className="govuk-table__caption govuk-!-font-size-27">Edit forecast</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
-                        <td className="handle govuk-table__cell indicate-action">
-                            <button className="link-button"
+                        <th className="handle govuk-table__cell indicate-action select-all">
+                            <button className="link-button govuk-link"
                                 id="select_all"                          
-                                onClick={() => { 
-                                    dispatch(
-                                        SELECT_ALL()
-                                    );
+                                onMouseDown={() => {
+                                    if (allSelected) {
+                                        dispatch(
+                                            UNSELECT_ALL()
+                                        )
+                                    } else {
+                                        dispatch(
+                                            SELECT_ALL()
+                                        )
+                                    }
                                 }
-                            }>select all</button>
-                        </td>
-                        <TableHeader isHidden={isHidden} id="natural_account_code_header" headerType="natural_account_code">Natural Account Code</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="programme">Programme</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="analysis1_code">Analysis Code Sector</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="analysis2_code">Analysis Code Market</TableHeader>
-                        <TableHeader isHidden={isHidden} headerType="project_code">Project Code</TableHeader>
+                            }>
+                                {allSelected ? (
+                                    <Fragment>unselect</Fragment>
+                                ) : (
+                                    <Fragment>select all</Fragment>
+                                )}
+                            </button>
+                        </th>
+                        <TableHeader id="natural_account_code_header" headerType="natural_account_code">NAC</TableHeader>
+                        <TableHeader headerType="programme">Programme</TableHeader>
+                        <TableHeader headerType="analysis1_code">Analysis Code Sector</TableHeader>
+                        <TableHeader headerType="analysis2_code">Analysis Code Market</TableHeader>
+                        <TableHeader headerType="project_code">Project Code</TableHeader>
+                        <TableHeader headerType="budget">Budget</TableHeader>
                         <th className="govuk-table__header">Apr</th>
                         <th className="govuk-table__header">May</th>
                         <th className="govuk-table__header">Jun</th>
@@ -74,6 +68,9 @@ function Table({rowData}) {
                         <th className="govuk-table__header">Jan</th>
                         <th className="govuk-table__header">Feb</th>
                         <th className="govuk-table__header">Mar</th>
+                        <th className="govuk-table__header">Year to date</th>
+                        <th className="govuk-table__header">Year total</th>
+                        <th className="govuk-table__header">Underspend (Overspend)</th>
                     </tr>
                 </thead>
                 <tbody className="govuk-table__body">
@@ -81,36 +78,96 @@ function Table({rowData}) {
                         return <tr key={rowIndex} index={(rowIndex + 1)}>
                             <td id={"select_" + rowIndex} className="handle govuk-table__cell indicate-action">
                                 <button
-                                    className="select_row_btn link-button"
+                                    className="select_row_btn govuk-link link-button"
                                     id={"select_row_" + rowIndex}
-                                    onClick={() => { 
-                                        dispatch(
-                                            SET_SELECTED_ROW({
-                                                selectedRow: rowIndex
-                                            })
-                                        );
+                                    onMouseDown={() => {
+                                        if (selectedRow === rowIndex) {
+                                            dispatch(
+                                                SET_SELECTED_ROW({
+                                                    selectedRow: null
+                                                })
+                                            )
+                                        } else {
+                                            dispatch(
+                                                SET_SELECTED_ROW({
+                                                    selectedRow: rowIndex
+                                                })
+                                            )
+                                        }
                                     }
-                                }>select</button>
+                                }>
+                                    {selectedRow === rowIndex ? (
+                                        <Fragment>unselect</Fragment>
+                                    ) : (
+                                        <Fragment>select</Fragment>
+                                    )}
+                                </button>
                             </td>
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"natural_account_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"programme"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis1_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"analysis2_code"} />
-                            <TableCell rowIndex={rowIndex} isHidden={isHidden} cellKey={"project_code"} />
-                            <TableCell rowIndex={rowIndex} cellKey={4} />
-                            <TableCell rowIndex={rowIndex} cellKey={5} />
-                            <TableCell rowIndex={rowIndex} cellKey={6} />
-                            <TableCell rowIndex={rowIndex} cellKey={7} />
-                            <TableCell rowIndex={rowIndex} cellKey={8} />
-                            <TableCell rowIndex={rowIndex} cellKey={9} />
-                            <TableCell rowIndex={rowIndex} cellKey={10} />
-                            <TableCell rowIndex={rowIndex} cellKey={11} />
-                            <TableCell rowIndex={rowIndex} cellKey={12} />
-                            <TableCell rowIndex={rowIndex} cellKey={1} />
-                            <TableCell rowIndex={rowIndex} cellKey={2} />
-                            <TableCell rowIndex={rowIndex} cellKey={3} />
+                            <InfoCell cellKey={"natural_account_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"natural_account_code"} />
+                            </InfoCell>
+                            <InfoCell cellKey={"programme"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"programme"} />
+                            </InfoCell>
+                            <InfoCell cellKey={"analysis1_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"analysis1_code"} />
+                            </InfoCell>
+                            <InfoCell cellKey={"analysis2_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"analysis2_code"} />
+                            </InfoCell>
+                            <InfoCell cellKey={"project_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"project_code"} />
+                            </InfoCell>
+                            <InfoCell cellKey={"budget"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"budget"} format={true} />
+                            </InfoCell>
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={1} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={2} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={3} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={4} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={5} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={6} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={7} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={8} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={9} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={10} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={11} />
+                            <TableCell sheetUpdating={sheetUpdating} rowIndex={rowIndex} cellKey={12} />
+                            <InfoCell rowIndex={rowIndex}>
+                                <AggregateValue rowIndex={rowIndex} actualsOnly={true} />
+                            </InfoCell>
+                            <InfoCell rowIndex={rowIndex}>
+                                <AggregateValue rowIndex={rowIndex} actualsOnly={false} />
+                            </InfoCell>
+                            <InfoCell rowIndex={rowIndex}>
+                                <OverspendUnderspend rowIndex={rowIndex} />
+                            </InfoCell>
                         </tr>
                     })}
+                    <tr>
+                        <td className="govuk-table__cell total">Totals</td>
+                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
+                        <InfoCell cellKey={"programme"} ignoreSelection={true} />
+                        <InfoCell cellKey={"analysis1_code"} ignoreSelection={true} />
+                        <InfoCell cellKey={"analysis2_code"} ignoreSelection={true} />
+                        <InfoCell cellKey={"project_code"} ignoreSelection={true} />
+                        <TotalBudget id="total-budget" cellKey={"budget"} />
+                        <TotalCol month={1} />
+                        <TotalCol month={2} />
+                        <TotalCol month={3} />
+                        <TotalCol month={4} />
+                        <TotalCol month={5} />
+                        <TotalCol month={6} />
+                        <TotalCol month={7} />
+                        <TotalCol month={8} />
+                        <TotalCol month={9} />
+                        <TotalCol month={10} />
+                        <TotalCol month={11} />
+                        <TotalCol month={12} />
+                        <TotalAggregate actualsOnly={true} id="year-to-date" />
+                        <TotalAggregate actualsOnly={false} id="year-total" />
+                        <TotalOverspendUnderspend id="overspend-underspend-total" />
+                    </tr>
                 </tbody>
             </table>
         </Fragment>

@@ -9,3 +9,4 @@ pytest==3.7.4
 pytest-django==3.4.2
 pytest-xdist
 behave-django
+pyperclip

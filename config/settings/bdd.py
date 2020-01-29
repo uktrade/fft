@@ -9,9 +9,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "../node_modules/govuk-frontend"),
 )
 
-# for debug_toolbar, to activate it only on localhost
-INTERNAL_IPS = ["127.0.0.1"]
-
 SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 MIDDLEWARE = [
@@ -24,7 +21,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.middleware.ThreadLocalMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
 ]
 

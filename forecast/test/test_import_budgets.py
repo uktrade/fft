@@ -24,8 +24,7 @@ from forecast.import_utils import (
     UploadFileFormatError,
 )
 from forecast.models import (
-    Budget,
-    BudgetAmount,
+    BudgetMonthlyFigure,
     FinancialPeriod,
 )
 
@@ -121,7 +120,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         bad_file_upload.save()
 
         self.assertEqual(
-            Budget.objects.all().count(),
+            BudgetMonthlyFigure.objects.all().count(),
             0,
         )
         with self.assertRaises(UploadFileDataError):
@@ -130,7 +129,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
                 self.test_year,
             )
         self.assertEqual(
-            Budget.objects.all().count(),
+            BudgetMonthlyFigure.objects.all().count(),
             0,
         )
 
@@ -150,14 +149,14 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
 
         # # Check that existing figures for the same period have been deleted
         self.assertEqual(
-            Budget.objects.filter(
+            BudgetMonthlyFigure.objects.filter(
                 financial_year=self.test_year
             ).count(),
             24,
         )
         # # Check that existing figures for the same period have been deleted
         self.assertEqual(
-            Budget.objects.filter(
+            BudgetMonthlyFigure.objects.filter(
                 financial_year=self.test_year,
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
@@ -165,25 +164,25 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         )
         # Check that figures for same budgets are added together
         self.assertEqual(
-            BudgetAmount.objects.filter(
-                budget_figure__financial_year=self.test_year,
-                budget_figure__financial_code__cost_centre=self.cost_centre_code,
-                budget_figure__financial_period=1,
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=1,
             ).first().amount,
             1100,
         )
         self.assertEqual(
-            BudgetAmount.objects.filter(
-                budget_figure__financial_year=self.test_year,
-                budget_figure__financial_code__cost_centre=self.cost_centre_code,
-                budget_figure__financial_period=12,
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=12,
             ).first().amount,
             2200,
         )
 
     def test_upload_budget_with_actuals(self):
         self.assertEqual(
-            Budget.objects.filter(
+            BudgetMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
             0,
@@ -208,14 +207,14 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(
-            Budget.objects.filter(
+            BudgetMonthlyFigure.objects.filter(
                 financial_year=self.test_year
             ).count(),
             16,
         )
         # # Check that existing figures for the same period have been deleted
         self.assertEqual(
-            Budget.objects.filter(
+            BudgetMonthlyFigure.objects.filter(
                 financial_year=self.test_year,
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
@@ -224,7 +223,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         # Check that there are no entry for the actual periods
         for period in range(1, actual_month + 1):
             self.assertEqual(
-                Budget.objects.filter(
+                BudgetMonthlyFigure.objects.filter(
                     financial_year=self.test_year,
                     financial_code__cost_centre=self.cost_centre_code,
                     financial_period=period,
@@ -232,10 +231,10 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
                 None,
             )
         self.assertEqual(
-            BudgetAmount.objects.filter(
-                budget_figure__financial_year=self.test_year,
-                budget_figure__financial_code__cost_centre=self.cost_centre_code,
-                budget_figure__financial_period=12,
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=12,
             ).first().amount,
             2200,
         )

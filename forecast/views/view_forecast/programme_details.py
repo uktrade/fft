@@ -20,13 +20,13 @@ from costcentre.models import (
 )
 
 from forecast.models import (
-    MonthlyFigureAmount,
+    ForecastBudgetDataView,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
 )
 from forecast.utils.query_fields import (
-    FORECAST_EXPENDITURE_TYPE_ID,
+    FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -60,11 +60,11 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
         """
          Return an array of table instances containing data.
         """
-        forecast_expenditure_type_id = self.kwargs['forecast_expenditure_type']
+        forecast_expenditure_type_name = self.kwargs['forecast_expenditure_type']
         programme_code_id = self.kwargs['programme_code']
         pivot_filter = {
             PROGRAMME_CODE: f"{programme_code_id}",
-            FORECAST_EXPENDITURE_TYPE_ID: f"{forecast_expenditure_type_id}",
+            FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
         }
         arg_name = filter_codes[self.hierarchy_type]
         if arg_name:
@@ -72,7 +72,7 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
             pivot_filter[filter_selectors[self.hierarchy_type]] = f"{filter_code}"
 
         columns = programme_details_hierarchy_columns[self.hierarchy_type]
-        programme_details_data = MonthlyFigureAmount.pivot.subtotal_data(
+        programme_details_data = ForecastBudgetDataView.view_data.subtotal_data(
             programme_details_display_sub_total_column,
             programme_details_sub_total,
             columns.keys(),
@@ -87,6 +87,7 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
         self.tables = [
             programme_details_table,
         ]
+
         return self.tables
 
 
@@ -115,7 +116,7 @@ class DITProgrammeDetailsView(
                 )
             )
         else:
-            raise Http404("Budget Type not found")
+            raise Http404("Programme not found")
 
 
 class GroupProgrammeDetailsView(
@@ -149,7 +150,7 @@ class GroupProgrammeDetailsView(
                 )
             )
         else:
-            raise Http404("Budget Type not found")
+            raise Http404("Programme not found")
 
 
 class DirectorateProgrammeDetailsView(
@@ -183,4 +184,4 @@ class DirectorateProgrammeDetailsView(
                 )
             )
         else:
-            raise Http404("Budget Type not found")
+            raise Http404("Programme not found")
