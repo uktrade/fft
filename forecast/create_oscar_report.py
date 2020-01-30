@@ -1,4 +1,6 @@
-from core.exportutils import export_to_csv
+from core.utils import today_string
+
+from core.exportutils import export_to_excel
 
 from forecast.models import OSCARReturn
 
@@ -58,5 +60,6 @@ def export_oscarreport_iterator(queryset):
 
 
 def create_oscar_report():
+    title = f'OSCAR {today_string()}'
     queryset = OSCARReturn.objects.all()
-    return export_to_csv(queryset, export_oscarreport_iterator)
+    return export_to_excel(queryset, export_oscarreport_iterator, title)
