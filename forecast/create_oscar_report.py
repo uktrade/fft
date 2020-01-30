@@ -57,6 +57,6 @@ def export_oscarreport_iterator(queryset):
         ]
 
 
-def export_oscar_report():
+def create_oscar_report():
     queryset = OSCARReturn.objects.all()
     return export_to_csv(queryset, export_oscarreport_iterator)

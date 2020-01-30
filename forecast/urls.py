@@ -8,6 +8,7 @@ from forecast.views.edit_forecast import (
     EditLockedView,
     PasteForecastRowsView,
 )
+from forecast.views.export_oscar_return import export_oscar_report
 from forecast.views.upload_file import (
     UploadActualsView,
     UploadBudgetView,
@@ -163,6 +164,11 @@ urlpatterns = [
         "export-edit-forecast-data/<cost_centre>",
         export_edit_forecast_data,
         name="export_edit_forecast_data_cost_centre"
+    ),
+    path(
+        "download_oscar/",
+        export_oscar_report,
+        name="download_oscar"
     ),
 
 ]

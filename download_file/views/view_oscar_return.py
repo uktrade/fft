@@ -15,5 +15,4 @@ class DownloadOscarReturnView(TemplateView):
         downloaded_files = FileDownload.objects.all().order_by(
             "-created"
         )
-
         return downloaded_files

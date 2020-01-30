@@ -26,11 +26,12 @@ urlpatterns = [
     path("chartofaccountDIT/", include("chartofaccountDIT.urls")),
     path("forecast/", include("forecast.urls")),
     path("gifthospitality/", include("gifthospitality.urls")),
+    path("download_file/", include("download_file.urls")),
     path("payroll/", include("payroll.urls")),
     path("pingdom/", include("pingdom.urls")),
     path("upload/", include("upload_file.urls")),
     path("admin/", admin.site.urls),
-    # TODO - split below out into develop only?
+     # TODO - split below out into develop only?
     path(
         "assets/<path:asset_path>",
         RedirectView.as_view(url="/static/govuk/assets/%(asset_path)s"),
