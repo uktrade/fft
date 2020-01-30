@@ -134,6 +134,11 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
 
     const handleBlur = (event) => {
         updateValue()
+        dispatch(
+            SET_EDITING_CELL({
+                "cellId": null
+            })
+        )
     }
 
     const handleKeyDown = (event) => {
@@ -145,12 +150,6 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
     const handleKeyPress = (event) => {
         if(event.key === 'Enter') {
             updateValue()
-            dispatch(
-                SET_EDITING_CELL({
-                    "cellId": null
-                })
-            );
-
             event.preventDefault()
         }
     }

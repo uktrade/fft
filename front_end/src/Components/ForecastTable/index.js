@@ -8,7 +8,7 @@ import {
 } from '../../Reducers/HiddenCols'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
-
+import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 import {
     getCellId,
     postData,
@@ -85,14 +85,12 @@ function ForecastTable() {
                 if (response.status === 200) {
                     setSheetUpdating(false)
                     let rows = processForecastData(response.data)
-                    console.log("UPDATED")
                       dispatch({
                         type: SET_CELLS,
                         cells: rows
                       })
                 } else {
                     setSheetUpdating(false)
-                    console.log("UPDATED ERROR")
                     dispatch(
                         SET_ERROR({
                             errorMessage: response.data.error
@@ -113,8 +111,7 @@ function ForecastTable() {
     useEffect(() => {
         const handleKeyDown = (event) => {
             // This function puts editing cells into the tab order of the page
-            let footerLink = document.getElementsByClassName("govuk-footer__link")[0]
-
+            let footerLink = document.getElementsByClassName("national-archives")[0]
             let lowestMonth = 0
 
             if (window.actuals && window.actuals.length > 0) {
@@ -126,6 +123,40 @@ function ForecastTable() {
             }
 
             const state = store.getState();
+
+            if(event.key === 'Enter') {
+                if (document.activeElement.className === "link-button govuk-link") {
+                    if (allSelected) {
+                        dispatch(
+                            UNSELECT_ALL()
+                        )
+                    } else {
+                        dispatch(
+                            SELECT_ALL()
+                        )
+                    }
+
+                    event.preventDefault()
+                } else if (document.activeElement.className === "select_row_btn govuk-link link-button") {
+                    let parts = document.activeElement.id.split("_")
+                    let targetRow = parseInt(parts[2])
+
+                    if (selectedRow === targetRow) {
+                        dispatch(
+                            SET_SELECTED_ROW({
+                                selectedRow: -1
+                            })
+                        )
+                    } else {
+                        dispatch(
+                            SET_SELECTED_ROW({
+                                selectedRow: targetRow
+                            })
+                        )
+                    }
+                }
+            }
+
 
             if (event.key === "Tab") {
                 let targetRow = -1
@@ -204,6 +235,18 @@ function ForecastTable() {
                             targetRow++
                             // targetMonth = lowestMonth + 1
 
+                            // Check for end of table
+                            if (targetRow > (cells.length - 1)) {
+                                dispatch(
+                                    SET_EDITING_CELL({
+                                        "cellId": null
+                                    })
+                                );
+                                footerLink.focus()
+                                event.preventDefault()
+                                return
+                            }
+
                             let selectRowBtn = document.getElementById("select_row_" + targetRow)
                             selectRowBtn.focus()
                             event.preventDefault()
@@ -217,17 +260,6 @@ function ForecastTable() {
 
                         if (targetMonth <= lowestMonth) {
                             targetMonth = lowestMonth
-                        }
-                        // Check for end of table
-                        if (targetRow > (cells.length - 1)) {
-                            dispatch(
-                                SET_EDITING_CELL({
-                                    "cellId": null
-                                })
-                            );
-                            footerLink.focus()
-                            event.preventDefault()
-                            return
                         }
                     }
 
@@ -245,25 +277,26 @@ function ForecastTable() {
             }
         }
 
-        const handleMouseDn = (event) => {
-            if (event) {
-              //alert("You clicked outside of me!");
+        const handleMouseDown = (event) => {
+            let active = document.activeElement
+
+            if (active.tagName !== "INPUT") {
+                dispatch(
+                    SET_EDITING_CELL({
+                        "cellId": null
+                    })
+                );
             }
-            // dispatch(
-            //     SET_EDITING_CELL({
-            //         "cellId": null
-            //     })
-            // );
         }
 
+        window.addEventListener("mousedown", handleMouseDown);
         window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("mousedown", handleMouseDn);
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("mousedown", handleMouseDn);
+            window.removeEventListener("mousedown", handleMouseDown);
         };
-    }, [dispatch, cells, editCellId]);
+    }, [dispatch, cells, editCellId, allSelected, selectedRow]);
 
 
 
@@ -355,4 +388,4 @@ function ForecastTable() {
     );
 }
 
-export default ForecastTable;
+export default ForecastTable

@@ -11,6 +11,7 @@ import TotalBudget from '../../Components/TotalBudget/index'
 import OverspendUnderspend from '../../Components/OverspendUnderspend/index'
 import TotalOverspendUnderspend from '../../Components/TotalOverspendUnderspend/index'
 
+import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 
 
@@ -32,6 +33,11 @@ function Table({rowData, sheetUpdating}) {
                             <button className="link-button govuk-link"
                                 id="select_all"                          
                                 onMouseDown={() => {
+                                    dispatch(
+                                        SET_EDITING_CELL({
+                                            "cellId": null
+                                        })
+                                    )
                                     if (allSelected) {
                                         dispatch(
                                             UNSELECT_ALL()
@@ -81,6 +87,11 @@ function Table({rowData, sheetUpdating}) {
                                     className="select_row_btn govuk-link link-button"
                                     id={"select_row_" + rowIndex}
                                     onMouseDown={() => {
+                                        dispatch(
+                                            SET_EDITING_CELL({
+                                                "cellId": null
+                                            })
+                                        )
                                         if (selectedRow === rowIndex) {
                                             dispatch(
                                                 SET_SELECTED_ROW({
