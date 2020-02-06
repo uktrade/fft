@@ -15,6 +15,8 @@ import dj_database_url
 
 import environ
 
+import json
+
 AUTH_USER_MODEL = 'core.User'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
