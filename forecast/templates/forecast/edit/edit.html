@@ -38,10 +38,11 @@
 {% block scripts %}
     {% render_bundle 'vendors' %}
     {% render_bundle 'main' %}
-    {% render_bundle 'runtime~main' %}
+    {% render_bundle 'runtime-main' %}
     <script>
         window.actuals = {{ actuals|safe }};
+        window.period_display = {{ period_display|safe }};
         window.table_data = {{ forecast_dump|safe }};
-        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
+        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }}
     </script>
 {% endblock %}

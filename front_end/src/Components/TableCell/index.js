@@ -1,8 +1,7 @@
-import React, {Fragment, useState, useEffect } from 'react'
+import React, {Fragment, useState, useEffect, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
-    getCellId,
     postData,
     processForecastData,
     formatValue
@@ -10,19 +9,47 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
+
+    let editing = false
+
+    const checkValue = (val) => {
+        if (cellId === val) {
+            editing = true
+            return false
+        } else if (editing) {
+            // Turn off editing
+            editing = false
+            return false
+        }
+
+        return true
+    }
+
+    let selectChanged = false
+
+    const checkSelectRow = (selectedRow) => {
+        if (selectedRow === rowIndex) {
+            selectChanged = true
+            return false
+        } else if (selectChanged) {
+            selectChanged = false
+            return false
+        }
+
+        return true
+    }
+
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
-    const editCellId = useSelector(state => state.edit.cellId);
+    const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
     const [isUpdating, setIsUpdating] = useState(false)
 
-    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow);
     const allSelected = useSelector(state => state.selected.all);
-
-    const cellId = getCellId(rowIndex, cellKey)
 
     let isEditable = true
 
@@ -78,7 +105,7 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
             negative = " negative"
         }
 
-        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
+        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
     }
 
     const setContentState = (value) => {
@@ -179,6 +206,34 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
         return false
     }
 
+    const getCellContent = () => {
+        if (isCellUpdating()) {
+            return (
+                <Fragment>
+                    <span className="updating">UPDATING...</span>
+                </Fragment>
+            )
+        } else {
+            if (editCellId === cellId) {
+                return (
+                    <input
+                        ref={input => input && input.focus() }
+                        id={cellId + "_input"}
+                        className="cell-input"
+                        type="text"
+                        value={value}
+                        onChange={e => setContentState(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyDown}
+                        onBlur={handleBlur}
+                    />
+                )
+            } else {
+                return <Fragment>{formatValue(getValue())}</Fragment>
+            }
+        }
+    }
+
     return (
         <Fragment>
             <td
@@ -194,32 +249,16 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
                     }
                 }}
             >
-                {isCellUpdating() ? (
-                    <Fragment>
-                        <span className="updating">UPDATING...</span>
-                    </Fragment>
-                ) : (
-                    <Fragment>
-                        {editCellId === cellId ? (
-                            <input
-                                ref={input => input && input.focus() }
-                                id={cellId + "_input"}
-                                className="cell-input"
-                                type="text"
-                                value={value}
-                                onChange={e => setContentState(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                onKeyDown={handleKeyDown}
-                                onBlur={handleBlur}
-                            />
-                        ) : (
-                            <Fragment>{formatValue(getValue())}</Fragment>
-                        )}
-                    </Fragment>
-                )}
+                {getCellContent()}
             </td>
         </Fragment>
     );
 }
 
-export default TableCell
+const comparisonFn = function(prevProps, nextProps) {
+    return (
+        prevProps.sheetUpdating === nextProps.sheetUpdating
+    )
+};
+
+export default memo(TableCell, comparisonFn);

@@ -25,7 +25,7 @@ const TotalAggregate = ({rowIndex, actualsOnly, id}) => {
     }
 
     return (
-        <td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable " + negative}>{formatValue(total / 100)}</td>
+        <td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable figure-cell " + negative}>{formatValue(total / 100)}</td>
     );
 }
 

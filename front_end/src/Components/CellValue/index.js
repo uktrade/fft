@@ -20,7 +20,7 @@ const CellValue = ({rowIndex, cellKey, format}) => {
     	<Fragment>
     		{getValue(cell.value)}
     	</Fragment>
-    );
+    )
 }
 
 export default CellValue

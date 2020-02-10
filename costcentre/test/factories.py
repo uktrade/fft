@@ -1,10 +1,14 @@
 import factory
 
+from faker import Faker
+
 from costcentre.models import (
     CostCentre,
     DepartmentalGroup,
     Directorate,
 )
+
+fake = Faker()
 
 
 class DepartmentalGroupFactory(factory.DjangoModelFactory):
@@ -14,18 +18,19 @@ class DepartmentalGroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = DepartmentalGroup
+        django_get_or_create = ('group_code',)
 
+    group_code = str(fake.pyint())
     active = True
 
 
 class DirectorateFactory(factory.DjangoModelFactory):
-    """
-        Define Directorate Factory
-    """
 
     class Meta:
         model = Directorate
+        django_get_or_create = ('directorate_code',)
 
+    directorate_code = str(fake.pyint())
     group = factory.SubFactory(DepartmentalGroupFactory)
     active = True
 
@@ -37,6 +42,7 @@ class CostCentreFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = CostCentre
+        django_get_or_create = ('cost_centre_code',)
 
     active = True
     directorate = factory.SubFactory(DirectorateFactory)

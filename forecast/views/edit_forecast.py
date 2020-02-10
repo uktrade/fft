@@ -2,6 +2,7 @@ import json
 import re
 
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.urls import (
@@ -193,7 +194,12 @@ class PasteForecastRowsView(
             financial_code__cost_centre_id=cost_centre_code,
         ).count()
 
-        row_count = figure_count / 12
+        # Get number of active financial periods
+        active_periods = FinancialPeriod.objects.filter(
+            display_figure=True
+        ).count()
+
+        row_count = round(figure_count / active_periods)
 
         rows = paste_content.splitlines()
 
@@ -265,11 +271,20 @@ class PasteForecastRowsView(
         ).prefetch_related(
             'forecast_forecastmonthlyfigures',
             'forecast_forecastmonthlyfigures__financial_period'
+        ).order_by(
+            "programme__budget_type_fk__budget_type_edit_display_order",
+            "natural_account_code__natural_account_code",
         )
 
         financial_code_serialiser = FinancialCodeSerializer(
             financial_codes,
             many=True,
+        )
+
+        cache.set(
+            f"{cost_centre_code}_cost_centre_cache",
+            financial_code_serialiser.data,
+            90000,
         )
 
         return JsonResponse(financial_code_serialiser.data, safe=False)
@@ -352,11 +367,20 @@ class EditForecastFigureView(
         ).prefetch_related(
             'forecast_forecastmonthlyfigures',
             'forecast_forecastmonthlyfigures__financial_period'
+        ).order_by(
+            "programme__budget_type_fk__budget_type_edit_display_order",
+            "natural_account_code__natural_account_code",
         )
 
         financial_code_serialiser = FinancialCodeSerializer(
             financial_codes,
             many=True,
+        )
+
+        cache.set(
+            f"{cost_centre_code}_cost_centre_cache",
+            financial_code_serialiser.data,
+            90000,
         )
 
         return JsonResponse(financial_code_serialiser.data, safe=False)
@@ -399,27 +423,44 @@ class EditForecastView(
             }
         )
 
-        financial_code = FinancialCode.objects.filter(
-            cost_centre_id=self.cost_centre_code,
-        ).prefetch_related(
-            'forecast_forecastmonthlyfigures',
-            'forecast_forecastmonthlyfigures__financial_period'
-        )
+        if cache.get(f"{self.cost_centre_code}_cost_centre_cache"):
+            forecast_dump = json.dumps(
+                cache.get(
+                    f"{self.cost_centre_code}_cost_centre_cache"
+                )
+            )
+        else:
+            financial_codes = FinancialCode.objects.filter(
+                cost_centre_id=self.cost_centre_code,
+            ).prefetch_related(
+                'forecast_forecastmonthlyfigures',
+                'forecast_forecastmonthlyfigures__financial_period'
+            ).order_by(
+                "programme__budget_type_fk__budget_type_edit_display_order",
+                "natural_account_code__natural_account_code",
+            )
 
-        financial_code_serialiser = FinancialCodeSerializer(
-            financial_code,
-            many=True,
-        )
+            financial_code_serialiser = FinancialCodeSerializer(
+                financial_codes,
+                many=True,
+            )
+            serialiser_data = financial_code_serialiser.data
+            forecast_dump = json.dumps(serialiser_data)
+            cache.set(
+                f"{self.cost_centre_code}_cost_centre_cache",
+                serialiser_data,
+                90000,
+            )
 
         actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
-
-        forecast_dump = json.dumps(financial_code_serialiser.data)
+        period_display = FinancialPeriod.financial_period_info.period_display_code_list()  # noqa
         paste_form = PasteForecastForm()
 
         context["form"] = form
         context["paste_form"] = paste_form
         context["forecast_dump"] = forecast_dump
         context["actuals"] = actual_data
+        context["period_display"] = period_display
 
         return context
 

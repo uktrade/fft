@@ -95,6 +95,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django_settings_export.settings_export",
             ]
         },
     }
@@ -223,3 +224,9 @@ NUM_META_COLS = 5
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_URL = env("CLAM_AV_URL", default=None)
+GTM_CODE = env("GTM_CODE", default=None)
+
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'GTM_CODE',
+]

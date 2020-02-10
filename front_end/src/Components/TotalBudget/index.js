@@ -15,7 +15,7 @@ const TotalBudget = (id) => {
     }
 
     return (
-    	<td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable "}>{formatValue(total / 100)}</td>
+    	<td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable figure-cell "}>{formatValue(total / 100)}</td>
     );
 }
 

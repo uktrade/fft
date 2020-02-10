@@ -298,8 +298,6 @@ function ForecastTable() {
         };
     }, [dispatch, cells, editCellId, allSelected, selectedRow]);
 
-
-
     return (
         <Fragment>
             {errorMessage != null &&

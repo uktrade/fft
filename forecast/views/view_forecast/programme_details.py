@@ -99,6 +99,9 @@ class DITProgrammeDetailsView(
     template_name = "forecast/view/programme_details/dit.html"
     hierarchy_type = SHOW_DIT
 
+    def class_name(self):
+        return "wide-table"
+
     def post(self, request, *args, **kwargs):
         programme_code_id = request.POST.get(
             'programme_code',

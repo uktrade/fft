@@ -89,6 +89,13 @@ class FinancialPeriodManager(models.Manager):
                 .values_list("period_short_name", flat=True)
         )
 
+    def period_display_code_list(self):
+        return list(
+            self.get_queryset()
+                .filter(display_figure=True)
+                .values_list("financial_period_code", flat=True)
+        )
+
     def actual_period_code_list(self):
         return list(
             self.get_queryset().filter(

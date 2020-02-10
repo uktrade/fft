@@ -18,7 +18,7 @@ const TotalCol = ({month}) => {
     }
 
     const getClasses = () => {
-        return "govuk-table__cell total-figure forecast-month-cell not-editable " + (total < 0 ? 'negative' : '')
+        return "govuk-table__cell total-figure forecast-month-cell not-editable figure-cell " + (total < 0 ? 'negative' : '')
     }
 
     return (
