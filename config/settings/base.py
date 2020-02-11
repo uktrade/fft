@@ -197,10 +197,10 @@ AWS_DEFAULT_ACL = None  # Need to check this with GDS bucket
 if 'VCAP_SERVICES' in os.environ:
     services = json.loads(os.getenv('VCAP_SERVICES'))
     credentials = services['redis'][0]['credentials']
-    REDIS_URL = "redis://:{}@{}:{}/0".format(
+    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=CERT_REQUIRED".format(
         credentials['password'],
         credentials['host'],
-        credentials['port']
+        credentials['port'],
     )
 else:
     REDIS_URL = env("CELERY_BROKER_URL", default=None)
