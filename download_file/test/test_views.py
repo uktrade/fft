@@ -1,4 +1,3 @@
-import os
 from unittest.mock import MagicMock
 
 from django.contrib.auth.models import Permission
@@ -54,13 +53,3 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
-
-        # File name should be in response
-        assert self.file_mock.name in resp.rendered_content
-
-        # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
-        if os.path.exists(file_path):
-            os.remove(file_path)

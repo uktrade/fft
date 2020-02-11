@@ -267,7 +267,7 @@ class PasteForecastRowsView(
             )
 
         financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=cost_centre_code,
+            cost_centre_id=self.cost_centre_code,
         ).prefetch_related(
             'forecast_forecastmonthlyfigures',
             'forecast_forecastmonthlyfigures__financial_period'
@@ -363,7 +363,7 @@ class EditForecastFigureView(
         monthly_figure.save()
 
         financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=cost_centre_code,
+            cost_centre_id=self.cost_centre_code,
         ).prefetch_related(
             'forecast_forecastmonthlyfigures',
             'forecast_forecastmonthlyfigures__financial_period'
