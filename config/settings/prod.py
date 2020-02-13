@@ -57,6 +57,7 @@ if SENTRY_KEY and SENTRY_PROJECT:
 # HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # ## IHTC compliance
 
@@ -80,3 +81,6 @@ SESSION_COOKIE_HTTPONLY = True
 
 # Set content to no sniff
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Set anti XSS header
+SECURE_BROWSER_XSS_FILTER = True
