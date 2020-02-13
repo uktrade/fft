@@ -2,24 +2,12 @@ from .base import *  # noqa
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
-    "core.middleware.ThreadLocalMiddleware",
+MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
-    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
+AUTHENTICATION_BACKENDS += [
     "authbroker_client.backends.AuthbrokerBackend",
-    "guardian.backends.ObjectPermissionBackend",
 ]
 
 STATICFILES_DIRS = ("/app/front_end/build/static",)
@@ -29,10 +17,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 IGNORE_ANTI_VIRUS = False
-
-# HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
-SECURE_HSTS_SECONDS = 3600
-SECURE_HSTS_PRELOAD = True
 
 CACHES = {
     'default': {
@@ -69,3 +53,30 @@ if SENTRY_KEY and SENTRY_PROJECT:
         dsn=f"https://{SENTRY_KEY}@sentry.ci.uktrade.io/{SENTRY_PROJECT}",
         integrations=[DjangoIntegration()]
     )
+
+# HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_PRELOAD = True
+
+# ## IHTC compliance
+
+# Set crsf cookie to be secure
+CSRF_COOKIE_SECURE = True
+
+# Set session cookie to be secure
+SESSION_COOKIE_SECURE = True
+
+# Make browser end session when user closes browser
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Set cookie expiry to 4 hours
+SESSION_COOKIE_AGE = 4 * 60 * 60  # 4 hours in seconds
+
+# Prevent client side JS from accessing CRSF token
+CSRF_COOKIE_HTTPONLY = True
+
+# Prevent client side JS from accessing session cookie (true by default)
+SESSION_COOKIE_HTTPONLY = True
+
+# Set content to no sniff
+SECURE_CONTENT_TYPE_NOSNIFF = True
