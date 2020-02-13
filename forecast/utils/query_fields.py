@@ -1,6 +1,7 @@
 # indicates if DEL, AME, ADMIN
 BUDGET_TYPE =  "financial_code__programme__budget_type_fk__budget_type_display"  # noqa
 BUDGET_TYPE_ORDER =  "financial_code__programme__budget_type_fk__budget_type_display_order"  # noqa
+BUDGET_TYPE_EDIT_ORDER =  "financial_code__programme__budget_type_fk__budget_type_edit_display_order"  # noqa
 
 # Categories defined by DIT: i.e. Consultancy, Contingency, Contractors, etc
 BUDGET_CATEGORY_ID = "financial_code__natural_account_code__expenditure_category__id"  # noqa
@@ -269,7 +270,9 @@ VIEW_FORECAST_DOWNLOAD_COLUMNS = {
 
 EDIT_KEYS_DOWNLOAD = {
     NAC_CODE: 'Natural Account code',
+    NAC_NAME: "Natural Account Code Description",
     PROGRAMME_CODE: 'Programme code',
+    PROGRAMME_NAME: "Programme Description",
     ANALYSIS1_CODE: 'Contract Code',
     ANALYSIS2_CODE: 'Market Code',
     PROJECT_CODE: 'Project Code',
@@ -289,10 +292,13 @@ EDIT_FORECAST_DOWNLOAD_COLUMNS = {
     BUDGET_CATEGORY_NAME: "Budget Category",
     BUDGET_NAC_CODE: "Budget/Forecast NAC",
     BUDGET_NAC_CODE_DESCRIPTION: "Budget/Forecast NAC Description",
-    NAC_NAME: "Natural Account Code Description",
     NAC_EXPENDITURE_TYPE: "NAC Expenditure Type",
-    PROGRAMME_NAME: "Programme Description",
     ANALYSIS1_NAME: "Contract Description",
     ANALYSIS2_NAME: "Market Description",
     PROJECT_NAME: "Project Description",
 }
+
+EDIT_FORECAST_DOWNLOAD_ORDER = [
+    BUDGET_TYPE_EDIT_ORDER,
+    NAC_CODE,
+]

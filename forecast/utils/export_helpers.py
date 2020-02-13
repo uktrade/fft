@@ -15,10 +15,9 @@ from core.utils import today_string
 
 from forecast.models import FinancialPeriod
 
-EDIT_BUDGET_COL = "F"
-VIEW_BUDGET_COL = "X"
+BUDGET_HEADER = 'Budget'
 MONTH_HEADERS = [
-    'Budget',
+    BUDGET_HEADER,
     'Apr',
     'May',
     'Jun',
@@ -96,7 +95,6 @@ def last_actual_cell(col):
 def export_to_excel(queryset,
                     columns_dict,
                     extra_columns_dict,
-                    budget_col,
                     protect,
                     title):
     resp = HttpResponse(content_type=EXCEL_TYPE)
@@ -116,7 +114,9 @@ def export_to_excel(queryset,
         ws.protection.formatRows = False
         ws.protection.formatColumns = False
     row_count = 1
-    budget_index = column_index_from_string(budget_col)
+    header = create_headers(columns_dict, extra_columns_dict)
+    budget_index = header.index(BUDGET_HEADER) + 1
+    budget_col = get_column_letter(budget_index)
     first_actual_col = get_column_letter(budget_index + 1)
     last_actual_col = last_actual_cell(first_actual_col)
     if last_actual_col:
@@ -128,7 +128,8 @@ def export_to_excel(queryset,
     year_to_date_col = get_column_letter(last_month_index + 1)
     year_total_col = get_column_letter(last_month_index + 2)
     over_under_spend_col = get_column_letter(last_month_index + 3)
-    ws.append(create_headers(columns_dict, extra_columns_dict))
+    ws.append(header)
+
     for data_row in forecast_query_iterator(queryset, columns_dict, extra_columns_dict):
         ws.append(data_row)
         row_count += 1
@@ -155,7 +156,6 @@ def export_query_to_excel(queryset, columns_dict, title):
     return export_to_excel(queryset,
                            columns_dict,
                            {},
-                           VIEW_BUDGET_COL,
                            False,
                            title
                            )
@@ -165,7 +165,6 @@ def export_edit_to_excel(queryset, key_dict, columns_dict, title):
     return export_to_excel(queryset,
                            key_dict,
                            columns_dict,
-                           EDIT_BUDGET_COL,
                            True,
                            title
                            )
