@@ -45,14 +45,11 @@ LOGGING = {
     },
 }
 
-SENTRY_KEY = env("SENTRY_KEY", default=None)
-SENTRY_PROJECT = env("SENTRY_PROJECT", default=None)
-
-if SENTRY_KEY and SENTRY_PROJECT:
-    sentry_sdk.init(
-        dsn=f"https://{SENTRY_KEY}@sentry.ci.uktrade.io/{SENTRY_PROJECT}",
-        integrations=[DjangoIntegration()]
-    )
+sentry_sdk.init(
+    os.environ.get("SENTRY_DSN"),
+    environment=os.environ.get("SENTRY_ENVIRONMENT"),
+    integrations=[DjangoIntegration()],
+)
 
 # HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 SECURE_HSTS_SECONDS = 3600
