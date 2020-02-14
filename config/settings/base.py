@@ -243,7 +243,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "core.middleware.ThreadLocalMiddleware",
     "core.no_cache_middleware.NoCacheMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "defender.middleware.FailedLoginMiddleware",
