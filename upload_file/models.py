@@ -4,11 +4,11 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from core.metamodels import (
-    SimpleTimeStampedModel,
+    BaseModel,
 )
 
 
-class FileUpload(SimpleTimeStampedModel):
+class FileUpload(BaseModel):
     UNPROCESSED = 'unprocessed'
     PROCESSING = 'processing'
     PROCESSED = 'processed'

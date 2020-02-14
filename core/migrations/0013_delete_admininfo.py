@@ -5,6 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [("core", "0012_auto_20190917_0732")]
+    dependencies = [("core", "0011_delete_asyncimportlog")]
 
     operations = [migrations.DeleteModel(name="AdminInfo")]

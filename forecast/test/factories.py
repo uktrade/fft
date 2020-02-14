@@ -29,6 +29,21 @@ class FinancialPeriodFactory(factory.DjangoModelFactory):
     period_calendar_code = 4
 
 
+class FinancialCodeFactory(factory.DjangoModelFactory):
+    programme = factory.SubFactory(ProgrammeCodeFactory)
+    cost_centre = factory.SubFactory(CostCentreFactory)
+    natural_account_code = factory.SubFactory(NaturalCodeFactory)
+
+    class Meta:
+        model = FinancialCode
+
+
+class BudgetMonthlyFigureFactory(factory.DjangoModelFactory):
+    financial_code = factory.SubFactory(FinancialCodeFactory)
+    financial_year = factory.Iterator(FinancialYear.objects.all())
+    financial_period = factory.Iterator(FinancialPeriod.objects.all())
+
+
 class BudgetFactory(factory.DjangoModelFactory):
 
     class Meta:

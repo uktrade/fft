@@ -48,7 +48,7 @@ class FinancialPeriodAdmin(AdminReadOnly):
 
 
 class ForecastEditLockAdmin(AdminEditOnly, SimpleHistoryAdmin):
-    pass
+    history_list_display = ["locked"]
 
 
 admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)

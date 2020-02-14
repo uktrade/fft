@@ -1,7 +1,11 @@
 from django.db import models
 
+from core.metamodels import (
+    BaseModel,
+)
 
-class DownloadLog(models.Model):
+
+class DownloadLog(BaseModel):
     CC_AT = "CC"
     NAC_H_AT = "NAC H"
     CC_TRAVEL = "CC TRAV"

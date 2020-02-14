@@ -2,14 +2,13 @@ from django.db import models
 
 from core.metamodels import (
     ArchivedModel,
-    LogChangeModel,
-    TimeStampedModel,
+    IsActiveModel,
 )
 
 from treasurySS.models import Segment
 
 
-class CostCentrePerson(TimeStampedModel, LogChangeModel):
+class CostCentrePerson(IsActiveModel):
     """Model used for storing the name of Deputy Directors, Directors and DG.
     It would be better to use the  HR data, but they are not always up-to-date,
     so it is easier to have a different table."""
@@ -35,7 +34,7 @@ class CostCentrePerson(TimeStampedModel, LogChangeModel):
         ordering = ["surname", "name"]
 
 
-class BusinessPartner(TimeStampedModel, LogChangeModel):
+class BusinessPartner(IsActiveModel):
     """Model used for storing information about the business partners"""
 
     name = models.CharField(max_length=100, blank=True)
@@ -51,7 +50,7 @@ class BusinessPartner(TimeStampedModel, LogChangeModel):
         ordering = ["surname", "name"]
 
 
-class BSCEEmail(TimeStampedModel, LogChangeModel):
+class BSCEEmail(IsActiveModel):
     """Model used to store the generic BSCE email"""
 
     bsce_email = models.EmailField("BSCE email", unique=True)
@@ -65,7 +64,7 @@ class BSCEEmail(TimeStampedModel, LogChangeModel):
         ordering = ["bsce_email"]
 
 
-class DepartmentalGroup(TimeStampedModel, LogChangeModel):
+class DepartmentalGroup(IsActiveModel):
     group_code = models.CharField("Group Code", primary_key=True, max_length=6)
     group_name = models.CharField("Group Name", max_length=300)
     director_general = models.ForeignKey(
@@ -88,7 +87,7 @@ class DepartmentalGroup(TimeStampedModel, LogChangeModel):
         ordering = ["group_code"]
 
 
-class Directorate(TimeStampedModel, LogChangeModel):
+class Directorate(IsActiveModel):
     directorate_code = models.CharField(
         "Directorate Code", primary_key=True, max_length=6
     )
@@ -107,7 +106,7 @@ class Directorate(TimeStampedModel, LogChangeModel):
         ordering = ["directorate_code"]
 
 
-class CostCentre(TimeStampedModel, LogChangeModel):
+class CostCentre(IsActiveModel):
     cost_centre_code = models.CharField(
         "Cost Centre Code", primary_key=True, max_length=6
     )

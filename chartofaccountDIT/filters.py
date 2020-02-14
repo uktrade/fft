@@ -5,18 +5,18 @@ import django_filters
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
+    ArchivedAnalysis1,
+    ArchivedAnalysis2,
+    ArchivedCommercialCategory,
+    ArchivedExpenditureCategory,
+    ArchivedFCOMapping,
+    ArchivedInterEntity,
+    ArchivedNaturalCode,
+    ArchivedProgrammeCode,
+    ArchivedProjectCode,
     CommercialCategory,
     ExpenditureCategory,
     FCOMapping,
-    HistoricalAnalysis1,
-    HistoricalAnalysis2,
-    HistoricalCommercialCategory,
-    HistoricalExpenditureCategory,
-    HistoricalFCOMapping,
-    HistoricalInterEntity,
-    HistoricalNaturalCode,
-    HistoricalProgrammeCode,
-    HistoricalProjectCode,
     InterEntity,
     NaturalCode,
     ProgrammeCode,
@@ -99,7 +99,7 @@ class HistoricalNACFilter(MyFilterSet):
         )
 
     class Meta(MyFilterSet.Meta):
-        model = HistoricalNaturalCode
+        model = ArchivedNaturalCode
         fields = ["search_all"]
 
     @property
@@ -168,7 +168,7 @@ class HistoricalExpenditureCategoryFilter(MyFilterSet):
         )
 
     class Meta(MyFilterSet.Meta):
-        model = HistoricalExpenditureCategory
+        model = ArchivedExpenditureCategory
         fields = ["search_all"]
 
     @property
@@ -215,7 +215,7 @@ class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
     because the fields are identical."""
 
     class Meta(CommercialCategoryFilter.Meta):
-        model = HistoricalCommercialCategory
+        model = ArchivedCommercialCategory
 
 
 class Analysis1Filter(MyFilterSet):
@@ -250,7 +250,7 @@ class HistoricalAnalysis1Filter(Analysis1Filter):
     because the fields are identical."""
 
     class Meta(Analysis1Filter.Meta):
-        model = HistoricalAnalysis1
+        model = ArchivedAnalysis1
 
 
 class Analysis2Filter(MyFilterSet):
@@ -283,7 +283,7 @@ class HistoricalAnalysis2Filter(Analysis2Filter):
     because the fields are identical."""
 
     class Meta(Analysis2Filter.Meta):
-        model = HistoricalAnalysis2
+        model = ArchivedAnalysis2
 
 
 class ProgrammeFilter(MyFilterSet):
@@ -322,7 +322,7 @@ class HistoricalProgrammeFilter(ProgrammeFilter):
         )
 
     class Meta(ProgrammeFilter.Meta):
-        model = HistoricalProgrammeCode
+        model = ArchivedProgrammeCode
 
     @property
     def qs(self):
@@ -373,7 +373,7 @@ class HistoricalInterEntityFilter(MyFilterSet):
         )
 
     class Meta(MyFilterSet.Meta):
-        model = HistoricalInterEntity
+        model = ArchivedInterEntity
         fields = ["search_all"]
 
     @property
@@ -409,7 +409,7 @@ class HistoricalProjectFilter(ProjectFilter):
     because the fields are identical."""
 
     class Meta(ProjectFilter.Meta):
-        model = HistoricalProjectCode
+        model = ArchivedProjectCode
 
 
 class FCOMappingtFilter(MyFilterSet):
@@ -461,7 +461,7 @@ class HistoricalFCOMappingtFilter(MyFilterSet):
         )
 
     class Meta(MyFilterSet.Meta):
-        model = HistoricalFCOMapping
+        model = ArchivedFCOMapping
         fields = ["search_all"]
 
     @property
