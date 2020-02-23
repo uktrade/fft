@@ -30,7 +30,6 @@ urlpatterns = [
     path("pingdom/", include("pingdom.urls")),
     path("upload/", include("upload_file.urls")),
     path("admin/", admin.site.urls),
-    path("admin/defender/", include("defender.urls")),  # defender admin
     # TODO - split below out into develop only?
     path(
         "assets/<path:asset_path>",

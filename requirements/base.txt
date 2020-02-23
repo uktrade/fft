@@ -91,5 +91,5 @@ redis
 djangorestframework
 django-simple-history
 django-settings-export
-django-defender
+django-axes
 django-redis
