@@ -493,82 +493,81 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_programme_table(self, table, prog_index=2):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[1].find_all("td")
-        assert first_prog_cols[prog_index].get_text() == \
+        assert first_prog_cols[prog_index].get_text().strip() == \
             self.programme_obj.programme_description
-        assert first_prog_cols[prog_index + 1].get_text() == \
+        assert first_prog_cols[prog_index + 1].get_text().strip() == \
             self.programme_obj.programme_code
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_programme_cols[TOTAL_COLUMN].get_text() == \
+        assert last_programme_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_programme_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_programme_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_expenditure_table(self, table):
         expenditure_rows = table.find_all("tr")
         first_expenditure_cols = expenditure_rows[1].find_all("td")
-        assert (first_expenditure_cols[1].get_text() == '—')
-        assert first_expenditure_cols[3].get_text() == format_forecast_figure(
+        assert (first_expenditure_cols[1].get_text().strip() == '—')
+        assert first_expenditure_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_expenditure_cols[TOTAL_COLUMN].get_text() == \
+        assert last_expenditure_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
         first_project_cols = project_rows[1].find_all("td")
-        assert first_project_cols[1].get_text() == self.project_obj.project_description
-        assert first_project_cols[2].get_text() == self.project_obj.project_code
-        assert first_project_cols[3].get_text() == format_forecast_figure(
+        assert first_project_cols[1].get_text().strip() == \
+            self.project_obj.project_description
+        assert first_project_cols[2].get_text().strip() == self.project_obj.project_code
+        assert first_project_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_project_cols[TOTAL_COLUMN].get_text() == \
+        assert last_project_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_project_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_project_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
-    def check_hierarchy_table(self, table, hierarchy_element):
+    def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[1].find_all("td")
-        assert first_hierarchy_cols[1].get_text() == hierarchy_element
-
-        assert first_hierarchy_cols[3].get_text() == format_forecast_figure(
-            self.budget / 100
-        )
-        assert first_hierarchy_cols[4].get_text() == format_forecast_figure(
-            self.amount_apr / 100
-        )
+        assert first_hierarchy_cols[2 + offset].get_text().strip() == \
+            hierarchy_element
+        assert first_hierarchy_cols[4 + offset].get_text().strip() == \
+            format_forecast_figure(self.budget / 100)
+        assert first_hierarchy_cols[5 + offset].get_text().strip() == \
+            format_forecast_figure(self.amount_apr / 100)
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == \
+        assert last_hierarchy_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup):
@@ -603,7 +602,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre.cost_centre_name)
+                                   self.cost_centre.cost_centre_name, -1)
         # Check that the second table displays the programme and the correct totals
         # The programme table in the cost centre does not show the 'View'
         # so the programme is displayed in a different column
@@ -644,7 +643,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre.cost_centre_name)
+                                   self.cost_centre.cost_centre_name, 0)
+
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -683,7 +683,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.directorate.directorate_name)
+                                   self.directorate.directorate_name, 0)
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -716,7 +716,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.group_name)
+                                   self.group_name, 0)
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -834,22 +834,22 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
         first_nac_cols = nac_rows[1].find_all("td")
-        assert (first_nac_cols[0].get_text() ==
+        assert (first_nac_cols[0].get_text().strip() ==
                 self.nac2_obj.natural_account_code_description)
 
-        assert first_nac_cols[3].get_text() == format_forecast_figure(
+        assert first_nac_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[TOTAL_COLUMN].get_text() == \
+        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_nac_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_nac_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
@@ -1037,13 +1037,13 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
 
         last_details_cols = details_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_details_cols[TOTAL_COLUMN].get_text() == \
+        assert last_details_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_details_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_details_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):

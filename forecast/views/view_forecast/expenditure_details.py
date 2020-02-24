@@ -47,6 +47,9 @@ class ForecastExpenditureDetailsMixin(MultiTableMixin):
     hierarchy_type = -1
     table_pagination = False
 
+    def class_name(self):
+        return "wide-table"
+
     def expenditure_category(self):
         return ExpenditureCategory.objects.get(
             pk=self.kwargs['expenditure_category'],

@@ -121,6 +121,20 @@ class FinancialPeriodManager(models.Manager):
                 .values_list("period_short_name", "period_long_name")
         )
 
+    def month_periods(self):
+        return (
+            self.get_queryset()
+                .filter(financial_period_code__lte=12)
+                .values_list("period_short_name", "period_long_name")
+        )
+
+    def adj_periods(self):
+        return (
+            self.get_queryset()
+                .filter(financial_period_code__gt=12, display_figure=True)
+                .values_list("period_short_name", "period_long_name")
+        )
+
     def reset_actuals(self):
         self.get_queryset().filter(
             actual_loaded=True,

@@ -45,6 +45,9 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
     hierarchy_type = -1
     table_pagination = False
 
+    def class_name(self):
+        return "wide-table"
+
     def programme_code(self):
         return ProgrammeCode.objects.get(
             pk=self.kwargs['programme_code'],
@@ -115,7 +118,6 @@ class DITProgrammeDetailsView(
                     kwargs={'programme_code': programme_code_id,
                             'forecast_expenditure_type': self.forecast_expenditure_type(),  # noqa
                             }
-
                 )
             )
         else:

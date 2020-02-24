@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb "DIT" "forecast_dit" %}
 {% endblock %}
 
 
@@ -14,16 +14,6 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">DIT</h1>
             <a class="govuk-button govuk-button--secondary"  href="{%  url 'export_forecast_data_dit' %} ">Download</a>
-        </div>
-
-        <div class="govuk-grid-column-one-third directorate-cc-form">
-            <ul class="govuk-list">
-                {% for group in view.groups %}
-                <li>
-                    <a class="govuk-link" href="{% url 'forecast_group' group.group_code %}">{{ group.group_name }}</a>
-                </li>
-                {% endfor %}
-            </ul>
         </div>
     </div>
 

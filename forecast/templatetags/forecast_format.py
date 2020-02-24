@@ -12,7 +12,6 @@ forecast_figure_cols = [
     "Year to Date",
     "Year Total",
     "Underspend (Overspend)",
-    "%",
 ]
 
 
@@ -34,3 +33,19 @@ def format_figure(value, column):
             pass
 
     return value
+
+
+@register.filter()
+def is_percentage_figure(_, column):
+    if str(column) == '%':
+        return True
+
+    return False
+
+
+@register.filter()
+def is_negative_percentage_figure(value, column):
+    if str(column) == '%' and value[:1] == '-':
+        return True
+
+    return False

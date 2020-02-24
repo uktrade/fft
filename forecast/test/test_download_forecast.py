@@ -123,7 +123,7 @@ class DownloadForecastHierarchyTest(TestCase, RequestFactoryBase):
         wb = load_workbook(filename=file)
         ws = wb.active
         # Check group
-        assert ws["A1"].value == "Group Name"
+        assert ws["A1"].value == "Group name"
         assert ws["B2"].value == self.group_code
 
     def test_group_download(self):
@@ -144,7 +144,7 @@ class DownloadForecastHierarchyTest(TestCase, RequestFactoryBase):
         wb = load_workbook(filename=file)
         ws = wb.active
         # Check group
-        assert ws["A1"].value == "Group Name"
+        assert ws["A1"].value == "Group name"
         assert ws["B2"].value == self.group_code
 
     def test_directorate_download(self):
@@ -164,7 +164,7 @@ class DownloadForecastHierarchyTest(TestCase, RequestFactoryBase):
         wb = load_workbook(filename=file)
         ws = wb.active
         # Check group
-        assert ws["A1"].value == "Group Name"
+        assert ws["A1"].value == "Group name"
         assert ws["B2"].value == self.group_code
 
     def test_cost_centre_download(self):
@@ -185,7 +185,7 @@ class DownloadForecastHierarchyTest(TestCase, RequestFactoryBase):
         wb = load_workbook(filename=file)
         ws = wb.active
         # Check group
-        assert ws["A1"].value == "Group Name"
+        assert ws["A1"].value == "Group name"
         assert ws["B2"].value == self.group_code
 
 

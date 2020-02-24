@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb "DIT" "forecast_dit" %}
     {% breadcrumb view.cost_centre.directorate.group.group_name "forecast_group" view.cost_centre.directorate.group_id %}
     {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code %}
     {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code %}
