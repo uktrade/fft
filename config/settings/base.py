@@ -253,3 +253,5 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AXES_LOGIN_FAILURE_LIMIT = 5
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.SessionStorage'
