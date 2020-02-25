@@ -97,7 +97,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         }
 
         if (!cell)
-            return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '') + editable
+            return "govuk-table__cell forecast-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
 
         let negative = ''
 
@@ -123,6 +123,10 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         let newAmount = parseInt(value * 100)
 
         if (cell && newAmount === cell.amount) {
+            return
+        }
+
+        if (!cell && newAmount === 0) {
             return
         }
 

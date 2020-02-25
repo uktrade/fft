@@ -220,7 +220,7 @@ STATICFILES_FINDERS = [
     "sass_processor.finders.CssFinder",
 ]
 
-NUM_META_COLS = 5
+NUM_META_COLS = 8
 
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)

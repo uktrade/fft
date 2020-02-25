@@ -84,14 +84,14 @@ def step_impl(context):
 
 @when(u'the user pastes valid row data')
 def step_impl(context):
-    paste_text = "111111	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 
 
 @when(u'the user pastes valid sheet data')
 def step_impl(context):
-    paste_text = "111111	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
 
     copy_text(context, paste_text)
     paste(context)
@@ -99,7 +99,7 @@ def step_impl(context):
 
 @when(u'the user pastes too many rows')
 def step_impl(context):
-    too_many_rows_paste_text = "111111	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n222222	123456	1111111	2222222	3000	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    too_many_rows_paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n333333	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, too_many_rows_paste_text)
     paste(context)
 
@@ -154,7 +154,7 @@ def step_impl(context):
     april.actual_loaded = True
     april.save()
 
-    paste_text = "111111	123456	1111111	2222222	3000	111.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 
@@ -174,14 +174,14 @@ def step_impl(context):
 
 @when(u'the user pastes valid row data with a 5 decimal place value')
 def step_impl(context):
-    paste_text = "111111	123456	1111111	2222222	3000	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 
 
 @when(u'the user pastes too many column row data')
 def step_impl(context):
-    paste_text = "111111	123456	1111111	2222222	3000	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 
@@ -198,7 +198,7 @@ def step_impl(context):
 
 @when(u'the user pastes too few column row data')
 def step_impl(context):
-    paste_text = "111111	123456	1111111	2222222	3000	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 
@@ -215,7 +215,7 @@ def step_impl(context):
 
 @when(u'the user pastes mismatched columns')
 def step_impl(context):
-    paste_text = "333444	123456	1111111	2222222	3000	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "333444	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 

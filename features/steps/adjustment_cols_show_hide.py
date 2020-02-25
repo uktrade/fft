@@ -14,11 +14,11 @@ from features.environment import (
     create_test_user,
 )
 
-from forecast.models import FinancialPeriod, FinancialCode
+from forecast.models import FinancialPeriod
 from forecast.test.factories import (
-    FinancialCodeFactory,
     FinancialPeriodFactory,
 )
+
 
 @given(u'adjustment 1 is set to display')
 def step_impl(context):

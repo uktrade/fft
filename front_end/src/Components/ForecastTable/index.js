@@ -100,7 +100,7 @@ function ForecastTable() {
             })
         }
 
-        capturePaste();
+        capturePaste()
         document.addEventListener("paste", capturePaste)
 
         return () => {
@@ -111,8 +111,9 @@ function ForecastTable() {
     useEffect(() => {
         const handleKeyDown = (event) => {
             // This function puts editing cells into the tab order of the page
-            let footerLink = document.getElementsByClassName("national-archives")[0]
             let lowestMonth = 0
+            let body = document.getElementsByTagName("BODY")[0]
+            let skipLink = document.getElementsByClassName("govuk-skip-link")[0]
 
             if (window.actuals && window.actuals.length > 0) {
                 let highestActual = Math.max(...window.actuals)
@@ -157,11 +158,11 @@ function ForecastTable() {
                 }
             }
 
-
             if (event.key === "Tab") {
                 let targetRow = -1
                 let targetMonth = null
                 let nextId = null
+                let maxMonth = Math.max(...window.period_display)
 
                 // Check for select button
                 if (editCellId) {
@@ -173,11 +174,15 @@ function ForecastTable() {
                     targetRow = parseInt(parts[2])
                 }
 
-                if (event.shiftKey && document.activeElement === footerLink) {
+                if (event.shiftKey && 
+                    editCellId === null && (
+                    document.activeElement === body ||
+                    document.activeElement === skipLink
+                )) {
                     targetRow = cells.length - 1
-                    targetMonth = 12
 
-                    nextId = getCellId(targetRow, targetMonth)
+                    nextId = getCellId(targetRow, maxMonth)
+
                     event.preventDefault()
                     document.activeElement.blur();
 
@@ -192,11 +197,7 @@ function ForecastTable() {
 
                 if (targetRow > -1) {
                     if (event.shiftKey) { // We're going backwards
-                        if (document.activeElement === footerLink) {
-                            targetRow = cells.length
-                            targetMonth = 12
-                        }
-                        else if (!targetMonth) { // See if we're on a select button
+                        if (!targetMonth) { // See if we're on a select button
                             if (targetRow === 0) { // See if we're at the start of the table
                                 dispatch(
                                     SET_EDITING_CELL({
@@ -206,7 +207,7 @@ function ForecastTable() {
                                 return
                             } else {
                                 targetRow--
-                                targetMonth = 12
+                                targetMonth = maxMonth
                             }
                         } else { // We're coming from a cell
                             if (targetMonth === (lowestMonth + 1)) { // See if we need to jump to select link
@@ -231,9 +232,8 @@ function ForecastTable() {
                         targetMonth++
 
                         // Jump to next row if we've reached the end of the current one
-                        if (targetMonth > 12) {
+                        if (targetMonth > maxMonth) {
                             targetRow++
-                            // targetMonth = lowestMonth + 1
 
                             // Check for end of table
                             if (targetRow > (cells.length - 1)) {
@@ -242,7 +242,6 @@ function ForecastTable() {
                                         "cellId": null
                                     })
                                 );
-                                footerLink.focus()
                                 event.preventDefault()
                                 return
                             }
