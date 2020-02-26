@@ -121,7 +121,7 @@ class ForecastTable(tables.Table):
             ("Budget",
              ForecastFigureCol(self.display_footer, "Budget", empty_values=()))
         ]
-        # Only add the month columns here. If you add the adjustements too,
+        # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
         for month in FinancialPeriod.financial_period_info.month_display_list():
             cols.append(
