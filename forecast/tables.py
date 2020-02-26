@@ -121,11 +121,13 @@ class ForecastTable(tables.Table):
             ("Budget",
              ForecastFigureCol(self.display_footer, "Budget", empty_values=()))
         ]
-        for month in FinancialPeriod.financial_period_info.month_periods():
+        # Only add the month columns here. If you add the adjustements too,
+        # their columns will be displayed even after 'display_figure' field is False
+        for month in FinancialPeriod.financial_period_info.month_display_list():
             cols.append(
                 (
-                    month[0],
-                    ForecastFigureCol(self.display_footer, month[1], empty_values=()),
+                    month,
+                    ForecastFigureCol(self.display_footer, month, empty_values=()),
                 )
             )
 
@@ -153,13 +155,15 @@ class ForecastTable(tables.Table):
 
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
         # See if Adjustment periods should be displayed.
-        adj_list = FinancialPeriod.financial_period_info.adj_periods()
+        # Add them as extra columns, otherwise they remain visible even after
+        # their field 'display_figure' is set to False.
+        adj_list = FinancialPeriod.financial_period_info.adj_display_list()
         if adj_list:
             for adj in adj_list:
                 extra_column_to_display.extend(
                     [(
-                        adj[0],
-                        ForecastFigureCol(self.display_footer, adj[1], empty_values=()),
+                        adj,
+                        ForecastFigureCol(self.display_footer, adj, empty_values=()),
                     )]
                 )
 

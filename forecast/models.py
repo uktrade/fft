@@ -79,6 +79,20 @@ class ForecastExpenditureType(BaseModel):
 
 
 class FinancialPeriodManager(models.Manager):
+    def month_display_list(self):
+        return list(
+            self.get_queryset()
+                .filter(financial_period_code__lte=12)
+                .values_list("period_short_name", flat=True)
+        )
+
+    def adj_display_list(self):
+        return list(
+            self.get_queryset()
+                .filter(financial_period_code__gt=12, display_figure=True)
+                .values_list("period_short_name", flat=True)
+        )
+
     def period_display_list(self):
         return list(
             self.get_queryset()
@@ -595,8 +609,12 @@ class DisplaySubTotalManager(models.Manager):
                        'Jan': Sum('jan'),
                        'Feb': Sum('feb'),
                        'Mar': Sum('mar'),
+                       'Adj1': Sum('adj1'),
+                       'Adj2': Sum('adj2'),
+                       'Adj3': Sum('adj3'),
                        }
-        # Lines with 0 values across the year have no year specified.
+        # Lines with 0 values across the year have no year specified:
+        # they come from an outer join in the query.
         # So use financial_year = NULL to filter them in or out.
         raw_data = (self.get_queryset().values(*columns)
                     .filter(
