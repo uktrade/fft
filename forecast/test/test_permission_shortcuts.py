@@ -1,3 +1,4 @@
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
@@ -52,6 +53,12 @@ class PermissionShortcutsTest(
         )
 
         assert len(cost_centres) == 1
+
+        # Check that log entry was created for assignment
+        log_entry = LogEntry.objects.last()
+
+        assert log_entry.object_id == str(self.cost_centre.cost_centre_code)
+        assert log_entry.change_message == "Cost Centre permission was assigned"
 
     def test_get_objects_for_user(self):
         with self.assertRaises(NoForecastViewPermission):
