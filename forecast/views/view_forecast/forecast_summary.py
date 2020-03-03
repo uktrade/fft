@@ -118,15 +118,15 @@ class ForecastMultiTableMixin(MultiTableMixin):
                 programme_data
             )
 
-        programme_table.attrs['caption'] = "Programme Report"
+        programme_table.attrs['caption'] = "Control total report"
         expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
                                                   [BUDGET_CATEGORY_ID, BUDGET_TYPE],
                                                   filter_code,
                                                   expenditure_columns,
                                                   expenditure_data)
-        expenditure_table.attrs['caption'] = "Expenditure Report"
+        expenditure_table.attrs['caption'] = "Expenditure report"
         project_table = ForecastSubTotalTable(project_columns, project_data)
-        project_table.attrs['caption'] = "Project Report"
+        project_table.attrs['caption'] = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:
             hierarchy_table = ForecastSubTotalTable(
