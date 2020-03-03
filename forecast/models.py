@@ -23,7 +23,7 @@ from core.metamodels import (
 )
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
-from core.utils import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS
+from core.utils import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL_CLASS
 
 from costcentre.models import CostCentre
 
@@ -403,14 +403,15 @@ class SubTotalForecast:
                 level = self.subtotal_columns.index(column)
                 subtotal_row[self.display_total_column] = \
                     f"Total {self.previous_values[column]}"
-
+                show_class = TOTAL_CLASS
                 for out_total in self.subtotal_columns[level + 1:]:
                     subtotal_row[self.display_total_column] = \
                         f"{subtotal_row[self.display_total_column]} " \
                         f"{self.previous_values[out_total]}"
+                    show_class = SUB_TOTAL_CLASS
                 self.output_row_to_table(
                     subtotal_row,
-                    SUB_TOTAL_CLASS,
+                    show_class,
                 )
                 self.clear_row(self.subtotals[column])
                 self.previous_values[column] = current_row[column]
@@ -491,12 +492,15 @@ class SubTotalForecast:
         for column in self.subtotal_columns:
             level = self.subtotal_columns.index(column)
             caption = f"Total {self.previous_values[column]}"
+            show_class = TOTAL_CLASS
             for out_total in self.subtotal_columns[level + 1:]:
                 caption = f"{caption} {self.previous_values[out_total]}"
+                show_class = SUB_TOTAL_CLASS
+
             self.subtotals[column][self.display_total_column] = caption
             self.output_row_to_table(
                 self.subtotals[column],
-                SUB_TOTAL_CLASS,
+                show_class,
             )
         if show_grand_total:
             self.subtotals[GRAND_TOTAL_ROW][self.display_total_column] = \

@@ -51,6 +51,22 @@ input.cell-input {
   }
 }
 
+.mid-total {
+  background-color: rgba(43, 148, 101, 0.75);
+  color: $govuk-body-background-colour;
+  .actual-month {
+    background-color: rgba(86, 148, 202, 1) !important;
+  }
+}
+
+.grand-total {
+  background-color: rgba(86, 148, 101, 0.75);
+  color: $govuk-body-background-colour;
+  .actual-month {
+    background-color: rgba(86, 148, 202, 1) !important;
+  }
+}
+
 .govuk-error-summary {
   margin-bottom: 20px;
 }
