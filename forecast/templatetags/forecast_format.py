@@ -7,7 +7,7 @@ register = template.Library()
 forecast_figure_cols = [
     "Budget",
     "Year to Date",
-    "Year Total",
+    "Forecast outturn total",
     "Underspend (Overspend)",
 ]
 

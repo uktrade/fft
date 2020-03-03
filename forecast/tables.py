@@ -183,7 +183,7 @@ class ForecastTable(tables.Table):
                     SummingMonthFooterCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
                         self.display_footer,
-                        "Year Total",
+                        "Forecast outturn total",
                         empty_values=(),
                     ),
                 ),
