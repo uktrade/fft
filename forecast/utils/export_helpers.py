@@ -60,9 +60,9 @@ def create_headers(keys_dict, columns_dict, period_list):
     k = list(keys_dict.values())
     k.append(budget_header)
     k.extend(period_list)
-    k.append(year_to_date_header)
     k.append(forecast_total_header)
     k.append(variance_header)
+    k.append(year_to_date_header)
     k.extend(list(columns_dict.values()))
     return k
 
@@ -109,9 +109,9 @@ def export_to_excel(queryset,
         first_forecast_index = budget_index + 1
     last_month_index = budget_index + howmany_periods
     last_month_col = get_column_letter(last_month_index)
-    year_to_date_col = get_column_letter(last_month_index + 1)
-    year_total_col = get_column_letter(last_month_index + 2)
-    over_under_spend_col = get_column_letter(last_month_index + 3)
+    year_total_col = get_column_letter(last_month_index + 1)
+    over_under_spend_col = get_column_letter(last_month_index + 2)
+    year_to_date_col = get_column_letter(last_month_index + 3)
     ws.append(header)
 
     for data_row in forecast_query_iterator(

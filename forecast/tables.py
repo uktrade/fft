@@ -176,16 +176,7 @@ class ForecastTable(tables.Table):
 
         extra_column_to_display.extend(
             [
-                (
-                    "year_to_date",
-                    SummingMonthFooterCol(
-                        actual_month_list,
-                        self.display_footer,
-                        year_to_date_header,
-                        empty_values=(),
-                    ),
-                ),
-                (
+               (
                     "year_total",
                     SummingMonthFooterCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
@@ -214,6 +205,25 @@ class ForecastTable(tables.Table):
                         empty_values=()
                     ),
                 ),
+                (
+                    "year_to_date",
+                    SummingMonthFooterCol(
+                        actual_month_list,
+                        self.display_footer,
+                        year_to_date_header,
+                        empty_values=(),
+                    ),
+                ),
+                (
+                "percentage_spent",
+                PercentageCol(
+                    "year_to_date",
+                    "Budget",
+                    self.display_footer,
+                    budget_spent_percentage_header,
+                    empty_values=()
+                ),
+               ),
             ]
         )
 
