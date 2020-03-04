@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from openpyxl import Workbook
+from openpyxl import load_workbook
 from openpyxl.styles import Protection
 from openpyxl.utils import (
     column_index_from_string,
@@ -16,10 +16,8 @@ from core.utils import today_string
 from forecast.models import FinancialPeriod
 from forecast.utils.view_header_definition import (
     budget_header,
-    budget_spent_percentage_header,
     forecast_total_header,
     variance_header,
-    variance_percentage_header,
     year_to_date_header,
 )
 
@@ -82,10 +80,11 @@ def export_to_excel(queryset,
     resp = HttpResponse(content_type=EXCEL_TYPE)
     filename = f'{title}  {today_string()} .xlsx'
     resp["Content-Disposition"] = "attachment; filename=" + filename
-    wb = Workbook()
+    # wb = Workbook()
+    wb = load_workbook('download_templates/pivotTemplate.xlsx')
     ws = wb.get_active_sheet()
     # Truncate the tab name to the maximum lenght permitted by Excel
-    ws.title = f'{title} {today_string()}'[:EXC_TAB_NAME_LEN]
+    # ws.title = f'{title} {today_string()}'[:EXC_TAB_NAME_LEN]
     if protect:
         #  Set the required level of protection
         ws.protection.sheet = True
