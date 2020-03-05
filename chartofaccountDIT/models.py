@@ -134,7 +134,7 @@ class NACCategory(IsActiveModel):
     class Meta:
         verbose_name = "Budget Grouping"
         verbose_name_plural = "Budget Groupings"
-        ordering = ["NAC_category_description"]
+        ordering = ["NAC_category_display_order"]
 
 
 class OperatingDeliveryCategory(IsActiveModel):
