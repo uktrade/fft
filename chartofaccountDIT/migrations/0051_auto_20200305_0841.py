@@ -13,13 +13,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='naccategory',
             name='NAC_category_display_order',
-            field=models.IntegerField(default=1),
+            field=models.IntegerField(blank=True, null=True),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='simplehistorynaccategory',
             name='NAC_category_display_order',
-            field=models.IntegerField(default=1),
+            field=models.IntegerField(blank=True, null=True),
             preserve_default=False,
         ),
     ]

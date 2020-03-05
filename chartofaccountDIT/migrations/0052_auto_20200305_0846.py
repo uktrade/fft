@@ -5,27 +5,27 @@ from django.db import migrations
 def update(apps, schema_editor):
     NacCategory = apps.get_model("chartofaccountDIT", 'naccategory')
 
-    model_obj = NacCategory.objects.get(NAC_category_description="Pay")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Pay")
     model_obj.NAC_category_display_order = 1
     model_obj.save()
 
-    model_obj = NacCategory.objects.get(NAC_category_description="NonPay")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="NonPay")
     model_obj.NAC_category_display_order = 2
     model_obj.save()
 
-    model_obj = NacCategory.objects.get(NAC_category_description="NonCash")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="NonCash")
     model_obj.NAC_category_display_order = 3
     model_obj.save()
 
-    model_obj = NacCategory.objects.get(NAC_category_description="Capital")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Capital")
     model_obj.NAC_category_display_order = 4
     model_obj.save()
 
-    model_obj = NacCategory.objects.get(NAC_category_description="Contingency")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Contingency")
     model_obj.NAC_category_display_order = 5
     model_obj.save()
 
-    model_obj = NacCategory.objects.get(NAC_category_description="Remove")
+    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Remove")
     model_obj.NAC_category_display_order = 99
     model_obj.save()
 
