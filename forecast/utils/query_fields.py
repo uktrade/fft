@@ -9,6 +9,7 @@ BUDGET_CATEGORY_NAME = "financial_code__natural_account_code__expenditure_catego
 
 # PAY, NON-PAY, CAPITAL, NON-CASH
 BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
+BUDGET_GROUPING_ORDERING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_display_order"   # noqa
 BUDGET_NAC_CODE = "financial_code__natural_account_code__expenditure_category__linked_budget_code"  # noqa
 BUDGET_NAC_CODE_DESCRIPTION = "financial_code__natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
 
@@ -109,7 +110,7 @@ expenditure_display_sub_total_column = BUDGET_CATEGORY_NAME
 
 expenditure_order_list = [
     BUDGET_TYPE_ORDER,
-    BUDGET_GROUPING,
+    BUDGET_GROUPING_ORDERING,
 ]
 
 # Project data
