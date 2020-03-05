@@ -3,7 +3,14 @@ from collections import OrderedDict
 import django_tables2 as tables
 
 from forecast.models import FinancialPeriod
-
+from forecast.utils.view_header_definition import (
+    budget_header,
+    budget_spent_percentage_header,
+    forecast_total_header,
+    variance_header,
+    variance_percentage_header,
+    year_to_date_header,
+)
 
 class ForecastLinkCol(tables.Column):
 
@@ -119,7 +126,7 @@ class ForecastTable(tables.Table):
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
             ("Budget",
-             ForecastFigureCol(self.display_footer, "Budget", empty_values=()))
+             ForecastFigureCol(self.display_footer, budget_header, empty_values=()))
         ]
         # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
@@ -169,21 +176,12 @@ class ForecastTable(tables.Table):
 
         extra_column_to_display.extend(
             [
-                (
-                    "year_to_date",
-                    SummingMonthFooterCol(
-                        actual_month_list,
-                        self.display_footer,
-                        "Year to Date",
-                        empty_values=(),
-                    ),
-                ),
-                (
+               (
                     "year_total",
                     SummingMonthFooterCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
                         self.display_footer,
-                        "Year Total",
+                        forecast_total_header,
                         empty_values=(),
                     ),
                 ),
@@ -193,16 +191,39 @@ class ForecastTable(tables.Table):
                         "Budget",
                         "year_total",
                         self.display_footer,
-                        "Underspend (Overspend)",
+                        variance_header,
                         empty_values=(),
                     ),
                 ),
                 (
                     "percentage",
                     PercentageCol(
-                        "spend", "Budget", self.display_footer, "%", empty_values=()
+                        "spend",
+                        "Budget",
+                        self.display_footer,
+                        variance_percentage_header,
+                        empty_values=()
                     ),
                 ),
+                (
+                    "year_to_date",
+                    SummingMonthFooterCol(
+                        actual_month_list,
+                        self.display_footer,
+                        year_to_date_header,
+                        empty_values=(),
+                    ),
+                ),
+                (
+                "percentage_spent",
+                PercentageCol(
+                    "year_to_date",
+                    "Budget",
+                    self.display_footer,
+                    budget_spent_percentage_header,
+                    empty_values=()
+                ),
+               ),
             ]
         )
 

@@ -14,8 +14,14 @@ from core.exportutils import (
 from core.utils import today_string
 
 from forecast.models import FinancialPeriod
-
-BUDGET_HEADER = 'Budget'
+from forecast.utils.view_header_definition import (
+    budget_header,
+    budget_spent_percentage_header,
+    forecast_total_header,
+    variance_header,
+    variance_percentage_header,
+    year_to_date_header,
+)
 
 
 def format_numbers(ws, row, start):
@@ -52,11 +58,11 @@ def forecast_query_iterator(queryset, keys_dict, columns_dict, period_list):
 
 def create_headers(keys_dict, columns_dict, period_list):
     k = list(keys_dict.values())
-    k.append(BUDGET_HEADER)
+    k.append(budget_header)
     k.extend(period_list)
-    k.append('Year to Date')
-    k.append('Year Total')
-    k.append('Underspend/Overspend')
+    k.append(forecast_total_header)
+    k.append(variance_header)
+    k.append(year_to_date_header)
     k.extend(list(columns_dict.values()))
     return k
 
@@ -93,7 +99,7 @@ def export_to_excel(queryset,
     period_list = FinancialPeriod.financial_period_info.period_display_list()
     howmany_periods = len(period_list)
     header = create_headers(columns_dict, extra_columns_dict, period_list)
-    budget_index = header.index(BUDGET_HEADER) + 1
+    budget_index = header.index(budget_header) + 1
     budget_col = get_column_letter(budget_index)
     first_actual_col = get_column_letter(budget_index + 1)
     last_actual_col = last_actual_cell(first_actual_col)
@@ -103,9 +109,9 @@ def export_to_excel(queryset,
         first_forecast_index = budget_index + 1
     last_month_index = budget_index + howmany_periods
     last_month_col = get_column_letter(last_month_index)
-    year_to_date_col = get_column_letter(last_month_index + 1)
-    year_total_col = get_column_letter(last_month_index + 2)
-    over_under_spend_col = get_column_letter(last_month_index + 3)
+    year_total_col = get_column_letter(last_month_index + 1)
+    over_under_spend_col = get_column_letter(last_month_index + 2)
+    year_to_date_col = get_column_letter(last_month_index + 3)
     ws.append(header)
 
     for data_row in forecast_query_iterator(

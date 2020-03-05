@@ -15,6 +15,7 @@ def today_string():
 
 
 SUB_TOTAL_CLASS = "sub-total"
+TOTAL_CLASS = "mid-total"
 GRAND_TOTAL_CLASS = "grand-total"
 
 
