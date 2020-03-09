@@ -65,7 +65,7 @@ def check_budget_header(header_dict, correct_header):
 
 def copy_uploaded_budget(year, month_dict):
     for m, period_obj in month_dict.items():
-        # Now copy the newly uploaded actuals to the monthly figure table
+        # Now copy the newly uploaded budgets to the monthly figure table
         BudgetMonthlyFigure.objects.filter(
             financial_year=year,
             financial_period=period_obj,
