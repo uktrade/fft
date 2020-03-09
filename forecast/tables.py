@@ -12,6 +12,7 @@ from forecast.utils.view_header_definition import (
     year_to_date_header,
 )
 
+
 class ForecastLinkCol(tables.Column):
 
     def render(self, value):
@@ -176,7 +177,7 @@ class ForecastTable(tables.Table):
 
         extra_column_to_display.extend(
             [
-               (
+                (
                     "year_total",
                     SummingMonthFooterCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
@@ -215,15 +216,15 @@ class ForecastTable(tables.Table):
                     ),
                 ),
                 (
-                "percentage_spent",
-                PercentageCol(
-                    "year_to_date",
-                    "Budget",
-                    self.display_footer,
-                    budget_spent_percentage_header,
-                    empty_values=()
+                    "percentage_spent",
+                    PercentageCol(
+                        "year_to_date",
+                        "Budget",
+                        self.display_footer,
+                        budget_spent_percentage_header,
+                        empty_values=()
+                    ),
                 ),
-               ),
             ]
         )
 

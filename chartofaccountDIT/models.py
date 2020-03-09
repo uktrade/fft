@@ -126,7 +126,7 @@ class NACCategory(IsActiveModel):
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", unique=True
     )
-    NAC_category_display_order = models.IntegerField(blank=True,null=True,)
+    NAC_category_display_order = models.IntegerField(blank=True, null=True,)
 
     def __str__(self):
         return str(self.NAC_category_description)

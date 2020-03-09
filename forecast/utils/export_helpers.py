@@ -81,8 +81,9 @@ def export_to_excel(queryset,
     filename = f'{title}  {today_string()} .xlsx'
     resp["Content-Disposition"] = "attachment; filename=" + filename
     wb = Workbook()
-    ws = wb.get_active_sheet()    # Truncate the tab name to the maximum lenght permitted by Excel
-    # ws.title = f'{title} {today_string()}'[:EXC_TAB_NAME_LEN]
+    ws = wb.get_active_sheet()
+    # Truncate the tab name to the maximum lenght permitted by Excel
+    ws.title = f'{title} {today_string()}'[:EXC_TAB_NAME_LEN]
     if protect:
         #  Set the required level of protection
         ws.protection.sheet = True
