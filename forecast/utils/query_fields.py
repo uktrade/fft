@@ -239,6 +239,9 @@ programme_details_hierarchy_sub_total_column = [
     '',
 ]
 
+
+# Project details views
+
 DEFAULT_PIVOT_COLUMNS = {
     COST_CENTRE_CODE: "Cost Centre code",
     COST_CENTRE_NAME: "Cost Centre description",

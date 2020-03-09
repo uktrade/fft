@@ -1,0 +1,32 @@
+{% extends "wide_content.html" %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "DIT forecast" "forecast_dit" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+          {% block view_hierarchy_title %}{% endblock %}
+        <h3 class="govuk-heading-xl">{{ view.expenditure_category.NAC_category }} - {{ view.expenditure_category.grouping_description }}</h3>
+      </div>
+
+      <div class="govuk-grid-column-one-third directorate-cc-form">
+        <form method="post" action ="">
+            {% csrf_token %}
+            {% include "core/govt_uk_form.html" with form=view.expenditure_type_form %}
+            <input type="submit" value="Change" class="govuk-button" data-module="govuk-button"/>
+        </form>
+      </div>
+    </div>
+
+    {% for table in tables %}
+        <div class="tables-container">
+            {% render_table table %}
+        </div>
+    {% endfor %}
+
+{% endblock %}
