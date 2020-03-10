@@ -150,9 +150,9 @@ function Table({rowData, sheetUpdating}) {
                                 <CellValue rowIndex={rowIndex} cellKey={"analysis1_code"} />
                             </ToggleCell>
 
-                            <InfoCell colName={"analysis2_code"} rowIndex={rowIndex}>
+                            <ToggleCell colName={"analysis2_code"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"analysis2_code"} />
-                            </InfoCell>
+                            </ToggleCell>
 
                             <ToggleCell colName={"project_code"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"project_code"} />
@@ -178,9 +178,9 @@ function Table({rowData, sheetUpdating}) {
                     <tr>
                         <td className="govuk-table__cell total">Totals</td>
                         <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
-                        <InfoCell cellKey={"nac_description"} ignoreSelection={true} />
+                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"programme"} ignoreSelection={true} />
-                        <InfoCell cellKey={"programme_description"} ignoreSelection={true} />
+                        <InfoCell cellKey={"programme"} ignoreSelection={true} />
                         <InfoCell cellKey={"analysis1_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"analysis2_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"project_code"} ignoreSelection={true} />
