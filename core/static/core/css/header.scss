@@ -257,3 +257,15 @@
     border-bottom-color: inherit;
   }
 }
+
+.wide-table {
+  .internal-header {
+    @media (min-width: 1860px) {
+      .internal-header__logo-container, .internal-header__navigation {
+        max-width: none !important;
+        margin: 0 30px !important;
+        padding: 2px 15px 0 0;
+      }
+    }
+  }
+}
