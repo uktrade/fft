@@ -16,10 +16,8 @@ from core.utils import today_string
 from forecast.models import FinancialPeriod
 from forecast.utils.view_header_definition import (
     budget_header,
-    budget_spent_percentage_header,
     forecast_total_header,
     variance_header,
-    variance_percentage_header,
     year_to_date_header,
 )
 

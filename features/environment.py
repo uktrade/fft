@@ -4,6 +4,7 @@ import time
 import pyperclip
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -19,6 +20,8 @@ from django.contrib.auth import (
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.db import SessionStore
 from django.core.cache import cache
+
+from webdriver_manager.chrome import ChromeDriverManager
 
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
@@ -239,10 +242,15 @@ def before_feature(context, feature):
         )
         context.browser.implicitly_wait(5)
     else:
-        from webdriver_manager.chrome import ChromeDriverManager
+        chrome_options = Options()
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+
         context.browser = webdriver.Chrome(
-            ChromeDriverManager().install()
+            ChromeDriverManager().install(),
+            options=chrome_options,
         )
+        context.browser.implicitly_wait(5)
 
 
 def after_feature(context, feature):

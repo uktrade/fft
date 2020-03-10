@@ -5,24 +5,21 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Forecast" "edit_forecast" %}
+    {% breadcrumb "Choose cost centre" "choose_cost_centre" %}
+    {% breadcrumb "Edit cost centre forecast" "edit_forecast" %}
 {% endblock %}
 
 {% block page_content %}
-    <h3 class="govuk-heading-m">Forecast workbook</h3>
     <div class="govuk-grid-row date-selection-download">
         <div class="govuk-grid-column-one-half">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-third">
-                    <p>AREA FOR DATE/PERIOD SELECTION</p>
-                </div>
-                <div class="govuk-grid-column-one-third">
-                    <a href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code %}" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                       Add a new row
                     </a>
                 </div>
                 <div class="govuk-grid-column-one-third">
-                    <a class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code %}">
+                    <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code %}">
                         Download
                     </a>
                 </div>

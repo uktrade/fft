@@ -4,15 +4,26 @@ import { createSlice } from 'redux-starter-kit';
 const hiddenCols = createSlice({
     slice: 'hidden',
     initialState: {
-        hiddenCols: []
+        hiddenCols: [],
+        showAll: true
     },
     reducers: {
         TOGGLE_ITEM: (state, action) => {
             let index = state.hiddenCols.indexOf(action.payload)
             if (index > -1) {
-               state.hiddenCols.splice(index, 1);
+                state.hiddenCols.splice(index, 1)
             } else {
+                state.showAll = false
                 state.hiddenCols.push(action.payload)
+            }
+        },
+        TOGGLE_SHOW_ALL: (state, action) => {
+            if (state.showAll) {
+                state.showAll = false
+            } else {
+                state.showAll = true
+                // Turn on all cols
+                state.hiddenCols = []
             }
         },
     }
@@ -20,6 +31,7 @@ const hiddenCols = createSlice({
 
 export const {
     TOGGLE_ITEM,
+    TOGGLE_SHOW_ALL
 } = hiddenCols.actions;
 
 export default hiddenCols.reducer;

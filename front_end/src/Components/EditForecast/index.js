@@ -1,13 +1,13 @@
-import React, {Fragment, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, {Fragment, useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import Table from '../../Components/Table/index'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { store } from '../../Store';
-import { 
-    TOGGLE_ITEM,
-} from '../../Reducers/HiddenCols'
+import EditActionBar from '../../Components/EditActionBar/index'
+
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
+import { OPEN_FILTER_IF_CLOSED } from '../../Reducers/Filter'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 import {
     getCellId,
@@ -16,10 +16,9 @@ import {
 } from '../../Util'
 
 
-function ForecastTable() {
+function EditForecast() {
     const dispatch = useDispatch();
 
-    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols)
 
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
@@ -47,7 +46,7 @@ function ForecastTable() {
         }
 
         timer()
-    }, [dispatch]);
+    }, [dispatch])
 
     useEffect(() => {
         const capturePaste = (event) => {
@@ -65,6 +64,7 @@ function ForecastTable() {
             );
 
             let clipBoardContent = event.clipboardData.getData('text/plain')
+
             let payload = new FormData()
             payload.append("paste_content", clipBoardContent)
 
@@ -114,6 +114,8 @@ function ForecastTable() {
             let lowestMonth = 0
             let body = document.getElementsByTagName("BODY")[0]
             let skipLink = document.getElementsByClassName("govuk-skip-link")[0]
+            let filterOpenLink = document.getElementById("filter-switch")
+            let selectAll = document.getElementById("select_all")
 
             if (window.actuals && window.actuals.length > 0) {
                 let highestActual = Math.max(...window.actuals)
@@ -159,6 +161,21 @@ function ForecastTable() {
             }
 
             if (event.key === "Tab") {
+                // See if users has hit open filter link
+                if (document.activeElement === filterOpenLink) {
+                    dispatch(
+                        OPEN_FILTER_IF_CLOSED()
+                    );
+                    return
+                }
+                // See if we need to open filter because of a backwards tab from select all
+                if (event.shiftKey && document.activeElement === selectAll) {
+                    dispatch(
+                        OPEN_FILTER_IF_CLOSED()
+                    );
+                    return
+                }
+
                 let targetRow = -1
                 let targetMonth = null
                 let nextId = null
@@ -313,76 +330,10 @@ function ForecastTable() {
                   </div>
                 </div>
             }
-            <div className="toggle-links">
-                <button id="show_hide_nac"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_ITEM("natural_account_code")
-                        );
-                        e.preventDefault()
-                    }}
-                >{hiddenCols.indexOf("natural_account_code") === -1 ? (
-                        <Fragment>Hide</Fragment>
-                    ) : (
-                        <Fragment>Show</Fragment>
-                    )} NAC</button>
-                <button id="show_hide_prog"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_ITEM("programme")
-                        );
-                        e.preventDefault()
-                    }}
-                >{hiddenCols.indexOf("programme") === -1 ? (
-                        <Fragment>Hide</Fragment>
-                    ) : (
-                        <Fragment>Show</Fragment>
-                    )} programme</button>
-                <button id="show_hide_a1"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_ITEM("analysis1_code")
-                        );
-                        e.preventDefault()
-                    }}
-                >{hiddenCols.indexOf("analysis1_code") === -1 ? (
-                        <Fragment>Hide</Fragment>
-                    ) : (
-                        <Fragment>Show</Fragment>
-                    )} analysis code sector</button>
-                <button id="show_hide_a2"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_ITEM("analysis2_code")
-                        );
-                        e.preventDefault()
-                    }}
-                >{hiddenCols.indexOf("analysis2_code") === -1 ? (
-                        <Fragment>Hide</Fragment>
-                    ) : (
-                        <Fragment>Show</Fragment>
-                    )} analysis code market</button>
-                <button id="show_hide_proj"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_ITEM("project_code")
-                        );
-                        e.preventDefault()
-                    }}
-                >{hiddenCols.indexOf("project_code") === -1 ? (
-                        <Fragment>Hide</Fragment>
-                    ) : (
-                        <Fragment>Show</Fragment>
-                    )} project code</button>
-            </div>            
+            <EditActionBar />          
             <Table sheetUpdating={sheetUpdating} />
         </Fragment>
     );
 }
 
-export default ForecastTable
+export default EditForecast

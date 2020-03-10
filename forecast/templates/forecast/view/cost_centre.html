@@ -13,7 +13,7 @@
 {% block content %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
+        <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
           <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code %}">Download</a>
 
       </div>

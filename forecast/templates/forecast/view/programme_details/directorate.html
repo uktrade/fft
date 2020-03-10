@@ -9,6 +9,6 @@
 {% endblock %}
 
 {% block view_hierarchy_title %}
-        <h1 class="govuk-heading-xl">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }} </h1>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'export_programme_details_directorate' view.directorate.directorate_code view.programme_code.programme_code  view.forecast_expenditure_type %}">Download</a>
+    <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }} </h1>
+    <a class="govuk-button govuk-button--secondary" href="{% url 'export_programme_details_directorate' view.directorate.directorate_code view.programme_code.programme_code  view.forecast_expenditure_type %}">Download</a>
 {% endblock %}

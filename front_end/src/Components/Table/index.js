@@ -31,7 +31,7 @@ function Table({rowData, sheetUpdating}) {
         <Fragment>
             <table
                 className="govuk-table finance-table" id="forecast-table">
-                <caption className="govuk-table__caption govuk-!-font-size-27">Edit forecast</caption>
+                <caption className="govuk-table__caption govuk-!-font-size-17">Forecast data</caption>
                 <thead className="govuk-table__head">
                     <tr index="0">
                         <th className="handle govuk-table__cell indicate-action select-all">

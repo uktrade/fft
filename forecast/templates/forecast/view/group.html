@@ -11,7 +11,7 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+            <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
             <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_group' view.group.group_code %}">Download</a>
         </div>
     </div>

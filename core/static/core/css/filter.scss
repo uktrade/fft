@@ -1,0 +1,65 @@
+
+.filter {
+  background-color: govuk-colour("mid-grey");
+  max-width: 1200px;
+  margin-bottom: 24px;
+
+  .govuk-button {
+    margin: 16px;
+  }
+
+  .filter-by {
+    float: right;
+    background-color: white;
+    border:16px solid govuk-colour("mid-grey");
+    padding:8px;
+    font-weight: bold;
+    overflow: hidden;
+  }
+
+  .filter-link {
+    float: right;
+  }
+
+  .filter-content {
+    border:16px solid govuk-colour("mid-grey");
+    border-top-width: 0;
+    background-color: govuk-colour("light-grey");
+    padding: 16px;
+  }
+
+  .filter-content-wrapper {
+    max-height: 0;
+    transition: max-height 0.4s linear;
+    overflow-y: hidden;
+    box-sizing: border-box;
+  }
+
+  .filter-open {
+    max-height: 1000px;
+  }
+
+  .filter-cols {
+    background-color: white;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .arrow-down {
+    &:after {
+      content: '\25bc';
+      padding-left: 0.2em;
+      text-decoration: none!important;
+      color: #069;
+    }
+  }
+
+  .arrow-up {
+    &:after {
+      content: '\25b2';
+      padding-left: 0.2em;
+      text-decoration: none!important;
+      color: #069;
+    }
+  }
+}

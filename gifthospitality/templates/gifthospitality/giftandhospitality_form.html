@@ -2,7 +2,6 @@
 {% load bootstrap4 %}
 {% bootstrap_css %}
 {% bootstrap_javascript jquery='full' %}
-
 {% block scripts %}
 <script type="text/javascript" language="JavaScript">
 
@@ -77,8 +76,8 @@ $(document).one('autocompleteLightInitialize', '[data-autocomplete-light-functio
 {% endblock %}
 
 {% block content %}
-    <h1>{{ section_name }}</h1>
-    <p>{{ section_description }}
+    <h1 class="govuk-heading-l">{{ section_name }}</h1>
+    <p class="govuk-body">{{ section_description }}
         <a href="https://workspace.trade.gov.uk/working-at-dit/policies-and-guidance/gifts-and-hospitality/">
            here</a>.</p>
 
@@ -87,13 +86,9 @@ $(document).one('autocompleteLightInitialize', '[data-autocomplete-light-functio
 
 <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form layout='horizontal' %}
+    {% include "core/govt_uk_form.html" with form=form %}
+    <input type="submit" value="Save" class="govuk-button" data-module="govuk-button"/>
     {{ form.media }}            {# Adds date-picker required JS and CSS #}
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">Save</button>
-    {% endbuttons %}
-
-{#    <input type="submit" value="Submit">#}
 </form>
     </div>
   </div>

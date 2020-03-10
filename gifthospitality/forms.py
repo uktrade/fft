@@ -18,6 +18,11 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             self.fields[f].required = True
         self.fields["company"].visible = False
 
+        self.fields['classification_fk'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['category_fk'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['date_offered'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
+
     def save(self, *args, **kwargs):
         self.instance.offer = self.offer
         self.instance.entered_date_stamp = datetime.datetime.now()

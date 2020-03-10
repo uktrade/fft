@@ -1167,7 +1167,7 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
         )
 
         assert resp.status_code == 302
-        assert resp.url == "/forecast/editing-locked/"
+        assert resp.url == "/forecast/edit/editing-locked/"
 
         # Add edit whilst lock permission
         can_edit_whilst_locked = Permission.objects.get(

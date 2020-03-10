@@ -1,5 +1,11 @@
 $govuk-page-width: 1800px;
 @import "./node_modules/govuk-frontend/govuk/all";
+@import "./header";
+@import "./filter";
+
+body {
+  font-size: 16px;
+}
 
 .actual-month {
   background-color: rgba(177, 180, 182, 0.5);
@@ -70,6 +76,7 @@ input.cell-input {
 .govuk-error-summary {
   margin-bottom: 20px;
 }
+
 .directorate-cc-form {
   label {
     display: none;
@@ -184,19 +191,10 @@ table, td, th {
   background-color: rgba(86, 148, 202, 0.25);
 }
 
-.toggle-links {
-  width:900px;
-  display:flex;
-  align-self:stretch;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom:20px;
-}
-
 .link-button {
   border: none;
   padding: 0!important;
-  font-size:19px;
+  font-size:16px;
   font-family: "GDS Transport", Arial, sans-serif;
   color: #069;
   text-decoration: underline;
@@ -214,22 +212,17 @@ table, td, th {
 
     .govuk-width-container {
       max-width: none!important;
-      margin: 0 40px!important;
+      margin: 0 30px!important;
     }
 
     .govuk-grid-column-two-thirds {
       max-width: 66vw;
     }
-
-    .govuk-table {
-      //width:1%;
-      //min-width: 100%;
-    }
   }
 }
 
 .govuk-table__caption {
-  margin: 20px 0;
+  display: none;
 }
 
 .total {
@@ -300,5 +293,17 @@ table, td, th {
 .select-all {
   width:80px;
   display: block;
-  text-align: right;
+}
+
+// Overrides of gov styles
+.govuk-body {
+  font-size: 16px;
+}
+
+.govuk-summary-list {
+  font-size: 16px;
+}
+
+.govuk-table {
+  font-size: 16px;
 }
