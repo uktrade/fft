@@ -126,6 +126,7 @@ class NACCategory(IsActiveModel):
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", unique=True
     )
+    NAC_category_display_order = models.IntegerField(blank=True, null=True,)
 
     def __str__(self):
         return str(self.NAC_category_description)
@@ -133,7 +134,7 @@ class NACCategory(IsActiveModel):
     class Meta:
         verbose_name = "Budget Grouping"
         verbose_name_plural = "Budget Groupings"
-        ordering = ["NAC_category_description"]
+        ordering = ["NAC_category_display_order"]
 
 
 class OperatingDeliveryCategory(IsActiveModel):

@@ -9,6 +9,7 @@ BUDGET_CATEGORY_NAME = "financial_code__natural_account_code__expenditure_catego
 
 # PAY, NON-PAY, CAPITAL, NON-CASH
 BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
+BUDGET_GROUPING_ORDERING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_display_order"   # noqa
 BUDGET_NAC_CODE = "financial_code__natural_account_code__expenditure_category__linked_budget_code"  # noqa
 BUDGET_NAC_CODE_DESCRIPTION = "financial_code__natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
 
@@ -109,7 +110,7 @@ expenditure_display_sub_total_column = BUDGET_CATEGORY_NAME
 
 expenditure_order_list = [
     BUDGET_TYPE_ORDER,
-    BUDGET_GROUPING,
+    BUDGET_GROUPING_ORDERING,
 ]
 
 # Project data
@@ -262,7 +263,8 @@ VIEW_FORECAST_DOWNLOAD_COLUMNS = {
     COST_CENTRE_NAME: "Cost Centre description",
     COST_CENTRE_CODE: "Cost Centre code",
     BUDGET_GROUPING: "Budget grouping",
-    FORECAST_EXPENDITURE_TYPE_NAME: "Forecast expenditure type",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    FORECAST_EXPENDITURE_TYPE_DESCRIPTION: "Expenditure type description",
     BUDGET_TYPE: "Budget Type",
     BUDGET_CATEGORY_NAME: "Budget category",
     BUDGET_NAC_CODE: "Budget/Forecast NAC",
@@ -300,7 +302,8 @@ EDIT_FORECAST_DOWNLOAD_COLUMNS = {
     COST_CENTRE_NAME: "Cost Centre name",
     COST_CENTRE_CODE: "Cost Centre code",
     BUDGET_GROUPING: "Budget Grouping",
-    FORECAST_EXPENDITURE_TYPE_NAME: "Forecast Expenditure type",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    FORECAST_EXPENDITURE_TYPE_DESCRIPTION: "Expenditure type description",
     BUDGET_TYPE: "Budget type",
     BUDGET_CATEGORY_NAME: "Budget Category",
     BUDGET_NAC_CODE: "Budget/Forecast NAC",
