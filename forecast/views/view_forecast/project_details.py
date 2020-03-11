@@ -10,9 +10,9 @@ from django_tables2 import (
 )
 
 from chartofaccountDIT.forms import (
-    ProgrammeForm,
+    ProjectForm,
 )
-from chartofaccountDIT.models import ProgrammeCode
+from chartofaccountDIT.models import ProjectCode
 
 from costcentre.models import (
     DepartmentalGroup,
@@ -33,10 +33,10 @@ from forecast.utils.query_fields import (
     SHOW_GROUP,
     filter_codes,
     filter_selectors,
-    programme_details_display_sub_total_column,
-    programme_details_hierarchy_columns,
-    programme_details_hierarchy_order_list,
-    programme_details_sub_total,
+    project_details_display_sub_total_column,
+    project_details_hierarchy_columns,
+    project_details_hierarchy_order_list,
+    project_details_sub_total,
 )
 from forecast.views.base import ForecastViewPermissionMixin
 
@@ -48,47 +48,42 @@ class ForecastProjectDetailsMixin(MultiTableMixin):
     def class_name(self):
         return "wide-table"
 
-    def programme_code(self):
-        return ProgrammeCode.objects.get(
-            pk=self.kwargs['programme_code'],
+    def project_code(self):
+        return ProjectCode.objects.get(
+            pk=self.kwargs['project_code'],
         )
 
-    def forecast_expenditure_type(self):
-        return self.kwargs['forecast_expenditure_type']
-
-    def programme_code_form(self):
-        return ProgrammeForm()
+    def project_code_form(self):
+        return ProjectForm()
 
     def get_tables(self):
         """
          Return an array of table instances containing data.
         """
-        forecast_expenditure_type_name = self.kwargs['forecast_expenditure_type']
-        programme_code_id = self.kwargs['programme_code']
+        project_code_id = self.kwargs['project_code']
         pivot_filter = {
-            PROGRAMME_CODE: f"{programme_code_id}",
-            FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
+            PROGRAMME_CODE: f"{project_code_id}",
         }
         arg_name = filter_codes[self.hierarchy_type]
         if arg_name:
             filter_code = self.kwargs[arg_name]
             pivot_filter[filter_selectors[self.hierarchy_type]] = f"{filter_code}"
 
-        columns = programme_details_hierarchy_columns[self.hierarchy_type]
-        programme_details_data = ForecastingDataView.view_data.subtotal_data(
-            programme_details_display_sub_total_column,
-            programme_details_sub_total,
+        columns = project_details_hierarchy_columns[self.hierarchy_type]
+        project_details_data = ForecastingDataView.view_data.subtotal_data(
+            project_details_display_sub_total_column,
+            project_details_sub_total,
             columns.keys(),
             pivot_filter,
-            order_list=programme_details_hierarchy_order_list[self.hierarchy_type],
+            order_list=project_details_hierarchy_order_list[self.hierarchy_type],
             show_grand_total=False
         )
 
-        programme_details_table = ForecastSubTotalTable(columns, programme_details_data)
-        programme_details_table.attrs['caption'] = "Programme Report"
+        project_details_table = ForecastSubTotalTable(columns, project_details_data)
+        project_details_table.attrs['caption'] = "Project Report"
 
         self.tables = [
-            programme_details_table,
+            project_details_table,
         ]
 
         return self.tables
@@ -99,29 +94,28 @@ class DITProjectDetailsView(
     ForecastProjectDetailsMixin,
     TemplateView,
 ):
-    template_name = "forecast/view/programme_details/dit.html"
+    template_name = "forecast/view/project_details/dit.html"
     hierarchy_type = SHOW_DIT
 
     def class_name(self):
         return "wide-table"
 
     def post(self, request, *args, **kwargs):
-        programme_code_id = request.POST.get(
-            'programme_code',
+        project_code_id = request.POST.get(
+            'project_code',
             None,
         )
 
-        if programme_code_id:
+        if project_code_id:
             return HttpResponseRedirect(
                 reverse(
-                    "programme_details_dit",
-                    kwargs={'programme_code': programme_code_id,
-                            'forecast_expenditure_type': self.forecast_expenditure_type(),  # noqa
+                    "project_details_dit",
+                    kwargs={'project_code': project_code_id,
                             }
                 )
             )
         else:
-            raise Http404("Programme not found")
+            raise Http404("Project not found")
 
 
 class GroupProjectDetailsView(
@@ -129,7 +123,7 @@ class GroupProjectDetailsView(
     ForecastProjectDetailsMixin,
     TemplateView,
 ):
-    template_name = "forecast/view/programme_details/group.html"
+    template_name = "forecast/view/project_details/group.html"
     hierarchy_type = SHOW_GROUP
 
     def group(self):
@@ -139,23 +133,22 @@ class GroupProjectDetailsView(
         )
 
     def post(self, request, *args, **kwargs):
-        programme_code_id = request.POST.get(
-            'programme_code',
+        project_code_id = request.POST.get(
+            'project_code',
             None,
         )
 
-        if programme_code_id:
+        if project_code_id:
             return HttpResponseRedirect(
                 reverse(
-                    "programme_details_group",
+                    "project_details_group",
                     kwargs={'group_code': self.group().group_code,
-                            'programme_code': programme_code_id,
-                            'forecast_expenditure_type': self.forecast_expenditure_type(),  # noqa
+                            'project_code': project_code_id,
                             }
                 )
             )
         else:
-            raise Http404("Programme not found")
+            raise Http404("Project not found")
 
 
 class DirectorateProjectDetailsView(
@@ -163,7 +156,7 @@ class DirectorateProjectDetailsView(
     ForecastProjectDetailsMixin,
     TemplateView,
 ):
-    template_name = "forecast/view/programme_details/directorate.html"
+    template_name = "forecast/view/project_details/directorate.html"
     hierarchy_type = SHOW_DIRECTORATE
 
     def directorate(self):
@@ -173,20 +166,27 @@ class DirectorateProjectDetailsView(
         )
 
     def post(self, request, *args, **kwargs):
-        programme_code_id = request.POST.get(
-            'programme_code',
+        project_code_id = request.POST.get(
+            'project_code',
             None,
         )
 
-        if programme_code_id:
+        if project_code_id:
             return HttpResponseRedirect(
                 reverse(
-                    "programme_details_directorate",
+                    "project_details_directorate",
                     kwargs={'directorate_code': self.directorate().directorate_code,
-                            'programme_code': programme_code_id,
-                            'forecast_expenditure_type': self.forecast_expenditure_type(),  # noqa
+                            'project_code': project_code_id,
                             }
                 )
             )
         else:
-            raise Http404("Programme not found")
+            raise Http404("Project not found")
+
+
+class CostCentreProjectDetailsView(
+    ForecastViewPermissionMixin,
+    ForecastProjectDetailsMixin,
+    TemplateView,
+):
+    pass
