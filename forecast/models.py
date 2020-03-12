@@ -622,8 +622,7 @@ class DisplaySubTotalManager(models.Manager):
         # So use financial_year = NULL to filter them in or out.
         raw_data = (self.get_queryset().values(*columns)
                     .filter(
-                    Q(financial_year=year) |
-                    Q(financial_year__isnull=include_zeros),
+                    Q(financial_year=year) | Q(financial_year__isnull=include_zeros),
                     **filter_dict)
                     .annotate(**annotations)
                     .order_by(*order_list)

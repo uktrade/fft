@@ -76,6 +76,15 @@ class FakeCell:
         self.value = value
 
 
+# Set file upload handlers back to default as
+# we need to remove S3 interactions for test purposes
+@override_settings(
+    FILE_UPLOAD_HANDLERS=[
+        "django.core.files.uploadhandler.MemoryFileUploadHandler",
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+    ],
+    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+)
 class ImportActualsTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
@@ -455,6 +464,14 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             )
 
 
+# Set file upload handlers back to default as
+# we need to remove S3 interactions for test purposes
+@override_settings(
+    FILE_UPLOAD_HANDLERS=[
+        "django.core.files.uploadhandler.MemoryFileUploadHandler",
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+    ]
+)
 class UploadActualsTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)

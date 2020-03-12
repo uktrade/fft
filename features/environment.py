@@ -245,6 +245,7 @@ def before_feature(context, feature):
         chrome_options = Options()
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.headless = True
 
         context.browser = webdriver.Chrome(
             ChromeDriverManager().install(),

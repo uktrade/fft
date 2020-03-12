@@ -1,7 +1,11 @@
 import os
 from zipfile import BadZipFile
 
-from django.test import RequestFactory, TestCase
+from django.test import (
+    RequestFactory,
+    TestCase,
+    override_settings,
+)
 
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
@@ -36,6 +40,15 @@ TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = '310940'
 
 
+# Set file upload handlers back to default as
+# we need to remove S3 interactions for test purposes
+@override_settings(
+    FILE_UPLOAD_HANDLERS=[
+        "django.core.files.uploadhandler.MemoryFileUploadHandler",
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+    ],
+    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+)
 class ImportBudgetsTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
