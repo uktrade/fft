@@ -191,16 +191,18 @@ programme_details_dit_columns = {
     GROUP_CODE: "code",
 }
 programme_details_group_columns = {
-    PROGRAMME_NAME: "Hidden",
     FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
     DIRECTORATE_NAME: "Directorate description",
     DIRECTORATE_CODE: "code",
 }
+
 programme_details_directorate_columns = {
-    PROGRAMME_NAME: "Hidden",
     FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
     COST_CENTRE_NAME: "Cost Centre description",
     COST_CENTRE_CODE: "code",
+}
+programme_details_costcentre_columns = {
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
 }
 programme_details_sub_total = [
     PROGRAMME_NAME,
@@ -241,6 +243,76 @@ programme_details_hierarchy_sub_total_column = [
 
 
 # Project details views
+project_details_dit_columns = {
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    GROUP_NAME: "Departmental Group description",
+    GROUP_CODE: "code",
+}
+project_details_group_columns = {
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    DIRECTORATE_NAME: "Directorate description",
+    DIRECTORATE_CODE: "code",
+}
+project_details_directorate_columns = {
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    COST_CENTRE_NAME: "Cost Centre description",
+    COST_CENTRE_CODE: "code",
+}
+project_details_costcentre_columns = {
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+}
+
+project_details_sub_total = [
+    FORECAST_EXPENDITURE_TYPE_NAME,
+]
+
+project_details_display_sub_total_column = FORECAST_EXPENDITURE_TYPE_NAME
+
+project_details_dit_order_list = [
+    GROUP_NAME,
+    FORECAST_EXPENDITURE_TYPE_NAME,
+]
+project_details_group_order_list = [
+    DIRECTORATE_NAME,
+    FORECAST_EXPENDITURE_TYPE_NAME,
+]
+project_details_directorate_order_list = [
+    COST_CENTRE_NAME,
+    FORECAST_EXPENDITURE_TYPE_NAME,
+]
+
+project_details_costcentre_order_list = [
+    COST_CENTRE_NAME,
+]
+
+project_details_hierarchy_order_list = [
+    project_details_dit_order_list,
+    project_details_group_order_list,
+    project_details_directorate_order_list,
+    project_details_costcentre_order_list,
+]
+
+project_details_hierarchy_columns = [
+    project_details_dit_columns,
+    project_details_group_columns,
+    project_details_directorate_columns,
+    project_details_costcentre_columns,
+]
+
+project_details_hierarchy_sub_total_column = [
+    GROUP_NAME,
+    DIRECTORATE_NAME,
+    COST_CENTRE_NAME,
+    FORECAST_EXPENDITURE_TYPE_NAME,
+]
+
+
+
+
+
+
+
+
 
 DEFAULT_PIVOT_COLUMNS = {
     COST_CENTRE_CODE: "Cost Centre code",

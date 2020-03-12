@@ -27,7 +27,7 @@ from forecast.tables import (
 )
 from forecast.utils.query_fields import (
     FORECAST_EXPENDITURE_TYPE_NAME,
-    PROGRAMME_CODE,
+    PROJECT_CODE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
     SHOW_GROUP,
@@ -62,7 +62,7 @@ class ForecastProjectDetailsMixin(MultiTableMixin):
         """
         project_code_id = self.kwargs['project_code']
         pivot_filter = {
-            PROGRAMME_CODE: f"{project_code_id}",
+            PROJECT_CODE: f"{project_code_id}",
         }
         arg_name = filter_codes[self.hierarchy_type]
         if arg_name:
