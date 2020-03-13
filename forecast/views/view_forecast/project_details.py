@@ -15,6 +15,7 @@ from chartofaccountDIT.forms import (
 from chartofaccountDIT.models import ProjectCode
 
 from costcentre.models import (
+    CostCentre,
     DepartmentalGroup,
     Directorate,
 )
@@ -28,14 +29,15 @@ from forecast.tables import (
 from forecast.utils.query_fields import (
     FORECAST_EXPENDITURE_TYPE_NAME,
     PROJECT_CODE,
+    SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
     SHOW_GROUP,
     filter_codes,
     filter_selectors,
-    project_details_display_sub_total_column,
     project_details_hierarchy_columns,
     project_details_hierarchy_order_list,
+    project_details_hierarchy_sub_total_column,
     project_details_sub_total,
 )
 from forecast.views.base import ForecastViewPermissionMixin
@@ -71,7 +73,7 @@ class ForecastProjectDetailsMixin(MultiTableMixin):
 
         columns = project_details_hierarchy_columns[self.hierarchy_type]
         project_details_data = ForecastingDataView.view_data.subtotal_data(
-            project_details_display_sub_total_column,
+            project_details_hierarchy_sub_total_column[self.hierarchy_type],
             project_details_sub_total,
             columns.keys(),
             pivot_filter,
@@ -189,4 +191,29 @@ class CostCentreProjectDetailsView(
     ForecastProjectDetailsMixin,
     TemplateView,
 ):
-    pass
+    template_name = "forecast/view/project_details/cost_centre.html"
+    table_pagination = False
+    hierarchy_type = SHOW_COSTCENTRE
+
+    def cost_centre(self):
+        return CostCentre.objects.get(
+            cost_centre_code=self.kwargs['cost_centre_code'],
+        )
+
+    def post(self, request, *args, **kwargs):
+        project_code_id = request.POST.get(
+            'project_code',
+            None,
+        )
+
+        if project_code_id:
+            return HttpResponseRedirect(
+                reverse(
+                    "project_details_costcentre",
+                    kwargs={'cost_centre_code': self.cost_centre().cost_centre_code,
+                            'project_code': project_code_id,
+                            }
+                )
+            )
+        else:
+            raise Http404("Project not found")

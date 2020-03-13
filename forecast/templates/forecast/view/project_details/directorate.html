@@ -5,7 +5,7 @@
     {{ block.super }}
     {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id %}
     {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code %}
-    {% breadcrumb view.project_description.grouping_description "expenditure_details_cost_centre"  %}
+    {% breadcrumb view.project_code.project_description "project_details_directorate"  %}
 {% endblock %}
 
 {% block view_hierarchy_title %}

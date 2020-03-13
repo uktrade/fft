@@ -273,8 +273,6 @@ project_details_sub_total = [
     FORECAST_EXPENDITURE_TYPE_NAME,
 ]
 
-project_details_display_sub_total_column = FORECAST_EXPENDITURE_TYPE_NAME
-
 project_details_dit_order_list = [
     GROUP_NAME,
     FORECAST_EXPENDITURE_TYPE_NAME,
@@ -289,7 +287,7 @@ project_details_directorate_order_list = [
 ]
 
 project_details_costcentre_order_list = [
-    COST_CENTRE_NAME,
+    FORECAST_EXPENDITURE_TYPE_NAME,
 ]
 
 project_details_hierarchy_order_list = [
