@@ -74,7 +74,7 @@ class SummingMonthCol(tables.Column):
         super().__init__(*args, **kwargs)
 
 
-class SubtractCol(ForecastFigureCol):
+class SubtractCol(tables.Column):
     """Used to display the difference between the figures in two columns"""
 
     def calc_value(self, table):
@@ -82,6 +82,9 @@ class SubtractCol(ForecastFigureCol):
         b = table.columns.columns[self.col2].current_value
         val = a - b
         return self.display_value(val)
+
+    def display_value(self, value):
+        return value
 
     def render(self, table):
         return self.calc_value(table)
@@ -95,7 +98,7 @@ class SubtractCol(ForecastFigureCol):
         super().__init__(*args, **kwargs)
 
 
-class PercentageCol(ForecastFigureCol):
+class PercentageCol(tables.Column):
     """Used to display the percentage of values in two columns"""
     def display_value(self, value):
         return f"{value:.0%}"
@@ -192,7 +195,6 @@ class ForecastTable(tables.Table):
                     SubtractCol(
                         "Budget",
                         "year_total",
-                        self.display_footer,
                         variance_header,
                         empty_values=(),
                     ),
@@ -202,7 +204,6 @@ class ForecastTable(tables.Table):
                     PercentageCol(
                         "spend",
                         "Budget",
-                        self.display_footer,
                         variance_percentage_header,
                         empty_values=()
                     ),
@@ -220,7 +221,6 @@ class ForecastTable(tables.Table):
                     PercentageCol(
                         "year_to_date",
                         "Budget",
-                        self.display_footer,
                         budget_spent_percentage_header,
                         empty_values=()
                     ),
