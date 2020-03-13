@@ -127,7 +127,7 @@ class ForecastTable(tables.Table):
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
             ("Budget",
-             ForecastFigureCol(self.display_footer, budget_header, empty_values=()))
+             tables.Column(budget_header, empty_values=()))
         ]
         # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
@@ -135,7 +135,7 @@ class ForecastTable(tables.Table):
             cols.append(
                 (
                     month,
-                    ForecastFigureCol(self.display_footer, month, empty_values=()),
+                    tables.Column(month, empty_values=()),
                 )
             )
 
@@ -171,7 +171,7 @@ class ForecastTable(tables.Table):
                 extra_column_to_display.extend(
                     [(
                         adj,
-                        ForecastFigureCol(self.display_footer, adj, empty_values=()),
+                        tables.Column(adj, empty_values=()),
                     )]
                 )
 
