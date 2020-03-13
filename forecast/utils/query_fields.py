@@ -127,6 +127,13 @@ project_sub_total = [
 ]
 project_display_sub_total_column = PROJECT_NAME
 
+project_detail_view = [
+    'project_details_dit',
+    'project_details_group',
+    'project_details_directorate',
+    'project_details_costcentre',
+]
+
 filter_codes = ['', 'group_code', 'directorate_code', 'cost_centre_code']
 filter_selectors = [
     '',
