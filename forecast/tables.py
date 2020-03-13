@@ -49,7 +49,7 @@ class ForecastFigureCol(tables.Column):
         return self.display_value(self.tot_value)
 
 
-class SummingMonthFooterCol(ForecastFigureCol):
+class SummingMonthCol(tables.Column):
     """It expects a list of month as first argument.
     Used to calculate and display year to date, full year, etc"""
     def calc_value(self, record):
@@ -58,9 +58,11 @@ class SummingMonthFooterCol(ForecastFigureCol):
         )
         return val or 0
 
+    def display_value(self, value):
+        return value
+
     def render(self, value, record):
         val = self.calc_value(record)
-        self.tot_value += val
         return self.display_value(val)
 
     def value(self, record, value):
@@ -179,9 +181,8 @@ class ForecastTable(tables.Table):
             [
                 (
                     "year_total",
-                    SummingMonthFooterCol(
+                    SummingMonthCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
-                        self.display_footer,
                         forecast_total_header,
                         empty_values=(),
                     ),
@@ -208,9 +209,8 @@ class ForecastTable(tables.Table):
                 ),
                 (
                     "year_to_date",
-                    SummingMonthFooterCol(
+                    SummingMonthCol(
                         actual_month_list,
-                        self.display_footer,
                         year_to_date_header,
                         empty_values=(),
                     ),
