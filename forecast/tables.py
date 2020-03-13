@@ -21,34 +21,6 @@ class ForecastLinkCol(tables.Column):
         return ''
 
 
-class ForecastFigureCol(tables.Column):
-    # display 0 for null value instead of a dash
-    default = 0
-    tot_value = 0
-
-    def display_value(self, value):
-        return value
-
-    def render(self, value):
-        if type(value) == str:
-            value = 0
-        v = value or 0
-        self.tot_value += v
-        return self.display_value(v)
-
-    def value(self, record, value):
-        return float(value or 0)
-
-    def __init__(self, show_footer, *args, **kwargs):
-        self.show_footer = show_footer
-        super().__init__(*args, **kwargs)
-        if show_footer:
-            self.render_footer = self.proto_render_footer
-
-    def proto_render_footer(self, bound_column, table):
-        return self.display_value(self.tot_value)
-
-
 class SummingMonthCol(tables.Column):
     """It expects a list of month as first argument.
     Used to calculate and display year to date, full year, etc"""
@@ -123,10 +95,9 @@ class PercentageCol(tables.Column):
         super().__init__(*args, **kwargs)
 
 
-class ForecastTable(tables.Table):
-    """Define the month columns format and their footer.
+class ForecastSubTotalTable(tables.Table):
+    """Define the month columns format.
     Used every time we need to display a forecast"""
-    display_footer = True
     display_view_details = False
 
     def __init__(self, column_dict={}, *args, **kwargs):
@@ -252,16 +223,11 @@ class ForecastTable(tables.Table):
             "a": {"class": "govuk-link"},
         }
         orderable = False
-        row_attrs = {"class": "govuk-table__row"}
-
-
-class ForecastSubTotalTable(ForecastTable, tables.Table):
-    display_footer = False
-
-    class Meta(ForecastTable.Meta):
         row_attrs = {
-            "class": lambda record: "govuk-table__row {}".format(record["row_type"])
+            "class": "govuk-table__row",
+            "class": lambda record: "govuk-table__row {}".format(record["row_type"]),
         }
+
 
 
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
