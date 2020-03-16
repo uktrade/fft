@@ -129,7 +129,9 @@ class AddRowView(
         )
         return {
             "group": cost_centre.directorate.group.group_name,
+            "group_code": cost_centre.directorate.group.group_code,
             "directorate": cost_centre.directorate.directorate_name,
+            "directorate_code": cost_centre.directorate.directorate_code,
             "cost_centre_name": cost_centre.cost_centre_name,
             "cost_centre_code": cost_centre.cost_centre_code,
         }
@@ -422,9 +424,11 @@ class EditForecastView(
         )
         return {
             "group": cost_centre.directorate.group.group_name,
+            "group_code": cost_centre.directorate.group.group_code,
             "directorate": cost_centre.directorate.directorate_name,
+            "directorate_code": cost_centre.directorate.directorate_code,
             "cost_centre_name": cost_centre.cost_centre_name,
-            "cost_centre_code": self.cost_centre_code,
+            "cost_centre_code": cost_centre.cost_centre_code,
         }
 
     def get_context_data(self, **kwargs):

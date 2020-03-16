@@ -3,7 +3,7 @@
 {% block content %}
 <div class="app-pane__content">
     <h1 class="govuk-heading-l">Edit forecast</h1>
-    <h2 class="govuk-heading-m">Cost centre details</h2>
+    <h2 class="govuk-heading-m">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }})</h2>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -11,6 +11,7 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 {{ view.cost_centre_details.group }}
+                ({{ view.cost_centre_details.group_code }})
             </dd>
         </div>
         <div class="govuk-summary-list__row">
@@ -19,22 +20,7 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 {{ view.cost_centre_details.directorate }}
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Cost centre name
-            </dt>
-            <dd class="govuk-summary-list__value">
-                {{ view.cost_centre_details.cost_centre_name }}
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                Cost centre
-            </dt>
-            <dd class="govuk-summary-list__value">
-                {{ view.cost_centre_details.cost_centre_code }}
+                ({{ view.cost_centre_details.directorate_code }})
             </dd>
         </div>
     </dl>

@@ -1,7 +1,8 @@
 $govuk-page-width: 1800px;
 @import "./node_modules/govuk-frontend/govuk/all";
 @import "./header";
-@import "./filter";
+@import "./action-bar";
+@import "./table";
 
 body {
   font-size: 16px;
@@ -201,6 +202,23 @@ table, td, th {
   cursor: pointer;
 }
 
+.cost-centre-choice-form {
+  float: right;
+
+  label {
+    display: inline;
+    font-weight: bold;
+    margin-right:10px;
+  }
+  select {
+    display: inline;
+    margin-top:15px;
+  }
+  input {
+    display: inline;
+  }
+}
+
 @media (min-width: 1200px) {
   .wide-table {
     display: inline-block!important;
@@ -218,6 +236,15 @@ table, td, th {
     .govuk-grid-column-two-thirds {
       max-width: 66vw;
     }
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .govuk-summary-list__value:last-child {
+    width: auto;
+  }
+  .govuk-summary-list__value {
+    width: auto;
   }
 }
 

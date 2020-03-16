@@ -24,7 +24,7 @@ def step_impl(context):
 @when(u'the user clicks the hide NAC column')
 def step_impl(context):
     filter_switch_button = WebDriverWait(context.browser, 500).until(
-        ec.presence_of_element_located((By.ID, "filter-switch"))
+        ec.presence_of_element_located((By.ID, "action-bar-switch"))
     )
 
     filter_switch_button.click()

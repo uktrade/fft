@@ -11,28 +11,35 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
-          <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code %}">Download</a>
-
-      </div>
-
-      <div class="govuk-grid-column-one-third directorate-cc-form">
-        <form method="post" action ="">
-            {% csrf_token %}
-            {% include "core/govt_uk_form.html" with form=view.cost_centres_form %}
-            <input type="submit" value="Change" class="govuk-button" data-module="govuk-button"/>
-        </form>
-      </div>
+    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code %} ">Download raw data</a>
+            <form method="post" action="" class="cost-centre-choice-form">
+                {% csrf_token %}
+                {% for field in view.cost_centres_form  %}
+                    <label class="govuk-label" for="{{ field.name }}">
+                        {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+                    </label>
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <span id="{{ field.name }}-issued-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                {{ error|escape }}
+                            </span>
+                        {% endfor %}
+                    {% endif %}
+                    {{ field }}
+                {% endfor %}
+                <input type="submit" value="Change" class="govuk-button govuk-button--secondary" data-module="govuk-button"/>
+            </form>
+        </div>
     </div>
-
     {% for table in tables %}
-        <div class="tables-container">
+        <div class="tables-container cc-forecast-table">
             {% render_table table %}
         </div>
     {% endfor %}
-
 {% endblock %}
 
 {% block scripts %}

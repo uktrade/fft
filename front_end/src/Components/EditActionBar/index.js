@@ -31,10 +31,10 @@ const EditActionBar = () => {
     }, [])
 
     const getClasses = () => {
-        let classes = "filter-content-wrapper "
+        let classes = "action-bar-content-wrapper "
 
         if (filterOpen)
-            classes += "filter-open"
+            classes += "action-bar-open"
 
         return classes
     }
@@ -47,131 +47,132 @@ const EditActionBar = () => {
     }
 
     return (
-        <div className="filter" ref={containerRef}>
-            <div className="filter-by">
-                <span className="govuk-body">Filter by </span>                
-                <button 
-                    id="filter-switch"
-                    className="link-button govuk-link"
-                    onClick={(e) => {
-                        dispatch(
-                            TOGGLE_FILTER()
-                        );
-                        e.preventDefault()
-                    }}
-                >
-                    Table filters
-                </button>
-                <span className={getArrowClass()}></span>
-            </div>
- 
-            <div className={getClasses()}>
-                <div className="filter-content">
-                    <h3 className="govuk-heading-m">Table filters</h3>
+        <div className="action-bar-wrapper">
+            <div className="action-bar" ref={containerRef}>
+                <div className="action-bar-by">               
+                    <button 
+                        id="action-bar-switch"
+                        className="link-button govuk-link"
+                        onClick={(e) => {
+                            dispatch(
+                                TOGGLE_FILTER()
+                            );
+                            e.preventDefault()
+                        }}
+                    >
+                        Show/hide columns
+                    </button>
+                    <span className={getArrowClass()}></span>
+                </div>
+     
+                <div className={getClasses()}>
+                    <div className="action-bar-content">
+                        <h3 className="govuk-heading-m">Show/hide columns</h3>
 
-                    <div className="govuk-checkboxes">
-                        <div className="govuk-checkboxes__item">
-                            <input
-                                type="checkbox"
-                                className="govuk-checkboxes__input"
-                                checked={showAll}
-                                onChange={(e) => {
-                                    dispatch(
-                                        TOGGLE_SHOW_ALL()
-                                    );
-                                }}
-                            />
-                            <label className="govuk-label govuk-checkboxes__label" for="waste">
-                                All columns
-                            </label>
-                        </div>
-                    </div>
-
-                    <div className="filter-cols">
-                        <h4 className="govuk-heading-m">Table columns</h4>
                         <div className="govuk-checkboxes">
                             <div className="govuk-checkboxes__item">
                                 <input
                                     type="checkbox"
-                                    name="natural_account_code"
-                                    id="show_hide_nac"
                                     className="govuk-checkboxes__input"
-                                    checked={hiddenCols.indexOf("natural_account_code") === -1}
+                                    checked={showAll}
                                     onChange={(e) => {
                                         dispatch(
-                                            TOGGLE_ITEM("natural_account_code")
+                                            TOGGLE_SHOW_ALL()
                                         );
                                     }}
                                 />
-                                <label className="govuk-label govuk-checkboxes__label" for="natural_account_code">
-                                    Natural account code
+                                <label className="govuk-label govuk-checkboxes__label" for="waste">
+                                    All info columns
                                 </label>
                             </div>
-                            <div className="govuk-checkboxes__item">
-                                <input
-                                    type="checkbox"
-                                    name="programme"
-                                    className="govuk-checkboxes__input"
-                                    checked={hiddenCols.indexOf("programme") === -1}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            TOGGLE_ITEM("programme")
-                                        );
-                                    }}
-                                />
-                                <label className="govuk-label govuk-checkboxes__label" for="programme">
-                                    Programme
-                                </label>
-                            </div>
-                            <div className="govuk-checkboxes__item">
-                                <input
-                                    type="checkbox"
-                                    name="analysis1_code"
-                                    className="govuk-checkboxes__input"
-                                    checked={hiddenCols.indexOf("analysis1_code") === -1}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            TOGGLE_ITEM("analysis1_code")
-                                        );
-                                    }}
-                                />
-                                <label className="govuk-label govuk-checkboxes__label" for="analysis1_code">
-                                    Analysis 1
-                                </label>
-                            </div>
-                            <div className="govuk-checkboxes__item">
-                                <input
-                                    type="checkbox"
-                                    name="analysis2_code"
-                                    className="govuk-checkboxes__input"
-                                    checked={hiddenCols.indexOf("analysis2_code") === -1}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            TOGGLE_ITEM("analysis2_code")
-                                        );
-                                    }}
-                                />
-                                <label className="govuk-label govuk-checkboxes__label" for="analysis2_code">
-                                    Analysis 2
-                                </label>
-                            </div>
-                            <div className="govuk-checkboxes__item">
-                                <input
-                                    type="checkbox"
-                                    name="project_code"
-                                    className="govuk-checkboxes__input"
-                                    checked={hiddenCols.indexOf("project_code") === -1}
-                                    onChange={(e) => {
-                                        dispatch(
-                                            TOGGLE_ITEM("project_code")
-                                        );
-                                    }}
-                                />
-                                <label className="govuk-label govuk-checkboxes__label" for="project_code">
-                                    Project Code
-                                </label>
-                            </div>
-                        </div> 
+                        </div>
+
+                        <div className="action-bar-cols">
+                            <h4 className="govuk-heading-m">Individual columns</h4>
+                            <div className="govuk-checkboxes">
+                                <div className="govuk-checkboxes__item">
+                                    <input
+                                        type="checkbox"
+                                        name="natural_account_code"
+                                        id="show_hide_nac"
+                                        className="govuk-checkboxes__input"
+                                        checked={hiddenCols.indexOf("natural_account_code") === -1}
+                                        onChange={(e) => {
+                                            dispatch(
+                                                TOGGLE_ITEM("natural_account_code")
+                                            );
+                                        }}
+                                    />
+                                    <label className="govuk-label govuk-checkboxes__label" for="natural_account_code">
+                                        Natural account code
+                                    </label>
+                                </div>
+                                <div className="govuk-checkboxes__item">
+                                    <input
+                                        type="checkbox"
+                                        name="programme"
+                                        className="govuk-checkboxes__input"
+                                        checked={hiddenCols.indexOf("programme") === -1}
+                                        onChange={(e) => {
+                                            dispatch(
+                                                TOGGLE_ITEM("programme")
+                                            );
+                                        }}
+                                    />
+                                    <label className="govuk-label govuk-checkboxes__label" for="programme">
+                                        Programme
+                                    </label>
+                                </div>
+                                <div className="govuk-checkboxes__item">
+                                    <input
+                                        type="checkbox"
+                                        name="analysis1_code"
+                                        className="govuk-checkboxes__input"
+                                        checked={hiddenCols.indexOf("analysis1_code") === -1}
+                                        onChange={(e) => {
+                                            dispatch(
+                                                TOGGLE_ITEM("analysis1_code")
+                                            );
+                                        }}
+                                    />
+                                    <label className="govuk-label govuk-checkboxes__label" for="analysis1_code">
+                                        Analysis 1
+                                    </label>
+                                </div>
+                                <div className="govuk-checkboxes__item">
+                                    <input
+                                        type="checkbox"
+                                        name="analysis2_code"
+                                        className="govuk-checkboxes__input"
+                                        checked={hiddenCols.indexOf("analysis2_code") === -1}
+                                        onChange={(e) => {
+                                            dispatch(
+                                                TOGGLE_ITEM("analysis2_code")
+                                            );
+                                        }}
+                                    />
+                                    <label className="govuk-label govuk-checkboxes__label" for="analysis2_code">
+                                        Analysis 2
+                                    </label>
+                                </div>
+                                <div className="govuk-checkboxes__item">
+                                    <input
+                                        type="checkbox"
+                                        name="project_code"
+                                        className="govuk-checkboxes__input"
+                                        checked={hiddenCols.indexOf("project_code") === -1}
+                                        onChange={(e) => {
+                                            dispatch(
+                                                TOGGLE_ITEM("project_code")
+                                            );
+                                        }}
+                                    />
+                                    <label className="govuk-label govuk-checkboxes__label" for="project_code">
+                                        Project Code
+                                    </label>
+                                </div>
+                            </div> 
+                        </div>
                     </div>
                 </div>
             </div>

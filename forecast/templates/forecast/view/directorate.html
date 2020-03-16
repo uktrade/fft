@@ -10,16 +10,15 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}</h1>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_directorate' view.directorate.directorate_code %}">Download</a>
-      </div>
+    <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}</h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_directorate' view.directorate.directorate_code %} ">Download raw data</a>
+        </div>
     </div>
 
     {% for table in tables %}
-        <div class="tables-container">
+        <div class="tables-container forecast-table-{{ forloop.counter }}">
             {% render_table table %}
         </div>
     {% endfor %}

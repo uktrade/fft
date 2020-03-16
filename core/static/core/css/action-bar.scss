@@ -1,14 +1,19 @@
 
-.filter {
+.action-bar-wrapper {
+  width: 100vw;
+}
+
+.action-bar {
   background-color: govuk-colour("mid-grey");
-  max-width: 1200px;
+  width: calc(100% - 60px);
+  box-sizing: border-box;
   margin-bottom: 24px;
 
   .govuk-button {
     margin: 16px;
   }
 
-  .filter-by {
+  .action-bar-by {
     float: right;
     background-color: white;
     border:16px solid govuk-colour("mid-grey");
@@ -17,29 +22,29 @@
     overflow: hidden;
   }
 
-  .filter-link {
+  .action-bar-link {
     float: right;
   }
 
-  .filter-content {
+  .action-bar-content {
     border:16px solid govuk-colour("mid-grey");
     border-top-width: 0;
     background-color: govuk-colour("light-grey");
     padding: 16px;
   }
 
-  .filter-content-wrapper {
+  .action-bar-content-wrapper {
     max-height: 0;
     transition: max-height 0.4s linear;
     overflow-y: hidden;
     box-sizing: border-box;
   }
 
-  .filter-open {
+  .action-bar-open {
     max-height: 1000px;
   }
 
-  .filter-cols {
+  .action-bar-cols {
     background-color: white;
     padding: 16px;
     margin-top: 16px;

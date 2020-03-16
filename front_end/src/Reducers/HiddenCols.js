@@ -20,6 +20,13 @@ const hiddenCols = createSlice({
         TOGGLE_SHOW_ALL: (state, action) => {
             if (state.showAll) {
                 state.showAll = false
+                state.hiddenCols = [
+                    "natural_account_code",
+                    "programme",
+                    "analysis1_code",
+                    "analysis2_code",
+                    "project_code"
+                ]
             } else {
                 state.showAll = true
                 // Turn on all cols
