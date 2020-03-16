@@ -132,13 +132,15 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
 
         setIsUpdating(true)
 
+        let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
+
         let payload = new FormData()
         payload.append("natural_account_code", cells[rowIndex]["natural_account_code"].value)
         payload.append("programme_code", cells[rowIndex]["programme"].value)
         payload.append("project_code", cells[rowIndex]["project_code"].value)
         payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value)
         payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value)
-
+        payload.append("csrfmiddlewaretoken", crsfToken)
         payload.append("month", cellKey)
         payload.append("amount", newAmount)
 
