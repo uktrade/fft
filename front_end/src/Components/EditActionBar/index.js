@@ -68,7 +68,6 @@ const EditActionBar = () => {
                 <div className={getClasses()}>
                     <div className="action-bar-content">
                         <h3 className="govuk-heading-m">Show/hide columns</h3>
-
                         <div className="govuk-checkboxes">
                             <div className="govuk-checkboxes__item">
                                 <input

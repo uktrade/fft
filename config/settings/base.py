@@ -261,3 +261,7 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # s3chunkuploader
 FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
 CLEAN_FILE_NAME = True
+
+# Max and min for forecast entry values
+MAX_FORECAST_FIGURE = 100000000
+MIN_FORECAST_FIGURE = -100000000

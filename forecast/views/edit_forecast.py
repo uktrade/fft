@@ -1,6 +1,7 @@
 import json
 import re
 
+from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
@@ -362,8 +363,16 @@ class EditForecastFigureView(
             financial_period__financial_period_code=month,
         ).first()
 
+        amount = form.cleaned_data['amount']
+
+        if amount > settings.MAX_FORECAST_FIGURE:
+            amount = settings.MAX_FORECAST_FIGURE
+
+        if amount < settings.MIN_FORECAST_FIGURE:
+            amount = settings.MIN_FORECAST_FIGURE
+
         if monthly_figure:
-            monthly_figure.amount = form.cleaned_data['amount']
+            monthly_figure.amount = amount
         else:
             financial_period = FinancialPeriod.objects.filter(
                 financial_period_code=month
@@ -372,7 +381,7 @@ class EditForecastFigureView(
                 financial_year=financial_year,
                 financial_code=financial_code.first(),
                 financial_period=financial_period,
-                amount=form.cleaned_data['amount'],
+                amount=amount,
             )
 
         monthly_figure.save()

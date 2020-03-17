@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import (
@@ -33,10 +34,14 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.factories import (
+    FinancialCodeFactory,
+)
 from forecast.test.test_utils import create_budget
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
+    EditForecastFigureView,
     EditForecastView,
 )
 from forecast.views.view_forecast.expenditure_details import (
@@ -1188,3 +1193,88 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
+
+
+class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.nac_code = 999999
+        self.cost_centre_code = 888812
+
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(
+            natural_account_code=self.nac_code,
+        )
+
+        self.cost_centre_code = 888812
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+        FinancialCodeFactory.create(
+            programme=self.programme,
+            cost_centre=self.cost_centre,
+            natural_account_code=self.nac,
+        )
+
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+    def test_edit_forecast_max_amount(self):
+        update_forecast_figure_url = reverse(
+            "update_forecast_figure",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        amount = 999999999999999999
+        assert amount > settings.MAX_FORECAST_FIGURE
+
+        resp = self.factory_post(
+            update_forecast_figure_url, {
+                "natural_account_code": self.nac_code,
+                "programme_code": self.programme.programme_code,
+                "month": 5,
+                "amount": amount,
+            },
+            EditForecastFigureView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        assert ForecastMonthlyFigure.objects.first().amount == settings.MAX_FORECAST_FIGURE  # noqa
+
+    def test_edit_forecast_min_amount(self):
+        update_forecast_figure_url = reverse(
+            "update_forecast_figure",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        amount = -999999999999999999
+        assert amount < settings.MIN_FORECAST_FIGURE
+
+        resp = self.factory_post(
+            update_forecast_figure_url, {
+                "natural_account_code": self.nac_code,
+                "programme_code": self.programme.programme_code,
+                "month": 5,
+                "amount": amount,
+            },
+            EditForecastFigureView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        assert ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE  # noqa
