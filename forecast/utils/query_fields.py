@@ -198,19 +198,19 @@ programme_details_dit_columns = {
     GROUP_CODE: "code",
 }
 programme_details_group_columns = {
+    PROGRAMME_NAME: "Hidden",
     FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
     DIRECTORATE_NAME: "Directorate description",
     DIRECTORATE_CODE: "code",
 }
 
 programme_details_directorate_columns = {
+    PROGRAMME_NAME: "Hidden",
     FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
     COST_CENTRE_NAME: "Cost Centre description",
     COST_CENTRE_CODE: "code",
 }
-programme_details_costcentre_columns = {
-    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
-}
+
 programme_details_sub_total = [
     PROGRAMME_NAME,
 ]
