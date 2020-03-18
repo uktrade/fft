@@ -121,29 +121,18 @@ class ForecastMultiTableMixin(MultiTableMixin):
             )
 
         programme_table.attrs['caption'] = "Control total report"
-<<<<<<< HEAD
-        # use   # noqa to avoid random flake8 errors for underindent/overindent
-        expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
-                [BUDGET_CATEGORY_ID, BUDGET_TYPE],  # noqa
-                filter_code,  # noqa
-                expenditure_columns,  # noqa
-                expenditure_data)  # noqa
-        expenditure_table.attrs['caption'] = "Expenditure report"
-        # use   # noqa to avoid random flake8 errors for underindent/overindent
-        project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
-                [PROJECT_CODE],   # noqa
-                filter_code,   # noqa
-                project_columns,  # noqa
-                project_data)  # noqa
-=======
         expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
                                                   [BUDGET_CATEGORY_ID, BUDGET_TYPE],
                                                   filter_code,
                                                   expenditure_columns,
                                                   expenditure_data)
         expenditure_table.attrs['caption'] = "Expenditure report"
-        project_table = ForecastSubTotalTable(project_columns, project_data)
->>>>>>> dev
+        # use   # noqa to avoid random flake8 errors for underindent/overindent
+        project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
+                                                  [PROJECT_CODE],
+                                                  filter_code,
+                                                  project_columns,
+                                                  project_data)  # noqa
         project_table.attrs['caption'] = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:
