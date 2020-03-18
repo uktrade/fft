@@ -224,10 +224,8 @@ class ForecastSubTotalTable(tables.Table):
         }
         orderable = False
         row_attrs = {
-            "class": "govuk-table__row",
             "class": lambda record: "govuk-table__row {}".format(record["row_type"]),
         }
-
 
 
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):

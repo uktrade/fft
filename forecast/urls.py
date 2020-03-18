@@ -38,16 +38,16 @@ from forecast.views.view_forecast.forecast_summary import (
     DirectorateView,
     GroupView,
 )
+from forecast.views.view_forecast.programme_details import (
+    DITProgrammeDetailsView,
+    DirectorateProgrammeDetailsView,
+    GroupProgrammeDetailsView,
+)
 from forecast.views.view_forecast.project_details import (
     CostCentreProjectDetailsView,
     DITProjectDetailsView,
     DirectorateProjectDetailsView,
     GroupProjectDetailsView,
-)
-from forecast.views.view_forecast.programme_details import (
-    DITProgrammeDetailsView,
-    DirectorateProgrammeDetailsView,
-    GroupProgrammeDetailsView,
 )
 
 
