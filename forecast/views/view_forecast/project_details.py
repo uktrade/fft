@@ -27,7 +27,6 @@ from forecast.tables import (
     ForecastSubTotalTable,
 )
 from forecast.utils.query_fields import (
-    FORECAST_EXPENDITURE_TYPE_NAME,
     PROJECT_CODE,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,

@@ -1,37 +1,31 @@
 from bs4 import BeautifulSoup
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
-    Analysis1Factory,
-    Analysis2Factory,
     ExpenditureCategoryFactory,
     NaturalCodeFactory,
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
+
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
+
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
+
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    ForecastEditLock,
     ForecastMonthlyFigure,
-)
-from forecast.permission_shortcuts import assign_perm
-from forecast.test.test_utils import create_budget
-from forecast.views.edit_forecast import (
-    AddRowView,
-    ChooseCostCentreView,
-    EditForecastView,
 )
 from forecast.test.test_views import format_forecast_figure
 from forecast.views.view_forecast.project_details import (
@@ -40,21 +34,11 @@ from forecast.views.view_forecast.project_details import (
     DirectorateProjectDetailsView,
     GroupProjectDetailsView,
 )
-from forecast.views.view_forecast.forecast_summary import (
-    CostCentreView,
-    DITView,
-    DirectorateView,
-    GroupView,
-)
-from forecast.views.view_forecast.programme_details import (
-    DITProgrammeDetailsView,
-    DirectorateProgrammeDetailsView,
-    GroupProgrammeDetailsView,
-)
 
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
 UNDERSPEND_COLUMN = -4
+
 
 class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
     def setUp(self):
@@ -95,7 +79,7 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
         apr_period = FinancialPeriod.objects.get(financial_period_code=1)
         apr_period.actual_loaded = True
         apr_period.save()
-        
+
         project_obj = ProjectCodeFactory(project_code=1234)
         self.project_code = project_obj.project_code
         # If you use the MonthlyFigureFactory the test fails.
@@ -107,7 +91,8 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
             project_code=project_obj
         )
         financial_code1_obj.save
-        self.expenditure_type = financial_code1_obj.forecast_expenditure_type.forecast_expenditure_type_name
+        self.expenditure_type = \
+            financial_code1_obj.forecast_expenditure_type.forecast_expenditure_type_name
         apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
@@ -141,9 +126,8 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
-        self.year_total = self.amount_apr  + self.amount_may
-        self.underspend_total = \
-            0 - self.amount_apr - self.amount_may 
+        self.year_total = self.amount_apr + self.amount_may
+        self.underspend_total = -self.amount_apr - self.amount_may
         self.spend_to_date_total = self.amount_apr
 
     def check_project_details_table(self, table):
