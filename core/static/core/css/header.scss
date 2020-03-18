@@ -1,0 +1,271 @@
+
+.internal-header {
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  line-height: 1.5;
+  background-color: black;
+
+  // Wrapper
+  .internal-header__navigation-wrapper {
+    background-color: #dee0e2;
+    font-weight: 700;
+  }
+
+  // Logo
+  .internal-header__logo-container {
+    color: white;
+    font-weight: 700;
+    padding: 2px 15px 0 15px;
+
+    $gutter-safe-area-right: calc(#{$govuk-gutter-half} + env(safe-area-inset-right));
+    $gutter-safe-area-left: calc(#{$govuk-gutter-half} + env(safe-area-inset-left));
+
+    margin-right: unquote("max(#{$govuk-gutter-half}, #{$gutter-safe-area-right})");
+    margin-left: unquote("max(#{$govuk-gutter-half}, #{$gutter-safe-area-left})");
+  }
+
+  .internal-header__logo {
+    font-size: 30px;
+    font-weight: bold;
+    display: inline-block;
+    padding-right: 2em;
+  }
+
+  .internal-header__logo__site-name {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    -webkit-clip-path: inset(50%) !important;
+    clip-path: inset(50%) !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .internal-header__logo-container a, .internal-header__logo-container a:visited, .internal-header__logo-container a:link {
+    color: white;
+    text-decoration: none;
+  }
+
+  .internal-header__logo__text {
+    -webkit-font-smoothing: initial;
+  }
+
+  .internal-header__logo__tag {
+    -webkit-font-smoothing: initial;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.25;
+    display: inline-block;
+    padding: 4px 8px 2px 8px;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    color: white;
+    background-color: #005ea5;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    position: relative;
+    top: -5px;
+  }
+  
+  // Navigation links
+  .internal-header__navigation__item__link {
+    display: block;
+    padding: 2px 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 23px;
+    text-decoration: none;
+    color: #0b0c0c;
+  }
+
+  .internal-header__navigation__item__link:visited, .internal-header__navigation__item__link:link {
+    color: #0b0c0c;
+  }
+
+  @media (min-width: 40.0625em) {
+    // Navigation links
+    .internal-header__navigation__item__link {
+      display: inline-block;
+      padding: 8px 0;
+    }
+
+    .internal-header__navigation__item__link:hover {
+      color: #0b0c0c!important;
+      padding-bottom: 3px;
+      border-bottom: 5px solid #005ea5;
+    }
+
+    .internal-header__navigation__item__link--active {
+      padding-bottom: 3px;
+      border-bottom: 5px solid #005ea5;
+    }
+  }
+
+  .internal-header__navigation__item__link--active {
+    color: #005ea5!important;
+  }
+
+  .internal-header__links {
+    display: block;
+    font-size: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    outline: 3px solid transparent;
+    font-weight: 700;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (min-width: 40.0625em) {
+    .js-internal-header-enabled .internal-header__navigation, .js-internal-header-enabled .internal-header__links {
+      display: block!important;
+    }
+
+    .internal-header__links {
+      float: right;
+    }
+  }
+
+  ul, ol {
+    list-style-type: none;
+  }
+
+  .internal-header__navigation {
+    padding: 0 15px;
+    margin:0;
+  }
+
+  @media (min-width: 1860px) {
+    .internal-header__logo-container, .internal-header__navigation {
+      max-width: 1800px;
+      margin: auto;
+    }
+  }
+
+  @media (min-width: 40.0625em) {
+    .internal-header__navigation {
+      padding: 0;
+      list-style: none;
+      padding: 0 30px;
+      box-sizing: content-box;
+    }
+  }
+
+  ul, ol {
+    list-style-type: none;
+  }
+
+  .internal-header__navigation__item {
+    display: block;
+    padding-right: 20px;
+  }
+
+  .internal-header__links__item {
+    padding: 4px 0;
+  }
+
+  @media (min-width: 40.0625em) {
+    .internal-header__navigation__item {
+      display: inline-block;
+      padding-right: 20px;
+    }
+
+    .internal-header__links__item {
+      display: inline-block;
+      padding: 8px 20px;
+      border-bottom: 0;
+    }
+  }
+
+  a:visited {
+    color: #4c2c92;
+  }
+
+  a, input, textarea {
+    outline: 3px solid transparent;
+  }
+
+  a {
+    color: #005ea5;
+    -webkit-text-decoration-skip: ink;
+    text-decoration-skip: ink;
+    outline-color: transparent;
+  }
+
+  .internal-header__links__item {
+    display: block;
+    border-bottom: 1px solid #6f777b;
+  }
+
+  .internal-header__links__item:last-child{
+    border: 0;
+  }
+
+  @media (min-width: 40.0625em) {
+    .internal-header__menu-button {
+      display: none;
+    }
+
+    .internal-header__links__item {
+      display: inline-block;
+      border: none;
+    }
+  }
+
+  .internal-header__menu-button {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.14286;
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: white;
+      background: 0 0;
+  }
+
+  .internal-header__menu-button::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    -webkit-clip-path: polygon(0 0, 50% 100%, 100% 0);
+    clip-path: polygon(0 0, 50% 100%, 100% 0);
+    border-width: 8.66px 5px 0 5px;
+    border-top-color: inherit;
+    content: "";
+    margin-left: 5px;
+  }
+
+  .internal-header__menu-button--open::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
+    -webkit-clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    clip-path: polygon(50% 0, 0 100%, 100% 100%);
+    border-width: 0 5px 8.66px 5px;
+    border-bottom-color: inherit;
+  }
+}
+
+.wide-table {
+  .internal-header {
+    @media (min-width: 1860px) {
+      .internal-header__logo-container, .internal-header__navigation {
+        max-width: none !important;
+        margin: 0 30px !important;
+        padding: 2px 15px 0 0;
+      }
+    }
+  }
+}

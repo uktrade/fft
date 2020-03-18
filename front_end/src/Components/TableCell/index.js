@@ -120,17 +120,29 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
 
 
     const updateValue = () => {
-        let newAmount = parseInt(value * 100)
+        let newAmount = value * 100
 
-        if (cell && newAmount === cell.amount) {
+        if (newAmount > Number.MAX_SAFE_INTEGER) {
+            newAmount = Number.MAX_SAFE_INTEGER
+        }
+
+        if (newAmount < Number.MIN_SAFE_INTEGER) {
+            newAmount = Number.MIN_SAFE_INTEGER
+        }
+
+        let intAmount = parseInt(newAmount)
+
+        if (cell && intAmount === cell.amount) {
             return
         }
 
-        if (!cell && newAmount === 0) {
+        if (!cell && intAmount === 0) {
             return
         }
 
         setIsUpdating(true)
+
+        let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
 
         let payload = new FormData()
         payload.append("natural_account_code", cells[rowIndex]["natural_account_code"].value)
@@ -138,9 +150,9 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         payload.append("project_code", cells[rowIndex]["project_code"].value)
         payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value)
         payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value)
-
+        payload.append("csrfmiddlewaretoken", crsfToken)
         payload.append("month", cellKey)
-        payload.append("amount", newAmount)
+        payload.append("amount", intAmount)
 
         postData(
             `/forecast/update-forecast/${window.cost_centre}/`,

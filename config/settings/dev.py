@@ -10,6 +10,6 @@ AUTHENTICATION_BACKENDS += [
     "authbroker_client.backends.AuthbrokerBackend",
 ]
 
-ASYNC_FILE_UPLOAD = True
+ASYNC_FILE_UPLOAD = False
 
 IGNORE_ANTI_VIRUS = True

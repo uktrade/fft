@@ -142,7 +142,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
 # Remove extra details in the label
 # for the filter fields, it does
 # not says 'contains' or similar
@@ -183,16 +182,19 @@ WEBPACK_LOADER = {
     }
 }
 
+# AWS
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+AWS_REGION = env('AWS_REGION', default='')
 
-AWS_STORAGE_BUCKET_NAME = "fido-dev"  # Need to check this with GDS bucket
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME  # Need to check this with GDS bucket
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}  # Need to check this with GDS bucket
-AWS_S3_REGION_NAME = 'eu-west-2'  # Need to check this with GDS bucket
-#
-AWS_DEFAULT_ACL = None  # Need to check this with GDS bucket
-#
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+AWS_S3_REGION_NAME = 'eu-west-2'
+AWS_DEFAULT_ACL = None
+
+# File storage
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
 if 'VCAP_SERVICES' in os.environ:
@@ -255,3 +257,11 @@ AUTHENTICATION_BACKENDS = [
 AXES_LOGIN_FAILURE_LIMIT = 5
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# s3chunkuploader
+FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
+CLEAN_FILE_NAME = True
+
+# Max and min for forecast entry values
+MAX_FORECAST_FIGURE = 100000000
+MIN_FORECAST_FIGURE = -100000000

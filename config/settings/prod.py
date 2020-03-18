@@ -14,10 +14,6 @@ STATICFILES_DIRS = ("/app/front_end/build/static",)
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-IGNORE_ANTI_VIRUS = False
-
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [
     'noindex',
@@ -50,6 +46,12 @@ LOGGING = {
         },
     },
 }
+
+# Use anti virus check on uploaded files
+IGNORE_ANTI_VIRUS = False
+
+# Set async file uploading
+ASYNC_FILE_UPLOAD = True
 
 sentry_sdk.init(
     os.environ.get("SENTRY_DSN"),

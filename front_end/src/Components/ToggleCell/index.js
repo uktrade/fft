@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const ToggleCell = ({rowIndex, colName, children, className, ignoreSelection}) => {
+const ToggleCell = ({rowIndex, colName, children}) => {
 
     let changed = false
 
@@ -36,9 +36,6 @@ const ToggleCell = ({rowIndex, colName, children, className, ignoreSelection}) =
     const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols, checkValue)
 
     const isSelected = () => {
-        if (ignoreSelection)
-            return false
-
         if (allSelected) {
             return true
         }
@@ -47,7 +44,7 @@ const ToggleCell = ({rowIndex, colName, children, className, ignoreSelection}) =
     }
 
     const getClasses = () => {
-        return "govuk-table__cell forecast-month-cell not-editable " + className + " " + (isSelected() ? 'selected ' : '')  + (hiddenCols.indexOf(colName) > -1 ? 'hidden' : '')
+        return "govuk-table__cell forecast-month-cell not-editable " + (isSelected() ? 'selected ' : '')  + (hiddenCols.indexOf(colName) > -1 ? 'hidden' : '')
     }
 
     return (

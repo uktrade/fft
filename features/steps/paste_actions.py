@@ -67,7 +67,7 @@ def step_impl(context):
     )
 
     WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "select_0"))
+        ec.presence_of_element_located((By.ID, "select_row_0"))
     )
 
     april_value = context.browser.find_element_by_id(
@@ -78,7 +78,7 @@ def step_impl(context):
 
     assert april_value == "0"
 
-    first_select = context.browser.find_element_by_id("select_0")
+    first_select = context.browser.find_element_by_id("select_row_0")
     first_select.click()
 
 
@@ -174,7 +174,7 @@ def step_impl(context):
 
 @when(u'the user pastes valid row data with a 5 decimal place value')
 def step_impl(context):
-    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n999999	Test	123456	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "111111	Test	123456	Test	1111111	2222222	3000	0	1000.49999	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 

@@ -1,10 +1,14 @@
 import os
+import re
 from unittest.mock import MagicMock
 
 from django.contrib.auth.models import Permission
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
-from django.test import TestCase
+from django.test import (
+    TestCase,
+    override_settings,
+)
 from django.urls import reverse
 
 from core.test.test_base import RequestFactoryBase
@@ -15,12 +19,22 @@ from upload_file.test.factories import (
 from upload_file.views import UploadedView
 
 
+# Set file upload handlers back to default as
+# we need to remove S3 interactions for test purposes
+@override_settings(
+    FILE_UPLOAD_HANDLERS=[
+        "django.core.files.uploadhandler.MemoryFileUploadHandler",
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+    ],
+    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+)
 class UploadedViewTests(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
 
         self.file_mock = MagicMock(spec=File)
         self.file_mock.name = 'test.txt'
+        self.file_name_regex = 'test_(.*).txt'
 
         self.file_upload = FileUploadFactory.create(
             uploading_user=self.test_user,
@@ -56,7 +70,10 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 200)
 
         # File name should be in response
-        assert self.file_mock.name in resp.rendered_content
+        assert re.search(
+            self.file_name_regex,
+            resp.rendered_content,
+        ) is not None
 
         # Clean up file
         file_path = 'uploaded/actuals/{}'.format(

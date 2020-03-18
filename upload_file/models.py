@@ -1,7 +1,7 @@
-from pathlib import Path
-
 from django.contrib.auth import get_user_model
 from django.db import models
+
+from s3chunkuploader.fields import S3FileField
 
 from core.metamodels import (
     BaseModel,
@@ -36,8 +36,8 @@ class FileUpload(BaseModel):
         choices=DOCUMENT_TYPE_CHOICES,
         default=ACTUALS,
     )
-    document_file = models.FileField(
-        upload_to='uploaded/actuals/'
+    document_file = S3FileField(
+        max_length=1000,
     )
     status = models.CharField(
         max_length=11,
@@ -61,13 +61,11 @@ class FileUpload(BaseModel):
 
     @property
     def file_name(self):
-        return Path(
-            self.document_file.path,
-        ).name
+        return self.document_file.name
 
     def __str__(self):
         return "{} {} {}".format(
-            self.document_file,
+            self.document_file.name,
             self.document_type,
             self.status,
         )

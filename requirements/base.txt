@@ -92,3 +92,4 @@ django-simple-history
 django-settings-export
 django-axes
 django-redis
+s3chunkuploader

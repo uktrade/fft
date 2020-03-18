@@ -1,0 +1,57 @@
+.forecast-table-1, .forecast-table-2 {
+  .govuk-table tr td:first-child {
+    min-width: 100px;
+  }
+
+  .govuk-table tr td:first-child + td {
+    min-width: 160px;
+  }
+
+  .govuk-table tr td:first-child + td + td {
+    min-width: 250px;
+  }
+
+  .govuk-table tr td:first-child + td + td + td {
+    min-width: 90px;
+  }
+}
+
+.forecast-table-3, .forecast-table-4 {
+  .govuk-table tr td:first-child {
+    min-width: 100px;
+  }
+
+  .govuk-table tr td:first-child + td {
+    min-width: 260px;
+  }
+
+  .govuk-table tr td:first-child + td + td {
+    min-width: 260px;
+  }
+}
+
+.cc-forecast-table {
+  .govuk-table tr td:first-child {
+    min-width: 140px;
+  }
+
+  .govuk-table tr td:first-child + td {
+    min-width: 260px;
+  }
+
+  .govuk-table tr td:first-child + td + td {
+    min-width: 200px;
+  }
+
+  .govuk-table tr td:first-child {
+    min-width: 140px;
+  }
+
+  .govuk-table tr td:first-child + td {
+    min-width: 260px;
+  }
+
+  .govuk-table tr td:first-child + td + td {
+    min-width: 200px;
+  }
+}

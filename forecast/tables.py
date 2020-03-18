@@ -14,16 +14,16 @@ from forecast.utils.view_header_definition import (
 
 
 class ForecastLinkCol(tables.Column):
-
     def render(self, value):
-        if f'{value}'.strip():
-            return 'View'
-        return ''
+        if f"{value}".strip():
+            return "View"
+        return ""
 
 
 class SummingMonthCol(tables.Column):
     """It expects a list of month as first argument.
     Used to calculate and display year to date, full year, etc"""
+
     def calc_value(self, record):
         val = sum(
             record[m] for m in self.month_list if m in record and record[m] is not None
@@ -72,6 +72,7 @@ class SubtractCol(tables.Column):
 
 class PercentageCol(tables.Column):
     """Used to display the percentage of values in two columns"""
+
     def display_value(self, value):
         return f"{value:.0%}"
 
@@ -108,12 +109,7 @@ class ForecastSubTotalTable(tables.Table):
         # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
         for month in FinancialPeriod.financial_period_info.month_display_list():
-            cols.append(
-                (
-                    month,
-                    tables.Column(month, empty_values=()),
-                )
-            )
+            cols.append((month,tables.Column(month, empty_values=()),))
 
         self.base_columns.update(OrderedDict(cols))
 
@@ -130,11 +126,7 @@ class ForecastSubTotalTable(tables.Table):
         ]
         column_list = list(column_dict.keys())
         if self.display_view_details:
-            extra_column_to_display.extend(
-                [("Link",
-                  self.link_col,
-                  )]
-            )
+            extra_column_to_display.extend([("Link", self.link_col,)])
             column_list.insert(0, "Link")
 
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
@@ -201,7 +193,9 @@ class ForecastSubTotalTable(tables.Table):
 
         super().__init__(
             extra_columns=extra_column_to_display,
-            sequence=column_list, *args, **kwargs,
+            sequence=column_list,
+            *args,
+            **kwargs,
         )
         # change the stile for columns showing "actuals".
         # It has to be done after super().__init__
@@ -231,7 +225,7 @@ class ForecastSubTotalTable(tables.Table):
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
     display_view_details = True
 
-    def __init__(self, viewname, arg_link, code='', *args, **kwargs):
+    def __init__(self, viewname, arg_link, code="", *args, **kwargs):
 
         link_args = []
         if code:
@@ -241,15 +235,10 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
             link_args.append(tables.A(item))
 
         self.link_col = ForecastLinkCol(
-            '',
+            "",
             arg_link[0],
-            attrs={
-                "class": "govuk-link"
-            },
-            linkify={
-                "viewname": viewname,
-                "args": link_args,
-            }
+            attrs={"class": "govuk-link"},
+            linkify={"viewname": viewname, "args": link_args, },
         )
 
         super().__init__(*args, **kwargs)
