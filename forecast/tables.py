@@ -14,10 +14,11 @@ from forecast.utils.view_header_definition import (
 
 
 class ForecastLinkCol(tables.Column):
-    def render(self, value):
-        if f"{value}".strip():
-            return "View"
-        return ""
+    pass
+    # def render(self, value):
+    #     if f"{value}".strip():
+    #         return "View"
+    #     return ""
 
 
 class SummingMonthCol(tables.Column):
@@ -120,14 +121,16 @@ class ForecastSubTotalTable(tables.Table):
         #  but they are not required
         #  in the displayed table.
         column_dict = {k: v for k, v in column_dict.items() if v != "Hidden"}
-
-        extra_column_to_display = [
-            (k, tables.Column(v)) for (k, v) in column_dict.items()
-        ]
         column_list = list(column_dict.keys())
+
         if self.display_view_details:
-            extra_column_to_display.extend([("Link", self.link_col,)])
-            column_list.insert(0, "Link")
+            extra_column_to_display = [
+                           (k, tables.Column(v)) for (k, v) in column_dict.items() if k != self.column_name
+                            ]
+            extra_column_to_display.extend([(self.column_name, self.link_col,)])
+        else:
+            extra_column_to_display = [(k, tables.Column(v)) for (k, v) in column_dict.items()]
+
 
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
         # See if Adjustment periods should be displayed.
@@ -225,23 +228,27 @@ class ForecastSubTotalTable(tables.Table):
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
     display_view_details = True
 
-    def __init__(self, viewname, arg_link, code="", *args, **kwargs):
+    def __init__(self, column_name, viewname, arg_link, code="", column_dict={}, *args, **kwargs):
 
-        link_args = []
+        self.link_args = []
         if code:
-            link_args.append(code)
+            self.link_args.append(code)
 
         for item in arg_link:
-            link_args.append(tables.A(item))
+            self.link_args.append(tables.A(item))
 
+        # Find the column to be linked
+        self.column_name = column_name
+        self.viewname = viewname
         self.link_col = ForecastLinkCol(
-            "",
-            arg_link[0],
-            attrs={"class": "govuk-link"},
-            linkify={"viewname": viewname, "args": link_args, },
-        )
+                       column_dict.get(column_name),
+                       column_name,
+                       attrs = {"class": "govuk-link"},
+                       linkify = {"viewname": viewname,
+                        "args": self.link_args, },
+                        )
 
-        super().__init__(*args, **kwargs)
+        super().__init__(column_dict, *args, **kwargs)
 
     class Meta(ForecastSubTotalTable.Meta):
         pass

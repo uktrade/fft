@@ -30,6 +30,7 @@ from forecast.utils.query_fields import (
     BUDGET_TYPE,
     FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
+    PROGRAMME_NAME,
     PROJECT_CODE,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
@@ -112,7 +113,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
         if self.hierarchy_type == SHOW_COSTCENTRE:
             programme_table = ForecastSubTotalTable(programme_columns, programme_data)
         else:
-            programme_table = ForecastWithLinkTable(
+            programme_table = ForecastWithLinkTable(PROGRAMME_NAME,
                 programme_detail_view[self.hierarchy_type],
                 [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_NAME],
                 filter_code,
@@ -121,38 +122,38 @@ class ForecastMultiTableMixin(MultiTableMixin):
             )
 
         programme_table.attrs['caption'] = "Control total report"
-        expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
-                                                  [BUDGET_CATEGORY_ID, BUDGET_TYPE],
-                                                  filter_code,
-                                                  expenditure_columns,
-                                                  expenditure_data)
-        expenditure_table.attrs['caption'] = "Expenditure report"
+        # expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
+        #                                           [BUDGET_CATEGORY_ID, BUDGET_TYPE],
+        #                                           filter_code,
+        #                                           expenditure_columns,
+        #                                           expenditure_data)
+        # expenditure_table.attrs['caption'] = "Expenditure report"
         # use   # noqa to avoid random flake8 errors for underindent/overindent
-        project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
-                                                  [PROJECT_CODE],
-                                                  filter_code,
-                                                  project_columns,
-                                                  project_data)  # noqa
-        project_table.attrs['caption'] = "Project report"
-
-        if self.hierarchy_type == SHOW_COSTCENTRE:
-            hierarchy_table = ForecastSubTotalTable(
-                hierarchy_columns[self.hierarchy_type],
-                hierarchy_data
-            )
-        else:
-            hierarchy_table = ForecastWithLinkTable(
-                hierarchy_view[self.hierarchy_type],
-                hierarchy_view_code[self.hierarchy_type],
-                '',
-                hierarchy_columns[self.hierarchy_type],
-                hierarchy_data)
+        # project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
+        #                                           [PROJECT_CODE],
+        #                                           filter_code,
+        #                                           project_columns,
+        #                                           project_data)  # noqa
+        # project_table.attrs['caption'] = "Project report"
+        #
+        # if self.hierarchy_type == SHOW_COSTCENTRE:
+        #     hierarchy_table = ForecastSubTotalTable(
+        #         hierarchy_columns[self.hierarchy_type],
+        #         hierarchy_data
+        #     )
+        # else:
+        #     hierarchy_table = ForecastWithLinkTable(
+        #         hierarchy_view[self.hierarchy_type],
+        #         hierarchy_view_code[self.hierarchy_type],
+        #         '',
+        #         hierarchy_columns[self.hierarchy_type],
+        #         hierarchy_data)
 
         self.tables = [
-            hierarchy_table,
+            # hierarchy_table,
             programme_table,
-            expenditure_table,
-            project_table,
+            # expenditure_table,
+            # project_table,
         ]
         return self.tables
 
