@@ -80,57 +80,41 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
-        self.amount1_apr = -9876543
-        self.amount2_apr = 1000000
+        self.amount_apr = -9876543
 
         programme_obj = ProgrammeCodeFactory()
         self.budget_type = programme_obj.budget_type_fk.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
-        self.nac1_obj = NaturalCodeFactory(natural_account_code=12345678,
-                                           project_code=expenditure_obj
-                                           )
-        self.nac2_obj = NaturalCodeFactory(project_code=expenditure_obj)
+        self.nac_obj = NaturalCodeFactory(natural_account_code=12345678,
+                                          expenditure_category=expenditure_obj,
+                                          economic_budget_code='RESOURCE'
+                                          )
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
         apr_period = FinancialPeriod.objects.get(financial_period_code=1)
         apr_period.actual_loaded = True
         apr_period.save()
         
-        project_obj = ProjectCodeFactory()
+        project_obj = ProjectCodeFactory(project_code=1234)
         self.project_code = project_obj.project_code
         # If you use the MonthlyFigureFactory the test fails.
         # I cannot work out why, it may be due to using a random year....
         financial_code1_obj = FinancialCode.objects.create(
             programme=programme_obj,
             cost_centre=self.cost_centre,
-            natural_account_code=self.nac1_obj,
+            natural_account_code=self.nac_obj,
             project_code=project_obj
         )
         financial_code1_obj.save
-        financial_code2_obj = FinancialCode.objects.create(
-            programme=programme_obj,
-            cost_centre=self.cost_centre,
-            natural_account_code=self.nac2_obj,
-        )
-        financial_code2_obj.save
+        self.expenditure_type = financial_code1_obj.forecast_expenditure_type.forecast_expenditure_type_name
         apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1
             ),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
-            amount=self.amount1_apr,
-        )
-        apr_figure.save
-
-        apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
-            financial_code=financial_code2_obj,
-            financial_year=year_obj,
-            amount=self.amount2_apr
+            amount=self.amount_apr,
         )
         apr_figure.save
 
@@ -157,20 +141,17 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
             email="test@test.com"
         )
 
-        self.budget = create_budget(financial_code2_obj, year_obj)
-        self.year_total = self.amount1_apr + self.amount2_apr + self.amount_may
+        self.year_total = self.amount_apr  + self.amount_may
         self.underspend_total = \
-            self.budget - self.amount1_apr - self.amount_may - self.amount2_apr
-        self.spend_to_date_total = self.amount1_apr + self.amount2_apr
+            0 - self.amount_apr - self.amount_may 
+        self.spend_to_date_total = self.amount_apr
 
     def check_project_details_table(self, table):
         project_rows = table.find_all("tr")
         first_cols = project_rows[1].find_all("td")
-        assert (first_cols[0].get_text().strip() ==
-                self.nac2_obj.natural_account_code_description)
-
-        assert first_cols[3].get_text().strip() == format_forecast_figure(
-            self.budget / 100
+        assert (first_cols[0].get_text().strip() == self.expenditure_type)
+        assert first_cols[4].get_text().strip() == format_forecast_figure(
+            self.amount_apr / 100
         )
 
         last_cols = project_rows[-1].find_all("td")
@@ -193,14 +174,14 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
         self.assertContains(resp, "govuk-table")
 
         soup = BeautifulSoup(resp.content, features="html.parser")
-
+        # print(resp.content)
         # Check that there is 1 table
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 1
 
-        # Check that all the subtotal hierachy_rows exist
+        # Check that  the total hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
-        assert len(table_rows) == 4
+        assert len(table_rows) == 3
 
         self.check_negative_value_formatted(soup, 6)
 
@@ -225,7 +206,7 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
     def test_view_directory_project_details(self):
         resp = self.factory_get(
             reverse(
-                "expenditure_details_directorate",
+                "project_details_directorate",
                 kwargs={
                     'directorate_code': self.directorate.directorate_code,
                     'project_code': self.project_code,
@@ -240,7 +221,7 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
     def test_view_group_project_details(self):
         resp = self.factory_get(
             reverse(
-                "expenditure_details_group",
+                "project_details_group",
                 kwargs={
                     'group_code': self.group.group_code,
                     'project_code': self.expenditure_id,

@@ -267,6 +267,8 @@ project_details_directorate_columns = {
 }
 project_details_costcentre_columns = {
     FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
+    COST_CENTRE_NAME: "Cost Centre description",
+    COST_CENTRE_CODE: "code",
 }
 
 project_details_sub_total = [
@@ -308,15 +310,8 @@ project_details_hierarchy_sub_total_column = [
     GROUP_NAME,
     DIRECTORATE_NAME,
     COST_CENTRE_NAME,
-    FORECAST_EXPENDITURE_TYPE_NAME,
+    COST_CENTRE_NAME,
 ]
-
-
-
-
-
-
-
 
 
 DEFAULT_PIVOT_COLUMNS = {
