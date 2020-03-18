@@ -16,13 +16,27 @@ forecast_figure_cols = [
     year_to_date_header,
     forecast_total_header,
     variance_header,
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Adj1',
+    'Adj2',
+    'Adj3',
 ]
 
 
 @register.filter()
 def is_forecast_figure(_, column):
-    if str(column) in FinancialPeriod.financial_period_info.period_display_list() \
-            or str(column) in forecast_figure_cols:
+    if str(column) in forecast_figure_cols:
         return True
 
     return False
