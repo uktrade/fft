@@ -156,10 +156,10 @@ class ForecastMultiTableMixin(MultiTableMixin):
                 hierarchy_data)
 
         self.tables = [
-            # hierarchy_table,
-            # programme_table,
+            hierarchy_table,
+            programme_table,
             expenditure_table,
-            # project_table,
+            project_table,
         ]
         return self.tables
 

@@ -16,7 +16,8 @@ from django.utils.html import format_html
 from django.urls import reverse
 
 class ForecastLinkCol(tables.Column):
-    # pass
+    # Because of the subtotals in the columns, it is not possible to use linkify
+    # So the html is generated here.
     # If the row_type has a value, the row is a total row, so don't create the link
     def render(self, value, record):
         if record['row_type']!= '':
