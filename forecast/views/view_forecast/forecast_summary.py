@@ -147,6 +147,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             expenditure_table,
             project_table,
         ]
+
         return self.tables
 
 

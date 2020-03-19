@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "simple_history",
     "axes",
+    "adv_cache_tag",
 ]
 
 ROOT_URLCONF = "config.urls"
