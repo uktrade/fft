@@ -43,6 +43,12 @@ from forecast.views.view_forecast.programme_details import (
     DirectorateProgrammeDetailsView,
     GroupProgrammeDetailsView,
 )
+from forecast.views.view_forecast.project_details import (
+    CostCentreProjectDetailsView,
+    DITProjectDetailsView,
+    DirectorateProjectDetailsView,
+    GroupProjectDetailsView,
+)
 
 
 urlpatterns = [
@@ -124,6 +130,32 @@ urlpatterns = [
         "view/directorate-programme/<directorate_code>/<programme_code>/<forecast_expenditure_type>/",  # noqa
         DirectorateProgrammeDetailsView.as_view(),
         name="programme_details_directorate",
+    ),
+
+    path(
+        "dit-project/<project_code>/",
+        DITProjectDetailsView.as_view(),
+        name="project_details_dit",
+    ),
+
+    path(
+        "group-project/<group_code>/<project_code>/",
+        GroupProjectDetailsView.as_view(),
+        name="project_details_group",
+    ),
+
+    #  directorate-project/10907T/310530/6/
+    path(
+        "directorate-project/<directorate_code>/<project_code>/",
+        DirectorateProjectDetailsView.as_view(),
+        name="project_details_directorate",
+    ),
+
+    #  directorate-project/10907T/310530/6/
+    path(
+        "cost-centre_project/<cost_centre_code>/<project_code>/",
+        CostCentreProjectDetailsView.as_view(),
+        name="project_details_costcentre",
     ),
 
     path(

@@ -2,7 +2,11 @@
 from django import forms
 from django.forms import Select
 
-from chartofaccountDIT.models import ExpenditureCategory, ProgrammeCode
+from chartofaccountDIT.models import (
+    ExpenditureCategory,
+    ProgrammeCode,
+    ProjectCode,
+)
 
 
 class ExpenditureTypeForm(forms.Form):
@@ -25,6 +29,20 @@ class ProgrammeForm(forms.Form):
         widget=Select(),
     )
     programme_code.widget.attrs.update(
+        {
+            "class": "govuk-select",
+        }
+    )
+
+
+class ProjectForm(forms.Form):
+    project_code = forms.ModelChoiceField(
+        queryset=ProjectCode.objects.filter(
+            active=True,
+        ),
+        widget=Select(),
+    )
+    project_code.widget.attrs.update(
         {
             "class": "govuk-select",
         }

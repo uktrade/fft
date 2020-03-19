@@ -30,6 +30,7 @@ from forecast.utils.query_fields import (
     BUDGET_TYPE,
     FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
+    PROJECT_CODE,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -53,6 +54,7 @@ from forecast.utils.query_fields import (
     programme_order_list,
     programme_sub_total,
     project_columns,
+    project_detail_view,
     project_display_sub_total_column,
     project_order_list,
     project_sub_total,
@@ -125,7 +127,12 @@ class ForecastMultiTableMixin(MultiTableMixin):
                                                   expenditure_columns,
                                                   expenditure_data)
         expenditure_table.attrs['caption'] = "Expenditure report"
-        project_table = ForecastSubTotalTable(project_columns, project_data)
+        # use   # noqa to avoid random flake8 errors for underindent/overindent
+        project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
+                                                  [PROJECT_CODE],
+                                                  filter_code,
+                                                  project_columns,
+                                                  project_data)  # noqa
         project_table.attrs['caption'] = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:

@@ -20,35 +20,7 @@ class ForecastLinkCol(tables.Column):
         return ""
 
 
-class ForecastFigureCol(tables.Column):
-    # display 0 for null value instead of a dash
-    default = 0
-    tot_value = 0
-
-    def display_value(self, value):
-        return value
-
-    def render(self, value):
-        if type(value) == str:
-            value = 0
-        v = value or 0
-        self.tot_value += v
-        return self.display_value(v)
-
-    def value(self, record, value):
-        return float(value or 0)
-
-    def __init__(self, show_footer, *args, **kwargs):
-        self.show_footer = show_footer
-        super().__init__(*args, **kwargs)
-        if show_footer:
-            self.render_footer = self.proto_render_footer
-
-    def proto_render_footer(self, bound_column, table):
-        return self.display_value(self.tot_value)
-
-
-class SummingMonthFooterCol(ForecastFigureCol):
+class SummingMonthCol(tables.Column):
     """It expects a list of month as first argument.
     Used to calculate and display year to date, full year, etc"""
 
@@ -58,9 +30,11 @@ class SummingMonthFooterCol(ForecastFigureCol):
         )
         return val or 0
 
+    def display_value(self, value):
+        return value
+
     def render(self, value, record):
         val = self.calc_value(record)
-        self.tot_value += val
         return self.display_value(val)
 
     def value(self, record, value):
@@ -72,7 +46,7 @@ class SummingMonthFooterCol(ForecastFigureCol):
         super().__init__(*args, **kwargs)
 
 
-class SubtractCol(ForecastFigureCol):
+class SubtractCol(tables.Column):
     """Used to display the difference between the figures in two columns"""
 
     def calc_value(self, table):
@@ -80,6 +54,9 @@ class SubtractCol(ForecastFigureCol):
         b = table.columns.columns[self.col2].current_value
         val = a - b
         return self.display_value(val)
+
+    def display_value(self, value):
+        return value
 
     def render(self, table):
         return self.calc_value(table)
@@ -93,7 +70,7 @@ class SubtractCol(ForecastFigureCol):
         super().__init__(*args, **kwargs)
 
 
-class PercentageCol(ForecastFigureCol):
+class PercentageCol(tables.Column):
     """Used to display the percentage of values in two columns"""
 
     def display_value(self, value):
@@ -119,26 +96,20 @@ class PercentageCol(ForecastFigureCol):
         super().__init__(*args, **kwargs)
 
 
-class ForecastTable(tables.Table):
-    """Define the month columns format and their footer.
+class ForecastSubTotalTable(tables.Table):
+    """Define the month columns format.
     Used every time we need to display a forecast"""
-
-    display_footer = True
     display_view_details = False
 
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
-            (
-                "Budget",
-                ForecastFigureCol(self.display_footer, budget_header, empty_values=()),
-            )
+            ("Budget",
+             tables.Column(budget_header, empty_values=()))
         ]
         # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
         for month in FinancialPeriod.financial_period_info.month_display_list():
-            cols.append(
-                (month, ForecastFigureCol(self.display_footer, month, empty_values=()),)
-            )
+            cols.append((month, tables.Column(month, empty_values=()), ))
 
         self.base_columns.update(OrderedDict(cols))
 
@@ -166,23 +137,18 @@ class ForecastTable(tables.Table):
         if adj_list:
             for adj in adj_list:
                 extra_column_to_display.extend(
-                    [
-                        (
-                            adj,
-                            ForecastFigureCol(
-                                self.display_footer, adj, empty_values=()
-                            ),
-                        )
-                    ]
+                    [(
+                        adj,
+                        tables.Column(adj, empty_values=()),
+                    )]
                 )
 
         extra_column_to_display.extend(
             [
                 (
                     "year_total",
-                    SummingMonthFooterCol(
+                    SummingMonthCol(
                         FinancialPeriod.financial_period_info.period_display_list(),
-                        self.display_footer,
                         forecast_total_header,
                         empty_values=(),
                     ),
@@ -192,7 +158,6 @@ class ForecastTable(tables.Table):
                     SubtractCol(
                         "Budget",
                         "year_total",
-                        self.display_footer,
                         variance_header,
                         empty_values=(),
                     ),
@@ -202,16 +167,14 @@ class ForecastTable(tables.Table):
                     PercentageCol(
                         "spend",
                         "Budget",
-                        self.display_footer,
                         variance_percentage_header,
-                        empty_values=(),
+                        empty_values=()
                     ),
                 ),
                 (
                     "year_to_date",
-                    SummingMonthFooterCol(
+                    SummingMonthCol(
                         actual_month_list,
-                        self.display_footer,
                         year_to_date_header,
                         empty_values=(),
                     ),
@@ -221,9 +184,8 @@ class ForecastTable(tables.Table):
                     PercentageCol(
                         "year_to_date",
                         "Budget",
-                        self.display_footer,
                         budget_spent_percentage_header,
-                        empty_values=(),
+                        empty_values=()
                     ),
                 ),
             ]
@@ -255,15 +217,8 @@ class ForecastTable(tables.Table):
             "a": {"class": "govuk-link"},
         }
         orderable = False
-        row_attrs = {"class": "govuk-table__row"}
-
-
-class ForecastSubTotalTable(ForecastTable, tables.Table):
-    display_footer = False
-
-    class Meta(ForecastTable.Meta):
         row_attrs = {
-            "class": lambda record: "govuk-table__row {}".format(record["row_type"])
+            "class": lambda record: "govuk-table__row {}".format(record["row_type"]),
         }
 
 

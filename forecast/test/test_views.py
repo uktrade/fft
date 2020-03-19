@@ -538,10 +538,10 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
         first_project_cols = project_rows[1].find_all("td")
-        assert first_project_cols[1].get_text().strip() == \
+        assert first_project_cols[2].get_text().strip() == \
             self.project_obj.project_description
-        assert first_project_cols[2].get_text().strip() == self.project_obj.project_code
-        assert first_project_cols[3].get_text().strip() == format_forecast_figure(
+        assert first_project_cols[3].get_text().strip() == self.project_obj.project_code
+        assert first_project_cols[4].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
