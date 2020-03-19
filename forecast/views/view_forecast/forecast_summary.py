@@ -27,11 +27,13 @@ from forecast.tables import (
 )
 from forecast.utils.query_fields import (
     BUDGET_CATEGORY_ID,
+    BUDGET_CATEGORY_NAME,
     BUDGET_TYPE,
     FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
     PROGRAMME_NAME,
     PROJECT_CODE,
+    PROJECT_NAME,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -49,6 +51,7 @@ from forecast.utils.query_fields import (
     hierarchy_sub_total_column,
     hierarchy_view,
     hierarchy_view_code,
+    hierarchy_view_link_column,
     programme_columns,
     programme_detail_view,
     programme_display_sub_total_column,
@@ -122,37 +125,40 @@ class ForecastMultiTableMixin(MultiTableMixin):
             )
 
         programme_table.attrs['caption'] = "Control total report"
-        # expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
-        #                                           [BUDGET_CATEGORY_ID, BUDGET_TYPE],
-        #                                           filter_code,
-        #                                           expenditure_columns,
-        #                                           expenditure_data)
-        # expenditure_table.attrs['caption'] = "Expenditure report"
+        expenditure_table = ForecastWithLinkTable(BUDGET_CATEGORY_NAME,
+                                                  expenditure_view[self.hierarchy_type],
+                                                  [BUDGET_CATEGORY_ID, BUDGET_TYPE],
+                                                  filter_code,
+                                                  expenditure_columns,
+                                                  expenditure_data)
+        expenditure_table.attrs['caption'] = "Expenditure report"
         # use   # noqa to avoid random flake8 errors for underindent/overindent
-        # project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
-        #                                           [PROJECT_CODE],
-        #                                           filter_code,
-        #                                           project_columns,
-        #                                           project_data)  # noqa
-        # project_table.attrs['caption'] = "Project report"
-        #
-        # if self.hierarchy_type == SHOW_COSTCENTRE:
-        #     hierarchy_table = ForecastSubTotalTable(
-        #         hierarchy_columns[self.hierarchy_type],
-        #         hierarchy_data
-        #     )
-        # else:
-        #     hierarchy_table = ForecastWithLinkTable(
-        #         hierarchy_view[self.hierarchy_type],
-        #         hierarchy_view_code[self.hierarchy_type],
-        #         '',
-        #         hierarchy_columns[self.hierarchy_type],
-        #         hierarchy_data)
+        project_table = ForecastWithLinkTable(  PROJECT_NAME,
+                                                project_detail_view[self.hierarchy_type],
+                                                [PROJECT_CODE],
+                                                filter_code,
+                                                project_columns,
+                                                project_data)  # noqa
+        project_table.attrs['caption'] = "Project report"
+
+        if self.hierarchy_type == SHOW_COSTCENTRE:
+            hierarchy_table = ForecastSubTotalTable(
+                hierarchy_columns[self.hierarchy_type],
+                hierarchy_data
+            )
+        else:
+            hierarchy_table = ForecastWithLinkTable(
+                hierarchy_view_link_column[self.hierarchy_type],
+                hierarchy_view[self.hierarchy_type],
+                hierarchy_view_code[self.hierarchy_type],
+                '',
+                hierarchy_columns[self.hierarchy_type],
+                hierarchy_data)
 
         self.tables = [
             # hierarchy_table,
-            programme_table,
-            # expenditure_table,
+            # programme_table,
+            expenditure_table,
             # project_table,
         ]
         return self.tables

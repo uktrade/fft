@@ -12,13 +12,19 @@ from forecast.utils.view_header_definition import (
     year_to_date_header,
 )
 
+from django.utils.html import format_html
+from django.urls import reverse
 
 class ForecastLinkCol(tables.Column):
-    pass
-    # def render(self, value):
-    #     if f"{value}".strip():
-    #         return "View"
-    #     return ""
+    # pass
+    # If the row_type has a value, the row is a total row, so don't create the link
+    def render(self, value, record):
+        if record['row_type']!= '':
+            return value
+        else:
+            args = [record.get(v,v) for v in self.link_args]
+            url = reverse(self.viewname, args=args)
+            return format_html('<a href="{}">{}</a>', url, value)
 
 
 class SummingMonthCol(tables.Column):
@@ -230,23 +236,23 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
 
     def __init__(self, column_name, viewname, arg_link, code="", column_dict={}, *args, **kwargs):
 
-        self.link_args = []
+        link_args = []
         if code:
-            self.link_args.append(code)
-
-        for item in arg_link:
-            self.link_args.append(tables.A(item))
-
-        # Find the column to be linked
+            link_args.append(code)
+        # Save the name of the columns, so we can find it when
+        # processing the columns in ForecastSubTotalTable
         self.column_name = column_name
-        self.viewname = viewname
+        # Find the column to be linked
+        for item in arg_link:
+            link_args.append(tables.A(item))
+
         self.link_col = ForecastLinkCol(
                        column_dict.get(column_name),
                        column_name,
                        attrs = {"class": "govuk-link"},
-                       linkify = {"viewname": viewname,
-                        "args": self.link_args, },
                         )
+        self.link_col.viewname = viewname
+        self.link_col.link_args = link_args
 
         super().__init__(column_dict, *args, **kwargs)
 

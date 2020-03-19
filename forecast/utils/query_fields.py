@@ -87,7 +87,7 @@ programme_sub_total = [
     BUDGET_TYPE,
     FORECAST_EXPENDITURE_TYPE_DESCRIPTION,
 ]
-programme_display_sub_total_column = PROGRAMME_NAME
+programme_display_sub_total_column = PROGRAMME_CODE
 
 programme_detail_view = [
     'programme_details_dit',
@@ -125,7 +125,7 @@ project_order_list = [
 project_sub_total = [
     BUDGET_TYPE,
 ]
-project_display_sub_total_column = PROJECT_NAME
+project_display_sub_total_column = PROJECT_CODE
 
 project_detail_view = [
     'project_details_dit',
@@ -150,9 +150,15 @@ hierarchy_columns = [
 ]
 
 hierarchy_sub_total_column = [
+    GROUP_CODE,
+    DIRECTORATE_CODE,
+    COST_CENTRE_CODE,
+    COST_CENTRE_CODE,
+]
+
+hierarchy_view_link_column = [
     GROUP_NAME,
     DIRECTORATE_NAME,
-    COST_CENTRE_NAME,
     COST_CENTRE_NAME,
 ]
 
