@@ -497,7 +497,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-    def check_programme_table(self, table, prog_index=2):
+    def check_programme_table(self, table, prog_index=1):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[1].find_all("td")
         assert first_prog_cols[prog_index].get_text().strip() == \
@@ -520,7 +520,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         expenditure_rows = table.find_all("tr")
         first_expenditure_cols = expenditure_rows[1].find_all("td")
         assert (first_expenditure_cols[1].get_text().strip() == '—')
-        assert first_expenditure_cols[3].get_text().strip() == format_forecast_figure(
+        assert first_expenditure_cols[2].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
@@ -538,10 +538,10 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
         first_project_cols = project_rows[1].find_all("td")
-        assert first_project_cols[2].get_text().strip() == \
+        assert first_project_cols[1].get_text().strip() == \
             self.project_obj.project_description
-        assert first_project_cols[3].get_text().strip() == self.project_obj.project_code
-        assert first_project_cols[4].get_text().strip() == format_forecast_figure(
+        assert first_project_cols[2].get_text().strip() == self.project_obj.project_code
+        assert first_project_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
@@ -559,11 +559,12 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
     def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[1].find_all("td")
-        assert first_hierarchy_cols[2 + offset].get_text().strip() == \
+        assert first_hierarchy_cols[1 + offset].get_text().strip() == \
             hierarchy_element
-        assert first_hierarchy_cols[4 + offset].get_text().strip() == \
+        budget_col = 3 + offset
+        assert first_hierarchy_cols[budget_col].get_text().strip() == \
             format_forecast_figure(self.budget / 100)
-        assert first_hierarchy_cols[5 + offset].get_text().strip() == \
+        assert first_hierarchy_cols[budget_col + 1].get_text().strip() == \
             format_forecast_figure(self.amount_apr / 100)
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
@@ -609,7 +610,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre.cost_centre_name, -1)
+                                   self.cost_centre.cost_centre_name, 0)
         # Check that the second table displays the programme and the correct totals
         # The programme table in the cost centre does not show the 'View'
         # so the programme is displayed in a different column
