@@ -116,12 +116,13 @@ class ForecastMultiTableMixin(MultiTableMixin):
         if self.hierarchy_type == SHOW_COSTCENTRE:
             programme_table = ForecastSubTotalTable(programme_columns, programme_data)
         else:
+            # use   # noqa to avoid random flake8 errors for underindent/overindent
             programme_table = ForecastWithLinkTable(PROGRAMME_NAME,
-                programme_detail_view[self.hierarchy_type],
-                [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_NAME],
-                filter_code,
-                programme_columns,
-                programme_data
+                        programme_detail_view[self.hierarchy_type], # noqa
+                        [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_NAME], # noqa
+                        filter_code,
+                        programme_columns,
+                        programme_data
             )
 
         programme_table.attrs['caption'] = "Control total report"
@@ -130,15 +131,16 @@ class ForecastMultiTableMixin(MultiTableMixin):
                                                   [BUDGET_CATEGORY_ID, BUDGET_TYPE],
                                                   filter_code,
                                                   expenditure_columns,
-                                                  expenditure_data)
+                                                  expenditure_data
+                                                  )
         expenditure_table.attrs['caption'] = "Expenditure report"
         # use   # noqa to avoid random flake8 errors for underindent/overindent
-        project_table = ForecastWithLinkTable(  PROJECT_NAME,
-                                                project_detail_view[self.hierarchy_type],
-                                                [PROJECT_CODE],
-                                                filter_code,
-                                                project_columns,
-                                                project_data)  # noqa
+        project_table = ForecastWithLinkTable(PROJECT_NAME,
+                                            project_detail_view[self.hierarchy_type],
+                                            [PROJECT_CODE],
+                                            filter_code,
+                                            project_columns,
+                                            project_data)  # noqa
         project_table.attrs['caption'] = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:
