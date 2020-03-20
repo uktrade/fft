@@ -158,7 +158,6 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
         self.assertContains(resp, "govuk-table")
 
         soup = BeautifulSoup(resp.content, features="html.parser")
-        # print(resp.content)
         # Check that there is 1 table
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 1

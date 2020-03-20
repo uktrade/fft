@@ -1,6 +1,5 @@
 from django import template
 
-from forecast.models import FinancialPeriod
 from forecast.utils.view_header_definition import (
     budget_header,
     budget_spent_percentage_header,

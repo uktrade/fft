@@ -1,6 +1,7 @@
 {% extends "wide_content.html" %}
 {% load render_table from django_tables2 %}
 {% load django_bootstrap_breadcrumbs %}
+{% load adv_cache %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -35,11 +36,13 @@
             </form>
         </div>
     </div>
-    {% for table in tables %}
-        <div class="tables-container cc-forecast-table">
-            {% render_table table %}
-        </div>
-    {% endfor %}
+    {% cache None view.cost_centre.cost_centre_code %}
+        {% for table in tables %}
+            <div class="tables-container cc-forecast-table">
+                {% render_table table %}
+            </div>
+        {% endfor %}
+    {% endcache %}
 {% endblock %}
 
 {% block scripts %}

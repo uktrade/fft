@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "simple_history",
     "axes",
+    "adv_cache_tag",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -183,14 +184,25 @@ WEBPACK_LOADER = {
 }
 
 # AWS
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-AWS_REGION = env('AWS_REGION', default='')
+if 'VCAP_SERVICES' in os.environ:
+    services = json.loads(os.getenv('VCAP_SERVICES'))
+    credentials = services['aws-s3-bucket'][0]['credentials']
 
-AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+    AWS_ACCESS_KEY_ID = credentials["aws_access_key_id"]
+    AWS_SECRET_ACCESS_KEY = credentials["aws_secret_access_key"]
+    AWS_REGION = credentials["aws_region"]
+    AWS_S3_REGION_NAME = credentials["aws_region"]
+    AWS_STORAGE_BUCKET_NAME = credentials["bucket_name"]
+else:
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+    AWS_REGION = env('AWS_REGION', default='')
+    AWS_S3_REGION_NAME = 'eu-west-2'
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
-AWS_S3_REGION_NAME = 'eu-west-2'
+
 AWS_DEFAULT_ACL = None
 
 # File storage
