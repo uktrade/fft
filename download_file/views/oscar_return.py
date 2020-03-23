@@ -12,7 +12,7 @@ class DownloadOscarReturnView(TemplateView):
         return super(DownloadOscarReturnView, self).dispatch(request, *args, **kwargs)
 
     def downloaded_files(self):
-        downloaded_files = FileDownload.objects.all().order_by(
-            "-created"
-        )
+        downloaded_files = FileDownload.objects.filter(
+            document_type=FileDownload.OSCAR_RETURN
+        ).order_by("-created")
         return downloaded_files

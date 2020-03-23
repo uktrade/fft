@@ -8,6 +8,7 @@ from forecast.views.edit_forecast import (
     EditLockedView,
     PasteForecastRowsView,
 )
+from forecast.views.export_mi_report_source import export_mi_report
 from forecast.views.export_oscar_return import export_oscar_report
 from forecast.views.upload_file import (
     UploadActualsView,
@@ -208,6 +209,11 @@ urlpatterns = [
         "download_oscar/",
         export_oscar_report,
         name="download_oscar"
+    ),
+    path(
+        "download_mi_report_source/",
+        export_mi_report,
+        name="download_mi_report_source"
     ),
     path(
         "export-expenditure-details/dit/<expenditure_category_id>/<budget_type_id>/",

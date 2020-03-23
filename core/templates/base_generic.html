@@ -129,9 +129,17 @@
                             </a>
                         </li>
                         {% endif %}
+                        {% has_mi_report_download_permission user as has_mi_report_download_permission %}
+                        {% if has_mi_report_download_permission == True %}
+                        <li class="govuk-header__navigation-item {% if request.path == '/download/oscar-return/' %}govuk-header__navigation-item--active{% endif %}">
+                            <a class="govuk-header__link" href="/download_file/download_mi_report/">
+                                Download Source for MI Reports
+                            </a>
+                        </li>
+                        {% endif %}
                         {% has_oscar_download_permission user as has_oscar_download_permission %}
                         {% if has_oscar_download_permission == True %}
-                        <li class="govuk-header__navigation-item {% if request.path == '/download/oscar-return/' %}govuk-header__navigation-item--active{% endif %}">
+                        <li class="govuk-header__navigation-item {% if request.path == '/download/mi-report/' %}govuk-header__navigation-item--active{% endif %}">
                             <a class="govuk-header__link" href="/download_file/download_oscar_report/">
                                 Download OSCAR Return
                             </a>

@@ -399,3 +399,12 @@ EDIT_FORECAST_DOWNLOAD_ORDER = [
     BUDGET_TYPE_EDIT_ORDER,
     NAC_CODE,
 ]
+
+MI_REPORT_DOWNLOAD_COLUMNS = {
+    COST_CENTRE_CODE: "Cost Centre code",
+    NAC_CODE: 'Natural Account code',
+    PROGRAMME_CODE: 'Programme code',
+    ANALYSIS1_CODE: 'Contract Code',
+    ANALYSIS2_CODE: 'Market Code',
+    PROJECT_CODE: 'Project Code',
+}
