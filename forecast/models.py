@@ -785,6 +785,7 @@ class OSCARReturn(models.Model):
         db_table = "forecast_oscarreturn"
         ordering = ["sub_segment_code"]
 
+
 """
 
             DROP VIEW if exists forecast_forecast_budget_view ;

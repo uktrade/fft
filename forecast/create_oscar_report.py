@@ -1,6 +1,5 @@
-from core.utils import today_string
-
 from core.exportutils import export_to_excel
+from core.utils import today_string
 
 from forecast.models import OSCARReturn
 
