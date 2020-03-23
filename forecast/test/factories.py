@@ -11,6 +11,7 @@ from costcentre.test.factories import CostCentreFactory
 
 from forecast.models import (
     BudgetMonthlyFigure,
+    FinancialCode,
     FinancialPeriod,
     ForecastEditLock,
     ForecastMonthlyFigure,
@@ -28,24 +29,40 @@ class FinancialPeriodFactory(factory.DjangoModelFactory):
     period_calendar_code = 4
 
 
+class FinancialCodeFactory(factory.DjangoModelFactory):
+    programme = factory.SubFactory(ProgrammeCodeFactory)
+    cost_centre = factory.SubFactory(CostCentreFactory)
+    natural_account_code = factory.SubFactory(NaturalCodeFactory)
+
+    class Meta:
+        model = FinancialCode
+
+
+class BudgetMonthlyFigureFactory(factory.DjangoModelFactory):
+    financial_code = factory.SubFactory(FinancialCodeFactory)
+    financial_year = factory.Iterator(FinancialYear.objects.all())
+    financial_period = factory.Iterator(FinancialPeriod.objects.all())
+
+
 class BudgetFactory(factory.DjangoModelFactory):
-    """
-    Define Budget Factory
-    """
 
     class Meta:
         model = BudgetMonthlyFigure
 
 
-class MonthlyFigureFactory(factory.DjangoModelFactory):
-    """
-    Define MonthlyFigure Factory
-    """
+class FinancialCodeFactory(factory.DjangoModelFactory):
     programme = factory.SubFactory(ProgrammeCodeFactory)
     cost_centre = factory.SubFactory(CostCentreFactory)
     natural_account_code = factory.SubFactory(NaturalCodeFactory)
+
+    class Meta:
+        model = FinancialCode
+
+
+class MonthlyFigureFactory(factory.DjangoModelFactory):
     financial_year = factory.Iterator(FinancialYear.objects.all())
     financial_period = factory.Iterator(FinancialPeriod.objects.all())
+    financial_code = factory.SubFactory(FinancialCodeFactory)
     amount = 123456
 
     class Meta:

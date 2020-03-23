@@ -3,18 +3,18 @@ import django_tables2 as tables
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
+    ArchivedAnalysis1,
+    ArchivedAnalysis2,
+    ArchivedCommercialCategory,
+    ArchivedExpenditureCategory,
+    ArchivedFCOMapping,
+    ArchivedInterEntity,
+    ArchivedNaturalCode,
+    ArchivedProgrammeCode,
+    ArchivedProjectCode,
     CommercialCategory,
     ExpenditureCategory,
     FCOMapping,
-    HistoricalAnalysis1,
-    HistoricalAnalysis2,
-    HistoricalCommercialCategory,
-    HistoricalExpenditureCategory,
-    HistoricalFCOMapping,
-    HistoricalInterEntity,
-    HistoricalNaturalCode,
-    HistoricalProgrammeCode,
-    HistoricalProjectCode,
     InterEntity,
     NaturalCode,
     ProgrammeCode,
@@ -45,7 +45,7 @@ class HistoricalProgrammeTable(ProgrammeTable):
     inherit the class"""
 
     class Meta(ProgrammeTable.Meta):
-        model = HistoricalProgrammeCode
+        model = ArchivedProgrammeCode
 
 
 class NaturalCodeTable(FadminTable):
@@ -84,7 +84,7 @@ class NaturalCodeTable(FadminTable):
 
 class HistoricalNaturalCodeTable(FadminTable):
     class Meta(FadminTable.Meta):
-        model = HistoricalNaturalCode
+        model = ArchivedNaturalCode
         fields = (
             "economic_budget_code",
             "NAC_category",
@@ -114,7 +114,7 @@ class ExpenditureCategoryTable(FadminTable):
 
 class HistoricalExpenditureCategoryTable(FadminTable):
     class Meta(FadminTable.Meta):
-        model = HistoricalExpenditureCategory
+        model = ArchivedExpenditureCategory
         fields = (
             "NAC_category",
             "grouping_description",
@@ -135,7 +135,7 @@ class HistoricalCommercialCategoryTable(CommercialCategoryTable):
     inherit the class"""
 
     class Meta(CommercialCategoryTable.Meta):
-        model = HistoricalCommercialCategory
+        model = ArchivedCommercialCategory
 
 
 class Analysis2Table(FadminTable):
@@ -150,7 +150,7 @@ class HistoricalAnalysis2Table(Analysis2Table):
     inherit the class"""
 
     class Meta(Analysis2Table.Meta):
-        model = HistoricalAnalysis2
+        model = ArchivedAnalysis2
 
 
 class Analysis1Table(FadminTable):
@@ -172,7 +172,7 @@ class HistoricalAnalysis1Table(Analysis1Table):
     inherit the class"""
 
     class Meta(Analysis1Table.Meta):
-        model = HistoricalAnalysis1
+        model = ArchivedAnalysis1
 
 
 class InterEntityTable(FadminTable):
@@ -203,7 +203,7 @@ class HistoricalInterEntityTable(InterEntityTable):
     )
 
     class Meta(InterEntityTable.Meta):
-        model = HistoricalInterEntity
+        model = ArchivedInterEntity
 
 
 class ProjectTable(FadminTable):
@@ -218,7 +218,7 @@ class HistoricalProjectTable(ProjectTable):
      inherit the class"""
 
     class Meta(ProjectTable.Meta):
-        model = HistoricalProjectCode
+        model = ArchivedProjectCode
 
 
 class FCOMappingTable(FadminTable):
@@ -281,4 +281,4 @@ class HistoricalFCOMappingTable(FCOMappingTable):
     )
 
     class Meta(FCOMappingTable.Meta):
-        model = HistoricalFCOMapping
+        model = ArchivedFCOMapping

@@ -1,24 +1,41 @@
-import calendar
-
 from django import template
 
+from forecast.utils.view_header_definition import (
+    budget_header,
+    budget_spent_percentage_header,
+    forecast_total_header,
+    variance_header,
+    variance_percentage_header,
+    year_to_date_header,
+)
 register = template.Library()
 
 forecast_figure_cols = [
-    "Budget",
-    "Adjustment 1",
-    "Adjustment 2",
-    "Adjustment 3",
-    "Year to Date",
-    "Year Total",
-    "Underspend (Overspend)",
-    "%",
+    budget_header,
+    year_to_date_header,
+    forecast_total_header,
+    variance_header,
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Adj1',
+    'Adj2',
+    'Adj3',
 ]
 
 
 @register.filter()
 def is_forecast_figure(_, column):
-    if str(column) in calendar.month_name or str(column) in forecast_figure_cols:
+    if str(column) in forecast_figure_cols:
         return True
 
     return False
@@ -26,7 +43,7 @@ def is_forecast_figure(_, column):
 
 @register.filter()
 def format_figure(value, column):
-    if str(column) in calendar.month_name or str(column) in forecast_figure_cols:
+    if is_forecast_figure(value, column):
         try:
             figure_value = int(value) / 100
             return f'{round(figure_value):,d}'
@@ -34,3 +51,20 @@ def format_figure(value, column):
             pass
 
     return value
+
+
+@register.filter()
+def is_percentage_figure(_, column):
+    if str(column) == variance_percentage_header \
+            or str(column) == budget_spent_percentage_header:
+        return True
+
+    return False
+
+
+@register.filter()
+def is_negative_percentage_figure(value, column):
+    if str(column) == variance_percentage_header and value[:1] == '-':
+        return True
+
+    return False

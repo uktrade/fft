@@ -1,14 +1,14 @@
 from django.db import models
 
 from core.metamodels import (
-    LogChangeModel,
-    TimeStampedModel,
+    BaseModel,
+    IsActiveModel,
 )
 
 from payroll.models import DITPeople, Grade
 
 
-class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
+class GiftAndHospitalityClassification(IsActiveModel):
     GIFT = "Gift"
     HOSPITALITY = "Hospitality"
     GF_TYPE = ((GIFT, "Gift"), (HOSPITALITY, "Hospitality"))
@@ -28,7 +28,7 @@ class GiftAndHospitalityClassification(TimeStampedModel, LogChangeModel):
         ordering = ["sequence_no"]
 
 
-class GiftAndHospitalityCategory(TimeStampedModel, LogChangeModel):
+class GiftAndHospitalityCategory(IsActiveModel):
     gif_hospitality_category = models.CharField("Category", max_length=100)
     sequence_no = models.IntegerField(null=True)
 
@@ -49,7 +49,7 @@ OFFER_CHOICE = (
 )
 
 
-class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
+class GiftAndHospitalityCompany(IsActiveModel):
     gif_hospitality_company = models.CharField("Company", max_length=100)
     sequence_no = models.IntegerField(null=True)
 
@@ -64,7 +64,7 @@ class GiftAndHospitalityCompany(TimeStampedModel, LogChangeModel):
     # Gift and Hospitality
 
 
-class GiftAndHospitality(LogChangeModel):
+class GiftAndHospitality(BaseModel):
     """Model used to keep information of gifts/hospitality received/offered by DIT people.
     On purpose, I am not using foreign key for people and group,
     because we need to have a record of details

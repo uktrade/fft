@@ -1,8 +1,11 @@
 from bs4 import BeautifulSoup
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
-from django.test import TestCase
+from django.test import (
+    TestCase,
+)
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -31,10 +34,14 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.factories import (
+    FinancialCodeFactory,
+)
 from forecast.test.test_utils import create_budget
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
+    EditForecastFigureView,
     EditForecastView,
 )
 from forecast.views.view_forecast.expenditure_details import (
@@ -56,9 +63,9 @@ from forecast.views.view_forecast.programme_details import (
 )
 
 
-TOTAL_COLUMN = -3
-SPEND_TO_DATE_COLUMN = -4
-UNDERSPEND_COLUMN = -2
+TOTAL_COLUMN = -5
+SPEND_TO_DATE_COLUMN = -2
+UNDERSPEND_COLUMN = -4
 
 HIERARCHY_TABLE_INDEX = 0
 PROGRAMME_TABLE_INDEX = 1
@@ -490,85 +497,85 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check directorate is shown
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
-    def check_programme_table(self, table, prog_index=2):
+    def check_programme_table(self, table, prog_index=1):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[1].find_all("td")
-        assert first_prog_cols[prog_index].get_text() == \
+        assert first_prog_cols[prog_index].get_text().strip() == \
             self.programme_obj.programme_description
-        assert first_prog_cols[prog_index + 1].get_text() == \
+        assert first_prog_cols[prog_index + 1].get_text().strip() == \
             self.programme_obj.programme_code
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_programme_cols[TOTAL_COLUMN].get_text() == \
+        assert last_programme_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_programme_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_programme_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_expenditure_table(self, table):
         expenditure_rows = table.find_all("tr")
         first_expenditure_cols = expenditure_rows[1].find_all("td")
-        assert (first_expenditure_cols[1].get_text() == '—')
-        assert first_expenditure_cols[3].get_text() == format_forecast_figure(
+        assert (first_expenditure_cols[1].get_text().strip() == '—')
+        assert first_expenditure_cols[2].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_expenditure_cols[TOTAL_COLUMN].get_text() == \
+        assert last_expenditure_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
         first_project_cols = project_rows[1].find_all("td")
-        assert first_project_cols[1].get_text() == self.project_obj.project_description
-        assert first_project_cols[2].get_text() == self.project_obj.project_code
-        assert first_project_cols[3].get_text() == format_forecast_figure(
+        assert first_project_cols[1].get_text().strip() == \
+            self.project_obj.project_description
+        assert first_project_cols[2].get_text().strip() == self.project_obj.project_code
+        assert first_project_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_project_cols[TOTAL_COLUMN].get_text() == \
+        assert last_project_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_project_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_project_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
-    def check_hierarchy_table(self, table, hierarchy_element):
+    def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[1].find_all("td")
-        assert first_hierarchy_cols[1].get_text() == hierarchy_element
-
-        assert first_hierarchy_cols[3].get_text() == format_forecast_figure(
-            self.budget / 100
-        )
-        assert first_hierarchy_cols[4].get_text() == format_forecast_figure(
-            self.amount_apr / 100
-        )
+        assert first_hierarchy_cols[1 + offset].get_text().strip() == \
+            hierarchy_element
+        budget_col = 3 + offset
+        assert first_hierarchy_cols[budget_col].get_text().strip() == \
+            format_forecast_figure(self.budget / 100)
+        assert first_hierarchy_cols[budget_col + 1].get_text().strip() == \
+            format_forecast_figure(self.amount_apr / 100)
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_hierarchy_cols[TOTAL_COLUMN].get_text() == \
+        assert last_hierarchy_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup):
@@ -603,7 +610,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre.cost_centre_name)
+                                   self.cost_centre.cost_centre_name, 0)
         # Check that the second table displays the programme and the correct totals
         # The programme table in the cost centre does not show the 'View'
         # so the programme is displayed in a different column
@@ -644,7 +651,8 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre.cost_centre_name)
+                                   self.cost_centre.cost_centre_name, 0)
+
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -683,7 +691,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.directorate.directorate_name)
+                                   self.directorate.directorate_name, 0)
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -716,7 +724,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_negative_value_formatted(soup)
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.group_name)
+                                   self.group_name, 0)
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -834,22 +842,23 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
         first_nac_cols = nac_rows[1].find_all("td")
-        assert (first_nac_cols[0].get_text() ==
-                self.nac2_obj.natural_account_code_description)
+        assert (
+            first_nac_cols[0].get_text().strip() == self.nac2_obj.natural_account_code_description  # noqa
+        )
 
-        assert first_nac_cols[3].get_text() == format_forecast_figure(
+        assert first_nac_cols[3].get_text().strip() == format_forecast_figure(
             self.budget / 100
         )
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[TOTAL_COLUMN].get_text() == \
+        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_nac_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_nac_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
@@ -1037,13 +1046,13 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
 
         last_details_cols = details_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_details_cols[TOTAL_COLUMN].get_text() == \
+        assert last_details_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_details_cols[UNDERSPEND_COLUMN].get_text() == \
+        assert last_details_cols[UNDERSPEND_COLUMN].get_text().strip() == \
             format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text() == \
+        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
             format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
@@ -1167,7 +1176,7 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
         )
 
         assert resp.status_code == 302
-        assert resp.url == "/forecast/editing-locked/"
+        assert resp.url == "/forecast/edit/editing-locked/"
 
         # Add edit whilst lock permission
         can_edit_whilst_locked = Permission.objects.get(
@@ -1185,3 +1194,88 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
+
+
+class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.nac_code = 999999
+        self.cost_centre_code = 888812
+
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(
+            natural_account_code=self.nac_code,
+        )
+
+        self.cost_centre_code = 888812
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+        FinancialCodeFactory.create(
+            programme=self.programme,
+            cost_centre=self.cost_centre,
+            natural_account_code=self.nac,
+        )
+
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+    def test_edit_forecast_max_amount(self):
+        update_forecast_figure_url = reverse(
+            "update_forecast_figure",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        amount = 999999999999999999
+        assert amount > settings.MAX_FORECAST_FIGURE
+
+        resp = self.factory_post(
+            update_forecast_figure_url, {
+                "natural_account_code": self.nac_code,
+                "programme_code": self.programme.programme_code,
+                "month": 5,
+                "amount": amount,
+            },
+            EditForecastFigureView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        assert ForecastMonthlyFigure.objects.first().amount == settings.MAX_FORECAST_FIGURE  # noqa
+
+    def test_edit_forecast_min_amount(self):
+        update_forecast_figure_url = reverse(
+            "update_forecast_figure",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        amount = -999999999999999999
+        assert amount < settings.MIN_FORECAST_FIGURE
+
+        resp = self.factory_post(
+            update_forecast_figure_url, {
+                "natural_account_code": self.nac_code,
+                "programme_code": self.programme.programme_code,
+                "month": 5,
+                "amount": amount,
+            },
+            EditForecastFigureView,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        assert ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE  # noqa

@@ -41,13 +41,21 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         read_only=True,
         source='forecast_forecastmonthlyfigures',
     )
+    programme_description = serializers.SerializerMethodField(
+        'get_programme_description',
+    )
+    nac_description = serializers.SerializerMethodField(
+        'get_nac_description',
+    )
 
     class Meta:
         model = FinancialCode
         fields = [
+            'programme_description',
+            'nac_description',
+            'natural_account_code',
             'programme',
             'cost_centre',
-            'natural_account_code',
             'analysis1_code',
             'analysis2_code',
             'project_code',
@@ -55,6 +63,12 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             'budget',
         ]
         read_only_fields = fields
+
+    def get_programme_description(self, obj):
+        return obj.programme.programme_description
+
+    def get_nac_description(self, obj):
+        return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
         budget = BudgetMonthlyFigure.objects.values(

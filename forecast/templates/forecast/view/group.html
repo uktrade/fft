@@ -1,34 +1,27 @@
 {% extends "wide_content.html" %}
 {% load render_table from django_tables2 %}
 {% load django_bootstrap_breadcrumbs %}
+{% load adv_cache %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb "DIT" "forecast_dit" %}
     {% breadcrumb view.group.group_name "" %}
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_group' view.group.group_code %}">Download</a>
-        </div>
-
-        <div class="govuk-grid-column-one-third directorate-cc-form">
-            <ul class="govuk-list">
-                {% for directorate in view.directorates %}
-                <li>
-                    <a class="govuk-link" href="{% url 'forecast_directorate' directorate.directorate_code %}">{{ directorate }}</a>
-                </li>
-                {% endfor %}
-            </ul>
+    <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_group' view.group.group_code %} ">Download raw data</a>
         </div>
     </div>
 
-    {% for table in tables %}
-        <div class="tables-container">
-            {% render_table table %}
-        </div>
-    {% endfor %}
+    {% cache None group_forecast_tables %}
+        {% for table in tables %}
+            <div class="tables-container forecast-table-{{ forloop.counter }}">
+                {% render_table table %}
+            </div>
+        {% endfor %}
+    {% endcache %}
 {% endblock %}

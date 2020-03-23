@@ -1,0 +1,14 @@
+{% extends "forecast/view/project_details/project_details_base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb view.cost_centre.directorate.group.group_name "forecast_group" view.cost_centre.directorate.group_id %}
+    {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code %}
+    {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code %}
+    {% breadcrumb view.project_code.project_description "project_details_cost_centre"  %}
+{% endblock %}
+
+{% block view_hierarchy_title %}
+    <h1 class="govuk-heading-xl">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
+{% endblock %}

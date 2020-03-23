@@ -9,7 +9,7 @@
 
 {% block content %}
     <div class="app-pane__content">
-        <h1 class="govuk-heading-xl">{{ section_name }}</h1>
+        <h1 class="govuk-heading-l">{{ section_name }}</h1>
         <form method="post" enctype="multipart/form-data" action="">
             {% csrf_token %}
             {% include "core/govt_uk_form.html" %}

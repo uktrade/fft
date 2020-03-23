@@ -28,7 +28,7 @@ const TotalOverspendUnderspend = ({rowIndex, id}) => {
     }
 
     return (
-        <td id={id} className={"govuk-table__cell total-figure forecast-month-cell not-editable " + negative }>{formatValue(total / 100)}</td>
+        <td id={id} className={"govuk-table__cell total-figure forecast-month-cell not-editable figure-cell " + negative }>{formatValue(total / 100)}</td>
     );
 }
 

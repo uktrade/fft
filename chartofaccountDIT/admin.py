@@ -40,19 +40,19 @@ from chartofaccountDIT.import_csv import (
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
+    ArchivedAnalysis1,
+    ArchivedAnalysis2,
+    ArchivedCommercialCategory,
+    ArchivedExpenditureCategory,
+    ArchivedFCOMapping,
+    ArchivedInterEntity,
+    ArchivedNaturalCode,
+    ArchivedProgrammeCode,
+    ArchivedProjectCode,
     BudgetType,
     CommercialCategory,
     ExpenditureCategory,
     FCOMapping,
-    HistoricalAnalysis1,
-    HistoricalAnalysis2,
-    HistoricalCommercialCategory,
-    HistoricalExpenditureCategory,
-    HistoricalFCOMapping,
-    HistoricalInterEntity,
-    HistoricalNaturalCode,
-    HistoricalProgrammeCode,
-    HistoricalProjectCode,
     InterEntity,
     InterEntityL1,
     NACCategory,
@@ -653,14 +653,14 @@ admin.site.register(ProjectCode, ProjectCodeAdmin)
 admin.site.register(FCOMapping, FCOMappingAdmin)
 admin.site.register(OperatingDeliveryCategory, OpDelCategoryAdmin)
 
-admin.site.register(HistoricalAnalysis1, HistoricalAnalysis1Admin)
-admin.site.register(HistoricalAnalysis2, HistoricalAnalysis2Admin)
-admin.site.register(HistoricalExpenditureCategory, HistoricalExpenditureCategoryAdmin)
-admin.site.register(HistoricalCommercialCategory, HistoricalCommercialCategoryAdmin)
-admin.site.register(HistoricalNaturalCode, HistoricalNaturalCodeAdmin)
-admin.site.register(HistoricalProgrammeCode, HistoricalProgrammeAdmin)
-admin.site.register(HistoricalInterEntity, HistoricalInterEntityAdmin)
-admin.site.register(HistoricalProjectCode, HistoricalProjectCodeAdmin)
-admin.site.register(HistoricalFCOMapping, HistoricalFCOMappingAdmin)
+admin.site.register(ArchivedAnalysis1, HistoricalAnalysis1Admin)
+admin.site.register(ArchivedAnalysis2, HistoricalAnalysis2Admin)
+admin.site.register(ArchivedExpenditureCategory, HistoricalExpenditureCategoryAdmin)
+admin.site.register(ArchivedCommercialCategory, HistoricalCommercialCategoryAdmin)
+admin.site.register(ArchivedNaturalCode, HistoricalNaturalCodeAdmin)
+admin.site.register(ArchivedProgrammeCode, HistoricalProgrammeAdmin)
+admin.site.register(ArchivedInterEntity, HistoricalInterEntityAdmin)
+admin.site.register(ArchivedProjectCode, HistoricalProjectCodeAdmin)
+admin.site.register(ArchivedFCOMapping, HistoricalFCOMappingAdmin)
 
 admin.site.register(BudgetType)

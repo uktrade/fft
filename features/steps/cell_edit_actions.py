@@ -90,6 +90,15 @@ def step_impl(context):
     action_chains = ActionChains(context.browser)
     action_chains.key_down(Keys.TAB).perform()
 
+    # Wait for update process to execute
+    WebDriverWait(context.browser, 5000).until(
+        ec.presence_of_element_located((By.ID, "id_0_6_updating"))
+    )
+
+    WebDriverWait(context.browser, 5000).until(
+        ec.presence_of_element_located((By.ID, "id_0_6"))
+    )
+
 
 @then(u'the value is changed and has the correct format')
 def step_impl(context):

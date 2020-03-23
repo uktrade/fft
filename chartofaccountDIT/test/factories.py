@@ -3,19 +3,19 @@ import factory
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
+    ArchivedAnalysis1,
+    ArchivedAnalysis2,
+    ArchivedCommercialCategory,
+    ArchivedExpenditureCategory,
+    ArchivedFCOMapping,
+    ArchivedInterEntity,
+    ArchivedNaturalCode,
+    ArchivedProgrammeCode,
+    ArchivedProjectCode,
     BudgetType,
     CommercialCategory,
     ExpenditureCategory,
     FCOMapping,
-    HistoricalAnalysis1,
-    HistoricalAnalysis2,
-    HistoricalCommercialCategory,
-    HistoricalExpenditureCategory,
-    HistoricalFCOMapping,
-    HistoricalInterEntity,
-    HistoricalNaturalCode,
-    HistoricalProgrammeCode,
-    HistoricalProjectCode,
     InterEntity,
     InterEntityL1,
     NACCategory,
@@ -39,11 +39,11 @@ class Analysis1Factory(factory.DjangoModelFactory):
 
 class HistoricalAnalysis1Factory(factory.DjangoModelFactory):
     """
-    Define HistoricalAnalysis1 Factory
+    Define ArchivedAnalysis1 Factory
     """
 
     class Meta:
-        model = HistoricalAnalysis1
+        model = ArchivedAnalysis1
 
 
 class Analysis2Factory(factory.DjangoModelFactory):
@@ -59,11 +59,11 @@ class Analysis2Factory(factory.DjangoModelFactory):
 
 class HistoricalAnalysis2Factory(factory.DjangoModelFactory):
     """
-    Define HistoricalAnalysis2 Factory
+    Define ArchivedAnalysis2 Factory
     """
 
     class Meta:
-        model = HistoricalAnalysis2
+        model = ArchivedAnalysis2
 
 
 class NACCategoryFactory(factory.DjangoModelFactory):
@@ -99,11 +99,11 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
 
 class HistoricalExpenditureCategoryFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalExpenditureCategory Factory
+    Define ArchivedExpenditureCategory Factory
     """
 
     class Meta:
-        model = HistoricalExpenditureCategory
+        model = ArchivedExpenditureCategory
 
 
 class CommercialCategoryFactory(factory.DjangoModelFactory):
@@ -117,11 +117,11 @@ class CommercialCategoryFactory(factory.DjangoModelFactory):
 
 class HistoricalCommercialCategoryFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalCommercialCategory Factory
+    Define ArchivedCommercialCategory Factory
     """
 
     class Meta:
-        model = HistoricalCommercialCategory
+        model = ArchivedCommercialCategory
 
 
 class NaturalCodeFactory(factory.DjangoModelFactory):
@@ -131,6 +131,7 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = NaturalCode
+        django_get_or_create = ('natural_account_code',)
 
     active = True
     natural_account_code = 999999
@@ -139,21 +140,19 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
 
 
 class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
-    """
-    Define HistoricalNaturalCode Factory
-    """
 
     class Meta:
-        model = HistoricalNaturalCode
+        model = ArchivedNaturalCode
 
 
-class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
+class ProgrammeCodeFactory(factory.DjangoModelFactory):
     """
     Define ProgrammeCode Factory
     """
 
     class Meta:
         model = ProgrammeCode
+        django_get_or_create = ('programme_code',)
 
     active = True
     programme_code = "123456"
@@ -163,11 +162,11 @@ class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
 
 class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalProgrammeCode Factory
+    Define ArchivedProgrammeCode Factory
     """
 
     class Meta:
-        model = HistoricalProgrammeCode
+        model = ArchivedProgrammeCode
 
 
 class InterEntityL1Factory(factory.DjangoModelFactory):
@@ -190,11 +189,11 @@ class InterEntityFactory(factory.DjangoModelFactory):
 
 class HistoricalInterEntityFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalInterEntity Factory
+    Define ArchivedInterEntity Factory
     """
 
     class Meta:
-        model = HistoricalInterEntity
+        model = ArchivedInterEntity
 
 
 class ProjectCodeFactory(factory.DjangoModelFactory):
@@ -212,11 +211,11 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
 
 class HistoricalProjectCodeFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalProjectCode Factory
+    Define ArchivedProjectCode Factory
     """
 
     class Meta:
-        model = HistoricalProjectCode
+        model = ArchivedProjectCode
 
 
 class FCOMappingFactory(factory.DjangoModelFactory):
@@ -230,8 +229,8 @@ class FCOMappingFactory(factory.DjangoModelFactory):
 
 class HistoricalFCOMappingFactory(factory.DjangoModelFactory):
     """
-    Define HistoricalFCOMapping Factory
+    Define ArchivedFCOMapping Factory
     """
 
     class Meta:
-        model = HistoricalFCOMapping
+        model = ArchivedFCOMapping

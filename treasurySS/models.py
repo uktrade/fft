@@ -2,11 +2,11 @@ from django.db import models
 
 from chartofaccountDIT.models import BudgetType
 
-from core.metamodels import TimeStampedModel
+from core.metamodels import IsActiveModel
 
 
 # Treasury data
-class SegmentGrandParent(TimeStampedModel):
+class SegmentGrandParent(IsActiveModel):
     segment_grand_parent_code = models.CharField(
         max_length=8, primary_key=True, verbose_name="segment grand parent code"
     )
@@ -24,7 +24,7 @@ class SegmentGrandParent(TimeStampedModel):
         return self.segment_grand_parent_code
 
 
-class SegmentParent(TimeStampedModel):
+class SegmentParent(IsActiveModel):
     segment_parent_code = models.CharField(
         max_length=8, primary_key=True, verbose_name="segment parent code"
     )
@@ -39,7 +39,7 @@ class SegmentParent(TimeStampedModel):
         return "{} - {}".format(self.segment_parent_code, self.segment_parent_long_name)
 
 
-class Segment(TimeStampedModel):
+class Segment(IsActiveModel):
     segment_code = models.CharField(
         max_length=8, primary_key=True, verbose_name="segment code"
     )
@@ -52,7 +52,7 @@ class Segment(TimeStampedModel):
         return self.segment_long_name
 
 
-class EstimateRow(TimeStampedModel):
+class EstimateRow(IsActiveModel):
     estimate_row_code = models.CharField(
         max_length=8, primary_key=True, verbose_name="estimates row code"
     )
@@ -65,7 +65,7 @@ class EstimateRow(TimeStampedModel):
         return self.estimate_row_code
 
 
-class SubSegment(TimeStampedModel):
+class SubSegment(IsActiveModel):
     VOTED = "VT"
     NON_VOTED = "NVT"
     UNDEF = "N/A"

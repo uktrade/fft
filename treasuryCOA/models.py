@@ -2,13 +2,13 @@ from django.db import models
 
 from core.metamodels import (
     ArchivedModel,
-    TimeStampedModel,
+    IsActiveModel,
 )
 
 
 # Account codes from Treasury
 # the following table could be normalised more, but I don't think it matters
-class L1Account(TimeStampedModel):
+class L1Account(IsActiveModel):
     account_l1_code = models.BigIntegerField(
         primary_key=True,
         verbose_name="account l1 code"
@@ -34,7 +34,7 @@ class L1Account(TimeStampedModel):
         return str(self.account_l1_code) + " - " + str(self.account_l1_long_name)
 
 
-class L2Account(TimeStampedModel):
+class L2Account(IsActiveModel):
     account_l2_code = models.BigIntegerField(
         primary_key=True,
         verbose_name="account l2 code",
@@ -57,7 +57,7 @@ class L2Account(TimeStampedModel):
         return str(self.account_l2_code) + " - " + str(self.account_l2_long_name)
 
 
-class L3Account(TimeStampedModel):
+class L3Account(IsActiveModel):
     account_l3_code = models.BigIntegerField(
         verbose_name="account l3 code", primary_key=True
     )
@@ -75,7 +75,7 @@ class L3Account(TimeStampedModel):
         return str(self.account_l3_code) + " - " + str(self.account_l3_long_name)
 
 
-class L4Account(TimeStampedModel):
+class L4Account(IsActiveModel):
     account_l4_code = models.BigIntegerField(
         verbose_name="account l4 code", primary_key=True
     )
@@ -141,7 +141,7 @@ class L5AccountAbstract(models.Model):
         return str(self.account_l5_code) + " - " + str(self.account_l5_long_name)
 
 
-class L5Account(L5AccountAbstract, TimeStampedModel):
+class L5Account(L5AccountAbstract, IsActiveModel):
     account_l4 = models.ForeignKey(
         L4Account, verbose_name="account l4 code", on_delete=models.PROTECT
     )

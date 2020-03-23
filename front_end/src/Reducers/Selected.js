@@ -14,10 +14,11 @@ const selected = createSlice({
         },
         SELECT_ALL: (state, action) => {
             state.all = true
+            state.selectedRow = -1
         },
         UNSELECT_ALL: (state, action) => {
-            state.selectedRow = -1
             state.all = false
+            state.selectedRow = -1
         },
     }
 });

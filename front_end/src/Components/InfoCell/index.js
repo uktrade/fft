@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { useSelector } from 'react-redux'
 
-const InfoCell = ({rowIndex, cellKey, children, ignoreSelection}) => {
+const InfoCell = ({rowIndex, cellKey, children, className, ignoreSelection}) => {
     const selectedRow = useSelector(state => state.selected.selectedRow)
     const allSelected = useSelector(state => state.selected.all)
-    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols)
+    let changed = false
 
-    let isHidden = false
+    const checkValue = (hiddenCols) => {
+        if (hiddenCols.indexOf(cellKey) > -1) {
+            changed = true
+            return false
+        } else if (changed) {
+            changed = false
+            return false
+        }
 
-    if (cellKey) {
-        isHidden = hiddenCols.indexOf(cellKey) > -1
+        return true
     }
+
+    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols, checkValue)
 
     const isSelected = () => {
         if (ignoreSelection)
@@ -24,13 +32,7 @@ const InfoCell = ({rowIndex, cellKey, children, ignoreSelection}) => {
     }
 
     const getClasses = () => {
-        let hidden = ''
-
-        if (isHidden) {
-            hidden = ' hidden'
-        }
-
-        return "govuk-table__cell forecast-month-cell not-editable " + (isSelected() ? 'selected' : '') + hidden 
+        return "govuk-table__cell forecast-month-cell not-editable " + className + " " + (isSelected() ? 'selected ' : '') + (hiddenCols.indexOf(cellKey) > -1 ? 'hidden' : '')
     }
 
     return (
@@ -40,4 +42,13 @@ const InfoCell = ({rowIndex, cellKey, children, ignoreSelection}) => {
     );
 }
 
-export default InfoCell
+
+const comparisonFn = function(prevProps, nextProps) {
+    return (
+        prevProps.selectedRow === nextProps.selectedRow &&
+        prevProps.allSelected === nextProps.allSelected
+    )
+};
+
+export default memo(InfoCell, comparisonFn);
+

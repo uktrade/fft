@@ -1,8 +1,7 @@
-import React, {Fragment, useState, useEffect } from 'react'
+import React, {Fragment, useState, useEffect, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
-    getCellId,
     postData,
     processForecastData,
     formatValue
@@ -10,19 +9,47 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
+
+    let editing = false
+
+    const checkValue = (val) => {
+        if (cellId === val) {
+            editing = true
+            return false
+        } else if (editing) {
+            // Turn off editing
+            editing = false
+            return false
+        }
+
+        return true
+    }
+
+    let selectChanged = false
+
+    const checkSelectRow = (selectedRow) => {
+        if (selectedRow === rowIndex) {
+            selectChanged = true
+            return false
+        } else if (selectChanged) {
+            selectChanged = false
+            return false
+        }
+
+        return true
+    }
+
     const dispatch = useDispatch();
 
     const cells = useSelector(state => state.allCells.cells);
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
-    const editCellId = useSelector(state => state.edit.cellId);
+    const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
     const [isUpdating, setIsUpdating] = useState(false)
 
-    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow);
     const allSelected = useSelector(state => state.selected.all);
-
-    const cellId = getCellId(rowIndex, cellKey)
 
     let isEditable = true
 
@@ -70,7 +97,7 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
         }
 
         if (!cell)
-            return "govuk-table__cell forecast-month-cell " + (isSelected() ? 'selected' : '') + editable
+            return "govuk-table__cell forecast-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
 
         let negative = ''
 
@@ -78,7 +105,7 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
             negative = " negative"
         }
 
-        return "govuk-table__cell forecast-month-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
+        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
     }
 
     const setContentState = (value) => {
@@ -93,13 +120,29 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
 
 
     const updateValue = () => {
-        let newAmount = parseInt(value * 100)
+        let newAmount = value * 100
 
-        if (cell && newAmount === cell.amount) {
+        if (newAmount > Number.MAX_SAFE_INTEGER) {
+            newAmount = Number.MAX_SAFE_INTEGER
+        }
+
+        if (newAmount < Number.MIN_SAFE_INTEGER) {
+            newAmount = Number.MIN_SAFE_INTEGER
+        }
+
+        let intAmount = parseInt(newAmount)
+
+        if (cell && intAmount === cell.amount) {
+            return
+        }
+
+        if (!cell && intAmount === 0) {
             return
         }
 
         setIsUpdating(true)
+
+        let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
 
         let payload = new FormData()
         payload.append("natural_account_code", cells[rowIndex]["natural_account_code"].value)
@@ -107,9 +150,9 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
         payload.append("project_code", cells[rowIndex]["project_code"].value)
         payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value)
         payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value)
-
+        payload.append("csrfmiddlewaretoken", crsfToken)
         payload.append("month", cellKey)
-        payload.append("amount", newAmount)
+        payload.append("amount", intAmount)
 
         postData(
             `/forecast/update-forecast/${window.cost_centre}/`,
@@ -134,6 +177,11 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
 
     const handleBlur = (event) => {
         updateValue()
+        dispatch(
+            SET_EDITING_CELL({
+                "cellId": null
+            })
+        )
     }
 
     const handleKeyDown = (event) => {
@@ -145,12 +193,6 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
     const handleKeyPress = (event) => {
         if(event.key === 'Enter') {
             updateValue()
-            dispatch(
-                SET_EDITING_CELL({
-                    "cellId": null
-                })
-            );
-
             event.preventDefault()
         }
     }
@@ -180,6 +222,34 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
         return false
     }
 
+    const getCellContent = () => {
+        if (isCellUpdating()) {
+            return (
+                <Fragment>
+                    <span className="updating">UPDATING...</span>
+                </Fragment>
+            )
+        } else {
+            if (editCellId === cellId) {
+                return (
+                    <input
+                        ref={input => input && input.focus() }
+                        id={cellId + "_input"}
+                        className="cell-input"
+                        type="text"
+                        value={value}
+                        onChange={e => setContentState(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        onKeyDown={handleKeyDown}
+                        onBlur={handleBlur}
+                    />
+                )
+            } else {
+                return <Fragment>{formatValue(getValue())}</Fragment>
+            }
+        }
+    }
+
     return (
         <Fragment>
             <td
@@ -195,32 +265,16 @@ const TableCell = ({rowIndex, cellKey, sheetUpdating}) => {
                     }
                 }}
             >
-                {isCellUpdating() ? (
-                    <Fragment>
-                        <span className="updating">UPDATING...</span>
-                    </Fragment>
-                ) : (
-                    <Fragment>
-                        {editCellId === cellId ? (
-                            <input
-                                ref={input => input && input.focus() }
-                                id={cellId + "_input"}
-                                className="cell-input"
-                                type="text"
-                                value={value}
-                                onChange={e => setContentState(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                onKeyDown={handleKeyDown}
-                                onBlur={handleBlur}
-                            />
-                        ) : (
-                            <Fragment>{formatValue(getValue())}</Fragment>
-                        )}
-                    </Fragment>
-                )}
+                {getCellContent()}
             </td>
         </Fragment>
     );
 }
 
-export default TableCell
+const comparisonFn = function(prevProps, nextProps) {
+    return (
+        prevProps.sheetUpdating === nextProps.sheetUpdating
+    )
+};
+
+export default memo(TableCell, comparisonFn);

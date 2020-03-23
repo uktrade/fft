@@ -80,6 +80,8 @@ INSTALLED_APPS = [
     "reversion",
     "rest_framework",
     "simple_history",
+    "axes",
+    "adv_cache_tag",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -95,6 +97,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django_settings_export.settings_export",
             ]
         },
     }
@@ -140,7 +143,6 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-
 # Remove extra details in the label
 # for the filter fields, it does
 # not says 'contains' or similar
@@ -181,25 +183,39 @@ WEBPACK_LOADER = {
     }
 }
 
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+# AWS
+if 'VCAP_SERVICES' in os.environ:
+    services = json.loads(os.getenv('VCAP_SERVICES'))
+    credentials = services['aws-s3-bucket'][0]['credentials']
 
-AWS_STORAGE_BUCKET_NAME = "fido-dev"  # Need to check this with GDS bucket
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME  # Need to check this with GDS bucket
-AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}  # Need to check this with GDS bucket
-AWS_S3_REGION_NAME = 'eu-west-2'  # Need to check this with GDS bucket
-#
-AWS_DEFAULT_ACL = None  # Need to check this with GDS bucket
-#
+    AWS_ACCESS_KEY_ID = credentials["aws_access_key_id"]
+    AWS_SECRET_ACCESS_KEY = credentials["aws_secret_access_key"]
+    AWS_REGION = credentials["aws_region"]
+    AWS_S3_REGION_NAME = credentials["aws_region"]
+    AWS_STORAGE_BUCKET_NAME = credentials["bucket_name"]
+else:
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+    AWS_REGION = env('AWS_REGION', default='')
+    AWS_S3_REGION_NAME = 'eu-west-2'
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+AWS_DEFAULT_ACL = None
+
+# File storage
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
 if 'VCAP_SERVICES' in os.environ:
     services = json.loads(os.getenv('VCAP_SERVICES'))
     credentials = services['redis'][0]['credentials']
-    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=CERT_REQUIRED".format(
+    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
         credentials['password'],
         credentials['host'],
-        credentials['port']
+        credentials['port'],
     )
 else:
     REDIS_URL = env("CELERY_BROKER_URL", default=None)
@@ -218,8 +234,46 @@ STATICFILES_FINDERS = [
     "sass_processor.finders.CssFinder",
 ]
 
-NUM_META_COLS = 5
+NUM_META_COLS = 8
 
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_URL = env("CLAM_AV_URL", default=None)
+GTM_CODE = env("GTM_CODE", default=None)
+
+SETTINGS_EXPORT = [
+    'DEBUG',
+    'GTM_CODE',
+]
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "core.no_cache_middleware.NoCacheMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
+    "axes.middleware.AxesMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend",
+    "axes.backends.AxesBackend",
+]
+
+AXES_LOGIN_FAILURE_LIMIT = 5
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# s3chunkuploader
+FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
+CLEAN_FILE_NAME = True
+
+# Max and min for forecast entry values
+MAX_FORECAST_FIGURE = 100000000
+MIN_FORECAST_FIGURE = -100000000

@@ -4,6 +4,7 @@ import time
 import pyperclip
 
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
@@ -18,6 +19,9 @@ from django.contrib.auth import (
 )
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.backends.db import SessionStore
+from django.core.cache import cache
+
+from webdriver_manager.chrome import ChromeDriverManager
 
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
@@ -51,7 +55,10 @@ TEST_COST_CENTRE_CODE = 888812
 
 
 def set_up_test_objects(context):
-    nac_codes = [111111, 999999, ]
+    # Clear forecast data cache
+    cache.clear()
+
+    nac_codes = [111111, 999999]
     analysis_1_code = "1111111"
     analysis_2_code = "2222222"
     project_code_value = "3000"
@@ -88,7 +95,7 @@ def set_up_test_objects(context):
         nac_code = NaturalCodeFactory.create(
             natural_account_code=nac_code,
         )
-        for financial_period in range(1, 13):
+        for financial_period in range(1, 14):
             financial_month = financial_period + 3
 
             if financial_month > 12:
@@ -235,7 +242,16 @@ def before_feature(context, feature):
         )
         context.browser.implicitly_wait(5)
     else:
-        context.browser = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.headless = True
+
+        context.browser = webdriver.Chrome(
+            ChromeDriverManager().install(),
+            options=chrome_options,
+        )
+        context.browser.implicitly_wait(5)
 
 
 def after_feature(context, feature):

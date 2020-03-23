@@ -32,6 +32,12 @@ You now need to elevate your user permissions in order to access the admin tool.
 docker-compose run fido python manage.py elevate_sso_user_permissions
 ```
 
+### Compile the front end
+```
+docker-compose run fido python manage.py compilescss
+collectstatic
+```
+
 
 ### Environment variables
 
@@ -52,12 +58,10 @@ To enable the forecast edit interface:
 npm start
 ```
 
-
 ### Running docker-compose run with port access
 ```
 docker-compose run --service-ports
 ```
-
 
 ### Important notes on design
 

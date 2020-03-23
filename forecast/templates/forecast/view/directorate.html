@@ -1,35 +1,28 @@
 {% extends "wide_content.html" %}
 {% load render_table from django_tables2 %}
 {% load django_bootstrap_breadcrumbs %}
+{% load adv_cache %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb "DIT" "forecast_dit" %}
     {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id %}
     {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code %}
 {% endblock %}
 
 {% block content %}
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}</h1>
-            <a class="govuk-button govuk-button--secondary" href="{% url 'export_forecast_data_directorate' view.directorate.directorate_code %}">Download</a>
-      </div>
-
-      <div class="govuk-grid-column-one-third directorate-cc-form">
-          <h2 class="govuk-heading-s">Cost centres in directorate</h2>
-        <form method="post" action ="">
-            {% csrf_token %}
-            {% include "core/govt_uk_form.html" with form=view.cost_centres_form %}
-            <input type="submit" value="Choose" class="govuk-button" data-module="govuk-button"/>
-        </form>
-      </div>
+    <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}</h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_directorate' view.directorate.directorate_code %} ">Download raw data</a>
+        </div>
     </div>
 
-    {% for table in tables %}
-        <div class="tables-container">
-            {% render_table table %}
-        </div>
-    {% endfor %}
+    {% cache None directorate_forecast_tables %}
+        {% for table in tables %}
+            <div class="tables-container forecast-table-{{ forloop.counter }}">
+                {% render_table table %}
+            </div>
+        {% endfor %}
+    {% endcache %}
 {% endblock %}

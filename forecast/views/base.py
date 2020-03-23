@@ -20,8 +20,8 @@ def can_edit_forecast(user):
     forecast_edit_lock = ForecastEditLock.objects.get()
 
     if (
-        forecast_edit_lock.locked and
-        not user.has_perm(
+        forecast_edit_lock.locked and not
+        user.has_perm(
             "forecast.can_edit_whilst_locked",
         )
     ):

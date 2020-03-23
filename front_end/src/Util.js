@@ -89,6 +89,8 @@ export const processForecastData = (forecastData) => {
         "cost_centre",
         "natural_account_code",
         "programme",
+        "nac_description",
+        "programme_description",
         "project_code",
         "budget",
     ]

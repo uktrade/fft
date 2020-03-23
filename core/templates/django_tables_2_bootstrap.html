@@ -29,7 +29,11 @@
                 <tr {{ row.attrs.as_html }}>
                     {% for column, cell in row.items %}
 
-                        <td {{ column.attrs.td.as_html }}>{% if cell|is_forecast_figure:column %}<span class="forecast-month">{% endif %}{% if cell < 0 %}<span class="negative">{% endif %}{% if column.localize == None %}{{ cell|format_figure:column }}{% else %}{% if column.localize %}{{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}{% if cell < 0 %}</span>{% endif %}{% if cell|is_forecast_figure:column %}</span>{% endif %}</td>
+                        <td {{ column.attrs.td.as_html }}>{% if cell|is_forecast_figure:column %}<span class="forecast-month">{% endif %}
+                            {% if cell < 0 %}<span class="negative">{% endif %}{% if cell|is_negative_percentage_figure:column %}<span class="negative">{% endif %}
+                            {% if column.localize == None %}{{ cell|format_figure:column }}{% else %}{% if column.localize %}{{ cell|localize }}{% else %}{{ cell|unlocalize }}{% endif %}{% endif %}
+                            {% if cell < 0 %}</span>{% endif %}{% if cell|is_negative_percentage_figure:column %}</span>{% endif %}
+                            {% if cell|is_forecast_figure:column %}</span>{% endif %}</td>
                     {% endfor %}
                 </tr>
                 {% endblock table.tbody.row %}

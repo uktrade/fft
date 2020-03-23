@@ -14,27 +14,12 @@ from core.exportutils import (
 from core.utils import today_string
 
 from forecast.models import FinancialPeriod
-
-EDIT_BUDGET_COL = "F"
-VIEW_BUDGET_COL = "X"
-MONTH_HEADERS = [
-    'Budget',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-    'Jan',
-    'Feb',
-    'Mar',
-    'Year to Date',
-    'Year Total',
-    'Underspend/Overspend',
-]
+from forecast.utils.view_header_definition import (
+    budget_header,
+    forecast_total_header,
+    variance_header,
+    year_to_date_header,
+)
 
 
 def format_numbers(ws, row, start):
@@ -47,7 +32,7 @@ def unlock_forecast_cells(ws, row, start, end):
         ws[f'{get_column_letter(c)}{row}'].protection = Protection(locked=False)
 
 
-def forecast_query_iterator(queryset, keys_dict, columns_dict):
+def forecast_query_iterator(queryset, keys_dict, columns_dict, period_list):
     for obj in queryset:
         row = []
         for field in keys_dict.keys():
@@ -56,18 +41,8 @@ def forecast_query_iterator(queryset, keys_dict, columns_dict):
                 val = ""
             row.append(val)
         row.append(obj['Budget'] / 100)
-        row.append(obj['Apr'] / 100)
-        row.append(obj['May'] / 100)
-        row.append(obj['Jun'] / 100)
-        row.append(obj['Jul'] / 100)
-        row.append(obj['Aug'] / 100)
-        row.append(obj['Sep'] / 100)
-        row.append(obj['Oct'] / 100)
-        row.append(obj['Nov'] / 100)
-        row.append(obj['Dec'] / 100)
-        row.append(obj['Jan'] / 100)
-        row.append(obj['Feb'] / 100)
-        row.append(obj['Mar'] / 100)
+        for period in period_list:
+            row.append(obj[period] / 100)
         row.append('')
         row.append('')
         row.append('')
@@ -79,9 +54,13 @@ def forecast_query_iterator(queryset, keys_dict, columns_dict):
         yield row
 
 
-def create_headers(keys_dict, columns_dict):
+def create_headers(keys_dict, columns_dict, period_list):
     k = list(keys_dict.values())
-    k.extend(MONTH_HEADERS)
+    k.append(budget_header)
+    k.extend(period_list)
+    k.append(forecast_total_header)
+    k.append(variance_header)
+    k.append(year_to_date_header)
     k.extend(list(columns_dict.values()))
     return k
 
@@ -96,14 +75,13 @@ def last_actual_cell(col):
 def export_to_excel(queryset,
                     columns_dict,
                     extra_columns_dict,
-                    budget_col,
                     protect,
                     title):
     resp = HttpResponse(content_type=EXCEL_TYPE)
     filename = f'{title}  {today_string()} .xlsx'
     resp["Content-Disposition"] = "attachment; filename=" + filename
     wb = Workbook()
-    ws = wb.get_active_sheet()
+    ws = wb.active
     # Truncate the tab name to the maximum lenght permitted by Excel
     ws.title = f'{title} {today_string()}'[:EXC_TAB_NAME_LEN]
     if protect:
@@ -116,20 +94,30 @@ def export_to_excel(queryset,
         ws.protection.formatRows = False
         ws.protection.formatColumns = False
     row_count = 1
-    budget_index = column_index_from_string(budget_col)
+    period_list = FinancialPeriod.financial_period_info.period_display_list()
+    howmany_periods = len(period_list)
+    header = create_headers(columns_dict, extra_columns_dict, period_list)
+    budget_index = header.index(budget_header) + 1
+    budget_col = get_column_letter(budget_index)
     first_actual_col = get_column_letter(budget_index + 1)
     last_actual_col = last_actual_cell(first_actual_col)
     if last_actual_col:
         first_forecast_index = column_index_from_string(last_actual_col) + 1
     else:
         first_forecast_index = budget_index + 1
-    last_month_index = budget_index + 12
+    last_month_index = budget_index + howmany_periods
     last_month_col = get_column_letter(last_month_index)
-    year_to_date_col = get_column_letter(last_month_index + 1)
-    year_total_col = get_column_letter(last_month_index + 2)
-    over_under_spend_col = get_column_letter(last_month_index + 3)
-    ws.append(create_headers(columns_dict, extra_columns_dict))
-    for data_row in forecast_query_iterator(queryset, columns_dict, extra_columns_dict):
+    year_total_col = get_column_letter(last_month_index + 1)
+    over_under_spend_col = get_column_letter(last_month_index + 2)
+    year_to_date_col = get_column_letter(last_month_index + 3)
+    ws.append(header)
+
+    for data_row in forecast_query_iterator(
+            queryset,
+            columns_dict,
+            extra_columns_dict,
+            period_list
+    ):
         ws.append(data_row)
         row_count += 1
         # Formula for Year To Date. Don't use it if there are no actuals
@@ -155,7 +143,6 @@ def export_query_to_excel(queryset, columns_dict, title):
     return export_to_excel(queryset,
                            columns_dict,
                            {},
-                           VIEW_BUDGET_COL,
                            False,
                            title
                            )
@@ -165,7 +152,6 @@ def export_edit_to_excel(queryset, key_dict, columns_dict, title):
     return export_to_excel(queryset,
                            key_dict,
                            columns_dict,
-                           EDIT_BUDGET_COL,
                            True,
                            title
                            )

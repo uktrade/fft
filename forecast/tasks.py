@@ -1,6 +1,9 @@
 from celery import shared_task
 
-from core.myutils import run_anti_virus
+from core.myutils import (
+    get_s3_file_body,
+    run_anti_virus,
+)
 
 from forecast.import_actuals import upload_trial_balance_report
 from forecast.import_budgets import upload_budget_from_file
@@ -15,14 +18,19 @@ def process_uploaded_file(*args):
     ).order_by('-created').first()
 
     if latest_unprocessed is not None:
-        # Check for viruses
-        print("Unprocessed file: {}".format(latest_unprocessed))
         latest_unprocessed.status = FileUpload.ANTIVIRUS
         latest_unprocessed.save()
 
-        anti_virus_result = run_anti_virus(
-            latest_unprocessed.document_file,
+        # Get file body from S3
+        file_body = get_s3_file_body(
+            latest_unprocessed.document_file.name
         )
+
+        # Check for viruses
+        anti_virus_result = run_anti_virus(
+            file_body,
+        )
+
         if anti_virus_result["malware"]:
             latest_unprocessed.status = FileUpload.ERROR
             latest_unprocessed.user_error_message = "A virus was found in the file"
@@ -31,6 +39,7 @@ def process_uploaded_file(*args):
         else:
             latest_unprocessed.status = FileUpload.PROCESSING
             latest_unprocessed.save()
+
             # Process file here
             if latest_unprocessed.document_type == FileUpload.ACTUALS:
                 success = upload_trial_balance_report(

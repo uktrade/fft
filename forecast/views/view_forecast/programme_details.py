@@ -20,7 +20,7 @@ from costcentre.models import (
 )
 
 from forecast.models import (
-    ForecastBudgetDataView,
+    ForecastingDataView,
 )
 from forecast.tables import (
     ForecastSubTotalTable,
@@ -44,6 +44,9 @@ from forecast.views.base import ForecastViewPermissionMixin
 class ForecastProgrammeDetailsMixin(MultiTableMixin):
     hierarchy_type = -1
     table_pagination = False
+
+    def class_name(self):
+        return "wide-table"
 
     def programme_code(self):
         return ProgrammeCode.objects.get(
@@ -72,7 +75,7 @@ class ForecastProgrammeDetailsMixin(MultiTableMixin):
             pivot_filter[filter_selectors[self.hierarchy_type]] = f"{filter_code}"
 
         columns = programme_details_hierarchy_columns[self.hierarchy_type]
-        programme_details_data = ForecastBudgetDataView.view_data.subtotal_data(
+        programme_details_data = ForecastingDataView.view_data.subtotal_data(
             programme_details_display_sub_total_column,
             programme_details_sub_total,
             columns.keys(),
@@ -99,6 +102,9 @@ class DITProgrammeDetailsView(
     template_name = "forecast/view/programme_details/dit.html"
     hierarchy_type = SHOW_DIT
 
+    def class_name(self):
+        return "wide-table"
+
     def post(self, request, *args, **kwargs):
         programme_code_id = request.POST.get(
             'programme_code',
@@ -112,7 +118,6 @@ class DITProgrammeDetailsView(
                     kwargs={'programme_code': programme_code_id,
                             'forecast_expenditure_type': self.forecast_expenditure_type(),  # noqa
                             }
-
                 )
             )
         else:
