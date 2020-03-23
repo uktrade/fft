@@ -5,7 +5,7 @@ from download_file.models import FileDownload
 
 
 class DownloadOscarReturnView(TemplateView):
-    template_name = "download_file/downloaded_files.html"
+    template_name = "download_file/downloaded_oscar_reports.html"
 
     @has_download_oscar_permission
     def dispatch(self, request, *args, **kwargs):

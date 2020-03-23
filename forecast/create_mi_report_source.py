@@ -3,7 +3,15 @@ from core.utils import today_string
 from core.exportutils import export_to_excel
 
 from forecast.models import ForecastingDataView
-from forecast.utils.query_fields import MI_REPORT_DOWNLOAD_COLUMNS
+from forecast.utils.query_fields import (
+        COST_CENTRE_CODE,
+        NAC_CODE,
+        PROGRAMME_CODE,
+        ANALYSIS1_CODE,
+        ANALYSIS2_CODE,
+        PROJECT_CODE,
+        MI_REPORT_DOWNLOAD_COLUMNS
+)
 
 def export_oscarreport_iterator(queryset):
     yield [
@@ -34,42 +42,42 @@ def export_oscarreport_iterator(queryset):
     for obj in queryset:
         yield [
             "3000",
-            obj.financial_code.cost_centre.cost_centre_code,
-            obj.financial_code.natural_account_code.natural_account_code,
-            obj.financial_code.programme.programme_code,
-            obj.financial_code.analysis1_code.analysis1_code,
-            obj.financial_code.analysis2_code.analysis2_code,
-            obj.project_code.project_code,
-            obj.apr,
-            obj.may,
-            obj.jun,
-            obj.jul,
-            obj.aug,
-            obj.sep,
-            obj.oct,
-            obj.nov,
-            obj.dec,
-            obj.jan,
-            obj.feb,
-            obj.mar,
-            obj.adj1,
-            obj.adj2,
-            obj.adj3,
-            obj.apr +
-            obj.may +
-            obj.jun +
-            obj.jul +
-            obj.aug +
-            obj.sep +
-            obj.oct +
-            obj.nov +
-            obj.dec +
-            obj.jan +
-            obj.feb +
-            obj.mar +
-            obj.adj1 +
-            obj.adj2  +
-            obj.adj3
+            obj[COST_CENTRE_CODE],
+            obj[NAC_CODE],
+            obj[PROGRAMME_CODE],
+            obj[ANALYSIS1_CODE],
+            obj[ANALYSIS2_CODE],
+            obj[PROJECT_CODE],
+            obj['Apr']/100,
+            obj['May']/100,
+            obj['Jun']/100,
+            obj['Jul']/100,
+            obj['Aug']/100,
+            obj['Sep']/100,
+            obj['Oct']/100,
+            obj['Nov']/100,
+            obj['Dec']/100,
+            obj['Jan']/100,
+            obj['Feb']/100,
+            obj['Mar']/100,
+            obj['Adj1']/100,
+            obj['Adj2']/100,
+            obj['Adj3']/100,
+            (obj['Apr'] +
+            obj['May'] +
+            obj['Jun'] +
+            obj['Jul'] +
+            obj['Aug'] +
+            obj['Sep'] +
+            obj['Oct'] +
+            obj['Nov'] +
+            obj['Dec'] +
+            obj['Jan'] +
+            obj['Feb'] +
+            obj['Mar'] +
+            obj['Adj1'] +
+            obj['Adj2'] +
+            obj['Adj3'])/100
         ]
 
 
