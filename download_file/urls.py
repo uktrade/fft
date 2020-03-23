@@ -1,9 +1,9 @@
 from django.urls import path
 
-from download_file.views.view_oscar_report import (
-    UploadedView,
+from download_file.views.view_oscar_return import (
+    DownloadOscarReturnView,
 )
 
 urlpatterns = [
-    path("files/", UploadedView.as_view(), name="uploaded_files"),
+    path("download_oscar_report/", DownloadOscarReturnView.as_view(), name="download_oscar_report"),
 ]
