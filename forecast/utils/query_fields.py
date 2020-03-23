@@ -156,6 +156,12 @@ hierarchy_sub_total_column = [
     COST_CENTRE_NAME,
 ]
 
+hierarchy_view_link_column = [
+    GROUP_NAME,
+    DIRECTORATE_NAME,
+    COST_CENTRE_NAME,
+]
+
 hierarchy_view = [
     'forecast_group',
     'forecast_directorate',

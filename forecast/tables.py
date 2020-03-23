@@ -1,5 +1,8 @@
 from collections import OrderedDict
 
+from django.urls import reverse
+from django.utils.html import format_html
+
 import django_tables2 as tables
 
 from forecast.models import FinancialPeriod
@@ -14,10 +17,16 @@ from forecast.utils.view_header_definition import (
 
 
 class ForecastLinkCol(tables.Column):
-    def render(self, value):
-        if f"{value}".strip():
-            return "View"
-        return ""
+    # Because of the subtotals in the columns, it is not possible to use linkify
+    # So the html is generated here.
+    # If the row_type has a value, the row is a total row, so don't create the link
+    def render(self, value, record):
+        if record['row_type'] != '':
+            return value
+        else:
+            args = [record.get(v, v) for v in self.link_args]
+            url = reverse(self.viewname, args=args)
+            return format_html('<a href="{}">{}</a>', url, value)
 
 
 class SummingMonthCol(tables.Column):
@@ -109,7 +118,7 @@ class ForecastSubTotalTable(tables.Table):
         # Only add the month columns here. If you add the adjustments too,
         # their columns will be displayed even after 'display_figure' field is False
         for month in FinancialPeriod.financial_period_info.month_display_list():
-            cols.append((month, tables.Column(month, empty_values=()), ))
+            cols.append((month, tables.Column(month, empty_values=()),))
 
         self.base_columns.update(OrderedDict(cols))
 
@@ -120,14 +129,17 @@ class ForecastSubTotalTable(tables.Table):
         #  but they are not required
         #  in the displayed table.
         column_dict = {k: v for k, v in column_dict.items() if v != "Hidden"}
-
-        extra_column_to_display = [
-            (k, tables.Column(v)) for (k, v) in column_dict.items()
-        ]
         column_list = list(column_dict.keys())
+
         if self.display_view_details:
-            extra_column_to_display.extend([("Link", self.link_col,)])
-            column_list.insert(0, "Link")
+            extra_column_to_display = [
+                (k, tables.Column(v)) for (k, v) in column_dict.items() if
+                k != self.column_name
+            ]
+            extra_column_to_display.extend([(self.column_name, self.link_col,)])
+        else:
+            extra_column_to_display = [(k, tables.Column(v)) for (k, v) in
+                                       column_dict.items()]
 
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
         # See if Adjustment periods should be displayed.
@@ -225,23 +237,28 @@ class ForecastSubTotalTable(tables.Table):
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
     display_view_details = True
 
-    def __init__(self, viewname, arg_link, code="", *args, **kwargs):
+    def __init__(self, column_name, viewname, arg_link, code="", column_dict={}, *args,
+                 **kwargs):
 
         link_args = []
         if code:
             link_args.append(code)
-
+        # Save the name of the columns, so we can find it when
+        # processing the columns in ForecastSubTotalTable
+        self.column_name = column_name
+        # Find the column to be linked
         for item in arg_link:
             link_args.append(tables.A(item))
 
         self.link_col = ForecastLinkCol(
-            "",
-            arg_link[0],
+            column_dict.get(column_name),
+            column_name,
             attrs={"class": "govuk-link"},
-            linkify={"viewname": viewname, "args": link_args, },
         )
+        self.link_col.viewname = viewname
+        self.link_col.link_args = link_args
 
-        super().__init__(*args, **kwargs)
+        super().__init__(column_dict, *args, **kwargs)
 
     class Meta(ForecastSubTotalTable.Meta):
         pass

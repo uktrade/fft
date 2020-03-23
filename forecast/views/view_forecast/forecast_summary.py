@@ -1,36 +1,31 @@
 from django.http import Http404
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import (
-    reverse,
-)
+from django.shortcuts import reverse
 from django.views.generic.base import TemplateView
 
-from django_tables2 import (
-    MultiTableMixin,
-)
+from django_tables2 import MultiTableMixin
 
-from costcentre.forms import (
-    DirectorateCostCentresForm,
-)
+from costcentre.forms import DirectorateCostCentresForm
 from costcentre.models import (
     CostCentre,
     Directorate,
 )
 from costcentre.models import DepartmentalGroup
 
-from forecast.models import (
-    ForecastingDataView,
-)
+from forecast.models import ForecastingDataView
 from forecast.tables import (
     ForecastSubTotalTable,
     ForecastWithLinkTable,
 )
 from forecast.utils.query_fields import (
     BUDGET_CATEGORY_ID,
+    BUDGET_CATEGORY_NAME,
     BUDGET_TYPE,
     FORECAST_EXPENDITURE_TYPE_NAME,
     PROGRAMME_CODE,
+    PROGRAMME_NAME,
     PROJECT_CODE,
+    PROJECT_NAME,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
@@ -48,6 +43,7 @@ from forecast.utils.query_fields import (
     hierarchy_sub_total_column,
     hierarchy_view,
     hierarchy_view_code,
+    hierarchy_view_link_column,
     programme_columns,
     programme_detail_view,
     programme_display_sub_total_column,
@@ -72,7 +68,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
         """
          Return an array of table instances containing data.
         """
-        filter_code = ''
+        filter_code = ""
         pivot_filter = {}
         arg_name = filter_codes[self.hierarchy_type]
         if arg_name:
@@ -113,40 +109,47 @@ class ForecastMultiTableMixin(MultiTableMixin):
             programme_table = ForecastSubTotalTable(programme_columns, programme_data)
         else:
             programme_table = ForecastWithLinkTable(
+                PROGRAMME_NAME,
                 programme_detail_view[self.hierarchy_type],
                 [PROGRAMME_CODE, FORECAST_EXPENDITURE_TYPE_NAME],
                 filter_code,
                 programme_columns,
-                programme_data
+                programme_data,
             )
 
-        programme_table.attrs['caption'] = "Control total report"
-        expenditure_table = ForecastWithLinkTable(expenditure_view[self.hierarchy_type],
-                                                  [BUDGET_CATEGORY_ID, BUDGET_TYPE],
-                                                  filter_code,
-                                                  expenditure_columns,
-                                                  expenditure_data)
-        expenditure_table.attrs['caption'] = "Expenditure report"
-        # use   # noqa to avoid random flake8 errors for underindent/overindent
-        project_table = ForecastWithLinkTable(project_detail_view[self.hierarchy_type],
-                                                  [PROJECT_CODE],
-                                                  filter_code,
-                                                  project_columns,
-                                                  project_data)  # noqa
-        project_table.attrs['caption'] = "Project report"
+        programme_table.attrs["caption"] = "Control total report"
+        expenditure_table = ForecastWithLinkTable(
+            BUDGET_CATEGORY_NAME,
+            expenditure_view[self.hierarchy_type],
+            [BUDGET_CATEGORY_ID, BUDGET_TYPE],
+            filter_code,
+            expenditure_columns,
+            expenditure_data,
+        )
+        expenditure_table.attrs["caption"] = "Expenditure report"
+        project_table = ForecastWithLinkTable(
+            PROJECT_NAME,
+            project_detail_view[self.hierarchy_type],
+            [PROJECT_CODE],
+            filter_code,
+            project_columns,
+            project_data,
+        )
+        project_table.attrs["caption"] = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:
             hierarchy_table = ForecastSubTotalTable(
-                hierarchy_columns[self.hierarchy_type],
-                hierarchy_data
+                hierarchy_columns[self.hierarchy_type], hierarchy_data
             )
         else:
             hierarchy_table = ForecastWithLinkTable(
+                hierarchy_view_link_column[self.hierarchy_type],
                 hierarchy_view[self.hierarchy_type],
                 hierarchy_view_code[self.hierarchy_type],
-                '',
+                "",
                 hierarchy_columns[self.hierarchy_type],
-                hierarchy_data)
+                hierarchy_data,
+            )
 
         self.tables = [
             hierarchy_table,
@@ -159,9 +162,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
 
 
 class DITView(
-    ForecastViewPermissionMixin,
-    ForecastMultiTableMixin,
-    TemplateView,
+    ForecastViewPermissionMixin, ForecastMultiTableMixin, TemplateView,
 ):
     template_name = "forecast/view/dit.html"
     table_pagination = False
@@ -169,9 +170,7 @@ class DITView(
 
 
 class GroupView(
-    ForecastViewPermissionMixin,
-    ForecastMultiTableMixin,
-    TemplateView,
+    ForecastViewPermissionMixin, ForecastMultiTableMixin, TemplateView,
 ):
     template_name = "forecast/view/group.html"
     table_pagination = False
@@ -179,15 +178,12 @@ class GroupView(
 
     def group(self):
         return DepartmentalGroup.objects.get(
-            group_code=self.kwargs['group_code'],
-            active=True,
+            group_code=self.kwargs["group_code"], active=True,
         )
 
 
 class DirectorateView(
-    ForecastViewPermissionMixin,
-    ForecastMultiTableMixin,
-    TemplateView,
+    ForecastViewPermissionMixin, ForecastMultiTableMixin, TemplateView,
 ):
     template_name = "forecast/view/directorate.html"
     table_pagination = False
@@ -195,20 +191,17 @@ class DirectorateView(
 
     def directorate(self):
         return Directorate.objects.get(
-            directorate_code=self.kwargs['directorate_code'],
-            active=True,
+            directorate_code=self.kwargs["directorate_code"], active=True,
         )
 
     def cost_centres_form(self):
         return DirectorateCostCentresForm(
-            directorate_code=self.kwargs['directorate_code']
+            directorate_code=self.kwargs["directorate_code"]
         )
 
 
 class CostCentreView(
-    ForecastViewPermissionMixin,
-    ForecastMultiTableMixin,
-    TemplateView,
+    ForecastViewPermissionMixin, ForecastMultiTableMixin, TemplateView,
 ):
     template_name = "forecast/view/cost_centre.html"
     table_pagination = False
@@ -227,15 +220,12 @@ class CostCentreView(
         )
 
     def post(self, request, *args, **kwargs):
-        cost_centre_code = request.POST.get(
-            'cost_centre',
-            None,
-        )
+        cost_centre_code = request.POST.get("cost_centre", None,)
         if cost_centre_code:
             return HttpResponseRedirect(
                 reverse(
                     "forecast_cost_centre",
-                    kwargs={'cost_centre_code': cost_centre_code}
+                    kwargs={"cost_centre_code": cost_centre_code},
                 )
             )
         else:
