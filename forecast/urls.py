@@ -8,8 +8,8 @@ from forecast.views.edit_forecast import (
     EditLockedView,
     PasteForecastRowsView,
 )
-from forecast.views.export_mi_report_source import export_mi_report
-from forecast.views.export_oscar_return import export_oscar_report
+from forecast.views.export.mi_report_source import export_mi_report
+from forecast.views.export.oscar_return import export_oscar_report
 from forecast.views.upload_file import (
     UploadActualsView,
     UploadBudgetView,
