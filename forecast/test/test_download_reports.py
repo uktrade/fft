@@ -16,9 +16,7 @@ from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
 
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
+from costcentre.test.factories import CostCentreFactory
 
 from forecast.models import (
     FinancialCode,
@@ -30,6 +28,7 @@ from forecast.views.export.oscar_return import export_oscar_report
 
 from treasuryCOA.test.factories import L5AccountFactory
 
+
 class DownloadMIReportTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
@@ -39,7 +38,7 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         self.amount_apr = -9876543
         programme_obj = ProgrammeCodeFactory()
         self.programme_code = programme_obj.programme_code
-        treasury_l5 =  L5AccountFactory()
+        treasury_l5 = L5AccountFactory()
         nac_obj = NaturalCodeFactory(account_L5_code=treasury_l5)
         self.nac = nac_obj.natural_account_code
         project_obj = ProjectCodeFactory()
@@ -96,7 +95,7 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         assert ws["B2"].value == f"{self.cost_centre_code}"
         assert ws["C1"].value == "Natural Account"
         assert ws["C2"].value == self.nac
-        assert ws["G1"].value == 'Project'
+        assert ws["G1"].value == "Project"
         assert ws["G2"].value == self.project_code
         assert ws["W1"].value == "Total"
         assert ws["W2"].value == self.year_total / 100
@@ -157,18 +156,15 @@ class DownloadOscarReportTest(TestCase, RequestFactoryBase):
         self.year_total = self.amount_apr + self.amount_may
 
     def test_download(self):
-        response = self.factory_get(
-            reverse("download_oscar"),
-            export_oscar_report,
-        )
+        response = self.factory_get(reverse("download_oscar"), export_oscar_report,)
 
         self.assertEqual(response.status_code, 200)
 
         file = io.BytesIO(response.content)
         wb = load_workbook(filename=file)
         ws = wb.active
-        assert ws["A1"].value == 'Row'
-        assert ws["B1"].value == 'Organisation'
-        assert ws["C1"].value == 'Organisation Alias'
-        assert ws["D1"].value == 'COA'
-        assert ws["E1"].value == 'COA Alias'
+        assert ws["A1"].value == "Row"
+        assert ws["B1"].value == "Organisation"
+        assert ws["C1"].value == "Organisation Alias"
+        assert ws["D1"].value == "COA"
+        assert ws["E1"].value == "COA Alias"

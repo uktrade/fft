@@ -34,12 +34,8 @@ def export_oscarreport_iterator(queryset):
                 obj.row_number,
                 "UKT013",
                 "UK TRADE & INVESTMENT",
-                obj.account_l5_code.account_l5_code
-                if obj.account_l5_code
-                else "",
-                obj.account_l5_code.account_l5_long_name
-                if obj.account_l5_code
-                else "",
+                obj.account_l5_code.account_l5_code if obj.account_l5_code else "",
+                obj.account_l5_code.account_l5_long_name if obj.account_l5_code else "",
                 obj.sub_segment_code,
                 obj.sub_segment_long_name,
                 "TYPE_INYEAR",
@@ -57,12 +53,11 @@ def export_oscarreport_iterator(queryset):
                 obj.feb,
                 obj.mar,
             ]
-        except :
-            # TODO add error handling to catch the no data situation.
+        except OSCARReturn.account_l5_code.RelatedObjectDoesNotExist:
             pass
 
 
 def create_oscar_report():
-    title = f'OSCAR {today_string()}'
+    title = f"OSCAR {today_string()}"
     queryset = OSCARReturn.objects.all()
     return export_to_excel(queryset, export_oscarreport_iterator, title)
