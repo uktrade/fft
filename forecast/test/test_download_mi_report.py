@@ -32,30 +32,16 @@ from forecast.views.export.mi_report_source import export_mi_report
 class DownloadMIReportTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
-
-        self.group_name = "Test Group"
-        self.group_code = "TestGG"
-        self.directorate_name = "Test Directorate"
-        self.directorate_code = "TestDD"
         self.cost_centre_code = 109076
-
-        self.group = DepartmentalGroupFactory(
-            group_code=self.group_code,
-            group_name=self.group_name,
-        )
-        self.directorate = DirectorateFactory(
-            directorate_code=self.directorate_code,
-            directorate_name=self.directorate_name,
-            group=self.group,
-        )
-        self.cost_centre = CostCentreFactory(
-            directorate=self.directorate,
+        cost_centre = CostCentreFactory(
             cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
-        self.programme_obj = ProgrammeCodeFactory()
+        programme_obj = ProgrammeCodeFactory()
+        self.programme_code = programme_obj.programme_code
         nac_obj = NaturalCodeFactory()
+        self.nac = nac_obj.natural_account_code
         self.project_obj = ProjectCodeFactory()
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
@@ -66,8 +52,8 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         # If you use the MonthlyFigureFactory the test fails.
         # I cannot work out why, it may be due to using a random year....
         financial_code_obj = FinancialCode.objects.create(
-            programme=self.programme_obj,
-            cost_centre=self.cost_centre,
+            programme=programme_obj,
+            cost_centre=cost_centre,
             natural_account_code=nac_obj,
             project_code=self.project_obj
         )
@@ -111,7 +97,15 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         file = io.BytesIO(response.content)
         wb = load_workbook(filename=file)
         ws = wb.active
-        # Check group
-        assert ws["A1"].value == "Group name"
-        assert ws["B2"].value == self.group_code
+        assert ws["A1"].value == "Entity"
+        assert ws["B1"].value == "Cost Centre"
+        assert ws["B2"].value == f'{self.cost_centre_code}'
+        assert ws["C1"].value == "Natural Account"
+        assert ws["C2"].value == self.nac
+        assert ws["W1"].value == "Total"
+        assert ws["W2"].value == self.year_total/100
+        assert ws["H1"].value == "APR"
+        assert ws["H2"].value == self.amount_apr/100
+        assert ws["I1"].value == "MAY"
+        assert ws["I2"].value == self.amount_may/100
 
