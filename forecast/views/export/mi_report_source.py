@@ -12,4 +12,5 @@ def export_mi_report(request):
     file_download.save()
     mi_report_source = create_mi_source_report()
     file_download.status = FileDownload.DOWNLOADED
+    file_download.save()
     return mi_report_source

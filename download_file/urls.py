@@ -9,10 +9,9 @@ urlpatterns = [
         DownloadOscarReturnView.as_view(),
         name="download_oscar_report",
     ),
-]
-
-urlpatterns = [
     path(
-        "download_mi_report/", DownloadMIReportView.as_view(), name="download_mi_report"
+        "download_mi_report/",
+        DownloadMIReportView.as_view(),
+        name="download_mi_report"
     ),
 ]

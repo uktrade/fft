@@ -21,7 +21,7 @@ def export_oscarreport_iterator(queryset):
         "Programme",
         "Analysis",
         "Analysis2",
-        "Spare2",
+        "Project",
         "APR",
         "MAY",
         "JUN",

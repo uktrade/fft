@@ -12,4 +12,5 @@ def export_oscar_report(request):
     file_download.save()
     oscar_report = create_oscar_report()
     file_download.status = FileDownload.DOWNLOADED
+    file_download.save()
     return oscar_report
