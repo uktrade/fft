@@ -306,6 +306,7 @@ class PasteForecastRowsView(
             'forecast_forecastmonthlyfigures__financial_period'
         ).order_by(
             "programme__budget_type_fk__budget_type_edit_display_order",
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
             "natural_account_code__natural_account_code",
         )
 
@@ -412,6 +413,7 @@ class EditForecastFigureView(
             'forecast_forecastmonthlyfigures__financial_period'
         ).order_by(
             "programme__budget_type_fk__budget_type_edit_display_order",
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
             "natural_account_code__natural_account_code",
         )
 
@@ -484,6 +486,7 @@ class EditForecastView(
                 'forecast_forecastmonthlyfigures__financial_period'
             ).order_by(
                 "programme__budget_type_fk__budget_type_edit_display_order",
+                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
                 "natural_account_code__natural_account_code",
             )
 

@@ -142,6 +142,10 @@ class ForecastSubTotalTable(tables.Table):
                                        column_dict.items()]
 
         actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
+
+        self.num_meta_cols = len(column_list)
+        self.num_actuals = len(actual_month_list)
+
         # See if Adjustment periods should be displayed.
         # Add them as extra columns, otherwise they remain visible even after
         # their field 'display_figure' is set to False.
@@ -203,6 +207,8 @@ class ForecastSubTotalTable(tables.Table):
             ]
         )
 
+        self.forecast_cols = (12 + len(extra_column_to_display)) - self.num_actuals
+
         super().__init__(
             extra_columns=extra_column_to_display,
             sequence=column_list,
@@ -257,6 +263,7 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
         )
         self.link_col.viewname = viewname
         self.link_col.link_args = link_args
+        self.heading = ""
 
         super().__init__(column_dict, *args, **kwargs)
 

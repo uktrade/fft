@@ -8,21 +8,13 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-          {% block view_hierarchy_title %}{% endblock %}
-        <h3 class="govuk-heading-xl">{{ view.project_code.project_description }} - {{ view.project_code.project_code }}</h3>
-      </div>
-
-      <div class="govuk-grid-column-one-third directorate-cc-form">
-        <form method="post" action ="">
-            {% csrf_token %}
-            {% include "core/govt_uk_form.html" with form=view.project_code_form %}
-            <input type="submit" value="Change" class="govuk-button" data-module="govuk-button"/>
-        </form>
-      </div>
+    {% block view_hierarchy_title %}{% endblock %}
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            {% include "forecast/view/sub_section_form.html" with form=view.project_code_form %}
+        </div>
     </div>
-
+    <h3 class="govuk-heading-m">{{ view.project_code.project_description }} - {{ view.project_code.project_code }}</h3>
     {% for table in tables %}
         <div class="tables-container">
             {% render_table table %}

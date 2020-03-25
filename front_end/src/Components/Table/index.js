@@ -12,6 +12,7 @@ import TotalAggregate from '../../Components/TotalAggregate/index'
 import TotalBudget from '../../Components/TotalBudget/index'
 import OverspendUnderspend from '../../Components/OverspendUnderspend/index'
 import TotalOverspendUnderspend from '../../Components/TotalOverspendUnderspend/index'
+import ActualsHeaderRow from '../../Components/ActualsHeaderRow/index'
 import {
     getCellId
 } from '../../Util'
@@ -33,6 +34,7 @@ function Table({rowData, sheetUpdating}) {
                 className="govuk-table finance-table" id="forecast-table">
                 <caption className="govuk-table__caption govuk-!-font-size-17">Forecast data</caption>
                 <thead className="govuk-table__head">
+                    <ActualsHeaderRow />
                     <tr index="0">
                         <th className="handle govuk-table__cell indicate-action select-all">
                             <button className="link-button govuk-link"
