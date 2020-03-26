@@ -10,7 +10,7 @@ AUTHENTICATION_BACKENDS += [
     "authbroker_client.backends.AuthbrokerBackend",
 ]
 
-STATICFILES_DIRS = ("/app/front_end/build/static",)
+STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
