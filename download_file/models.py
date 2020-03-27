@@ -18,17 +18,17 @@ class FileDownload(BaseModel):
     ]
 
     OSCAR_RETURN = 'Oscar'
-    FORECAST_REPORT = 'Forecast'
+    MI_REPORT = 'Forecast'
 
     DOWNLOAD_TYPE_CHOICES = [
-        (OSCAR_RETURN, 'Actuals'),
-        (FORECAST_REPORT, 'Budget'),
+        (OSCAR_RETURN, 'OSCAR Return'),
+        (MI_REPORT, 'Budget'),
     ]
 
     document_type = models.CharField(
         max_length=70,
         choices=DOWNLOAD_TYPE_CHOICES,
-        default=FORECAST_REPORT,
+        default=MI_REPORT,
     )
     status = models.CharField(
         max_length=11,

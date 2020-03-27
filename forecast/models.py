@@ -752,6 +752,7 @@ class OSCARReturn(models.Model):
     the query is too complex"""
 
     # The view is created by  migration 0038_auto_create_view_forecast_oscar_return.py
+
     row_number = models.BigIntegerField()
     # The Treasury Level 5 account returned by the query is the result of a coalesce.
     # It is easier to use it as a foreign key in django
@@ -786,6 +787,7 @@ class OSCARReturn(models.Model):
 
 
 """
+
             DROP VIEW if exists forecast_forecast_budget_view ;
             DROP VIEW if exists yearly_budget;
             DROP VIEW if exists annual_forecast;
@@ -845,28 +847,29 @@ class OSCARReturn(models.Model):
 """
 Query created in the database to return the info for the OSCAR return
 DROP VIEW  if exists "forecast_oscarreturn";
-CREATE VIEW "forecast_oscarreturn" as 
-        SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
+            CREATE VIEW "forecast_oscarreturn" as             
+            SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
             coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id")
             account_l5_code,
             "treasurySS_subsegment"."sub_segment_code" ,
             "treasurySS_subsegment"."sub_segment_long_name" ,                    
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 1 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "apr",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 2 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "may",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 3 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jun",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 4 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jul",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 5 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "aug",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 6 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "sep",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 7 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "oct",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 8 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "nov",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 9 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "dec",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 10 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "jan",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 11 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "feb",
-            coalesce(round(SUM(CASE WHEN "forecast_financialperiod"."financial_period_code" = 12 THEN "forecast_monthlyfigureamount"."amount" ELSE NULL END)/100000), 0)  AS "mar"
-        FROM "forecast_monthlyfigureamount"
-                INNER JOIN
-                 "forecast_monthlyfigure" on (forecast_monthlyfigureamount.monthly_figure_id = forecast_monthlyfigure.id)
-                INNER JOIN "forecast_financialcode" on (forecast_monthlyfigure.financial_code_id = forecast_financialcode.id)
+                       ROUND(SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END)/100000) AS apr,
+                       ROUND(SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END)/100000) AS may,
+                       ROUND(SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END)/100000) AS jun,
+                       ROUND(SUM(CASE WHEN financial_period_id = 4 THEN amount ELSE NULL END)/100000) AS jul,
+                       ROUND(SUM(CASE WHEN financial_period_id = 5 THEN amount ELSE NULL END)/100000) AS aug,
+                       ROUND(SUM(CASE WHEN financial_period_id = 6 THEN amount ELSE NULL END)/100000) AS sep,
+                       ROUND(SUM(CASE WHEN financial_period_id = 7 THEN amount ELSE NULL END)/100000) AS oct,
+                       ROUND(SUM(CASE WHEN financial_period_id = 8 THEN amount ELSE NULL END)/100000) AS nov,
+                       ROUND(SUM(CASE WHEN financial_period_id = 9 THEN amount ELSE NULL END)/100000) AS "dec",
+                       ROUND(SUM(CASE WHEN financial_period_id = 10 THEN amount ELSE NULL END)/100000) AS jan,
+                       ROUND(SUM(CASE WHEN financial_period_id = 11 THEN amount ELSE NULL END)/100000) AS feb,
+                       ROUND(SUM(CASE WHEN financial_period_id = 12 THEN amount ELSE NULL END)/100000) AS mar,
+                       ROUND(SUM(CASE WHEN financial_period_id = 13 THEN amount ELSE NULL END)/100000) AS adj1 ,
+                       ROUND(SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END)/100000) AS adj2 ,
+                       ROUND(SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END)/100000) AS adj3
+        FROM "forecast_forecastmonthlyfigure"
+                INNER JOIN "forecast_financialcode" on (forecast_forecastmonthlyfigure.financial_code_id = forecast_financialcode.id)
                     LEFT OUTER JOIN "chartofaccountDIT_naturalcode"
                     ON ("forecast_financialcode"."natural_account_code_id" = "chartofaccountDIT_naturalcode"."natural_account_code")
                     INNER JOIN "costcentre_costcentre"
@@ -876,10 +879,10 @@ CREATE VIEW "forecast_oscarreturn" as
                     INNER JOIN "costcentre_departmentalgroup"
                     ON ("costcentre_directorate"."group_id" = "costcentre_departmentalgroup"."group_code")
                     INNER JOIN "chartofaccountDIT_programmecode" ON ("forecast_financialcode"."programme_id" = "chartofaccountDIT_programmecode"."programme_code")
-                        INNER JOIN "forecast_financialperiod" ON ("forecast_monthlyfigure"."financial_period_id" = "forecast_financialperiod"."financial_period_code")
                     LEFT OUTER JOIN "treasurySS_subsegment" ON ("costcentre_departmentalgroup"."treasury_segment_fk_id" = "treasurySS_subsegment"."Segment_code_id"
                     AND "chartofaccountDIT_programmecode"."budget_type_fk_id" = "treasurySS_subsegment"."dit_budget_type_id")
-                    INNER JOIN "core_financialyear" ON ("forecast_monthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
-                    WHERE "core_financialyear"."current" = TRUE and forecast_monthlyfigureamount.version = 1
+                    INNER JOIN "core_financialyear" ON ("forecast_forecastmonthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
+                    WHERE "core_financialyear"."current" = TRUE 
                     GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
-                    "treasurySS_subsegment"."sub_segment_code" ;        """  # noqa
+                    "treasurySS_subsegment"."sub_segment_code" ;                      
+                     """  # noqa

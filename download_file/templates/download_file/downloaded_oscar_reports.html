@@ -3,26 +3,19 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Uploaded files" "uploaded_files" %}
+    {% breadcrumb "Download OSCAR Return" "downloaded_files" %}
 {% endblock %}
 
 {% block content %}
     <h3 class="govuk-heading-l">OSCAR Returns downloads</h3>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url "upload_actuals_file" %}">
+        <a class="govuk-link" href="{% url "download_oscar" %}">
             <button class="govuk-button" data-module="govuk-button">
-                Upload actuals file
+                Download OSCAR Return
             </button>
         </a>
     </p>
-    <p class="govuk-body">
-        <a class="govuk-link" href="{% url "upload_budget_file" %}">
-            <button class="govuk-button" data-module="govuk-button">
-                Upload budgets file
-            </button>
-        </a>
-    </p>
-    {% for document in view.uploaded_files %}
+    {% for document in view.downloaded_files %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <p class="govuk-heading-s">{{ document.file_name }}</p>
@@ -53,7 +46,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Uploaded on
+                  Downloaded on
                 </dt>
                 <dd class="govuk-summary-list__value">
                   {{ document.created }}
@@ -61,10 +54,10 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Uploaded by
+                  Downloaded by
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {{ document.uploading_user }}
+                  {{ document.downloading_user }}
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -77,7 +70,7 @@
               </div>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Last updated
+                  Last downloaded
                 </dt>
                 <dd class="govuk-summary-list__value">
                   {{ document.updated }}
