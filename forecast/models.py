@@ -847,8 +847,7 @@ class OSCARReturn(models.Model):
 """
 Query created in the database to return the info for the OSCAR return
 DROP VIEW  if exists "forecast_oscarreturn";
-            CREATE VIEW "forecast_oscarreturn" as 
-            
+            CREATE VIEW "forecast_oscarreturn" as             
             SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
             coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id")
             account_l5_code,

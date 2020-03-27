@@ -7,6 +7,7 @@ def has_download_oscar_permission(function):
             return function(view_func, *args, **kwargs)
         else:
             raise PermissionDenied
+
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
@@ -18,6 +19,7 @@ def has_download_mi_report_permission(function):
             return function(view_func, *args, **kwargs)
         else:
             raise PermissionDenied
+
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
     return wrap
