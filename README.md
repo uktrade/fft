@@ -35,7 +35,7 @@ docker-compose run fido python manage.py elevate_sso_user_permissions
 ### Compile the front end
 ```
 docker-compose run fido python manage.py compilescss
-collectstatic
+docker-compose run fido python manage.py collectstatic
 ```
 
 

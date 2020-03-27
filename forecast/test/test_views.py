@@ -499,7 +499,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def check_programme_table(self, table, prog_index=1):
         programme_rows = table.find_all("tr")
-        first_prog_cols = programme_rows[1].find_all("td")
+        first_prog_cols = programme_rows[2].find_all("td")
         assert first_prog_cols[prog_index].get_text().strip() == \
             self.programme_obj.programme_description
         assert first_prog_cols[prog_index + 1].get_text().strip() == \
@@ -518,7 +518,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def check_expenditure_table(self, table):
         expenditure_rows = table.find_all("tr")
-        first_expenditure_cols = expenditure_rows[1].find_all("td")
+        first_expenditure_cols = expenditure_rows[2].find_all("td")
         assert (first_expenditure_cols[1].get_text().strip() == '—')
         assert first_expenditure_cols[2].get_text().strip() == format_forecast_figure(
             self.budget / 100
@@ -537,7 +537,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
-        first_project_cols = project_rows[1].find_all("td")
+        first_project_cols = project_rows[2].find_all("td")
         assert first_project_cols[1].get_text().strip() == \
             self.project_obj.project_description
         assert first_project_cols[2].get_text().strip() == self.project_obj.project_code
@@ -558,7 +558,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
-        first_hierarchy_cols = hierarchy_rows[1].find_all("td")
+        first_hierarchy_cols = hierarchy_rows[2].find_all("td")
         assert first_hierarchy_cols[1 + offset].get_text().strip() == \
             hierarchy_element
         budget_col = 3 + offset
@@ -841,7 +841,7 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
 
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
-        first_nac_cols = nac_rows[1].find_all("td")
+        first_nac_cols = nac_rows[2].find_all("td")
         assert (
             first_nac_cols[0].get_text().strip() == self.nac2_obj.natural_account_code_description  # noqa
         )

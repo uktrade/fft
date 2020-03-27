@@ -132,7 +132,8 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
 
     def check_project_details_table(self, table):
         project_rows = table.find_all("tr")
-        first_cols = project_rows[1].find_all("td")
+        first_cols = project_rows[2].find_all("td")
+
         assert (first_cols[0].get_text().strip() == self.expenditure_type)
         assert first_cols[4].get_text().strip() == format_forecast_figure(
             self.amount_apr / 100

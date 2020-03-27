@@ -9,21 +9,14 @@
 {% endblock %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-two-thirds">
-          {% block view_hierarchy_title %}{% endblock %}
-        <h3 class="govuk-heading-l">{{ view.expenditure_category.NAC_category }} - {{ view.expenditure_category.grouping_description }}</h3>
-      </div>
-
-      <div class="govuk-grid-column-one-third directorate-cc-form">
-        <form method="post" action ="">
-            {% csrf_token %}
-            {% include "core/govt_uk_form.html" with form=view.expenditure_type_form %}
-            <input type="submit" value="Change" class="govuk-button" data-module="govuk-button"/>
-        </form>
-      </div>
+    {% block view_hierarchy_title %}{% endblock %}
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            {% block download_link %}{% endblock %}
+            {% include "forecast/view/sub_section_form.html" with form=view.expenditure_type_form %}
+        </div>
     </div>
-
+    <h3 class="govuk-heading-m">{{ view.expenditure_category.NAC_category }} - {{ view.expenditure_category.grouping_description }}</h3>
     {% cache None expenditure_forecast_tables %}
         {% for table in tables %}
             <div class="tables-container">
@@ -32,3 +25,4 @@
         {% endfor %}
     {% endcache %}
 {% endblock %}
+

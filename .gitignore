@@ -149,3 +149,7 @@ chromedriver
 
 # Fixture data
 fixtures/*
+
+# Test files
+test.txt
+test_*

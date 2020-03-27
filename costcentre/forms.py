@@ -64,18 +64,19 @@ class DirectorateCostCentresForm(forms.Form):
 class MyCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
-        super(MyCostCentresForm, self).__init__(
-            *args,
-            **kwargs,
-        )
 
         self.base_fields['cost_centre'].queryset = get_objects_for_user(
             user,
             "costcentre.change_costcentre",
         )
 
+        super(MyCostCentresForm, self).__init__(
+            *args,
+            **kwargs,
+        )
+
     cost_centre = forms.ModelChoiceField(
-        queryset=CostCentre.objects.all(),
+        queryset=None,
         widget=Select(),
     )
 

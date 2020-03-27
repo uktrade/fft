@@ -17,11 +17,24 @@
         </div>
     </div>
 
-    {% cache None group_forecast_tables %}
-        {% for table in tables %}
-            <div class="tables-container forecast-table-{{ forloop.counter }}">
-                {% render_table table %}
-            </div>
-        {% endfor %}
-    {% endcache %}
+{#    {% cache None group_forecast_tables %}#}
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">Forecast</h2>
+            <ul class="govuk-tabs__list">
+                {% for table in tables %}
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#tab-{{ forloop.counter }}">{{ table.heading }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% for table in tables %}
+                <div class="govuk-tabs__panel" id="tab-{{ forloop.counter }}">
+                    <h2 class="govuk-heading-l">{{ table.heading }}</h2>
+                    <div class="tables-container forecast-table-{{ forloop.counter }}">
+                        {% render_table table %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{#    {% endcache %}#}
 {% endblock %}

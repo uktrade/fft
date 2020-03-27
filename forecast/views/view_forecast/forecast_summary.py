@@ -117,7 +117,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
                 programme_data,
             )
 
-        programme_table.attrs["caption"] = "Control total report"
+        programme_table.heading = "Control total report"
         expenditure_table = ForecastWithLinkTable(
             BUDGET_CATEGORY_NAME,
             expenditure_view[self.hierarchy_type],
@@ -126,7 +126,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             expenditure_columns,
             expenditure_data,
         )
-        expenditure_table.attrs["caption"] = "Expenditure report"
+        expenditure_table.heading = "Expenditure report"
         project_table = ForecastWithLinkTable(
             PROJECT_NAME,
             project_detail_view[self.hierarchy_type],
@@ -135,7 +135,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             project_columns,
             project_data,
         )
-        project_table.attrs["caption"] = "Project report"
+        project_table.heading = "Project report"
 
         if self.hierarchy_type == SHOW_COSTCENTRE:
             hierarchy_table = ForecastSubTotalTable(
@@ -150,6 +150,8 @@ class ForecastMultiTableMixin(MultiTableMixin):
                 hierarchy_columns[self.hierarchy_type],
                 hierarchy_data,
             )
+
+        hierarchy_table.heading = "Forecast hierarchy report"
 
         self.tables = [
             hierarchy_table,
