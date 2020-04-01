@@ -689,6 +689,12 @@ class MonthlyFigureAbstract(BaseModel):
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
+    archived_status = models.ForeignKey(
+        "end_of_month.EndOfMonthStatus",
+        on_delete=models.PROTECT,
+        related_name="%(app_label)s_%(class)ss",
+        blank=True, null=True,
+    )
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
@@ -699,6 +705,7 @@ class MonthlyFigureAbstract(BaseModel):
             "financial_code",
             "financial_year",
             "financial_period",
+            "archived_status",
         )
 
     def __str__(self):
@@ -717,19 +724,19 @@ class ForecastMonthlyFigure(MonthlyFigureAbstract):
     starting_amount = models.BigIntegerField(default=0)
 
 
-class ArchivedForecastMonthlyFigure(MonthlyFigureAbstract):
-    is_actual = models.BooleanField(default=False)
-    forecast_month = models.ForeignKey(
-        FinancialPeriod,
-        on_delete=models.PROTECT,
-        related_name='historical_forecast_monthly_figures'
-    )
-    forecast_year = models.ForeignKey(
-        FinancialYear,
-        on_delete=models.PROTECT,
-        related_name='historical_forecast_monthly_figures'
-    )
-
+# class ArchivedForecastMonthlyFigure(MonthlyFigureAbstract):
+#     is_actual = models.BooleanField(default=False)
+#     forecast_month = models.ForeignKey(
+#         FinancialPeriod,
+#         on_delete=models.PROTECT,
+#         related_name='historical_forecast_monthly_figures'
+#     )
+#     forecast_year = models.ForeignKey(
+#         FinancialYear,
+#         on_delete=models.PROTECT,
+#         related_name='historical_forecast_monthly_figures'
+#     )
+#
 
 class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
     pass
@@ -809,7 +816,7 @@ class OSCARReturn(models.Model):
                        SUM(CASE WHEN financial_period_id = 13 THEN amount ELSE NULL END) AS adj1 ,
                        SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END) AS adj2 ,
                        SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END) AS adj3
-                FROM forecast_forecastmonthlyfigure
+                FROM forecast_forecastmonthlyfigure where 
                 GROUP BY financial_code_id,  financial_year_id;
                        
             CREATE VIEW yearly_budget as
