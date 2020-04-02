@@ -1,27 +1,25 @@
 {% extends "wide_content.html" %}
 
+
 {% block content %}
 <div class="app-pane__content">
     <h1 class="govuk-heading-l">Edit forecast</h1>
-    <h2 class="govuk-heading-m">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }})</h2>
+    <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code %}" target="_blank" class="govuk-heading-m cost-centre-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 Group
             </dt>
-            <dd class="govuk-summary-list__value">
-                {{ view.cost_centre_details.group }}
-                ({{ view.cost_centre_details.group_code }})
-            </dd>
+            <a href="{% url 'forecast_group' view.cost_centre_details.group_code %}" target="_blank" class="govuk-summary-list__value group-link">{{ view.cost_centre_details.group }} ({{ view.cost_centre_details.group_code }}) </a>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 Directorate
             </dt>
-            <dd class="govuk-summary-list__value">
+            <a href="{% url 'forecast_directorate' view.cost_centre_details.directorate_code %}" target="_blank" class="govuk-summary-list__value directorate-link">
                 {{ view.cost_centre_details.directorate }}
                 ({{ view.cost_centre_details.directorate_code }})
-            </dd>
+            </a>
         </div>
     </dl>
     {% block page_content %}

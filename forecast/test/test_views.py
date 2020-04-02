@@ -62,7 +62,6 @@ from forecast.views.view_forecast.programme_details import (
     GroupProgrammeDetailsView,
 )
 
-
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
 UNDERSPEND_COLUMN = -4
@@ -1279,3 +1278,200 @@ class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
         self.assertEqual(resp.status_code, 200)
 
         assert ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE  # noqa
+
+
+class ViewEditTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        self.client.login(
+            username=self.test_user_email,
+            password=self.test_password,
+        )
+
+        self.group = DepartmentalGroupFactory()
+
+        self.directorate = DirectorateFactory(
+            group=self.group,
+        )
+
+        self.test_cost_centre = 888812
+        self.cost_centre_code = self.test_cost_centre
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+    def test_edit_to_view_cost_centre_code(self):
+        # Checks the 'Edit-Forecast tab' returns an 'OK' status code
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Checks CC href in the 'Edit Forecast' tab links to 'View Forecast' CC tab
+        view_forecast_url = reverse(
+            "forecast_cost_centre",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        response = self.client.get(view_forecast_url)
+        assert response.status_code == 200
+
+        cost_centre_links = soup.find_all("a", class_="cost-centre-link")
+
+        assert len(cost_centre_links) == 1
+        assert cost_centre_links[0]['href'] == view_forecast_url
+
+        # Checks Group Code in 'Edit Forecast' tab links to 'View Forecast' GC tab
+        view_group_forecast_url = reverse(
+            "forecast_group",
+            kwargs={
+                'group_code': self.group.group_code
+            }
+        )
+
+        group_code_links = soup.find_all("a", class_="group-link")
+
+        assert len(group_code_links) == 1
+        assert group_code_links[0]['href'] == view_group_forecast_url
+
+        # Checks Directorate in 'Edit Forecast' tab links to 'View Forecast' tab
+        view_directorate_forecast_url = reverse(
+            "forecast_directorate",
+            kwargs={
+                'directorate_code': self.directorate.directorate_code
+            }
+        )
+
+        directorate_code_links = soup.find_all("a", class_="directorate-link")
+
+        assert len(directorate_code_links) == 1
+        assert directorate_code_links[0]['href'] == view_directorate_forecast_url
+
+
+class ViewEditButtonTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        self.client.login(
+            username=self.test_user_email,
+            password=self.test_password,
+        )
+
+        self.group = DepartmentalGroupFactory()
+
+        self.directorate = DirectorateFactory(
+            group=self.group,
+        )
+
+        self.test_cost_centre = 888812
+        self.cost_centre_code = self.test_cost_centre
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_user_can_view_edit_button(self):
+        """
+        Test user has Edit Forecast permissions to view specific cost centre
+        """
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        # Takes the client to the 'View Forecast' tab for a specified Cost Centre
+        view_forecast_url = reverse(
+            "forecast_cost_centre",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        response = self.client.get(view_forecast_url)
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Looks for 'edit-forecast-link' class (Edit Forecast Button), returns '1'
+        # Proves 'Edit Forecast' appears on page as user has editing perm for CC.
+        edit_forecast_links = soup.find_all("a", class_="edit-forecast-link")
+
+        assert len(edit_forecast_links) == 1
+
+    def test_user_cannot_view_edit_button(self):
+        """
+        Tests 'Edit Forecast' button does not appear when
+        user has not been assigned editing permissions.
+        """
+        view_forecast_url = reverse(
+            "forecast_cost_centre",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+
+        response = self.client.get(view_forecast_url)
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Looks for 'edit-forecast-link' class (Edit Forecast Button) returns '[]'
+        edit_forecast_links = soup.find_all("a", class_="edit-forecast-link")
+
+        assert len(edit_forecast_links) == 0
+
+    def test_user_cannot_view_unassigned_cost_centre(self):
+        """
+        Tests user can view a cost centre but cannot see
+        'Edit Forecast' button as they do not have the permissions.
+        """
+
+        # Assigns user to one cost centre
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        # Changes cost_centre_code to one that user can view but NOT edit
+        self.test_cost_centre = 888332
+        self.cost_centre_code = self.test_cost_centre
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+        # Client to 'View Forecast' tab for Cost Centre they cannot edit
+        view_forecast_url = reverse(
+            "forecast_cost_centre",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            }
+        )
+        response = self.client.get(view_forecast_url)
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Tests that user cannot see 'Edit Forecast' button
+        edit_forecast_links = soup.find_all("a", class_="edit-forecast-link")
+
+        assert len(edit_forecast_links) == 0

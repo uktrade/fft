@@ -1,5 +1,7 @@
 from django import template
 
+from costcentre.models import CostCentre
+
 from forecast.permission_shortcuts import get_objects_for_user
 
 
@@ -23,3 +25,11 @@ def has_edit_permission(user):
         return True
 
     return False
+
+
+@register.simple_tag
+def has_cost_centre_edit_permission(user, cost_centre_code):
+    # Find out if they have permission on a specific cost centre
+    cost_centre = CostCentre.objects.get(cost_centre_code=cost_centre_code)
+
+    return user.has_perm("change_costcentre", cost_centre)

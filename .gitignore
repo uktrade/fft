@@ -150,6 +150,9 @@ chromedriver
 # Fixture data
 fixtures/*
 
+# Generated css file
+core/static/core/css/styles.css
+
 # Test files
 test.txt
 test_*
