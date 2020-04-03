@@ -11,7 +11,7 @@ class EndOfMonthStatus(BaseModel):
     archived = models.BooleanField(default=False)
     archived_by = models.ForeignKey(
         get_user_model(),
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True, null=True,
     )
     archived_period = models.OneToOneField(

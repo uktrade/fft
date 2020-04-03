@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('archived', models.BooleanField(default=False)),
-                ('archived_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('archived_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
                 ('archived_period', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, related_name='end_of_month_endofmonthstatuss', to='forecast.FinancialPeriod')),
             ],
             options={
