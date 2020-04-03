@@ -24,6 +24,7 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
             'month',
             'amount',
             'starting_amount',
+            'archived_status',
         ]
         read_only_fields = fields
 
@@ -77,6 +78,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         ).filter(
             financial_code=obj.id,
             financial_year_id=get_current_financial_year(),
+            archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')
         )

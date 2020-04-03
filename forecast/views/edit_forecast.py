@@ -381,6 +381,7 @@ class EditForecastFigureView(
             financial_year=financial_year,
             financial_code=financial_code.first(),
             financial_period__financial_period_code=month,
+            archived_status = None,
         ).first()
 
         amount = form.cleaned_data['amount']

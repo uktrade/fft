@@ -705,12 +705,29 @@ class MonthlyFigureAbstract(BaseModel):
     # TODO don't save to month that have actuals
     class Meta:
         abstract = True
-        unique_together = (
-            "financial_code",
-            "financial_year",
-            "financial_period",
-            "archived_status",
-        )
+        # The constraints are renamed in the migration file
+        # The construct does not work in the version of Django we are using
+        constraints = [
+           UniqueConstraint(
+               fields=[
+                   "financial_code",
+                   "financial_year",
+                   "financial_period",
+                   "archived_status",
+               ],
+               name="%(app_label)s_%(class)_unique1",
+               condition=Q(archived_status__isnull=False)
+           ),
+           UniqueConstraint(
+               fields=[
+                   "financial_code",
+                   "financial_year",
+                   "financial_period",
+               ],
+               name="%(app_label)s_%(class)_unique2",
+               condition=Q(archived_status__isnull=True)
+           ),
+        ]
 
     def __str__(self):
         return f"{self.financial_code.cost_centre}" \
