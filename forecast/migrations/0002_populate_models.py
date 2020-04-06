@@ -167,7 +167,7 @@ class Migration(migrations.Migration):
             DROP VIEW if exists annual_forecast;
     
             CREATE VIEW annual_forecast as
-                SELECT financial_code_id, financial_year_id, 
+                SELECT financial_code_id, financial_year_id,
                        SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END) AS apr,
                        SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END) AS may,
                        SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END) AS jun,
