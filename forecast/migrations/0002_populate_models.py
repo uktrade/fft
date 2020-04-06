@@ -167,7 +167,7 @@ class Migration(migrations.Migration):
             DROP VIEW if exists annual_forecast;
     
             CREATE VIEW annual_forecast as
-                SELECT financial_code_id, financial_year_id, archived_status_id
+                SELECT financial_code_id, financial_year_id, 
                        SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END) AS apr,
                        SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END) AS may,
                        SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END) AS jun,
@@ -184,7 +184,7 @@ class Migration(migrations.Migration):
                        SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END) AS adj2 ,
                        SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END) AS adj3
                 FROM forecast_forecastmonthlyfigure
-                GROUP BY financial_code_id,  financial_year_id, archived_status_id;
+                GROUP BY financial_code_id,  financial_year_id;
     
             CREATE VIEW yearly_budget as
                 SELECT financial_code_id, financial_year_id, SUM(amount) AS budget
