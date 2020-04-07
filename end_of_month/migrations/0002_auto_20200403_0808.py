@@ -2,9 +2,10 @@
 
 from django.db import migrations
 
+
 def populate_end_of_month(apps, schema_editor):
     EndOfMonthModel = apps.get_model("end_of_month", "EndOfMonthStatus")
-    for m in range(1,16):
+    for m in range(1, 16):
         obj = EndOfMonthModel.objects.create(archived_period_id=m)
         obj.save()
 
@@ -12,6 +13,6 @@ def populate_end_of_month(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('end_of_month', '0001_initial'),
+        ("end_of_month", "0001_initial"),
     ]
     operations = [migrations.RunPython(populate_end_of_month)]
