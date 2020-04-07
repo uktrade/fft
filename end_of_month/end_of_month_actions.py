@@ -43,7 +43,7 @@ def end_of_month_archive(end_of_month_info):
     #  when changes are done to the record.
     # Note that initial amount is updated to be the current amount.
     forecast_sql = insert_query(
-        "forecast_forecastmonthlyfigure", end_of_month_info.archived_period_id
+        "forecast_forecastmonthlyfigure", end_of_month_info.id
     )
     with connection.cursor() as cursor:
         cursor.execute(forecast_sql)
@@ -55,7 +55,7 @@ def end_of_month_archive(end_of_month_info):
     )
     budget_periods.update(archived_status=end_of_month_info)
     budget_sql = insert_query(
-        "forecast_budgetmonthlyfigure", end_of_month_info.archived_period_id
+        "forecast_budgetmonthlyfigure", end_of_month_info.id
     )
 
     with connection.cursor() as cursor:
