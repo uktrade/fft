@@ -16,3 +16,11 @@ class EndOfMonthStatus(BaseModel):
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
+
+    class Meta:
+        verbose_name = "End of Month Archive Status"
+        verbose_name_plural = "End of Month Archive Statuses"
+        ordering = ["archived_period"]
+
+    def __str__(self):
+        return str(self.archived_period.period_long_name)
