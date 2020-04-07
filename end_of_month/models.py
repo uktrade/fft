@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+
 from core.metamodels import BaseModel
 
 from forecast.models import FinancialPeriod
