@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
         end_of_month_info = EndOfMonthStatus.objects.filter(
             archived_period__financial_period_code=period_code
-        )
+        ).first()
         if end_of_month_info.archived:
             self.stdout.write(
                 self.style.ERROR("The selected period has already been archived.")
@@ -39,5 +39,5 @@ class Command(BaseCommand):
 
         end_of_month_archive(end_of_month_info)
         self.stdout.write(
-            self.style.SUCCESS("Actual for period {} added".format(period_code))
+            self.style.SUCCESS(f'Period {period_code} archived.')
         )
