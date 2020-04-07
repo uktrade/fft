@@ -155,4 +155,4 @@ core/static/core/css/styles.css
 
 # Test files
 test.txt
-test_*
+test_*.txt
