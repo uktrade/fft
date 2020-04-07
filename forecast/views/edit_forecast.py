@@ -8,18 +8,14 @@ from django.core.cache.utils import make_template_fragment_key
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import JsonResponse
-from django.urls import (
-    reverse,
-)
+from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 
-from costcentre.forms import (
-    MyCostCentresForm,
-)
+from costcentre.forms import MyCostCentresForm
 from costcentre.models import CostCentre
 
 from forecast.forms import (
@@ -56,11 +52,11 @@ from forecast.views.base import (
 
 
 def delete_forecast_cache(cost_centre_code):
-    dit_key = make_template_fragment_key('dit_forecast_tables')
-    group_key = make_template_fragment_key('group_forecast_tables')
-    directorate_key = make_template_fragment_key('directorate_forecast_tables')
-    programme_key = make_template_fragment_key('programme_forecast_tables')
-    expenditure_key = make_template_fragment_key('expenditure_forecast_tables')
+    dit_key = make_template_fragment_key("dit_forecast_tables")
+    group_key = make_template_fragment_key("group_forecast_tables")
+    directorate_key = make_template_fragment_key("directorate_forecast_tables")
+    programme_key = make_template_fragment_key("programme_forecast_tables")
+    expenditure_key = make_template_fragment_key("expenditure_forecast_tables")
     cost_centre_key = make_template_fragment_key(cost_centre_code)
 
     cache.delete(dit_key)
@@ -72,8 +68,7 @@ def delete_forecast_cache(cost_centre_code):
 
 
 class ChooseCostCentreView(
-    UserPassesTestMixin,
-    FormView,
+    UserPassesTestMixin, FormView,
 ):
     template_name = "forecast/edit/choose_cost_centre.html"
     form_class = MyCostCentresForm
@@ -82,8 +77,7 @@ class ChooseCostCentreView(
     def test_func(self):
         try:
             cost_centres = get_objects_for_user(
-                self.request.user,
-                "costcentre.change_costcentre",
+                self.request.user, "costcentre.change_costcentre",
             )
         except NoForecastViewPermission:
             raise PermissionDenied()
@@ -94,25 +88,22 @@ class ChooseCostCentreView(
 
     def get_form_kwargs(self):
         kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
     def form_valid(self, form):
-        self.cost_centre = form.cleaned_data['cost_centre']
+        self.cost_centre = form.cleaned_data["cost_centre"]
         return super(ChooseCostCentreView, self).form_valid(form)
 
     def get_success_url(self):
         return reverse(
             "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre.cost_centre_code
-            }
+            kwargs={"cost_centre_code": self.cost_centre.cost_centre_code},
         )
 
 
 class AddRowView(
-    CostCentrePermissionTest,
-    FormView,
+    CostCentrePermissionTest, FormView,
 ):
     template_name = "forecast/edit/add.html"
     form_class = AddForecastRowForm
@@ -122,10 +113,8 @@ class AddRowView(
         if self.cost_centre_code is not None:
             return
 
-        if 'cost_centre_code' not in self.kwargs:
-            raise NoCostCentreCodeInURLError(
-                "No cost centre code provided in URL"
-            )
+        if "cost_centre_code" not in self.kwargs:
+            raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
         self.cost_centre_code = self.kwargs["cost_centre_code"]
 
@@ -133,18 +122,13 @@ class AddRowView(
         self.get_cost_centre()
 
         return reverse(
-            "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            }
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
         )
 
     def cost_centre_details(self):
         self.get_cost_centre()
 
-        cost_centre = CostCentre.objects.get(
-            cost_centre_code=self.cost_centre_code,
-        )
+        cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
         return {
             "group": cost_centre.directorate.group.group_name,
             "group_code": cost_centre.directorate.group.group_code,
@@ -194,23 +178,20 @@ class AddRowView(
 
 
 class PasteForecastRowsView(
-    CostCentrePermissionTest,
-    FormView,
+    CostCentrePermissionTest, FormView,
 ):
     form_class = PasteForecastForm
 
     @transaction.atomic  # noqa: C901
     def form_valid(self, form):
-        if 'cost_centre_code' not in self.kwargs:
-            raise NoCostCentreCodeInURLError(
-                "No cost centre code provided in URL"
-            )
+        if "cost_centre_code" not in self.kwargs:
+            raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
         cost_centre_code = self.kwargs["cost_centre_code"]
 
-        paste_content = form.cleaned_data['paste_content']
-        pasted_at_row = form.cleaned_data.get('pasted_at_row', None)
-        all_selected = form.cleaned_data.get('all_selected', False)
+        paste_content = form.cleaned_data["paste_content"]
+        pasted_at_row = form.cleaned_data.get("pasted_at_row", None)
+        all_selected = form.cleaned_data.get("all_selected", False)
 
         financial_codes = FinancialCode.objects.filter(
             cost_centre_id=self.cost_centre_code,
@@ -230,10 +211,8 @@ class PasteForecastRowsView(
         pasted_row_count = len(rows)
 
         if len(rows) == 0:
-            return JsonResponse({
-                'error': 'Your pasted data is not formatted correctly.'
-            },
-                status=400,
+            return JsonResponse(
+                {"error": "Your pasted data is not formatted correctly."}, status=400,
             )
 
         # Check for header row
@@ -246,22 +225,24 @@ class PasteForecastRowsView(
             pasted_row_count -= 1
 
         if all_selected and row_count < pasted_row_count:
-            return JsonResponse({
-                'error': (
-                    'You have selected all forecast rows '
-                    'but the pasted data has too many rows.'
-                )
-            },
+            return JsonResponse(
+                {
+                    "error": (
+                        "You have selected all forecast rows "
+                        "but the pasted data has too many rows."
+                    )
+                },
                 status=400,
             )
 
         if all_selected and row_count > pasted_row_count:
-            return JsonResponse({
-                'error': (
-                    'You have selected all forecast rows '
-                    'but the pasted data has too few rows.'
-                )
-            },
+            return JsonResponse(
+                {
+                    "error": (
+                        "You have selected all forecast rows "
+                        "but the pasted data has too few rows."
+                    )
+                },
                 status=400,
             )
 
@@ -270,50 +251,42 @@ class PasteForecastRowsView(
                 if index == 0 and has_start_row:
                     continue
 
-                cell_data = re.split(r'\t', row.rstrip('\t'))
+                cell_data = re.split(r"\t", row.rstrip("\t"))
 
                 # Check that pasted at content and desired first row match
                 check_row_match(
-                    index,
-                    pasted_at_row,
-                    cell_data,
+                    index, pasted_at_row, cell_data,
                 )
 
                 # Check cell data length against expected number of cols
                 check_cols_match(cell_data)
 
                 set_monthly_figure_amount(
-                    cost_centre_code,
-                    cell_data,
+                    cost_centre_code, cell_data,
                 )
         except (
-                BadFormatException,
-                TooManyMatchException,
-                NotEnoughMatchException,
-                RowMatchException,
-                CannotFindMonthlyFigureException,
+            BadFormatException,
+            TooManyMatchException,
+            NotEnoughMatchException,
+            RowMatchException,
+            CannotFindMonthlyFigureException,
         ) as ex:
-            return JsonResponse({
-                'error': str(ex)
-            },
-                status=400,
+            return JsonResponse({"error": str(ex)}, status=400,)
+
+        financial_codes = (
+            FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
+            .prefetch_related(
+                "forecast_forecastmonthlyfigures",
+                "forecast_forecastmonthlyfigures__financial_period",
             )
-
-        financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=self.cost_centre_code,
-        ).prefetch_related(
-            'forecast_forecastmonthlyfigures',
-            'forecast_forecastmonthlyfigures__financial_period'
-        ).order_by(
-            "programme__budget_type_fk__budget_type_edit_display_order",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-            "natural_account_code__natural_account_code",
+            .order_by(
+                "programme__budget_type_fk__budget_type_edit_display_order",
+                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
+                "natural_account_code__natural_account_code",
+            )
         )
 
-        financial_code_serialiser = FinancialCodeSerializer(
-            financial_codes,
-            many=True,
-        )
+        financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True,)
 
         cache.set(
             f"{cost_centre_code}_cost_centre_cache",
@@ -326,25 +299,23 @@ class PasteForecastRowsView(
         return JsonResponse(financial_code_serialiser.data, safe=False)
 
     def form_invalid(self, form):
-        return JsonResponse({
-            'error': 'There was a problem with your '
-                     'submission, please contact support'
-        },
+        return JsonResponse(
+            {
+                "error": "There was a problem with your "
+                "submission, please contact support"
+            },
             status=400,
         )
 
 
 class EditForecastFigureView(
-    CostCentrePermissionTest,
-    FormView,
+    CostCentrePermissionTest, FormView,
 ):
     form_class = EditForecastFigureForm
 
     def form_valid(self, form):
-        if 'cost_centre_code' not in self.kwargs:
-            raise NoCostCentreCodeInURLError(
-                "No cost centre code provided in URL"
-            )
+        if "cost_centre_code" not in self.kwargs:
+            raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
         cost_centre_code = self.kwargs["cost_centre_code"]
 
@@ -356,23 +327,18 @@ class EditForecastFigureView(
 
         financial_code = FinancialCode.objects.filter(
             cost_centre=cost_centre,
-            natural_account_code=form.cleaned_data['natural_account_code'],
-            programme__programme_code=form.cleaned_data['programme_code'],
+            natural_account_code=form.cleaned_data["natural_account_code"],
+            programme__programme_code=form.cleaned_data["programme_code"],
             analysis1_code__analysis1_code=form.cleaned_data.get(
-                'analysis1_code',
-                None,
+                "analysis1_code", None,
             ),
             analysis2_code__analysis2_code=form.cleaned_data.get(
-                'analysis2_code',
-                None,
+                "analysis2_code", None,
             ),
-            project_code__project_code=form.cleaned_data.get(
-                'project_code',
-                None,
-            ),
+            project_code__project_code=form.cleaned_data.get("project_code", None,),
         )
 
-        month = form.cleaned_data['month']
+        month = form.cleaned_data["month"]
 
         if not financial_code.first():
             raise NoFinancialCodeForEditedValue()
@@ -381,10 +347,10 @@ class EditForecastFigureView(
             financial_year=financial_year,
             financial_code=financial_code.first(),
             financial_period__financial_period_code=month,
-            archived_status = None,
+            archived_status=None,
         ).first()
 
-        amount = form.cleaned_data['amount']
+        amount = form.cleaned_data["amount"]
 
         if amount > settings.MAX_FORECAST_FIGURE:
             amount = settings.MAX_FORECAST_FIGURE
@@ -407,21 +373,20 @@ class EditForecastFigureView(
 
         monthly_figure.save()
 
-        financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=self.cost_centre_code,
-        ).prefetch_related(
-            'forecast_forecastmonthlyfigures',
-            'forecast_forecastmonthlyfigures__financial_period'
-        ).order_by(
-            "programme__budget_type_fk__budget_type_edit_display_order",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-            "natural_account_code__natural_account_code",
+        financial_codes = (
+            FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
+            .prefetch_related(
+                "forecast_forecastmonthlyfigures",
+                "forecast_forecastmonthlyfigures__financial_period",
+            )
+            .order_by(
+                "programme__budget_type_fk__budget_type_edit_display_order",
+                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
+                "natural_account_code__natural_account_code",
+            )
         )
 
-        financial_code_serialiser = FinancialCodeSerializer(
-            financial_codes,
-            many=True,
-        )
+        financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True,)
 
         cache.set(
             f"{cost_centre_code}_cost_centre_cache",
@@ -434,17 +399,17 @@ class EditForecastFigureView(
         return JsonResponse(financial_code_serialiser.data, safe=False)
 
     def form_invalid(self, form):
-        return JsonResponse({
-            'error': 'There was a problem with your '
-                     'submission, please contact support'
-        },
+        return JsonResponse(
+            {
+                "error": "There was a problem with your "
+                "submission, please contact support"
+            },
             status=400,
         )
 
 
 class EditForecastView(
-    CostCentrePermissionTest,
-    TemplateView,
+    CostCentrePermissionTest, TemplateView,
 ):
     template_name = "forecast/edit/edit.html"
 
@@ -452,9 +417,7 @@ class EditForecastView(
         return "wide-table"
 
     def cost_centre_details(self):
-        cost_centre = CostCentre.objects.get(
-            cost_centre_code=self.cost_centre_code,
-        )
+        cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
         return {
             "group": cost_centre.directorate.group.group_name,
             "group_code": cost_centre.directorate.group.group_code,
@@ -467,44 +430,39 @@ class EditForecastView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        form = PublishForm(
-            initial={
-                "cost_centre_code": self.cost_centre_code,
-            }
-        )
+        form = PublishForm(initial={"cost_centre_code": self.cost_centre_code, })
 
         if cache.get(f"{self.cost_centre_code}_cost_centre_cache"):
             forecast_dump = json.dumps(
-                cache.get(
-                    f"{self.cost_centre_code}_cost_centre_cache"
-                )
+                cache.get(f"{self.cost_centre_code}_cost_centre_cache")
             )
         else:
-            financial_codes = FinancialCode.objects.filter(
-                cost_centre_id=self.cost_centre_code,
-            ).prefetch_related(
-                'forecast_forecastmonthlyfigures',
-                'forecast_forecastmonthlyfigures__financial_period'
-            ).order_by(
-                "programme__budget_type_fk__budget_type_edit_display_order",
-                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-                "natural_account_code__natural_account_code",
+            financial_codes = (
+                FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
+                .prefetch_related(
+                    "forecast_forecastmonthlyfigures",
+                    "forecast_forecastmonthlyfigures__financial_period",
+                )
+                .order_by(
+                    "programme__budget_type_fk__budget_type_edit_display_order",
+                    "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
+                    "natural_account_code__natural_account_code",
+                )
             )
 
             financial_code_serialiser = FinancialCodeSerializer(
-                financial_codes,
-                many=True,
+                financial_codes, many=True,
             )
             serialiser_data = financial_code_serialiser.data
             forecast_dump = json.dumps(serialiser_data)
             cache.set(
-                f"{self.cost_centre_code}_cost_centre_cache",
-                serialiser_data,
-                90000,
+                f"{self.cost_centre_code}_cost_centre_cache", serialiser_data, 90000,
             )
 
         actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
-        period_display = FinancialPeriod.financial_period_info.period_display_code_list()  # noqa
+        period_display = (
+            FinancialPeriod.financial_period_info.period_display_code_list()
+        )  # noqa
         paste_form = PasteForecastForm()
 
         context["form"] = form
@@ -516,7 +474,5 @@ class EditForecastView(
         return context
 
 
-class EditLockedView(
-    TemplateView,
-):
+class EditLockedView(TemplateView,):
     template_name = "forecast/edit/edit_locked.html"

@@ -18,9 +18,7 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.metamodels import (
-    BaseModel,
-)
+from core.metamodels import BaseModel
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.utils import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL_CLASS
@@ -44,7 +42,7 @@ class ForecastEditLock(BaseModel):
     locked = models.BooleanField(default=False)
 
     def __str__(self):
-        return 'Forecast edit lock'
+        return "Forecast edit lock"
 
     class Meta:
         permissions = [
@@ -82,46 +80,43 @@ class FinancialPeriodManager(models.Manager):
     def month_display_list(self):
         return list(
             self.get_queryset()
-                .filter(financial_period_code__lte=12)
-                .values_list("period_short_name", flat=True)
+            .filter(financial_period_code__lte=12)
+            .values_list("period_short_name", flat=True)
         )
 
     def adj_display_list(self):
         return list(
             self.get_queryset()
-                .filter(financial_period_code__gt=12, display_figure=True)
-                .values_list("period_short_name", flat=True)
+            .filter(financial_period_code__gt=12, display_figure=True)
+            .values_list("period_short_name", flat=True)
         )
 
     def period_display_list(self):
         return list(
             self.get_queryset()
-                .filter(display_figure=True)
-                .values_list("period_short_name", flat=True)
+            .filter(display_figure=True)
+            .values_list("period_short_name", flat=True)
         )
 
     def period_display_code_list(self):
         return list(
             self.get_queryset()
-                .filter(display_figure=True)
-                .values_list("financial_period_code", flat=True)
+            .filter(display_figure=True)
+            .values_list("financial_period_code", flat=True)
         )
 
     def actual_period_code_list(self):
         return list(
-            self.get_queryset().filter(
-                actual_loaded=True
-            ).values_list(
-                "financial_period_code",
-                flat=True,
-            )
+            self.get_queryset()
+            .filter(actual_loaded=True)
+            .values_list("financial_period_code", flat=True,)
         )
 
     def actual_month(self):
         m = (
             self.get_queryset()
-                .filter(actual_loaded=True)
-                .aggregate(Max("financial_period_code"))
+            .filter(actual_loaded=True)
+            .aggregate(Max("financial_period_code"))
         )
         return m["financial_period_code__max"] or 0
 
@@ -131,30 +126,26 @@ class FinancialPeriodManager(models.Manager):
     def periods(self):
         return (
             self.get_queryset()
-                .filter(display_figure=True)
-                .values_list("period_short_name", "period_long_name")
+            .filter(display_figure=True)
+            .values_list("period_short_name", "period_long_name")
         )
 
     def month_periods(self):
         return (
             self.get_queryset()
-                .filter(financial_period_code__lte=12)
-                .values_list("period_short_name", "period_long_name")
+            .filter(financial_period_code__lte=12)
+            .values_list("period_short_name", "period_long_name")
         )
 
     def adj_periods(self):
         return (
             self.get_queryset()
-                .filter(financial_period_code__gt=12, display_figure=True)
-                .values_list("period_short_name", "period_long_name")
+            .filter(financial_period_code__gt=12, display_figure=True)
+            .values_list("period_short_name", "period_long_name")
         )
 
     def reset_actuals(self):
-        self.get_queryset().filter(
-            actual_loaded=True,
-        ).update(
-            actual_loaded=False,
-        )
+        self.get_queryset().filter(actual_loaded=True,).update(actual_loaded=False,)
 
 
 class FinancialPeriod(BaseModel):
@@ -191,101 +182,100 @@ class FinancialCode(BaseModel):
         # fields that can be Null
         constraints = [
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis1_code",
-                        "analysis2_code",
-                        "project_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "analysis2_code",
+                    "project_code",
+                ],
                 name="financial_row_unique_6",
                 condition=Q(analysis1_code__isnull=False)
                 & Q(analysis2_code__isnull=False)
-                & Q(project_code__isnull=False)
+                & Q(project_code__isnull=False),
             ),
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis2_code",
-                        "project_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis2_code",
+                    "project_code",
+                ],
                 name="financial_row_unique_5a",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=False)
-                & Q(project_code__isnull=False)
+                & Q(project_code__isnull=False),
             ),
-
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis1_code",
-                        "project_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "project_code",
+                ],
                 name="financial_row_unique_5b",
                 condition=Q(analysis1_code__isnull=False)
                 & Q(analysis2_code__isnull=True)
-                & Q(project_code__isnull=False)
+                & Q(project_code__isnull=False),
             ),
-
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis1_code",
-                        "analysis2_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "analysis2_code",
+                ],
                 name="financial_row_unique_5c",
                 condition=Q(analysis1_code__isnull=False)
                 & Q(analysis2_code__isnull=False)
-                & Q(project_code__isnull=True)
+                & Q(project_code__isnull=True),
             ),
-
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "project_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "project_code",
+                ],
                 name="financial_row_unique_4a",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=True)
-                & Q(project_code__isnull=False)
+                & Q(project_code__isnull=False),
             ),
-
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis1_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                ],
                 name="financial_row_unique_4b",
                 condition=Q(analysis1_code__isnull=False)
                 & Q(analysis2_code__isnull=True)
-                & Q(project_code__isnull=True)
+                & Q(project_code__isnull=True),
             ),
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        "analysis2_code",
-                        ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis2_code",
+                ],
                 name="financial_row_unique_4c",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=False)
-                & Q(project_code__isnull=True)
+                & Q(project_code__isnull=True),
             ),
-
             UniqueConstraint(
-                fields=["programme",
-                        "cost_centre",
-                        "natural_account_code",
-                        ],
+                fields=["programme", "cost_centre", "natural_account_code", ],
                 name="financial_row_unique_3",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=True)
-                & Q(project_code__isnull=True)
+                & Q(project_code__isnull=True),
             ),
         ]
         permissions = [
@@ -311,16 +301,14 @@ class FinancialCode(BaseModel):
         on_delete=models.PROTECT,
         default=1,
         blank=True,
-        null=True
+        null=True,
     )
 
     def save(self, *args, **kwargs):
         # Override save to calculate the forecast_expenditure_type.
         if self.pk is None:
             # calculate the forecast_expenditure_type
-            nac_economic_budget_code = (
-                self.natural_account_code.economic_budget_code
-            )
+            nac_economic_budget_code = self.natural_account_code.economic_budget_code
             programme_budget_type = self.programme.budget_type_fk
 
             forecast_type = ForecastExpenditureType.objects.filter(
@@ -339,7 +327,7 @@ class SubTotalForecast:
     full_list = []
     output_subtotal = []
     previous_values = []
-    display_total_column = ''
+    display_total_column = ""
 
     def __init__(self, data):
         self.display_data = data
@@ -383,8 +371,8 @@ class SubTotalForecast:
         for i in range(how_many_row, -1, -1):
             row = self.display_data[i]
             if not self.row_has_values(row):
-                print(f'Deleted {i}')
-                del (self.display_data[i])
+                print(f"Deleted {i}")
+                del self.display_data[i]
 
     def do_output_subtotal(self, current_row):
         new_flag = False
@@ -401,17 +389,18 @@ class SubTotalForecast:
             if self.output_subtotal[column]:
                 subtotal_row = self.subtotals[column].copy()
                 level = self.subtotal_columns.index(column)
-                subtotal_row[self.display_total_column] = \
-                    f"Total {self.previous_values[column]}"
+                subtotal_row[
+                    self.display_total_column
+                ] = f"Total {self.previous_values[column]}"
                 show_class = TOTAL_CLASS
                 for out_total in self.subtotal_columns[level + 1:]:
-                    subtotal_row[self.display_total_column] = \
-                        f"{subtotal_row[self.display_total_column]} " \
+                    subtotal_row[self.display_total_column] = (
+                        f"{subtotal_row[self.display_total_column]} "
                         f"{self.previous_values[out_total]}"
+                    )
                     show_class = SUB_TOTAL_CLASS
                 self.output_row_to_table(
-                    subtotal_row,
-                    show_class,
+                    subtotal_row, show_class,
                 )
                 self.clear_row(self.subtotals[column])
                 self.previous_values[column] = current_row[column]
@@ -420,10 +409,7 @@ class SubTotalForecast:
                 break
 
     def subtotal_data(
-            self,
-            display_total_column,
-            subtotal_columns_arg,
-            show_grand_total,
+        self, display_total_column, subtotal_columns_arg, show_grand_total,
     ):
         # The self.subtotals are passed in from
         # the outer totals for calculation,
@@ -446,7 +432,7 @@ class SubTotalForecast:
         self.period_list = [
             value for value in self.full_list if value in self.display_data[0].keys()
         ]
-        self.period_list.append('Budget')
+        self.period_list.append("Budget")
         self.remove_empty_rows()
         first_row = self.display_data.pop(0)
         self.output_row_to_table(first_row, "")
@@ -499,21 +485,20 @@ class SubTotalForecast:
 
             self.subtotals[column][self.display_total_column] = caption
             self.output_row_to_table(
-                self.subtotals[column],
-                show_class,
+                self.subtotals[column], show_class,
             )
         if show_grand_total:
-            self.subtotals[GRAND_TOTAL_ROW][self.display_total_column] = \
-                "Total Managed Expenditure"
-            self.output_row_to_table(
-                self.subtotals[GRAND_TOTAL_ROW], GRAND_TOTAL_CLASS
-            )
+            self.subtotals[GRAND_TOTAL_ROW][
+                self.display_total_column
+            ] = "Total Managed Expenditure"
+            self.output_row_to_table(self.subtotals[GRAND_TOTAL_ROW], GRAND_TOTAL_CLASS)
 
         return self.result_table
 
 
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
+
     default_columns = DEFAULT_PIVOT_COLUMNS
 
     def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
@@ -524,14 +509,11 @@ class PivotManager(models.Manager):
 
         q1 = (
             self.get_queryset()
-                .filter(financial_year=year, **filter_dict)
-                .order_by(*order_list)
+            .filter(financial_year=year, **filter_dict)
+            .order_by(*order_list)
         )
         pivot_data = pivot(
-            q1,
-            columns,
-            "financial_period__period_short_name",
-            "amount",
+            q1, columns, "financial_period__period_short_name", "amount",
         )
         # print(pivot_data.query)
         return pivot_data
@@ -544,14 +526,14 @@ class DisplaySubTotalManager(models.Manager):
     default_columns = DEFAULT_PIVOT_COLUMNS
 
     def subtotal_data(
-            self,
-            display_total_column,
-            subtotal_columns,
-            data_columns,
-            filter_dict={},
-            year=0,
-            order_list=[],
-            show_grand_total=True
+        self,
+        display_total_column,
+        subtotal_columns,
+        data_columns,
+        filter_dict={},
+        year=0,
+        order_list=[],
+        show_grand_total=True,
     ):
         # If requesting a subtotal, the
         # list of columns must be specified
@@ -559,7 +541,7 @@ class DisplaySubTotalManager(models.Manager):
             raise SubTotalFieldNotSpecifiedError("Sub-total field not specified")
 
         correct = True
-        error_msg = ''
+        error_msg = ""
         for elem in subtotal_columns:
             if elem not in [*data_columns]:
                 correct = False
@@ -575,58 +557,56 @@ class DisplaySubTotalManager(models.Manager):
                 f"does not exist in provided columns: '{[*data_columns]}'."
             )
 
-        data_returned = self.raw_data_annotated(data_columns, filter_dict, year,
-                                                order_list)
+        data_returned = self.raw_data_annotated(
+            data_columns, filter_dict, year, order_list
+        )
         raw_data = list(data_returned)
         if not raw_data:
             return []
         r = SubTotalForecast(raw_data)
         return r.subtotal_data(
-            display_total_column,
-            subtotal_columns,
-            show_grand_total,
+            display_total_column, subtotal_columns, show_grand_total,
         )
 
     def raw_data_annotated(
-            self,
-            columns={},
-            filter_dict={},
-            year=0,
-            order_list=[],
-            include_zeros=False
+        self, columns={}, filter_dict={}, year=0, order_list=[], include_zeros=False
     ):
         if year == 0:
             year = get_current_financial_year()
         if columns == {}:
             columns = self.default_columns
 
-        annotations = {'Budget': Sum('budget'),
-                       'Apr': Sum('apr'),
-                       'May': Sum('may'),
-                       'Jun': Sum('jun'),
-                       'Jul': Sum('jul'),
-                       'Aug': Sum('aug'),
-                       'Sep': Sum('sep'),
-                       'Oct': Sum('oct'),
-                       'Nov': Sum('nov'),
-                       'Dec': Sum('dec'),
-                       'Jan': Sum('jan'),
-                       'Feb': Sum('feb'),
-                       'Mar': Sum('mar'),
-                       'Adj1': Sum('adj1'),
-                       'Adj2': Sum('adj2'),
-                       'Adj3': Sum('adj3'),
-                       }
+        annotations = {
+            "Budget": Sum("budget"),
+            "Apr": Sum("apr"),
+            "May": Sum("may"),
+            "Jun": Sum("jun"),
+            "Jul": Sum("jul"),
+            "Aug": Sum("aug"),
+            "Sep": Sum("sep"),
+            "Oct": Sum("oct"),
+            "Nov": Sum("nov"),
+            "Dec": Sum("dec"),
+            "Jan": Sum("jan"),
+            "Feb": Sum("feb"),
+            "Mar": Sum("mar"),
+            "Adj1": Sum("adj1"),
+            "Adj2": Sum("adj2"),
+            "Adj3": Sum("adj3"),
+        }
         # Lines with 0 values across the year have no year specified:
         # they come from an outer join in the query.
         # So use financial_year = NULL to filter them in or out.
-        raw_data = (self.get_queryset().values(*columns)
-                    .filter(
-                    Q(financial_year=year) | Q(financial_year__isnull=include_zeros),
-                    **filter_dict)
-                    .annotate(**annotations)
-                    .order_by(*order_list)
-                    )
+        raw_data = (
+            self.get_queryset()
+            .values(*columns)
+            .filter(
+                Q(financial_year=year) | Q(financial_year__isnull=include_zeros),
+                **filter_dict,
+            )
+            .annotate(**annotations)
+            .order_by(*order_list)
+        )
         return raw_data
 
 
@@ -639,12 +619,10 @@ class ForecastingDataView(models.Model):
     because the year is linked to the figures, and they have none!
     Mapped to a view in the database, because
     the query is too complex"""
-    id = models.IntegerField(primary_key=True, )
+
+    id = models.IntegerField(primary_key=True,)
     # The view is created by a migration. Its code is at the bottom of this file.
-    financial_code = models.ForeignKey(
-        FinancialCode,
-        on_delete=models.PROTECT,
-    )
+    financial_code = models.ForeignKey(FinancialCode, on_delete=models.PROTECT,)
     financial_year = models.IntegerField()
     budget = models.BigIntegerField(default=0)
     apr = models.BigIntegerField(default=0)
@@ -673,12 +651,10 @@ class ForecastingDataView(models.Model):
 class MonthlyFigureAbstract(BaseModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
+
     amount = models.BigIntegerField(default=0)  # stored in pence
     id = models.AutoField(primary_key=True)
-    financial_year = models.ForeignKey(
-        FinancialYear,
-        on_delete=models.PROTECT,
-    )
+    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
     financial_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
@@ -697,7 +673,8 @@ class MonthlyFigureAbstract(BaseModel):
         "end_of_month.EndOfMonthStatus",
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
-        blank=True, null=True,
+        blank=True,
+        null=True,
     )
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
@@ -708,37 +685,35 @@ class MonthlyFigureAbstract(BaseModel):
         # The constraints are renamed in the migration file
         # The construct does not work in the version of Django we are using
         constraints = [
-           UniqueConstraint(
-               fields=[
-                   "financial_code",
-                   "financial_year",
-                   "financial_period",
-                   "archived_status",
-               ],
-               name="%(app_label)s_%(class)_unique1",
-               condition=Q(archived_status__isnull=False)
-           ),
-           UniqueConstraint(
-               fields=[
-                   "financial_code",
-                   "financial_year",
-                   "financial_period",
-               ],
-               name="%(app_label)s_%(class)_unique2",
-               condition=Q(archived_status__isnull=True)
-           ),
+            UniqueConstraint(
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                    "archived_status",
+                ],
+                name="%(app_label)s_%(class)_unique1",
+                condition=Q(archived_status__isnull=False),
+            ),
+            UniqueConstraint(
+                fields=["financial_code", "financial_year", "financial_period", ],
+                name="%(app_label)s_%(class)_unique2",
+                condition=Q(archived_status__isnull=True),
+            ),
         ]
 
     def __str__(self):
-        return f"{self.financial_code.cost_centre}" \
-               f"--{self.financial_code.programme}" \
-               f"--{self.financial_code.natural_account_code}" \
-               f"--{self.financial_code.analysis1_code}" \
-               f"--{self.financial_code.analysis2_code}" \
-               f"--{self.financial_code.project_code}:" \
-               f"{self.financial_year} " \
-               f"{self.financial_period} " \
-               f"{self.amount}"
+        return (
+            f"{self.financial_code.cost_centre}"
+            f"--{self.financial_code.programme}"
+            f"--{self.financial_code.natural_account_code}"
+            f"--{self.financial_code.analysis1_code}"
+            f"--{self.financial_code.analysis2_code}"
+            f"--{self.financial_code.project_code}:"
+            f"{self.financial_year} "
+            f"{self.financial_period} "
+            f"{self.amount}"
+        )
 
 
 class ForecastMonthlyFigure(MonthlyFigureAbstract):
@@ -759,6 +734,7 @@ class ForecastMonthlyFigure(MonthlyFigureAbstract):
 #     )
 #
 
+
 class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
     pass
 
@@ -766,6 +742,7 @@ class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
 class BudgetMonthlyFigure(MonthlyFigureAbstract):
     """Used to store the budgets
     for the financial year."""
+
     starting_amount = models.BigIntegerField(default=0)
 
 
@@ -787,9 +764,7 @@ class OSCARReturn(models.Model):
     # for getting the account description
     # than doing another join in the query.
     account_l5_code = models.ForeignKey(
-        "treasuryCOA.L5Account",
-        on_delete=models.PROTECT,
-        db_column="account_l5_code",
+        "treasuryCOA.L5Account", on_delete=models.PROTECT, db_column="account_l5_code",
     )
     sub_segment_code = models.CharField(max_length=8, primary_key=True)
     sub_segment_long_name = models.CharField(max_length=255)
@@ -812,4 +787,3 @@ class OSCARReturn(models.Model):
         managed = False
         db_table = "forecast_oscarreturn"
         ordering = ["sub_segment_code"]
-
