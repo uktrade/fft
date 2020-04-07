@@ -2,6 +2,8 @@ from django.db import (
     connection,
 )
 
+from core.myutils import get_current_financial_year
+
 from forecast.models import (
     BudgetMonthlyFigure,
     ForecastMonthlyFigure,
@@ -24,10 +26,13 @@ def insert_query(table_name, archived_period_id):
 # TODO error handling
 def end_of_month_archive(end_of_month_info):
     period_id = end_of_month_info.archived_period.financial_period_code
+    current_year = get_current_financial_year()
+
     # I cannot use transactions because of the direct SQL
     # Add archive period to all the active forecast
     forecast_periods = ForecastMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gt=period_id,
+        financial_year_id=current_year,
         archived_status__isnull=True,
     )
     forecast_periods.update(archived_status=end_of_month_info)
