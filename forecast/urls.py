@@ -6,6 +6,7 @@ from forecast.views.edit_forecast import (
     EditForecastFigureView,
     EditForecastView,
     EditLockedView,
+    ErrorView,
     PasteForecastRowsView,
 )
 from forecast.views.export.mi_report_source import export_mi_report
@@ -54,6 +55,11 @@ from forecast.views.view_forecast.project_details import (
 
 
 urlpatterns = [
+    path(
+        "error/",
+        ErrorView.as_view(),
+        name="error"
+    ),
     path(
         "edit/<int:cost_centre_code>/",
         EditForecastView.as_view(), name="edit_forecast"
@@ -253,5 +259,4 @@ urlpatterns = [
         export_forecast_data_programme_detail_directorate,
         name="export_programme_details_directorate",
     ),
-
 ]
