@@ -12,6 +12,7 @@ from .models import (
     ForecastMonthlyFigure,
 )
 
+
 class FilteredListSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = data.filter(archived_status__isnull=True)
