@@ -2,6 +2,7 @@
 {% load render_table from django_tables2 %}
 {% load django_bootstrap_breadcrumbs %}
 {% load adv_cache %}
+{% load forecast_permissions %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -10,17 +11,23 @@
     {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code %}
     {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code %}
 {% endblock %}
-
 {% block content %}
-    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
+    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }} </h1>
     <div class="action-bar-wrapper">
         <div class="action-bar">
             <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code %} ">Download raw data</a>
+            {% is_forecast_user user as is_forecast_user %}
+            {% if is_forecast_user == True %}
+                {% has_cost_centre_edit_permission user view.cost_centre.cost_centre_code as has_cost_centre_edit_permission %}
+                {% if has_cost_centre_edit_permission == True %}
+                    <a class="govuk-button govuk-button--secondary edit-forecast-link" href="{% url 'edit_forecast' view.cost_centre.cost_centre_code %}"> Edit Forecast </a>
+                {% endif %}
+            {% endif %}
             <form method="post" action="" class="cost-centre-choice-form">
                 {% csrf_token %}
                 {% for field in view.cost_centres_form  %}
                     <label class="govuk-label" for="{{ field.name }}">
-                        {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+                    {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
                     </label>
                     {% if field.errors %}
                         {% for error in field.errors %}

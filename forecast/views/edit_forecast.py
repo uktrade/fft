@@ -476,3 +476,10 @@ class EditForecastView(
 
 class EditLockedView(TemplateView,):
     template_name = "forecast/edit/edit_locked.html"
+
+
+class ErrorView(
+    TemplateView,
+):
+    def dispatch(self, request, *args, **kwargs):
+        1 / 0
