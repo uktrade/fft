@@ -1335,7 +1335,7 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         response = self.client.get(view_forecast_url)
         assert response.status_code == 200
 
-        cost_centre_links = soup.find_all("a", class_="cost-centre-link")
+        cost_centre_links = soup.find_all("a", class_="cost-centre-heading-link")
 
         assert len(cost_centre_links) == 1
         assert cost_centre_links[0]['href'] == view_forecast_url
