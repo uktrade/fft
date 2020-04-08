@@ -665,42 +665,12 @@ class MonthlyFigureAbstract(BaseModel):
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
-    # If archived_status is null, the record is the current one.
-    # Because EndOfMonthStatus uses FinancialPeriod,
-    #  it cannot be imported from the end_of_month models: it gives
-    #  a circular reference and several errors.
-    archived_status = models.ForeignKey(
-        "end_of_month.EndOfMonthStatus",
-        on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
-        blank=True,
-        null=True,
-    )
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
     # TODO don't save to month that have actuals
     class Meta:
         abstract = True
-        # The constraints are renamed in the migration file
-        # The construct does not work in the version of Django we are using
-        constraints = [
-            UniqueConstraint(
-                fields=[
-                    "financial_code",
-                    "financial_year",
-                    "financial_period",
-                    "archived_status",
-                ],
-                name="%(app_label)s_%(class)_unique1",
-                condition=Q(archived_status__isnull=False),
-            ),
-            UniqueConstraint(
-                fields=["financial_code", "financial_year", "financial_period", ],
-                name="%(app_label)s_%(class)_unique2",
-                condition=Q(archived_status__isnull=True),
-            ),
-        ]
 
     def __str__(self):
         return (
@@ -718,25 +688,51 @@ class MonthlyFigureAbstract(BaseModel):
 
 class ForecastMonthlyFigure(MonthlyFigureAbstract):
     starting_amount = models.BigIntegerField(default=0)
+    # If archived_status is null, the record is the current one.
+    # Because EndOfMonthStatus uses FinancialPeriod,
+    #  it cannot be imported from the end_of_month models: it gives
+    #  a circular reference and several errors.
+    archived_status = models.ForeignKey(
+        "end_of_month.EndOfMonthStatus",
+        on_delete=models.PROTECT,
+        related_name="%(app_label)s_%(class)ss",
+        blank=True,
+        null=True,
+    )
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                    "archived_status",
+                ],
+                name="ForecastMonthlyFigure_unique1",
+                condition=Q(archived_status__isnull=False),
+            ),
+            UniqueConstraint(
+                fields=["financial_code", "financial_year", "financial_period", ],
+                name="ForecastMonthlyFigure_unique2",
+                condition=Q(archived_status__isnull=True),
+            ),
+        ]
 
-# class ArchivedForecastMonthlyFigure(MonthlyFigureAbstract):
-#     is_actual = models.BooleanField(default=False)
-#     forecast_month = models.ForeignKey(
-#         FinancialPeriod,
-#         on_delete=models.PROTECT,
-#         related_name='historical_forecast_monthly_figures'
-#     )
-#     forecast_year = models.ForeignKey(
-#         FinancialYear,
-#         on_delete=models.PROTECT,
-#         related_name='historical_forecast_monthly_figures'
-#     )
-#
 
 
 class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
-    pass
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                 ],
+                name="ActualUploadMonthlyFigure_unique1",
+            ),
+            ]
 
 
 class BudgetMonthlyFigure(MonthlyFigureAbstract):
@@ -744,13 +740,53 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
     for the financial year."""
 
     starting_amount = models.BigIntegerField(default=0)
+    # If archived_status is null, the record is the current one.
+    # Because EndOfMonthStatus uses FinancialPeriod,
+    #  it cannot be imported from the end_of_month models: it gives
+    #  a circular reference and several errors.
+    archived_status = models.ForeignKey(
+        "end_of_month.EndOfMonthStatus",
+        on_delete=models.PROTECT,
+        related_name="%(app_label)s_%(class)ss",
+        blank=True,
+        null=True,
+    )
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                    "archived_status",
+                ],
+                name="BudgetMonthlyFigure_unique1",
+                condition=Q(archived_status__isnull=False),
+            ),
+            UniqueConstraint(
+                fields=["financial_code", "financial_year", "financial_period", ],
+                name="BudgetMonthlyFigure_unique2",
+                condition=Q(archived_status__isnull=True),
+            ),
+        ]
+
 
 
 class BudgetUploadMonthlyFigure(MonthlyFigureAbstract):
-    pass
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                 ],
+                name="BudgetUploadMonthlyFigure_unique1",
+            ),
+            ]
 
 
-# Does not inherit from BaseModel as it maps to view
+        # Does not inherit from BaseModel as it maps to view
 class OSCARReturn(models.Model):
     """Used for downloading the Oscar return.
     Mapped to a view in the database, because
