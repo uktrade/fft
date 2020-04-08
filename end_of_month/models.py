@@ -16,6 +16,7 @@ class EndOfMonthStatus(BaseModel):
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
+    archived_date = models.DateTimeField(blank=True, null=True,)
 
     class Meta:
         verbose_name = "End of Month Archive Status"

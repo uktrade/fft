@@ -13,7 +13,7 @@ class EndOfMonthStatusAdmin(AdminReadOnly, SimpleHistoryAdmin):
         "period_code",
         "archived",
         "archived_by",
-        "updated"
+        "archived_date"
     )
 
     def period_name(self, instance):

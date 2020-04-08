@@ -2,6 +2,8 @@ from django.db import (
     connection,
 )
 
+from django.utils import timezone
+
 from core.myutils import get_current_financial_year
 
 from forecast.models import (
@@ -63,4 +65,5 @@ def end_of_month_archive(end_of_month_info):
 
     # set the archived status to archived
     end_of_month_info.archived = True
+    end_of_month_info.archived_date = timezone.now()
     end_of_month_info.save()
