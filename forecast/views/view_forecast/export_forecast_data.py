@@ -14,6 +14,7 @@ from forecast.utils.query_fields import (
     FORECAST_EXPENDITURE_TYPE_NAME,
     GROUP_CODE,
     PROGRAMME_CODE,
+    PROJECT_CODE,
     VIEW_FORECAST_DOWNLOAD_COLUMNS,
 )
 
@@ -176,6 +177,70 @@ def export_forecast_data_programme_detail_dit(
     title = f'DIT {programme_code_id}'
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
+
+#----------
+
+def export_forecast_data_project_detail_cost_centre(
+    request,
+    cost_centre,
+    project_code_id
+):
+    filter = {
+        COST_CENTRE_CODE: cost_centre,
+        PROJECT_CODE: f"{project_code_id}",
+    }
+    q = ForecastingDataView.view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+    )
+    title = f'{cost_centre} {project_code_id}'
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+
+
+def export_forecast_data_project_detail_directorate(
+    request,
+    directorate_code,
+    project_code_id
+):
+    filter = {
+        DIRECTORATE_CODE: directorate_code,
+        PROJECT_CODE: f"{project_code_id}",
+    }
+    q = ForecastingDataView.view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+    )
+    title = f'{directorate_code} {project_code_id}'
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+
+
+def export_forecast_data_project_detail_group(
+    request,
+    group_code,
+    project_code_id
+):
+    filter = {
+        GROUP_CODE: group_code,
+        PROJECT_CODE: f"{project_code_id}",
+    }
+    q = ForecastingDataView.view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+    )
+    title = f'{group_code} {project_code_id}'
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+
+def export_forecast_data_project_detail_dit(
+    request,
+    project_code_id
+):
+    filter = {
+        PROJECT_CODE: f"{project_code_id}",
+    }
+    q = ForecastingDataView.view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+    )
+    title = f'DIT {project_code_id}'
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+
+# -----------------
 
 def export_edit_forecast_data(request, cost_centre):
     filter = {COST_CENTRE_CODE: cost_centre}
