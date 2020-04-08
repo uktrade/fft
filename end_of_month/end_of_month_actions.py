@@ -1,7 +1,6 @@
 from django.db import (
     connection,
 )
-
 from django.utils import timezone
 
 from core.myutils import get_current_financial_year
