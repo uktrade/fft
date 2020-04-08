@@ -720,19 +720,14 @@ class ForecastMonthlyFigure(MonthlyFigureAbstract):
         ]
 
 
-
 class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=[
-                    "financial_code",
-                    "financial_year",
-                    "financial_period",
-                 ],
+                fields=["financial_code", "financial_year", "financial_period", ],
                 name="ActualUploadMonthlyFigure_unique1",
             ),
-            ]
+        ]
 
 
 class BudgetMonthlyFigure(MonthlyFigureAbstract):
@@ -751,6 +746,7 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
         blank=True,
         null=True,
     )
+
     class Meta:
         constraints = [
             UniqueConstraint(
@@ -764,29 +760,31 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
                 condition=Q(archived_status__isnull=False),
             ),
             UniqueConstraint(
-                fields=["financial_code", "financial_year", "financial_period", ],
+                fields=["financial_code",
+                        "financial_year",
+                        "financial_period",
+                        ],
                 name="BudgetMonthlyFigure_unique2",
                 condition=Q(archived_status__isnull=True),
             ),
         ]
 
 
-
 class BudgetUploadMonthlyFigure(MonthlyFigureAbstract):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=[
-                    "financial_code",
-                    "financial_year",
-                    "financial_period",
-                 ],
+                fields=["financial_code",
+                        "financial_year",
+                        "financial_period",
+                        ],
                 name="BudgetUploadMonthlyFigure_unique1",
             ),
-            ]
-
+        ]
 
         # Does not inherit from BaseModel as it maps to view
+
+
 class OSCARReturn(models.Model):
     """Used for downloading the Oscar return.
     Mapped to a view in the database, because
