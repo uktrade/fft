@@ -141,6 +141,7 @@ fido_db_test_all.json
 config/staticfiles/
 
 backup.sql
+backup.backup
 
 test-reports/*
 fidovenv/*

@@ -94,3 +94,4 @@ django-axes
 django-redis
 s3chunkuploader
 django-adv-cache-tag
+django-compressor
