@@ -29,11 +29,6 @@ from forecast.models import (
 )
 from forecast.test.test_utils import create_budget
 from forecast.views.view_forecast.export_forecast_data import (
-    export_edit_forecast_data,
-    export_forecast_data_cost_centre,
-    export_forecast_data_directorate,
-    export_forecast_data_dit,
-    export_forecast_data_group,
     export_forecast_data_project_detail_cost_centre,
     export_forecast_data_project_detail_directorate,
     export_forecast_data_project_detail_dit,
@@ -51,24 +46,23 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         self.directorate_code = "TestDD"
         self.cost_centre_code = 109076
 
-        self.group = DepartmentalGroupFactory(
-            group_code=self.group_code,
-            group_name=self.group_name,
+        group_obj = DepartmentalGroupFactory(
+            group_code=self.group_code, group_name=self.group_name,
         )
         self.directorate = DirectorateFactory(
             directorate_code=self.directorate_code,
             directorate_name=self.directorate_name,
-            group=self.group,
+            group=group_obj,
         )
-        self.cost_centre = CostCentreFactory(
-            directorate=self.directorate,
-            cost_centre_code=self.cost_centre_code,
+        cost_centre = CostCentreFactory(
+            directorate=self.directorate, cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
-        self.programme_obj = ProgrammeCodeFactory()
+        programme_obj = ProgrammeCodeFactory()
         nac_obj = NaturalCodeFactory()
-        self.project_obj = ProjectCodeFactory()
+        project_obj = ProjectCodeFactory()
+        self.project_code = project_obj.project_code
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
         apr_period = FinancialPeriod.objects.get(financial_period_code=1)
@@ -76,35 +70,29 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         apr_period.save()
 
         financial_code_obj = FinancialCode.objects.create(
-            programme=self.programme_obj,
-            cost_centre=self.cost_centre,
+            programme=programme_obj,
+            cost_centre=cost_centre,
             natural_account_code=nac_obj,
-            project_code=self.project_obj
+            project_code=project_obj,
         )
         financial_code_obj.save
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
-            amount=self.amount_apr
+            amount=self.amount_apr,
         )
         apr_figure.save
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=2,
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
             amount=self.amount_may,
             financial_code=financial_code_obj,
-            financial_year=year_obj
+            financial_year=year_obj,
         )
         may_figure.save
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -115,8 +103,12 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
 
     def test_dit_download(self):
         response = self.factory_get(
-            reverse("export_forecast_data_dit"),
-            export_forecast_data_dit,
+            reverse(
+                "export_forecast_data_project_detail_dit",
+                kwargs={"project_code_id": self.project_code},
+            ),
+            export_forecast_data_project_detail_dit,
+            project_code_id=self.project_code,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -131,13 +123,15 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
     def test_group_download(self):
         response = self.factory_get(
             reverse(
-                "export_forecast_data_group",
+                "export_forecast_data_project_detail_group",
                 kwargs={
-                    'group_code': self.group.group_code
+                    "group_code": self.group_code,
+                    "project_code_id": self.project_code,
                 },
             ),
-            export_forecast_data_group,
-            group_code=self.group.group_code,
+            export_forecast_data_project_detail_group,
+            group_code=self.group_code,
+            project_code_id=self.project_code,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -152,13 +146,16 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
     def test_directorate_download(self):
         response = self.factory_get(
             reverse(
-                "export_forecast_data_directorate",
+                "export_forecast_data_project_detail_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code
+                    "directorate_code": self.directorate.directorate_code,
+                    "project_code_id": self.project_code,
                 },
             ),
-            export_forecast_data_directorate,
-            directorate_code=self.directorate.directorate_code, )
+            export_forecast_data_project_detail_directorate,
+            directorate_code=self.directorate.directorate_code,
+            project_code_id=self.project_code,
+        )
 
         self.assertEqual(response.status_code, 200)
 
@@ -172,13 +169,15 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
     def test_cost_centre_download(self):
         response = self.factory_get(
             reverse(
-                "export_forecast_data_cost_centre",
+                "export_forecast_data_project_detail_cost_centre",
                 kwargs={
-                    'cost_centre': self.cost_centre_code
+                    "cost_centre": self.cost_centre_code,
+                    "project_code_id": self.project_code,
                 },
             ),
-            export_forecast_data_cost_centre,
-            cost_centre=self.cost_centre.cost_centre_code,
+            export_forecast_data_project_detail_cost_centre,
+            cost_centre=self.cost_centre_code,
+            project_code_id=self.project_code,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -189,5 +188,3 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         # Check group
         assert ws["A1"].value == "Group name"
         assert ws["B2"].value == self.group_code
-
-
