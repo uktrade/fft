@@ -1,1 +1,2 @@
-web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn fadmin2.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file - 
+web: python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 300 --log-file -
+worker: celery  -A config worker -l info

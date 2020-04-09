@@ -5,24 +5,38 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('treasurySS', '0091_auto_20190619_1100'),
-    ]
+    dependencies = [("treasurySS", "0091_auto_20190619_1100")]
 
     operations = [
         migrations.AddField(
-            model_name='segmentgrandparent',
-            name='segment_department_code',
-            field=models.CharField(default='', max_length=20, verbose_name='segment department code'),
+            model_name="segmentgrandparent",
+            name="segment_department_code",
+            field=models.CharField(
+                default="", max_length=20, verbose_name="segment department code"
+            ),
         ),
         migrations.AddField(
-            model_name='segmentgrandparent',
-            name='segment_department_long_name',
-            field=models.CharField(default='', max_length=255, verbose_name='segment department long name'),
+            model_name="segmentgrandparent",
+            name="segment_department_long_name",
+            field=models.CharField(
+                default="", max_length=255, verbose_name="segment department long name"
+            ),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME'))), ('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
     ]

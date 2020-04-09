@@ -1,0 +1,13 @@
+-r base.txt
+Faker
+factory-boy
+selenium
+django-compressor
+beautifulsoup4
+black
+pytest
+pytest-django
+pytest-xdist
+behave-django
+pyperclip
+webdriver-manager

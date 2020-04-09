@@ -1,0 +1,13 @@
+{
+  "name": "fido",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "NODE_ENV=production react-app-rewired build",
+    "start": "BROWSER=none NODE_ENV=development PUBLIC_PATH=http://localhost:3000/ react-app-rewired start",
+    "bdd": "BROWSER=none NODE_ENV=development PUBLIC_PATH=http://host.docker.internal:3000/ react-app-rewired start"
+  },
+  "dependencies": {
+    "react-scripts": "^1.0.17"
+  }
+}

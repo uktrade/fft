@@ -4,35 +4,41 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('chartofaccountDIT', '0004_interentity_cpid'),
-    ]
+    dependencies = [("chartofaccountDIT", "0004_interentity_cpid")]
 
     operations = [
         migrations.AddField(
-            model_name='analysis1',
-            name='pc_reference',
-            field=models.CharField(default='', max_length=300, verbose_name='PC Reference'),
+            model_name="analysis1",
+            name="pc_reference",
+            field=models.CharField(
+                default="", max_length=300, verbose_name="PC Reference"
+            ),
         ),
         migrations.AddField(
-            model_name='analysis1',
-            name='supplier',
-            field=models.CharField(default='', max_length=300, verbose_name='Supplier'),
+            model_name="analysis1",
+            name="supplier",
+            field=models.CharField(default="", max_length=300, verbose_name="Supplier"),
         ),
         migrations.AlterField(
-            model_name='analysis1',
-            name='analysis1_code',
-            field=models.CharField(max_length=50, primary_key=True, serialize=False,
-                                   verbose_name='Contract Code'),
+            model_name="analysis1",
+            name="analysis1_code",
+            field=models.CharField(
+                max_length=50,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Contract Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysis1',
-            name='analysis1_description',
-            field=models.CharField(max_length=300, verbose_name='Contract Name'),
+            model_name="analysis1",
+            name="analysis1_description",
+            field=models.CharField(max_length=300, verbose_name="Contract Name"),
         ),
         migrations.AlterField(
-            model_name='interentity',
-            name='cpid',
-            field=models.CharField(max_length=10, verbose_name='CPID (Departmental Code No.)'),
+            model_name="interentity",
+            name="cpid",
+            field=models.CharField(
+                max_length=10, verbose_name="CPID (Departmental Code No.)"
+            ),
         ),
     ]

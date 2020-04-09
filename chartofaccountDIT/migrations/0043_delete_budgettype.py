@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0042_remove_programmecode_budget_type_fk'),
-    ]
+    dependencies = [("chartofaccountDIT", "0042_remove_programmecode_budget_type_fk")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='BudgetType',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="BudgetType")]

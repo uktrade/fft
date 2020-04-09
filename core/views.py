@@ -1,33 +1,33 @@
-from core.exportutils import EXC_TAB_NAME_LEN
-from core.utils import today_string
-
 from django import get_version
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 
 from django_filters.views import FilterView
 
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from fadmin2.settings import GIT_COMMIT
+from core.exportutils import EXC_TAB_NAME_LEN
+from core.models import Document
+from core.utils import today_string
 
 
 @login_required()
 def index(request):
-    return render(
-        request, 'core/index.html'
-    )
+    return render(request, "core/index.html")
 
 
 class AboutView(TemplateView):
-    template_name = 'core/about.html'
+    template_name = "core/about.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['django_version'] = get_version()
-        context['git_commit'] = GIT_COMMIT
+        context["django_version"] = get_version()
+        context["git_commit"] = settings.GIT_COMMIT
         return context
 
 
@@ -49,16 +49,58 @@ class FidoExportMixin(ExportMixin):
         return exporter.response(filename=self.get_export_filename(export_format))
 
 
-class FAdminFilteredView(FidoExportMixin, SingleTableMixin, FilterView):
+class FAdminFilteredView(
+    FidoExportMixin,
+    SingleTableMixin,
+    FilterView,
+):
     paginate_by = 200
-    template_name = 'core/table_filter_generic.html'
+    template_name = "core/table_filter_generic.html"
     strict = False
-    name = 'View'
+    name = "View"
+
+    def class_name(self):
+        return "wide-table"
+
+    def get_table_kwargs(self):
+        return {
+            "template_name": "django_tables_2_bootstrap.html",
+            "attrs": {
+                "class": "govuk-table",
+                "thead": {"class": "govuk-table__head"},
+                "tbody": {"class": "govuk-table__body"},
+                "th": {"class": "govuk-table__header", "a": {"class": "govuk-link"}},
+                "td": {"class": "govuk-table__cell", "a": {"class": "govuk-link"}},
+                "a": {"class": "govuk-link"},
+            }
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Define the export name at init, so it uses the current date, and not the date the class was loaded
+        # Define the export name at init,
+        # so it uses the current date, and
+        # not the date the class was loaded
         # for the first time
-        self.export_name = self.name + ' ' + today_string()
-        # The max lenght for an Excel tab name is 31. So truncate the name, if needed
+        self.export_name = self.name + " " + today_string()
+        # The max length for an Excel tab name is 31.
+        # So truncate the name, if needed
         self.sheet_name = self.name[:EXC_TAB_NAME_LEN]
+
+
+class DocumentCreateView(CreateView):
+    model = Document
+    fields = ["upload"]
+    success_url = reverse_lazy("home")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        documents = Document.objects.all()
+        context["documents"] = documents
+        return context
+
+
+def logout(request):
+    if request.method == "POST":
+        logout(request)
+
+    return redirect(reverse("index"))

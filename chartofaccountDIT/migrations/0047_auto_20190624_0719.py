@@ -2,20 +2,19 @@
 
 from django.db import migrations
 
+
 def insert_budget_type_fk(apps, schema_editor):
-    ProgrammeCode = apps.get_model('chartofaccountDIT', 'ProgrammeCode')
-    BudgetType = apps.get_model('chartofaccountDIT', 'BudgetType')
+    ProgrammeCode = apps.get_model("chartofaccountDIT", "ProgrammeCode")
+    BudgetType = apps.get_model("chartofaccountDIT", "BudgetType")
     for programme in ProgrammeCode.objects.all():
-        programme.budget_type_fk = BudgetType.objects.get(budget_type = programme.budget_type)
+        programme.budget_type_fk = BudgetType.objects.get(
+            budget_type=programme.budget_type
+        )
         programme.save()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0046_auto_20190621_1730'),
-    ]
+    dependencies = [("chartofaccountDIT", "0046_auto_20190621_1730")]
 
-    operations = [
-        migrations.RunPython(insert_budget_type_fk),
-    ]
+    operations = [migrations.RunPython(insert_budget_type_fk)]

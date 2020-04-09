@@ -5,12 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0029_historicalnaturalcode'),
-    ]
+    dependencies = [("chartofaccountDIT", "0029_historicalnaturalcode")]
 
-    operations = [
-        migrations.DeleteModel(
-            name='HistoricalNaturalCode',
-        ),
-    ]
+    operations = [migrations.DeleteModel(name="HistoricalNaturalCode")]

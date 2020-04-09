@@ -4,24 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0001_initial'),
-    ]
+    dependencies = [("gifthospitality", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='giftsandhospitality',
-            options={'verbose_name': 'Gifts and Hospitality',
-                     'verbose_name_plural': 'Gifts and Hospitality'},
+            name="giftsandhospitality",
+            options={
+                "verbose_name": "Gifts and Hospitality",
+                "verbose_name_plural": "Gifts and Hospitality",
+            },
         ),
         migrations.AlterField(
-            model_name='giftsandhospitality',
-            name='classification',
+            model_name="giftsandhospitality",
+            name="classification",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='giftsandhospitality',
-            name='date_offered',
+            model_name="giftsandhospitality",
+            name="date_offered",
             field=models.DateField(),
         ),
     ]

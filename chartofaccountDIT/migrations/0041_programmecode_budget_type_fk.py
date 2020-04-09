@@ -6,14 +6,18 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0040_budgettype'),
-    ]
+    dependencies = [("chartofaccountDIT", "0040_budgettype")]
 
     operations = [
         migrations.AddField(
-            model_name='programmecode',
-            name='budget_type_fk',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.BudgetType', verbose_name='Budget Type'),
-        ),
+            model_name="programmecode",
+            name="budget_type_fk",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.BudgetType",
+                verbose_name="Budget Type",
+            ),
+        )
     ]

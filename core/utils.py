@@ -11,4 +11,16 @@ class ChoiceEnum(Enum):
 
 def today_string():
     today = datetime.datetime.today()
-    return today.strftime('%d %b %Y')
+    return today.strftime("%d %b %Y")
+
+
+SUB_TOTAL_CLASS = "sub-total"
+TOTAL_CLASS = "mid-total"
+GRAND_TOTAL_CLASS = "grand-total"
+
+
+def check_empty(value):
+    if value is not None and value != '':
+        return value
+
+    return None

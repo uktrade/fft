@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static admin_modify %}
+{% load i18n static %}
+{% load util %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+     <a href="../../../../">{% trans "Home" %}</a> &rsaquo;
+     <a href="../../../">{{ opts.app_config.verbose_name|capfirst|escape }}</a> &rsaquo;
+     <a href="../../">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+     <a href="../">{{ original|truncatewords:"18" }}</a> &rsaquo;
+     {% trans "Manage permissions" %}
+</div>
+{% endblock %}
+
+{% block content %}
+<p id="content-main">
+    <form action="." method="POST">
+        {% csrf_token %}
+
+        {% for error in remove_permission_form.non_field_errors %}
+            <p class="errornote">
+                <strong>{{ error|escape }}</strong>
+            </p>
+        {% endfor %}
+        {% if remove_permission_form.errors %}
+            <p class="errornote">
+                {% if remove_permission_form.errors.items|length == 1 %}Please correct the error below.{% else %}Please correct the errors below.{% endif %}
+            </p>
+            <div class="errors">
+                <ul class="errorlist">
+                    {% for field in remove_permission_form %}
+                        {% for error in field.errors %}
+                            <li><strong>{{ field.name }} - {{ error|escape }}</strong></li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th scope="col" class="sortable column-user_email">First name</th>
+                    <th scope="col" class="sortable column-user_first_name">Last name</th>
+                    <th scope="col" class="sortable column-user_last_name">Email address</th>
+                </tr>
+            </thead>
+            <tbody>
+                 {% for user, widget in remove_permission_form.users|instances_and_widgets %}
+                    <tr>
+                        <td>
+                            {{ widget.tag }}
+                        </td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4"><input name="submit_remove_permission" type="submit" value="Remove users"></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <h2>Add a new user</h2>
+    <form action="." method="POST">
+        {% csrf_token %}
+        {% if give_permission_form.non_field_errors|length > 0 %}
+            <p class="errornote">Please correct the errors below.</p>
+            {{ give_permission_form.non_field_errors }}
+        {% endif %}
+        <fieldset class="module aligned">
+            {% for field in give_permission_form %}
+                <div class="form-row">
+                    {{ field.errors }}
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.field.help_text %}
+                        <p class="help">
+                        {{ field.field.help_text|safe }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </fieldset>
+        <div class="submit-row">
+            <input name="submit_give_permission" type="submit" class="default" value="Add user">
+        </div>
+    </form>
+</div>
+{% endblock %}

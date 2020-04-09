@@ -5,14 +5,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('downloadsupport', '0001_initial'),
-    ]
+    dependencies = [("downloadsupport", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='downloadlog',
-            name='download_type',
-            field=models.CharField(choices=[('CC TRAV', 'Cost Centre  for Trainline'), ('CC', 'Cost Centre Hierarchy for Admin Tool'), ('NAC H', 'NAC Hierarchy for Admin Tool')], max_length=300, verbose_name='Download Type'),
-        ),
+            model_name="downloadlog",
+            name="download_type",
+            field=models.CharField(
+                choices=[
+                    ("CC TRAV", "Cost Centre  for Trainline"),
+                    ("CC", "Cost Centre Hierarchy for Admin Tool"),
+                    ("NAC H", "NAC Hierarchy for Admin Tool"),
+                ],
+                max_length=300,
+                verbose_name="Download Type",
+            ),
+        )
     ]

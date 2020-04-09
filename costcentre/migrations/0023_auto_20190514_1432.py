@@ -5,44 +5,57 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('costcentre', '0022_auto_20190328_0920'),
-    ]
+    dependencies = [("costcentre", "0022_auto_20190328_0920")]
 
     operations = [
         migrations.AlterField(
-            model_name='costcentre',
-            name='cost_centre_code',
-            field=models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Cost Centre Code'),
+            model_name="costcentre",
+            name="cost_centre_code",
+            field=models.CharField(
+                max_length=6,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Cost Centre Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='departmentalgroup',
-            name='group_code',
-            field=models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Group Code'),
+            model_name="departmentalgroup",
+            name="group_code",
+            field=models.CharField(
+                max_length=6,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Group Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='directorate',
-            name='directorate_code',
-            field=models.CharField(max_length=6, primary_key=True, serialize=False, verbose_name='Directorate Code'),
+            model_name="directorate",
+            name="directorate_code",
+            field=models.CharField(
+                max_length=6,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Directorate Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='directorate',
-            name='directorate_name',
-            field=models.CharField(max_length=300, verbose_name='Directorate Name'),
+            model_name="directorate",
+            name="directorate_name",
+            field=models.CharField(max_length=300, verbose_name="Directorate Name"),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='cost_centre_code',
-            field=models.CharField(max_length=50, verbose_name='Cost Centre Code'),
+            model_name="historiccostcentre",
+            name="cost_centre_code",
+            field=models.CharField(max_length=50, verbose_name="Cost Centre Code"),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='directorate_code',
-            field=models.CharField(max_length=50, verbose_name='Directorate Code'),
+            model_name="historiccostcentre",
+            name="directorate_code",
+            field=models.CharField(max_length=50, verbose_name="Directorate Code"),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='group_code',
-            field=models.CharField(max_length=50, verbose_name='Group Code'),
+            model_name="historiccostcentre",
+            name="group_code",
+            field=models.CharField(max_length=50, verbose_name="Group Code"),
         ),
     ]

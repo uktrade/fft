@@ -1,0 +1,45 @@
+{% extends "forecast/forecast_base.html" %}
+
+{% load render_bundle from webpack_loader %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Choose cost centre" "choose_cost_centre" %}
+    {% breadcrumb "Edit cost centre forecast" "edit_forecast" %}
+{% endblock %}
+
+{% block page_content %}
+    <div class="govuk-grid-row date-selection-download">
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                      Add a new row
+                    </a>
+                </div>
+                <div class="govuk-grid-column-one-third">
+                    <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code %}">
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="root"></div>
+    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
+        {% csrf_token %}
+        {{ paste_form }}
+    </form>
+{% endblock %}
+{% block scripts %}
+    {% render_bundle 'vendors' %}
+    {% render_bundle 'main' %}
+    {% render_bundle 'runtime-main' %}
+    <script>
+        window.actuals = {{ actuals|safe }};
+        window.period_display = {{ period_display|safe }};
+        window.table_data = {{ forecast_dump|safe }};
+        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }}
+    </script>
+{% endblock %}

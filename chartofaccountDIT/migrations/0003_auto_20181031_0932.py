@@ -5,88 +5,125 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('chartofaccountDIT', '0002_auto_20181003_1207'),
-    ]
+    dependencies = [("chartofaccountDIT", "0002_auto_20181003_1207")]
 
     operations = [
         migrations.CreateModel(
-            name='InterEntity',
+            name="InterEntity",
             fields=[
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('l2_value', models.CharField(max_length=10, primary_key=True, serialize=False,
-                                              verbose_name='L2 Value')),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
                 (
-                'l2_description', models.CharField(max_length=100, verbose_name='L2 Description')),
+                    "l2_value",
+                    models.CharField(
+                        max_length=10,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="L2 Value",
+                    ),
+                ),
+                (
+                    "l2_description",
+                    models.CharField(max_length=100, verbose_name="L2 Description"),
+                ),
             ],
             options={
-                'verbose_name': 'Inter-Entity',
-                'verbose_name_plural': 'Inter-Entities',
+                "verbose_name": "Inter-Entity",
+                "verbose_name_plural": "Inter-Entities",
             },
         ),
         migrations.CreateModel(
-            name='InterEntityL1',
+            name="InterEntityL1",
             fields=[
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('l1_value', models.CharField(max_length=10, primary_key=True, serialize=False,
-                                              verbose_name='L1 Value')),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
                 (
-                'l1_description', models.CharField(max_length=100, verbose_name='L1 Description')),
+                    "l1_value",
+                    models.CharField(
+                        max_length=10,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="L1 Value",
+                    ),
+                ),
+                (
+                    "l1_description",
+                    models.CharField(max_length=100, verbose_name="L1 Description"),
+                ),
             ],
             options={
-                'verbose_name': 'L1 Inter-Entity',
-                'verbose_name_plural': 'L1 Inter-Entities',
+                "verbose_name": "L1 Inter-Entity",
+                "verbose_name_plural": "L1 Inter-Entities",
             },
         ),
         migrations.AlterModelOptions(
-            name='expenditurecategory',
-            options={'verbose_name': 'Budget Category',
-                     'verbose_name_plural': 'Budget Categories'},
+            name="expenditurecategory",
+            options={
+                "verbose_name": "Budget Category",
+                "verbose_name_plural": "Budget Categories",
+            },
         ),
         migrations.AlterModelOptions(
-            name='naturalcode',
-            options={'ordering': ['natural_account_code'],
-                     'verbose_name': 'Natural Account Code (NAC)',
-                     'verbose_name_plural': 'Natural Account Codes (NAC)'},
+            name="naturalcode",
+            options={
+                "ordering": ["natural_account_code"],
+                "verbose_name": "Natural Account Code (NAC)",
+                "verbose_name_plural": "Natural Account Codes (NAC)",
+            },
         ),
         migrations.AlterField(
-            model_name='analysis1',
-            name='analysis1_code',
-            field=models.CharField(max_length=50, primary_key=True, serialize=False,
-                                   verbose_name='Analysis 1 Code'),
+            model_name="analysis1",
+            name="analysis1_code",
+            field=models.CharField(
+                max_length=50,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Analysis 1 Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysis1',
-            name='analysis1_description',
-            field=models.CharField(max_length=300, verbose_name='Contract Reconciliation'),
+            model_name="analysis1",
+            name="analysis1_description",
+            field=models.CharField(
+                max_length=300, verbose_name="Contract Reconciliation"
+            ),
         ),
         migrations.AlterField(
-            model_name='analysis2',
-            name='analysis2_code',
-            field=models.CharField(max_length=50, primary_key=True, serialize=False,
-                                   verbose_name='Market Code'),
+            model_name="analysis2",
+            name="analysis2_code",
+            field=models.CharField(
+                max_length=50,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Market Code",
+            ),
         ),
         migrations.AlterField(
-            model_name='expenditurecategory',
-            name='grouping_description',
-            field=models.CharField(max_length=255, unique=True, verbose_name='Budget Category'),
+            model_name="expenditurecategory",
+            name="grouping_description",
+            field=models.CharField(
+                max_length=255, unique=True, verbose_name="Budget Category"
+            ),
         ),
         migrations.AlterField(
-            model_name='naturalcode',
-            name='expenditure_category',
-            field=models.ForeignKey(blank=True, null=True,
-                                    on_delete=django.db.models.deletion.PROTECT,
-                                    to='chartofaccountDIT.ExpenditureCategory',
-                                    verbose_name='Budget Category'),
+            model_name="naturalcode",
+            name="expenditure_category",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.ExpenditureCategory",
+                verbose_name="Budget Category",
+            ),
         ),
         migrations.AddField(
-            model_name='interentity',
-            name='l1_value',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
-                                    to='chartofaccountDIT.InterEntityL1'),
+            model_name="interentity",
+            name="l1_value",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.InterEntityL1",
+            ),
         ),
     ]

@@ -5,17 +5,9 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gifthospitality', '0025_auto_20181224_1409'),
-    ]
+    dependencies = [("gifthospitality", "0025_auto_20181224_1409")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='giftandhospitality',
-            name='classification',
-        ),
-        migrations.RemoveField(
-            model_name='giftandhospitality',
-            name='gift_type',
-        ),
+        migrations.RemoveField(model_name="giftandhospitality", name="classification"),
+        migrations.RemoveField(model_name="giftandhospitality", name="gift_type"),
     ]

@@ -5,9 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('costcentre', '0025_costcentre_subsegment_mapping'),
-    ]
+    dependencies = [("costcentre", "0025_costcentre_subsegment_mapping")]
 
     # operations = [
     #     migrations.RemoveField(

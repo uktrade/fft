@@ -1,0 +1,89 @@
+{% extends "wide_content.html" %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load adv_cache %}
+{% load forecast_permissions %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "DIT" "forecast_dit" %}
+    {% breadcrumb view.cost_centre.directorate.group.group_name "forecast_group" view.cost_centre.directorate.group_id %}
+    {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code %}
+    {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code %}
+{% endblock %}
+{% block content %}
+    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }} </h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code %} ">Download raw data</a>
+            {% is_forecast_user user as is_forecast_user %}
+            {% if is_forecast_user == True %}
+                {% can_edit_cost_centre user view.cost_centre.cost_centre_code as can_edit_cost_centre %}
+                {% if can_edit_cost_centre == True %}
+                    <a class="govuk-button govuk-button--secondary edit-forecast-link" href="{% url 'edit_forecast' view.cost_centre.cost_centre_code %}"> Edit Forecast </a>
+                {% endif %}
+            {% endif %}
+            <form method="post" action="" class="cost-centre-choice-form">
+                {% csrf_token %}
+                {% for field in view.cost_centres_form  %}
+                    <label class="govuk-label" for="{{ field.name }}">
+                    {{ field.label }}{% if field.field.required == False %} (optional){% endif %}
+                    </label>
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <span id="{{ field.name }}-issued-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error:</span>
+                                {{ error|escape }}
+                            </span>
+                        {% endfor %}
+                    {% endif %}
+                    {{ field }}
+                {% endfor %}
+                <input type="submit" value="Change" class="govuk-button govuk-button--secondary" data-module="govuk-button"/>
+            </form>
+        </div>
+    </div>
+{#    {% cache None view.cost_centre.cost_centre_code %}#}
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">Forecast</h2>
+            <ul class="govuk-tabs__list">
+                {% for table in tables %}
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#tab-{{ forloop.counter }}">{{ table.heading }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% for table in tables %}
+                <div class="govuk-tabs__panel" id="tab-{{ forloop.counter }}">
+                    <h2 class="govuk-heading-l">{{ table.heading }}</h2>
+                    <div class="{% if forloop.counter != 3 %}cc-forecast-table{% else %}cc-forecast-table-3{% endif %} tables-container forecast-table-{{ forloop.counter }}">
+                        {% render_table table %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{#    {% endcache %}#}
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="application/javascript">
+    let allCC = document.getElementById("all-cc");
+    let myCC = document.getElementById("my-cc");
+
+    if (allCC && myCC) {
+        myCC.style.display = "none";
+        document.getElementById("id_mode_0").checked = true;
+
+        function swapCostCentreChoice(input) {
+            if (input.id === "id_mode_0") {
+                allCC.style.display = "block";
+                myCC.style.display = "none";
+            } else {
+                allCC.style.display = "none";
+                myCC.style.display = "block";
+            }
+        }
+    }
+</script>
+{% endblock %}

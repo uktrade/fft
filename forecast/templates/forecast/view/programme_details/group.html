@@ -1,0 +1,16 @@
+{% extends "forecast/view/programme_details/programme_details_base.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb view.group.group_name "forecast_group" view.group.group_code %}
+    {% breadcrumb view.programme_code.programme_description "programme_details_group"  %}
+{% endblock %}
+
+{% block view_hierarchy_title %}
+    <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+{% endblock %}
+
+{% block download_link %}
+    <a class="govuk-button govuk-button" href="{% url 'export_programme_details_group' view.group.group_code view.programme_code.programme_code  view.forecast_expenditure_type %} ">Download raw data</a>
+{% endblock %}

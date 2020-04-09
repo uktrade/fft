@@ -7,29 +7,56 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('chartofaccountDIT', '0011_historicalprojectcode'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("chartofaccountDIT", "0011_historicalprojectcode"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalProgrammeCode',
+            name="HistoricalProgrammeCode",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('programme_description', models.CharField(max_length=100, verbose_name='Programme Name')),
-                ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
-                ('programme_code', models.CharField(max_length=50, verbose_name='Programme Code')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "programme_description",
+                    models.CharField(max_length=100, verbose_name="Programme Name"),
+                ),
+                (
+                    "budget_type",
+                    models.CharField(max_length=100, verbose_name="Budget Type"),
+                ),
+                (
+                    "programme_code",
+                    models.CharField(max_length=50, verbose_name="Programme Code"),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Programme Code',
-                'verbose_name_plural': 'Historic Programme Codes',
-                'ordering': ['financial_year', 'programme_code'],
+                "verbose_name": "Historic Programme Code",
+                "verbose_name_plural": "Historic Programme Codes",
+                "ordering": ["financial_year", "programme_code"],
             },
         ),
         migrations.AlterModelOptions(
-            name='historicalprojectcode',
-            options={'ordering': ['financial_year', 'project_code'], 'verbose_name': 'Historic Project', 'verbose_name_plural': 'Historic Projects'},
+            name="historicalprojectcode",
+            options={
+                "ordering": ["financial_year", "project_code"],
+                "verbose_name": "Historic Project",
+                "verbose_name_plural": "Historic Projects",
+            },
         ),
     ]

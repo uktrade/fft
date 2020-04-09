@@ -4,24 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('costcentre', '0003_auto_20181031_0932'),
-    ]
+    dependencies = [("costcentre", "0003_auto_20181031_0932")]
 
     operations = [
         migrations.CreateModel(
-            name='BSCEEmail',
+            name="BSCEEmail",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
-                                        verbose_name='ID')),
-                ('active', models.BooleanField(default=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('bsce_email', models.CharField(max_length=300, verbose_name='BSCE email')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                (
+                    "bsce_email",
+                    models.CharField(max_length=300, verbose_name="BSCE email"),
+                ),
             ],
             options={
-                'verbose_name': 'BSCE Email',
-                'verbose_name_plural': 'BSCE Emails',
+                "verbose_name": "BSCE Email",
+                "verbose_name_plural": "BSCE Emails",
             },
-        ),
+        )
     ]

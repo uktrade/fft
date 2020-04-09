@@ -4,15 +4,13 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('chartofaccountDIT', '0003_auto_20181031_0932'),
-    ]
+    dependencies = [("chartofaccountDIT", "0003_auto_20181031_0932")]
 
     operations = [
         migrations.AddField(
-            model_name='interentity',
-            name='cpid',
-            field=models.CharField(default='', max_length=10, verbose_name='CPID'),
+            model_name="interentity",
+            name="cpid",
+            field=models.CharField(default="", max_length=10, verbose_name="CPID"),
             preserve_default=False,
-        ),
+        )
     ]

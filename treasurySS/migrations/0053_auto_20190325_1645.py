@@ -5,14 +5,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('treasurySS', '0052_auto_20190124_1136'),
-    ]
+    dependencies = [("treasurySS", "0052_auto_20190124_1136")]
 
     operations = [
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
-        ),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
+        )
     ]

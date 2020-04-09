@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('gifthospitality', '0021_auto_20181220_1433'),
-    ]
+    dependencies = [("gifthospitality", "0021_auto_20181220_1433")]
 
     operations = [
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='value',
-            field=models.IntegerField(verbose_name='Estimated value of offer (£)'),
-        ),
+            model_name="giftandhospitality",
+            name="value",
+            field=models.IntegerField(verbose_name="Estimated value of offer (£)"),
+        )
     ]

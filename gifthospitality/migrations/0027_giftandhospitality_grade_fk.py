@@ -7,15 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('payroll', '0004_auto_20181211_1600'),
-        ('gifthospitality', '0026_auto_20181224_1603'),
+        ("payroll", "0004_auto_20181211_1600"),
+        ("gifthospitality", "0026_auto_20181224_1603"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='giftandhospitality',
-            name='grade_fk',
-            field=models.ForeignKey(default='SEO', on_delete=django.db.models.deletion.PROTECT, to='payroll.Grade', verbose_name='grade'),
+            model_name="giftandhospitality",
+            name="grade_fk",
+            field=models.ForeignKey(
+                default="SEO",
+                on_delete=django.db.models.deletion.PROTECT,
+                to="payroll.Grade",
+                verbose_name="grade",
+            ),
             preserve_default=False,
-        ),
+        )
     ]

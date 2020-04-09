@@ -4,19 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('gifthospitality', '0002_auto_20181109_0819'),
-    ]
+    dependencies = [("gifthospitality", "0002_auto_20181109_0819")]
 
     operations = [
         migrations.AlterField(
-            model_name='giftsandhospitality',
-            name='category',
+            model_name="giftsandhospitality",
+            name="category",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='giftsandhospitality',
-            name='company',
+            model_name="giftsandhospitality",
+            name="company",
             field=models.CharField(max_length=100),
         ),
     ]

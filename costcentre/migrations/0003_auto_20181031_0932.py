@@ -4,26 +4,32 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('costcentre', '0002_auto_20181003_1109'),
-    ]
+    dependencies = [("costcentre", "0002_auto_20181003_1109")]
 
     operations = [
         migrations.AlterField(
-            model_name='costcentre',
-            name='cost_centre_code',
-            field=models.CharField(max_length=6, primary_key=True, serialize=False,
-                                   verbose_name='Cost Centre No.'),
+            model_name="costcentre",
+            name="cost_centre_code",
+            field=models.CharField(
+                max_length=6,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Cost Centre No.",
+            ),
         ),
         migrations.AlterField(
-            model_name='departmentalgroup',
-            name='group_code',
-            field=models.CharField(max_length=6, primary_key=True, serialize=False,
-                                   verbose_name='Group No.'),
+            model_name="departmentalgroup",
+            name="group_code",
+            field=models.CharField(
+                max_length=6,
+                primary_key=True,
+                serialize=False,
+                verbose_name="Group No.",
+            ),
         ),
         migrations.AlterField(
-            model_name='directorate',
-            name='directorate_name',
-            field=models.CharField(max_length=300, verbose_name='Directorate No.'),
+            model_name="directorate",
+            name="directorate_name",
+            field=models.CharField(max_length=300, verbose_name="Directorate No."),
         ),
     ]

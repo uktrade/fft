@@ -4,22 +4,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('payroll', '0001_initial'),
-    ]
+    dependencies = [("payroll", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ditpeople',
-            options={'verbose_name': 'DIT People', 'verbose_name_plural': 'DIT People'},
+            name="ditpeople",
+            options={"verbose_name": "DIT People", "verbose_name_plural": "DIT People"},
         ),
         migrations.AlterModelOptions(
-            name='grade',
-            options={'verbose_name': 'Grade', 'verbose_name_plural': 'Grades'},
+            name="grade",
+            options={"verbose_name": "Grade", "verbose_name_plural": "Grades"},
         ),
         migrations.AlterField(
-            model_name='grade',
-            name='gradedescription',
-            field=models.CharField(max_length=50, verbose_name='Grade Description'),
+            model_name="grade",
+            name="gradedescription",
+            field=models.CharField(max_length=50, verbose_name="Grade Description"),
         ),
     ]

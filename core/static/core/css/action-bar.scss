@@ -1,0 +1,70 @@
+
+.action-bar-wrapper {
+  width: 100vw;
+}
+
+.action-bar {
+  background-color: govuk-colour("mid-grey");
+  width: calc(100% - 60px);
+  box-sizing: border-box;
+  margin-bottom: 24px;
+
+  .govuk-button {
+    margin: 16px;
+  }
+
+  .action-bar-by {
+    float: right;
+    background-color: white;
+    border:16px solid govuk-colour("mid-grey");
+    padding:8px;
+    font-weight: bold;
+    overflow: hidden;
+  }
+
+  .action-bar-link {
+    float: right;
+  }
+
+  .action-bar-content {
+    border:16px solid govuk-colour("mid-grey");
+    border-top-width: 0;
+    background-color: govuk-colour("light-grey");
+    padding: 16px;
+  }
+
+  .action-bar-content-wrapper {
+    max-height: 0;
+    transition: max-height 0.4s linear;
+    overflow-y: hidden;
+    box-sizing: border-box;
+  }
+
+  .action-bar-open {
+    max-height: 1000px;
+  }
+
+  .action-bar-cols {
+    background-color: white;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .arrow-down {
+    &:after {
+      content: '\25bc';
+      padding-left: 0.2em;
+      text-decoration: none!important;
+      color: #069;
+    }
+  }
+
+  .arrow-up {
+    &:after {
+      content: '\25b2';
+      padding-left: 0.2em;
+      text-decoration: none!important;
+      color: #069;
+    }
+  }
+}

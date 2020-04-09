@@ -5,51 +5,45 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('costcentre', '0020_auto_20190328_0746'),
-    ]
+    dependencies = [("costcentre", "0020_auto_20190328_0746")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='costcentrenextyear',
-            name='directorate',
-        ),
-        migrations.RemoveField(
-            model_name='directoratenextyear',
-            name='group',
+        migrations.RemoveField(model_name="costcentrenextyear", name="directorate"),
+        migrations.RemoveField(model_name="directoratenextyear", name="group"),
+        migrations.AlterField(
+            model_name="historiccostcentre",
+            name="business_partner_fullname",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Business Partner"
+            ),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='business_partner_fullname',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Business Partner'),
+            model_name="historiccostcentre",
+            name="deputy_director_fullname",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Deputy Director"
+            ),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='deputy_director_fullname',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Deputy Director'),
+            model_name="historiccostcentre",
+            name="dg_fullname",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Director General"
+            ),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='dg_fullname',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Director General'),
+            model_name="historiccostcentre",
+            name="director_fullname",
+            field=models.CharField(
+                blank=True, max_length=200, null=True, verbose_name="Director"
+            ),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='director_fullname',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='Director'),
+            model_name="historiccostcentre",
+            name="directorate_name",
+            field=models.CharField(max_length=300, verbose_name="Directorate Name"),
         ),
-        migrations.AlterField(
-            model_name='historiccostcentre',
-            name='directorate_name',
-            field=models.CharField(max_length=300, verbose_name='Directorate Name'),
-        ),
-        migrations.DeleteModel(
-            name='CostCentreNextYear',
-        ),
-        migrations.DeleteModel(
-            name='DepartmentalGroupNextYear',
-        ),
-        migrations.DeleteModel(
-            name='DirectorateNextYear',
-        ),
+        migrations.DeleteModel(name="CostCentreNextYear"),
+        migrations.DeleteModel(name="DepartmentalGroupNextYear"),
+        migrations.DeleteModel(name="DirectorateNextYear"),
     ]

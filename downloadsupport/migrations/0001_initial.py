@@ -7,22 +7,42 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='DownloadLog',
+            name="DownloadLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('download_type', models.CharField(choices=[('CC', 'Cost Centre Hierarchy for Admin Tool'), ('NAC H', 'NAC Hierarchy for Admin Tool')], max_length=300, verbose_name='Download Type')),
-                ('downloader', models.CharField(max_length=300, verbose_name='Download by')),
-                ('download_time', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "download_type",
+                    models.CharField(
+                        choices=[
+                            ("CC", "Cost Centre Hierarchy for Admin Tool"),
+                            ("NAC H", "NAC Hierarchy for Admin Tool"),
+                        ],
+                        max_length=300,
+                        verbose_name="Download Type",
+                    ),
+                ),
+                (
+                    "downloader",
+                    models.CharField(max_length=300, verbose_name="Download by"),
+                ),
+                ("download_time", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'Download Log',
-                'verbose_name_plural': 'Download Logs',
-                'ordering': ['-download_time'],
+                "verbose_name": "Download Log",
+                "verbose_name_plural": "Download Logs",
+                "ordering": ["-download_time"],
             },
-        ),
+        )
     ]

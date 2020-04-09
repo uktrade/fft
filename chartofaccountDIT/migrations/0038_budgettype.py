@@ -5,16 +5,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0037_auto_20190514_1432'),
-    ]
+    dependencies = [("chartofaccountDIT", "0037_auto_20190514_1432")]
 
     operations = [
         migrations.CreateModel(
-            name='BudgetType',
+            name="BudgetType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "budget_type",
+                    models.CharField(max_length=100, verbose_name="Budget Type"),
+                ),
             ],
-        ),
+        )
     ]

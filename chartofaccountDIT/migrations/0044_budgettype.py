@@ -5,16 +5,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('chartofaccountDIT', '0043_delete_budgettype'),
-    ]
+    dependencies = [("chartofaccountDIT", "0043_delete_budgettype")]
 
     operations = [
         migrations.CreateModel(
-            name='BudgetType',
+            name="BudgetType",
             fields=[
-                ('budget_type_key', models.CharField(max_length=50, primary_key=True, serialize=False, verbose_name='Key')),
-                ('budget_type', models.CharField(max_length=100, verbose_name='Budget Type')),
+                (
+                    "budget_type_key",
+                    models.CharField(
+                        max_length=50,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="Key",
+                    ),
+                ),
+                (
+                    "budget_type",
+                    models.CharField(max_length=100, verbose_name="Budget Type"),
+                ),
             ],
-        ),
+        )
     ]

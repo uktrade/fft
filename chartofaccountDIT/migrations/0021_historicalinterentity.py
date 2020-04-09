@@ -7,26 +7,62 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_remove_financialyear_current_year'),
-        ('chartofaccountDIT', '0020_auto_20190402_1710'),
+        ("core", "0005_remove_financialyear_current_year"),
+        ("chartofaccountDIT", "0020_auto_20190402_1710"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='HistoricalInterEntity',
+            name="HistoricalInterEntity",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('l2_description', models.CharField(max_length=100, verbose_name='ORACLE - Inter Entity Description')),
-                ('cpid', models.CharField(max_length=10, verbose_name='Treasury - CPID (Departmental Code No.)')),
-                ('l2_value', models.CharField(max_length=10, verbose_name='ORACLE - Inter Entity Code')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.FinancialYear')),
-                ('l1_value', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.InterEntityL1')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("archived", models.DateTimeField(auto_now_add=True)),
+                (
+                    "l2_description",
+                    models.CharField(
+                        max_length=100, verbose_name="ORACLE - Inter Entity Description"
+                    ),
+                ),
+                (
+                    "cpid",
+                    models.CharField(
+                        max_length=10,
+                        verbose_name="Treasury - CPID (Departmental Code No.)",
+                    ),
+                ),
+                (
+                    "l2_value",
+                    models.CharField(
+                        max_length=10, verbose_name="ORACLE - Inter Entity Code"
+                    ),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.FinancialYear",
+                    ),
+                ),
+                (
+                    "l1_value",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="chartofaccountDIT.InterEntityL1",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Historic Inter-Entity',
-                'verbose_name_plural': 'Historic Inter-Entities',
-                'ordering': ['financial_year', 'l2_value'],
+                "verbose_name": "Historic Inter-Entity",
+                "verbose_name_plural": "Historic Inter-Entities",
+                "ordering": ["financial_year", "l2_value"],
             },
-        ),
+        )
     ]

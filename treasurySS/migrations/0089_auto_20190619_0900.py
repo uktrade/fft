@@ -6,30 +6,79 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('treasurySS', '0088_auto_20190618_1041'),
-    ]
+    dependencies = [("treasurySS", "0088_auto_20190618_1041")]
 
     operations = [
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME'))), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('NON-BUDGET', 'NON-BUDGET')], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    ("NON-BUDGET", "NON-BUDGET"),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.CreateModel(
-            name='DITSSGroup',
+            name="DITSSGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('active', models.BooleanField(default=False)),
-                ('group_description', models.CharField(max_length=255, verbose_name='Group Description')),
-                ('admin_sub_segment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='admin_sub_segment_linked', to='treasurySS.SubSegment', verbose_name='Admin SubSegment')),
-                ('ame_prog_sub_segment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='ame_prog_sub_segment_linked', to='treasurySS.SubSegment', verbose_name='AME Programme SubSegment')),
-                ('del_prog_sub_segment', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='del_prog_sub_segment_linked', to='treasurySS.SubSegment', verbose_name='Del Programme SubSegment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("active", models.BooleanField(default=False)),
+                (
+                    "group_description",
+                    models.CharField(max_length=255, verbose_name="Group Description"),
+                ),
+                (
+                    "admin_sub_segment",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="admin_sub_segment_linked",
+                        to="treasurySS.SubSegment",
+                        verbose_name="Admin SubSegment",
+                    ),
+                ),
+                (
+                    "ame_prog_sub_segment",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="ame_prog_sub_segment_linked",
+                        to="treasurySS.SubSegment",
+                        verbose_name="AME Programme SubSegment",
+                    ),
+                ),
+                (
+                    "del_prog_sub_segment",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="del_prog_sub_segment_linked",
+                        to="treasurySS.SubSegment",
+                        verbose_name="Del Programme SubSegment",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
     ]

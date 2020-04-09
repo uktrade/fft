@@ -1,0 +1,83 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6-stretch-node-browsers-legacy
+        environment:
+          FLASK_CONFIG: testing
+          DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
+          DJANGO_SETTINGS_MODULE: config.settings.dev
+          SECRET_KEY: used_for_testing
+          ALLOWED_HOSTS: "*"
+          SELENIUM_ADDRESS: localhost
+          SELENIUM_HOST: localhost
+          PUBLIC_PATH: localhost:3000/
+          USE_SELENIUM_HUB: False
+
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: fido_test
+          POSTGRES_PASSWORD: ""
+
+    steps:
+      - checkout
+      - run: mkdir test-reports
+      - run:
+          name: Download Selenium
+          command: |
+            curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
+      - run:
+          name: Start Selenium
+          command: |
+            java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+          background: true
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+      - run:
+          name: Install Python deps
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/dev.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Install React app
+          command:
+            npm install
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python manage.py test
+      - run:
+          name: Run node BDD
+          command: |
+            npm start
+          background: true
+      # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
+      # so override the shell and have the last command be the : { null } command to force exit code 0.
+      - run:
+          shell: /bin/sh
+          command: |
+            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:3000
+            :
+      - run:
+          name: Run BDD tests
+          command: |
+            . venv/bin/activate
+            python manage.py behave --settings=config.settings.bdd
+      - run:
+          name: Run Flake8
+          command: |
+            . venv/bin/activate
+            python -m flake8
+
+      - store_artifacts:
+          path: test-reports/
+          destination: tr1
+      - store_test_results:
+          path: test-reports/

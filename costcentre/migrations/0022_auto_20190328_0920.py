@@ -5,24 +5,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('costcentre', '0021_auto_20190328_0825'),
-    ]
+    dependencies = [("costcentre", "0021_auto_20190328_0825")]
 
     operations = [
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='cost_centre_code',
-            field=models.CharField(max_length=50, verbose_name='Cost Centre No.'),
+            model_name="historiccostcentre",
+            name="cost_centre_code",
+            field=models.CharField(max_length=50, verbose_name="Cost Centre No."),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='directorate_code',
-            field=models.CharField(max_length=50, verbose_name='Directorate'),
+            model_name="historiccostcentre",
+            name="directorate_code",
+            field=models.CharField(max_length=50, verbose_name="Directorate"),
         ),
         migrations.AlterField(
-            model_name='historiccostcentre',
-            name='group_code',
-            field=models.CharField(max_length=50, verbose_name='Group No.'),
+            model_name="historiccostcentre",
+            name="group_code",
+            field=models.CharField(max_length=50, verbose_name="Group No."),
         ),
     ]
