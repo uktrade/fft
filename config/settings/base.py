@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "treasuryCOA.apps.TreasuryCOAConfig",
     "treasurySS.apps.TreasurySSConfig",
     "core.apps.CoreConfig",
+    "end_of_month.apps.EndOfMonthConfig",
     "importdata.apps.ImportDataConfig",
     "upload_file.apps.UploadFileConfig",
     "download_file.apps.DownloadFileConfig",

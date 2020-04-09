@@ -13,17 +13,25 @@ from .models import (
 )
 
 
+class FilteredListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(archived_status__isnull=True)
+        return super(FilteredListSerializer, self).to_representation(data)
+
+
 class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
 
     class Meta:
+        list_serializer_class = FilteredListSerializer
         model = ForecastMonthlyFigure
         fields = [
             'actual',
             'month',
             'amount',
             'starting_amount',
+            'archived_status',
         ]
         read_only_fields = fields
 
@@ -77,6 +85,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         ).filter(
             financial_code=obj.id,
             financial_year_id=get_current_financial_year(),
+            archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')
         )
