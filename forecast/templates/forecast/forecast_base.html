@@ -4,7 +4,7 @@
 {% block content %}
 <div class="app-pane__content">
     <h1 class="govuk-heading-l">Edit forecast</h1>
-    <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code %}" target="_blank" class="govuk-heading-m cost-centre-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
+    <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code %}" target="_blank" class="govuk-heading-m cost-centre-heading-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">

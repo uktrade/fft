@@ -24,13 +24,13 @@ def insert_query(table_name, archived_period_id):
     )
 
 
-# TODO error handling
+# TODO add transaction
 def end_of_month_archive(end_of_month_info):
     period_id = end_of_month_info.archived_period.financial_period_code
     current_year = get_current_financial_year()
 
-    # I cannot use transactions because of the direct SQL
-    # Add archive period to all the active forecast
+    # Add archive period to all the active forecast.
+    # The actuals are not archived, because they don't change from one month to another
     forecast_periods = ForecastMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gt=period_id,
         financial_year_id=current_year,
@@ -39,6 +39,7 @@ def end_of_month_archive(end_of_month_info):
     forecast_periods.update(archived_status=end_of_month_info)
 
     # Copy forecast just archived to current forecast
+    # The current forecast is recognised by  having archive period equal Null.
     # Use direct SQL for performance reason.
     # Simple history does not get updated, but it recovers
     #  when changes are done to the record.
@@ -49,7 +50,7 @@ def end_of_month_archive(end_of_month_info):
     with connection.cursor() as cursor:
         cursor.execute(forecast_sql)
 
-    # Archive the budget
+    # Archive the budget. Use the same logic used for Forecast.
     budget_periods = BudgetMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gt=period_id,
         archived_status__isnull=True,
@@ -62,7 +63,6 @@ def end_of_month_archive(end_of_month_info):
     with connection.cursor() as cursor:
         cursor.execute(budget_sql)
 
-    # set the archived status to archived
     end_of_month_info.archived = True
     end_of_month_info.archived_date = timezone.now()
     end_of_month_info.save()
