@@ -8,9 +8,16 @@ from django.core.cache.utils import make_template_fragment_key
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import JsonResponse
-from django.urls import reverse
+from django.shortcuts import redirect
+from django.urls import (
+    reverse,
+)
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
+
+from guardian.shortcuts import (
+    get_objects_for_user,
+)
 
 from core.models import FinancialYear
 from core.myutils import get_current_financial_year
@@ -31,9 +38,9 @@ from forecast.models import (
 )
 from forecast.permission_shortcuts import (
     NoForecastViewPermission,
-    get_objects_for_user,
 )
 from forecast.serialisers import FinancialCodeSerializer
+from forecast.utils.access_helpers import can_forecast_be_edited
 from forecast.utils.edit_helpers import (
     BadFormatException,
     CannotFindMonthlyFigureException,
@@ -474,8 +481,21 @@ class EditForecastView(
         return context
 
 
-class EditLockedView(TemplateView,):
+class EditUnavailableView(
+    TemplateView,
+):
     template_name = "forecast/edit/edit_locked.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        # If edit is open, redirect to choose CC page
+        if can_forecast_be_edited(request.user):
+            return redirect(reverse("choose_cost_centre"))
+
+        return super(EditUnavailableView, self).dispatch(
+            request,
+            *args,
+            **kwargs,
+        )
 
 
 class ErrorView(

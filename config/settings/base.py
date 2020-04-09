@@ -41,6 +41,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
+    "custom_usermodel",
     "authbroker_client",
     # 'admintool_support.apps.AdmintoolSupportConfig',
     "downloadsupport.apps.DownloadSupportConfig",
@@ -72,7 +73,6 @@ INSTALLED_APPS = [
     "dal",
     "dal_select2",
     "bootstrap_datepicker_plus",  # https://pypi.org/project/django-bootstrap-datepicker-plus/  # noqa
-    "custom_usermodel",
     "storages",
     "sass_processor",
     "webpack_loader",
@@ -225,6 +225,7 @@ CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = False
+CAN_CREATE_TEST_USER = False
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",

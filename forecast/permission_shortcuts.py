@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 
 from guardian.shortcuts import (
     assign_perm as guardian_assign_perm,
-    get_objects_for_user as guardian_get_objects_for_user,
 )
 
 
@@ -30,14 +29,3 @@ def assign_perm(perm, user, cost_centre):
     )
 
     guardian_assign_perm(perm, user, cost_centre)
-
-
-def get_objects_for_user(user, perms, *args, **kwargs):
-    # Check user can view forecasts
-    if not user.has_perm("forecast.can_view_forecasts"):
-        raise NoForecastViewPermission(
-            "Users without forecast view "
-            "permission cannot edit cost centres"
-        )
-
-    return guardian_get_objects_for_user(user, perms, *args, **kwargs)

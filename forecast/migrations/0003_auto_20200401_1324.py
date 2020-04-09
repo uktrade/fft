@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('core', '0007_create_financial_years'),
         ('end_of_month', '0001_initial'),
-        ('forecast', '0002_populate_models'),
+        ('forecast', '0003_auto_20200403_0828'),
     ]
 
     operations = [

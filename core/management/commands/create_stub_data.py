@@ -77,7 +77,7 @@ class CostHierarchy:
         """Clear the Cost Centre, Directorate
         and Group tables, and create the stub data"""
         self.clear()
-        self.create_departmental_group("8888AA", 1, 1)
+        self.create_departmental_group("8888AA", 1, 3)
         # self.create_departmental_group('8123AA', 5, 3)
         # self.create_departmental_group('8213CC', 5, 3)
         # self.create_departmental_group('8456AA', 5, 3)

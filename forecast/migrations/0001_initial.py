@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='ForecastEditLock',
+            name='ForecastEditOpenState',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now_add=True)),
@@ -177,7 +177,7 @@ class Migration(migrations.Migration):
             bases=(simple_history.models.HistoricalChanges, models.Model),
         ),
         migrations.CreateModel(
-            name='SimpleHistoryForecastEditLock',
+            name='SimpleHistoryForecastEditOpenState',
             fields=[
                 ('id', models.IntegerField(auto_created=True, blank=True, db_index=True, verbose_name='ID')),
                 ('created', models.DateTimeField(blank=True, editable=False)),

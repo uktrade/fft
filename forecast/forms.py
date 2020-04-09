@@ -1,6 +1,7 @@
 import json
 
 from django import forms
+from django.contrib.auth import get_user_model
 
 from chartofaccountDIT.models import (
     Analysis1,
@@ -15,7 +16,10 @@ from core.models import FinancialYear
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
+    UnlockedForecastEditor,
 )
+
+User = get_user_model()
 
 
 class PublishForm(forms.Form):
@@ -228,3 +232,30 @@ class EditForecastFigureForm(forms.Form):
             return None
 
         return analysis2_code
+
+
+class UnlockedForecastEditorForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(UnlockedForecastEditorForm, self).__init__(*args, **kwargs)
+
+        unlocked_editors = UnlockedForecastEditor.objects.all()
+        existing_editors = [
+            editor.user.id for editor in unlocked_editors
+        ]
+
+        finance_business_partners = User.objects.filter(
+            groups__name='Finance Business Partner/BSCE',
+        )
+        id_list = [
+            user.id for user in finance_business_partners
+        ]
+
+        self.fields['user'].queryset = User.objects.filter(
+            id__in=id_list
+        ).exclude(
+            id__in=existing_editors
+        )
+
+    class Meta:
+        model = UnlockedForecastEditor
+        fields = ["user", ]

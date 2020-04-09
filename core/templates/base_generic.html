@@ -121,8 +121,8 @@
                             View Forecast
                         </a>
                     </li>
-                    {% has_edit_permission user as has_edit_permission %}
-                    {% if has_edit_permission == True %}
+                    {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
+                    {% if can_edit_at_least_one_cost_centre == True %}
                         <li class="internal-header__navigation__item">
                             <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/edit/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'choose_cost_centre' %}">
                                 Edit forecast

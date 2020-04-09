@@ -1,8 +1,10 @@
 from django import template
 
-from costcentre.models import CostCentre
-
-from forecast.permission_shortcuts import get_objects_for_user
+from forecast.utils.access_helpers import (
+    can_edit_at_least_one_cost_centre as can_edit_at_least_one_cost_centre_helper,
+    can_edit_cost_centre as can_edit_cost_centre_helper,
+    can_view_forecasts,
+)
 
 
 register = template.Library()
@@ -10,26 +12,14 @@ register = template.Library()
 
 @register.simple_tag
 def is_forecast_user(user):
-    return user.has_perm("forecast.can_view_forecasts")
+    return can_view_forecasts(user)
 
 
 @register.simple_tag
-def has_edit_permission(user):
-    # Find out if they have permissions on any cost centres
-    cost_centres = get_objects_for_user(
-        user,
-        "costcentre.change_costcentre",
-    )
-
-    if cost_centres:
-        return True
-
-    return False
+def can_edit_at_least_one_cost_centre(user):
+    return can_edit_at_least_one_cost_centre_helper(user)
 
 
 @register.simple_tag
-def has_cost_centre_edit_permission(user, cost_centre_code):
-    # Find out if they have permission on a specific cost centre
-    cost_centre = CostCentre.objects.get(cost_centre_code=cost_centre_code)
-
-    return user.has_perm("change_costcentre", cost_centre)
+def can_edit_cost_centre(user, cost_centre_code):
+    return can_edit_cost_centre_helper(user, cost_centre_code)
