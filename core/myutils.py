@@ -1,5 +1,6 @@
 # Collection of useful functions and classes
 import datetime
+from io import BytesIO
 
 import boto3
 
@@ -58,7 +59,9 @@ def get_s3_file_body(file_name):
         settings.AWS_STORAGE_BUCKET_NAME,
         file_name,
     )
-    return obj.get()['Body'].read()
+    data = obj.get()['Body'].read()
+    # loadworkbook needs a file like object to work. BytesIO transform the stream
+    return BytesIO(data)
 
 
 def run_anti_virus(file_body):
