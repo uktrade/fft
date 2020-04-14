@@ -210,16 +210,15 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 if 'VCAP_SERVICES' in os.environ:
     services = json.loads(os.getenv('VCAP_SERVICES'))
     credentials = services['redis'][0]['credentials']
-    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
+    CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
         credentials['password'],
         credentials['host'],
         credentials['port'],
     )
 else:
-    REDIS_URL = env("CELERY_BROKER_URL", default=None)
+    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
 # celery
-CELERY_BROKER_URL = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 
