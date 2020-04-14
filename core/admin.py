@@ -1,5 +1,7 @@
 import io
 
+from custom_usermodel.admin import UserAdmin
+
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.models import (
@@ -359,7 +361,7 @@ class UserListFilter(admin.SimpleListFilter):
         return queryset
 
 
-class UserAdmin(admin.ModelAdmin):
+class UserAdmin(UserAdmin):
     list_filter = (UserListFilter,)
 
     def save_model(self, request, obj, form, change):
