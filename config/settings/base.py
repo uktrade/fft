@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 import os
 import environ
-import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -193,7 +192,7 @@ else:
     AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
     AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
     AWS_REGION = env('AWS_REGION', default='')
-    AWS_S3_REGION_NAME = 'eu-west-2'
+    AWS_S3_REGION_NAME = env('AWS_REGION', default='')
     AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
