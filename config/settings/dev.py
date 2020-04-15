@@ -1,6 +1,7 @@
 from .base import *  # noqa
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
+CAN_CREATE_TEST_USER = True
 
 STATICFILES_DIRS = ("/app/front_end/build/static", "/app/node_modules/govuk-frontend")
 

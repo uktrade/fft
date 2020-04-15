@@ -125,7 +125,10 @@ def upload_budget(worksheet, year, header_dict):
         analysis2 = worksheet[f"{header_dict['analysis2']}{row}"].value
         project_code = worksheet[f"{header_dict['project']}{row}"].value
         error_list = []
-        nac_obj, message = get_primary_nac_obj(nac)
+        nac_obj, message = get_fk(NaturalCode, nac)
+        #  Temporary disable the check for Primary NACs, as most of the NAC
+        #  used for budgets are NOT primary nacs.
+        # nac_obj, message = get_primary_nac_obj(nac)
         error_list.append(message)
         cc_obj, message = get_fk(CostCentre, cost_centre)
         error_list.append(message)

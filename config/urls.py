@@ -39,10 +39,10 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    admin.site.site_header = "FIDO Admin - TEST"
-    admin.site.site_title = "FIDO Admin Portal - TEST"
-    admin.site.index_title = "Welcome to FIDO Admin Portal - TEST"
+    admin.site.site_header = "Finance Forecast Tool Admin - DEBUG"
+    admin.site.site_title = "Finance Forecast Tool Admin - DEBUG"
+    admin.site.index_title = "Welcome to the FFT admin site - DEBUG"
 else:
-    admin.site.site_header = "FIDO Admin"
-    admin.site.site_title = "FIDO Admin Portal"
-    admin.site.index_title = "Welcome to FIDO Admin Portal"
+    admin.site.site_header = "Finance Forecast Tool Admin"
+    admin.site.site_title = "Finance Forecast Tool Admin"
+    admin.site.index_title = "Welcome to the FFT admin site"

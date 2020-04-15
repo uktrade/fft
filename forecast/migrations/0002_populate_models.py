@@ -90,18 +90,12 @@ def create_forecast_expenditure_types(apps, schema_editor):
     ).save()
 
 
-def create_forecast_lock(apps, schema_editor):
-    ForecastEditLock = apps.get_model('forecast', 'ForecastEditLock')
-    ForecastEditLock.objects.create()
-
-
 class Migration(migrations.Migration):
     dependencies = [("forecast", "0001_initial")]
 
     operations = [
         migrations.RunPython(populate_period),
         migrations.RunPython(create_forecast_expenditure_types),
-        migrations.RunPython(create_forecast_lock),
         # 0038_auto_create_view_forecast_oscar_return
         migrations.RunSQL(
             """DROP VIEW  if exists "forecast_oscarreturn";

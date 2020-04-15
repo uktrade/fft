@@ -5,7 +5,7 @@ from forecast.views.edit_forecast import (
     ChooseCostCentreView,
     EditForecastFigureView,
     EditForecastView,
-    EditLockedView,
+    EditUnavailableView,
     ErrorView,
     PasteForecastRowsView,
 )
@@ -69,8 +69,8 @@ urlpatterns = [
         EditForecastView.as_view(), name="edit_forecast"
     ),
     path(
-        "edit/editing-locked/",
-        EditLockedView.as_view(), name="edit_locked"
+        "edit/editing-unavailable/",
+        EditUnavailableView.as_view(), name="edit_unavailable"
     ),
     path(
         "edit/add/<int:cost_centre_code>/",

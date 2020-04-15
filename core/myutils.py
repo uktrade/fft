@@ -1,5 +1,6 @@
 # Collection of useful functions and classes
 import datetime
+from io import BytesIO
 
 import boto3
 
@@ -47,13 +48,20 @@ class GetValidYear:
 
 
 def get_s3_file_body(file_name):
-    s3 = boto3.resource('s3')
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        region_name=settings.AWS_REGION,
+    )
 
     obj = s3.Object(
         settings.AWS_STORAGE_BUCKET_NAME,
         file_name,
     )
-    return obj.get()['Body'].read()
+    data = obj.get()['Body'].read()
+    # loadworkbook needs a file like object to work. BytesIO transform the stream
+    return BytesIO(data)
 
 
 def run_anti_virus(file_body):

@@ -2,13 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
-
-from forecast.permission_shortcuts import assign_perm
 from forecast.templatetags.forecast_permissions import (
-    has_edit_permission,
     is_forecast_user,
 )
 
@@ -37,25 +31,3 @@ class EditPermissionTest(TestCase):
         )
 
         assert is_forecast_user(test_user)
-
-    def test_has_edit_permission(self):
-        test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
-        )
-
-        # Give user permission to view forecasts
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
-        test_user.user_permissions.add(can_view_forecasts)
-        test_user.save()
-
-        cost_centre = CostCentreFactory.create(
-            cost_centre_code=self.test_cost_centre
-        )
-
-        assert not has_edit_permission(test_user)
-
-        assign_perm("change_costcentre", test_user, cost_centre)
-
-        assert has_edit_permission(test_user) is True

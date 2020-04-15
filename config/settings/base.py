@@ -11,17 +11,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 import os
 import environ
-import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-ENV_FILE = os.path.join(BASE_DIR, ".environ")
-
-if os.path.exists(ENV_FILE):
-    environ.Env.read_env(ENV_FILE)
-
-env = environ.Env(DEBUG=(bool, False), RESTRICT_ADMIN=(bool, False))
+env = environ.Env()
+env.read_env()
 
 DEBUG = env.bool("DEBUG", default=False)
 
@@ -33,6 +28,8 @@ SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
+VCAP_SERVICES = env.json('VCAP_SERVICES', {})
+
 # ALLOWED_HOSTS = [
 # 'financeadmin-dev.cloudapps.digital',
 # 'd3sy7fs6o4dizv.cloudfront.net',
@@ -41,6 +38,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
+    "custom_usermodel",
     "authbroker_client",
     # 'admintool_support.apps.AdmintoolSupportConfig',
     "downloadsupport.apps.DownloadSupportConfig",
@@ -72,7 +70,6 @@ INSTALLED_APPS = [
     "dal",
     "dal_select2",
     "bootstrap_datepicker_plus",  # https://pypi.org/project/django-bootstrap-datepicker-plus/  # noqa
-    "custom_usermodel",
     "storages",
     "sass_processor",
     "webpack_loader",
@@ -106,9 +103,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-if 'VCAP_SERVICES' in os.environ:
-    services = json.loads(os.getenv('VCAP_SERVICES'))
-    DATABASE_URL = services['postgres'][0]['credentials']['uri']
+VCAP_SERVICES = env.json('VCAP_SERVICES', {})
+
+if 'postgres' in VCAP_SERVICES:
+    DATABASE_URL = VCAP_SERVICES['postgres'][0]['credentials']['uri']
 else:
     DATABASE_URL = os.getenv('DATABASE_URL')
 
@@ -182,9 +180,8 @@ WEBPACK_LOADER = {
 }
 
 # AWS
-if 'VCAP_SERVICES' in os.environ:
-    services = json.loads(os.getenv('VCAP_SERVICES'))
-    credentials = services['aws-s3-bucket'][0]['credentials']
+if 'aws-s3-bucket' in VCAP_SERVICES:
+    credentials = VCAP_SERVICES['aws-s3-bucket'][0]['credentials']
 
     AWS_ACCESS_KEY_ID = credentials["aws_access_key_id"]
     AWS_SECRET_ACCESS_KEY = credentials["aws_secret_access_key"]
@@ -195,7 +192,7 @@ else:
     AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
     AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
     AWS_REGION = env('AWS_REGION', default='')
-    AWS_S3_REGION_NAME = 'eu-west-2'
+    AWS_S3_REGION_NAME = env('AWS_REGION', default='')
     AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
@@ -207,24 +204,22 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
-if 'VCAP_SERVICES' in os.environ:
-    services = json.loads(os.getenv('VCAP_SERVICES'))
-    credentials = services['redis'][0]['credentials']
-    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
+if 'redis' in VCAP_SERVICES:
+    credentials = VCAP_SERVICES['redis'][0]['credentials']
+    CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
         credentials['password'],
         credentials['host'],
         credentials['port'],
     )
 else:
-    REDIS_URL = env("CELERY_BROKER_URL", default=None)
+    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
 # celery
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = False
+CAN_CREATE_TEST_USER = False
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -246,13 +241,13 @@ SETTINGS_EXPORT = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "core.no_cache_middleware.NoCacheMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",

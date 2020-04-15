@@ -2,7 +2,6 @@
 Faker
 factory-boy
 selenium
-django-compressor
 beautifulsoup4
 black
 pytest

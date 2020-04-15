@@ -38,7 +38,6 @@ docker-compose run fido python manage.py compilescss
 docker-compose run fido python manage.py collectstatic
 ```
 
-
 ### Environment variables
 
 You need to populate the .env file in the project root folder with the following variables:

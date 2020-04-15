@@ -33,8 +33,14 @@ class UploadActualsView(FormView):
         if form.is_valid():
             data = form.cleaned_data
 
+            # When using a model form, you must use the
+            # name attribute of the file rather than
+            # passing the request file var directly as this is the
+            # required when using the chunk uploader project
+            s3_file_name = request.FILES['file'].name
+
             file_upload = FileUpload(
-                document_file=request.FILES['file'].name,
+                document_file=s3_file_name,
                 uploading_user=request.user,
                 document_type=FileUpload.ACTUALS,
             )
@@ -78,8 +84,14 @@ class UploadBudgetView(FormView):
         if form.is_valid():
             data = form.cleaned_data
 
+            # When using a model form, you must use the
+            # name attribute of the file rather than
+            # passing the request file var directly as this is the
+            # required when using the chunk uploader project
+            s3_file_name = request.FILES['file'].name
+
             file_upload = FileUpload(
-                document_file=request.FILES['file'],
+                document_file=s3_file_name,
                 uploading_user=request.user,
                 document_type=FileUpload.BUDGET,
             )
