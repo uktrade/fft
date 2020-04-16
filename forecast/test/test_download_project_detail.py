@@ -101,6 +101,16 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         self.underspend_total = self.budget - self.amount_apr - self.amount_may
         self.spend_to_date_total = self.amount_apr
 
+    def check_response_content(self, content):
+        file = io.BytesIO(content)
+        wb = load_workbook(filename=file)
+        ws = wb.active
+        # Check group
+        assert ws["A1"].value == "Group name"
+        assert ws["B2"].value == self.group_code
+        assert ws["W1"].value == "Project code"
+        assert ws["W2"].value == self.project_code
+
     def test_dit_download(self):
         response = self.factory_get(
             reverse(
@@ -113,12 +123,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
 
         self.assertEqual(response.status_code, 200)
 
-        file = io.BytesIO(response.content)
-        wb = load_workbook(filename=file)
-        ws = wb.active
-        # Check group
-        assert ws["A1"].value == "Group name"
-        assert ws["B2"].value == self.group_code
+        self.check_response_content(response.content)
 
     def test_group_download(self):
         response = self.factory_get(
@@ -136,12 +141,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
 
         self.assertEqual(response.status_code, 200)
 
-        file = io.BytesIO(response.content)
-        wb = load_workbook(filename=file)
-        ws = wb.active
-        # Check group
-        assert ws["A1"].value == "Group name"
-        assert ws["B2"].value == self.group_code
+        self.check_response_content(response.content)
 
     def test_directorate_download(self):
         response = self.factory_get(
@@ -158,13 +158,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(response.status_code, 200)
-
-        file = io.BytesIO(response.content)
-        wb = load_workbook(filename=file)
-        ws = wb.active
-        # Check group
-        assert ws["A1"].value == "Group name"
-        assert ws["B2"].value == self.group_code
+        self.check_response_content(response.content)
 
     def test_cost_centre_download(self):
         response = self.factory_get(
@@ -181,10 +175,4 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(response.status_code, 200)
-
-        file = io.BytesIO(response.content)
-        wb = load_workbook(filename=file)
-        ws = wb.active
-        # Check group
-        assert ws["A1"].value == "Group name"
-        assert ws["B2"].value == self.group_code
+        self.check_response_content(response.content)
