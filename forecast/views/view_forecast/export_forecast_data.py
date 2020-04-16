@@ -159,9 +159,6 @@ def export_forecast_data_programme_detail_dit(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
-# ----------
-
-
 def export_forecast_data_project_detail_cost_centre(
     request, cost_centre, project_code_id
 ):
@@ -211,9 +208,6 @@ def export_forecast_data_project_detail_dit(request, project_code_id):
     )
     title = f"DIT {project_code_id}"
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
-
-
-# -----------------
 
 
 def export_edit_forecast_data(request, cost_centre):
