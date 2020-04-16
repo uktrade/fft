@@ -34,6 +34,10 @@ from forecast.views.view_forecast.export_forecast_data import (
     export_forecast_data_programme_detail_directorate,
     export_forecast_data_programme_detail_dit,
     export_forecast_data_programme_detail_group,
+    export_forecast_data_project_detail_cost_centre,
+    export_forecast_data_project_detail_directorate,
+    export_forecast_data_project_detail_dit,
+    export_forecast_data_project_detail_group,
 )
 from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
@@ -241,7 +245,26 @@ urlpatterns = [
         export_forecast_data_expenditure_detail_cost_centre,
         name="export_expenditure_details_cost_centre",
     ),
-
+    path(
+        "export-project-details/cost-centre/<cost_centre>/<project_code_id>/",
+        export_forecast_data_project_detail_cost_centre,
+        name="export_forecast_data_project_detail_cost_centre",
+    ),
+    path(
+        "export-project-details/directorate/<directorate_code>/<project_code_id>/",
+        export_forecast_data_project_detail_directorate,
+        name="export_forecast_data_project_detail_directorate",
+    ),
+    path(
+        "export-project-details/group/<group_code>/<project_code_id>/",
+        export_forecast_data_project_detail_group,
+        name="export_forecast_data_project_detail_group",
+    ),
+    path(
+        "export-project-details/<project_code_id>/",
+        export_forecast_data_project_detail_dit,
+        name="export_forecast_data_project_detail_dit",
+    ),
     path(
         "export-dit-programme/<programme_code_id>/<forecast_expenditure_type_name>/",
         export_forecast_data_programme_detail_dit,

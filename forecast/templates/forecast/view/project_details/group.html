@@ -10,3 +10,6 @@
 {% block view_hierarchy_title %}
     <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
 {% endblock %}
+{% block download_link %}
+    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_project_detail_group' view.group.group_code view.project_code.project_code  %} ">Download raw data</a>
+{% endblock %}

@@ -11,4 +11,6 @@
 {% block view_hierarchy_title %}
     <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }} </h1>
 {% endblock %}
-
+{% block download_link %}
+    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_project_detail_directorate' view.directorate.directorate_code view.project_code.project_code  %} ">Download raw data</a>
+{% endblock %}
