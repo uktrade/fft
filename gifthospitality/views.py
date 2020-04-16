@@ -110,18 +110,18 @@ def quick_links(request):
         "quick_links": [
             {
                 "title": "Add Gift/Hosp Received",
-                "text": "TODO",
-                "url": "gifts_hospitality:gift-received",
+                "text": "Go",
+                "url": "gifthospitality:gift-received",
             },
             {
                 "title": "Add Gift/Hosp Offered",
-                "text": "TODO",
-                "url": "gifts_hospitality:gift-offered",
+                "text": "Go",
+                "url": "gifthospitality:gift-offered",
             },
             {
                 "title": "Search Records",
-                "text": "TODO",
-                "url": "gifts_hospitality:gift-search",
+                "text": "Go",
+                "url": "gifthospitality:gift-search",
             },
         ]
     })

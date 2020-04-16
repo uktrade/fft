@@ -16,8 +16,6 @@ from costcentre.import_csv import import_cc
 
 from forecast.import_csv import import_adi_file
 
-from payroll.import_csv import import_HR_Report
-
 from treasuryCOA.import_csv import import_treasury_COA
 
 IMPORT_TYPE = {
@@ -32,7 +30,6 @@ IMPORT_TYPE = {
     "NAC_Dashboard_Budget": import_expenditure_category,
     "NAC_Category": import_NAC_category,
     "NAC_DIT_Setting": import_NAC_DIT,  # add extra fields defined by DIT
-    "HR_Report": import_HR_Report,
     "NAC_Dashboard_other": import_expenditure_category,
     "Commercial_Cat": import_commercial_category,
     "ADI": import_adi_file,

@@ -12,10 +12,8 @@ from gifthospitality.models import (
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
     GiftAndHospitalityCompany,
+    Grade,
 )
-
-from payroll.models import Grade
-
 
 GH_CLASSIF_KEY = {
     IMPORT_CSV_MODEL_KEY: GiftAndHospitalityClassification,
@@ -65,31 +63,34 @@ GH_CLASS_FK_KEY = {
     IMPORT_CSV_PK_NAME_KEY: GiftAndHospitalityClassification.gif_hospitality_classification.field_name,  # noqa
 }
 
-GH_GRADE_FK_KEY = {
+GH_GRADE_KEY = {
     IMPORT_CSV_MODEL_KEY: Grade,
     IMPORT_CSV_IS_FK: "",
     IMPORT_CSV_PK_KEY: "Grade",
 }
 
+import_grade_class = ImportInfo(GH_GRADE_KEY)
+
 GH_KEY = {
     IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
     IMPORT_CSV_FIELDLIST_KEY: {
         GiftAndHospitality.old_id.field_name: "HospID",
-        GiftAndHospitality.classification_fk.field.name: GH_CLASS_FK_KEY,
+        GiftAndHospitality.classification.field.name: GH_CLASS_FK_KEY,
         GiftAndHospitality.group_name.field_name: "Group",
         GiftAndHospitality.date_offered.field_name: "Date of event/gift offered",
         GiftAndHospitality.venue.field_name: "Venue",
         GiftAndHospitality.reason.field_name: "Description of offer & reason",
         GiftAndHospitality.value.field_name: "Estimate value of offer",
+        # GiftAndHospitality.group.field_name: "DIT group offered to/from",
         GiftAndHospitality.rep.field_name: "DIT representative offered to/from",
         GiftAndHospitality.offer.field_name: "Offer",
         GiftAndHospitality.company_rep.field_name: "Company representative offered to/from",  # noqa
-        GiftAndHospitality.company.field_name: "Company offered to/from",
+        # GiftAndHospitality.company.field_name: "Company offered to/from",
         GiftAndHospitality.action_taken.field_name: "Action taken",
         GiftAndHospitality.entered_by.field_name: "Entered By",
         GiftAndHospitality.entered_date_stamp.field_name: "Date Entered",
-        GiftAndHospitality.category_fk.field.name: GH_CAT_FK_KEY,
-        GiftAndHospitality.grade_fk.field.name: GH_GRADE_FK_KEY,
+        GiftAndHospitality.category.field.name: GH_CAT_FK_KEY,
+        GiftAndHospitality.grade.field.name: GH_GRADE_KEY,
     },
 }
 

@@ -9,12 +9,14 @@ from gifthospitality.import_csv import (
     import_gh_class,
     import_gh_classification_class,
     import_gh_company_class,
+    import_grade_class,
 )
 from gifthospitality.models import (
     GiftAndHospitality,
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
     GiftAndHospitalityCompany,
+    Grade,
 )
 
 
@@ -74,26 +76,45 @@ class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport)
         return import_gh_classification_class
 
 
+def _export_grade_iterator(queryset):
+    yield ["Grade", "Grade Description"]
+    for obj in queryset:
+        yield [obj.grade, obj.gradedescription]
+
+
+class GradeAdmin(AdminImportExport):
+    list_display = ("grade", "gradedescription")
+
+    @property
+    def export_func(self):
+        return _export_grade_iterator
+
+    @property
+    def import_info(self):
+        return import_grade_class
+
+
 class GiftAndHospitalityAdmin(AdminImportExport):
     def gift_or_hospitality(
         self, instance
     ):  # required to display the field from a foreign key
-        return instance.classification_fk.gift_type
+        return instance.classification.gift_type
 
-    gift_or_hospitality.admin_order_field = "classification_fk__gift_type"
+    gift_or_hospitality.admin_order_field = "classification__gift_type"
 
     list_display = (
         "id",
         "gift_or_hospitality",
-        "category_fk",
-        "classification_fk",
+        "category",
+        "classification",
         "group_name",
         "date_offered",
         "venue",
         "reason",
         "value",
+        "group",
         "rep",
-        "grade_fk",
+        "grade",
         "offer",
         "company_rep",
         "company",
@@ -101,22 +122,23 @@ class GiftAndHospitalityAdmin(AdminImportExport):
         "entered_date_stamp",
         "entered_by",
     )
-    search_fields = ["id", "rep", "entered_by"]
+    search_fields = ["id", "rep", "group", "entered_by"]
 
-    list_filter = ("classification_fk__gift_type", "offer", "action_taken")
+    list_filter = ("classification__gift_type", "offer", "action_taken")
 
     def get_fields(self, request, obj=None):
         return [
             "gift_or_hospitality",
-            "category_fk",
-            "classification_fk",
+            "category",
+            "classification",
             "group_name",
             "date_offered",
             "venue",
             "reason",
             "value",
+            "group",
             "rep",
-            "grade_fk",
+            "grade",
             "offer",
             "company_rep",
             "company",
@@ -147,3 +169,4 @@ admin.site.register(GiftAndHospitalityCategory, GiftAndHospitalityCategoryAdmin)
 admin.site.register(
     GiftAndHospitalityClassification, GiftAndHospitalityClassificationAdmin
 )
+admin.site.register(Grade, GradeAdmin)

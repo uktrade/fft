@@ -2,8 +2,6 @@ import datetime
 
 from bootstrap_datepicker_plus import DatePickerInput
 
-from dal import autocomplete
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
@@ -16,21 +14,27 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].required = True
-        self.fields["company"].visible = False
+        # self.fields["company"].visible = False
 
-        self.fields['classification_fk'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['category_fk'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['date_offered'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['value'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['rep'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['company'].widget.attrs.update({'class': 'govuk-select'})
 
     def save(self, *args, **kwargs):
         self.instance.offer = self.offer
         self.instance.entered_date_stamp = datetime.datetime.now()
-        if self.instance.rep_fk:
-            self.instance.rep = self.instance.rep_fk
-            self.instance.grade_fk = self.instance.rep_fk.grade
+        if self.instance.group:
             self.instance.group_name = (
-                self.instance.rep_fk.cost_centre.directorate.group.group_name
+                self.instance.group.group_name
             )
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
@@ -40,27 +44,30 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
 
         model = GiftAndHospitality
         fields = [
-            "classification_fk",
-            "category_fk",
+            "classification",
+            "category",
             "date_offered",
             "action_taken",
             "venue",
             "reason",
             "value",
-            "rep_fk",
+            "rep",
+            "grade",
+            "group",
             "company_rep",
-            "company_fk",
             "company",
         ]
         labels = {
-            "company_fk": _("Company received from"),
+            "company": _("Company received from"),
             "company_rep": _("Company Representative received from"),
-            "rep_fk": _("DIT Representative offered to"),
+            "group": _("DIT Group offered to"),
+            "rep": _("DIT Representative offered to"),
+            "grade": _("DIT Representative Grade"),
         }
 
         widgets = {
-            # 'rep_fk' : ModelSelect2Bootstrap(url='people-autocomplete'),
-            "rep_fk": autocomplete.ModelSelect2(url="people-autocomplete"),
+            # 'rep' : ModelSelect2Bootstrap(url='people-autocomplete'),
+            # "rep": autocomplete.ModelSelect2(url="people-autocomplete"),
             "date_offered": DatePickerInput(
                 options={
                     "format": "DD/MM/YYYY",  # moment date-time format
@@ -77,9 +84,23 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
         self.offer = GIFT_OFFERED
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
 
+        self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['date_offered'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['value'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['rep'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['company'].widget.attrs.update({'class': 'govuk-select'})
+
     class Meta(GiftAndHospitalityReceivedForm.Meta):
         labels = {
-            "company_fk": _("Company offered to"),
+            "company": _("Company offered to"),
             "company_rep": _("Company Representative offered to"),
-            "rep_fk": _("DIT Representative received from"),
+            "group": _("DIT Group received from"),
+            "rep": _("DIT Representative received from"),
         }

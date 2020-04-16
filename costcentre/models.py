@@ -78,6 +78,16 @@ class DepartmentalGroup(IsActiveModel):
         blank=True,
     )
 
+    @property
+    def full_name(self):
+        return "{} - {}".format(
+            self.group_code,
+            self.group_name,
+        )
+
+    # def __str__(self):
+    #     return self.full_name
+
     def __str__(self):
         return str(self.group_name)
 

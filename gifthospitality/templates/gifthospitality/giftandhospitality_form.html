@@ -9,7 +9,7 @@
 {#Show/hide the company text input, according to the value selected in the company dropdown.#}
 {#When other is selected, show the field.constructor. Copy the value selected #}
 {#when the company field is hidden, to avoid problems with the 'required' attribute.#}
-$("#id_company_fk").change(function(){
+$("#id_company").change(function(){
     var txt = $(this).find("option:selected").text();
     if ( txt == "Other")
     {
@@ -40,7 +40,7 @@ function isgift(value) {
   return (false)
 }
 
-$("#id_classification_fk").change(function(){
+$("#id_classification").change(function(){
     if(isgift($(this).val())){
         {#show the options specific for gift received#}
         $("#id_action_taken").children('[value="Action2"]').show();
@@ -84,7 +84,7 @@ $(document).one('autocompleteLightInitialize', '[data-autocomplete-light-functio
   <div class="container">
     <div class="col-md-12">
 
-<form method="post">
+<form method='post'>
     {% csrf_token %}
     {% include "core/govt_uk_form.html" with form=form %}
     <input type="submit" value="Save" class="govuk-button" data-module="govuk-button"/>

@@ -4,20 +4,7 @@ from core.metamodels import BaseModel, IsActiveModel
 
 from costcentre.models import CostCentre, DepartmentalGroup
 
-
-# salaries data
-# define a choice field for this
-class Grade(BaseModel):
-    grade = models.CharField(primary_key=True, max_length=10)
-    gradedescription = models.CharField("Grade Description", max_length=50)
-    order = models.IntegerField
-
-    def __str__(self):
-        return self.grade
-
-    class Meta:
-        verbose_name = "Grade"
-        verbose_name_plural = "Grades"
+from gifthospitality.models import Grade
 
 
 class DITPeople(IsActiveModel):

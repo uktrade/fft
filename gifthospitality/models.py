@@ -5,7 +5,22 @@ from core.metamodels import (
     IsActiveModel,
 )
 
-from payroll.models import DITPeople, Grade
+from costcentre.models import DepartmentalGroup
+
+
+# salaries data
+# define a choice field for this
+class Grade(IsActiveModel):
+    grade = models.CharField(primary_key=True, max_length=10)
+    gradedescription = models.CharField("Grade Description", max_length=50)
+    order = models.IntegerField
+
+    def __str__(self):
+        return self.grade
+
+    class Meta:
+        verbose_name = "Grade"
+        verbose_name_plural = "Grades"
 
 
 class GiftAndHospitalityClassification(IsActiveModel):
@@ -72,32 +87,37 @@ class GiftAndHospitality(BaseModel):
 
     id = models.AutoField("Record ID", primary_key=True)
     old_id = models.IntegerField(null=True, blank=True)
-    classification_fk = models.ForeignKey(
+    classification = models.ForeignKey(
         GiftAndHospitalityClassification,
         on_delete=models.PROTECT,
         limit_choices_to={"active": True},
         verbose_name="Type",
     )
 
-    group_name = models.CharField("Group", max_length=200)
+    group_name = models.CharField("Group", max_length=200, blank=True, null=True)
     date_offered = models.DateField("Date of event /  gift offered")
     venue = models.CharField(max_length=1000)
     reason = models.CharField("Description of offer and reason", max_length=1000)
     value = models.IntegerField("Estimated value of offer (£)")
-    rep_fk = models.ForeignKey(
-        DITPeople,
+    rep = models.CharField(
+        "DIT representative offered to/from", max_length=200, blank=True
+    )
+
+    group = models.ForeignKey(
+        DepartmentalGroup,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="DIT Representative",
+        verbose_name="DIT Group",
     )
 
-    rep = models.CharField("DIT representative offered to/from", max_length=255)
+    # rep = models.CharField("DIT representative offered to/from", max_length=255)
+    # group = models.CharField("DIT Group offered to/from", max_length=255)
     offer = models.CharField(max_length=200, choices=OFFER_CHOICE)
     company_rep = models.CharField(
         "Company representative offered to/from", max_length=200
     )
-    company_fk = models.ForeignKey(
+    company = models.ForeignKey(
         GiftAndHospitalityCompany,
         on_delete=models.SET_NULL,
         limit_choices_to={"active": True},
@@ -105,7 +125,7 @@ class GiftAndHospitality(BaseModel):
         blank=True,
         verbose_name="company",
     )
-    company = models.CharField("Company offered to/from", max_length=200)
+    # company = models.CharField("Company offered to/from", max_length=200)
     ACTION_TYPE = (
         ("Action1", "Rejected"),
         ("Action2", "Accepted (difference paid to Department)"),
@@ -117,13 +137,14 @@ class GiftAndHospitality(BaseModel):
     )
     entered_by = models.CharField(max_length=100)
     entered_date_stamp = models.DateField("Date entered")
-    category_fk = models.ForeignKey(
+    category = models.ForeignKey(
         GiftAndHospitalityCategory,
         on_delete=models.PROTECT,
         limit_choices_to={"active": True},
         verbose_name="category",
     )
-    grade_fk = models.ForeignKey(Grade, on_delete=models.PROTECT, verbose_name="grade")
+    grade = models.ForeignKey(Grade, on_delete=models.PROTECT, verbose_name="grade",
+                              null=True)
 
     class Meta:
         verbose_name = "Gift and Hospitality"
