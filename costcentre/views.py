@@ -15,8 +15,10 @@ from costcentre.tables import (
 class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
     table_class = CostCentreTable
     model = table_class.Meta.model
-    filterset_class = CostCentreFilter
+    # filterset_class = CostCentreFilter
     name = "Cost Centre Hierarchy"
+    def __init__(self):
+        filterset_class = CostCentreFilter
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -39,3 +41,9 @@ class FilteredCostHistoricalListView(FilteredCostListView):
     model = table_class.Meta.model
     name = "Cost Centre Hierarchy 2018-19"
     filterset_class = CostCentreHistoricalFilter
+
+    def get(self, request, *args, **kwargs):
+        year = kwargs['year']
+        self.filterset_class.year = year
+        self.name = f"Cost centre {year}"
+        return super().get(request, *args, **kwargs)

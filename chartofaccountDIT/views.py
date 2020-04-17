@@ -285,14 +285,15 @@ def quick_links(request, year):
     if year == 2018:
         historical = "historical_"
 
-    return render(request, 'chartofaccountDIT/quick_links.html', {
+
+    a =  render(request, 'chartofaccountDIT/quick_links.html', {
         "year": year,
         "quick_links": [
-            {
-                "title": "Cost Centre Hierarchy",
-                "text": "view",
-                "url": "{}cost_centre_filter".format(historical),
-            },
+            # {
+            #     "title": "Cost Centre Hierarchy",
+            #     "text": "view",
+            #     "url": "{}cost_centre_filter:{}".format(historical, year),
+            # },
             {
                 "title": "Programme Codes",
                 "text": "view",
@@ -340,3 +341,4 @@ def quick_links(request, year):
             },
         ]
     })
+    return a

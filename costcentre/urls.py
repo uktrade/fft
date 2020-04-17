@@ -9,7 +9,7 @@ urlpatterns = [
         name="cost_centre_filter",
     ),
     path(
-        "costcentrehistoricalfilter/",
+        "costcentrehistoricalfilter/<year>/",
         FilteredCostHistoricalListView.as_view(),
         name="historical_cost_centre_filter",
     ),

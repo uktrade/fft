@@ -65,7 +65,7 @@ class CostCentreHistoricalFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
-
+    year = 0
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(
             Q(group_name__icontains=value)
@@ -85,7 +85,7 @@ class CostCentreHistoricalFilter(MyFilterSet):
 
     @property
     def qs(self):
-        cc = super(CostCentreHistoricalFilter, self).qs
+        cc = super(CostCentreHistoricalFilter, self).qs.filter(financial_year = self.year)
         return cc.filter(active=True).order_by(
             "group_code",
             "group_name",
