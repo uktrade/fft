@@ -5,7 +5,11 @@
           {{ quick_link.title }}
         </dt>
         <dd class="govuk-summary-list__value">
-          <a class="govuk-button govuk-button" href="{% url quick_link.url year=financial_year %}">
+            {% if financial_year %}
+                <a class="govuk-button govuk-button" href="{% url quick_link.url year=financial_year %}">
+            {%  else  %}
+                <a class="govuk-button govuk-button" href="{% url quick_link.url %}">
+            {% endif %}
              {{ quick_link.text }}
           </a>
         </dd>

@@ -336,7 +336,9 @@ def choose_year(request):
 def quick_links(request, year):
     historical = ""
 
-    if year != 2019:
+    if year == 2019:
+        year = 0
+    else:
         historical = "historical_"
 
 
