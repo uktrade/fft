@@ -38,7 +38,7 @@ def get_current_financial_year():
 
 
 class GetValidYear:
-    regex = '2018|2019'
+    regex = '2017|2018|2019|2020'
 
     def to_python(self, value):
         return int(value)

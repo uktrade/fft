@@ -2,7 +2,7 @@ from django.db.models import Q
 
 import django_filters
 
-from core.filters import MyFilterSet
+from core.filters import ArchivedFilterSet, MyFilterSet
 
 from costcentre.models import (
     CostCentre,
@@ -57,7 +57,7 @@ class CostCentreFilter(MyFilterSet):
         )
 
 
-class CostCentreHistoricalFilter(MyFilterSet):
+class CostCentreHistoricalFilter(ArchivedFilterSet):
     """Use a single text box to enter an object name.
     It will search into group, directorate and cost centre name
     """

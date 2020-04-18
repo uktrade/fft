@@ -23,7 +23,7 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.filters import MyFilterSet
+from core.filters import ArchivedFilterSet, MyFilterSet
 
 
 class NACFilter(MyFilterSet):
@@ -75,7 +75,7 @@ class NACFilter(MyFilterSet):
         )
 
 
-class HistoricalNACFilter(MyFilterSet):
+class HistoricalNACFilter(ArchivedFilterSet):
     """Provide filter definition for
     Historical NAC. It cannot inherit
     from the current NAC filter class
@@ -98,7 +98,7 @@ class HistoricalNACFilter(MyFilterSet):
             | Q(natural_account_code_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedNaturalCode
         fields = ["search_all"]
 
@@ -146,7 +146,7 @@ class ExpenditureCategoryFilter(MyFilterSet):
         )
 
 
-class HistoricalExpenditureCategoryFilter(MyFilterSet):
+class HistoricalExpenditureCategoryFilter(ArchivedFilterSet):
     """Provide filter definition for
     Historical Expenditure Category.
     It cannot inherit from the current
@@ -167,7 +167,7 @@ class HistoricalExpenditureCategoryFilter(MyFilterSet):
             | Q(further_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedExpenditureCategory
         fields = ["search_all"]
 
@@ -208,14 +208,26 @@ class CommercialCategoryFilter(MyFilterSet):
         return myfilter.order_by("commercial_category", "description")
 
 
-class HistoricalCommercialCategoryFilter(CommercialCategoryFilter):
-    """Provide the filter definition
-    for Historical Commercial
-    Category. Inherit from current one,
-    because the fields are identical."""
+class HistoricalCommercialCategoryFilter(ArchivedFilterSet):
+    search_all = django_filters.CharFilter(
+        field_name="", label="", method="search_all_filter"
+    )
 
-    class Meta(CommercialCategoryFilter.Meta):
+    def search_all_filter(selfself, queryset, name, value):
+        return queryset.filter(
+            Q(commercial_category__icontains=value) | Q(description__icontains=value)
+        )
+
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedCommercialCategory
+        fields = ["search_all"]
+
+    @property
+    def qs(self):
+        # There is no Active field on the commercial Category table:
+        # this is why there is no filter on Active  on the queryset
+        myfilter = super(HistoricalCommercialCategoryFilter, self).qs
+        return myfilter.order_by("commercial_category", "description")
 
 
 class Analysis1Filter(MyFilterSet):
@@ -245,12 +257,30 @@ class Analysis1Filter(MyFilterSet):
         )
 
 
-class HistoricalAnalysis1Filter(Analysis1Filter):
-    """Provide the filter definition for Analysis 2. Inherit from current one,
-    because the fields are identical."""
+class HistoricalAnalysis1Filter(ArchivedFilterSet):
+    search_all = django_filters.CharFilter(
+        field_name="", label="", method="search_all_filter"
+    )
 
-    class Meta(Analysis1Filter.Meta):
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(analysis1_code__icontains=value)
+            | Q(analysis1_description__icontains=value)
+            | Q(supplier__icontains=value)
+            | Q(pc_reference__icontains=value)
+        )
+
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedAnalysis1
+        fields = ["search_all"]
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalAnalysis1Filter, self).qs
+        return myfilter.filter(active=True).order_by(
+            "analysis1_code", "analysis1_description"
+        )
+
 
 
 class Analysis2Filter(MyFilterSet):
@@ -278,12 +308,28 @@ class Analysis2Filter(MyFilterSet):
         )
 
 
-class HistoricalAnalysis2Filter(Analysis2Filter):
-    """Provide the filter definition for Analysis 1. Inherit from current one,
-    because the fields are identical."""
+class HistoricalAnalysis2Filter(ArchivedFilterSet):
+    search_all = django_filters.CharFilter(
+        field_name="", label="", method="search_all_filter"
+    )
 
-    class Meta(Analysis2Filter.Meta):
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(analysis2_code__icontains=value)
+            | Q(analysis2_description__icontains=value)
+        )
+
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedAnalysis2
+        fields = ["search_all"]
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalAnalysis2Filter, self).qs
+        return myfilter.filter(active=True).order_by(
+            "analysis2_code", "analysis2_description"
+        )
+
 
 
 class ProgrammeFilter(MyFilterSet):
@@ -310,9 +356,13 @@ class ProgrammeFilter(MyFilterSet):
         )
 
 
-class HistoricalProgrammeFilter(ProgrammeFilter):
+class HistoricalProgrammeFilter(ArchivedFilterSet):
     """Provide the filter definition for Programme. Inherit from current one,
     but change the filter to ."""
+
+    search_all = django_filters.CharFilter(
+        field_name="", label="", method="search_all_filter"
+    )
 
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(
@@ -321,12 +371,13 @@ class HistoricalProgrammeFilter(ProgrammeFilter):
             | Q(budget_type__icontains=value)
         )
 
-    class Meta(ProgrammeFilter.Meta):
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedProgrammeCode
+        fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(ProgrammeFilter, self).qs
+        myfilter = super(HistoricalProgrammeFilter, self).qs
         return myfilter.filter(active=True).order_by(
             "programme_code", "programme_description", "budget_type"
         )
@@ -358,7 +409,7 @@ class InterEntityFilter(MyFilterSet):
         )
 
 
-class HistoricalInterEntityFilter(MyFilterSet):
+class HistoricalInterEntityFilter(ArchivedFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -372,7 +423,7 @@ class HistoricalInterEntityFilter(MyFilterSet):
             | Q(cpid__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedInterEntity
         fields = ["search_all"]
 
@@ -404,12 +455,24 @@ class ProjectFilter(MyFilterSet):
         return myfilter.filter(active=True).order_by("project_code")
 
 
-class HistoricalProjectFilter(ProjectFilter):
-    """Provide the filter definition for Programme. Inherit from current one,
-    because the fields are identical."""
+class HistoricalProjectFilter(ArchivedFilterSet):
+    search_all = django_filters.CharFilter(
+        field_name="", label="", method="search_all_filter"
+    )
 
-    class Meta(ProjectFilter.Meta):
+    def search_all_filter(self, queryset, name, value):
+        return queryset.filter(
+            Q(project_code__icontains=value) | Q(project_description__icontains=value)
+        )
+
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedProjectCode
+        fields = ["search_all"]
+
+    @property
+    def qs(self):
+        myfilter = super(HistoricalProjectFilter, self).qs
+        return myfilter.filter(active=True).order_by("project_code")
 
 
 class FCOMappingtFilter(MyFilterSet):
@@ -444,7 +507,7 @@ class FCOMappingtFilter(MyFilterSet):
         return myfilter.filter(active=True).order_by("fco_code")
 
 
-class HistoricalFCOMappingtFilter(MyFilterSet):
+class HistoricalFCOMappingtFilter(ArchivedFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -460,7 +523,7 @@ class HistoricalFCOMappingtFilter(MyFilterSet):
             | Q(economic_budget_code__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(ArchivedFilterSet.Meta):
         model = ArchivedFCOMapping
         fields = ["search_all"]
 
