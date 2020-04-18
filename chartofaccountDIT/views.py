@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from core.myutils import get_current_financial_year
 from core.views import FAdminFilteredView
 
 from .filters import (
@@ -336,13 +337,12 @@ def choose_year(request):
 def quick_links(request, year):
     historical = ""
 
-    if year == 2019:
+    if year == get_current_financial_year():
         year = 0
     else:
         historical = "historical_"
 
-
-    a =  render(request, 'chartofaccountDIT/quick_links.html', {
+    return  render(request, 'chartofaccountDIT/quick_links.html', {
         "financial_year": year,
         "quick_links": [
             {
@@ -397,4 +397,3 @@ def quick_links(request, year):
             },
         ]
     })
-    return a
