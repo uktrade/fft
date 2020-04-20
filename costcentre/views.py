@@ -41,7 +41,7 @@ class FilteredCostHistoricalListView(FilteredCostListView):
     filterset_class = CostCentreHistoricalFilter
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Cost Centre Hierarchy {year}"
         return super().get(request, *args, **kwargs)

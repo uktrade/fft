@@ -17,6 +17,7 @@ class MyFilterSet(django_filters.FilterSet):
 
 class ArchivedFilterSet(MyFilterSet):
     year = 0
+
     @property
     def qs(self):
         return super(ArchivedFilterSet, self).qs.filter(financial_year=self.year)

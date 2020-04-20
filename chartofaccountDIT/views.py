@@ -71,7 +71,7 @@ class HistoricalFilteredNACListView(FilteredNACListView):
     name = "Natural Account Codes  2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Natural Account Codes {year}"
         return super().get(request, *args, **kwargs)
@@ -103,7 +103,7 @@ class HistoricalFilteredExpenditureCategoryListView(
     name = "Budget Categories 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Budget Categories {year}"
         return super().get(request, *args, **kwargs)
@@ -133,7 +133,7 @@ class HistoricalFilteredCommercialCategoryListView(FilteredCommercialCategoryLis
     name = "Commercial Categories 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Commercial Categories  {year}"
         return super().get(request, *args, **kwargs)
@@ -165,7 +165,7 @@ class HistoricalFilteredAnalysis1ListView(FilteredAnalysis1ListView):
     name = "Contract Reconciliation (Analysis 1) 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Contract Reconciliation (Analysis 1)  {year}"
         return super().get(request, *args, **kwargs)
@@ -196,7 +196,7 @@ class HistoricalFilteredAnalysis2ListView(FilteredAnalysis2ListView):
     name = "Markets (Analysis 2) 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Markets (Analysis 2)  {year}"
         return super().get(request, *args, **kwargs)
@@ -230,7 +230,7 @@ class HistoricalFilteredProgrammeView(FilteredProgrammeView):
     name = "Programme Codes 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Programme Codes   {year}"
         return super().get(request, *args, **kwargs)
@@ -262,7 +262,7 @@ class HistoricalFilteredInterEntityView(FilteredInterEntityView):
     name = "Entity Inter Entity 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Entity Inter Entity   {year}"
         return super().get(request, *args, **kwargs)
@@ -295,7 +295,7 @@ class HistoricalFilteredProjectView(FilteredProjectView):
     name = "Project Codes (Spare 1) 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"Project Codes (Spare 1)  {year}"
         return super().get(request, *args, **kwargs)
@@ -321,17 +321,14 @@ class HistoricalFilteredFCOMappingView(FilteredFCOMappingView):
     name = "FCO Mappings 2018-19"
 
     def get(self, request, *args, **kwargs):
-        year = kwargs['year']
+        year = kwargs["year"]
         self.filterset_class.year = year
         self.name = f"FCO Mappings   {year}"
         return super().get(request, *args, **kwargs)
 
 
 def choose_year(request):
-    return render(
-        request,
-        'chartofaccountDIT/choose_year.html',
-    )
+    return render(request, "chartofaccountDIT/choose_year.html",)
 
 
 def quick_links(request, year):
@@ -343,59 +340,63 @@ def quick_links(request, year):
         current_year = False
         historical = "historical_"
 
-    return  render(request, 'chartofaccountDIT/quick_links.html', {
-        "financial_year": year,
-        "current_year": current_year,
-        "quick_links": [
-            {
-                "title": "Cost Centre Hierarchy",
-                "text": "view",
-                "url": "{}cost_centre_filter".format(historical),
-            },
-            {
-                "title": "Programme Codes",
-                "text": "view",
-                "url": "{}programme_filter".format(historical),
-            },
-            {
-                "title": "Natural Account",
-                "text": "view",
-                "url": "{}natural_code".format(historical),
-            },
-            {
-                "title": "Budget",
-                "text": "view",
-                "url": "{}finance_category".format(historical),
-            },
-            {
-                "title": "Commercial",
-                "text": "view",
-                "url": "{}commercial_category".format(historical),
-            },
-            {
-                "title": "Contract Reconciliation",
-                "text": "view",
-                "url": "{}analysis_1".format(historical),
-            },
-            {
-                "title": "Markets (Analysis 2)",
-                "text": "view",
-                "url": "{}analysis_2".format(historical),
-            },
-            {
-                "title": "Projects (Spare 1)",
-                "text": "view",
-                "url": "{}project_filter".format(historical),
-            },
-            {
-                "title": "Entity-Inter Entity",
-                "text": "view",
-                "url": "{}inter_entity_filter".format(historical),
-            },
-            {
-                "title": "FCO Mapping",
-                "text": "view",
-                "url": "{}fco_filter".format(historical),
-            },
-        ]
-    })
+    return render(
+        request,
+        "chartofaccountDIT/quick_links.html",
+        {
+            "financial_year": year,
+            "current_year": current_year,
+            "quick_links": [
+                {
+                    "title": "Cost Centre Hierarchy",
+                    "text": "view",
+                    "url": "{}cost_centre_filter".format(historical),
+                },
+                {
+                    "title": "Programme Codes",
+                    "text": "view",
+                    "url": "{}programme_filter".format(historical),
+                },
+                {
+                    "title": "Natural Account",
+                    "text": "view",
+                    "url": "{}natural_code".format(historical),
+                },
+                {
+                    "title": "Budget",
+                    "text": "view",
+                    "url": "{}finance_category".format(historical),
+                },
+                {
+                    "title": "Commercial",
+                    "text": "view",
+                    "url": "{}commercial_category".format(historical),
+                },
+                {
+                    "title": "Contract Reconciliation",
+                    "text": "view",
+                    "url": "{}analysis_1".format(historical),
+                },
+                {
+                    "title": "Markets (Analysis 2)",
+                    "text": "view",
+                    "url": "{}analysis_2".format(historical),
+                },
+                {
+                    "title": "Projects (Spare 1)",
+                    "text": "view",
+                    "url": "{}project_filter".format(historical),
+                },
+                {
+                    "title": "Entity-Inter Entity",
+                    "text": "view",
+                    "url": "{}inter_entity_filter".format(historical),
+                },
+                {
+                    "title": "FCO Mapping",
+                    "text": "view",
+                    "url": "{}fco_filter".format(historical),
+                },
+            ],
+        },
+    )

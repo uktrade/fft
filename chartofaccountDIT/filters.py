@@ -282,7 +282,6 @@ class HistoricalAnalysis1Filter(ArchivedFilterSet):
         )
 
 
-
 class Analysis2Filter(MyFilterSet):
     """Define the filter for Analysis 2 page"""
 
@@ -329,7 +328,6 @@ class HistoricalAnalysis2Filter(ArchivedFilterSet):
         return myfilter.filter(active=True).order_by(
             "analysis2_code", "analysis2_description"
         )
-
 
 
 class ProgrammeFilter(MyFilterSet):
@@ -485,16 +483,16 @@ class FCOMappingtFilter(MyFilterSet):
             Q(fco_code__icontains=value)
             | Q(fco_description__icontains=value)
             | Q(account_L6_code_fk__natural_account_code__icontains=value)
-            | Q(account_L6_code_fk__natural_account_code_description__icontains=value)  # noqa
+            | Q(
+                account_L6_code_fk__natural_account_code_description__icontains=value
+            )  # noqa
             | Q(
                 account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value  # noqa
             )
             | Q(
                 account_L6_code_fk__expenditure_category__grouping_description__icontains=value  # noqa
             )
-            | Q(
-                account_L6_code_fk___economic_budget_code__icontains=value  # noqa
-            )
+            | Q(account_L6_code_fk___economic_budget_code__icontains=value)  # noqa
         )
 
     class Meta(MyFilterSet.Meta):
