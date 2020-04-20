@@ -88,8 +88,7 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
 
 
 class HistoricalFilteredExpenditureCategoryListView(
-    FilteredExpenditureCategoryListView,
-    HistoricalFilteredView
+    FilteredExpenditureCategoryListView, HistoricalFilteredView
 ):
     table_class = HistoricalExpenditureCategoryTable
     model = table_class.Meta.model
@@ -114,8 +113,7 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
 
 
 class HistoricalFilteredCommercialCategoryListView(
-    FilteredCommercialCategoryListView,
-    HistoricalFilteredView
+    FilteredCommercialCategoryListView, HistoricalFilteredView
 ):
     table_class = HistoricalCommercialCategoryTable
     model = table_class.Meta.model
@@ -142,8 +140,7 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
 
 
 class HistoricalFilteredAnalysis1ListView(
-    FilteredAnalysis1ListView,
-    HistoricalFilteredView
+    FilteredAnalysis1ListView, HistoricalFilteredView
 ):
     table_class = HistoricalAnalysis1Table
     model = table_class.Meta.model
@@ -169,8 +166,7 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
 
 
 class HistoricalFilteredAnalysis2ListView(
-    FilteredAnalysis2ListView,
-    HistoricalFilteredView
+    FilteredAnalysis2ListView, HistoricalFilteredView
 ):
     table_class = HistoricalAnalysis2Table
     model = table_class.Meta.model
@@ -224,8 +220,7 @@ class FilteredInterEntityView(FAdminFilteredView):
 
 
 class HistoricalFilteredInterEntityView(
-    FilteredInterEntityView,
-    HistoricalFilteredView
+    FilteredInterEntityView, HistoricalFilteredView
 ):
     table_class = HistoricalInterEntityTable
     model = table_class.Meta.model
@@ -271,7 +266,7 @@ class FilteredFCOMappingView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredFCOMappingView(FilteredFCOMappingView,HistoricalFilteredView):
+class HistoricalFilteredFCOMappingView(FilteredFCOMappingView, HistoricalFilteredView):
     table_class = HistoricalFCOMappingTable
     model = table_class.Meta.model
     filterset_class = HistoricalFCOMappingtFilter
