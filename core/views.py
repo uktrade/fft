@@ -13,6 +13,7 @@ from django_tables2.views import SingleTableMixin
 
 from core.exportutils import EXC_TAB_NAME_LEN
 from core.models import Document
+from core.myutils import get_year_display
 from core.utils import today_string
 
 
@@ -85,6 +86,15 @@ class FAdminFilteredView(
         # The max length for an Excel tab name is 31.
         # So truncate the name, if needed
         self.sheet_name = self.name[:EXC_TAB_NAME_LEN]
+
+
+class HistoricalFilteredView(FAdminFilteredView):
+    def get(self, request, *args, **kwargs):
+        year = kwargs["year"]
+        self.filterset_class.year = year
+        year_display = get_year_display(year)
+        self.name = f"{self.name} {year_display}"
+        return super().get(request, *args, **kwargs)
 
 
 class DocumentCreateView(CreateView):

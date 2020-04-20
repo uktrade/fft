@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from core.myutils import get_current_financial_year
-from core.views import FAdminFilteredView
+from core.views import FAdminFilteredView, HistoricalFilteredView
 
 from .filters import (
     Analysis1Filter,
@@ -64,17 +64,10 @@ class FilteredNACListView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredNACListView(FilteredNACListView):
+class HistoricalFilteredNACListView(FilteredNACListView, HistoricalFilteredView):
     table_class = HistoricalNaturalCodeTable
     model = table_class.Meta.model
     filterset_class = HistoricalNACFilter
-    name = "Natural Account Codes  2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Natural Account Codes {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredExpenditureCategoryListView(FAdminFilteredView):
@@ -95,18 +88,12 @@ class FilteredExpenditureCategoryListView(FAdminFilteredView):
 
 
 class HistoricalFilteredExpenditureCategoryListView(
-    FilteredExpenditureCategoryListView
+    FilteredExpenditureCategoryListView,
+    HistoricalFilteredView
 ):
     table_class = HistoricalExpenditureCategoryTable
     model = table_class.Meta.model
     filterset_class = HistoricalExpenditureCategoryFilter
-    name = "Budget Categories 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Budget Categories {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredCommercialCategoryListView(FAdminFilteredView):
@@ -126,17 +113,13 @@ class FilteredCommercialCategoryListView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredCommercialCategoryListView(FilteredCommercialCategoryListView):
+class HistoricalFilteredCommercialCategoryListView(
+    FilteredCommercialCategoryListView,
+    HistoricalFilteredView
+):
     table_class = HistoricalCommercialCategoryTable
     model = table_class.Meta.model
     filterset_class = HistoricalCommercialCategoryFilter
-    name = "Commercial Categories 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Commercial Categories  {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredAnalysis1ListView(FAdminFilteredView):
@@ -158,17 +141,13 @@ class FilteredAnalysis1ListView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredAnalysis1ListView(FilteredAnalysis1ListView):
+class HistoricalFilteredAnalysis1ListView(
+    FilteredAnalysis1ListView,
+    HistoricalFilteredView
+):
     table_class = HistoricalAnalysis1Table
     model = table_class.Meta.model
     filterset_class = HistoricalAnalysis1Filter
-    name = "Contract Reconciliation (Analysis 1) 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Contract Reconciliation (Analysis 1)  {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredAnalysis2ListView(FAdminFilteredView):
@@ -189,17 +168,13 @@ class FilteredAnalysis2ListView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredAnalysis2ListView(FilteredAnalysis2ListView):
+class HistoricalFilteredAnalysis2ListView(
+    FilteredAnalysis2ListView,
+    HistoricalFilteredView
+):
     table_class = HistoricalAnalysis2Table
     model = table_class.Meta.model
     filterset_class = HistoricalAnalysis2Filter
-    name = "Markets (Analysis 2) 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Markets (Analysis 2)  {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredProgrammeView(FAdminFilteredView):
@@ -223,17 +198,10 @@ class FilteredProgrammeView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredProgrammeView(FilteredProgrammeView):
+class HistoricalFilteredProgrammeView(FilteredProgrammeView, HistoricalFilteredView):
     table_class = HistoricalProgrammeTable
     model = table_class.Meta.model
     filterset_class = HistoricalProgrammeFilter
-    name = "Programme Codes 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Programme Codes   {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredInterEntityView(FAdminFilteredView):
@@ -255,17 +223,13 @@ class FilteredInterEntityView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredInterEntityView(FilteredInterEntityView):
+class HistoricalFilteredInterEntityView(
+    FilteredInterEntityView,
+    HistoricalFilteredView
+):
     table_class = HistoricalInterEntityTable
     model = table_class.Meta.model
     filterset_class = HistoricalInterEntityFilter
-    name = "Entity Inter Entity 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Entity Inter Entity   {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredProjectView(FAdminFilteredView):
@@ -288,17 +252,10 @@ class FilteredProjectView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredProjectView(FilteredProjectView):
+class HistoricalFilteredProjectView(FilteredProjectView, HistoricalFilteredView):
     table_class = HistoricalProjectTable
     model = table_class.Meta.model
     filterset_class = HistoricalProjectFilter
-    name = "Project Codes (Spare 1) 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Project Codes (Spare 1)  {year}"
-        return super().get(request, *args, **kwargs)
 
 
 class FilteredFCOMappingView(FAdminFilteredView):
@@ -314,17 +271,10 @@ class FilteredFCOMappingView(FAdminFilteredView):
         return context
 
 
-class HistoricalFilteredFCOMappingView(FilteredFCOMappingView):
+class HistoricalFilteredFCOMappingView(FilteredFCOMappingView,HistoricalFilteredView):
     table_class = HistoricalFCOMappingTable
     model = table_class.Meta.model
     filterset_class = HistoricalFCOMappingtFilter
-    name = "FCO Mappings 2018-19"
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"FCO Mappings   {year}"
-        return super().get(request, *args, **kwargs)
 
 
 def choose_year(request):

@@ -37,6 +37,14 @@ def get_current_financial_year():
     return current_financial_year
 
 
+def get_year_display(year):
+    y = FinancialYear.objects.get(financial_year=year)
+    if y:
+        return y.financial_year_display
+    else:
+        return "Invalid year"
+
+
 class GetValidYear:
     regex = '2017|2018|2019|2020'
 

@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from core.views import FAdminFilteredView
+from core.views import FAdminFilteredView, HistoricalFilteredView
 
 from costcentre.filters import (
     CostCentreFilter,
@@ -34,14 +34,7 @@ class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):
         return context
 
 
-class FilteredCostHistoricalListView(FilteredCostListView):
+class HistoricalFilteredCostListView(FilteredCostListView, HistoricalFilteredView):
     table_class = HistoricalCostCentreTable
     model = table_class.Meta.model
-    name = "Cost Centre Hierarchy 2018-19"
     filterset_class = CostCentreHistoricalFilter
-
-    def get(self, request, *args, **kwargs):
-        year = kwargs["year"]
-        self.filterset_class.year = year
-        self.name = f"Cost Centre Hierarchy {year}"
-        return super().get(request, *args, **kwargs)
