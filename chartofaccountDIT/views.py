@@ -338,12 +338,14 @@ def quick_links(request, year):
     historical = ""
 
     if year == get_current_financial_year():
-        year = 0
+        current_year = True
     else:
+        current_year = False
         historical = "historical_"
 
     return  render(request, 'chartofaccountDIT/quick_links.html', {
         "financial_year": year,
+        "current_year": current_year,
         "quick_links": [
             {
                 "title": "Cost Centre Hierarchy",
