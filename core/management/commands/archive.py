@@ -39,8 +39,8 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
-        parser.add_argument("type")
-        parser.add_argument("year", type=int, nargs="?", default=2018)
+        parser.add_argument("--type")
+        parser.add_argument("--year", type=int, nargs="?", default=2018)
 
     # pass the year an argument
     def handle(self, *args, **options):
