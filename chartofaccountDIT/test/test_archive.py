@@ -104,7 +104,7 @@ class ArchiveAnalysis2Test(TestCase, RequestFactoryBase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="analysis2", year=self.archive_year, stdout=self.out,
+            "archive", type="Analysis2", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
