@@ -2,7 +2,7 @@ from django.db.models import Q
 
 import django_filters
 
-from core.filters import MyFilterSet
+from core.filters import ArchivedFilterSet, MyFilterSet
 
 from costcentre.models import (
     CostCentre,
@@ -57,7 +57,7 @@ class CostCentreFilter(MyFilterSet):
         )
 
 
-class CostCentreHistoricalFilter(MyFilterSet):
+class CostCentreHistoricalFilter(ArchivedFilterSet):
     """Use a single text box to enter an object name.
     It will search into group, directorate and cost centre name
     """
@@ -65,6 +65,7 @@ class CostCentreHistoricalFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
+    year = 0
 
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(
@@ -85,7 +86,7 @@ class CostCentreHistoricalFilter(MyFilterSet):
 
     @property
     def qs(self):
-        cc = super(CostCentreHistoricalFilter, self).qs
+        cc = super(CostCentreHistoricalFilter, self).qs.filter(financial_year=self.year)
         return cc.filter(active=True).order_by(
             "group_code",
             "group_name",

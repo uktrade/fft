@@ -53,47 +53,47 @@ urlpatterns = [
     path("fcofilter/", FilteredFCOMappingView.as_view(), name="fco_filter"),
     # Historical data
     path(
-        "historicalnaturalcode/",
+        "historicalnaturalcode/<year>/",
         HistoricalFilteredNACListView.as_view(),
         name="historical_natural_code",
     ),
     path(
-        "historicalfinancecategory/",
+        "historicalfinancecategory/<year>/",
         HistoricalFilteredExpenditureCategoryListView.as_view(),
         name="historical_finance_category",
     ),
     path(
-        "historicalcommercialcategory/",
+        "historicalcommercialcategory/<year>/",
         HistoricalFilteredCommercialCategoryListView.as_view(),
         name="historical_commercial_category",
     ),
     path(
-        "historicalanalysis1/",
+        "historicalanalysis1/<year>/",
         HistoricalFilteredAnalysis1ListView.as_view(),
         name="historical_analysis_1",
     ),
     path(
-        "historicalanalysis2/",
+        "historicalanalysis2/<year>/",
         HistoricalFilteredAnalysis2ListView.as_view(),
         name="historical_analysis_2",
     ),
     path(
-        "historicalprogrammefilter/",
+        "historicalprogrammefilter/<year>/",
         HistoricalFilteredProgrammeView.as_view(),
         name="historical_programme_filter",
     ),
     path(
-        "historicalinterentityfilter/",
+        "historicalinterentityfilter/<year>/",
         HistoricalFilteredInterEntityView.as_view(),
         name="historical_inter_entity_filter",
     ),
     path(
-        "historicalprojectfilter/",
+        "historicalprojectfilter/<year>/",
         HistoricalFilteredProjectView.as_view(),
         name="historical_project_filter",
     ),
     path(
-        "historicalfcofilter/",
+        "historicalfcofilter/<year>/",
         HistoricalFilteredFCOMappingView.as_view(),
         name="historical_fco_filter",
     ),

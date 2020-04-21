@@ -1,6 +1,9 @@
 from django.urls import path
 
-from .views import FilteredCostHistoricalListView, FilteredCostListView
+from .views import (
+    FilteredCostListView,
+    HistoricalFilteredCostListView,
+)
 
 urlpatterns = [
     path(
@@ -9,8 +12,8 @@ urlpatterns = [
         name="cost_centre_filter",
     ),
     path(
-        "costcentrehistoricalfilter/",
-        FilteredCostHistoricalListView.as_view(),
+        "costcentrehistoricalfilter/<year>/",
+        HistoricalFilteredCostListView.as_view(),
         name="historical_cost_centre_filter",
     ),
 ]
