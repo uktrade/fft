@@ -6,18 +6,17 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
-from core.myutils import get_current_financial_year
-from core.test.test_base import RequestFactoryBase
-
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
     Analysis2Factory,
 )
-
 from chartofaccountDIT.views import (
     HistoricalFilteredAnalysis1ListView,
     HistoricalFilteredAnalysis2ListView,
 )
+
+from core.myutils import get_current_financial_year
+from core.test.test_base import RequestFactoryBase
 
 
 class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
@@ -26,17 +25,17 @@ class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
         RequestFactoryBase.__init__(self)
 
         self.analysis1_code = 123456
-        self.analysis1_description = 'Analysis1 description'
-        Analysis1Factory(analysis1_code= self.analysis1_code,
-                        analysis1_description=self.analysis1_description)
+        self.analysis1_description = "Analysis1 description"
+        Analysis1Factory(
+            analysis1_code=self.analysis1_code,
+            analysis1_description=self.analysis1_description,
+        )
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
         response = self.factory_get(
-            reverse(
-                "historical_analysis_1", kwargs={"year": self.archive_year},
-            ),
+            reverse("historical_analysis_1", kwargs={"year": self.archive_year},),
             HistoricalFilteredAnalysis1ListView,
             year=self.archive_year,
         )
@@ -75,17 +74,17 @@ class ArchiveAnalysis2Test(TestCase, RequestFactoryBase):
         RequestFactoryBase.__init__(self)
 
         self.analysis2_code = 123456
-        self.analysis2_description = 'analysis2 description'
-        Analysis2Factory(analysis2_code= self.analysis2_code,
-                        analysis2_description=self.analysis2_description)
+        self.analysis2_description = "analysis2 description"
+        Analysis2Factory(
+            analysis2_code=self.analysis2_code,
+            analysis2_description=self.analysis2_description,
+        )
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
         response = self.factory_get(
-            reverse(
-                "historical_analysis_2", kwargs={"year": self.archive_year},
-            ),
+            reverse("historical_analysis_2", kwargs={"year": self.archive_year},),
             HistoricalFilteredAnalysis2ListView,
             year=self.archive_year,
         )
