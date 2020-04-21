@@ -23,10 +23,10 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.filters import ArchivedFilterSet, MyFilterSet
+from core.filters import ArchivedFilterSet, qs_filteredSet
 
 
-class NACFilter(MyFilterSet):
+class NACFilter(qs_filteredSet):
     """It defines the filter for the NAC page. """
 
     search_all = django_filters.CharFilter(
@@ -53,7 +53,7 @@ class NACFilter(MyFilterSet):
             | Q(natural_account_code_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = NaturalCode
         fields = ["search_all"]
 
@@ -104,8 +104,8 @@ class HistoricalNACFilter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalNACFilter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(HistoricalNACFilter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "-economic_budget_code",
             "-NAC_category",
             "-expenditure_category",
@@ -114,7 +114,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
         )
 
 
-class ExpenditureCategoryFilter(MyFilterSet):
+class ExpenditureCategoryFilter(qs_filteredSet):
     """It defines the filter for the Expenditure category page. """
 
     search_all = django_filters.CharFilter(
@@ -129,7 +129,7 @@ class ExpenditureCategoryFilter(MyFilterSet):
             | Q(further_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = ExpenditureCategory
         fields = ["search_all"]
 
@@ -137,8 +137,8 @@ class ExpenditureCategoryFilter(MyFilterSet):
     def qs(self):
         # There is no Active field on the Expenditure Category table:
         # this is why there is no filter on Active  on the queryset
-        myfilter = super(ExpenditureCategoryFilter, self).qs
-        return myfilter.order_by(
+        qs_filtered = super(ExpenditureCategoryFilter, self).qs
+        return qs_filtered.order_by(
             "-NAC_category__NAC_category_description",
             "grouping_description",
             "description",
@@ -175,8 +175,8 @@ class HistoricalExpenditureCategoryFilter(ArchivedFilterSet):
     def qs(self):
         # There is no Active field on the Expenditure Category table:
         # this is why there is no filter on Active  on the queryset
-        myfilter = super(HistoricalExpenditureCategoryFilter, self).qs
-        return myfilter.order_by(
+        qs_filtered = super(HistoricalExpenditureCategoryFilter, self).qs
+        return qs_filtered.order_by(
             "-NAC_category",
             "grouping_description",
             "description",
@@ -184,7 +184,7 @@ class HistoricalExpenditureCategoryFilter(ArchivedFilterSet):
         )
 
 
-class CommercialCategoryFilter(MyFilterSet):
+class CommercialCategoryFilter(qs_filteredSet):
     """Define the filter for the Commercial Category"""
 
     search_all = django_filters.CharFilter(
@@ -196,7 +196,7 @@ class CommercialCategoryFilter(MyFilterSet):
             Q(commercial_category__icontains=value) | Q(description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = CommercialCategory
         fields = ["search_all"]
 
@@ -204,8 +204,8 @@ class CommercialCategoryFilter(MyFilterSet):
     def qs(self):
         # There is no Active field on the commercial Category table:
         # this is why there is no filter on Active  on the queryset
-        myfilter = super(CommercialCategoryFilter, self).qs
-        return myfilter.order_by("commercial_category", "description")
+        qs_filtered = super(CommercialCategoryFilter, self).qs
+        return qs_filtered.order_by("commercial_category", "description")
 
 
 class HistoricalCommercialCategoryFilter(ArchivedFilterSet):
@@ -226,11 +226,11 @@ class HistoricalCommercialCategoryFilter(ArchivedFilterSet):
     def qs(self):
         # There is no Active field on the commercial Category table:
         # this is why there is no filter on Active  on the queryset
-        myfilter = super(HistoricalCommercialCategoryFilter, self).qs
-        return myfilter.order_by("commercial_category", "description")
+        qs_filtered = super(HistoricalCommercialCategoryFilter, self).qs
+        return qs_filtered.order_by("commercial_category", "description")
 
 
-class Analysis1Filter(MyFilterSet):
+class Analysis1Filter(qs_filteredSet):
     """Define the filter for  Analysis 1"""
 
     search_all = django_filters.CharFilter(
@@ -245,14 +245,14 @@ class Analysis1Filter(MyFilterSet):
             | Q(pc_reference__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = Analysis1
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(Analysis1Filter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(Analysis1Filter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "analysis1_code", "analysis1_description"
         )
 
@@ -276,13 +276,13 @@ class HistoricalAnalysis1Filter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalAnalysis1Filter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(HistoricalAnalysis1Filter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "analysis1_code", "analysis1_description"
         )
 
 
-class Analysis2Filter(MyFilterSet):
+class Analysis2Filter(qs_filteredSet):
     """Define the filter for Analysis 2 page"""
 
     search_all = django_filters.CharFilter(
@@ -295,14 +295,14 @@ class Analysis2Filter(MyFilterSet):
             | Q(analysis2_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = Analysis2
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(Analysis2Filter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(Analysis2Filter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "analysis2_code", "analysis2_description"
         )
 
@@ -324,13 +324,13 @@ class HistoricalAnalysis2Filter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalAnalysis2Filter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(HistoricalAnalysis2Filter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "analysis2_code", "analysis2_description"
         )
 
 
-class ProgrammeFilter(MyFilterSet):
+class ProgrammeFilter(qs_filteredSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -342,14 +342,14 @@ class ProgrammeFilter(MyFilterSet):
             | Q(budget_type_fk__budget_type__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = ProgrammeCode
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(ProgrammeFilter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(ProgrammeFilter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "programme_code", "programme_description", "budget_type_fk__budget_type"
         )
 
@@ -375,13 +375,13 @@ class HistoricalProgrammeFilter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalProgrammeFilter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(HistoricalProgrammeFilter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "programme_code", "programme_description", "budget_type"
         )
 
 
-class InterEntityFilter(MyFilterSet):
+class InterEntityFilter(qs_filteredSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -395,14 +395,14 @@ class InterEntityFilter(MyFilterSet):
             | Q(cpid__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = InterEntity
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(InterEntityFilter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(InterEntityFilter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "l1_value__l1_value", "l1_value__l1_description", "l2_value"
         )
 
@@ -427,30 +427,31 @@ class HistoricalInterEntityFilter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalInterEntityFilter, self).qs
-        return myfilter.filter(active=True).order_by(
+        qs_filtered = super(HistoricalInterEntityFilter, self).qs
+        return qs_filtered.filter(active=True).order_by(
             "l1_value", "l1_description", "l2_value"
         )
 
 
-class ProjectFilter(MyFilterSet):
+class ProjectFilter(qs_filteredSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
 
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(
-            Q(project_code__icontains=value) | Q(project_description__icontains=value)
+            Q(project_code__icontains=value)
+            | Q(project_description__icontains=value)
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = ProjectCode
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(ProjectFilter, self).qs
-        return myfilter.filter(active=True).order_by("project_code")
+        qs_filtered = super(ProjectFilter, self).qs
+        return qs_filtered.filter(active=True).order_by("project_code")
 
 
 class HistoricalProjectFilter(ArchivedFilterSet):
@@ -460,7 +461,8 @@ class HistoricalProjectFilter(ArchivedFilterSet):
 
     def search_all_filter(self, queryset, name, value):
         return queryset.filter(
-            Q(project_code__icontains=value) | Q(project_description__icontains=value)
+            Q(project_code__icontains=value)
+            | Q(project_description__icontains=value)
         )
 
     class Meta(ArchivedFilterSet.Meta):
@@ -469,11 +471,11 @@ class HistoricalProjectFilter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalProjectFilter, self).qs
-        return myfilter.filter(active=True).order_by("project_code")
+        qs_filtered = super(HistoricalProjectFilter, self).qs
+        return qs_filtered.filter(active=True).order_by("project_code")
 
 
-class FCOMappingtFilter(MyFilterSet):
+class FCOMappingtFilter(qs_filteredSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -483,26 +485,20 @@ class FCOMappingtFilter(MyFilterSet):
             Q(fco_code__icontains=value)
             | Q(fco_description__icontains=value)
             | Q(account_L6_code_fk__natural_account_code__icontains=value)
-            | Q(
-                account_L6_code_fk__natural_account_code_description__icontains=value
-            )  # noqa
-            | Q(
-                account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value  # noqa
-            )
-            | Q(
-                account_L6_code_fk__expenditure_category__grouping_description__icontains=value  # noqa
-            )
+            | Q(account_L6_code_fk__natural_account_code_description__icontains=value)
+            | Q(account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value)# noqa
+            | Q(account_L6_code_fk__expenditure_category__grouping_description__icontains=value)  # noqa
             | Q(account_L6_code_fk___economic_budget_code__icontains=value)  # noqa
         )
 
-    class Meta(MyFilterSet.Meta):
+    class Meta(qs_filteredSet.Meta):
         model = FCOMapping
         fields = ["search_all"]
 
     @property
     def qs(self):
-        myfilter = super(FCOMappingtFilter, self).qs
-        return myfilter.filter(active=True).order_by("fco_code")
+        qs_filtered = super(FCOMappingtFilter, self).qs
+        return qs_filtered.filter(active=True).order_by("fco_code")
 
 
 class HistoricalFCOMappingtFilter(ArchivedFilterSet):
@@ -527,5 +523,5 @@ class HistoricalFCOMappingtFilter(ArchivedFilterSet):
 
     @property
     def qs(self):
-        myfilter = super(HistoricalFCOMappingtFilter, self).qs
-        return myfilter.filter(active=True).order_by("fco_code")
+        qs_filtered = super(HistoricalFCOMappingtFilter, self).qs
+        return qs_filtered.filter(active=True).order_by("fco_code")
