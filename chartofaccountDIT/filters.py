@@ -23,10 +23,12 @@ from chartofaccountDIT.models import (
     ProjectCode,
 )
 
-from core.filters import ArchivedFilterSet, qs_filteredSet
+from core.filters import (ArchivedFilterSet,
+                          MyFilterSet,
+                          )
 
 
-class NACFilter(qs_filteredSet):
+class NACFilter(MyFilterSet):
     """It defines the filter for the NAC page. """
 
     search_all = django_filters.CharFilter(
@@ -53,7 +55,7 @@ class NACFilter(qs_filteredSet):
             | Q(natural_account_code_description__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = NaturalCode
         fields = ["search_all"]
 
@@ -114,7 +116,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
         )
 
 
-class ExpenditureCategoryFilter(qs_filteredSet):
+class ExpenditureCategoryFilter(MyFilterSet):
     """It defines the filter for the Expenditure category page. """
 
     search_all = django_filters.CharFilter(
@@ -129,7 +131,7 @@ class ExpenditureCategoryFilter(qs_filteredSet):
             | Q(further_description__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = ExpenditureCategory
         fields = ["search_all"]
 
@@ -184,7 +186,7 @@ class HistoricalExpenditureCategoryFilter(ArchivedFilterSet):
         )
 
 
-class CommercialCategoryFilter(qs_filteredSet):
+class CommercialCategoryFilter(MyFilterSet):
     """Define the filter for the Commercial Category"""
 
     search_all = django_filters.CharFilter(
@@ -196,7 +198,7 @@ class CommercialCategoryFilter(qs_filteredSet):
             Q(commercial_category__icontains=value) | Q(description__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = CommercialCategory
         fields = ["search_all"]
 
@@ -230,7 +232,7 @@ class HistoricalCommercialCategoryFilter(ArchivedFilterSet):
         return qs_filtered.order_by("commercial_category", "description")
 
 
-class Analysis1Filter(qs_filteredSet):
+class Analysis1Filter(MyFilterSet):
     """Define the filter for  Analysis 1"""
 
     search_all = django_filters.CharFilter(
@@ -245,7 +247,7 @@ class Analysis1Filter(qs_filteredSet):
             | Q(pc_reference__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = Analysis1
         fields = ["search_all"]
 
@@ -282,7 +284,7 @@ class HistoricalAnalysis1Filter(ArchivedFilterSet):
         )
 
 
-class Analysis2Filter(qs_filteredSet):
+class Analysis2Filter(MyFilterSet):
     """Define the filter for Analysis 2 page"""
 
     search_all = django_filters.CharFilter(
@@ -295,7 +297,7 @@ class Analysis2Filter(qs_filteredSet):
             | Q(analysis2_description__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = Analysis2
         fields = ["search_all"]
 
@@ -330,7 +332,7 @@ class HistoricalAnalysis2Filter(ArchivedFilterSet):
         )
 
 
-class ProgrammeFilter(qs_filteredSet):
+class ProgrammeFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -342,7 +344,7 @@ class ProgrammeFilter(qs_filteredSet):
             | Q(budget_type_fk__budget_type__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = ProgrammeCode
         fields = ["search_all"]
 
@@ -381,7 +383,7 @@ class HistoricalProgrammeFilter(ArchivedFilterSet):
         )
 
 
-class InterEntityFilter(qs_filteredSet):
+class InterEntityFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -395,7 +397,7 @@ class InterEntityFilter(qs_filteredSet):
             | Q(cpid__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = InterEntity
         fields = ["search_all"]
 
@@ -433,7 +435,7 @@ class HistoricalInterEntityFilter(ArchivedFilterSet):
         )
 
 
-class ProjectFilter(qs_filteredSet):
+class ProjectFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -444,7 +446,7 @@ class ProjectFilter(qs_filteredSet):
             | Q(project_description__icontains=value)
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = ProjectCode
         fields = ["search_all"]
 
@@ -475,7 +477,7 @@ class HistoricalProjectFilter(ArchivedFilterSet):
         return qs_filtered.filter(active=True).order_by("project_code")
 
 
-class FCOMappingtFilter(qs_filteredSet):
+class FCOMappingtFilter(MyFilterSet):
     search_all = django_filters.CharFilter(
         field_name="", label="", method="search_all_filter"
     )
@@ -491,7 +493,7 @@ class FCOMappingtFilter(qs_filteredSet):
             | Q(account_L6_code_fk___economic_budget_code__icontains=value)  # noqa
         )
 
-    class Meta(qs_filteredSet.Meta):
+    class Meta(MyFilterSet.Meta):
         model = FCOMapping
         fields = ["search_all"]
 
