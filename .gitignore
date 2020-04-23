@@ -123,9 +123,6 @@ src/
 fido/staticfiles/*
 staticfiles/*
 
-# Web pack stats
-front_end/config/webpack-stats.json
-
 # Node module dir
 node_modules
 

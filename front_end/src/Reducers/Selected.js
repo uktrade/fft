@@ -1,7 +1,8 @@
-import { createSlice } from 'redux-starter-kit';
+import { createSlice } from '@reduxjs/toolkit';
 // Use of this lib guarentees no state mutatation
 
 const selected = createSlice({
+    name: "selected",
     slice: 'select',
     initialState: {
         selectedRow: -1,

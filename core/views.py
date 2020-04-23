@@ -1,9 +1,6 @@
-from django import get_version
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 
 from django_filters.views import FilterView
@@ -20,16 +17,6 @@ from core.utils import today_string
 @login_required()
 def index(request):
     return render(request, "core/index.html")
-
-
-class AboutView(TemplateView):
-    template_name = "core/about.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["django_version"] = get_version()
-        context["git_commit"] = settings.GIT_COMMIT
-        return context
 
 
 class TableExportWithSheetName(TableExport):

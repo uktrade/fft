@@ -130,7 +130,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
             newAmount = Number.MIN_SAFE_INTEGER
         }
 
-        let intAmount = parseInt(newAmount)
+        let intAmount = parseInt(newAmount, 10)
 
         if (cell && intAmount === cell.amount) {
             return

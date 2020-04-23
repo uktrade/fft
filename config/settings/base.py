@@ -12,16 +12,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import environ
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 
 env = environ.Env()
 env.read_env()
 
 DEBUG = env.bool("DEBUG", default=False)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
@@ -30,20 +26,11 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 
-# ALLOWED_HOSTS = [
-# 'financeadmin-dev.cloudapps.digital',
-# 'd3sy7fs6o4dizv.cloudfront.net',
-# 'fido.uat.uktrade.io','fna.uat.uktrade.io']
-
-# Application definition
-
 INSTALLED_APPS = [
     "custom_usermodel",
     "authbroker_client",
-    # 'admintool_support.apps.AdmintoolSupportConfig',
     "downloadsupport.apps.DownloadSupportConfig",
     "forecast.apps.ForecastConfig",
-    # 'dit_user_management',
     "gifthospitality.apps.GifthospitalityConfig",
     "payroll.apps.PayrollConfig",
     "costcentre.apps.CostCentreConfig",
@@ -72,7 +59,6 @@ INSTALLED_APPS = [
     "bootstrap_datepicker_plus",  # https://pypi.org/project/django-bootstrap-datepicker-plus/  # noqa
     "storages",
     "sass_processor",
-    "webpack_loader",
     "django_bootstrap_breadcrumbs",
     "guardian",
     "reversion",
@@ -87,7 +73,6 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -103,7 +88,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-VCAP_SERVICES = env.json('VCAP_SERVICES', {})
+VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
 
 if 'postgres' in VCAP_SERVICES:
     DATABASE_URL = VCAP_SERVICES['postgres'][0]['credentials']['uri']
@@ -126,16 +111,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
 LANGUAGE_CODE = "en-gb"  # must be gb for date entry to work
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
 
 # Remove extra details in the label
 # for the filter fields, it does
@@ -155,7 +136,6 @@ def FILTERS_VERBOSE_LOOKUPS():
 
 
 AUTH_USER_MODEL = "custom_usermodel.User"
-
 AUTHBROKER_URL = env("AUTHBROKER_URL", default=None)
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
@@ -169,15 +149,6 @@ GIT_COMMIT = env("GIT_COMMIT", default=None)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
-
-# Django webpack loader
-WEBPACK_LOADER = {
-    "DEFAULT": {
-        "CACHE": not DEBUG,
-        "BUNDLE_DIR_NAME": "build/",  # must end with slash
-        "STATS_FILE": os.path.join(BASE_DIR, "../front_end/config/webpack-stats.json"),
-    }
-}
 
 # AWS
 if 'aws-s3-bucket' in VCAP_SERVICES:
@@ -206,6 +177,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # Redis
 if 'redis' in VCAP_SERVICES:
     credentials = VCAP_SERVICES['redis'][0]['credentials']
+
     CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
         credentials['password'],
         credentials['host'],

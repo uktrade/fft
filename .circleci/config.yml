@@ -11,7 +11,6 @@ jobs:
           ALLOWED_HOSTS: "*"
           SELENIUM_ADDRESS: localhost
           SELENIUM_HOST: localhost
-          PUBLIC_PATH: localhost:3000/
           USE_SELENIUM_HUB: False
 
       - image: circleci/postgres:9.6.5-alpine-ram
@@ -45,26 +44,23 @@ jobs:
           paths:
             - "venv"
       - run:
+          name: Install latest NPM
+          command:
+            npm install npm
+      - run:
           name: Install React app
           command:
             npm install
+      - run:
+          name: Collect static
+          command: |
+            . venv/bin/activate
+            python manage.py collectstatic --noinput
       - run:
           name: Run tests
           command: |
             . venv/bin/activate
             python manage.py test
-      - run:
-          name: Run node BDD
-          command: |
-            npm start
-          background: true
-      # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
-      # so override the shell and have the last command be the : { null } command to force exit code 0.
-      - run:
-          shell: /bin/sh
-          command: |
-            wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:3000
-            :
       - run:
           name: Run BDD tests
           command: |

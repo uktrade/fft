@@ -9,17 +9,17 @@ const CellValue = ({rowIndex, cellKey, format}) => {
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
 
     const getValue = (value) => {
-    	if (format) {
-    		return formatValue(parseInt(value)/100)
-    	}
+        if (format) {
+            return formatValue(parseInt(value, 10)/100)
+        }
 
-    	return value
+        return value
     }
 
     return (
-    	<Fragment>
-    		{getValue(cell.value)}
-    	</Fragment>
+        <Fragment>
+            {getValue(cell.value)}
+        </Fragment>
     )
 }
 

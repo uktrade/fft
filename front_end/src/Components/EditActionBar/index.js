@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from 'react'
+import React, { Fragment } from 'react'
+import ReactDOM from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { 
     TOGGLE_ITEM,
@@ -14,21 +15,6 @@ const EditActionBar = () => {
     const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols)
     const showAll = useSelector(state => state.hiddenCols.showAll)
     const filterOpen = useSelector(state => state.filter.open)
-    const containerRef = useRef()
-
-    useEffect(() => {
-        let addForecastRow = document.getElementById("add_forecast_row")
-        let downloadForecast = document.getElementById("download_forecast")
-
-        containerRef.current.insertBefore(
-            downloadForecast,
-            containerRef.current.firstChild,
-        )
-        containerRef.current.insertBefore(
-            addForecastRow,
-            containerRef.current.firstChild,
-        )
-    }, [])
 
     const getClasses = () => {
         let classes = "action-bar-content-wrapper "
@@ -46,11 +32,11 @@ const EditActionBar = () => {
         return "arrow-down"
     }
 
-    return (
-        <div className="action-bar-wrapper">
-            <div className="action-bar" ref={containerRef}>
-                <div className="action-bar-by">               
-                    <button 
+    const getComponent = () => {
+        return (
+            <Fragment>
+                <div className="action-bar-by">
+                    <button
                         id="action-bar-switch"
                         className="link-button govuk-link"
                         onClick={(e) => {
@@ -64,7 +50,6 @@ const EditActionBar = () => {
                     </button>
                     <span className={getArrowClass()}></span>
                 </div>
-     
                 <div className={getClasses()}>
                     <div className="action-bar-content">
                         <h3 className="govuk-heading-m">Show/hide columns</h3>
@@ -170,12 +155,17 @@ const EditActionBar = () => {
                                         Project Code
                                     </label>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </Fragment>
+        )
+    }
+
+    return ReactDOM.createPortal(
+        getComponent(),
+        document.getElementById('action-bar')
     )
 }
 

@@ -1,7 +1,8 @@
-import { createSlice } from 'redux-starter-kit';
+import { createSlice } from '@reduxjs/toolkit';
 // Use of this lib guarentees no state mutatation
 
 const filter = createSlice({
+    name: "filter",
     slice: 'edit',
     initialState: {
         open: false

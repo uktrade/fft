@@ -142,7 +142,7 @@ function EditForecast() {
                     event.preventDefault()
                 } else if (document.activeElement.className === "select_row_btn govuk-link link-button") {
                     let parts = document.activeElement.id.split("_")
-                    let targetRow = parseInt(parts[2])
+                    let targetRow = parseInt(parts[2], 10)
 
                     if (selectedRow === targetRow) {
                         dispatch(
@@ -184,11 +184,11 @@ function EditForecast() {
                 // Check for select button
                 if (editCellId) {
                     let parts = state.edit.cellId.split("_")
-                    targetRow = parseInt(parts[1])
-                    targetMonth = parseInt(parts[2])
+                    targetRow = parseInt(parts[1], 10)
+                    targetMonth = parseInt(parts[2], 10)
                 } else if (document.activeElement.className === "select_row_btn govuk-link link-button") {
                     let parts = document.activeElement.id.split("_")
-                    targetRow = parseInt(parts[2])
+                    targetRow = parseInt(parts[2], 10)
                 }
 
                 if (event.shiftKey && 

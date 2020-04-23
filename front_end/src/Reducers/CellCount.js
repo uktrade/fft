@@ -1,7 +1,8 @@
-import { createSlice } from 'redux-starter-kit';
+import { createSlice } from '@reduxjs/toolkit';
 // Use of this lib guarentees no state mutatation
 
 const cellCount = createSlice({
+    name: "cellCount",
     slice: 'cellCount',
     initialState: {
         cellCount: 0
