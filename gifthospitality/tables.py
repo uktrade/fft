@@ -4,9 +4,11 @@ from .models import GiftAndHospitality
 
 
 class GiftHospitalityTable(FadminTable):
+
     class Meta(FadminTable.Meta):
         model = GiftAndHospitality
-        fields = (
+
+        fields = [
             "id",
             "category",
             "classification",
@@ -24,4 +26,4 @@ class GiftHospitalityTable(FadminTable):
             "action_taken",
             "entered_date_stamp",
             "entered_by",
-        )
+        ]

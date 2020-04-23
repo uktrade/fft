@@ -146,14 +146,10 @@ selenium-server-standalone-3.5.3.jar
 chromedriver
 
 #CSS
-
 core/static/core/css/styles.css
 
 # Fixture data
 fixtures/*
-
-# Generated css file
-core/static/core/css/styles.css
 
 # Test files
 test.txt

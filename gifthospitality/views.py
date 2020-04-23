@@ -18,20 +18,18 @@ from gifthospitality.models import GiftAndHospitalityClassification
 from gifthospitality.tables import GiftHospitalityTable
 
 
-class FilteredGiftHospitalityView(
-    LoginRequiredMixin,
-    FAdminFilteredView,
-):
+class FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView):
     table_class = GiftHospitalityTable
     model = table_class.Meta.model
     filterset_class = GiftHospitalityFilter
     template_name = "gifthospitality/gifthospitality_filter.html"
     export_name = "Gifts and Hospitality" + today_string()
     sheet_name = "Gifts and Hospitality"
+    name = "Search Gifts and Hospitality Records"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Search Gifts and Hospitality Records"
+        context["section_name"] = self.name
         return context
 
 
@@ -110,17 +108,17 @@ def quick_links(request):
         "quick_links": [
             {
                 "title": "Add Gift/Hosp Received",
-                "text": "Go",
+                "text": "view",
                 "url": "gifthospitality:gift-received",
             },
             {
                 "title": "Add Gift/Hosp Offered",
-                "text": "Go",
+                "text": "view",
                 "url": "gifthospitality:gift-offered",
             },
             {
                 "title": "Search Records",
-                "text": "Go",
+                "text": "view",
                 "url": "gifthospitality:gift-search",
             },
         ]

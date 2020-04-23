@@ -11,25 +11,17 @@
 {% block content %}
     <h1 class="govuk-heading-l">{{ section_name }}</h1>
     <p>{{ section_description }}</p>
+    {% csrf_token %}
     {% if filter %}
-        <div id="search-div">
-        {% csrf_token %}
-            <form action="" method="get" class="form-group">
-            <table>
-               {{ filter.form.media }}            {# Adds date-picker required JS and CSS #}
-            {{ filter.form.as_table }}
-
-                <tr><td></td><td><button type="submit">Search</button></td></tr>
-                     </table>
-        </form>
+        <div class="govuk-table">
+            <form action="" method="get" class="govuk-table__cell">
+                {% csrf_token %}
+                {% include "core/govt_uk_form.html" with form=filter.form %}
+                <input type="submit" value="Search" class="govuk-button" data-module="govuk-button"/>
+            </form>
+            <p>Record returned: {{ table.rows|length }}</p>
         </div>
     {% endif %}
-    <br>
-    <h5>Record returned: {{ table.rows|length }}</h5>
-
-
-    <p></p>
-    <a href="{% querystring '_export'='xlsx' %}">Download to Excel</a>
-
+    <a class="govuk-button govuk-button--secondary" href="{% querystring '_export'='xlsx' %}">Download to Excel</a>
     {% render_table table %}
 {% endblock %}

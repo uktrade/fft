@@ -1,11 +1,37 @@
 import datetime
-
-from bootstrap_datepicker_plus import DatePickerInput
+from datetime import date
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
 from .models import GIFT_OFFERED, GIFT_RECEIVED, GiftAndHospitality
+
+
+class DateSelectorWidget(forms.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [
+            forms.NumberInput(
+                attrs={
+                    'class': 'govuk-date-input__item govuk-input govuk-input--width-2',
+                    'placeholder': 'Day'}),
+            forms.NumberInput(
+                attrs={
+                    'class': 'govuk-date-input__item govuk-input govuk-input--width-3',
+                    'placeholder': 'Month'}),
+            forms.NumberInput(
+                attrs={
+                    'class': 'govuk-date-input__item govuk-input govuk-input--width-3',
+                    'placeholder': 'Year'}),
+        ]
+        super().__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if isinstance(value, date):
+            return [value.day, value.month, value.year]
+        elif isinstance(value, str):
+            year, month, day = value.split('-')
+            return [day, month, year]
+        return [None, None, None]
 
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
@@ -18,7 +44,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
 
         self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['date_offered'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['date_offered']
         self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
         self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
@@ -38,7 +64,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             )
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
-    class Meta:
+    class Meta(DateSelectorWidget):
         def __init__(self, *args, **kwargs):
             super(GiftAndHospitalityReceivedForm.Meta, self).__init__(*args, **kwargs)
 
@@ -66,15 +92,8 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         }
 
         widgets = {
-            # 'rep' : ModelSelect2Bootstrap(url='people-autocomplete'),
-            # "rep": autocomplete.ModelSelect2(url="people-autocomplete"),
-            "date_offered": DatePickerInput(
-                options={
-                    "format": "DD/MM/YYYY",  # moment date-time format
-                    "showClose": True,
-                    "showClear": True,
-                    "showTodayButton": True,
-                }
+            "date_offered": DateSelectorWidget(
+
             ),
         }
 
@@ -86,7 +105,7 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
 
         self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['date_offered'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['date_offered']
         self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
         self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})

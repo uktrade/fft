@@ -15,6 +15,57 @@ from gifthospitality.models import (
 
 
 class GiftHospitalityFilter(MyFilterSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.form.fields["id"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["category"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["classification"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["value"].widget.attrs.update(
+            {"class": "govuk-input", }
+        )
+
+        self.form.fields["rep"].widget.attrs.update(
+            {"class": "govuk-input", }
+        )
+
+        self.form.fields["grade"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["group"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["offer"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["company"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["action_taken"].widget.attrs.update(
+            {"class": "govuk-select", }
+        )
+
+        self.form.fields["entered_date_stamp_from"].widget.attrs.update(
+            {"class": "govuk-input", }
+        )
+
+        self.form.fields["entered_date_stamp_to"].widget.attrs.update(
+            {"class": "govuk-input", }
+        )
+
     entered_date_stamp_from = DateFilter(
         field_name="entered_date_stamp",
         label="Date Entered From:",
@@ -28,6 +79,7 @@ class GiftHospitalityFilter(MyFilterSet):
             }
         ),
     )
+
     entered_date_stamp_to = DateFilter(
         field_name="entered_date_stamp",
         label="To:",

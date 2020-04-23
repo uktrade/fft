@@ -88,7 +88,6 @@ $(document).one('autocompleteLightInitialize', '[data-autocomplete-light-functio
     {% csrf_token %}
     {% include "core/govt_uk_form.html" with form=form %}
     <input type="submit" value="Save" class="govuk-button" data-module="govuk-button"/>
-    {{ form.media }}            {# Adds date-picker required JS and CSS #}
 </form>
     </div>
   </div>

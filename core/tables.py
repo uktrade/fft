@@ -8,6 +8,7 @@ class FadminTable(tables.Table):
             "class": "govuk-table",
             "thead": {"class": "govuk-table__head"},
             "tbody": {"class": "govuk-table__body"},
+            "tr": {"class": "govuk-table__row"},
             "th": {"class": "govuk-table__header"},
             "td": {"class": "govuk-table__cell"},
             "tf": {"class": "govuk-table__cell"},

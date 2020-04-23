@@ -6,9 +6,9 @@
         </dt>
         <dd class="govuk-summary-list__value">
             {% if not financial_year or current_year %}
-                <a class="govuk-button govuk-button" href="{% url quick_link.url %}">
+                <a class="govuk-link" href="{% url quick_link.url %}">
             {%  else  %}
-                <a class="govuk-button govuk-button" href="{% url quick_link.url year=financial_year %}">
+                <a class="govuk-link" href="{% url quick_link.url year=financial_year %}">
             {% endif %}
              {{ quick_link.text }}
           </a>
