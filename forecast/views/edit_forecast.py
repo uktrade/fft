@@ -74,6 +74,24 @@ def delete_forecast_cache(cost_centre_code):
     cache.delete(cost_centre_key)
 
 
+def get_financial_code_serialiser(cost_centre_code):
+    financial_codes = (
+        FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )
+            .prefetch_related(
+            "forecast_forecastmonthlyfigures",
+            "forecast_forecastmonthlyfigures__financial_period",
+        )
+            .order_by(
+            "programme__budget_type_fk__budget_type_edit_display_order",
+            "programme__programme_code",
+            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
+            "natural_account_code__natural_account_code",
+        )
+    )
+
+    return FinancialCodeSerializer(financial_codes, many=True, )
+
+
 class ChooseCostCentreView(
     UserPassesTestMixin, FormView,
 ):
@@ -280,20 +298,7 @@ class PasteForecastRowsView(
         ) as ex:
             return JsonResponse({"error": str(ex)}, status=400,)
 
-        financial_codes = (
-            FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
-            .prefetch_related(
-                "forecast_forecastmonthlyfigures",
-                "forecast_forecastmonthlyfigures__financial_period",
-            )
-            .order_by(
-                "programme__budget_type_fk__budget_type_edit_display_order",
-                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-                "natural_account_code__natural_account_code",
-            )
-        )
-
-        financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True,)
+        financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
 
         cache.set(
             f"{cost_centre_code}_cost_centre_cache",
@@ -380,20 +385,7 @@ class EditForecastFigureView(
 
         monthly_figure.save()
 
-        financial_codes = (
-            FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
-            .prefetch_related(
-                "forecast_forecastmonthlyfigures",
-                "forecast_forecastmonthlyfigures__financial_period",
-            )
-            .order_by(
-                "programme__budget_type_fk__budget_type_edit_display_order",
-                "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-                "natural_account_code__natural_account_code",
-            )
-        )
-
-        financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True,)
+        financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
 
         cache.set(
             f"{cost_centre_code}_cost_centre_cache",
@@ -444,22 +436,10 @@ class EditForecastView(
                 cache.get(f"{self.cost_centre_code}_cost_centre_cache")
             )
         else:
-            financial_codes = (
-                FinancialCode.objects.filter(cost_centre_id=self.cost_centre_code,)
-                .prefetch_related(
-                    "forecast_forecastmonthlyfigures",
-                    "forecast_forecastmonthlyfigures__financial_period",
-                )
-                .order_by(
-                    "programme__budget_type_fk__budget_type_edit_display_order",
-                    "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-                    "natural_account_code__natural_account_code",
-                )
+            financial_code_serialiser = get_financial_code_serialiser(
+                self.cost_centre_code,
             )
 
-            financial_code_serialiser = FinancialCodeSerializer(
-                financial_codes, many=True,
-            )
             serialiser_data = financial_code_serialiser.data
             forecast_dump = json.dumps(serialiser_data)
             cache.set(

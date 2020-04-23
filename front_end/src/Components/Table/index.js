@@ -63,10 +63,10 @@ function Table({rowData, sheetUpdating}) {
                                 )}
                             </button>
                         </th>
-                        <TableHeader id="natural_account_code_header" colName="natural_account_code">NAC code</TableHeader>
-                        <TableHeader colName="natural_account_code">NAC description</TableHeader>
                         <TableHeader colName="programme">Programme code</TableHeader>
                         <TableHeader colName="programme">Programme description</TableHeader>
+                        <TableHeader id="natural_account_code_header" colName="natural_account_code">NAC code</TableHeader>
+                        <TableHeader colName="natural_account_code">NAC description</TableHeader>
                         <TableHeader colName="analysis1_code">Analysis Code Sector</TableHeader>
                         <TableHeader colName="analysis2_code">Analysis Code Market</TableHeader>
                         <TableHeader colName="project_code">Project Code</TableHeader>
@@ -132,20 +132,20 @@ function Table({rowData, sheetUpdating}) {
                                     )}
                                 </button>
                             </td>
-                            <ToggleCell colName={"natural_account_code"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"natural_account_code"} />
-                            </ToggleCell>
-
-                            <ToggleCell colName={"natural_account_code"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"nac_description"} />
-                            </ToggleCell>
-
                             <ToggleCell colName={"programme"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"programme"} />
                             </ToggleCell>
 
                             <ToggleCell colName={"programme"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"programme_description"} />
+                            </ToggleCell>
+
+                            <ToggleCell colName={"natural_account_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"natural_account_code"} />
+                            </ToggleCell>
+
+                            <ToggleCell colName={"natural_account_code"} rowIndex={rowIndex}>
+                                <CellValue rowIndex={rowIndex} cellKey={"nac_description"} />
                             </ToggleCell>
 
                             <ToggleCell colName={"analysis1_code"} rowIndex={rowIndex}>
@@ -179,10 +179,10 @@ function Table({rowData, sheetUpdating}) {
                     })}
                     <tr>
                         <td className="govuk-table__cell total">Totals</td>
-                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
-                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"programme"} ignoreSelection={true} />
                         <InfoCell cellKey={"programme"} ignoreSelection={true} />
+                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
+                        <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"analysis1_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"analysis2_code"} ignoreSelection={true} />
                         <InfoCell cellKey={"project_code"} ignoreSelection={true} />
