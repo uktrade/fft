@@ -1,4 +1,4 @@
 ---
 buildpacks:
-  - https://github.com/cloudfoundry/python-buildpack.git
-
+  - nodejs_buildpack
+  - python_buildpack
