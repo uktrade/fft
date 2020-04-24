@@ -154,3 +154,6 @@ fixtures/*
 # Test files
 test.txt
 test_*.txt
+
+# Webpack config
+front_end/config/*
