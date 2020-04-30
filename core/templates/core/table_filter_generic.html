@@ -4,6 +4,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Chart of account period" "chart_of_account_choose_year" %}
+    {% breadcrumb "Chart of account" "chart_of_account_quick_links"  view.display_year %}
     {% breadcrumb view.name "" %}
 {% endblock %}
 

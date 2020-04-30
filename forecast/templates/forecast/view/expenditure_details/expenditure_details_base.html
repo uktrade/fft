@@ -17,12 +17,10 @@
         </div>
     </div>
     <h3 class="govuk-heading-m">{{ view.expenditure_category.NAC_category }} - {{ view.expenditure_category.grouping_description }}</h3>
-    {% cache None expenditure_forecast_tables %}
         {% for table in tables %}
             <div class="tables-container">
                 {% render_table table %}
             </div>
         {% endfor %}
-    {% endcache %}
 {% endblock %}
 
