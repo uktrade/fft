@@ -24,6 +24,12 @@ You can add forecast data if you are developing forecast related functions:
 docker-compose run fido python manage.py create_stub_forecast_data
 ```
 
+You can add Gift and Hospitality data if you are developing Gift and Hospitality related functions:
+
+```
+docker-compose run fido python manage.py populate_gift_hospitality_table
+```
+
 Now access any page within the site and log in with your single sign on credentials.
 
 You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
