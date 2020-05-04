@@ -1,24 +1,94 @@
 from .base import *  # noqa
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
-CAN_ELEVATE_SSO_USER_PERMISSIONS = True
-CAN_CREATE_TEST_USER = True
+MIDDLEWARE += [
+    "authbroker_client.middleware.ProtectAllViewsMiddleware",
+]
 
-FRONT_END_SERVER = env(
-    "FRONT_END_SERVER",
-    default="http://localhost:3000",
-)
+AUTHENTICATION_BACKENDS += [
+    "authbroker_client.backends.AuthbrokerBackend",
+]
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "front_end/build/static"),
     os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
 )
 
-SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-AUTHENTICATION_BACKENDS += [
-    "authbroker_client.backends.AuthbrokerBackend",
+# X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
+X_ROBOTS_TAG = [
+    'noindex',
+    'nofollow',
 ]
 
-ASYNC_FILE_UPLOAD = False
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': CELERY_BROKER_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'cache_'
+    }
+}
 
-IGNORE_ANTI_VIRUS = True
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
+        },
+    },
+}
+
+# Use anti virus check on uploaded files
+IGNORE_ANTI_VIRUS = False
+
+# Set async file uploading
+ASYNC_FILE_UPLOAD = True
+
+sentry_sdk.init(
+    os.environ.get("SENTRY_DSN"),
+    environment=os.environ.get("SENTR   Y_ENVIRONMENT"),
+    integrations=[DjangoIntegration()],
+)
+
+# HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# ## IHTC compliance
+
+# Set crsf cookie to be secure
+CSRF_COOKIE_SECURE = True
+
+# Set session cookie to be secure
+SESSION_COOKIE_SECURE = True
+
+# Make browser end session when user closes browser
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Set cookie expiry to 4 hours
+SESSION_COOKIE_AGE = 4 * 60 * 60  # 4 hours in seconds
+
+# Prevent client side JS from accessing CRSF token
+CSRF_COOKIE_HTTPONLY = True
+
+# Prevent client side JS from accessing session cookie (true by default)
+SESSION_COOKIE_HTTPONLY = True
+
+# Set content to no sniff
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Set anti XSS header
+SECURE_BROWSER_XSS_FILTER = True

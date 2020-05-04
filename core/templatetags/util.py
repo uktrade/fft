@@ -12,11 +12,11 @@ register = template.Library()
 
 @register.simple_tag
 def render_front_end_script():
-    if settings.DEBUG:
+    if hasattr(settings, "FRONT_END_SERVER"):
         return mark_safe(
             '<script '
             'type="text/javascript" '
-            f'src="/{settings.FRONT_END_SERVER}/static/js/bundle.js">'
+            f'src="{settings.FRONT_END_SERVER}/static/js/bundle.js">'
             '</script>'
         )
     else:
