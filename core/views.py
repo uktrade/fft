@@ -10,7 +10,10 @@ from django_tables2.views import SingleTableMixin
 
 from core.exportutils import EXC_TAB_NAME_LEN
 from core.models import Document
-from core.myutils import get_year_display
+from core.myutils import (
+    get_current_financial_year,
+    get_year_display,
+)
 from core.utils import today_string
 
 
@@ -42,6 +45,9 @@ class FAdminFilteredView(
     SingleTableMixin,
     FilterView,
 ):
+    def display_year(self):
+        return get_current_financial_year()
+
     paginate_by = 200
     template_name = "core/table_filter_generic.html"
     strict = False
@@ -76,6 +82,9 @@ class FAdminFilteredView(
 
 
 class HistoricalFilteredView(FAdminFilteredView):
+    def display_year(self):
+        return int(self.filterset_class.year)
+
     def get(self, request, *args, **kwargs):
         year = kwargs["year"]
         self.filterset_class.year = year

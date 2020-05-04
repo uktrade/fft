@@ -81,6 +81,9 @@ class SubtractCol(tables.Column):
 
 class PercentageCol(tables.Column):
     """Used to display the percentage of values in two columns"""
+    attrs = {
+        "td": {"class": "govuk-table__cell  govuk-table__cell--numeric"},
+    }
 
     def display_value(self, value):
         return f"{value:.0%}"

@@ -1,4 +1,9 @@
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import redirect
+from django.urls import reverse
+
 from forecast.models import ForecastingDataView
+from forecast.utils.access_helpers import can_edit_cost_centre, can_view_forecasts
 from forecast.utils.export_helpers import (
     export_edit_to_excel,
     export_query_to_excel,
@@ -19,11 +24,14 @@ from forecast.utils.query_fields import (
 )
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_dit(request):
-    q = ForecastingDataView.view_data.raw_data_annotated(VIEW_FORECAST_DOWNLOAD_COLUMNS)
+    q = ForecastingDataView.view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS)
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, "DIT")
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_group(request, group_code):
     filter = {GROUP_CODE: group_code}
     q = ForecastingDataView.view_data.raw_data_annotated(
@@ -32,14 +40,17 @@ def export_forecast_data_group(request, group_code):
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, group_code)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_directorate(request, directorate_code):
     filter = {DIRECTORATE_CODE: directorate_code}
     q = ForecastingDataView.view_data.raw_data_annotated(
         VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
     )
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, directorate_code)
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS,
+                                 directorate_code)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_cost_centre(request, cost_centre):
     filter = {COST_CENTRE_CODE: cost_centre}
     q = ForecastingDataView.view_data.raw_data_annotated(
@@ -48,6 +59,7 @@ def export_forecast_data_cost_centre(request, cost_centre):
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, cost_centre)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_programme_details(request, cost_centre):
     filter = {COST_CENTRE_CODE: cost_centre}
     q = ForecastingDataView.view_data.raw_data_annotated(
@@ -56,9 +68,9 @@ def export_forecast_data_programme_details(request, cost_centre):
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, cost_centre)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_expenditure_detail_cost_centre(
-    request, cost_centre, expenditure_category_id, budget_type_id
-):
+        request, cost_centre, expenditure_category_id, budget_type_id):
     filter = {
         COST_CENTRE_CODE: cost_centre,
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
@@ -71,9 +83,9 @@ def export_forecast_data_expenditure_detail_cost_centre(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_expenditure_detail_directorate(
-    request, directorate_code, expenditure_category_id, budget_type_id
-):
+        request, directorate_code, expenditure_category_id, budget_type_id):
     filter = {
         DIRECTORATE_CODE: directorate_code,
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
@@ -86,6 +98,7 @@ def export_forecast_data_expenditure_detail_directorate(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_expenditure_detail_group(
     request, group_code, expenditure_category_id, budget_type_id
 ):
@@ -101,6 +114,7 @@ def export_forecast_data_expenditure_detail_group(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_expenditure_dit(
     request, expenditure_category_id, budget_type_id
 ):
@@ -115,6 +129,7 @@ def export_forecast_data_expenditure_dit(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_programme_detail_directorate(
     request, directorate_code, programme_code_id, forecast_expenditure_type_name
 ):
@@ -130,6 +145,7 @@ def export_forecast_data_programme_detail_directorate(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_programme_detail_group(
     request, group_code, programme_code_id, forecast_expenditure_type_name
 ):
@@ -145,6 +161,7 @@ def export_forecast_data_programme_detail_group(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_programme_detail_dit(
     request, programme_code_id, forecast_expenditure_type_name
 ):
@@ -159,6 +176,7 @@ def export_forecast_data_programme_detail_dit(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_project_detail_cost_centre(
     request, cost_centre, project_code_id
 ):
@@ -173,9 +191,9 @@ def export_forecast_data_project_detail_cost_centre(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
-def export_forecast_data_project_detail_directorate(
-    request, directorate_code, project_code_id
-):
+@user_passes_test(can_view_forecasts, login_url='index')
+def export_forecast_data_project_detail_directorate(request, directorate_code,
+                                                    project_code_id):
     filter = {
         DIRECTORATE_CODE: directorate_code,
         PROJECT_CODE: f"{project_code_id}",
@@ -187,6 +205,7 @@ def export_forecast_data_project_detail_directorate(
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_project_detail_group(request, group_code, project_code_id):
     filter = {
         GROUP_CODE: group_code,
@@ -199,6 +218,7 @@ def export_forecast_data_project_detail_group(request, group_code, project_code_
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 
+@user_passes_test(can_view_forecasts, login_url='index')
 def export_forecast_data_project_detail_dit(request, project_code_id):
     filter = {
         PROJECT_CODE: f"{project_code_id}",
@@ -211,14 +231,17 @@ def export_forecast_data_project_detail_dit(request, project_code_id):
 
 
 def export_edit_forecast_data(request, cost_centre):
-    filter = {COST_CENTRE_CODE: cost_centre}
-    q = ForecastingDataView.view_data.raw_data_annotated(
-        {**EDIT_KEYS_DOWNLOAD, **EDIT_FORECAST_DOWNLOAD_COLUMNS},
-        filter,
-        order_list=EDIT_FORECAST_DOWNLOAD_ORDER,
-        include_zeros=True,
-    )
-    title = f"Edit forecast {cost_centre}"
-    return export_edit_to_excel(
-        q, EDIT_KEYS_DOWNLOAD, EDIT_FORECAST_DOWNLOAD_COLUMNS, title
-    )
+    if can_edit_cost_centre(request.user, cost_centre):
+        filter = {COST_CENTRE_CODE: cost_centre}
+        q = ForecastingDataView.view_data.raw_data_annotated(
+            {**EDIT_KEYS_DOWNLOAD, **EDIT_FORECAST_DOWNLOAD_COLUMNS},
+            filter,
+            order_list=EDIT_FORECAST_DOWNLOAD_ORDER,
+            include_zeros=True,
+        )
+        title = f"Edit forecast {cost_centre}"
+        return export_edit_to_excel(
+            q, EDIT_KEYS_DOWNLOAD, EDIT_FORECAST_DOWNLOAD_COLUMNS, title
+        )
+    else:
+        return redirect(reverse("forecast_dit"))

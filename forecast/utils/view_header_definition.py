@@ -1,6 +1,6 @@
 budget_header = 'Budget'
-forecast_total_header = 'Forecast outturn total'
+forecast_total_header = 'Forecast outturn'
 variance_header = 'Variance -overspend/underspend'
 variance_percentage_header = 'Variance %'
-year_to_date_header = 'Year to Date'
+year_to_date_header = 'Year to Date Actuals'
 budget_spent_percentage_header = '% of budget spent to date'

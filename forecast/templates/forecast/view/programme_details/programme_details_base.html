@@ -17,12 +17,10 @@
         </div>
     </div>
     <h3 class="govuk-heading-m">{{ view.programme_code.programme_description }} - {{ view.programme_code.programme_code }}</h3>
-    {% cache None programme_forecast_tables %}
         {% for table in tables %}
             <div class="tables-container">
                 {% render_table table %}
             </div>
         {% endfor %}
-    {% endcache %}
 
 {% endblock %}
