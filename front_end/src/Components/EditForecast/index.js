@@ -64,9 +64,11 @@ function EditForecast() {
             );
 
             let clipBoardContent = event.clipboardData.getData('text/plain')
+            let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
 
             let payload = new FormData()
             payload.append("paste_content", clipBoardContent)
+            payload.append("csrfmiddlewaretoken", crsfToken)
 
             if (allSelected) {
                 payload.append("all_selected", allSelected)

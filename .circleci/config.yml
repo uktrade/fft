@@ -6,7 +6,7 @@ jobs:
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
-          DJANGO_SETTINGS_MODULE: config.settings.dev
+          DJANGO_SETTINGS_MODULE: config.settings.ci
           SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
           SELENIUM_ADDRESS: localhost
@@ -56,6 +56,11 @@ jobs:
           command: |
             . venv/bin/activate
             python manage.py collectstatic --noinput
+      - run:
+          name: Compile CSS
+          command: |
+            . venv/bin/activate
+            python manage.py compilescss
       - run:
           name: Run tests
           command: |

@@ -97,6 +97,24 @@ def step_impl(context):
     paste(context)
 
 
+@when(u'the user pastes valid sheet data with column headers')
+def step_impl(context):
+    paste_text = "Programme code	Programme code Description	Natural Account code	Natural Account Code Description	Contract Code	Market Code	Project Code	Budget	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec	Jan	Feb	Mar	Forecast outturn	Variance -overspend/underspend	Year to Date Actuals	Group name	Group code	Directorate name	Directorate code	Cost Centre name	Cost Centre code	Budget Grouping	Expenditure type	Expenditure type description	Budget type	Budget Category	Budget/Forecast NAC	Budget/Forecast NAC Description	NAC Expenditure Type	Contract Description	Market Description	Project Description"
+    paste_text += "\\n123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n123456	Test	999999	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+
+    copy_text(context, paste_text)
+    paste(context)
+
+
+@when(u'the user pastes sheet data with invalid column headers')
+def step_impl(context):
+    paste_text = "Natural Account code	Programme code Description	Programme code	Natural Account Code Description	Contract Code	Market Code	Project Code	Budget	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec	Jan	Feb	Mar	Forecast outturn	Variance -overspend/underspend	Year to Date Actuals	Group name	Group code	Directorate name	Directorate code	Cost Centre name	Cost Centre code	Budget Grouping	Expenditure type	Expenditure type description	Budget type	Budget Category	Budget/Forecast NAC	Budget/Forecast NAC Description	NAC Expenditure Type	Contract Description	Market Description	Project Description"
+    paste_text += "\\n123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n123456	Test	999999	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+
+    copy_text(context, paste_text)
+    paste(context)
+
+
 @when(u'the user pastes too many rows')
 def step_impl(context):
     too_many_rows_paste_text = "123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n123456	Test	999999	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00\\n123456	Test	n333333	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"

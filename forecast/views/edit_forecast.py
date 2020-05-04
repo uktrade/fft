@@ -242,7 +242,7 @@ class PasteForecastRowsView(
 
         # Check for header row
         has_start_row = False
-        if rows[0].lower().startswith("natural account code"):
+        if rows[0].lower().startswith("programme"):
             has_start_row = True
 
         # Account for header row in paste
