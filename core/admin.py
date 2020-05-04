@@ -380,14 +380,20 @@ class UserAdmin(UserAdmin):
 
     def get_exclude(self, request, obj=None):
         if request.user.is_superuser:
-            return None
+            return []
+
+        return [
+            "password",
+        ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return []
 
         return [
             "first_name",
-            "password",
             "last_name",
             "email",
-            "password",
             "last_login",
             "is_superuser",
             "user_permissions",
