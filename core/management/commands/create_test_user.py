@@ -14,6 +14,11 @@ class Command(BaseCommand):
             dest="email",
         )
         parser.add_argument(
+            "--password",
+            help="Test user's password",
+            dest="password",
+        )
+        parser.add_argument(
             "--group",
             help="Group for user to join",
             dest="group",
@@ -31,11 +36,18 @@ class Command(BaseCommand):
             is_admin = options["is_admin"]
             email = options["email"]
             group = options["group"]
+            password = options["password"]
 
             if not email:
                 email = "test@test.com"
 
-            password = "password"
+            if not password:
+                self.stdout.write(
+                    self.style.ERROR(
+                        "Please supply a password for this test user"
+                    )
+                )
+                return
 
             user = _User.objects.filter(email=email).first()
 
@@ -66,7 +78,7 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(
-                self.style.FATAL(
+                self.style.ERROR(
                     "The setting CAN_CREATE_TEST_USER is "
                     "set to false, action not allowed"
                 )

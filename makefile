@@ -10,9 +10,9 @@ setup-new-test-env:
 	docker-compose run fido python manage.py create_stub_data All
 	docker-compose run fido python manage.py create_stub_forecast_data
 	docker-compose run fido python manage.py populate_gift_hospitality_table
-	docker-compose run fido python manage.py create_test_user
-	docker-compose run fido python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator"
-	docker-compose run fido python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE"
+	docker-compose run fido python manage.py create_test_user --password=password
+	docker-compose run fido python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password
+	docker-compose run fido python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password
 
 makemigrations:
 	docker-compose run fido python manage.py makemigrations

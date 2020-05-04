@@ -42,7 +42,7 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(
-                self.style.FATAL(
+                self.style.ERROR(
                     "The setting CAN_ELEVATE_SSO_USER_PERMISSIONS"
                     " is set to false, action not allowed"
                 )
