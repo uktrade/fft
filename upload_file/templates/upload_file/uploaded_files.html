@@ -28,7 +28,7 @@
         <p class="govuk-heading-s">{{ document.file_name }}</p>
       </div>
       <div class="govuk-grid-column-two-thirds">
-        {% if document.status == "error" %}
+        {% if document.status == "error" or document.status == "parsing" or document.status == "processed_error" %}
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
               <h2 class="govuk-error-summary__title" id="error-summary-title">
                 There was a problem processing this file
@@ -36,7 +36,21 @@
               <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                   <li>
-                    {{ document.user_error_message }}
+                    {{ document.user_error_message|linebreaks }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+        {% endif %}
+        {% if document.status == "processed_warning" %}
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+              <h2 class="govuk-error-summary__title" id="error-summary-title">
+                The file was uploaded, but some warnings have been found:
+              </h2>
+              <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                  <li>
+                    {{ document.user_warning_message|linebreaks }}
                   </li>
                 </ul>
               </div>
@@ -72,7 +86,15 @@
                   Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {{ document.status }}
+                  {{ document.get_status_display }}
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Processing status:
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{ document.row_process_message }}
                 </dd>
               </div>
               <div class="govuk-summary-list__row">
@@ -84,7 +106,7 @@
                 </dd>
               </div>
             </dl>
-            {% if document.status == "processing" %}
+            {% if document.status == "processing" or document.status == "parsing" %}
                 <button onclick="javascript:window.location.reload();" class="govuk-button" data-module="govuk-button">
                     Refresh
                 </button>

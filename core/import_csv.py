@@ -41,13 +41,13 @@ def csv_header_to_dict(row):
 # build the dict from the header row
 # make everything lower case to make
 # it case insensitive
-# it will break if the header row is over row 9
 def xslx_header_to_dict(row):
     d = {}
+    col = 0
     for cell in row:
-        # save the letter part of the cell coordinates
         if cell.value:
-            d[cell.value.lower()] = cell.coordinate[:-1]
+            d[cell.value.lower()] = col
+        col += 1
     return d
 
 
@@ -91,10 +91,10 @@ def get_fk(m, pk_value):
     try:
         obj = m.objects.get(pk=pk_value)
     except m.DoesNotExist:
-        msg = f'{get_pk_verbose_name(m)} "{pk_value}"'
+        msg = f'{get_pk_verbose_name(m)} "{pk_value}" does not exist.\n'
         obj = None
     except ValueError:
-        msg = f'{get_pk_verbose_name(m)} "{pk_value}" is the wrong type. \n'
+        msg = f'{get_pk_verbose_name(m)} "{pk_value}" is the wrong type.\n'
         obj = None
     return obj, msg
 
