@@ -73,8 +73,8 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
             financial_year=year_obj,
         )
         may_figure.save
-        # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
+        # Assign download  permission
+        can_view_forecasts = Permission.objects.get(codename="can_download_mi_reports")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -148,9 +148,9 @@ class DownloadOscarReportTest(TestCase, RequestFactoryBase):
             financial_year=year_obj,
         )
         may_figure.save
-        # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
-        self.test_user.user_permissions.add(can_view_forecasts)
+
+        can_download_files = Permission.objects.get(codename="can_download_oscar",)
+        self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 
         self.year_total = self.amount_apr + self.amount_may
