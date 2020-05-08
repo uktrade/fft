@@ -39,7 +39,6 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
         )
         self.file_mock_name = file_upload.document_file.name
 
-
     def test_upload_view(self):
         assert not self.test_user.has_perm("forecast.can_upload_files")
 
