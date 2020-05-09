@@ -14,6 +14,7 @@ from core.import_csv import (
     get_fk,
     get_fk_from_field,
 )
+from core.myutils import get_current_financial_year
 
 from costcentre.models import CostCentre
 
@@ -48,7 +49,7 @@ def import_adi_file(csvfile):
     """Read the ADI file and unpivot it to enter the MonthlyFigure data
     Hard coded the year because it is a temporary solution....
     The information is used to create the OSCAR report to be uploaded to Treasury"""
-    fin_year = 2019
+    fin_year = get_current_financial_year()
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
     ForecastMonthlyFigure.objects.filter(financial_year=fin_year).delete()
@@ -70,7 +71,7 @@ def import_adi_file(csvfile):
         err_msg += msg
         an1_obj, msg = get_fk(Analysis1, int(row[col_key["analysis"]]))
         an2_obj, msg = get_fk(Analysis2, int(row[col_key["analysis2"]]))
-        proj_obj, msg = get_fk(ProjectCode, row[col_key["spare2"]].strip())
+        proj_obj, msg = get_fk(ProjectCode, row[col_key["project"]].strip())
         # Now read the twelve month values into a dict
         if err_msg == "":
             financial_code, created = FinancialCode.objects.get_or_create(
@@ -112,7 +113,7 @@ h_list = [
     "programme",
     "analysis",
     "analysis2",
-    "spare2",
+    "project",
     "Apr",
     "May",
     "Jun",

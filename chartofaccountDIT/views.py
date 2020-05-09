@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 from core.views import FAdminFilteredView, HistoricalFilteredView
 
@@ -273,7 +274,21 @@ class HistoricalFilteredFCOMappingView(FilteredFCOMappingView, HistoricalFiltere
 
 
 def choose_year(request):
-    return render(request, "chartofaccountDIT/choose_year.html",)
+    current_year = get_current_financial_year()
+    qs = FinancialYear.objects.filter(financial_year__lte=current_year).order_by(
+        "-financial_year"
+    )
+    chart_of_account_years = []
+    for q in qs:
+        chart_of_account_years.append(
+            {"year": q.financial_year, "display": q.financial_year_display}
+        )
+
+    return render(
+        request,
+        "chartofaccountDIT/choose_year.html",
+        {"chart_of_account_years": chart_of_account_years},
+    )
 
 
 def quick_links(request, year):

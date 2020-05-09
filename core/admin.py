@@ -12,9 +12,15 @@ from django.contrib.admin.models import (
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadhandler import (
+    MemoryFileUploadHandler,
+    TemporaryFileUploadHandler,
+)
 from django.shortcuts import redirect, render
 from django.urls import path, reverse
 from django.utils.html import escape
+from django.views.decorators.csrf import csrf_exempt
+
 
 from core.exportutils import (
     export_csv_from_import,
@@ -241,11 +247,33 @@ class AdminImportExport(AdminExport):
         e = export_csv_from_import(self.import_info.key)
         return export_to_csv(e.queryset, e.yield_data)
 
+    def process_csv(self, request):
+        import_file = request.FILES["csv_file"]
+        # read() gives you the file
+        # contents as a bytes object,
+        # on which you can call decode().
+        # decode('cp1252') turns your
+        # bytes into a string, with known
+        # encoding. cp1252 is used to
+        # handle single quotes in the strings
+        t = io.StringIO(import_file.read().decode("cp1252"))
+        success, message = self.import_info.my_check_headers(t)
+        if success:
+            t.seek(0)
+            success, message = self.import_info.import_func(t)
+        if not success:
+            messages.error(request, "Error: " + message)
+        return success, message
+
+    @csrf_exempt
     def import_csv(self, request):
         header_list = self.import_info.header_list
-        import_func = self.import_info.import_func
         form_title = self.import_info.form_title
-        check_headers = self.import_info.my_check_headers
+        # because the files are small, upload them to memory
+        # instead of using S3
+        request.upload_handlers.insert(0, TemporaryFileUploadHandler(request))
+        request.upload_handlers.insert(0, MemoryFileUploadHandler(request))
+
         if request.method == "POST":
             form = CsvImportForm(
                 header_list,
@@ -254,70 +282,12 @@ class AdminImportExport(AdminExport):
                 request.FILES,
             )
             if form.is_valid():
-                import_file = request.FILES["csv_file"]
-                # read() gives you the file
-                # contents as a bytes object,
-                # on which you can call decode().
-                # decode('cp1252') turns your
-                # bytes into a string, with known
-                # encoding. cp1252 is used to
-                # handle single quotes in the strings
-                t = io.StringIO(import_file.read().decode("cp1252"))
-                success, message = check_headers(t)
+                success, message = self.process_csv(request)
                 if success:
-                    t.seek(0)
-                    success, message = import_func(t)
-                    if success:
-                        return redirect("..")
-
-                messages.error(request, "Error: " + message)
+                    return redirect("..")
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}
-        return render(request, "admin/csv_form.html", payload)
-
-
-class AdminAsyncImportExport(AdminImportExport):
-    def import_csv(self, request):
-        header_list = self.import_info.header_list
-        import_func = self.import_info.import_func
-        form_title = self.import_info.form_title + " ASYNC"
-        check_headers = self.import_info.my_check_headers
-        if request.method == "POST":
-            form = CsvImportForm(
-                header_list,
-                form_title,
-                request.POST,
-                request.FILES,
-            )
-            if form.is_valid():
-                import_file = request.FILES["csv_file"]
-                # read() gives you the file
-                # contents as a bytes object,
-                # on which you can call decode().
-                # decode('cp1252') turns your
-                # bytes into a string, with
-                # known encoding. cp1252 is used
-                # to handle single quotes in the strings
-                t = io.StringIO(import_file.read().decode("cp1252"))
-                success, message = check_headers(t)
-                if success:
-                    t.seek(0)
-                    success, message = import_func(t)
-                    if success:
-                        return redirect("..")
-
-                messages.error(request, "Error: " + message)
-        else:
-            form = CsvImportForm(
-                header_list,
-                form_title,
-            )
-
-        payload = {
-            "form": form
-        }
-
         return render(request, "admin/csv_form.html", payload)
 
 

@@ -56,7 +56,8 @@ from forecast.permission_shortcuts import assign_perm
 
 # Displays extra fields in the list of cost centres
 class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExport):
-    """Define an extra import button, for the DIT specific fields"""
+    # Define an extra import button, for the DIT specific fields
+    change_list_template = "admin/m_import_changelist.html"
 
     change_form_template = "costcentre/admin/change_form.html"
 
