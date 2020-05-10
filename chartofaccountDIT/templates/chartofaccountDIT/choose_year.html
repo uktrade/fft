@@ -11,16 +11,13 @@
 
     <nav role="navigation" aria-labelledby="subsection-title">
       <ul class="govuk-list govuk-!-font-size-16">
-        <li>
-          <a class="govuk-link" href="{% url 'chart_of_account_quick_links' year=2019 %}">
-            2019-20 Chart of Account
-          </a>
-        </li>
-        <li>
-          <a class="govuk-link" href="{% url 'chart_of_account_quick_links' year=2018 %}">
-            2018-19 Chart of Account
-          </a>
-        </li>
+          {% for year in chart_of_account_years %}
+                <li>
+                  <a class="govuk-link" href="{% url 'chart_of_account_quick_links' year=year.year %}">
+                    {{year.display}}  Chart of Account
+                  </a>
+                </li>
+            {%  endfor  %}
       </ul>
     </nav>
 {% endblock %}

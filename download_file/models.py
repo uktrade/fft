@@ -19,10 +19,12 @@ class FileDownload(BaseModel):
 
     OSCAR_RETURN = 'Oscar'
     MI_REPORT = 'Forecast'
+    MI_BUDGET_REPORT = 'Budget'
 
     DOWNLOAD_TYPE_CHOICES = [
         (OSCAR_RETURN, 'OSCAR Return'),
-        (MI_REPORT, 'Budget'),
+        (MI_REPORT, 'Forecast'),
+        (MI_BUDGET_REPORT, 'Budget'),
     ]
 
     document_type = models.CharField(

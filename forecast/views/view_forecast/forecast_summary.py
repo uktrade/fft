@@ -97,6 +97,7 @@ class ForecastMultiTableMixin(MultiTableMixin):
             pivot_filter,
             order_list=expenditure_order_list,
         )
+
         # In the project report, exclude rows without a project code.
 
         k = f"{PROJECT_CODE}__isnull"

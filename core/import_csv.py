@@ -284,7 +284,8 @@ class ImportInfo:
         l1 = [x.lower() for x in [x.lower() for x in self.header_list]]
         # Before starting to read, check that all the expected columns exists
         if not all(elem in header for elem in l1):
-            msg = "Missing/wrong headers: expected {l1}, the file has: {header.keys()}."
+            msg = f"Missing/wrong headers: expected {l1}, " \
+                  f"the file has: {header.keys()}."
 
             return False, msg
 

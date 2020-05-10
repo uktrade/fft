@@ -1,9 +1,14 @@
 from django.core.exceptions import PermissionDenied
 
+from forecast.utils.access_helpers import (
+    can_download_mi_reports,
+    can_download_oscar,
+)
+
 
 def has_download_oscar_permission(function):
     def wrap(view_func, *args, **kwargs):
-        if view_func.request.user.has_perm("forecast.can_download_oscar"):
+        if can_download_oscar(view_func.request.user):
             return function(view_func, *args, **kwargs)
         else:
             raise PermissionDenied
@@ -15,7 +20,7 @@ def has_download_oscar_permission(function):
 
 def has_download_mi_report_permission(function):
     def wrap(view_func, *args, **kwargs):
-        if view_func.request.user.has_perm("forecast.can_download_mi_report"):
+        if can_download_mi_reports(view_func.request.user):
             return function(view_func, *args, **kwargs)
         else:
             raise PermissionDenied

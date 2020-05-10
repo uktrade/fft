@@ -10,4 +10,4 @@ def has_oscar_download_permission(user):
 
 @register.simple_tag
 def has_mi_report_download_permission(user):
-    return user.has_perm("forecast.can_download_oscar")
+    return user.has_perm("forecast.can_download_mi_reports")

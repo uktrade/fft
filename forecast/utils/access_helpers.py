@@ -102,3 +102,11 @@ def can_edit_cost_centre(user, cost_centre_code):
         "costcentre.change_costcentre",
         cost_centre,
     )
+
+
+def can_download_mi_reports(user):
+    return user.has_perm("forecast.can_download_mi_reports")
+
+
+def can_download_oscar(user):
+    return user.has_perm("forecast.can_download_oscar")
