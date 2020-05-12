@@ -3,8 +3,6 @@ import re
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http import JsonResponse
@@ -56,22 +54,6 @@ from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
 )
-
-
-def delete_forecast_cache(cost_centre_code):
-    dit_key = make_template_fragment_key("dit_forecast_tables")
-    group_key = make_template_fragment_key("group_forecast_tables")
-    directorate_key = make_template_fragment_key("directorate_forecast_tables")
-    programme_key = make_template_fragment_key("programme_forecast_tables")
-    expenditure_key = make_template_fragment_key("expenditure_forecast_tables")
-    cost_centre_key = make_template_fragment_key(cost_centre_code)
-
-    cache.delete(dit_key)
-    cache.delete(group_key)
-    cache.delete(directorate_key)
-    cache.delete(programme_key)
-    cache.delete(expenditure_key)
-    cache.delete(cost_centre_key)
 
 
 def get_financial_code_serialiser(cost_centre_code):
@@ -300,14 +282,6 @@ class PasteForecastRowsView(
 
         financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
 
-        cache.set(
-            f"{cost_centre_code}_cost_centre_cache",
-            financial_code_serialiser.data,
-            90000,
-        )
-
-        delete_forecast_cache(cost_centre_code)
-
         return JsonResponse(financial_code_serialiser.data, safe=False)
 
     def form_invalid(self, form):
@@ -387,14 +361,6 @@ class EditForecastFigureView(
 
         financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
 
-        cache.set(
-            f"{cost_centre_code}_cost_centre_cache",
-            financial_code_serialiser.data,
-            90000,
-        )
-
-        delete_forecast_cache(cost_centre_code)
-
         return JsonResponse(financial_code_serialiser.data, safe=False)
 
     def form_invalid(self, form):
@@ -431,20 +397,12 @@ class EditForecastView(
 
         form = PublishForm(initial={"cost_centre_code": self.cost_centre_code, })
 
-        if cache.get(f"{self.cost_centre_code}_cost_centre_cache"):
-            forecast_dump = json.dumps(
-                cache.get(f"{self.cost_centre_code}_cost_centre_cache")
-            )
-        else:
-            financial_code_serialiser = get_financial_code_serialiser(
-                self.cost_centre_code,
-            )
+        financial_code_serialiser = get_financial_code_serialiser(
+            self.cost_centre_code,
+        )
 
-            serialiser_data = financial_code_serialiser.data
-            forecast_dump = json.dumps(serialiser_data)
-            cache.set(
-                f"{self.cost_centre_code}_cost_centre_cache", serialiser_data, 90000,
-            )
+        serialiser_data = financial_code_serialiser.data
+        forecast_dump = json.dumps(serialiser_data)
 
         actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
         period_display = (
