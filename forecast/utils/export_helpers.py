@@ -2,7 +2,10 @@ from django.http import HttpResponse
 
 from openpyxl import Workbook
 from openpyxl.styles import Protection
-from openpyxl.utils import get_column_letter
+from openpyxl.utils import (
+    column_index_from_string,
+    get_column_letter,
+)
 
 from core.exportutils import (
     EXCEL_TYPE,
@@ -62,7 +65,14 @@ def create_headers(keys_dict, columns_dict, period_list):
     return k
 
 
-def export_to_excel(queryset, columns_dict, extra_columns_dict, protect, title):
+def export_to_excel(
+    queryset,
+    columns_dict,
+    extra_columns_dict,
+    protect,
+    title,
+    include_month_total=False,
+):
     resp = HttpResponse(content_type=EXCEL_TYPE)
     filename = f"{title}  {today_string()} .xlsx"
     resp["Content-Disposition"] = "attachment; filename=" + filename
@@ -121,9 +131,20 @@ def export_to_excel(queryset, columns_dict, extra_columns_dict, protect, title):
         ].value = f"=SUM({first_figure_col}{row_count}:{last_month_col}{row_count})"
         ws[
             f"{over_under_spend_col}{row_count}"
-        ].value = f"=({budget_col}{row_count}-{year_to_date_col}{row_count})"
+        ].value = f"=({budget_col}{row_count}-{year_total_col}{row_count})"
         format_numbers(ws, row_count, budget_index)
         unlock_forecast_cells(ws, row_count, first_forecast_index, last_month_index + 1)
+    if include_month_total:
+        row_count += 1
+        grand_total_column = get_column_letter(column_index_from_string(budget_col) - 1)
+        ws[f"{grand_total_column}{row_count}"].value = "Grand Total:"
+
+        for col_idx in range(
+            column_index_from_string(budget_col),
+            column_index_from_string(year_to_date_col) + 1,
+        ):
+            col = get_column_letter(col_idx)
+            ws[f"{col}{row_count}"].value = f"=SUM({col}2:{col}{row_count-1})"
 
     wb.save(resp)
     return resp
@@ -134,4 +155,4 @@ def export_query_to_excel(queryset, columns_dict, title):
 
 
 def export_edit_to_excel(queryset, key_dict, columns_dict, title):
-    return export_to_excel(queryset, key_dict, columns_dict, True, title)
+    return export_to_excel(queryset, key_dict, columns_dict, True, title, True)

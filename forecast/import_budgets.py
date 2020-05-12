@@ -117,6 +117,13 @@ def upload_budget(worksheet, year, header_dict, file_upload):
     a2_index = header_dict["analysis2"]
     proj_index = header_dict["project"]
     row = 0
+    # There is a terrible performance hit accessing the individual cells:
+    # The cell is found starting from cell A0, and continuing until the
+    # required cell is found
+    # The rows in worksheet.rows are accessed sequentially, so there is no
+    # performance problem.
+    # A typical files took over 2 hours to read using the cell access method
+    # and 10 minutes with the row access.
     for budget_row in worksheet.rows:
         row += 1
         if row == 1:
