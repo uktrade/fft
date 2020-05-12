@@ -1,6 +1,11 @@
+import sys
+
 from .base import *  # noqa
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+from django_log_formatter_ecs import ECSFormatter
+
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
@@ -35,17 +40,25 @@ CACHES = {
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "ecs_formatter": {
+            "()": ECSFormatter,
+        },
+    },
     'handlers': {
-        'console': {
+        'ecs': {
             'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'ecs_formatter',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
+        'django.request': {
+            'handlers': ['ecs', ],
+            'level': 'INFO',
+            'propagate': True,
         },
     },
 }

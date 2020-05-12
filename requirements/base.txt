@@ -95,3 +95,4 @@ django-redis
 s3chunkuploader
 django-adv-cache-tag
 django-compressor
+django-log-formatter-ecs
