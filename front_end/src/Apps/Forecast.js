@@ -1,10 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { store } from './Store';
+import { store } from './../Store';
 //import { PersistGate } from 'redux-persist/integration/react';
-import EditForecast from './Components/EditForecast/index'
+import EditForecast from './../Components/EditForecast/index'
 
-function App() {
+function Forecast() {
     return (
         <Provider store={store}>
             <EditForecast />
@@ -12,4 +12,4 @@ function App() {
     );
 }
 
-export default App;
+export default Forecast;

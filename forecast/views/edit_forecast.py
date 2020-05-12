@@ -93,6 +93,21 @@ class ChooseCostCentreView(
         # one or more CCs then let them view
         return cost_centres.count() > 0
 
+    def get_user_cost_centres(self):
+        user_cost_centres = get_objects_for_user(
+            self.request.user, "costcentre.change_costcentre",
+        )
+
+        cost_centres = []
+
+        for (cost_centre) in user_cost_centres:
+            cost_centres.append({
+                "name": cost_centre.cost_centre_name,
+                "code": cost_centre.cost_centre_code,
+            })
+
+        return json.dumps(cost_centres)
+
     def get_form_kwargs(self):
         kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
         kwargs["user"] = self.request.user

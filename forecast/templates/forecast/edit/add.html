@@ -1,9 +1,11 @@
 {% extends "forecast/forecast_base.html" %}
+{% load util %}
 
 {% block page_content %}
     <form method="post" action="">
         {% csrf_token %}
         {% include "core/govt_uk_form.html" %}
+        <div id="cost-centre-type-ahead-root"></div>
         <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button"/>
     </form>
 {% endblock %}

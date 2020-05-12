@@ -19,7 +19,6 @@ import {
 function EditForecast() {
     const dispatch = useDispatch();
 
-
     const errorMessage = useSelector(state => state.error.errorMessage)
     const selectedRow = useSelector(state => state.selected.selectedRow)
     const allSelected = useSelector(state => state.selected.all)

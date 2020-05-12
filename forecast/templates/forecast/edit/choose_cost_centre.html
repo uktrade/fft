@@ -1,4 +1,5 @@
 {% extends "wide_content.html" %}
+{% load util %}
 
 {% load django_bootstrap_breadcrumbs %}
 
@@ -9,12 +10,11 @@
 
 {% block content %}
     <h3 class="govuk-heading-l">My cost centres</h3>
-    <form method="post" action ="">
-        {% csrf_token %}
-        {% include "core/govt_uk_form.html" %}
-        <input type="submit" value="Choose cost centre" class="govuk-button" data-module="govuk-button"/>
-    </form>
+    <div id="cost-centre-list-app"></div>
 {% endblock %}
-
-
-
+{% block scripts %}
+    {% render_front_end_script %}
+    <script>
+        window.costCentres = {{ view.get_user_cost_centres|safe }};
+    </script>
+{% endblock %}

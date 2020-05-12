@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div id="root"></div>
+    <div id="forecast-app"></div>
     <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ paste_form }}
