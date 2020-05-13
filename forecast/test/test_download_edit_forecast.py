@@ -144,7 +144,6 @@ class DownloadEditForecastTest(TestCase, RequestFactoryBase):
         assert ws["I1"].value == "Apr"
         assert ws["I2"].value == 0
         assert ws["I3"].value == self.amount_apr / 100
-        print(ws["I4"].value)
         assert ws["I4"].value == "=SUM(I2:I3)"
         assert ws["J1"].value == "May"
         assert ws["J2"].value == 0
