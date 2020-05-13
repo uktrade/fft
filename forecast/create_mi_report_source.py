@@ -16,6 +16,15 @@ from forecast.utils.query_fields import (
 )
 
 
+def get_obj_value(obj, name):
+    value = 0
+    if name in obj:
+        value = obj[name]
+        if value is None:
+            value = 0
+    return value
+
+
 def export_mi_iterator(queryset):
     yield [
         "Entity",
@@ -43,21 +52,21 @@ def export_mi_iterator(queryset):
         "Total",
     ]
     for obj in queryset:
-        apr = obj["Apr"] if "Apr" in obj else 0
-        may = obj["May"] if "May" in obj else 0
-        jun = obj["Jun"] if "Jun" in obj else 0
-        jul = obj["Jul"] if "Jul" in obj else 0
-        aug = obj["Aug"] if "Aug" in obj else 0
-        sep = obj["Sep"] if "Sep" in obj else 0
-        oct = obj["Oct"] if "Oct" in obj else 0
-        nov = obj["Nov"] if "Nov" in obj else 0
-        dec = obj["Dec"] if "Dec" in obj else 0
-        jan = obj["Jan"] if "Jan" in obj else 0
-        feb = obj["Feb"] if "Feb" in obj else 0
-        mar = obj["Mar"] if "Mar" in obj else 0
-        adj1 = obj["Adj1"] if "Adj1" in obj else 0
-        adj2 = obj["Adj2"] if "Adj2" in obj else 0
-        adj3 = obj["Adj3"] if "Adj3" in obj else 0
+        apr = get_obj_value(obj, "Apr")
+        may = get_obj_value(obj, "May")
+        jun = get_obj_value(obj, "Jun")
+        jul = get_obj_value(obj, "Jul")
+        aug = get_obj_value(obj, "Aug")
+        sep = get_obj_value(obj, "Sep")
+        oct = get_obj_value(obj, "Oct")
+        nov = get_obj_value(obj, "Nov")
+        dec = get_obj_value(obj, "Dec")
+        jan = get_obj_value(obj, "Jan")
+        feb = get_obj_value(obj, "Feb")
+        mar = get_obj_value(obj, "Mar")
+        adj1 = get_obj_value(obj, "Adj1")
+        adj2 = get_obj_value(obj, "Adj2")
+        adj3 = get_obj_value(obj, "Adj3")
 
         total = (
             apr
