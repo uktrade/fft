@@ -17,7 +17,6 @@ from guardian.shortcuts import (
     get_objects_for_user,
 )
 
-from core.models import FinancialYear
 from core.myutils import get_current_financial_year
 
 from costcentre.forms import MyCostCentresForm
@@ -324,7 +323,7 @@ class EditForecastFigureView(
             cost_centre_code=cost_centre_code,
         ).first()
 
-        financial_year = FinancialYear.objects.filter(current=True).first()
+        financial_year = get_current_financial_year()
 
         financial_code = FinancialCode.objects.filter(
             cost_centre=cost_centre,
@@ -345,7 +344,7 @@ class EditForecastFigureView(
             raise NoFinancialCodeForEditedValue()
 
         monthly_figure = ForecastMonthlyFigure.objects.filter(
-            financial_year=financial_year,
+            financial_year_id=financial_year,
             financial_code=financial_code.first(),
             financial_period__financial_period_code=month,
             archived_status=None,
@@ -366,7 +365,7 @@ class EditForecastFigureView(
                 financial_period_code=month
             ).first()
             monthly_figure = ForecastMonthlyFigure(
-                financial_year=financial_year,
+                financial_year_id=financial_year,
                 financial_code=financial_code.first(),
                 financial_period=financial_period,
                 amount=amount,
