@@ -1,12 +1,25 @@
+import csv
+import io
+
 from behave import (
     given,
     when,
     then,
 )
 
+from openpyxl import load_workbook
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as ec
+
+from django.test import RequestFactory
+from django.urls import reverse
+
+from forecast.views.view_forecast.export_forecast_data import (
+    export_edit_forecast_data,
+)
 
 from features.environment import (
     TEST_COST_CENTRE_CODE,
@@ -97,6 +110,35 @@ def step_impl(context):
     paste(context)
 
 
+@when(u'the user pastes valid sheet with no changes')
+def step_impl(context):
+    factory = RequestFactory()
+    kwargs = {"cost_centre": TEST_COST_CENTRE_CODE}
+    request = factory.get(reverse(
+        "export_edit_forecast_data_cost_centre",
+        kwargs=kwargs,
+    ))
+    request.user = context.user
+    response = export_edit_forecast_data(request, **kwargs)
+
+    assert response.status_code == 200
+
+    file = io.BytesIO(response.content)
+    wb = load_workbook(filename=file, read_only=True, data_only=True,)
+    ws = wb.get_active_sheet()
+
+    paste_text = ""
+
+    for row in ws.rows:
+        for cell in row:
+            value = cell.value or "\t"
+            paste_text += f"{value}\t"
+        paste_text += "\\n"
+
+    copy_text(context, paste_text)
+    paste(context)
+
+
 @when(u'the user pastes valid sheet data with column headers')
 def step_impl(context):
     paste_text = "Programme code	Programme code Description	Natural Account code	Natural Account Code Description	Contract Code	Market Code	Project Code	Budget	Apr	May	Jun	Jul	Aug	Sep	Oct	Nov	Dec	Jan	Feb	Mar	Forecast outturn	Variance -overspend/underspend	Year to Date Actuals	Group name	Group code	Directorate name	Directorate code	Cost Centre name	Cost Centre code	Budget Grouping	Expenditure type	Expenditure type description	Budget type	Budget Category	Budget/Forecast NAC	Budget/Forecast NAC Description	NAC Expenditure Type	Contract Description	Market Description	Project Description"
@@ -131,6 +173,20 @@ def step_impl(context):
     )
 
     assert april_value == "1,000"
+
+
+@then(u'no message is displayed')
+def step_impl(context):
+    shown_message = True
+
+    try:
+        WebDriverWait(context.browser, 5).until(
+            ec.presence_of_element_located((By.ID, "paste_error_msg"))
+        )
+    except TimeoutException:
+        shown_message = False
+
+    assert not shown_message
 
 
 @when(u'the user pastes invalid row data')

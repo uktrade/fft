@@ -224,6 +224,9 @@ class PasteForecastRowsView(
         row_count = financial_codes.count()
         rows = paste_content.splitlines()
 
+        # Remove any rows that start with empty cells (to account for totals etc)
+        rows = [row for row in rows if not row[0].strip() == ""]
+
         pasted_row_count = len(rows)
 
         if len(rows) == 0:

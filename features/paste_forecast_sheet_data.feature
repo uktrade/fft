@@ -24,3 +24,8 @@ Feature: Paste forecast sheet data
      Given the user selects all rows in the edit forecast table
      When the user pastes sheet data with invalid column headers
      Then the too many rows error is displayed
+
+  Scenario: Pasting valid data with no changes
+     Given the user selects all rows in the edit forecast table
+     When the user pastes valid sheet with no changes
+     Then no message is displayed

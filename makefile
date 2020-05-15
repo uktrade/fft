@@ -31,7 +31,7 @@ flake8:
 
 bdd:
 	npm run bdd; \
-	docker-compose exec fido sh -c "python manage.py behave --settings=config.settings.bdd --no-capture"
+	docker-compose exec fido sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
 
 up:
 	docker-compose up
