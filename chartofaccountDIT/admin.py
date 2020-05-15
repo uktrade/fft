@@ -41,6 +41,7 @@ from chartofaccountDIT.import_csv import (
     import_inter_entity_class,
     import_op_del_category_class,
     import_prog_class,
+    import_project_class,
 )
 from chartofaccountDIT.models import (
     Analysis1,
@@ -562,7 +563,7 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
 
     @property
     def import_info(self):
-        return import_a2_class
+        return import_project_class
 
 
 class HistoricalProjectCodeAdmin(AdminReadOnly, AdminExport):
