@@ -1480,3 +1480,172 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         edit_forecast_links = soup.find_all("a", class_="edit-forecast-link")
 
         assert len(edit_forecast_links) == 0
+
+
+class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
+    # Test that nothing is displayed when there are values
+    # that aggregate to 0
+    def setUp(self):
+        RequestFactoryBase.__init__(self)
+
+        self.group_name = "Test Group"
+        self.group_code = "TestGG"
+        self.directorate_name = "Test Directorate"
+        self.directorate_code = "TestDD"
+        self.cost_centre_code = 109076
+
+        self.group = DepartmentalGroupFactory(
+            group_code=self.group_code,
+            group_name=self.group_name,
+        )
+        self.directorate = DirectorateFactory(
+            directorate_code=self.directorate_code,
+            directorate_name=self.directorate_name,
+            group=self.group,
+        )
+        self.cost_centre = CostCentreFactory(
+            directorate=self.directorate,
+            cost_centre_code=self.cost_centre_code,
+        )
+        self.cost_centre1 = CostCentreFactory(
+            directorate=self.directorate,
+            cost_centre_code=109070,
+        )
+        current_year = get_current_financial_year()
+        self.amount_apr = 1234567
+        self.programme_obj = ProgrammeCodeFactory()
+        nac_obj = NaturalCodeFactory()
+        self.project_obj = ProjectCodeFactory()
+        year_obj = FinancialYear.objects.get(financial_year=current_year)
+
+        apr_period = FinancialPeriod.objects.get(financial_period_code=1)
+        apr_period.actual_loaded = True
+        apr_period.save()
+
+        # If you use the MonthlyFigureFactory the test fails.
+        # I cannot work out why, it may be due to using a random year....
+        financial_code_obj = FinancialCode.objects.create(
+            programme=self.programme_obj,
+            cost_centre=self.cost_centre,
+            natural_account_code=nac_obj,
+            project_code=self.project_obj
+        )
+        financial_code_obj.save
+        financial_code_obj1 = FinancialCode.objects.create(
+            programme=self.programme_obj,
+            cost_centre=self.cost_centre1,
+            natural_account_code=nac_obj,
+            project_code=self.project_obj
+        )
+        financial_code_obj1.save
+        apr_figure = ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            financial_code=financial_code_obj,
+            financial_year=year_obj,
+            amount=self.amount_apr
+        )
+        apr_figure.save
+
+        apr_figure = ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=1
+            ),
+            financial_code=financial_code_obj1,
+            financial_year=year_obj,
+            amount=-self.amount_apr
+        )
+        apr_figure.save
+
+        self.amount_may = 891000
+        may_figure = ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
+            amount=self.amount_may,
+            financial_code=financial_code_obj,
+            financial_year=year_obj
+        )
+        may_figure.save
+
+        may_figure = ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
+            amount=-self.amount_may,
+            financial_code=financial_code_obj1,
+            financial_year=year_obj
+        )
+        may_figure.save
+
+        # Assign forecast view permission
+        can_view_forecasts = Permission.objects.get(
+            codename='can_view_forecasts'
+        )
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+    def test_view_directorate_summary(self):
+        resp = self.factory_get(
+            reverse(
+                "forecast_directorate",
+                kwargs={
+                    'directorate_code': self.directorate.directorate_code
+                },
+            ),
+            DirectorateView,
+            directorate_code=self.directorate.directorate_code,
+        )
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "govuk-table")
+        soup = BeautifulSoup(resp.content, features="html.parser")
+
+        # Check that there are 4 tables on the page
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 4
+
+        # Check that all the tables are empty
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 8
+
+    def test_view_group_summary(self):
+        response = self.factory_get(
+            reverse(
+                "forecast_group",
+                kwargs={
+                    'group_code': self.group.group_code
+                },
+            ),
+            GroupView,
+            group_code=self.group.group_code,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "govuk-table")
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Check that there are 4 tables on the page
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 4
+
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 4
+
+    def test_view_dit_summary(self):
+        response = self.factory_get(
+            reverse("forecast_dit"),
+            DITView,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "govuk-table")
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Check that there are 4 tables on the page
+        tables = soup.find_all("table", class_="govuk-table")
+        assert len(tables) == 4
+
+        table_rows = soup.find_all("tr", class_="govuk-table__row")
+        assert len(table_rows) == 4

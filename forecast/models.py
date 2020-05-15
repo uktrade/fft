@@ -409,7 +409,6 @@ class SubTotalForecast:
         for i in range(how_many_row, -1, -1):
             row = self.display_data[i]
             if not self.row_has_values(row):
-                print(f"Deleted {i}")
                 del self.display_data[i]
 
     def do_output_subtotal(self, current_row):
@@ -475,6 +474,10 @@ class SubTotalForecast:
         ]
         self.period_list.append("Budget")
         self.remove_empty_rows()
+        # Check that there are rows left. Maybe they were all
+        # with values of 0.
+        if not self.display_data:
+            return []
         first_row = self.display_data.pop(0)
         self.output_row_to_table(first_row, "")
         # Initialise the structure required
@@ -556,7 +559,6 @@ class PivotManager(models.Manager):
         pivot_data = pivot(
             q1, columns, "financial_period__period_short_name", "amount",
         )
-        # print(pivot_data.query)
         return pivot_data
 
 
