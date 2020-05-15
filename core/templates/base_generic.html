@@ -156,6 +156,14 @@
                     </li>
                     {% endif %}
                 {% endif %}
+
+            {% if request.user.is_staff %}
+                <li class="internal-header__navigation__item">
+                    <a target="_blank" id="admin_page" class="internal-header__navigation__item__link" href="{% url 'admin:index' %}">
+                                Admin Site
+                    </a>
+                </li>
+            {% endif %}
             </ul>
         </nav>
     </div>
