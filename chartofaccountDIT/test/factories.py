@@ -92,6 +92,7 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
     """
 
     grouping_description = 'Test Budget Category'
+    NAC_category = factory.SubFactory(NACCategoryFactory)
 
     class Meta:
         model = ExpenditureCategory

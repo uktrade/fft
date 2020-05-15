@@ -11,31 +11,13 @@ from treasuryCOA.models import L5Account
 
 # Other members of Account Codes
 class Analysis1Abstract(models.Model):
-    analysis1_code = models.CharField(
-        "Contract Code",
-        primary_key=True,
-        max_length=50,
-    )
-    analysis1_description = models.CharField(
-        "Contract Name",
-        max_length=300,
-    )
-    supplier = models.CharField(
-        "Supplier",
-        max_length=300,
-        default="",
-    )
-    pc_reference = models.CharField(
-        "PC Reference",
-        max_length=300,
-        default="",
-    )
+    analysis1_code = models.CharField("Contract Code", primary_key=True, max_length=50,)
+    analysis1_description = models.CharField("Contract Name", max_length=300,)
+    supplier = models.CharField("Supplier", max_length=300, default="",)
+    pc_reference = models.CharField("PC Reference", max_length=300, default="",)
 
     def __str__(self):
-        return "{} - {}".format(
-            self.analysis1_code,
-            self.analysis1_description,
-        )
+        return "{} - {}".format(self.analysis1_code, self.analysis1_description,)
 
     class Meta:
         abstract = True
@@ -100,8 +82,7 @@ class ArchivedAnalysis2(Analysis2Abstract, ArchivedModel):
 
     def __str__(self):
         return "{}{}".format(
-            super().__str__(),
-            self.financial_year.financial_year_display,
+            super().__str__(), self.financial_year.financial_year_display,
         )
 
     @classmethod
@@ -141,9 +122,7 @@ class OperatingDeliveryCategory(IsActiveModel):
     """Another way to classify the Budget NACs"""
 
     operating_delivery_description = models.CharField(
-        max_length=255,
-        verbose_name="Operating Delivery Plan Category",
-        unique=True,
+        max_length=255, verbose_name="Operating Delivery Plan Category", unique=True,
     )
 
     def __str__(self):
@@ -160,11 +139,7 @@ class ExpenditureCategoryAbstract(models.Model):
         max_length=255, verbose_name="Budget Category", unique=True
     )
     description = models.CharField(max_length=5000, blank=True, null=True)
-    further_description = models.CharField(
-        max_length=5000,
-        blank=True,
-        null=True,
-    )
+    further_description = models.CharField(max_length=5000, blank=True, null=True,)
 
     def __str__(self):
         return str(self.grouping_description)
@@ -177,8 +152,7 @@ class ExpenditureCategoryAbstract(models.Model):
 
 
 class ExpenditureCategory(
-    ExpenditureCategoryAbstract,
-    IsActiveModel,
+    ExpenditureCategoryAbstract, IsActiveModel,
 ):
     linked_budget_code = models.ForeignKey(
         "NaturalCode",
@@ -204,23 +178,25 @@ class ExpenditureCategory(
 
 
 class ArchivedExpenditureCategory(
-    ExpenditureCategoryAbstract,
-    ArchivedModel,
+    ExpenditureCategoryAbstract, ArchivedModel,
 ):
-    linked_budget_code = models.IntegerField(verbose_name="Budget Code")
+    grouping_description = models.CharField(
+        max_length=255, verbose_name="Budget Category", unique=False
+    )
+    linked_budget_code = models.IntegerField(
+        verbose_name="Budget Code", blank=True, null=True,
+    )
     linked_budget_code_description = models.CharField(
-        max_length=200, verbose_name="Budget Description"
+        max_length=200, verbose_name="Budget Description", blank=True, null=True,
     )
     NAC_category = models.CharField(
-        max_length=255,
-        verbose_name="Budget Grouping",
+        max_length=255, verbose_name="Budget Grouping", blank=True, null=True,
     )
     active = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}{}".format(
-            super().__str__(),
-            self.financial_year.financial_year_display,
+            super().__str__(), self.financial_year.financial_year_display,
         )
 
     @classmethod
@@ -229,11 +205,17 @@ class ArchivedExpenditureCategory(
             financial_year=year_obj,
             active=obj.active,
             grouping_description=obj.grouping_description + suffix,
-            NAC_category=obj.NAC_category.NAC_category_description,
+            NAC_category=obj.NAC_category.NAC_category_description
+            if obj.NAC_category
+            else None,
             description=obj.description,
             further_description=obj.further_description,
-            linked_budget_code=obj.linked_budget_code.natural_account_code,
-            linked_budget_code_description=obj.linked_budget_code.natural_account_code_description, # noqa
+            linked_budget_code=obj.linked_budget_code.natural_account_code
+            if obj.linked_budget_code
+            else None,
+            linked_budget_code_description=obj.linked_budget_code.natural_account_code_description  # noqa
+            if obj.linked_budget_code
+            else None,
         )
         obj_hist.save()
         return obj_hist
@@ -246,20 +228,10 @@ class ArchivedExpenditureCategory(
 
 class CommercialCategoryAbstract(models.Model):
     commercial_category = models.CharField(
-        max_length=255,
-        verbose_name="Commercial Category",
-        unique=True,
+        max_length=255, verbose_name="Commercial Category", unique=True,
     )
-    description = models.CharField(
-        max_length=5000,
-        blank=True,
-        null=True,
-    )
-    approvers = models.CharField(
-        max_length=5000,
-        blank=True,
-        null=True,
-    )
+    description = models.CharField(max_length=5000, blank=True, null=True,)
+    approvers = models.CharField(max_length=5000, blank=True, null=True,)
 
     def __str__(self):
         return str(self.commercial_category)
@@ -272,16 +244,18 @@ class CommercialCategoryAbstract(models.Model):
 
 
 class CommercialCategory(
-    CommercialCategoryAbstract,
-    IsActiveModel,
+    CommercialCategoryAbstract, IsActiveModel,
 ):
     pass
 
 
 class ArchivedCommercialCategory(
-    CommercialCategoryAbstract,
-    ArchivedModel,
+    CommercialCategoryAbstract, ArchivedModel,
 ):
+    commercial_category = models.CharField(
+        max_length=255, verbose_name="Commercial Category", unique=False,
+    )
+
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -309,20 +283,14 @@ class ArchivedCommercialCategory(
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCodeAbstract(models.Model):
-    natural_account_code = models.IntegerField(
-        primary_key=True,
-        verbose_name="NAC",
-    )
+    natural_account_code = models.IntegerField(primary_key=True, verbose_name="NAC",)
     natural_account_code_description = models.CharField(
         max_length=200, verbose_name="NAC Description"
     )
     used_for_budget = models.BooleanField(default=False)
 
     economic_budget_code = models.CharField(
-        max_length=255,
-        verbose_name="Expenditure Type",
-        blank=True,
-        null=True,
+        max_length=255, verbose_name="Expenditure Type", blank=True, null=True,
     )
 
     def __str__(self):
@@ -370,9 +338,7 @@ class NaturalCode(NaturalCodeAbstract, IsActiveModel):
                 link_l5_code = self.account_L5_code_upload.account_l5_code
 
         if link_l5_code:
-            l5_linked = L5Account.objects.get(
-                account_l5_code=link_l5_code,
-            )
+            l5_linked = L5Account.objects.get(account_l5_code=link_l5_code,)
             self.economic_budget_code = l5_linked.economic_budget_code
         super(NaturalCode, self).save(*args, **kwargs)
 
@@ -393,11 +359,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
         max_length=255, verbose_name="Commercial Category", blank=True, null=True
     )
     account_L5_code = models.BigIntegerField(blank=True, null=True)
-    account_L5_description = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-    )
+    account_L5_description = models.CharField(max_length=255, blank=True, null=True,)
     account_L6_budget = models.BigIntegerField(
         "Budget/Forecast NAC", blank=True, null=True
     )
@@ -412,7 +374,9 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):
         if obj.expenditure_category:
-            expenditure_category_value = obj.expenditure_category.grouping_description  # noqa
+            expenditure_category_value = (
+                obj.expenditure_category.grouping_description
+            )  # noqa
             NAC_category_val = (
                 obj.expenditure_category.NAC_category.NAC_category_description
             )
@@ -438,7 +402,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             account_L5_code_val = None
             account_L5_description_val = None
         obj_hist = cls(
-            natural_account_code_description=obj.natural_account_code_description + suffix,  # noqa
+            natural_account_code_description=obj.natural_account_code_description
+            + suffix,  # noqa
             natural_account_code=obj.natural_account_code,
             used_for_budget=obj.used_for_budget,
             expenditure_category=expenditure_category_value,
@@ -474,14 +439,9 @@ class BudgetType(BaseModel):
 
 class ProgrammeCodeAbstract(models.Model):
     programme_code = models.CharField(
-        "Programme Code",
-        primary_key=True,
-        max_length=50,
+        "Programme Code", primary_key=True, max_length=50,
     )
-    programme_description = models.CharField(
-        "Programme Name",
-        max_length=100,
-    )
+    programme_description = models.CharField("Programme Name", max_length=100,)
 
     def __str__(self):
         return self.programme_code + " - " + self.programme_description
@@ -517,10 +477,7 @@ class ArchivedProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
     def archive_year(cls, obj, year_obj, suffix=""):
         pc_hist = cls(
             programme_code=obj.programme_code,
-            programme_description="{}{}".format(
-                obj.programme_description,
-                suffix,
-            ),
+            programme_description="{}{}".format(obj.programme_description, suffix,),
             budget_type=obj.budget_type_fk.budget_type,
             active=obj.active,
             financial_year=year_obj,
@@ -535,15 +492,8 @@ class ArchivedProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
 
 
 class InterEntityL1(IsActiveModel):
-    l1_value = models.CharField(
-        "Government Body",
-        primary_key=True,
-        max_length=10,
-    )
-    l1_description = models.CharField(
-        "Government Body Description",
-        max_length=100,
-    )
+    l1_value = models.CharField("Government Body", primary_key=True, max_length=10,)
+    l1_description = models.CharField("Government Body Description", max_length=100,)
 
     def __str__(self):
         return self.l1_value + " - " + self.l1_description
@@ -556,18 +506,12 @@ class InterEntityL1(IsActiveModel):
 
 class InterEntityAbstract(models.Model):
     l2_value = models.CharField(
-        "ORACLE - Inter Entity Code",
-        primary_key=True,
-        max_length=10,
+        "ORACLE - Inter Entity Code", primary_key=True, max_length=10,
     )
     l2_description = models.CharField(
-        "ORACLE - Inter Entity Description",
-        max_length=100,
+        "ORACLE - Inter Entity Description", max_length=100,
     )
-    cpid = models.CharField(
-        "Treasury - CPID (Departmental Code No.)",
-        max_length=10,
-    )
+    cpid = models.CharField("Treasury - CPID (Departmental Code No.)", max_length=10,)
 
     def __str__(self):
         return self.l2_value + " - " + self.l2_description
@@ -584,18 +528,9 @@ class InterEntity(InterEntityAbstract, IsActiveModel):
 
 
 class ArchivedInterEntity(InterEntityAbstract, ArchivedModel):
-    l2_value = models.CharField(
-        "ORACLE - Inter Entity Code",
-        max_length=10,
-    )
-    l1_value = models.CharField(
-        "Government Body",
-        max_length=10,
-    )
-    l1_description = models.CharField(
-        "Government Body Description",
-        max_length=100,
-    )
+    l2_value = models.CharField("ORACLE - Inter Entity Code", max_length=10,)
+    l1_value = models.CharField("Government Body", max_length=10,)
+    l1_description = models.CharField("Government Body Description", max_length=100,)
     active = models.BooleanField(default=False)
 
     def __str__(self):
@@ -623,11 +558,7 @@ class ArchivedInterEntity(InterEntityAbstract, ArchivedModel):
 
 
 class ProjectCodeAbstract(models.Model):
-    project_code = models.CharField(
-        "Project Code",
-        primary_key=True,
-        max_length=50,
-    )
+    project_code = models.CharField("Project Code", primary_key=True, max_length=50,)
     project_description = models.CharField(
         max_length=300, verbose_name="Project Description"
     )
@@ -652,8 +583,7 @@ class ArchivedProjectCode(ProjectCodeAbstract, ArchivedModel):
 
     def __str__(self):
         return "{} {}".format(
-            super().__str__(),
-            self.financial_year.financial_year_display,
+            super().__str__(), self.financial_year.financial_year_display,
         )
 
     @classmethod
@@ -674,10 +604,7 @@ class ArchivedProjectCode(ProjectCodeAbstract, ArchivedModel):
 
 
 class FCOMappingAbstract(models.Model):
-    fco_code = models.IntegerField(
-        primary_key=True,
-        verbose_name="FCO (Prism) Code",
-    )
+    fco_code = models.IntegerField(primary_key=True, verbose_name="FCO (Prism) Code",)
     fco_description = models.CharField(
         max_length=300, verbose_name="FCO (Prism) Description"
     )
@@ -700,24 +627,15 @@ class FCOMapping(FCOMappingAbstract, IsActiveModel):
 
 class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
     fco_code = models.IntegerField(verbose_name="FCO (Prism) Code")
-    account_L6_code = models.IntegerField(
-        verbose_name="Oracle (DIT) Code",
-    )
+    account_L6_code = models.IntegerField(verbose_name="Oracle (DIT) Code",)
     account_L6_description = models.CharField(
-        max_length=200,
-        verbose_name="Oracle (DIT) Description",
+        max_length=200, verbose_name="Oracle (DIT) Description",
     )
     nac_category_description = models.CharField(
-        max_length=200,
-        verbose_name="Budget Grouping",
-        blank=True,
-        null=True,
+        max_length=200, verbose_name="Budget Grouping", blank=True, null=True,
     )
     budget_description = models.CharField(
-        max_length=200,
-        verbose_name="Budget Category",
-        blank=True,
-        null=True,
+        max_length=200, verbose_name="Budget Category", blank=True, null=True,
     )
     economic_budget_code = models.CharField(
         max_length=200, verbose_name="Expenditure Type"
@@ -727,15 +645,14 @@ class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
 
     def __str__(self):
         return "{} {}".format(
-            super().__str__(),
-            self.financial_year.financial_year_display,
+            super().__str__(), self.financial_year.financial_year_display,
         )
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):
         if obj.account_L6_code_fk.expenditure_category:
             category = (
-                obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description # noqa
+                obj.account_L6_code_fk.expenditure_category.NAC_category.NAC_category_description  # noqa
             )
             budget_desc = (
                 obj.account_L6_code_fk.expenditure_category.grouping_description
@@ -747,7 +664,7 @@ class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
             fco_description=obj.fco_description + suffix,
             fco_code=obj.fco_code,
             account_L6_code=obj.account_L6_code_fk.natural_account_code,
-            account_L6_description=obj.account_L6_code_fk.natural_account_code_description, # noqa
+            account_L6_description=obj.account_L6_code_fk.natural_account_code_description,  # noqa
             nac_category_description=category,
             budget_description=budget_desc,
             economic_budget_code=obj.account_L6_code_fk.economic_budget_code,
