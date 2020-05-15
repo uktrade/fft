@@ -1,48 +1,49 @@
+financial_code_prefix = "financial_code__"
 # indicates if DEL, AME, ADMIN
-BUDGET_TYPE =  "financial_code__programme__budget_type_fk__budget_type_display"  # noqa
-BUDGET_TYPE_ORDER =  "financial_code__programme__budget_type_fk__budget_type_display_order"  # noqa
-BUDGET_TYPE_EDIT_ORDER =  "financial_code__programme__budget_type_fk__budget_type_edit_display_order"  # noqa
+BUDGET_TYPE =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_display"  # noqa
+BUDGET_TYPE_ORDER =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_display_order"  # noqa
+BUDGET_TYPE_EDIT_ORDER =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_edit_display_order"  # noqa
 
 # Categories defined by DIT: i.e. Consultancy, Contingency, Contractors, etc
-BUDGET_CATEGORY_ID = "financial_code__natural_account_code__expenditure_category__id"  # noqa
-BUDGET_CATEGORY_NAME = "financial_code__natural_account_code__expenditure_category__grouping_description"   # noqa
+BUDGET_CATEGORY_ID = f"{financial_code_prefix}natural_account_code__expenditure_category__id"  # noqa
+BUDGET_CATEGORY_NAME = f"{financial_code_prefix}natural_account_code__expenditure_category__grouping_description"   # noqa
 
 # PAY, NON-PAY, CAPITAL, NON-CASH
-BUDGET_GROUPING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
-BUDGET_GROUPING_ORDERING = "financial_code__natural_account_code__expenditure_category__NAC_category__NAC_category_display_order"   # noqa
-BUDGET_NAC_CODE = "financial_code__natural_account_code__expenditure_category__linked_budget_code"  # noqa
-BUDGET_NAC_CODE_DESCRIPTION = "financial_code__natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
+BUDGET_GROUPING = f"{financial_code_prefix}natural_account_code__expenditure_category__NAC_category__NAC_category_description"   # noqa
+BUDGET_GROUPING_ORDERING = f"{financial_code_prefix}natural_account_code__expenditure_category__NAC_category__NAC_category_display_order"   # noqa
+BUDGET_NAC_CODE = f"{financial_code_prefix}natural_account_code__expenditure_category__linked_budget_code"  # noqa
+BUDGET_NAC_CODE_DESCRIPTION = f"{financial_code_prefix}natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
 
 # Admin, Capital or Programme
-FORECAST_EXPENDITURE_TYPE_NAME = "financial_code__forecast_expenditure_type__forecast_expenditure_type_name"  # noqa
-FORECAST_EXPENDITURE_TYPE_DESCRIPTION = "financial_code__forecast_expenditure_type__forecast_expenditure_type_description"  # noqa
-FORECAST_EXPENDITURE_TYPE_ORDER = "financial_code__forecast_expenditure_type__forecast_expenditure_type_display_order"   # noqa
+FORECAST_EXPENDITURE_TYPE_NAME = f"{financial_code_prefix}forecast_expenditure_type__forecast_expenditure_type_name"  # noqa
+FORECAST_EXPENDITURE_TYPE_DESCRIPTION = f"{financial_code_prefix}forecast_expenditure_type__forecast_expenditure_type_description"  # noqa
+FORECAST_EXPENDITURE_TYPE_ORDER = f"{financial_code_prefix}forecast_expenditure_type__forecast_expenditure_type_display_order"   # noqa
 
-PROGRAMME_CODE = "financial_code__programme__programme_code"
-PROGRAMME_NAME = "financial_code__programme__programme_description"
+PROGRAMME_CODE = f"{financial_code_prefix}programme__programme_code"
+PROGRAMME_NAME = f"{financial_code_prefix}programme__programme_description"
 
-COST_CENTRE_NAME = "financial_code__cost_centre__cost_centre_name"
-COST_CENTRE_CODE = "financial_code__cost_centre__cost_centre_code"
+COST_CENTRE_NAME = f"{financial_code_prefix}cost_centre__cost_centre_name"
+COST_CENTRE_CODE = f"{financial_code_prefix}cost_centre__cost_centre_code"
 
-DIRECTORATE_NAME = "financial_code__cost_centre__directorate__directorate_name"  # noqa
-DIRECTORATE_CODE = "financial_code__cost_centre__directorate__directorate_code"  # noqa
+DIRECTORATE_NAME = f"{financial_code_prefix}cost_centre__directorate__directorate_name"  # noqa
+DIRECTORATE_CODE = f"{financial_code_prefix}cost_centre__directorate__directorate_code"  # noqa
 
-GROUP_NAME = "financial_code__cost_centre__directorate__group__group_name"  # noqa
-GROUP_CODE = "financial_code__cost_centre__directorate__group__group_code"  # noqa
+GROUP_NAME = f"{financial_code_prefix}cost_centre__directorate__group__group_name"  # noqa
+GROUP_CODE = f"{financial_code_prefix}cost_centre__directorate__group__group_code"  # noqa
 
-NAC_CODE = "financial_code__natural_account_code__natural_account_code"
-NAC_NAME = "financial_code__natural_account_code__natural_account_code_description"  # noqa
-NAC_EXPENDITURE_TYPE = "financial_code__natural_account_code__economic_budget_code"  # noqa
+NAC_CODE = f"{financial_code_prefix}natural_account_code__natural_account_code"
+NAC_NAME = f"{financial_code_prefix}natural_account_code__natural_account_code_description"  # noqa
+NAC_EXPENDITURE_TYPE = f"{financial_code_prefix}natural_account_code__economic_budget_code"  # noqa
 
 
-PROJECT_CODE = "financial_code__project_code__project_code"
-PROJECT_NAME = "financial_code__project_code__project_description"
+PROJECT_CODE = f"{financial_code_prefix}project_code__project_code"
+PROJECT_NAME = f"{financial_code_prefix}project_code__project_description"
 
-ANALYSIS1_CODE = "financial_code__analysis1_code__analysis1_code"
-ANALYSIS1_NAME = "financial_code__analysis1_code__analysis1_description"
+ANALYSIS1_CODE = f"{financial_code_prefix}analysis1_code__analysis1_code"
+ANALYSIS1_NAME = f"{financial_code_prefix}analysis1_code__analysis1_description"
 
-ANALYSIS2_CODE = "financial_code__analysis2_code__analysis2_code"
-ANALYSIS2_NAME = "financial_code__analysis2_code__analysis2_description"
+ANALYSIS2_CODE = f"{financial_code_prefix}analysis2_code__analysis2_code"
+ANALYSIS2_NAME = f"{financial_code_prefix}analysis2_code__analysis2_description"
 
 SHOW_DIT = 0
 SHOW_GROUP = 1
@@ -398,8 +399,20 @@ EDIT_FORECAST_DOWNLOAD_COLUMNS = {
 EDIT_FORECAST_DOWNLOAD_ORDER = [
     BUDGET_TYPE_EDIT_ORDER,
     PROGRAMME_CODE,
+    BUDGET_GROUPING_ORDERING,
     NAC_CODE,
 ]
+
+
+def edit_forecast_order():
+    # remove financial_code__ prefix from the
+    # fields used in the download order.
+    order_list = []
+    prefix_len = len(financial_code_prefix)
+    for l in EDIT_FORECAST_DOWNLOAD_ORDER:
+        order_list.append(l[prefix_len:])
+    return order_list
+
 
 MI_REPORT_DOWNLOAD_COLUMNS = {
     COST_CENTRE_CODE: "Cost Centre code",

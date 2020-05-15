@@ -50,6 +50,7 @@ from forecast.utils.edit_helpers import (
     check_row_match,
     set_monthly_figure_amount,
 )
+from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
@@ -59,16 +60,10 @@ from forecast.views.base import (
 def get_financial_code_serialiser(cost_centre_code):
     financial_codes = (
         FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )
-            .prefetch_related(
+        .prefetch_related(
             "forecast_forecastmonthlyfigures",
             "forecast_forecastmonthlyfigures__financial_period",
-        )
-            .order_by(
-            "programme__budget_type_fk__budget_type_edit_display_order",
-            "programme__programme_code",
-            "natural_account_code__expenditure_category__NAC_category__NAC_category_display_order",  # noqa: E501
-            "natural_account_code__natural_account_code",
-        )
+        ).order_by(*edit_forecast_order())
     )
 
     return FinancialCodeSerializer(financial_codes, many=True, )
