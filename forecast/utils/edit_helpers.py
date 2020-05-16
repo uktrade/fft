@@ -41,7 +41,6 @@ logger = logging.getLogger(__name__)
 
 
 def set_monthly_figure_amount(cost_centre_code, cell_data):
-    print("set_monthly_figure_amount...")
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
 
     period_max = FinancialPeriod.objects.filter(
@@ -62,18 +61,10 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
 
         col = (settings.NUM_META_COLS + financial_period_month) - 1
 
-        print("col:", col)
-
-        print("cell_data[col]", cell_data[col])
-
         new_value = convert_forecast_amount(cell_data[col])
 
-        print("new_value:", new_value)
-
         if new_value is not None:
-            print("new_value not none...")
             if not monthly_figure:
-                print("No monthly figure")
                 # Continue if not required to make record
                 if new_value == 0:
                     continue
@@ -95,11 +86,7 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
                     financial_code=financial_code,
                 )
 
-            print("monthly_figure.amount", monthly_figure.amount)
-            print("new_value", new_value)
-
             if new_value != monthly_figure.amount:
-                print("Value should be updated")
                 monthly_figure.amount = new_value
                 monthly_figure.save()
 
