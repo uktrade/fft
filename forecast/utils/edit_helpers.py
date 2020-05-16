@@ -74,9 +74,9 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
             print("new_value not none...")
             if not monthly_figure:
                 print("No monthly figure")
-                # Return if not required to make record
+                # Continue if not required to make record
                 if new_value == 0:
-                    return
+                    continue
 
                 financial_code = FinancialCode.objects.get(
                     cost_centre__cost_centre_code=cost_centre_code,
