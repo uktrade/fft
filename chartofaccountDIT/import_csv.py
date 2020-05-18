@@ -211,6 +211,7 @@ def import_expenditure_category(csvfile):
         )
         obj.op_del_category = op_plan_obj
         obj.save()
+    return True, ""
 
 
 import_expenditure_category_class = ImportInfo(

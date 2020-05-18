@@ -187,7 +187,7 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
 
     # Before starting to read, check that all the expected columns exists
     if not all(elem in header for elem in l1):
-        msg = "Missing/wrong headers: expected {l1}, the file has: {header.keys()}."
+        msg = f"Missing/wrong headers: expected {l1}, the file has: {header.keys()}."
         return False, msg
 
     d = add_position(obj_key, header)

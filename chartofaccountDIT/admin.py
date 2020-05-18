@@ -1,13 +1,4 @@
-import io
-
 from django.contrib import admin
-from django.core.files.uploadhandler import (
-    MemoryFileUploadHandler,
-    TemporaryFileUploadHandler,
-)
-from django.shortcuts import redirect, render
-from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
 
 from django_admin_listfilter_dropdown.filters import (
     RelatedDropdownFilter,
@@ -72,13 +63,13 @@ from core.admin import (
     AdminActiveField,
     AdminExport,
     AdminImportExport,
+    AdminImportExtraExport,
     AdminReadOnly,
-    CsvImportForm,
 )
 from core.exportutils import generic_table_iterator
 
 
-class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
+class NaturalCodeAdmin(AdminActiveField, AdminImportExtraExport):
     # Define an extra import button, for the DIT specific fields
     change_list_template = "admin/m_import_changelist.html"
 
@@ -142,35 +133,9 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExport):
     def import_info(self):
         return import_NAC_class
 
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [path("import1-csv/", self.import1_csv)]
-        return my_urls + urls
-
-    @csrf_exempt
-    def import1_csv(self, request):
-        header_list = import_NAC_DIT_class.header_list
-        import_func = import_NAC_DIT_class.import_func
-        form_title = import_NAC_DIT_class.form_title
-        # because the files are small, upload them to memory
-        # instead of using S3
-        request.upload_handlers.insert(0, TemporaryFileUploadHandler(request))
-        request.upload_handlers.insert(0, MemoryFileUploadHandler(request))
-        if request.method == "POST":
-            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
-            if form.is_valid():
-                csv_file = request.FILES["csv_file"]
-                # read() gives you the file contents as a bytes object,
-                # on which you can call decode().
-                # decode('cp1252') turns your bytes into a string, with known encoding.
-                # cp1252 is used to handle single quotes in the strings
-                t = io.StringIO(csv_file.read().decode("cp1252"))
-                import_func(t)
-                return redirect("..")
-        else:
-            form = CsvImportForm(header_list, form_title)
-        payload = {"form": form}
-        return render(request, "admin/csv_form.html", payload)
+    @property
+    def import_extra_info(self):
+        return import_NAC_DIT_class
 
 
 class HistoricalNaturalCodeAdmin(AdminReadOnly, AdminExport):

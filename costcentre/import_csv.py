@@ -5,7 +5,6 @@ from core.import_csv import (
     IMPORT_CSV_MODEL_KEY,
     IMPORT_CSV_PK_KEY,
     ImportInfo,
-    convert_to_bool_string,
     csv_header_to_dict,
     import_obj,
 )
@@ -18,37 +17,6 @@ from .models import (
     DepartmentalGroup,
     Directorate,
 )
-
-# define the column position in the csv file.
-
-# COLUMN_KEY = {
-#                 'GroupCode': 3,
-#                 'GroupName': 4,
-#                 'DirectorateCode': 5,
-#                 'DirectorateName': 6,
-#                 'CCCode': 7,
-#                 'CCName': 8}
-#
-#
-# def importcostcentres(csvfile):
-#     csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-#     for row in csvreader:
-#         # Create DG Group, Directorate and Cost centre
-#         objDG, created = DepartmentalGroup.objects.update_or_create(
-#             GroupCode=row[COLUMN_KEY['GroupCode']],
-#             defaults={'GroupName': row[COLUMN_KEY['GroupName']]},
-#         )
-#         objdir, created = Directorate.objects.update_or_create(
-#             DirectorateCode=row[COLUMN_KEY['DirectorateCode']],
-#             defaults={'GroupCode': objDG,
-#                        'DirectorateName':row[COLUMN_KEY['DirectorateName']]},
-#         )
-#         obj, created = CostCentre.objects.update_or_create(
-#             CCCode=row[COLUMN_KEY['CCCode']],
-#             defaults={CostCentre.CCName.field_name: row[COLUMN_KEY['CCName']],
-#                       CostCentre.Directorate.field.name: objdir},
-#         )
-#
 
 GROUP_KEY = {
     IMPORT_CSV_MODEL_KEY: DepartmentalGroup,
@@ -85,6 +53,15 @@ import_cc_class = ImportInfo(
 )
 
 
+def get_field_from_row(row, header_name):
+    temp = row[header_name]
+    if temp:
+        temp = temp.strip()
+    else:
+        temp = ''
+    return temp
+
+
 def import_cc_dit_specific(csvfile):
     """Special function to import the
     Deputy Director, Business partner
@@ -92,48 +69,47 @@ def import_cc_dit_specific(csvfile):
     reader = csv.reader(csvfile)
     # Convert the first row to a dictionary of positions
     header = csv_header_to_dict(next(reader))
+    row_counter = 1
     for row in reader:
+        row_counter += 1
         obj = CostCentre.objects.get(pk=row[header["cost centre"]].strip())
-        temp = row[header["deputy name"]].strip()
-        if temp != "":
+        deputy_name = get_field_from_row(row, header["deputy name"])
+        deputy_surname = get_field_from_row(row, header["deputy surname"])
+        if deputy_surname:
             deputy_obj, created = CostCentrePerson.objects.get_or_create(
-                name=row[header["deputy name"]].strip(),
-                surname=row[header["deputy surname"]].strip(),
+                name=deputy_name,
+                surname=deputy_surname,
             )
-            deputy_obj.email = row[header["deputy email"]].strip()
+            deputy_obj.email = get_field_from_row(row, header["deputy email"])
             deputy_obj.active = True
             deputy_obj.save()
             obj.deputy_director = deputy_obj
         else:
             obj.deputy_director = None
-        temp = row[header["bp name"]].strip()
-        if temp != "":
+
+        bp_name = get_field_from_row(row, header["bp name"])
+        bp_surname = get_field_from_row(row, header["bp surname"])
+        if bp_surname:
             bp_obj, created = BusinessPartner.objects.get_or_create(
-                name=row[header["bp name"]].strip(),
-                surname=row[header["bp surname"]].strip(),
+                name=bp_name,
+                surname=bp_surname,
             )
-            bp_obj.bp_email = row[header["bp email"]].strip()
+            bp_obj.bp_email = get_field_from_row(row, header["bp email"])
             bp_obj.active = True
             bp_obj.save()
             obj.business_partner = bp_obj
         else:
             obj.business_partner = None
-        temp = row[header["bsce email"]].strip()
-        if temp != "":
+        bsce_email = get_field_from_row(row, header["bsce email"])
+        if bsce_email:
             bsce_obj, created = BSCEEmail.objects.get_or_create(
-                bsce_email=row[header["bsce email"]].strip()
+                bsce_email=bsce_email
             )
             obj.bsce_email = bsce_obj
         else:
             obj.bsce_email = None
-        obj.disabled_with_actual = convert_to_bool_string(
-            row[header["disabled (actuals to be cleared)"]].strip()
-        )
-        obj.active = convert_to_bool_string(row[header["active"]].strip())
-        obj.used_for_travel = convert_to_bool_string(
-            row[header["used for travel"]].strip()
-        )
         obj.save()
+    return True, ""
 
 
 import_cc_dit_specific_class = ImportInfo(
@@ -148,9 +124,6 @@ import_cc_dit_specific_class = ImportInfo(
         "Deputy Surname",
         "Deputy Email",
         "BSCE Email",
-        "Active",
-        "Disabled (Actuals to be cleared)",
-        "Used for Travel",
     ],
     import_cc_dit_specific,
 )
@@ -163,17 +136,23 @@ def import_director(csvfile):
     # Convert the first row to a dictionary of positions
     header = csv_header_to_dict(next(reader))
     for row in reader:
-        obj = Directorate.objects.get(pk=row[header["Directorate Code"]].strip())
-        director_obj, created = CostCentrePerson.objects.get_or_create(
-            name=row[header["Director Name"]].strip(),
-            surname=row[header["Director Surname"]].strip(),
-        )
-        director_obj.email = row[header["Director email"]].strip()
-        director_obj.active = True
-        director_obj.is_director = True
-        director_obj.save()
+        obj = Directorate.objects.get(pk=row[header["directorate code"]].strip())
+        director_surname = get_field_from_row(row, header["director surname"])
+        if director_surname:
+            director_name = get_field_from_row(row, header["director name"])
+            director_obj, created = CostCentrePerson.objects.get_or_create(
+                name=director_name,
+                surname=director_surname,
+            )
+            director_obj.email = get_field_from_row(row, header["director email"])
+            director_obj.active = True
+            director_obj.is_director = True
+            director_obj.save()
+        else:
+            director_obj = None
         obj.director = director_obj
         obj.save()
+    return True, ""
 
 
 import_director_class = ImportInfo(
@@ -181,9 +160,9 @@ import_director_class = ImportInfo(
     "Directors",
     [
         "Directorate Code",
-        "Directorate Name",
-        "Directorate Surname",
-        "Directorate Email",
+        "Director Name",
+        "Director Surname",
+        "Director Email",
     ],
     import_director,
 )
@@ -196,17 +175,19 @@ def import_group_with_dg(csvfile):
     # Convert the first row to a dictionary of positions
     header = csv_header_to_dict(next(reader))
     for row in reader:
-        obj = DepartmentalGroup.objects.get(pk=row[header["Group Code"]].strip())
+        dg_group = row[header["group code"]].strip()
+        obj = DepartmentalGroup.objects.get(pk=dg_group)
         dg_obj, created = CostCentrePerson.objects.get_or_create(
-            name=row[header["DG Name"]].strip(),
-            surname=row[header["DG Surname"]].strip(),
+            name=row[header["dg name"]].strip(),
+            surname=row[header["dg surname"]].strip(),
         )
-        dg_obj.email = row[header["DG email"]].strip()
+        dg_obj.email = row[header["dg email"]].strip()
         dg_obj.active = True
         dg_obj.is_dg = True
         dg_obj.save()
         obj.director_general = dg_obj
         obj.save()
+    return True, ""
 
 
 import_departmental_group_class = ImportInfo(

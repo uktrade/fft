@@ -1,10 +1,15 @@
 import io
 
 from django.contrib import admin
+from django.core.files.uploadhandler import (
+    MemoryFileUploadHandler,
+    TemporaryFileUploadHandler,
+)
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
@@ -18,8 +23,8 @@ from core.admin import (
     AdminActiveField,
     AdminExport,
     AdminImportExport,
+    AdminImportExtraExport,
     AdminReadOnly,
-    CsvImportForm,
 )
 
 from costcentre.exportcsv import (
@@ -55,9 +60,7 @@ from forecast.permission_shortcuts import assign_perm
 
 
 # Displays extra fields in the list of cost centres
-class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExport):
-    # Define an extra import button, for the DIT specific fields
-    change_list_template = "admin/m_import_changelist.html"
+class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtraExport):
 
     change_form_template = "costcentre/admin/change_form.html"
 
@@ -156,6 +159,10 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExpor
     def import_info(self):
         return import_cc_class
 
+    @property
+    def import_extra_info(self):
+        return import_cc_dit_specific_class
+
     search_fields = [
         "cost_centre_code",
         "cost_centre_name",
@@ -179,7 +186,6 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExpor
     def get_urls(self):
         urls = super().get_urls()
         extra_urls = [
-            path("import1-csv/", self.import1_csv),
             path(
                 '<cost_centre_id>/change-permission/',
                 self.admin_site.admin_view(self.change_permission),
@@ -189,26 +195,6 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExpor
 
         return extra_urls + urls
 
-    def import1_csv(self, request):
-        header_list = import_cc_dit_specific_class.header_list
-        import_func = import_cc_dit_specific_class.import_func
-        form_title = import_cc_dit_specific_class.form_title
-        if request.method == "POST":
-            form = CsvImportForm(header_list, form_title, request.POST, request.FILES)
-            if form.is_valid():
-                csv_file = request.FILES["csv_file"]
-                # read() gives you the file contents as a bytes object,
-                # on which you can call decode().
-                # decode('cp1252') turns your bytes
-                # into a string, with known encoding.
-                # cp1252 is used to handle single quotes in the strings
-                t = io.StringIO(csv_file.read().decode("cp1252"))
-                import_func(t)
-                return redirect("..")
-        else:
-            form = CsvImportForm(header_list, form_title)
-        payload = {"form": form}
-        return render(request, "admin/csv_form.html", payload)
 
     def can_change_permissions(self, user, cost_centre):
         # Only super users, finance admins and finance
