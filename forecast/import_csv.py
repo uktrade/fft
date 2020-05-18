@@ -105,6 +105,7 @@ def import_adi_file(csvfile):
 
         if (line % 100) == 0:
             print(line)
+    return True, err_msg
 
 
 h_list = [

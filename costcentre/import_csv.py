@@ -109,6 +109,7 @@ def import_cc_dit_specific(csvfile):
         else:
             obj.bsce_email = None
         obj.save()
+    return True, ""
 
 
 import_cc_dit_specific_class = ImportInfo(
@@ -151,6 +152,7 @@ def import_director(csvfile):
             director_obj = None
         obj.director = director_obj
         obj.save()
+    return True, ""
 
 
 import_director_class = ImportInfo(
@@ -185,6 +187,7 @@ def import_group_with_dg(csvfile):
         dg_obj.save()
         obj.director_general = dg_obj
         obj.save()
+    return True, ""
 
 
 import_departmental_group_class = ImportInfo(

@@ -3,7 +3,7 @@ import requests
 import logging
 from .base import *  # noqa
 
-from django_log_formatter_ecs import ECSFormatter
+# from django_log_formatter_ecs import ECSFormatter
 
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 CAN_CREATE_TEST_USER = True
