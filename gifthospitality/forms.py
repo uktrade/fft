@@ -33,6 +33,10 @@ class DateSelectorWidget(forms.MultiWidget):
             return [day, month, year]
         return [None, None, None]
 
+    def value_from_datadict(self, data, files, name):
+        day, month, year = super().value_from_datadict(data, files, name)
+        return '{}-{}-{}'.format(year, month, day)
+
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
