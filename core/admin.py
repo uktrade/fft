@@ -247,7 +247,7 @@ class AdminImportExport(AdminExport):
         e = export_csv_from_import(self.import_info.key)
         return export_to_csv(e.queryset, e.yield_data)
 
-    def process_csv(self, request):
+    def process_csv(self, request, import_info):
         import_file = request.FILES["csv_file"]
         # read() gives you the file
         # contents as a bytes object,
@@ -257,18 +257,21 @@ class AdminImportExport(AdminExport):
         # encoding. cp1252 is used to
         # handle single quotes in the strings
         t = io.StringIO(import_file.read().decode("cp1252"))
-        success, message = self.import_info.my_check_headers(t)
+        success, message = import_info.my_check_headers(t)
         if success:
             t.seek(0)
-            success, message = self.import_info.import_func(t)
+            success, message = import_info.import_func(t)
         if not success:
             messages.error(request, "Error: " + message)
         return success, message
 
     @csrf_exempt
     def import_csv(self, request):
-        header_list = self.import_info.header_list
-        form_title = self.import_info.form_title
+        return self.generic_import_csv(request, self.import_info)
+
+    def generic_import_csv(self, request, import_info):
+        header_list = import_info.header_list
+        form_title = import_info.form_title
         # because the files are small, upload them to memory
         # instead of using S3
         request.upload_handlers.insert(0, TemporaryFileUploadHandler(request))
@@ -282,13 +285,29 @@ class AdminImportExport(AdminExport):
                 request.FILES,
             )
             if form.is_valid():
-                success, message = self.process_csv(request)
+                success, message = self.process_csv(request, import_info)
                 if success:
                     return redirect("..")
         else:
             form = CsvImportForm(header_list, form_title)
         payload = {"form": form}
         return render(request, "admin/csv_form.html", payload)
+
+
+class AdminImport2Export(AdminImportExport):
+
+    change_list_template = "admin/m_import_changelist.html"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path("import1-csv/", self.import1_csv),
+        ]
+        return my_urls + urls
+
+    @csrf_exempt
+    def import1_csv(self, request):
+        return self.generic_import_csv(request, self.import1_info)
 
 
 User = get_user_model()
