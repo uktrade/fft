@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.urls import path
 
 from django_admin_listfilter_dropdown.filters import (
     RelatedDropdownFilter,
@@ -63,14 +62,14 @@ from chartofaccountDIT.models import (
 from core.admin import (
     AdminActiveField,
     AdminExport,
-    AdminImport2Export,
     AdminImportExport,
+    AdminImportExtraExport,
     AdminReadOnly,
 )
 from core.exportutils import generic_table_iterator
 
 
-class NaturalCodeAdmin(AdminActiveField, AdminImport2Export):
+class NaturalCodeAdmin(AdminActiveField, AdminImportExtraExport):
     # Define an extra import button, for the DIT specific fields
     change_list_template = "admin/m_import_changelist.html"
 
@@ -135,13 +134,8 @@ class NaturalCodeAdmin(AdminActiveField, AdminImport2Export):
         return import_NAC_class
 
     @property
-    def import1_info(self):
+    def import_extra_info(self):
         return import_NAC_DIT_class
-
-    def get_urls(self):
-        urls = super().get_urls()
-        my_urls = [path("import1-csv/", self.import1_csv)]
-        return my_urls + urls
 
 
 class HistoricalNaturalCodeAdmin(AdminReadOnly, AdminExport):

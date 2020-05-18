@@ -23,9 +23,8 @@ from core.admin import (
     AdminActiveField,
     AdminExport,
     AdminImportExport,
-    AdminImport2Export,
+    AdminImportExtraExport,
     AdminReadOnly,
-    CsvImportForm,
 )
 
 from costcentre.exportcsv import (
@@ -61,7 +60,7 @@ from forecast.permission_shortcuts import assign_perm
 
 
 # Displays extra fields in the list of cost centres
-class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImport2Export):
+class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtraExport):
 
     change_form_template = "costcentre/admin/change_form.html"
 
@@ -161,7 +160,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImport2Expo
         return import_cc_class
 
     @property
-    def import1_info(self):
+    def import_extra_info(self):
         return import_cc_dit_specific_class
 
     search_fields = [

@@ -294,20 +294,20 @@ class AdminImportExport(AdminExport):
         return render(request, "admin/csv_form.html", payload)
 
 
-class AdminImport2Export(AdminImportExport):
+class AdminImportExtraExport(AdminImportExport):
 
     change_list_template = "admin/m_import_changelist.html"
 
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
-            path("import1-csv/", self.import1_csv),
+            path("import1-extra-csv/", self.import_extra_csv),
         ]
         return my_urls + urls
 
     @csrf_exempt
-    def import1_csv(self, request):
-        return self.generic_import_csv(request, self.import1_info)
+    def import_extra_csv(self, request):
+        return self.generic_import_csv(request, self.import_extra_info)
 
 
 User = get_user_model()

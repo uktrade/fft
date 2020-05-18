@@ -272,7 +272,7 @@ class ImportInfo:
             else:
                 success, message = import_obj(c, self.key)
         else:
-                success, message = self.special_func(c)
+            success, message = self.special_func(c)
         if success and self.extra_func:
             self.extra_func()
         return success, message
