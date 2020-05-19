@@ -48,7 +48,8 @@ class TestAddForecastRowForm(TestCase):
 
     def test_valid_data(self):
         form = AddForecastRowForm(
-            {
+            cost_centre_code=self.cost_centre_code,
+            data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,
                 "analysis1_code": self.analysis_1.analysis1_code,
@@ -60,7 +61,10 @@ class TestAddForecastRowForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_blank_data(self):
-        form = AddForecastRowForm({})
+        form = AddForecastRowForm(
+            cost_centre_code=self.cost_centre_code,
+            data={},
+        )
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors,
@@ -88,7 +92,8 @@ class TestAddForecastRowForm(TestCase):
         monthly_figure.save()
 
         form = AddForecastRowForm(
-            {
+            cost_centre_code=self.cost_centre_code,
+            data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,
                 "analysis1_code": self.analysis_1.analysis1_code,
@@ -126,7 +131,8 @@ class TestAddForecastRowForm(TestCase):
         monthly_figure.save()
 
         form = AddForecastRowForm(
-            {
+            cost_centre_code=self.cost_centre_code,
+            data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,
                 "analysis1_code": None,

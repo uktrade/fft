@@ -181,12 +181,12 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             cost_centre_code=self.cost_centre_code,
         )
 
-    def add_row_post_response(self, url, post_content):
+    def add_row_post_response(self, url, post_content, cost_centre_code):
         return self.factory_post(
             url,
             post_content,
             AddRowView,
-            cost_centre_code=self.cost_centre_code,
+            cost_centre_code=cost_centre_code,
         )
 
     def edit_row_get_response(self):
@@ -214,7 +214,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'cost_centre_code': self.cost_centre_code
                 },
-            )
+            ),
         )
 
         self.assertEqual(add_resp.status_code, 200)
@@ -230,7 +230,8 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             {
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac.natural_account_code,
-            }
+            },
+            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(add_row_resp.status_code, 302)
@@ -260,7 +261,8 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             {
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac.natural_account_code,
-            }
+            },
+            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(add_row_resp.status_code, 302)
@@ -288,7 +290,8 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis1_code": self.analysis_1_code,
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
-            }
+            },
+            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(response.status_code, 302)
@@ -307,7 +310,8 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis1_code": self.analysis_1_code,
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
-            }
+            },
+            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(response_2.status_code, 200)
@@ -316,6 +320,57 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             response_2.rendered_content,
         )
         self.assertEqual(FinancialCode.objects.count(), 1)
+
+    def test_duplicate_values_different_cost_centre_valid(self):
+        cost_centre_code_2 = self.cost_centre_code + 1
+
+        cost_centre_2 = CostCentreFactory.create(
+            cost_centre_code=cost_centre_code_2,
+        )
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+        assign_perm("change_costcentre", self.test_user, cost_centre_2)
+
+        # add forecast row
+        response = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(FinancialCode.objects.count(), 1)
+
+        response_2 = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': cost_centre_code_2,
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+            cost_centre_code=cost_centre_code_2,
+        )
+
+        self.assertEqual(response_2.status_code, 302)
+        self.assertEqual(FinancialCode.objects.count(), 2)
 
 
 class ChooseCostCentreTest(TestCase, RequestFactoryBase):

@@ -154,8 +154,14 @@ class AddRowView(
             "cost_centre_code": cost_centre.cost_centre_code,
         }
 
-    def form_valid(self, form):
+    def get_form_kwargs(self):
         self.get_cost_centre()
+
+        kwargs = super(AddRowView, self).get_form_kwargs()
+        kwargs['cost_centre_code'] = self.cost_centre_code
+        return kwargs
+
+    def form_valid(self, form):
         data = form.cleaned_data
 
         financial_code = FinancialCode.objects.filter(
