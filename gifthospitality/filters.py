@@ -42,11 +42,11 @@ class GiftHospitalityFilter(MyFilterSet):
         )
 
         self.form.fields["value"].widget.attrs.update(
-            {"class": "govuk-input", }
+            {"class": "govuk-input govuk-!-width-one-thirds", }
         )
 
         self.form.fields["rep"].widget.attrs.update(
-            {"class": "govuk-input", }
+            {"class": "govuk-input govuk-!-width-one-thirds", }
         )
 
         self.form.fields["grade"].widget.attrs.update(
@@ -70,11 +70,11 @@ class GiftHospitalityFilter(MyFilterSet):
         )
 
         self.form.fields["entered_date_stamp_from"].widget.attrs.update(
-            {"class": "govuk-input", }
+            {"class": "govuk-input govuk-!-width-one-thirds", }
         )
 
         self.form.fields["entered_date_stamp_to"].widget.attrs.update(
-            {"class": "govuk-input", }
+            {"class": "govuk-input govuk-!-width-one-thirds", }
         )
 
     entered_date_stamp_from = DateFilter(
