@@ -98,6 +98,21 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
     group_code.admin_order_field = "directorate__group__group_code"
     treasury_segment.admin_order_field = "directorate__group__treasury_segment_fk"
 
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+
+        remove_actions = [
+            "make_active",
+            "make_inactive",
+        ]
+
+        if not request.user.is_superuser:
+            for action in remove_actions:
+                if action in actions:
+                    del actions[action]
+
+        return actions
+
     # limit the entries for specific foreign fields
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "business_partner":
@@ -194,7 +209,6 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
         ]
 
         return extra_urls + urls
-
 
     def can_change_permissions(self, user, cost_centre):
         # Only super users, finance admins and finance
