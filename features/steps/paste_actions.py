@@ -271,7 +271,7 @@ def step_impl(context):
 
 @when(u'the user pastes too few column row data')
 def step_impl(context):
-    paste_text = "123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text = "123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00"
     copy_text(context, paste_text)
     paste(context)
 

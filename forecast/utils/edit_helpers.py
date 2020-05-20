@@ -37,6 +37,10 @@ class NoFinancialCodeForEditedValue(Exception):
     pass
 
 
+class NotEnoughColumnsException(Exception):
+    pass
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,7 +65,14 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
 
         col = (settings.NUM_META_COLS + financial_period_month) - 1
 
-        new_value = convert_forecast_amount(cell_data[col])
+        try:
+            new_value = convert_forecast_amount(cell_data[col])
+        except IndexError:
+            raise NotEnoughColumnsException(
+                'Your pasted data does not '
+                'match the expected format. '
+                'There are not enough columns.'
+            )
 
         if new_value is not None:
             if not monthly_figure:

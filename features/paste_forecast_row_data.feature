@@ -26,11 +26,10 @@ Feature: Paste forecast row data
 #     When the user pastes too many column row data
 #     Then the too many columns error message is displayed
 
-  # Will be reinstated once edit download has adjustment cols
-#  Scenario: Pasting too few columns data into the edit forecast table
-#    Given the user selects a row in the edit forecast table
-#     When the user pastes too few column row data
-#     Then the too few columns error message is displayed
+  Scenario: Pasting too few columns data into the edit forecast table
+    Given the user selects a row in the edit forecast table
+     When the user pastes too few column row data
+     Then the too few columns error message is displayed
 
   Scenario: Pasting mismatched columns into the edit forecast table
     Given the user selects a row in the edit forecast table

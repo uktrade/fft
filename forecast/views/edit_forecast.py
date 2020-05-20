@@ -42,6 +42,7 @@ from forecast.utils.edit_helpers import (
     BadFormatException,
     CannotFindMonthlyFigureException,
     NoFinancialCodeForEditedValue,
+    NotEnoughColumnsException,
     NotEnoughMatchException,
     RowMatchException,
     TooManyMatchException,
@@ -292,6 +293,7 @@ class PasteForecastRowsView(
         except (
             BadFormatException,
             TooManyMatchException,
+            NotEnoughColumnsException,
             NotEnoughMatchException,
             RowMatchException,
             CannotFindMonthlyFigureException,
