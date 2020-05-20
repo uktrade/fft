@@ -65,7 +65,7 @@ const EditActionBar = () => {
                                         );
                                     }}
                                 />
-                                <label className="govuk-label govuk-checkboxes__label" for="waste">
+                                <label className="govuk-label govuk-checkboxes__label">
                                     All info columns
                                 </label>
                             </div>
@@ -87,7 +87,7 @@ const EditActionBar = () => {
                                             );
                                         }}
                                     />
-                                    <label className="govuk-label govuk-checkboxes__label" for="natural_account_code">
+                                    <label className="govuk-label govuk-checkboxes__label" htmlFor="natural_account_code">
                                         Natural account code
                                     </label>
                                 </div>
@@ -103,7 +103,7 @@ const EditActionBar = () => {
                                             );
                                         }}
                                     />
-                                    <label className="govuk-label govuk-checkboxes__label" for="programme">
+                                    <label className="govuk-label govuk-checkboxes__label" htmlFor="programme">
                                         Programme
                                     </label>
                                 </div>
@@ -119,7 +119,7 @@ const EditActionBar = () => {
                                             );
                                         }}
                                     />
-                                    <label className="govuk-label govuk-checkboxes__label" for="analysis1_code">
+                                    <label className="govuk-label govuk-checkboxes__label" htmlFor="analysis1_code">
                                         Analysis 1
                                     </label>
                                 </div>
@@ -135,7 +135,7 @@ const EditActionBar = () => {
                                             );
                                         }}
                                     />
-                                    <label className="govuk-label govuk-checkboxes__label" for="analysis2_code">
+                                    <label className="govuk-label govuk-checkboxes__label" htmlFor="analysis2_code">
                                         Analysis 2
                                     </label>
                                 </div>
@@ -151,7 +151,7 @@ const EditActionBar = () => {
                                             );
                                         }}
                                     />
-                                    <label className="govuk-label govuk-checkboxes__label" for="project_code">
+                                    <label className="govuk-label govuk-checkboxes__label" htmlFor="project_code">
                                         Project Code
                                     </label>
                                 </div>

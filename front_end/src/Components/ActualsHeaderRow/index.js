@@ -20,11 +20,11 @@ const ActualsHeaderRow = () => {
 
     return (
         <tr>
-            <th className="govuk-table__head meta-col" colspan="9"></th>
+            <th className="govuk-table__head meta-col" colSpan="9"></th>
             {numActuals > 0 &&
-                <th id="actuals_header" className="govuk-table__head meta-col" colspan={ numActuals }>Actuals</th>
+                <th id="actuals_header" className="govuk-table__head meta-col" colSpan={ numActuals }>Actuals</th>
             }
-            <th className="govuk-table__head meta-col" colspan={ 18 - numActuals }>Forecast</th>
+            <th className="govuk-table__head meta-col" colSpan={ 18 - numActuals }>Forecast</th>
         </tr>
     );
 }

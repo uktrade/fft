@@ -115,7 +115,7 @@ function EditForecast() {
             let lowestMonth = 0
             let body = document.getElementsByTagName("BODY")[0]
             let skipLink = document.getElementsByClassName("govuk-skip-link")[0]
-            let filterOpenLink = document.getElementById("filter-switch")
+            let filterOpenLink = document.getElementById("action-bar-switch")
             let selectAll = document.getElementById("select_all")
 
             if (window.actuals && window.actuals.length > 0) {
