@@ -5,13 +5,11 @@ from custom_usermodel.admin import UserAdmin
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.models import (
-    CHANGE,
     DELETION,
     LogEntry,
 )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadhandler import (
     MemoryFileUploadHandler,
     TemporaryFileUploadHandler,
@@ -28,6 +26,7 @@ from core.exportutils import (
 )
 from core.exportutils import export_to_csv
 from core.models import FinancialYear
+from core.utils import log_object_change
 
 
 class LogEntryAdmin(admin.ModelAdmin):
@@ -102,18 +101,14 @@ class AdminActiveField(admin.ModelAdmin):
         else:
             msg = "deactivated"
         q = queryset.filter(active=not new_active_value)
-        ct = ContentType.objects.get_for_model(
-            queryset.model
-        )  # for_model --> get_for_model
+
         for obj in q:
-            LogEntry.objects.log_action(
-                user_id=request.user.id,
-                content_type_id=ct.pk,
-                object_id=obj.pk,
-                object_repr=str(obj),
-                action_flag=CHANGE,
-                change_message=str(obj) + " " + msg,
+            log_object_change(
+                request.user.id,
+                msg,
+                obj=obj,
             )
+
         rows_updated = q.update(active=new_active_value)
         if rows_updated == 1:
             message_bit = "1 {} was".format(queryset.model._meta.verbose_name)
@@ -181,14 +176,23 @@ class AdminExport(admin.ModelAdmin):
         return my_urls + urls
 
     def export_all_xls(self, request):
+        log_object_change(
+            request.user.id,
+            "Export all as .xlsx",
+        )
+
         try:
             queryset = self.queryset_all
         except AttributeError:
             queryset = self.model.objects.all()
-            # self.message_user(request, "Export called")
         return export_to_excel(queryset, self.export_func)
 
     def export_selection_xlsx(self, _, request, queryset):
+        log_object_change(
+            request.user.id,
+            "Export selection as .xlsx",
+        )
+
         # _ is required because the
         # function get called with
         # self passed in twice.
@@ -244,10 +248,20 @@ class AdminImportExport(AdminExport):
         return my_urls + urls
 
     def export_csv(self, request):
+        log_object_change(
+            request.user.id,
+            "Export CSV",
+        )
+
         e = export_csv_from_import(self.import_info.key)
         return export_to_csv(e.queryset, e.yield_data)
 
     def process_csv(self, request, import_info):
+        log_object_change(
+            request.user.id,
+            "Processing CSV",
+        )
+
         import_file = request.FILES["csv_file"]
         # read() gives you the file
         # contents as a bytes object,
@@ -270,8 +284,14 @@ class AdminImportExport(AdminExport):
         return self.generic_import_csv(request, self.import_info)
 
     def generic_import_csv(self, request, import_info):
+        log_object_change(
+            request.user.id,
+            f"Import CSV: '{import_info.form_title}'",
+        )
+
         header_list = import_info.header_list
         form_title = import_info.form_title
+
         # because the files are small, upload them to memory
         # instead of using S3
         request.upload_handlers.insert(0, TemporaryFileUploadHandler(request))
@@ -365,6 +385,13 @@ class UserAdmin(UserAdmin):
         else:
             if not obj.is_superuser:
                 obj.is_staff = False
+
+        if len(form.cleaned_data["groups"]) > 0:
+            log_object_change(
+                request.user.id,
+                f'user added to "{form.cleaned_data["groups"]}"',
+                obj=obj,
+            )
 
         super().save_model(request, obj, form, change)
 
