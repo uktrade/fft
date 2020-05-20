@@ -44,12 +44,18 @@ class Command(BaseCommand):
 
     # pass the year an argument
     def handle(self, *args, **options):
-        financialyear = options.get("year")
-        archivetype = options.get("type")
-        if archivetype == "All":
-            archive_all(financialyear)
-            archive_cost_centre(financialyear)
-            archive_treasury_l5(financialyear)
+        financial_year = options.get("year")
+        archive_type = options.get("type")
+
+        if archive_type == "All":
+            archive_all(financial_year)
+            archive_cost_centre(financial_year)
+            archive_treasury_l5(financial_year)
+            self.stdout.write(
+                self.style.SUCCESS("Archived all rows")
+            )
         else:
-            row = ARCHIVE_TYPE[archivetype](financialyear)
-            print("Archived " + str(row) + " rows")
+            row = ARCHIVE_TYPE[archive_type](financial_year)
+            self.stdout.write(
+                self.style.SUCCESS("Archived " + str(row) + " rows")
+            )
