@@ -107,7 +107,11 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
                 print("created monthly figure amount")
 
             if new_value != monthly_figure.amount:
-                print("new_value != monthly_figure.amount", new_value, monthly_figure.amount)
+                print(
+                    "new_value != monthly_figure.amount",
+                    new_value,
+                    monthly_figure.amount,
+                )
                 monthly_figure.amount = new_value
                 monthly_figure.save()
 
