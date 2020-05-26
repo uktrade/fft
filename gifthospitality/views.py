@@ -90,7 +90,7 @@ class GiftHospitalityOfferedDoneView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Completed Gift/Hospitality Offered"
+        context["section_name"] = "Completed Gift/Hospitality Offered Form."
         return context
 
 
@@ -99,7 +99,7 @@ class GiftHospitalityReceivedDoneView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Completed Gift/Hospitality Received"
+        context["section_name"] = "Completed Gift/Hospitality Received Form."
         return context
 
 

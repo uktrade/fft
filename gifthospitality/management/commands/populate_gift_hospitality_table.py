@@ -189,7 +189,7 @@ class Grades:
     def create(self):
         self.clear()
         Grade.objects.create(
-            grade='Unk',
+            grade='Contractor',
             gradedescription='Unknown',
             active=True,
         )
