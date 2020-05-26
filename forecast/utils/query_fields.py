@@ -116,11 +116,13 @@ expenditure_order_list = [
 
 # Project data
 project_columns = {
+    FORECAST_EXPENDITURE_TYPE_ORDER: "Hidden",
+    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
     PROJECT_NAME: "Project",
     PROJECT_CODE: "code",
-    FORECAST_EXPENDITURE_TYPE_NAME: "Expenditure type",
 }
 project_order_list = [
+    FORECAST_EXPENDITURE_TYPE_ORDER,
     PROJECT_CODE,
 ]
 project_sub_total = [
