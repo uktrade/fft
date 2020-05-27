@@ -45,7 +45,7 @@ CC_KEY = {
 
 
 def import_cc(csvfile):
-    import_obj(csvfile, CC_KEY)
+    return import_obj(csvfile, CC_KEY)
 
 
 import_cc_class = ImportInfo(

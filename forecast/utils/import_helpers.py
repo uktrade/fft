@@ -236,7 +236,11 @@ class CheckFinancialCode:
 
     def __init__(self, file_upload):
         self.file_upload = file_upload
-        self.upload_type = self.file_upload.document_type
+        if self.file_upload:
+            self.upload_type = self.file_upload.document_type
+        else:
+            # This is uploaded from a command, and there is no document type defined
+            self.upload_type = "Forecast"
         self.error_found = False
         self.warning_found = False
         self.nac_dict = {}
@@ -353,17 +357,18 @@ class CheckFinancialCode:
         self.analysis2_obj = self.validate_analysis2(analysis2)
         self.project_obj = self.validate_project(project)
 
-        if self.display_warning:
+        if self.display_warning and self.file_upload:
             set_file_upload_warning(
                 self.file_upload, f"Row {row_number} warning: {self.display_warning}"
             )
 
         if self.display_error:
-            set_file_upload_error(
-                self.file_upload,
-                f"Row {row_number} error: {self.display_error}",
-                "Upload aborted: Data error.",
-            )
+            if self.file_upload:
+                set_file_upload_error(
+                    self.file_upload,
+                    f"Row {row_number} error: {self.display_error}",
+                    "Upload aborted: Data error.",
+                )
         return self.error_found
 
     def get_financial_code(self):

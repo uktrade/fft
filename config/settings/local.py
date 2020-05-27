@@ -80,11 +80,21 @@ else:
                 'stream': sys.stdout,
             },
         },
+        'root': {
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
+        },
         'loggers': {
-            'django.request': {
+            'django': {
                 'handlers': ['stdout', ],
-                'level': 'WARNING',
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                'propagate': True,
+            },
+            'forecast.import_csv': {
+                'handlers': ['stdout', ],
+                'level': 'INFO',
                 'propagate': True,
             },
         },
     }
+

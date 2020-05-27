@@ -52,11 +52,11 @@ ANALYSIS2_KEY = {
 
 
 def import_Analysis1(csvfile):
-    import_obj(csvfile, ANALYSIS1_KEY)
+    return import_obj(csvfile, ANALYSIS1_KEY)
 
 
 def import_Analysis2(csvfile):
-    import_obj(csvfile, ANALYSIS2_KEY)
+    return import_obj(csvfile, ANALYSIS2_KEY)
 
 
 import_a1_class = ImportInfo(ANALYSIS1_KEY)
@@ -102,7 +102,7 @@ NAC_KEY = {
 
 
 def import_NAC(csvfile):
-    import_obj(csvfile, NAC_KEY)
+    return import_obj(csvfile, NAC_KEY)
 
 
 def fix_L5_ref():
@@ -153,7 +153,7 @@ NAC_DIT_KEY = {
 
 
 def import_NAC_DIT(csvfile):
-    import_obj(csvfile, NAC_DIT_KEY)
+    return import_obj(csvfile, NAC_DIT_KEY)
 
 
 import_NAC_DIT_class = ImportInfo(NAC_DIT_KEY)
@@ -167,7 +167,7 @@ NAC_CATEGORY_KEY = {
 
 
 def import_NAC_expenditure_category(csvfile):
-    import_obj(csvfile, NAC_CATEGORY_KEY)
+    return import_obj(csvfile, NAC_CATEGORY_KEY)
 
 
 import_NAC_category_class = ImportInfo(NAC_CATEGORY_KEY)
@@ -230,7 +230,7 @@ import_expenditure_category_class = ImportInfo(
 
 
 def import_NAC_category(csvfile):
-    import_list_obj(csvfile, NACCategory, "NAC_category_description")
+    return import_list_obj(csvfile, NACCategory, "NAC_category_description")
 
 
 COMMERCIAL_CATEGORY_KEY = {
@@ -245,7 +245,7 @@ COMMERCIAL_CATEGORY_KEY = {
 
 
 def import_commercial_category(csvfile):
-    import_obj(csvfile, COMMERCIAL_CATEGORY_KEY)
+    return import_obj(csvfile, COMMERCIAL_CATEGORY_KEY)
 
 
 import_comm_cat_class = ImportInfo(COMMERCIAL_CATEGORY_KEY)
@@ -268,7 +268,7 @@ PROG_KEY = {
 
 
 def import_programme(csvfile):
-    import_obj(csvfile, PROG_KEY)
+    return import_obj(csvfile, PROG_KEY)
 
 
 import_prog_class = ImportInfo(PROG_KEY)
