@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 
 from django.conf import settings
@@ -40,6 +41,7 @@ from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import can_forecast_be_edited
 from forecast.utils.edit_helpers import (
     BadFormatException,
+    CannotFindForecastMonthlyFigureException,
     CannotFindMonthlyFigureException,
     NoFinancialCodeForEditedValue,
     NotEnoughColumnsException,
@@ -67,6 +69,9 @@ def get_financial_code_serialiser(cost_centre_code):
     )
 
     return FinancialCodeSerializer(financial_codes, many=True, )
+
+
+logger = logging.getLogger(__name__)
 
 
 class ChooseCostCentreView(
@@ -210,99 +215,122 @@ class PasteForecastRowsView(
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
-        cost_centre_code = self.kwargs["cost_centre_code"]
-
-        paste_content = form.cleaned_data["paste_content"]
-        pasted_at_row = form.cleaned_data.get("pasted_at_row", None)
-        all_selected = form.cleaned_data.get("all_selected", False)
-
-        financial_codes = FinancialCode.objects.filter(
-            cost_centre_id=self.cost_centre_code,
-        )
-
-        # TODO - introduce a way of checking for
-        # active financial periods (see previously used logic below)
-
-        # Get number of active financial periods
-        # active_periods = FinancialPeriod.objects.filter(
-        #     display_figure=True
-        # ).count()
-
-        row_count = financial_codes.count()
-        rows = paste_content.splitlines()
-
-        # Remove any rows that start with empty cells (to account for totals etc)
-        rows = [row for row in rows if not row[0].strip() == ""]
-
-        pasted_row_count = len(rows)
-
-        if len(rows) == 0:
-            return JsonResponse(
-                {"error": "Your pasted data is not formatted correctly."}, status=400,
-            )
-
-        # Check for header row
-        has_start_row = False
-        if rows[0].lower().startswith("programme"):
-            has_start_row = True
-
-        # Account for header row in paste
-        if has_start_row:
-            pasted_row_count -= 1
-
-        if all_selected and row_count < pasted_row_count:
-            return JsonResponse(
-                {
-                    "error": (
-                        "You have selected all forecast rows "
-                        "but the pasted data has too many rows."
-                    )
-                },
-                status=400,
-            )
-
-        if all_selected and row_count > pasted_row_count:
-            return JsonResponse(
-                {
-                    "error": (
-                        "You have selected all forecast rows "
-                        "but the pasted data has too few rows."
-                    )
-                },
-                status=400,
-            )
-
         try:
-            for index, row in enumerate(rows):
-                if index == 0 and has_start_row:
-                    continue
+            cost_centre_code = self.kwargs["cost_centre_code"]
 
-                cell_data = re.split(r"\t", row.rstrip("\t"))
+            paste_content = form.cleaned_data["paste_content"]
+            pasted_at_row = form.cleaned_data.get("pasted_at_row", None)
+            all_selected = form.cleaned_data.get("all_selected", False)
 
-                # Check that pasted at content and desired first row match
-                check_row_match(
-                    index, pasted_at_row, cell_data,
+            financial_codes = FinancialCode.objects.filter(
+                cost_centre_id=self.cost_centre_code,
+            )
+
+            # TODO - introduce a way of checking for
+            # active financial periods (see previously used logic below)
+
+            # Get number of active financial periods
+            # active_periods = FinancialPeriod.objects.filter(
+            #     display_figure=True
+            # ).count()
+
+            row_count = financial_codes.count()
+            rows = paste_content.splitlines()
+
+            # Remove any rows that start with empty cells (to account for totals etc)
+            rows = [row for row in rows if not row[0].strip() == ""]
+
+            pasted_row_count = len(rows)
+
+            if len(rows) == 0:
+                return JsonResponse(
+                    {"error": "Your pasted data is not formatted correctly."},
+                    status=400,
                 )
 
-                # Check cell data length against expected number of cols
-                check_cols_match(cell_data)
+            # Check for header row
+            has_start_row = False
+            if rows[0].lower().startswith("programme"):
+                has_start_row = True
 
-                set_monthly_figure_amount(
-                    cost_centre_code, cell_data,
+            # Account for header row in paste
+            if has_start_row:
+                pasted_row_count -= 1
+
+            if all_selected and row_count < pasted_row_count:
+                return JsonResponse(
+                    {
+                        "error": (
+                            "You have selected all forecast rows "
+                            "but the pasted data has too many rows."
+                        )
+                    },
+                    status=400,
                 )
-        except (
-            BadFormatException,
-            TooManyMatchException,
-            NotEnoughColumnsException,
-            NotEnoughMatchException,
-            RowMatchException,
-            CannotFindMonthlyFigureException,
-        ) as ex:
-            return JsonResponse({"error": str(ex)}, status=400,)
 
-        financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
+            if all_selected and row_count > pasted_row_count:
+                return JsonResponse(
+                    {
+                        "error": (
+                            "You have selected all forecast rows "
+                            "but the pasted data has too few rows."
+                        )
+                    },
+                    status=400,
+                )
 
-        return JsonResponse(financial_code_serialiser.data, safe=False)
+            try:
+                for index, row in enumerate(rows):
+                    if index == 0 and has_start_row:
+                        continue
+
+                    cell_data = re.split(r"\t", row.rstrip("\t"))
+
+                    # Check that pasted at content and desired first row match
+                    check_row_match(
+                        index, pasted_at_row, cell_data,
+                    )
+
+                    # Check cell data length against expected number of cols
+                    check_cols_match(cell_data)
+
+                    set_monthly_figure_amount(
+                        cost_centre_code, cell_data,
+                    )
+            except (
+                BadFormatException,
+                TooManyMatchException,
+                NotEnoughColumnsException,
+                NotEnoughMatchException,
+                RowMatchException,
+                CannotFindMonthlyFigureException,
+                CannotFindForecastMonthlyFigureException,
+            ) as ex:
+                return JsonResponse({"error": str(ex)}, status=400,)
+
+            financial_code_serialiser = get_financial_code_serialiser(
+                self.cost_centre_code,
+            )
+
+            return JsonResponse(
+                financial_code_serialiser.data,
+                safe=False,
+            )
+        except Exception:
+            logger.fatal(
+                "Error when pasting forecast data",
+                exc_info=True,
+            )
+            return JsonResponse(
+                {"error": "There was an error when attempting to paste "
+                          "your data, please make sure you have selected "
+                          "all columns when you copy from the spreadsheet. "
+                          "Some of the forecast data may have been updated. "
+                          "If the error persists, please contact the Live "
+                          "Services Team"
+                 },
+                status=400,
+            )
 
     def form_invalid(self, form):
         return JsonResponse(

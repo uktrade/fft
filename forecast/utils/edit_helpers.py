@@ -41,6 +41,10 @@ class NotEnoughColumnsException(Exception):
     pass
 
 
+class CannotFindForecastMonthlyFigureException(Exception):
+    pass
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -52,17 +56,24 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
     ).count() + 1
 
     for financial_period_month in range(start_period, period_max):
-        monthly_figure = ForecastMonthlyFigure.objects.filter(
-            financial_code__cost_centre__cost_centre_code=cost_centre_code,
-            financial_year__financial_year=get_current_financial_year(),
-            financial_period__financial_period_code=financial_period_month,
-            financial_code__programme__programme_code=check_empty(cell_data[0]),
-            financial_code__natural_account_code__natural_account_code=cell_data[2],
-            financial_code__analysis1_code=check_empty(cell_data[4]),
-            financial_code__analysis2_code=check_empty(cell_data[5]),
-            financial_code__project_code=check_empty(cell_data[6]),
-            archived_status=None,
-        ).first()
+        try:
+            monthly_figure = ForecastMonthlyFigure.objects.filter(
+                financial_code__cost_centre__cost_centre_code=cost_centre_code,
+                financial_year__financial_year=get_current_financial_year(),
+                financial_period__financial_period_code=financial_period_month,
+                financial_code__programme__programme_code=check_empty(cell_data[0]),
+                financial_code__natural_account_code__natural_account_code=cell_data[2],
+                financial_code__analysis1_code=check_empty(cell_data[4]),
+                financial_code__analysis2_code=check_empty(cell_data[5]),
+                financial_code__project_code=check_empty(cell_data[6]),
+                archived_status=None,
+            ).first()
+        except (IndexError, ValueError):
+            raise CannotFindForecastMonthlyFigureException(
+                'Could not find forecast row, please check that you '
+                'have pasted ALL columns from the spreadsheet. '
+                'Some values may have been updated.'
+            )
 
         col = (settings.NUM_META_COLS + financial_period_month) - 1
 
