@@ -29,3 +29,8 @@ Feature: Paste forecast sheet data
      Given the user selects all rows in the edit forecast table
      When the user pastes valid sheet with no changes
      Then no message is displayed
+
+  Scenario: Pasting sheet data with incorrect meta columns into the edit forecast table
+    Given the user selects all rows in the edit forecast table
+     When the user pastes data with incorrect meta columns
+     Then the could not find forecast error is displayed
