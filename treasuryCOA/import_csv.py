@@ -108,7 +108,7 @@ L5_KEY = {
 
 
 def import_treasury_COA(csvfile):
-    import_obj(csvfile, L5_KEY)
+    return import_obj(csvfile, L5_KEY)
 
 
 import_L5_class = ImportInfo(L5_KEY, "Treasury Chart of Account")

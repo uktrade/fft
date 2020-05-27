@@ -45,6 +45,9 @@ LOGGING = {
         "ecs_formatter": {
             "()": ECSFormatter,
         },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
     },
     'handlers': {
         'ecs': {
@@ -52,10 +55,21 @@ LOGGING = {
             'stream': sys.stdout,
             'formatter': 'ecs_formatter',
         },
+        'stdout': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'simple',
+            'level': 'INFO',
+        },
     },
     'loggers': {
         'django.request': {
             'handlers': ['ecs', ],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'forecast.import_csv': {
+            'handlers': ['stdout', ],
             'level': 'INFO',
             'propagate': True,
         },
