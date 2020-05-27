@@ -24,7 +24,7 @@ const TotalOverspendUnderspend = ({rowIndex, id}) => {
     }
     
     if (total < 0) {
-        negative='negative'
+        negative ='negative'
     }
 
     return (

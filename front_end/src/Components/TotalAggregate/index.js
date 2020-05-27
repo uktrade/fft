@@ -4,7 +4,7 @@ import {
     formatValue
 } from '../../Util'
 
-const TotalAggregate = ({rowIndex, actualsOnly, id}) => {
+const TotalAggregate = ({ actualsOnly, id, extraClasses }) => {
     const cells = useSelector(state => state.allCells.cells);
 
     let total = 0
@@ -25,7 +25,7 @@ const TotalAggregate = ({rowIndex, actualsOnly, id}) => {
     }
 
     return (
-        <td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable figure-cell " + negative}>{formatValue(total / 100)}</td>
+        <td id={id} className={"govuk-table__cell forecast-month-cell total-figure not-editable figure-cell " + extraClasses + " " + negative }>{formatValue(total / 100)}</td>
     );
 }
 

@@ -59,6 +59,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         empty_label="",
+        label="Programme Description",
     )
     programme.widget.attrs.update(
         {"class": "govuk-select", "aria-describedby": "programme-hint programme-error"}
@@ -69,6 +70,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         empty_label="",
+        label="NAC Description",
     )
     natural_account_code.widget.attrs.update(
         {
@@ -83,6 +85,7 @@ class AddForecastRowForm(forms.Form):
         ),
         required=False,
         empty_label="",
+        label="Contract Reconciliation",
     )
     analysis1_code.widget.attrs.update(
         {
@@ -97,6 +100,7 @@ class AddForecastRowForm(forms.Form):
         ),
         required=False,
         empty_label="",
+        label="Markets",
     )
     analysis2_code.widget.attrs.update(
         {

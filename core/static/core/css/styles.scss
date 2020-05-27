@@ -274,6 +274,10 @@ table, td, th {
   max-width: 1600px;
 }
 
+.last-col {
+  padding-right:10px!important;
+}
+
 // style django tables 2 filter as per govt front end
 @media (min-width: 40.0625em) {
   #id_search_all {

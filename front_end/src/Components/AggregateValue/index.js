@@ -4,9 +4,9 @@ import {
     formatValue
 } from '../../Util'
 
-const AggregateValue = ({rowIndex, actualsOnly}) => {
+const AggregateValue = ({ rowIndex, actualsOnly, extraClasses }) => {
     const cells = useSelector(state => state.allCells.cells[rowIndex]);
-    let className = ''
+    let className = extraClasses
 
     let total = 0
 
@@ -18,7 +18,7 @@ const AggregateValue = ({rowIndex, actualsOnly}) => {
     }
 
     if (total < 0) {
-        className +='negative'
+        className +=' negative'
     }
 
     return (
