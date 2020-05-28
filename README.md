@@ -76,6 +76,17 @@ Django Guardian **should not be used directly**. There is a set of wrapper funct
 
 These add an additional permission check for the user being able to view forecasts at all.
 
+### Creating data/non-auto migrations
+When adding data or non-auto generated migrations, please use the convention:
+```
+[number]_data_[date]_[time]
+```
+for example:
+```
+0004_data_20200501_1345
+```
+
+
 ### Running manage.py on an app droplet
 ```
 /home/vcap/deps/1/bin/python3.6 ~/app/manage.py
