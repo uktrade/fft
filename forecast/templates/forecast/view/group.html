@@ -8,6 +8,8 @@
     {% breadcrumb view.group.group_name "" %}
 {% endblock %}
 
+{% block title %}Group - {{ view.group.group_name }}{% endblock %}
+
 {% block content %}
     <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
     <div class="action-bar-wrapper">

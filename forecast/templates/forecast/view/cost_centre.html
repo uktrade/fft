@@ -10,6 +10,9 @@
     {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code %}
     {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code %}
 {% endblock %}
+
+{% block title %}Cost Centre - {{ view.cost_centre.cost_centre_name }}{% endblock %}
+
 {% block content %}
     <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }} </h1>
     <div class="action-bar-wrapper">

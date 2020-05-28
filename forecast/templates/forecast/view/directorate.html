@@ -9,6 +9,8 @@
     {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code %}
 {% endblock %}
 
+{% block title %}Directorate - {{ view.directorate.directorate_name }}{% endblock %}
+
 {% block content %}
     <h1 class="govuk-heading-l">{{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}</h1>
     <div class="action-bar-wrapper">
