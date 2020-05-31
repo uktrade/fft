@@ -14,10 +14,6 @@ from django.urls import (
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from guardian.shortcuts import (
-    get_objects_for_user,
-)
-
 from core.myutils import get_current_financial_year
 
 from costcentre.forms import MyCostCentresForm
@@ -34,11 +30,12 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
-from forecast.permission_shortcuts import (
-    NoForecastViewPermission,
-)
 from forecast.serialisers import FinancialCodeSerializer
-from forecast.utils.access_helpers import can_forecast_be_edited
+from forecast.utils.access_helpers import (
+    can_edit_at_least_one_cost_centre,
+    can_forecast_be_edited,
+    get_user_cost_centres,
+)
 from forecast.utils.edit_helpers import (
     BadFormatException,
     CannotFindForecastMonthlyFigureException,
@@ -75,27 +72,26 @@ logger = logging.getLogger(__name__)
 
 
 class ChooseCostCentreView(
-    UserPassesTestMixin, FormView,
+    UserPassesTestMixin,
+    FormView,
 ):
     template_name = "forecast/edit/choose_cost_centre.html"
     form_class = MyCostCentresForm
     cost_centre = None
 
     def test_func(self):
-        try:
-            cost_centres = get_objects_for_user(
-                self.request.user, "costcentre.change_costcentre",
-            )
-        except NoForecastViewPermission:
+        can_edit = can_edit_at_least_one_cost_centre(
+            self.request.user
+        )
+
+        if not can_edit:
             raise PermissionDenied()
 
-        # If user has permission on
-        # one or more CCs then let them view
-        return cost_centres.count() > 0
+        return True
 
     def get_user_cost_centres(self):
-        user_cost_centres = get_objects_for_user(
-            self.request.user, "costcentre.change_costcentre",
+        user_cost_centres = get_user_cost_centres(
+            self.request.user,
         )
 
         cost_centres = []
