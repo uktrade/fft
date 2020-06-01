@@ -172,6 +172,14 @@ def step_impl(context):
     paste(context)
 
 
+@when(u'the user pastes non decimal values')
+def step_impl(context):
+    paste_text = "123456	Test	111111	Test	1111111	2222222	3000	0	1000.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    paste_text += "\\n123456	Test	999999	Test	1111111	2222222	3000	0	1000.xx	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00	0.00"
+    copy_text(context, paste_text)
+    paste(context)
+
+
 @then(u'the clipboard data is displayed in the forecast table')
 def step_impl(context):
     april_value = context.browser.find_element_by_id(
@@ -225,6 +233,16 @@ def step_impl(context):
     check_error_message(
         context,
         "You have selected all forecast rows but the pasted data has too many rows.",
+    )
+
+
+@then('the non decimal values error message is displayed')
+def step_impl(context):
+    check_error_message(
+        context,
+        "We cannot convert some of the values in your pasted "
+        "data to decimals, please check it and try again. "
+        "Some values may have been updated.",
     )
 
 
