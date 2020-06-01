@@ -20,6 +20,9 @@ makemigrations:
 migrate:
 	docker-compose run fido python manage.py migrate
 
+compilescss:
+	docker-compose run fido python manage.py compilescss
+
 test:
 	docker-compose run fido python manage.py test $(test)
 
