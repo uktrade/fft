@@ -39,6 +39,9 @@ bdd:
 up:
 	docker-compose up
 
+build:
+	docker-compose build
+
 elevate:
 	docker-compose run fido python manage.py elevate_sso_user_permissions
 

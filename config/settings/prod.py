@@ -14,6 +14,10 @@ AUTHENTICATION_BACKENDS += [
     "authbroker_client.backends.AuthbrokerBackend",
 ]
 
+INSTALLED_APPS += [
+    "elasticapm.contrib.django",
+]
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "front_end/build/static"),
     os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
