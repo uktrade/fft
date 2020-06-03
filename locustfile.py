@@ -3,12 +3,12 @@ import os
 from locust import (
     HttpLocust,
     TaskSet,
-    task,
     between,
+    task
 )
 
 sso_headers = {
-    "Cookie": f"csrftoken={os.environ['CRSF_TOKEN']}; sessionid={os.environ['SESSION_ID']}"
+    "Cookie": f"csrftoken={os.environ['CRSF_TOKEN']}; sessionid={os.environ['SESSION_ID']}"  # noqa E501
 }
 
 paste_content = ""
