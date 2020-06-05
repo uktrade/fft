@@ -162,7 +162,7 @@ class CostCentre(IsActiveModel):
         verbose_name = "Cost Centre"
         verbose_name_plural = "Cost Centres"
         ordering = ["cost_centre_code"]
-        default_permissions = ('change',)
+        default_permissions = ('change', 'add')
         permissions = (
             ('edit_forecast_all_cost_centres', 'Edit all cost centres'),
             (
