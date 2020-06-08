@@ -35,3 +35,8 @@ Feature: Paste forecast row data
     Given the user selects a row in the edit forecast table
      When the user pastes mismatched columns
      Then the mismatched columns error message is displayed
+
+  Scenario: Pasting non decimal values
+    Given the user selects a row in the edit forecast table
+     When the user pastes non decimal values
+     Then the non decimal values error message is displayed

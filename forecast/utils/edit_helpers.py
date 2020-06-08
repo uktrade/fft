@@ -45,10 +45,14 @@ class CannotFindForecastMonthlyFigureException(Exception):
     pass
 
 
+class IncorrectDecimalFormatException(Exception):
+    pass
+
+
 logger = logging.getLogger(__name__)
 
 
-def set_monthly_figure_amount(cost_centre_code, cell_data):
+def set_monthly_figure_amount(cost_centre_code, cell_data):  # noqa C901
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
 
     period_max = FinancialPeriod.objects.filter(
@@ -79,12 +83,17 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):
 
         try:
             new_value = convert_forecast_amount(cell_data[col])
-
         except IndexError:
             raise NotEnoughColumnsException(
                 'Your pasted data does not '
                 'match the expected format. '
                 'There are not enough columns.'
+            )
+        except InvalidOperation:
+            raise IncorrectDecimalFormatException(
+                'We cannot convert some of the values in your pasted '
+                'data to decimals, please check it and try again. '
+                'Some values may have been updated.'
             )
 
         if new_value is not None:
@@ -159,7 +168,7 @@ def convert_forecast_amount(amount_string):
     try:
         return Decimal(amount_string.replace(",", "")) * 100
     except InvalidOperation as ex:
-        logger.warning(f"Unable to convert value '{amount_string}' to decimal")
+        logger.fatal(f"Unable to convert value '{amount_string}' to decimal")
         raise InvalidOperation(ex)
 
 

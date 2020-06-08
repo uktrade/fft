@@ -62,3 +62,9 @@
 .meta-col {
   text-align: left!important;
 }
+
+.finance-table {
+  .govuk-table__cell, .govuk-table__head {
+    font-size: 16px;
+  }
+}

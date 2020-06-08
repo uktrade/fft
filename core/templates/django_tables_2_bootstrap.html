@@ -3,7 +3,7 @@
 {% load forecast_format %}
 {% block table-wrapper %}
 {% block table %}
-    <table {% render_attrs table.attrs class="govuk-table" %}>
+    <table {% render_attrs table.attrs %}>
         <caption class="govuk-table__caption govuk-!-font-size-27">{{ table.attrs.caption }}</caption>
         {% block table.thead %}
         {% if table.show_header %}
