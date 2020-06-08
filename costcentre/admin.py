@@ -123,7 +123,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
-        if request.user.is_superuser:
+        if request.user.groups.filter(name="Finance Administrator") or request.user.is_superuser:
             if obj:
                 return [
                     "cost_centre_code",
