@@ -47,6 +47,7 @@ class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
         "sub_segment_long_name",
         "Segment_code",
         "control_budget_detail_code",
+        "dit_budget_type",
         "accounting_authority_DetailCode",
     )
 
