@@ -88,6 +88,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+if env("ELASTIC_APM_ENVIRONMENT", default=None):
+    ELASTIC_APM = {
+        'SERVICE_NAME': 'fft',
+        'SECRET_TOKEN': env.bool("ELASTIC_APM_SECRET_TOKEN", default=None),
+        'SERVER_URL': 'https://apm.elk.uktrade.digital',
+        'ENVIRONMENT': env("ELASTIC_APM_ENVIRONMENT", default=None)
+    }
+
 VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
 
 if 'postgres' in VCAP_SERVICES:
@@ -239,6 +247,6 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
 CLEAN_FILE_NAME = True
 
-# Max and min for forecast entry values
-MAX_FORECAST_FIGURE = 100000000
-MIN_FORECAST_FIGURE = -100000000
+# Max and min for forecast entry values (in pence)
+MAX_FORECAST_FIGURE = 10000000000
+MIN_FORECAST_FIGURE = -10000000000

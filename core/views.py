@@ -60,7 +60,7 @@ class FAdminFilteredView(
         return {
             "template_name": "django_tables_2_bootstrap.html",
             "attrs": {
-                "class": "govuk-table",
+                "class": "govuk-table finance-table",
                 "thead": {"class": "govuk-table__head"},
                 "tbody": {"class": "govuk-table__body"},
                 "th": {"class": "govuk-table__header", "a": {"class": "govuk-link"}},

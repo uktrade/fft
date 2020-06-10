@@ -46,6 +46,7 @@ class PermissionShortcutsTest(
         cost_centres = guardian_get_objects_for_user(
             self.test_user,
             "costcentre.change_costcentre",
+            accept_global_perms=False,
         )
 
         assert len(cost_centres) == 1

@@ -139,6 +139,7 @@ config/staticfiles/
 
 backup.sql
 backup.backup
+backup.dump
 
 test-reports/*
 fidovenv/*

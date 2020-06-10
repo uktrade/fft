@@ -229,7 +229,7 @@ class ForecastSubTotalTable(tables.Table):
         template_name = "django_tables_2_bootstrap.html"
         empty_text = ""
         attrs = {
-            "class": "govuk-table",
+            "class": "govuk-table finance-table",
             "thead": {"class": "govuk-table__head"},
             "tbody": {"class": "govuk-table__body"},
             "th": {"class": "govuk-table__header"},

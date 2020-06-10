@@ -20,6 +20,9 @@ makemigrations:
 migrate:
 	docker-compose run fido python manage.py migrate
 
+compilescss:
+	docker-compose run fido python manage.py compilescss
+
 test:
 	docker-compose run fido python manage.py test $(test)
 
@@ -35,6 +38,9 @@ bdd:
 
 up:
 	docker-compose up
+
+build:
+	docker-compose build
 
 elevate:
 	docker-compose run fido python manage.py elevate_sso_user_permissions

@@ -55,13 +55,32 @@ def user_in_group(user, group):
 
 
 def can_edit_at_least_one_cost_centre(user):
+    if user.is_superuser or user.has_perm(
+        "costcentre.edit_forecast_all_cost_centres"
+    ):
+        return True
+
     cost_centres = guardian_get_objects_for_user(
         user,
         "change_costcentre",
         klass=CostCentre,
+        accept_global_perms=False,
     )
 
     return cost_centres.count() > 0
+
+
+def get_user_cost_centres(user):
+    if user.is_superuser or user.has_perm(
+        "costcentre.edit_forecast_all_cost_centres"
+    ):
+        return CostCentre.objects.all()
+
+    return guardian_get_objects_for_user(
+        user,
+        "costcentre.change_costcentre",
+        accept_global_perms=False,
+    )
 
 
 def can_forecast_be_edited(user):
