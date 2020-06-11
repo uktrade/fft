@@ -138,5 +138,8 @@ class SubSegment(IsActiveModel):
         verbose_name="DIT Budget Code (used to generate the Oscar return)",
     )
 
+    class Meta:
+        unique_together = ("Segment_code", "dit_budget_type")
+
     def __str__(self):
         return "{} - {}".format(self.sub_segment_code, self.sub_segment_long_name)

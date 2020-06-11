@@ -411,8 +411,8 @@ def edit_forecast_order():
     # fields used in the download order.
     order_list = []
     prefix_len = len(financial_code_prefix)
-    for l in EDIT_FORECAST_DOWNLOAD_ORDER:
-        order_list.append(l[prefix_len:])
+    for elem in EDIT_FORECAST_DOWNLOAD_ORDER:
+        order_list.append(elem[prefix_len:])
     return order_list
 
 
