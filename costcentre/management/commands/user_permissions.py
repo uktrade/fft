@@ -32,7 +32,11 @@ class Command(BaseCommand):
             )
         )
 
-        cost_centres = get_objects_for_user(user, "costcentre.change_costcentre")
+        cost_centres = get_objects_for_user(
+            user,
+            "costcentre.change_costcentre",
+            accept_global_perms=False,
+        )
 
         for cost_centre in cost_centres:
             self.stdout.write(self.style.WARNING(cost_centre))

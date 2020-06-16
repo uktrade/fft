@@ -125,7 +125,7 @@ def export_forecast_data_expenditure_dit(
     q = ForecastingDataView.view_data.raw_data_annotated(
         VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
     )
-    title = f"DIT  Expenditure"
+    title = "DIT  Expenditure"
     return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
 
 

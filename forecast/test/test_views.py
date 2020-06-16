@@ -2,9 +2,14 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import (
+    Group,
+    Permission,
+)
+from django.core.exceptions import PermissionDenied
 from django.test import (
     TestCase,
 )
@@ -381,9 +386,10 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
-        assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
     def test_choose_cost_centre(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
         response = self.factory_get(
             reverse(
                 "choose_cost_centre"
@@ -418,6 +424,98 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
 
         # Check we've been forwarded to edit page
         assert "/forecast/edit/" in response.url
+
+    def test_cost_centre_json(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.factory_get(
+            reverse(
+                "choose_cost_centre"
+            ),
+            ChooseCostCentreView,
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            },  # required because factory does not pass kwargs to request
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        self.assertContains(
+            response,
+            f'window.costCentres = [{{"name": "{self.cost_centre.cost_centre_name}", "code": "{self.cost_centre_code}"}}];'  # noqa E501
+        )
+
+    def test_finance_admin_cost_centre_access(self):
+        finance_admins = Group.objects.get(
+            name='Finance Administrator',
+        )
+        finance_admins.user_set.add(self.test_user)
+        finance_admins.save()
+
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email=self.test_user.email
+        )
+
+        # Check that no cost centres can be accessed
+        response = self.factory_get(
+            reverse(
+                "choose_cost_centre"
+            ),
+            ChooseCostCentreView,
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            },  # required because factory does not pass kwargs to request
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+    def test_finance_business_partner_cost_centre_access(self):
+        finance_business_partners = Group.objects.get(
+            name='Finance Business Partner/BSCE',
+        )
+        finance_business_partners.user_set.add(self.test_user)
+        finance_business_partners.save()
+
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email=self.test_user.email
+        )
+
+        # Check that no cost centres can be accessed
+        with self.assertRaises(PermissionDenied):
+            self.factory_get(
+                reverse(
+                    "choose_cost_centre"
+                ),
+                ChooseCostCentreView,
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },  # required because factory does not pass kwargs to request
+            )
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.factory_get(
+            reverse(
+                "choose_cost_centre"
+            ),
+            ChooseCostCentreView,
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            },  # required because factory does not pass kwargs to request
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
 
 
 class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):

@@ -1,3 +1,5 @@
+import logging
+
 from django.db import connection
 
 from core.import_csv import get_fk, get_fk_from_field
@@ -20,6 +22,8 @@ from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
 )
+
+logger = logging.getLogger(__name__)
 
 CHART_OF_ACCOUNT_COL = 3
 ACTUAL_FIGURE_COL = 5
@@ -118,7 +122,11 @@ def check_trial_balance_format(worksheet, period, year):
             raise UploadFileFormatError(
                 "This file appears to be corrupt (title is incorrect)"
             )
-    except TypeError as ex:
+    except TypeError:
+        logger.error(
+            "This file appears to be corrupt and it cannot be read",
+            exc_info=True
+        )
         # wrong file
         raise UploadFileFormatError(
             "This file appears to be corrupt and it cannot be read"
@@ -129,7 +137,11 @@ def check_trial_balance_format(worksheet, period, year):
         if report_date.year != year:
             # wrong date
             raise UploadFileFormatError("File is for wrong year")
-    except TypeError as ex:
+    except TypeError:
+        logger.error(
+            "This file appears to be corrupt and it cannot be read",
+            exc_info=True
+        )
         # wrong file
         raise UploadFileFormatError(
             "This file appears to be corrupt and it cannot be read"

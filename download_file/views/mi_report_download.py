@@ -14,7 +14,7 @@ class DownloadMIReportView(TemplateView):
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(
-            Q(document_type=FileDownload.MI_REPORT) |
-            Q(document_type=FileDownload.MI_BUDGET_REPORT)
+            Q(document_type=FileDownload.MI_REPORT)
+            | Q(document_type=FileDownload.MI_BUDGET_REPORT)
         ).order_by("-created")
         return downloaded_files
