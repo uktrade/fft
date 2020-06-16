@@ -40,3 +40,4 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(create_gift_hospitality_groups),
     ]
+
