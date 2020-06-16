@@ -1,5 +1,8 @@
 import factory
 
+from chartofaccountDIT.models import BudgetType
+
+
 from treasurySS.models import (
     EstimateRow,
     Segment,
@@ -16,6 +19,7 @@ class SegmentGrandParentFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = SegmentGrandParent
+        django_get_or_create = ("segment_grand_parent_code",)
 
 
 class SegmentParentFactory(factory.DjangoModelFactory):
@@ -23,8 +27,11 @@ class SegmentParentFactory(factory.DjangoModelFactory):
     Define SegmentParent Factory
     """
 
+    segment_grand_parent_code = factory.SubFactory(SegmentGrandParentFactory)
+
     class Meta:
         model = SegmentParent
+        django_get_or_create = ("segment_parent_code",)
 
 
 class SegmentFactory(factory.DjangoModelFactory):
@@ -32,8 +39,11 @@ class SegmentFactory(factory.DjangoModelFactory):
     Define Segment Factory
     """
 
+    segment_parent_code = factory.SubFactory(SegmentParentFactory)
+
     class Meta:
         model = Segment
+        django_get_or_create = ("segment_code",)
 
 
 class EstimateRowFactory(factory.DjangoModelFactory):
@@ -50,5 +60,11 @@ class SubSegmentFactory(factory.DjangoModelFactory):
     Define SubSegment Factory
     """
 
+    budget_type_fk = factory.Iterator(BudgetType.objects.all())
+
+    Segment_code = factory.SubFactory(SegmentFactory)
+    estimates_row_code = factory.SubFactory(EstimateRowFactory)
+
     class Meta:
         model = SubSegment
+        django_get_or_create = ("sub_segment_code",)

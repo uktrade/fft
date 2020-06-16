@@ -1,4 +1,9 @@
-from django.contrib import admin
+from django.contrib import (
+    admin,
+    messages,
+)
+from django.db import IntegrityError
+from django.http import HttpResponseRedirect
 
 from core.admin import (
     AdminEditOnly,
@@ -6,6 +11,7 @@ from core.admin import (
     AdminReadOnly,
 )
 
+from treasurySS.export_csv import _export_sub_segment_iterator
 from treasurySS.import_csv import import_SS_class
 from treasurySS.models import (
     EstimateRow,
@@ -42,6 +48,21 @@ class EstimateRowAdmin(AdminReadOnly):
 
 
 class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
+    search_fields = [
+        "sub_segment_code",
+        "sub_segment_long_name",
+        "Segment_code__segment_code",
+        "Segment_code__segment_long_name",
+        "control_budget_detail_code",
+        "dit_budget_type__budget_type",
+        "accounting_authority_DetailCode",
+    ]
+
+    list_filter = (
+        "control_budget_detail_code",
+        "dit_budget_type",
+    )
+
     list_display = (
         "sub_segment_code",
         "sub_segment_long_name",
@@ -74,9 +95,25 @@ class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
             "estimates_row_code",
         ]
 
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        try:
+            return super(SubSegmentAdmin, self).change_view(
+                request,
+                object_id,
+                form_url,
+                extra_context
+            )
+        except IntegrityError as err:
+            messages.error(request, err)
+            return HttpResponseRedirect(request.path)
+
     @property
     def import_info(self):
         return import_SS_class
+
+    @property
+    def export_func(self):
+        return _export_sub_segment_iterator
 
 
 admin.site.register(Segment, SegmentAdmin)

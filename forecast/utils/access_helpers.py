@@ -31,8 +31,7 @@ def is_system_locked():
     forecast_edit_date = ForecastEditState.objects.get()
 
     if (
-        forecast_edit_date.lock_date and
-        date.today() >= forecast_edit_date.lock_date
+        forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date
     ):
         return True
 
