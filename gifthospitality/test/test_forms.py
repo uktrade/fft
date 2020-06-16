@@ -45,7 +45,7 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
         self.company.save()
 
         action_taken = GiftAndHospitality(action_taken="Action1",
-                                          date_offered="2006-05-23",
+                                          date_agreed="2006-05-23",
                                           value="12",
                                           entered_date_stamp="2020-05-22",
                                           # category_id="1",
@@ -66,14 +66,14 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
         group_filter = DepartmentalGroup.objects.get(group_code="8888AA").group_code
 
         action_taken_filter = GiftAndHospitality.objects.get(
-            action_taken="Action1").date_offered
+            action_taken="Action1").date_agreed
 
         gift_hospitality_received_data = {
             'classification': self.classification.pk,
             'category': self.category.pk,
-            'date_offered_0': action_taken_filter.day,
-            'date_offered_1': action_taken_filter.month,
-            'date_offered_2': action_taken_filter.year,
+            'date_agreed_0': action_taken_filter.day,
+            'date_agreed_1': action_taken_filter.month,
+            'date_agreed_2': action_taken_filter.year,
             'action_taken': 'Action1',
             'venue': 'Normal Venue',
             'reason': 'Recommended by FD',
@@ -83,6 +83,7 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
             'group': group_filter,
             'company_rep': 'Someone from a company',
             'company': self.company.pk,
+            'company_name': '',
         }
 
         self.assertContains(response, "govuk-button")
@@ -104,14 +105,14 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
         group_filter = DepartmentalGroup.objects.get(group_code="8888AA").group_code
 
         action_taken_filter = GiftAndHospitality.objects.get(
-            action_taken="Action1").date_offered
+            action_taken="Action1").date_agreed
 
         gift_hospitality_offered_data = {
             'classification': self.classification.pk,
             'category': self.category.pk,
-            'date_offered_0': action_taken_filter.day,
-            'date_offered_1': action_taken_filter.month,
-            'date_offered_2': action_taken_filter.year,
+            'date_agreed_0': action_taken_filter.day,
+            'date_agreed_1': action_taken_filter.month,
+            'date_agreed_2': action_taken_filter.year,
             'action_taken': 'Action1',
             'venue': 'Normal Venue',
             'reason': 'Recommended by FD',
@@ -121,6 +122,7 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
             'group': group_filter,
             'company_rep': 'Someone from a company',
             'company': self.company.pk,
+            'company_name': '',
         }
 
         self.assertContains(response, "govuk-button")

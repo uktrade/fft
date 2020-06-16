@@ -13,15 +13,15 @@ class DateSelectorWidget(forms.MultiWidget):
             forms.NumberInput(
                 attrs={
                     'class': 'govuk-date-input__item govuk-input govuk-input--width-2',
-                    'placeholder': 'Day'}),
+                    'placeholder': 'DD'}),
+            forms.NumberInput(
+                attrs={
+                    'class': 'govuk-date-input__item govuk-input govuk-input--width-2',
+                    'placeholder': 'MM'}),
             forms.NumberInput(
                 attrs={
                     'class': 'govuk-date-input__item govuk-input govuk-input--width-3',
-                    'placeholder': 'Month'}),
-            forms.NumberInput(
-                attrs={
-                    'class': 'govuk-date-input__item govuk-input govuk-input--width-3',
-                    'placeholder': 'Year'}),
+                    'placeholder': 'YYYY'}),
         ]
         super().__init__(widgets, attrs)
 
@@ -44,11 +44,8 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].required = True
-        # self.fields["company"].visible = False
-
         self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['date_offered']
         self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
         self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
@@ -57,7 +54,10 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['company'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['company'].widget.attrs.update({'class': 'govuk-select',
+                                                    'onChange': 'checkOther()'})
+        self.fields['company_name'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields['company_name'].required = False
 
     def save(self, *args, **kwargs):
         self.instance.offer = self.offer
@@ -76,7 +76,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         fields = [
             "classification",
             "category",
-            "date_offered",
+            "date_agreed",
             "action_taken",
             "venue",
             "reason",
@@ -86,9 +86,11 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             "group",
             "company_rep",
             "company",
+            "company_name",
         ]
         labels = {
             "company": _("Company received from"),
+            "company_name": _("Please enter other company"),
             "company_rep": _("Company Representative received from"),
             "group": _("DIT Group offered to"),
             "rep": _("DIT Representative offered to"),
@@ -96,9 +98,13 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         }
 
         widgets = {
-            "date_offered": DateSelectorWidget(
+            "date_agreed": DateSelectorWidget(
 
             ),
+        }
+
+        help_texts = {
+            "date_agreed": _("Please use the following format: <em>YYYY-MM-DD</em>."),
         }
 
 
@@ -109,7 +115,6 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
 
         self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['date_offered']
         self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
         self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
@@ -118,12 +123,16 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
         self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
         self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['company'].widget.attrs.update({'class': 'govuk-select'})
+        self.fields['company'].widget.attrs.update({'class': 'govuk-select',
+                                                    'onChange': 'checkOther()'})
+        self.fields['company_name'].widget.attrs.update({'class': 'govuk-input'})
 
     class Meta(GiftAndHospitalityReceivedForm.Meta):
         labels = {
             "company": _("Company offered to"),
+            "company_name": _("Please enter other company"),
             "company_rep": _("Company Representative offered to"),
             "group": _("DIT Group received from"),
             "rep": _("DIT Representative received from"),
+            "date_agreed": _("Date of event / gift offered"),
         }

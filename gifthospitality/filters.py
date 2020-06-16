@@ -65,6 +65,10 @@ class GiftHospitalityFilter(MyFilterSet):
             {"class": "govuk-select", }
         )
 
+        self.form.fields["company_name"].widget.attrs.update(
+            {"class": "govuk-input", }
+        )
+
         self.form.fields["action_taken"].widget.attrs.update(
             {"class": "govuk-select", }
         )
@@ -87,7 +91,10 @@ class GiftHospitalityFilter(MyFilterSet):
                 "showClose": True,
                 "showClear": True,
                 "showTodayButton": True,
-            }
+            },
+            attrs={
+                "placeholder": "DD/MM/YYYY",
+            },
         ),
     )
 
@@ -101,7 +108,10 @@ class GiftHospitalityFilter(MyFilterSet):
                 "showClose": True,
                 "showClear": True,
                 "showTodayButton": True,
-            }
+            },
+            attrs={
+                "placeholder": "DD/MM/YYYY",
+            },
         ),
     )
     value = NumberFilter(lookup_expr="lte", label="Max value of offer (£)")
@@ -121,6 +131,7 @@ class GiftHospitalityFilter(MyFilterSet):
             "group",
             "offer",
             "company",
+            "company_name",
             "action_taken",
             "entered_date_stamp_from",
             "entered_date_stamp_to",
