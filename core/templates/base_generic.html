@@ -107,13 +107,11 @@
                     </a>
                 </li>
 
-                {%  if request.user.is_superuser %}
                     <li class="internal-header__navigation__item">
                         <a class="internal-header__navigation__item__link hospitality {% if request.path|startswith:'/gifthospitality/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'gifthospitality:quick_links' %}">
                             Gifts &amp; Hospitality Register
                         </a>
                     </li>
-                {% endif %}
 
                 {% is_forecast_user user as is_forecast_user %}
                 {% if is_forecast_user == True %}

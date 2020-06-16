@@ -20,13 +20,8 @@ class ViewGiftandHospitalityRegisterTest(TestCase, RequestFactoryBase):
 
     def test_user_can_see_g_h_tab(self):
         """
-        Test user can view the Gifts and Hospitality tab on the homepage
-        when assigned with 'superuser' permissions
+        Test basic user can view the Gifts and Hospitality tab on the homepage
         """
-
-        self.test_user.is_superuser = True
-
-        self.test_user.save()
 
         view_gifts_hospitality_tab = reverse(
             "index",
@@ -42,23 +37,3 @@ class ViewGiftandHospitalityRegisterTest(TestCase, RequestFactoryBase):
         gifts_hospitality_links = soup.find_all("a", class_="hospitality")
 
         assert len(gifts_hospitality_links) == 1
-
-    def test_user_cannot_see_g_h_tab(self):
-        """
-        Test basic user cannot view the Gifts and Hospitality tab on the homepage
-        """
-
-        view_gifts_hospitality_tab = reverse(
-            "index",
-        )
-
-        response = self.client.get(view_gifts_hospitality_tab)
-        assert response.status_code == 200
-
-        soup = BeautifulSoup(response.content, features="html.parser")
-
-        # print(soup)
-
-        gifts_hospitality_links = soup.find_all("a", class_="hospitality")
-
-        assert len(gifts_hospitality_links) == 0

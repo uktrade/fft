@@ -95,7 +95,7 @@ class GiftAndHospitality(BaseModel):
     )
 
     group_name = models.CharField("Group", max_length=200, blank=True, null=True)
-    date_offered = models.DateField("Date of event /  gift offered")
+    date_agreed = models.DateField("Date of event /  gift received",)
     venue = models.CharField(max_length=1000)
     reason = models.CharField("Description of offer and reason", max_length=1000)
     value = models.IntegerField("Estimated value of offer (£)")
@@ -125,7 +125,8 @@ class GiftAndHospitality(BaseModel):
         blank=True,
         verbose_name="company",
     )
-    # company = models.CharField("Company offered to/from", max_length=200)
+    company_name = models.CharField(
+        "Other company", max_length=200, blank=True, default='')
     ACTION_TYPE = (
         ("Action1", "Rejected"),
         ("Action2", "Accepted (difference paid to Department)"),
@@ -152,7 +153,7 @@ class GiftAndHospitality(BaseModel):
         ordering = ["-id"]
 
     def __str__(self):
-        return str(self.date_offered)
+        return str(self.date_agreed)
 
 
 class GiftHospitalityPermissions(models.Model):

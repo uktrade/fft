@@ -71,13 +71,16 @@ GH_GRADE_KEY = {
 
 import_grade_class = ImportInfo(GH_GRADE_KEY)
 
+"""
+NB: Commented code below may be required at a later date subject to client's request
+"""
 GH_KEY = {
     IMPORT_CSV_MODEL_KEY: GiftAndHospitality,
     IMPORT_CSV_FIELDLIST_KEY: {
         GiftAndHospitality.old_id.field_name: "HospID",
         GiftAndHospitality.classification.field.name: GH_CLASS_FK_KEY,
         GiftAndHospitality.group_name.field_name: "Group",
-        GiftAndHospitality.date_offered.field_name: "Date of event/gift offered",
+        GiftAndHospitality.date_agreed.field_name: "Date of event/gift offered",
         GiftAndHospitality.venue.field_name: "Venue",
         GiftAndHospitality.reason.field_name: "Description of offer & reason",
         GiftAndHospitality.value.field_name: "Estimate value of offer",
@@ -86,6 +89,7 @@ GH_KEY = {
         GiftAndHospitality.offer.field_name: "Offer",
         GiftAndHospitality.company_rep.field_name: "Company representative offered to/from",  # noqa
         # GiftAndHospitality.company.field_name: "Company offered to/from",
+        # GiftAndHospitality.company_name.field_name: "Other Company",
         GiftAndHospitality.action_taken.field_name: "Action taken",
         GiftAndHospitality.entered_by.field_name: "Entered By",
         GiftAndHospitality.entered_date_stamp.field_name: "Date Entered",
