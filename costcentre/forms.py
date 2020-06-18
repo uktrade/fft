@@ -45,6 +45,7 @@ class AllCostCentresForm(forms.Form):
 class DirectorateCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
         directorate_code = kwargs.pop('directorate_code')
+        cost_centre_code = kwargs.pop('cost_centre_code')
 
         super(DirectorateCostCentresForm, self).__init__(
             *args,
@@ -57,6 +58,7 @@ class DirectorateCostCentresForm(forms.Form):
                 active=True,
             ),
             widget=Select(),
+            initial=cost_centre_code
         )
         self.fields["cost_centre"].widget.attrs.update(
             {

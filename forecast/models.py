@@ -142,7 +142,12 @@ class FinancialPeriodManager(models.Manager):
             .values_list("financial_period_code", flat=True,)
         )
 
+    def month_sublist(self, month):
+        return self.period_display_list()[: month]
+
     def actual_month(self):
+        # use the Max to protect us from the situation of
+        # non contiguous actual month.
         m = (
             self.get_queryset()
             .filter(actual_loaded=True)
@@ -151,7 +156,7 @@ class FinancialPeriodManager(models.Manager):
         return m["financial_period_code__max"] or 0
 
     def actual_month_list(self):
-        return self.period_display_list()[: self.actual_month()]
+        return self.month_sublist(self.actual_month())
 
     def periods(self):
         return (
@@ -654,7 +659,7 @@ class DisplaySubTotalManager(models.Manager):
 
 
 # Does not inherit from BaseModel as it maps to view
-class ForecastingDataView(models.Model):
+class ForecastingDataViewAbstract(models.Model):
     """Used for joining budgets and forecast.
     The view adds rows with 0 values across the year (zero-values rows),
     to be consistent with the Edit Forecast logic.
@@ -665,7 +670,7 @@ class ForecastingDataView(models.Model):
 
     id = models.IntegerField(primary_key=True,)
     # The view is created by a migration. Its code is at the bottom of this file.
-    financial_code = models.ForeignKey(FinancialCode, on_delete=models.PROTECT,)
+    financial_code = models.ForeignKey(FinancialCode, on_delete=models.DO_NOTHING,)
     financial_year = models.IntegerField()
     budget = models.BigIntegerField(default=0)
     apr = models.BigIntegerField(default=0)
@@ -686,6 +691,11 @@ class ForecastingDataView(models.Model):
     objects = models.Manager()  # The default manager.
     view_data = DisplaySubTotalManager()
 
+    class Meta:
+        abstract = True
+
+
+class ForecastingDataView(ForecastingDataViewAbstract):
     class Meta:
         managed = False
         db_table = "forecast_forecast_download_view"

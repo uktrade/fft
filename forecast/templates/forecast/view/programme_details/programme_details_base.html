@@ -4,7 +4,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT forecast" "forecast_dit" %}
+    {% breadcrumb "DIT forecast" "forecast_dit" view.period %}
 {% endblock %}
 
 {% block content %}
@@ -12,6 +12,7 @@
     <div class="action-bar-wrapper">
         <div class="action-bar">
             {% block download_link %}{% endblock %}
+            {% include "forecast/view/sub_section_form.html"  with form=view.period_form %}
             {% include "forecast/view/sub_section_form.html" with form=view.programme_code_form %}
         </div>
     </div>

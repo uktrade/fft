@@ -116,7 +116,7 @@
                 {% is_forecast_user user as is_forecast_user %}
                 {% if is_forecast_user == True %}
                     <li class="internal-header__navigation__item">
-                        <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'forecast_dit' %}">
+                        <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'forecast_dit' 0 %}">
                             View Forecast
                         </a>
                     </li>

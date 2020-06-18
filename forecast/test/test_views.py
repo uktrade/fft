@@ -44,7 +44,10 @@ from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import (
     FinancialCodeFactory,
 )
-from forecast.test.test_utils import create_budget
+from forecast.test.test_utils import (
+    create_budget,
+    format_forecast_figure,
+)
 from forecast.views.edit_forecast import (
     AddRowView,
     ChooseCostCentreView,
@@ -79,10 +82,6 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-def format_forecast_figure(value):
-    return f'{round(value):,d}'
-
-
 class ViewPermissionsTest(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
@@ -97,7 +96,7 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
             }
         )
 
@@ -105,13 +104,15 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
             edit_forecast_url,
             EditForecastView,
             cost_centre_code=self.cost_centre_code,
+            period=0,
         )
 
         assert resp.status_code == 302
         assert resp.url == reverse(
             "forecast_cost_centre",
             kwargs={
-                "cost_centre_code": self.cost_centre_code
+                "cost_centre_code": self.cost_centre_code,
+                "period": 0,
             }
         )
 
@@ -594,8 +595,14 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def test_dit_view(self):
         response = self.factory_get(
-            reverse("forecast_dit"),
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    'period': 0,
+                },
+            ),
             DITView,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -608,11 +615,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group.group_code
+                    'group_code': self.group.group_code,
+                    'period': 0,
                 },
             ),
             GroupView,
             group_code=self.group.group_code,
+            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -624,11 +633,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code
+                    'directorate_code': self.directorate.directorate_code,
+                    'period': 0,
                 },
             ),
             DirectorateView,
             directorate_code=self.directorate.directorate_code,
+            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -640,11 +651,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    "period": 0,
                 },
             ),
             CostCentreView,
             cost_centre_code=self.cost_centre.cost_centre_code,
+            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -742,11 +755,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    "period": 0,
                 },
             ),
             CostCentreView,
             cost_centre_code=self.cost_centre_code,
+            period=0,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -766,6 +781,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
         self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
                                    self.cost_centre.cost_centre_name, 0)
+
         # Check that the second table displays the programme and the correct totals
         # The programme table in the cost centre does not show the 'View'
         # so the programme is displayed in a different column
@@ -782,11 +798,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code
+                    'directorate_code': self.directorate.directorate_code,
+                    'period': 0,
                 },
             ),
             DirectorateView,
             directorate_code=self.directorate.directorate_code,
+            period=0,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -822,11 +840,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group.group_code
+                    'group_code': self.group.group_code,
+                    'period': 0,
                 },
             ),
             GroupView,
             group_code=self.group.group_code,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -858,8 +878,14 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
 
     def test_view_dit_summary(self):
         response = self.factory_get(
-            reverse("forecast_dit"),
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    'period': 0,
+                },
+            ),
             DITView,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -1047,12 +1073,15 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'cost_centre_code': self.cost_centre_code,
                     'expenditure_category': self.expenditure_id,
                     'budget_type': self.budget_type,
+                    'period': 0,
                 },
             ),
             CostCentreExpenditureDetailsView,
             cost_centre_code=self.cost_centre_code,
             expenditure_category=self.expenditure_id,
-            budget_type=self.budget_type
+            budget_type=self.budget_type,
+            period=0,
+
         )
         self.check_response(resp)
 
@@ -1064,12 +1093,14 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'directorate_code': self.directorate.directorate_code,
                     'expenditure_category': self.expenditure_id,
                     'budget_type': self.budget_type,
+                    'period': 0,
                 },
             ),
             DirectorateExpenditureDetailsView,
             directorate_code=self.directorate.directorate_code,
             expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type
+            budget_type=self.budget_type,
+            period=0,
         )
         self.check_response(resp)
 
@@ -1081,12 +1112,14 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'group_code': self.group.group_code,
                     'expenditure_category': self.expenditure_id,
                     'budget_type': self.budget_type,
+                    'period': 0,
                 },
             ),
             GroupExpenditureDetailsView,
             group_code=self.group.group_code,
             expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type
+            budget_type=self.budget_type,
+            period=0,
         )
 
         self.check_response(resp)
@@ -1098,11 +1131,13 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'expenditure_category': self.expenditure_id,
                     'budget_type': self.budget_type,
+                    'period': 0,
                 },
             ),
             DITExpenditureDetailsView,
             expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type
+            budget_type=self.budget_type,
+            period=0,
         )
 
         self.check_response(resp)
@@ -1240,12 +1275,14 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                     'directorate_code': self.directorate.directorate_code,
                     'programme_code': self.programme_obj.programme_code,
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    'period': 0,
                 },
             ),
             DirectorateProgrammeDetailsView,
             directorate_code=self.directorate.directorate_code,
             programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id
+            forecast_expenditure_type=self.forecast_expenditure_type_id,
+            period=0,
         )
         self.check_response(resp)
 
@@ -1257,12 +1294,14 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                     'group_code': self.group_code,
                     'programme_code': self.programme_obj.programme_code,
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    'period': 0,
                 },
             ),
             GroupProgrammeDetailsView,
             group_code=self.group_code,
             programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id
+            forecast_expenditure_type=self.forecast_expenditure_type_id,
+            period=0,
         )
 
         self.check_response(resp)
@@ -1274,11 +1313,13 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'programme_code': self.programme_obj.programme_code,
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    'period': 0,
                 },
             ),
             DITProgrammeDetailsView,
             programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id
+            forecast_expenditure_type=self.forecast_expenditure_type_id,
+            period=0,
         )
         self.check_response(resp)
 
@@ -1486,7 +1527,8 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                "period": 0,
             }
         )
 
@@ -1502,7 +1544,8 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         view_group_forecast_url = reverse(
             "forecast_group",
             kwargs={
-                'group_code': self.group.group_code
+                'group_code': self.group.group_code,
+                'period': 0,
             }
         )
 
@@ -1515,7 +1558,8 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         view_directorate_forecast_url = reverse(
             "forecast_directorate",
             kwargs={
-                'directorate_code': self.directorate.directorate_code
+                'directorate_code': self.directorate.directorate_code,
+                'period': 0,
             }
         )
 
@@ -1564,7 +1608,8 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                "period": 0,
             }
         )
 
@@ -1587,7 +1632,8 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                "period": 0,
             }
         )
 
@@ -1621,7 +1667,8 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                "period": 0,
             }
         )
         response = self.client.get(view_forecast_url)
@@ -1744,11 +1791,13 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code
+                    'directorate_code': self.directorate.directorate_code,
+                    'period': 0,
                 },
             ),
             DirectorateView,
             directorate_code=self.directorate.directorate_code,
+            period=0,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -1768,11 +1817,13 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group.group_code
+                    'group_code': self.group.group_code,
+                    'period': 0,
                 },
             ),
             GroupView,
             group_code=self.group.group_code,
+            period=0
         )
 
         self.assertEqual(response.status_code, 200)
@@ -1788,8 +1839,14 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
 
     def test_view_dit_summary(self):
         response = self.factory_get(
-            reverse("forecast_dit"),
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    'period': 0,
+                },
+            ),
             DITView,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)

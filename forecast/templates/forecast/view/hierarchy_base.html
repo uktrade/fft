@@ -1,0 +1,42 @@
+{% extends "wide_content.html" %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "DIT forecast" "forecast_dit" view.period %}
+{% endblock %}
+
+
+{% block content %}
+    <h1 class="govuk-heading-l">
+    {% block hierarchy_title %}{% endblock %}
+    </h1>
+    <div class="action-bar-wrapper">
+        <div class="action-bar">
+            {% block download_link %}{% endblock %}
+            {% include "forecast/view/sub_section_form.html"  with form=view.period_form %}
+
+        </div>
+    </div>
+
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">Forecast</h2>
+            <ul class="govuk-tabs__list">
+                {% for table in tables %}
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#tab-{{ forloop.counter }}">{{ table.attrs.caption }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% for table in tables %}
+                <div class="govuk-tabs__panel" id="tab-{{ forloop.counter }}">
+                    <h2 class="govuk-heading-l">{{ table.attrs.caption }}</h2>
+                    <div class="tables-container forecast-table-{{ forloop.counter }}">
+                        {% render_table table %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+{% endblock %}
