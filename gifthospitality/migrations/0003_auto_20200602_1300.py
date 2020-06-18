@@ -20,6 +20,17 @@ class Migration(migrations.Migration):
             name='company_name',
             field=models.CharField(blank=True, default='', max_length=200, verbose_name='Other company'),
         ),
+        migrations.RenameField(
+            model_name='giftandhospitality',
+            old_name='date_offered',
+            new_name='date_agreed',
+        ),
+
+        migrations.RenameField(
+            model_name='simplehistorygiftandhospitality',
+            old_name='date_offered',
+            new_name='date_agreed',
+        ),
         migrations.AlterField(
             model_name='giftandhospitality',
             name='date_agreed',
