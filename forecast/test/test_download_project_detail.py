@@ -115,10 +115,11 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         response = self.factory_get(
             reverse(
                 "export_forecast_data_project_detail_dit",
-                kwargs={"project_code_id": self.project_code},
+                kwargs={"project_code_id": self.project_code, "period": 0},
             ),
             export_forecast_data_project_detail_dit,
             project_code_id=self.project_code,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -132,11 +133,13 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                 kwargs={
                     "group_code": self.group_code,
                     "project_code_id": self.project_code,
+                    "period": 0,
                 },
             ),
             export_forecast_data_project_detail_group,
             group_code=self.group_code,
             project_code_id=self.project_code,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -150,11 +153,13 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                 kwargs={
                     "directorate_code": self.directorate.directorate_code,
                     "project_code_id": self.project_code,
+                    "period": 0,
                 },
             ),
             export_forecast_data_project_detail_directorate,
             directorate_code=self.directorate.directorate_code,
             project_code_id=self.project_code,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -167,11 +172,13 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                 kwargs={
                     "cost_centre": self.cost_centre_code,
                     "project_code_id": self.project_code,
+                    "period": 0,
                 },
             ),
             export_forecast_data_project_detail_cost_centre,
             cost_centre=self.cost_centre_code,
             project_code_id=self.project_code,
+            period=0,
         )
 
         self.assertEqual(response.status_code, 200)

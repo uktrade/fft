@@ -3,6 +3,8 @@ import json
 from django import forms
 from django.contrib.auth import get_user_model
 
+from end_of_month.models import EndOfMonthStatus
+
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -268,3 +270,23 @@ class UnlockedForecastEditorForm(forms.ModelForm):
     class Meta:
         model = UnlockedForecastEditor
         fields = ["user", ]
+
+
+class ForecastPeriodForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        selected_period = kwargs.pop('selected_period', 0)
+        super(ForecastPeriodForm, self).__init__(
+            *args,
+            **kwargs,
+        )
+        period_list = EndOfMonthStatus.archived_period_objects.archived_list()
+        period_list.insert(0, (0, 'Current'))
+        self.fields['selected_period'] = forms.ChoiceField(
+            choices=period_list,
+            initial=selected_period
+        )
+        self.fields["selected_period"].widget.attrs.update(
+            {
+                "class": "govuk-select",
+            }
+        )

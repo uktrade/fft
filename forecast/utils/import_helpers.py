@@ -160,21 +160,6 @@ def get_error_from_list(error_list):
     return error_message
 
 
-def get_primary_nac_obj(code):
-    nac_obj, message = get_fk(NaturalCode, code)
-    if nac_obj:
-        #  Error if NAC is not a primary nac
-        if not nac_obj.used_for_budget:
-            message = (
-                f"{code}-{nac_obj.natural_account_code_description} "
-                f"is not a Primary NAC. \n"
-            )
-    else:
-        nac_obj = None
-        message = ""
-    return nac_obj, message
-
-
 CODE_OK = 1
 CODE_ERROR = 2
 CODE_WARNING = 3

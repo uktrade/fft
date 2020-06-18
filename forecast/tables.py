@@ -144,7 +144,7 @@ class ForecastSubTotalTable(tables.Table):
             extra_column_to_display = [(k, tables.Column(v)) for (k, v) in
                                        column_dict.items()]
 
-        actual_month_list = FinancialPeriod.financial_period_info.actual_month_list()
+        actual_month_list = kwargs.pop('actual_month_list', [])
 
         self.num_meta_cols = len(column_list)
         self.num_actuals = len(actual_month_list)
@@ -246,7 +246,8 @@ class ForecastSubTotalTable(tables.Table):
 class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
     display_view_details = True
 
-    def __init__(self, column_name, viewname, arg_link, code="", column_dict={}, *args,
+    def __init__(self, column_name, viewname, arg_link, code="", column_dict={},
+                 *args,
                  **kwargs):
 
         link_args = []

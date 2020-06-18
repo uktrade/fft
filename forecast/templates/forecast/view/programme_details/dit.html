@@ -3,13 +3,15 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb view.programme_code.programme_description "programme_details_dit"  %}
+    {% breadcrumb view.programme_code.programme_description "programme_details_dit" view.period %}
 {% endblock %}
+
+{% block title %}Programme Details - DIT {% endblock %}
 
 {% block view_hierarchy_title %}
     <h1 class="govuk-heading-l">DIT</h1>
 {% endblock %}
 
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_programme_details_dit' view.programme_code.programme_code  view.forecast_expenditure_type %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_programme_details_dit' view.programme_code.programme_code  view.forecast_expenditure_type  view.period %} ">Download raw data</a>
 {% endblock %}

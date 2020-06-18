@@ -37,7 +37,7 @@ class Command(BaseCommand):
             )
             return
 
-        end_of_month_archive(end_of_month_info)
+        end_of_month_archive(period_code)
         self.stdout.write(
             self.style.SUCCESS(f'Period {period_code} archived.')
         )

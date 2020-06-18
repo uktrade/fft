@@ -179,11 +179,13 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'cost_centre_code': self.cost_centre_code,
                     'project_code': self.project_code,
+                    'period': 0,
                 },
             ),
             CostCentreProjectDetailsView,
             cost_centre_code=self.cost_centre_code,
             project_code=self.project_code,
+            period=0,
         )
         self.check_response(resp)
 
@@ -194,11 +196,13 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'directorate_code': self.directorate.directorate_code,
                     'project_code': self.project_code,
+                    'period': 0,
                 },
             ),
             DirectorateProjectDetailsView,
             directorate_code=self.directorate.directorate_code,
             project_code=self.project_code,
+            period=0,
         )
         self.check_response(resp)
 
@@ -209,11 +213,13 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
                 kwargs={
                     'group_code': self.group.group_code,
                     'project_code': self.expenditure_id,
+                    'period': 0,
                 },
             ),
             GroupProjectDetailsView,
             group_code=self.group.group_code,
             project_code=self.project_code,
+            period=0,
         )
 
         self.check_response(resp)
@@ -224,10 +230,12 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
                 "project_details_dit",
                 kwargs={
                     'project_code': self.project_code,
+                    'period': 0,
                 },
             ),
             DITProjectDetailsView,
             project_code=self.project_code,
+            period=0,
         )
 
         self.check_response(resp)
