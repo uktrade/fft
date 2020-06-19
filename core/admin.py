@@ -5,7 +5,6 @@ from custom_usermodel.admin import UserAdmin
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.models import (
-    DELETION,
     LogEntry,
 )
 from django.contrib.auth import get_user_model
@@ -15,8 +14,7 @@ from django.core.files.uploadhandler import (
     TemporaryFileUploadHandler,
 )
 from django.shortcuts import redirect, render
-from django.urls import path, reverse
-from django.utils.html import escape
+from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -50,7 +48,6 @@ class LogEntryAdmin(admin.ModelAdmin):
         "action_time",
         "user",
         "content_type",
-        "object_link",
         "action_flag_",
         "change_message",
     ]
@@ -67,24 +64,6 @@ class LogEntryAdmin(admin.ModelAdmin):
     def action_flag_(self, obj):
         flags = {1: "Addition", 2: "Changed", 3: "Deleted"}
         return flags[obj.action_flag]
-
-    def object_link(self, obj):
-        if obj.action_flag == DELETION:
-            link = escape(obj.object_repr)
-        else:
-            ct = obj.content_type
-            link = u'<a href="%s">%s</a>' % (
-                reverse(
-                    "admin:%s_%s_change" % (ct.app_label, ct.model),
-                    args=[obj.object_id],
-                ),
-                escape(obj.object_repr),
-            )
-        return link
-
-    object_link.allow_tags = True
-    object_link.admin_order_field = "object_repr"
-    object_link.short_description = u"object"
 
 
 admin.site.register(LogEntry, LogEntryAdmin)
