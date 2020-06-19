@@ -3,9 +3,9 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id view.period view.period %}
-    {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code view.period view.period %}
-    {% breadcrumb view.expenditure_category.grouping_description "expenditure_details_directorate" view.period view.period %}
+    {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id view.period  %}
+    {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code  view.period %}
+    {% breadcrumb view.expenditure_category.grouping_description "expenditure_details_directorate" view.period %}
 {% endblock %}
 
 {% block title %}Expenditure Details - Directorate - {{ view.directorate.directorate_code }}{% endblock %}
