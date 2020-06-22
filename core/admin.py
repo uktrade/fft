@@ -17,7 +17,7 @@ from django.shortcuts import redirect, render
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
-
+from core.export_data import export_logentry_iterator
 from core.exportutils import (
     export_csv_from_import,
     export_to_excel,
@@ -25,49 +25,6 @@ from core.exportutils import (
 from core.exportutils import export_to_csv
 from core.models import FinancialYear
 from core.utils import log_object_change
-
-
-class LogEntryAdmin(admin.ModelAdmin):
-    """ Display the Admin log in the Admin interface"""
-
-    date_hierarchy = "action_time"
-
-    # make everything readonly
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            self.readonly_fields = [
-                field.name for field in obj.__class__._meta.fields
-            ]
-        return self.readonly_fields
-
-    list_filter = ["user", "content_type", "action_flag"]
-
-    search_fields = ["object_repr", "change_message"]
-
-    list_display = [
-        "action_time",
-        "user",
-        "content_type",
-        "action_flag_",
-        "change_message",
-    ]
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_superuser and request.method != "POST"
-
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-    def action_flag_(self, obj):
-        flags = {1: "Addition", 2: "Changed", 3: "Deleted"}
-        return flags[obj.action_flag]
-
-
-admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(FinancialYear)
 
 
 class AdminActiveField(admin.ModelAdmin):
@@ -398,6 +355,52 @@ class UserAdmin(UserAdmin):
             "date_joined",
         ]
 
+
+class LogEntryAdmin(AdminReadOnly, AdminExport):
+    """ Display the Admin log in the Admin interface"""
+
+    date_hierarchy = "action_time"
+
+    # make everything readonly
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            self.readonly_fields = [
+                field.name for field in obj.__class__._meta.fields
+            ]
+        return self.readonly_fields
+
+    @property
+    def export_func(self):
+        return export_logentry_iterator
+
+    list_filter = ["user", "content_type", "action_flag"]
+
+    search_fields = ["object_repr", "change_message"]
+
+    list_display = [
+        "action_time",
+        "user",
+        "content_type",
+        "action_flag_",
+        "change_message",
+    ]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser and request.method != "POST"
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def action_flag_(self, obj):
+        flags = {1: "Addition", 2: "Changed", 3: "Deleted"}
+        return flags[obj.action_flag]
+
+
+admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(FinancialYear)
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
