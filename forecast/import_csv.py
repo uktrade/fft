@@ -1,5 +1,6 @@
 import csv
 import logging
+from decimal import Decimal
 
 from core.import_csv import (
     ImportInfo,
@@ -81,13 +82,14 @@ def import_adi_file(csvfile):
         financialcode_obj = check_financial_code.get_financial_code()
 
         for month, per_obj in month_dict.items():
-            period_amount = int(row[col_key[month.lower()]])
+            period_amount = Decimal(row[col_key[month.lower()]])
             if period_amount:
                 month_figure_obj, created = \
                     ForecastMonthlyFigure.objects.get_or_create(
                         financial_year=fin_obj,
                         financial_period=per_obj,
                         financial_code=financialcode_obj,
+                        archived_status__isnull=True,
                     )
                 if created:
                     month_figure_obj.amount = period_amount * 100
