@@ -36,7 +36,7 @@ from forecast.utils.query_fields import (
     filter_codes,
     filter_selectors,
     hierarchy_columns,
-    hierarchy_order_list,
+    hierarchy_order_lists,
     hierarchy_sub_total,
     hierarchy_sub_total_column,
     hierarchy_view,
@@ -77,6 +77,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             filter_code = self.kwargs[arg_name]
             pivot_filter = {filter_selectors[self.hierarchy_type]: f"{filter_code}"}
 
+        hierarchy_order_list = hierarchy_order_lists[self.hierarchy_type]
         hierarchy_data = self.data_model.view_data.subtotal_data(
             hierarchy_sub_total_column[self.hierarchy_type],
             hierarchy_sub_total,

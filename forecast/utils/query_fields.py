@@ -68,7 +68,7 @@ group_columns = {
     GROUP_NAME: "Departmental Group description",
     GROUP_CODE: "code",
 }
-hierarchy_order_list = [BUDGET_TYPE_ORDER]
+
 hierarchy_sub_total = [BUDGET_TYPE]
 
 # programme data
@@ -157,6 +157,13 @@ hierarchy_sub_total_column = [
     DIRECTORATE_NAME,
     COST_CENTRE_NAME,
     COST_CENTRE_NAME,
+]
+
+hierarchy_order_lists = [
+    [BUDGET_TYPE_ORDER, GROUP_NAME, ],
+    [BUDGET_TYPE_ORDER, DIRECTORATE_NAME, ],
+    [BUDGET_TYPE_ORDER, COST_CENTRE_NAME, ],
+    [BUDGET_TYPE_ORDER, ]
 ]
 
 hierarchy_view_link_column = [
