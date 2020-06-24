@@ -1,0 +1,13 @@
+-r base.in
+
+Faker
+factory-boy
+selenium
+beautifulsoup4
+black
+pytest
+pytest-django
+pytest-xdist
+behave-django
+pyperclip
+webdriver-manager
