@@ -18,6 +18,10 @@ from django.test import (
 )
 from django.urls import reverse
 
+from chartofaccountDIT.models import (
+    NaturalCode,
+    ProgrammeCode,
+)
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
     ProgrammeCodeFactory,
@@ -26,6 +30,9 @@ from chartofaccountDIT.test.factories import (
 from core.models import FinancialYear
 from core.test.test_base import RequestFactoryBase
 
+from costcentre.models import (
+    CostCentre,
+)
 from costcentre.test.factories import (
     CostCentreFactory,
     DirectorateFactory,
@@ -105,21 +112,26 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code,
-            directorate=self.directorate_obj
+            directorate=self.directorate_obj,
+            active=False,
         )
         NaturalCodeFactory.create(
             natural_account_code=self.valid_natural_account_code,
-            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0]
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            active=False,
         )
         NaturalCodeFactory.create(
             natural_account_code=18162001,
-            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0]
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            active=False,
         )
         NaturalCodeFactory.create(
-            natural_account_code=self.not_valid_natural_account_code
+            natural_account_code=self.not_valid_natural_account_code,
+            active=False,
         )
         ProgrammeCodeFactory.create(
-            programme_code=self.programme_code
+            programme_code=self.programme_code,
+            active=False,
         )
         ProgrammeCodeFactory.create(
             programme_code='310540'
@@ -160,6 +172,20 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
                 self.valid_natural_account_code,
                 self.programme_code
             )
+        self.assertEqual(
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
+            False
+        )
+        self.assertEqual(
+            NaturalCode.objects.get(
+                natural_account_code=self.valid_natural_account_code
+            ).active,
+            False
+        )
+        self.assertEqual(
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
+            False
+        )
 
         save_trial_balance_row(
             chart_of_account_line_correct,
@@ -168,6 +194,20 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             self.year_obj,
             self.check_financial_code,
             2
+        )
+        self.assertEqual(
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
+            True
+        )
+        self.assertEqual(
+            NaturalCode.objects.get(
+                natural_account_code=self.valid_natural_account_code
+            ).active,
+            True
+        )
+        self.assertEqual(
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
+            True
         )
 
         self.assertEqual(
@@ -263,6 +303,21 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             ).count(),
             0,
         )
+        self.assertEqual(
+            NaturalCode.objects.get(
+                natural_account_code=self.not_valid_natural_account_code
+            ).active,
+            False
+        )
+        self.assertEqual(
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
+            False
+        )
+        self.assertEqual(
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
+            False
+        )
+
         save_trial_balance_row(
             '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
                 self.cost_centre_code,
@@ -274,6 +329,22 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             self.year_obj,
             self.check_financial_code,
             1
+        )
+        # The chart of account fields are still non active
+        # because the row was ignored
+        self.assertEqual(
+            NaturalCode.objects.get(
+                natural_account_code=self.not_valid_natural_account_code
+            ).active,
+            False
+        )
+        self.assertEqual(
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
+            False
+        )
+        self.assertEqual(
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
+            False
         )
         self.assertEqual(
             FinancialCode.objects.filter(
