@@ -192,12 +192,16 @@ class CheckFinancialCode:
 
     error_row = 0
 
-    def get_info_tuple(self, model, pk):
+    def get_info_tuple(self, model, pk, make_active=True):
+        status = IGNORE
         obj, msg = get_fk(model, pk)
         if not obj:
             status = CODE_ERROR
         else:
-            if not obj.active:
+            if obj.active:
+                status = CODE_OK
+                msg = ""
+            else:
                 if self.upload_type == FileUpload.BUDGET:
                     status = CODE_ERROR
                     msg = (
@@ -205,17 +209,14 @@ class CheckFinancialCode:
                         f"is not in the approved list. \n"
                     )
                     obj = None
-                else:
-                    obj.active
-                    obj.save
+                elif make_active:
+                    obj.active = True
+                    obj.save()
                     status = CODE_WARNING
                     msg = (
                         f'{get_pk_verbose_name(model)} "{pk}" '
                         f"added to the approved list. \n"
                     )
-            else:
-                status = CODE_OK
-                msg = ""
         info_tuple = (obj, status, msg)
         return info_tuple
 
@@ -277,9 +278,11 @@ class CheckFinancialCode:
         return self.validate_info_tuple(info_tuple)
 
     def validate_nac_for_actual(self, nac):
+        # don't make active the nac. If it is not resource/capital
+        # we ignore it.
         info_tuple = self.nac_dict.get(nac, None)
         if not info_tuple:
-            info_tuple = self.get_info_tuple(NaturalCode, nac)
+            info_tuple = self.get_info_tuple(NaturalCode, nac, False)
             if info_tuple[status_index] != CODE_ERROR:
                 obj = info_tuple[obj_index]
                 #  Check that the NAC is resource or capital
@@ -291,7 +294,18 @@ class CheckFinancialCode:
                     status = IGNORE
                     msg = ""
                     info_tuple = (None, status, msg)
-
+                elif not obj.active:
+                    # it is made active here, when we know is Resource or Capital
+                    # this is to avoid making active NACs that are not used in FFT
+                    # but are present in the Trial Balance
+                    obj.active = True
+                    obj.save()
+                    status = CODE_WARNING
+                    msg = (
+                        f'Natural account code "{nac}" '
+                        f"added to the approved list. \n"
+                    )
+                    info_tuple = (obj, status, msg)
             self.nac_dict[nac] = info_tuple
         if info_tuple[status_index] == IGNORE:
             self.ignore_row = True
