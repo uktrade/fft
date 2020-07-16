@@ -399,24 +399,33 @@ class NACCategoryAdmin(AdminImportExport):
         return import_NAC_category_class
 
 
-class ProgrammeAdmin(AdminActiveField, AdminImportExport):
+class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
+    change_list_template = "admin/m_import_changelist.html"
+
     list_display = (
         "programme_code",
         "programme_description",
         "budget_type_fk",
         "active",
+        "created",
+        "updated",
     )
-    search_fields = ["programme_code", "programme_description"]
-    list_filter = ["budget_type_fk", "active"]
 
     def get_readonly_fields(self, request, obj=None):
-        return [
-            "programme_code",
-            "programme_description",
-            "budget_type_fk",
-            "created",
-            "updated",
-        ]  # don't allow to edit the code
+        if request.user.is_superuser:
+            return["created", "updated"]
+        elif request.user.groups.filter(name="Finance Administrator"):
+            if obj:
+                return [
+                    "programme_code",
+                    "budget_type_fk",
+                    "created",
+                    "updated",
+                ]  # don't allow to edit the code
+            else:
+                return ["created", "updated"]
+        else:
+            return self.get_fields(request, obj)
 
     def get_fields(self, request, obj=None):
         return [
@@ -427,6 +436,9 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExport):
             "created",
             "updated",
         ]
+
+    search_fields = ["programme_code", "programme_description"]
+    list_filter = ["budget_type_fk", "active"]
 
     @property
     def export_func(self):

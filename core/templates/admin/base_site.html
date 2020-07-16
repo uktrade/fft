@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block footer %}
+    {{ block.super }}
+    <script>
+        window.addEventListener('load', function(e) {
+            var chooseAdd = document.getElementById("id_groups_add_link");
+
+            if (chooseAdd) {
+                chooseAdd.style.background = 'none';
+                chooseAdd.innerHTML = "Add";
+                chooseAdd.style.textIndent = "0px";
+                chooseAdd.style.overflow = "visible";
+                chooseAdd.style.marginLeft = '12px';
+            }
+
+            var chooseRemove = document.getElementById("id_groups_remove_link");
+
+            if (chooseRemove) {
+                chooseRemove.style.background = 'none';
+                chooseRemove.innerHTML = "Remove";
+                chooseRemove.style.textIndent = "0px";
+                chooseRemove.style.overflow = "visible";
+            }
+
+            var chooseBlock = chooseAdd.parentElement.parentElement;
+
+            if (chooseBlock) {
+                chooseBlock.style.width = "55px";
+                chooseBlock.style.textAlign = "center";
+                chooseBlock.style.float = "left";
+            }
+
+            var groupBlock = document.getElementById("id_groups_to").parentElement.parentElement;
+
+            if (groupBlock) {
+                groupBlock.style.width = "1000px";
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
