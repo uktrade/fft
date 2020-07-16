@@ -47,7 +47,6 @@ et-xmlfile==1.0.1
 flake8==3.5.0
 flake8-import-order==0.18
 future==0.18.2
-get==1.0.3
 gunicorn==19.9.0
 idna==2.7
 importlib-metadata==1.6.0
@@ -69,7 +68,6 @@ parso==0.1.1
 pexpect==4.4.0
 pickleshare==0.7.4
 pluggy>=0.7.1
-post==1.0.2
 prompt-toolkit==1.0.15
 psycopg2==2.7.4
 psycopg2-binary==2.7.4
@@ -89,7 +87,6 @@ query-string==1.0.2
 raven==6.9.0
 rcssmin==1.0.6
 redis==3.5.3
-request==1.0.2
 requests==2.21.0
 requests-oauthlib==1.0.0
 rjsmin==1.1.0
