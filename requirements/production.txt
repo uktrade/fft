@@ -53,10 +53,9 @@ et-xmlfile==1.0.1         # via -r requirements.in/base.in, openpyxl
 flake8-import-order==0.18  # via -r requirements.in/base.in
 flake8==3.5.0             # via -r requirements.in/base.in
 future==0.18.2            # via -r requirements.in/base.in
-get==1.0.3                # via -r requirements.in/base.in, request
 gunicorn==19.9.0          # via -r requirements.in/base.in
 idna==2.7                 # via -r requirements.in/base.in, requests
-importlib-metadata==1.6.0  # via -r requirements.in/base.in, kombu, pluggy
+importlib-metadata==1.6.0  # via -r requirements.in/base.in
 ipython-genutils==0.2.0   # via -r requirements.in/base.in, traitlets
 ipython==6.2.1            # via -r requirements.in/base.in
 jdcal==1.3                # via -r requirements.in/base.in, openpyxl
@@ -75,7 +74,6 @@ parso==0.1.1              # via -r requirements.in/base.in, jedi
 pexpect==4.4.0            # via -r requirements.in/base.in, ipython
 pickleshare==0.7.4        # via -r requirements.in/base.in, ipython
 pluggy==0.13.1            # via -r requirements.in/base.in
-post==1.0.2               # via -r requirements.in/base.in, request
 prompt-toolkit==1.0.15    # via -r requirements.in/base.in, ipython
 psycopg2-binary==2.7.4    # via -r requirements.in/base.in
 psycopg2==2.7.4           # via -r requirements.in/base.in
@@ -91,11 +89,10 @@ python-dateutil==2.7.3    # via -r requirements.in/base.in, botocore
 python-dotenv==0.9.1      # via -r requirements.in/base.in
 pytz==2018.3              # via -r requirements.in/base.in, celery, django
 pyyaml==5.1               # via -r requirements.in/base.in, tablib
-query-string==1.0.2       # via -r requirements.in/base.in, get
+query-string==1.0.2       # via -r requirements.in/base.in
 raven==6.9.0              # via -r requirements.in/base.in, custom-usermodel, django-staff-sso-client
 rcssmin==1.0.6            # via -r requirements.in/base.in, django-compressor
 redis==3.5.3              # via -r requirements.in/base.in, django-redis
-request==1.0.2            # via -r requirements.in/base.in
 requests-oauthlib==1.0.0  # via -r requirements.in/base.in, custom-usermodel, django-staff-sso-client
 requests==2.21.0          # via -r requirements.in/base.in, requests-oauthlib
 rjsmin==1.1.0             # via -r requirements.in/base.in, django-compressor
