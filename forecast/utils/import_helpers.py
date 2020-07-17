@@ -57,6 +57,7 @@ def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
         f"t.financial_period_id = u.financial_period_id and "
         f"t.financial_year_id = u.financial_year_id and "
         f"t.financial_period_id = {financial_period_id} and "
+        f"t.archived_status_id is NULL and "
         f"t.financial_year_id = {financial_year_id};"
     )
 
@@ -74,6 +75,7 @@ def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
         f"not in (select financial_code_id "
         f"from {target} where "
         f"financial_period_id = {financial_period_id} and "
+        f"archived_status_id is NULL and "
         f"financial_year_id = {financial_year_id});"
     )
 

@@ -59,7 +59,9 @@ def copy_uploaded_budget(year, month_dict):
     for period_obj in month_dict.values():
         # Now copy the newly uploaded budgets to the monthly figure table
         BudgetMonthlyFigure.objects.filter(
-            financial_year=year, financial_period=period_obj,
+            financial_year=year,
+            financial_period=period_obj,
+            archived_status__isnull=True,
         ).update(amount=0, starting_amount=0)
         sql_update, sql_insert = sql_for_data_copy(
             FileUpload.BUDGET, period_obj.pk, year
@@ -72,6 +74,7 @@ def copy_uploaded_budget(year, month_dict):
             financial_period=period_obj,
             amount=0,
             starting_amount=0,
+            archived_status__isnull=True,
         ).delete()
     BudgetUploadMonthlyFigure.objects.filter(financial_year=year).delete()
 
