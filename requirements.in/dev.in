@@ -6,6 +6,7 @@ selenium
 beautifulsoup4
 black
 pytest
+pytest-cov
 pytest-django
 pytest-xdist
 behave-django

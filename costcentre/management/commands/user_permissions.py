@@ -39,4 +39,4 @@ class Command(BaseCommand):
         )
 
         for cost_centre in cost_centres:
-            self.stdout.write(self.style.WARNING(cost_centre))
+            self.stdout.write(self.style.WARNING(f"{cost_centre.cost_centre_code}"))

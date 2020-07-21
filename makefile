@@ -58,3 +58,6 @@ dev-requirements:
 production-requirements:
 	pip-compile --output-file requirements/base.txt requirements.in/base.in
 	pip-compile --output-file requirements/production.txt requirements.in/production.in
+
+pytest:
+	docker-compose run fido pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4

@@ -42,4 +42,4 @@ class Command(BaseCommand):
         )
 
         for user in users:
-            self.stdout.write(self.style.WARNING(user))
+            self.stdout.write(self.style.WARNING(f"{user.email}"))
