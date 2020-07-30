@@ -490,7 +490,7 @@ class FCOMappingtFilter(MyFilterSet):
             | Q(account_L6_code_fk__natural_account_code_description__icontains=value)
             | Q(account_L6_code_fk__expenditure_category__NAC_category__NAC_category_description__icontains=value)# noqa
             | Q(account_L6_code_fk__expenditure_category__grouping_description__icontains=value)  # noqa
-            | Q(account_L6_code_fk___economic_budget_code__icontains=value)  # noqa
+            | Q(account_L6_code_fk__economic_budget_code__icontains=value)  # noqa
         )
 
     class Meta(MyFilterSet.Meta):
