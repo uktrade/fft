@@ -1,7 +1,5 @@
 from end_of_month.end_of_month_actions import end_of_month_archive
-from end_of_month.models import (
-    forecast_budget_view_model,
-)
+from end_of_month.models import forecast_budget_view_model
 
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
@@ -70,12 +68,13 @@ class MonthlyFigureSetup:
             group=group_obj,
         )
         cost_centre_obj = CostCentreFactory(
-            directorate=directorate_obj,
-            cost_centre_code=self.cost_centre_code,
+            directorate=directorate_obj, cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         programme_obj = ProgrammeCodeFactory()
-        nac_obj = NaturalCodeFactory()
+        self.programme_code = programme_obj.programme_code
+        nac_obj = NaturalCodeFactory(economic_budget_code="RESOURCE")
+        self.nac = nac_obj.natural_account_code
         project_obj = ProjectCodeFactory()
         self.project_code = project_obj.project_code
         self.year_obj = FinancialYear.objects.get(financial_year=current_year)
@@ -123,27 +122,25 @@ class SetFullYearArchive(MonthlyFigureSetup):
         )
         self.archived_budget[period] = tot_q[0].budget
 
-    def set_archive_period(self):
-
-        for tested_period in range(1, 13):
+    def set_archive_period(self, last_archived_period=13):
+        if last_archived_period > 13:
+            last_archived_period = 13
+        for tested_period in range(1, last_archived_period):
             end_of_month_archive(tested_period)
             # save the full total
             self.set_period_total(tested_period)
             change_amount = tested_period * 10000
-            self.monthly_figure_update(
-                tested_period + 1, change_amount, "Forecast"
-            )
+            self.monthly_figure_update(tested_period + 1, change_amount, "Forecast")
             change_amount = tested_period * 1000
-            self.monthly_figure_update(
-                tested_period + 1, change_amount, "Budget"
-            )
+            self.monthly_figure_update(tested_period + 1, change_amount, "Budget")
         self.set_period_total(0)
 
-    def __init__(self):
+    def __init__(self, last_archived_period=16):
         super().__init__()
         self.setup_forecast()
         self.setup_budget()
-        for period in range(0, 16):
+        # prepares the lists used to store the totals
+        for period in range(0, last_archived_period):
             self.archived_forecast.append(0)
             self.archived_budget.append(0)
-        self.set_archive_period()
+        self.set_archive_period(last_archived_period)
