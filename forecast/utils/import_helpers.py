@@ -90,7 +90,7 @@ class UploadFileDataError(Exception):
     pass
 
 
-def validate_excel_file(file_upload, worksheet_title_pattern):
+def validate_excel_file(file_upload, worksheet_title_pattern=''):
     try:
         # read_only=True makes the opening process much faster
         # data_only=True to read values from cells with formula.
@@ -107,6 +107,13 @@ def validate_excel_file(file_upload, worksheet_title_pattern):
         raise ex
     worksheet_found = False
     worksheet = None
+    # Open the first worksheet if no name pattern was provided.
+    # There are several checks when the file is uploaded, so if the
+    # workbook is wrong it will be spotted later on.
+    if not worksheet_title_pattern:
+        worksheet = workbook.active
+        return workbook, worksheet
+
     for ws in workbook:
         if ws.title[: len(worksheet_title_pattern)] == worksheet_title_pattern:
             worksheet_found = True

@@ -30,7 +30,7 @@ shell:
 	docker-compose run fido python manage.py shell
 
 flake8:
-	docker-compose run fido flake8
+	docker-compose run fido flake8 $(file)
 
 bdd:
 	npm run bdd; \

@@ -170,7 +170,7 @@ def delete_last_end_of_month_archive():
         archived=True
     ).order_by('-archived_period')
     if not end_of_month_queryset:
-        error_msg = f"No archive monthly period exists."
+        error_msg = "No archive monthly period exists."
         logger.error(error_msg, exc_info=True)
         raise DeleteNonExistingArchiveError(error_msg)
     latest_end_of_month = end_of_month_queryset.first()
