@@ -161,7 +161,7 @@ def check_trial_balance_format(worksheet, period, year):
 def validate_trial_balance_report(file_upload, month_number, year):
     try:
         workbook, worksheet = validate_excel_file(
-            file_upload, CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+            file_upload,
         )
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
