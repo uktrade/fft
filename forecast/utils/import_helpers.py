@@ -392,3 +392,12 @@ class CheckFinancialCode:
         )
         financial_code_obj.save()
         return financial_code_obj
+
+    def record_error(self, row_number, error_message):
+        self.error_found = True
+        if self.file_upload:
+            set_file_upload_error(
+                self.file_upload,
+                f"Row {row_number} error: {error_message}",
+                "Upload aborted: Data error.",
+            )

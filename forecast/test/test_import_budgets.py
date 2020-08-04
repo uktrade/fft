@@ -235,3 +235,62 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
             .amount,
             2200,
         )
+
+    def test_budget_file_contains_dash(self):
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
+            0,
+        )
+
+        actual_month = 4
+        FinancialPeriod.objects.filter(financial_period_code=actual_month).update(
+            actual_loaded=True
+        )
+
+        good_file_upload = FileUpload(
+            document_file=os.path.join(
+                os.path.dirname(__file__), "test_assets/budget_upload_bad_dash.xlsx",
+            ),
+            uploading_user=self.test_user,
+            document_type=FileUpload.BUDGET,
+        )
+        good_file_upload.save()
+
+        upload_budget_from_file(
+            good_file_upload, self.test_year,
+        )
+
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            16,
+        )
+        # # Check that existing figures for the same period have been deleted
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+            ).count(),
+            8,
+        )
+        # Check that there are no entry for the actual periods
+        for period in range(1, actual_month + 1):
+            self.assertEqual(
+                BudgetMonthlyFigure.objects.filter(
+                    financial_year=self.test_year,
+                    financial_code__cost_centre=self.cost_centre_code,
+                    financial_period=period,
+                ).first(),
+                None,
+            )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=12,
+            )
+            .first()
+            .amount,
+            2200,
+        )
