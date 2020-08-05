@@ -265,3 +265,5 @@ CLEAN_FILE_NAME = True
 # Max and min for forecast entry values (in pence)
 MAX_FORECAST_FIGURE = 10000000000
 MIN_FORECAST_FIGURE = -10000000000
+
+AUTHBROKER_ANONYMOUS_PATHS = ["/pingdom/ping.xml", ]

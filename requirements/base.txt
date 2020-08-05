@@ -40,7 +40,7 @@ django-reversion==3.0.7   # via -r requirements.in/base.in
 django-sass-processor==0.8  # via -r requirements.in/base.in
 django-settings-export==1.2.1  # via -r requirements.in/base.in
 django-simple-history==2.10.0  # via -r requirements.in/base.in
-django-staff-sso-client==0.3.1  # via -r requirements.in/base.in, custom-usermodel
+django-staff-sso-client==2.2.1  # via -r requirements.in/base.in, custom-usermodel
 django-storages==1.9.1    # via -r requirements.in/base.in, s3chunkuploader
 django-tables2==2.1.1     # via -r requirements.in/base.in
 django-tablib==3.2        # via -r requirements.in/base.in
@@ -90,7 +90,7 @@ python-dotenv==0.9.1      # via -r requirements.in/base.in
 pytz==2018.3              # via -r requirements.in/base.in, celery, django
 pyyaml==5.1               # via -r requirements.in/base.in, tablib
 query-string==1.0.2       # via -r requirements.in/base.in
-raven==6.9.0              # via -r requirements.in/base.in, custom-usermodel, django-staff-sso-client
+raven==6.9.0              # via -r requirements.in/base.in, custom-usermodel
 rcssmin==1.0.6            # via -r requirements.in/base.in, django-compressor
 redis==3.5.3              # via -r requirements.in/base.in, django-redis
 requests-oauthlib==1.0.0  # via -r requirements.in/base.in, custom-usermodel, django-staff-sso-client
