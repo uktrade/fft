@@ -28,6 +28,9 @@ X_ROBOTS_TAG = [
     'nofollow',
 ]
 
+# Django staff SSO user migration process requries the following
+MIGRATE_EMAIL_USER_ON_LOGIN = True
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
