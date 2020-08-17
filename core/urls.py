@@ -6,4 +6,5 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("logout", views.logout, name="logout"),
     path("testupload", views.DocumentCreateView.as_view(), name="testupload"),
+    path("accessibility", views.AccessibilityPageView.as_view(), name="accessibility"),
 ]

@@ -161,6 +161,14 @@
                     </a>
                 </li>
             {% endif %}
+
+            <li class="internal-header__navigation__item">
+                <a class="internal-header__navigation__item__link {% if request.path|startswith:'/core/accessibility' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'accessibility' %}">
+                    Accessibility Statement
+                </a>
+            </li>
+
+
             </ul>
         </nav>
     </div>
