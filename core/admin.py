@@ -283,7 +283,7 @@ class UserListFilter(admin.SimpleListFilter):
             users,
         ):
             list_of_users.append(
-                (str(user.id), user.email)
+                (str(user.id), user.get_short_name())
             )
 
         return sorted(list_of_users, key=lambda tp: tp[1])
