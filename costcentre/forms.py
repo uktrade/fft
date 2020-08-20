@@ -98,6 +98,11 @@ class MyCostCentresForm(forms.Form):
     )
 
 
+class UserModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.get_short_name()
+
+
 class GivePermissionAdminForm(forms.Form):
     def __init__(self, *args, **kwargs):
         User = get_user_model()
