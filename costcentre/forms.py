@@ -142,7 +142,7 @@ class GivePermissionAdminForm(forms.Form):
             **kwargs,
         )
 
-    user = forms.ModelChoiceField(
+    user = UserModelChoiceField(
         queryset=None,
         widget=Select(),
     )
