@@ -8,6 +8,11 @@
     "bdd": "BROWSER=none NODE_ENV=development react-scripts build"
   },
   "dependencies": {
+    "braces": "^3.0.2",
+    "dot-prop": "^5.2.0",
+    "eslint": "^7.6.0",
+    "mem": "^6.1.0",
+    "minimist": "^1.2.5",
     "react-scripts": "^1.0.17"
   }
 }
