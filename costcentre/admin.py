@@ -330,7 +330,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
     def has_change_permission(self, request, obj=None):
         if not obj:
-            return False
+            return True
 
         cost_centre = self.get_object(request, obj.pk)
 
