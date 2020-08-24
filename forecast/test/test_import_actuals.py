@@ -7,7 +7,10 @@ from typing import (
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import (
+    Group,
+    Permission,
+)
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db.models import Sum
@@ -608,6 +611,62 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         )
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
+
+        resp = self.factory_get(
+            uploaded_actuals_url,
+            UploadActualsView,
+        )
+
+        # Should have been permission now
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.factory_post(
+            uploaded_actuals_url,
+            {
+                "period": self.financial_period_code,
+                "year": self.financial_year_id,
+                'file': self.file_mock,
+            },
+            UploadActualsView,
+        )
+
+        # Make sure upload was process was kicked off
+        assert mock_process_uploaded_file.called
+
+        # Should have been redirected to document upload  page
+        self.assertEqual(resp.status_code, 302)
+        assert resp.url == '/upload/files/'
+
+        # Clean up file
+        file_path = 'uploaded/actuals/{}'.format(
+            self.file_mock.name
+        )
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    @override_settings(ASYNC_FILE_UPLOAD=False)
+    @patch('forecast.views.upload_file.process_uploaded_file')
+    def test_finance_admin_can_upload_actuals(self, mock_process_uploaded_file):
+        assert not self.test_user.groups.filter(
+            name="Finance Administrator"
+        )
+
+        uploaded_actuals_url = reverse(
+            "upload_actuals_file",
+        )
+
+        # Should have been redirected (no permission)
+        with self.assertRaises(PermissionDenied):
+            self.factory_get(
+                uploaded_actuals_url,
+                UploadActualsView,
+            )
+
+        finance_admins = Group.objects.get(
+            name='Finance Administrator',
+        )
+        finance_admins.user_set.add(self.test_user)
+        finance_admins.save()
 
         resp = self.factory_get(
             uploaded_actuals_url,

@@ -77,6 +77,16 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'forecast.views.upload_file': {
+            'handlers': ['stdout', ],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'forecast.tasks': {
+            'handlers': ['stdout', ],
+            'level': 'INFO',
+            'propagate': True,
+        }
     },
 }
 

@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
@@ -10,6 +12,9 @@ from forecast.tasks import process_uploaded_file
 
 from upload_file.decorators import has_upload_permission
 from upload_file.models import FileUpload
+
+
+logger = logging.getLogger(__name__)
 
 
 class UploadActualsView(FormView):
@@ -30,7 +35,10 @@ class UploadActualsView(FormView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
 
+        logger.info("Received file upload attempt")
+
         if form.is_valid():
+            logger.info("File upload form is valid")
             data = form.cleaned_data
 
             # When using a model form, you must use the
@@ -39,6 +47,8 @@ class UploadActualsView(FormView):
             # required when using the chunk uploader project
             s3_file_name = request.FILES['file'].name
 
+            logger.info(f"s3_file_name is f{s3_file_name}")
+
             file_upload = FileUpload(
                 document_file=s3_file_name,
                 uploading_user=request.user,
@@ -46,8 +56,11 @@ class UploadActualsView(FormView):
             )
             file_upload.save()
 
+            logger.info("Saved file to S3")
+
             # Process file async
             if settings.ASYNC_FILE_UPLOAD:
+                logger.info("Using worker to upload file")
                 process_uploaded_file.delay(
                     data['period'].period_calendar_code,
                     data['year'].financial_year,
