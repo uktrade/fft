@@ -39,6 +39,95 @@
                 groupBlock.style.width = "1000px";
             }
         });
+
+        window.addEventListener('load', function(e) {
+            var helpText = document.querySelector("form .aligned p.help:last-child, form .aligned div.help:last-child");
+
+
+            if (helpText) {
+                helpText.className = "govuk-label";
+                helpText.style.marginLeft = '18px';
+            }
+
+            var helpTextLock = document.querySelector("form .aligned p.help, form .aligned div.help");
+            var helpTextIcon = document.createElement("img");
+            var lineBreakItem = document.createElement("br");
+
+            helpTextIcon.src = "/static/core/images/WarningLogo.png";
+            helpTextIcon.width = '20';
+
+
+            if (helpTextLock) {
+                helpTextLock.className = "govuk-label";
+                helpTextLock.insertBefore(helpTextIcon, helpTextLock.childNodes[0])
+                helpTextLock.style.position = 'relative';
+                helpTextLock.style.top = '50px';
+                helpTextLock.style.right = '0px';
+                helpTextLock.style.paddingBottom = '50px';
+            }
+
+            var dateBox = document.getElementById("id_lock_date");
+
+            if (dateBox) {
+                dateBox.style.position = 'relative';
+                dateBox.style.top = '30px';
+                dateBox.style.right = '170px';
+            }
+
+            var iconBox = document.querySelectorAll("div.form-row")[1]
+
+            if (iconBox) {
+                var calendarIcon = iconBox.querySelector("span.datetimeshortcuts");
+                calendarIcon.style.position = 'relative';
+                calendarIcon.style.top = '30px';
+                calendarIcon.style.right = '170px';
+
+                var lineBreakItem2 = iconBox.querySelector("br");
+                lineBreakItem2.remove();
+                var warningNote = iconBox.querySelector("span.timezonewarning");
+                helpTextLock.insertBefore(lineBreakItem, helpTextLock.childNodes[0])
+                helpTextLock.insertBefore(warningNote, helpTextLock.firstChild);
+                warningNote.style.position = 'relative';
+                warningNote.style.bottom = '15px';
+                warningNote.style.right = '170px';
+            }
+
+        });
+
+        window.addEventListener('load', function(e) {
+            var chooseAdd = document.getElementById("id_groups_add_link");
+
+            if (chooseAdd) {
+                chooseAdd.style.background = 'none';
+                chooseAdd.innerHTML = "Add";
+                chooseAdd.style.textIndent = "0px";
+                chooseAdd.style.overflow = "visible";
+                chooseAdd.style.marginLeft = '12px';
+            }
+
+            var chooseRemove = document.getElementById("id_groups_remove_link");
+
+            if (chooseRemove) {
+                chooseRemove.style.background = 'none';
+                chooseRemove.innerHTML = "Remove";
+                chooseRemove.style.textIndent = "0px";
+                chooseRemove.style.overflow = "visible";
+            }
+
+            var chooseBlock = chooseAdd.parentElement.parentElement;
+
+            if (chooseBlock) {
+                chooseBlock.style.width = "55px";
+                chooseBlock.style.textAlign = "center";
+                chooseBlock.style.float = "left";
+            }
+
+            var groupBlock = document.getElementById("id_groups_to").parentElement.parentElement;
+
+            if (groupBlock) {
+                groupBlock.style.width = "1000px";
+            }
+        });
     </script>
 {% endblock %}
 
