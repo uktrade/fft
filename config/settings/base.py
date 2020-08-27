@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "downloadsupport.apps.DownloadSupportConfig",
     "forecast.apps.ForecastConfig",
     "gifthospitality.apps.GifthospitalityConfig",
-    "payroll.apps.PayrollConfig",
     "costcentre.apps.CostCentreConfig",
     "chartofaccountDIT.apps.ChartAccountConfig",
     "treasuryCOA.apps.TreasuryCOAConfig",

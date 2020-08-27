@@ -27,7 +27,6 @@ urlpatterns = [
     path("forecast/", include("forecast.urls")),
     path("gifthospitality/", include("gifthospitality.urls")),
     path("download_file/", include("download_file.urls")),
-    path("payroll/", include("payroll.urls")),
     path("pingdom/", include("pingdom.urls")),
     path("upload/", include("upload_file.urls")),
     path("admin/", admin.site.urls),
