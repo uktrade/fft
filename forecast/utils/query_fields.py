@@ -1,8 +1,8 @@
 financial_code_prefix = "financial_code__"
 # indicates if DEL, AME, ADMIN
-BUDGET_TYPE =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_display"  # noqa
-BUDGET_TYPE_ORDER =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_display_order"  # noqa
-BUDGET_TYPE_EDIT_ORDER =  f"{financial_code_prefix}programme__budget_type_fk__budget_type_edit_display_order"  # noqa
+BUDGET_TYPE = f"{financial_code_prefix}programme__budget_type__budget_type_display"
+BUDGET_TYPE_ORDER = f"{financial_code_prefix}programme__budget_type__budget_type_display_order"  # noqa
+BUDGET_TYPE_EDIT_ORDER = f"{financial_code_prefix}programme__budget_type__budget_type_edit_display_order"  # noqa
 
 # Categories defined by DIT: i.e. Consultancy, Contingency, Contractors, etc
 BUDGET_CATEGORY_ID = f"{financial_code_prefix}natural_account_code__expenditure_category__id"  # noqa
@@ -25,11 +25,11 @@ PROGRAMME_NAME = f"{financial_code_prefix}programme__programme_description"
 COST_CENTRE_NAME = f"{financial_code_prefix}cost_centre__cost_centre_name"
 COST_CENTRE_CODE = f"{financial_code_prefix}cost_centre__cost_centre_code"
 
-DIRECTORATE_NAME = f"{financial_code_prefix}cost_centre__directorate__directorate_name"  # noqa
-DIRECTORATE_CODE = f"{financial_code_prefix}cost_centre__directorate__directorate_code"  # noqa
+DIRECTORATE_NAME = f"{financial_code_prefix}cost_centre__directorate__directorate_name"
+DIRECTORATE_CODE = f"{financial_code_prefix}cost_centre__directorate__directorate_code"
 
-GROUP_NAME = f"{financial_code_prefix}cost_centre__directorate__group__group_name"  # noqa
-GROUP_CODE = f"{financial_code_prefix}cost_centre__directorate__group__group_code"  # noqa
+GROUP_NAME = f"{financial_code_prefix}cost_centre__directorate__group__group_name"
+GROUP_CODE = f"{financial_code_prefix}cost_centre__directorate__group__group_code"
 
 NAC_CODE = f"{financial_code_prefix}natural_account_code__natural_account_code"
 NAC_NAME = f"{financial_code_prefix}natural_account_code__natural_account_code_description"  # noqa

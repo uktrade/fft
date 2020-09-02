@@ -1,6 +1,3 @@
-from end_of_month.end_of_month_actions import end_of_month_archive
-from end_of_month.models import forecast_budget_view_model
-
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
     ProgrammeCodeFactory,
@@ -8,13 +5,16 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
+
+from end_of_month.end_of_month_actions import end_of_month_archive
+from end_of_month.models import forecast_budget_view_model
 
 from forecast.models import (
     BudgetMonthlyFigure,

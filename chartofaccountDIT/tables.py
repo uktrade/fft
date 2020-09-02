@@ -27,7 +27,7 @@ from core.tables import FadminTable
 class ProgrammeTable(FadminTable):
     budget_type_descr = tables.Column(
         verbose_name="Budget Type",
-        accessor="budget_type_fk.budget_type",
+        accessor="budget_type.budget_type",
     )
 
     class Meta(FadminTable.Meta):

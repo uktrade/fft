@@ -21,8 +21,8 @@ from chartofaccountDIT.views import (
     HistoricalFilteredProgrammeView,
 )
 
-from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
+from core.utils.generic_helpers import get_current_financial_year
 
 
 class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
@@ -313,7 +313,7 @@ class ArchiveProgrammeTest(TestCase, RequestFactoryBase):
         obj = ProgrammeCodeFactory()
         self.programme_code = obj.programme_code
         self.programme_description = obj.programme_description
-        self.budget_type = obj.budget_type_fk.budget_type
+        self.budget_type = obj.budget_type.budget_type
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
         current_year = get_current_financial_year()

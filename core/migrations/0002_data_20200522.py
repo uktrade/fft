@@ -2,7 +2,7 @@ from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 
 fields = ["financial_year", "financial_year_display", "current"]
 

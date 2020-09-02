@@ -142,6 +142,11 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
 
 class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
 
+    active = True
+    natural_account_code = 999999
+    natural_account_code_description = "NAC description"
+    used_for_budget = False
+
     class Meta:
         model = ArchivedNaturalCode
 
@@ -158,13 +163,17 @@ class ProgrammeCodeFactory(factory.DjangoModelFactory):
     active = True
     programme_code = "123456"
     programme_description = "Programme Test description"
-    budget_type_fk = factory.Iterator(BudgetType.objects.all())
+    budget_type = factory.Iterator(BudgetType.objects.all())
 
 
 class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):
     """
     Define ArchivedProgrammeCode Factory
     """
+    active = True
+    programme_code = "123456"
+    programme_description = "Programme Test description"
+    budget_type = factory.Iterator(BudgetType.objects.all())
 
     class Meta:
         model = ArchivedProgrammeCode
@@ -214,6 +223,9 @@ class HistoricalProjectCodeFactory(factory.DjangoModelFactory):
     """
     Define ArchivedProjectCode Factory
     """
+    active = True
+    project_code = "5000"
+    project_description = "Project Description"
 
     class Meta:
         model = ArchivedProjectCode

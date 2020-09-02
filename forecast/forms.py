@@ -3,8 +3,6 @@ import json
 from django import forms
 from django.contrib.auth import get_user_model
 
-from end_of_month.models import EndOfMonthStatus
-
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -14,6 +12,8 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
+
+from end_of_month.models import EndOfMonthStatus
 
 from forecast.models import (
     FinancialCode,

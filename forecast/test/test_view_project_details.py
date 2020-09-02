@@ -13,8 +13,8 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -67,7 +67,7 @@ class ViewForecastProjectDetailsTest(TestCase, RequestFactoryBase):
         self.amount_apr = -9876543
 
         programme_obj = ProgrammeCodeFactory()
-        self.budget_type = programme_obj.budget_type_fk.budget_type_display
+        self.budget_type = programme_obj.budget_type.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
         self.nac_obj = NaturalCodeFactory(natural_account_code=12345678,

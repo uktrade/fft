@@ -341,7 +341,7 @@ class ProgrammeFilter(MyFilterSet):
         return queryset.filter(
             Q(programme_code__icontains=value)
             | Q(programme_description__icontains=value)
-            | Q(budget_type_fk__budget_type__icontains=value)
+            | Q(budget_type__budget_type__icontains=value)
         )
 
     class Meta(MyFilterSet.Meta):
@@ -352,7 +352,7 @@ class ProgrammeFilter(MyFilterSet):
     def qs(self):
         qs_filtered = super(ProgrammeFilter, self).qs
         return qs_filtered.filter(active=True).order_by(
-            "programme_code", "programme_description", "budget_type_fk__budget_type"
+            "programme_code", "programme_description", "budget_type__budget_type"
         )
 
 

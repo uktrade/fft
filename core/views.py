@@ -8,13 +8,13 @@ from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from core.exportutils import EXC_TAB_NAME_LEN
 from core.models import Document
-from core.myutils import (
+from core.utils.export_helpers import EXC_TAB_NAME_LEN
+from core.utils.generic_helpers import (
     get_current_financial_year,
     get_year_display,
+    today_string,
 )
-from core.utils import today_string
 
 
 @login_required()

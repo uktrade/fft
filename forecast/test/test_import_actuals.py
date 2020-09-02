@@ -1,9 +1,5 @@
 import os
 from datetime import datetime
-from typing import (
-    Dict,
-    TypeVar,
-)
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
@@ -32,6 +28,10 @@ from chartofaccountDIT.test.factories import (
 
 from core.models import FinancialYear
 from core.test.test_base import RequestFactoryBase
+from core.utils.excel_test_helpers import (
+    FakeCell,
+    FakeWorkSheet
+)
 
 from costcentre.models import (
     CostCentre,
@@ -73,19 +73,6 @@ TEST_COST_CENTRE = 109189
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = '310940'
-_KT = TypeVar('_KT')
-_VT = TypeVar('_VT')
-
-
-class FakeWorkSheet(Dict[_KT, _VT]):
-    title = None
-
-
-class FakeCell:
-    value = None
-
-    def __init__(self, value):
-        self.value = value
 
 
 # Set file upload handlers back to default as
@@ -148,7 +135,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
         dummy_upload = FileUpload(
-            document_file='dummy.csv',
+            s3_document_file='dummy.csv',
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
         )
@@ -378,7 +365,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         # Check that BadZipFile is raised on
         # supply of incorrect file format
         bad_file_type_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/bad_file_type.csv',
             ),
@@ -394,7 +381,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             )
 
         bad_title_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/bad_title_upload_test.xlsx',
             ),
@@ -470,7 +457,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             ).actual_loaded
         )
         bad_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/upload_bad_data.xlsx',
             ),
@@ -499,7 +486,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
 
         good_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/upload_test.xlsx',
             ),

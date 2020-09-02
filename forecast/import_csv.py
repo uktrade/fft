@@ -8,7 +8,7 @@ from core.import_csv import (
     get_fk,
     get_fk_from_field,
 )
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 
 from forecast.models import (
     FinancialPeriod,

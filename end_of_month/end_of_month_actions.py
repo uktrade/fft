@@ -3,12 +3,12 @@ import logging
 from django.db import connection
 from django.utils import timezone
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from end_of_month.models import (
     EndOfMonthStatus,
     MonthlyTotalBudget,
 )
-
-from core.myutils import get_current_financial_year
 
 from forecast.models import (
     BudgetMonthlyFigure,

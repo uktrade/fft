@@ -41,43 +41,39 @@ def get_period_for_title(period):
     return f'({title})'
 
 
+def export_forecast_data_generic(period, filter, title):
+    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
+        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+    )
+    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title, period)
+
+
 @user_passes_test(can_view_forecasts, login_url="index")
 def export_forecast_data_dit(request, period):
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS
-    )
+    filter = {}
     title = f"DIT {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
 def export_forecast_data_group(request, group_code, period):
     filter = {GROUP_CODE: group_code}
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{group_code} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
 def export_forecast_data_directorate(request, directorate_code, period):
     filter = {DIRECTORATE_CODE: directorate_code}
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{directorate_code} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
 def export_forecast_data_cost_centre(request, cost_centre, period):
     filter = {COST_CENTRE_CODE: cost_centre}
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{cost_centre} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -89,11 +85,8 @@ def export_forecast_data_expenditure_detail_cost_centre(
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
         BUDGET_TYPE: f"{budget_type_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{cost_centre} {get_period_for_title(period)} Expenditure"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -105,11 +98,8 @@ def export_forecast_data_expenditure_detail_directorate(
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
         BUDGET_TYPE: f"{budget_type_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{directorate_code} {get_period_for_title(period)} Expenditure"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -121,11 +111,8 @@ def export_forecast_data_expenditure_detail_group(
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
         BUDGET_TYPE: f"{budget_type_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{group_code} {get_period_for_title(period)} Expenditure"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -136,11 +123,8 @@ def export_forecast_data_expenditure_dit(
         BUDGET_CATEGORY_ID: f"{expenditure_category_id}",
         BUDGET_TYPE: f"{budget_type_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"DIT {get_period_for_title(period)} Expenditure"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -152,11 +136,8 @@ def export_forecast_data_programme_detail_directorate(
         PROGRAMME_CODE: f"{programme_code_id}",
         FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{directorate_code} {programme_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -168,11 +149,8 @@ def export_forecast_data_programme_detail_group(
         PROGRAMME_CODE: f"{programme_code_id}",
         FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{group_code} {programme_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -183,11 +161,8 @@ def export_forecast_data_programme_detail_dit(
         PROGRAMME_CODE: f"{programme_code_id}",
         FORECAST_EXPENDITURE_TYPE_NAME: f"{forecast_expenditure_type_name}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"DIT {programme_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -198,11 +173,8 @@ def export_forecast_data_project_detail_cost_centre(
         COST_CENTRE_CODE: cost_centre,
         PROJECT_CODE: f"{project_code_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{cost_centre} {project_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -213,11 +185,8 @@ def export_forecast_data_project_detail_directorate(
         DIRECTORATE_CODE: directorate_code,
         PROJECT_CODE: f"{project_code_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{directorate_code} {project_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -228,11 +197,8 @@ def export_forecast_data_project_detail_group(
         GROUP_CODE: group_code,
         PROJECT_CODE: f"{project_code_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"{group_code} {project_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 @user_passes_test(can_view_forecasts, login_url="index")
@@ -240,11 +206,8 @@ def export_forecast_data_project_detail_dit(request, project_code_id, period):
     filter = {
         PROJECT_CODE: f"{project_code_id}",
     }
-    q = forecast_budget_view_model[period].view_data.raw_data_annotated(
-        VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
-    )
     title = f"DIT {project_code_id} {get_period_for_title(period)}"
-    return export_query_to_excel(q, VIEW_FORECAST_DOWNLOAD_COLUMNS, title)
+    return export_forecast_data_generic(period, filter, title)
 
 
 def export_edit_forecast_data(request, cost_centre):

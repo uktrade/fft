@@ -14,7 +14,7 @@ from django.urls import (
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.forms import MyCostCentresForm
 from costcentre.models import CostCentre

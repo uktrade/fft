@@ -66,7 +66,7 @@ from core.admin import (
     AdminImportExtraExport,
     AdminReadOnly,
 )
-from core.exportutils import generic_table_iterator
+from core.utils.export_helpers import generic_table_iterator
 
 
 class NaturalCodeAdmin(AdminActiveField, AdminImportExtraExport):
@@ -405,7 +405,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
     list_display = (
         "programme_code",
         "programme_description",
-        "budget_type_fk",
+        "budget_type",
         "active",
         "created",
         "updated",
@@ -418,7 +418,7 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
             if obj:
                 return [
                     "programme_code",
-                    "budget_type_fk",
+                    "budget_type",
                     "created",
                     "updated",
                 ]  # don't allow to edit the code
@@ -431,14 +431,14 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
         return [
             "programme_code",
             "programme_description",
-            "budget_type_fk",
+            "budget_type",
             "active",
             "created",
             "updated",
         ]
 
     search_fields = ["programme_code", "programme_description"]
-    list_filter = ["budget_type_fk", "active"]
+    list_filter = ["budget_type", "active"]
 
     @property
     def export_func(self):
@@ -627,6 +627,52 @@ class OpDelCategoryAdmin(AdminImportExport):
         return import_op_del_category_class
 
 
+class BudgetTypeAdmin(AdminImportExport):
+    list_display = ("budget_type_key", "budget_type",)
+
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "budget_type_key",
+                "budget_type",
+                "budget_type_display",
+                "created",
+                "updated",
+            ]  # don't allow to edit the code
+        else:
+            return ["created", "updated"]
+
+    # different fields visible if updating or creating the object
+    def get_fields(self, request, obj=None):
+        if obj:
+            return [
+                "budget_type_key",
+                "budget_type",
+                "budget_type_display",
+                "budget_type_display_order",
+                "budget_type_edit_display_order",
+                "created",
+                "updated",
+            ]
+        else:
+            return [
+                "budget_type_key",
+                "budget_type",
+                "budget_type_display",
+                "budget_type_display_order",
+                "budget_type_edit_display_order",
+            ]
+
+    @property
+    def export_func(self):
+        return generic_table_iterator
+
+    @property
+    def import_info(self):
+        return import_project_class
+
+
 admin.site.register(Analysis1, Analysis1Admin)
 admin.site.register(Analysis2, Analysis2Admin)
 admin.site.register(NaturalCode, NaturalCodeAdmin)
@@ -650,4 +696,4 @@ admin.site.register(ArchivedInterEntity, HistoricalInterEntityAdmin)
 admin.site.register(ArchivedProjectCode, HistoricalProjectCodeAdmin)
 admin.site.register(ArchivedFCOMapping, HistoricalFCOMappingAdmin)
 
-admin.site.register(BudgetType)
+admin.site.register(BudgetType, BudgetTypeAdmin)

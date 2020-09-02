@@ -2,13 +2,15 @@ import logging
 
 from celery import shared_task
 
-from core.myutils import (
+from core.utils.generic_helpers import (
     get_s3_file_body,
     run_anti_virus,
 )
 
 from forecast.import_actuals import upload_trial_balance_report
 from forecast.import_budgets import upload_budget_from_file
+
+from previous_years.import_previous_year import upload_previous_year_from_file
 
 from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_finished
@@ -32,7 +34,7 @@ def process_uploaded_file(*args):
 
         # Get file body from S3
         logger.info("Attempting get file from S3")
-        file_body = get_s3_file_body(latest_unprocessed.document_file.name)
+        file_body = get_s3_file_body(latest_unprocessed.s3_document_file.name)
 
         # Check for viruses
         anti_virus_result = run_anti_virus(file_body,)
@@ -52,6 +54,8 @@ def process_uploaded_file(*args):
                 upload_trial_balance_report(latest_unprocessed, *args)
             if latest_unprocessed.document_type == FileUpload.BUDGET:
                 upload_budget_from_file(latest_unprocessed, *args)
+            if latest_unprocessed.document_type == FileUpload.PREVIOUSYEAR:
+                upload_previous_year_from_file(latest_unprocessed, *args)
 
         set_file_upload_finished(latest_unprocessed)
         logger.info("File upload process complete")

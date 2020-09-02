@@ -1,4 +1,4 @@
-from core.exportutils import get_fk_value
+from core.utils.export_helpers import get_fk_value
 
 
 def export_logentry_iterator(queryset):

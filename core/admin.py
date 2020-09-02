@@ -18,13 +18,13 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from core.export_data import export_logentry_iterator
-from core.exportutils import (
+from core.models import FinancialYear
+from core.utils.export_helpers import (
     export_csv_from_import,
+    export_to_csv,
     export_to_excel,
 )
-from core.exportutils import export_to_csv
-from core.models import FinancialYear
-from core.utils import log_object_change
+from core.utils.generic_helpers import log_object_change
 
 
 class AdminActiveField(admin.ModelAdmin):

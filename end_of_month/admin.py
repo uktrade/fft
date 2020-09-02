@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from end_of_month.models import EndOfMonthStatus
-
 from simple_history.admin import SimpleHistoryAdmin
 
 from core.admin import AdminReadOnly
+
+from end_of_month.models import EndOfMonthStatus
 
 
 class EndOfMonthStatusAdmin(AdminReadOnly, SimpleHistoryAdmin):

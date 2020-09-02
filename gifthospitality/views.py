@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from core.utils import today_string
+from core.utils.generic_helpers import today_string
 from core.views import FAdminFilteredView
 
 from gifthospitality.filters import GiftHospitalityFilter

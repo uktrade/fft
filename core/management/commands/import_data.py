@@ -1,13 +1,6 @@
 import os
-import uuid
 
-import boto3
-
-import botocore
-
-from django.conf import settings
 from django.core.management.base import (
-    BaseCommand,
     CommandError,
 )
 
@@ -21,6 +14,10 @@ from chartofaccountDIT.import_csv import (
     import_commercial_category,
     import_expenditure_category,
     import_programme,
+)
+
+from core.utils.command_helpers import (
+    CommandUpload,
 )
 
 from costcentre.import_csv import import_cc
@@ -49,15 +46,8 @@ IMPORT_TYPE = {
     "ADI": import_adi_file,
 }
 
-session = boto3.Session(
-    aws_access_key_id=settings.TEMP_FILE_AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=settings.TEMP_FILE_AWS_SECRET_ACCESS_KEY,
-)
 
-s3 = session.resource("s3")
-
-
-class Command(BaseCommand):
+class Command(CommandUpload):
     help = "Import data from csv file"
 
     def add_arguments(self, parser):
@@ -73,39 +63,18 @@ class Command(BaseCommand):
         path = options.get("csv_path")
         import_type = options.get("type")
 
-        if settings.TEMP_FILE_AWS_ACCESS_KEY_ID:
-            file_name = f"{uuid.uuid4()}.csv"
-
-            try:
-                s3.Bucket(settings.TEMP_FILE_AWS_STORAGE_BUCKET_NAME).download_file(
-                    path, file_name,
-                )
-            except botocore.exceptions.ClientError as e:
-                if e.response["Error"]["Code"] == "404":
-                    print("The object does not exist.")
-                else:
-                    raise
-
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Downloaded file {path} from S3, " f"starting processing."
-                )
-            )
-        else:
-            file_name = path
-            self.stdout.write(self.style.SUCCESS(f"Using local file {path}."))
-
+        file_name = self.path_to_upload(path, 'csv')
         # Windows-1252 or CP-1252, used because of a back quote
         csv_file = open(file_name, newline="", encoding="cp1252")
         try:
             success, msg = IMPORT_TYPE[import_type](csv_file)
         except WrongChartOFAccountCodeException as ex:
             csv_file.close()
-
             raise CommandError(f"Failure import {import_type}: {str(ex)}")
         csv_file.close()
-        if success:
+        if self.upload_s3:
             os.remove(file_name)
+        if success:
             self.stdout.write(
                 self.style.SUCCESS(f"Successfully completed import {import_type}.")
             )
