@@ -1,0 +1,46 @@
+{% extends "standard_content.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Archive Monthly Forecast" "end_of_month" %}
+{% endblock %}
+
+{% block title %} Archive Monthly Forecast{% endblock %}
+
+{% block content %}
+
+    <h2 class="govuk-heading-l">Archive Monthly Forecast</h2>
+
+    <div class="container">
+        <div class="col-md-12">
+            {% if not locked %}
+                <h3 class="govuk-heading-m">Archiving not available</h3>
+                <h4 class="govuk-heading-s">Forecast is not locked</h4>
+            {% elif already_archived %}
+                <h3 class="govuk-heading-m">Nothing to archive</h3>
+                <h4 class="govuk-heading-s">{{ already_archived }}</h4>
+            {% elif invalid_period %}
+                <h3 class="govuk-heading-m">Invalid period</h3>
+                <h4 class="govuk-heading-s">Please contact the system administrator</h4>
+            {% else %}
+                <h3 class="govuk-heading-m">Archive month {{ archivable_month }}</h3>
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        Archiving cannot be undone
+                    </strong>
+                </div>
+                <form novalidate method='post'>
+                    {% csrf_token %}
+                    {% include "core/govt_uk_form.html" with form=form %}
+                    <input id="archive_button" type="submit" value="Archive {{ archivable_month }}"
+                           class="govuk-button govuk-button" data-module="govuk-button"/>
+                </form>
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -61,3 +61,9 @@ def instances_and_widgets(bound_field):
         instance_widgets.append((instance, widget))
         index += 1
     return instance_widgets
+
+
+@register.simple_tag
+def has_end_of_month_archive_permissions(user):
+    if user.is_superuser or user.groups.filter(name="Finance Administrator"):
+        return True

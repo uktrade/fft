@@ -11,15 +11,23 @@
 <head>
     {% if not settings.DEBUG %}
         <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','{{ settings.GTM_CODE }}');</script>
+        <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '{{ settings.GTM_CODE }}');</script>
         <!-- End Google Tag Manager -->
     {% endif %}
     <meta charset="utf-8"/>
-        <title>FFT - {% block title %}{% endblock %}</title>
+    <title>FFT - {% block title %}{% endblock %}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0b0c0c"/>
@@ -39,11 +47,14 @@
     <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
 </head>
 
-<body onresize="checkMenuState();" class="govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
+<body onresize="checkMenuState();"
+      class="govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
 {% if not settings.DEBUG %}
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id={{ settings.GTM_CODE }}"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
     <!-- End Google Tag Manager (noscript) -->
 {% endif %}
 <script>
@@ -87,14 +98,15 @@
             <a href="/" class="internal-header__logo__link"><span class="internal-header__logo__text">Financial Forecast Tool</span></a>
             <strong class="internal-header__logo__tag">beta</strong></div>
         <ul id="logo-navigation" class="internal-header__links" aria-label="Header links">
-{#            <li class="internal-header__links__item"><a class="internal-header__links__item__text" href="/profile">Ross#}
-{#                Miller</a></li>#}
-{# TODO - not sure we can have a log out because of SSO <li class="internal-header__links__item">#}
-{#                <a class="internal-header__links__item__text" href="{% url 'logout' %}">Sign out</a>#}
-{#            </li>#}
+            {#            <li class="internal-header__links__item"><a class="internal-header__links__item__text" href="/profile">Ross#}
+            {#                Miller</a></li>#}
+            {# TODO - not sure we can have a log out because of SSO <li class="internal-header__links__item">#}
+            {#                <a class="internal-header__links__item__text" href="{% url 'logout' %}">Sign out</a>#}
+            {#            </li>#}
         </ul>
     </div>
-    <button id="toggle-menu" onclick="toggleMenu();" role="button" class="internal-header__menu-button js-internal-header-toggle"
+    <button id="toggle-menu" onclick="toggleMenu();" role="button"
+            class="internal-header__menu-button js-internal-header-toggle"
             aria-controls="navigation sub-navigation logo-navigation" aria-label="Show or hide navigation">Menu
     </button>
     <div class="internal-header__navigation-container">
@@ -102,65 +114,83 @@
             <ul id="navigation" class="internal-header__navigation" aria-label="Top Level Navigation">
 
                 <li class="internal-header__navigation__item">
-                    <a class="internal-header__navigation__item__link {% if request.path|startswith:'/chartofaccountDIT/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'chart_of_account_choose_year' %}">
+                    <a class="internal-header__navigation__item__link {% if request.path|startswith:'/chartofaccountDIT/' %}internal-header__navigation__item__link--active{% endif %}"
+                       href="{% url 'chart_of_account_choose_year' %}">
                         Chart of Account
                     </a>
                 </li>
 
-                    <li class="internal-header__navigation__item">
-                        <a class="internal-header__navigation__item__link hospitality {% if request.path|startswith:'/gifthospitality/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'gifthospitality:quick_links' %}">
-                            Gifts &amp; Hospitality Register
-                        </a>
-                    </li>
+                <li class="internal-header__navigation__item">
+                    <a class="internal-header__navigation__item__link hospitality {% if request.path|startswith:'/gifthospitality/' %}internal-header__navigation__item__link--active{% endif %}"
+                       href="{% url 'gifthospitality:quick_links' %}">
+                        Gifts &amp; Hospitality Register
+                    </a>
+                </li>
 
                 {% is_forecast_user user as is_forecast_user %}
                 {% if is_forecast_user == True %}
                     <li class="internal-header__navigation__item">
-                        <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'forecast_dit' 0 %}">
+                        <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}"
+                           href="{% url 'forecast_dit' 0 %}">
                             View Forecast
                         </a>
                     </li>
                     {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
                     {% if can_edit_at_least_one_cost_centre == True %}
                         <li class="internal-header__navigation__item">
-                            <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/edit/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'choose_cost_centre' %}">
+                            <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/edit/' %}internal-header__navigation__item__link--active{% endif %}"
+                               href="{% url 'choose_cost_centre' %}">
                                 Edit forecast
                             </a>
                         </li>
-                        {% endif %}
-                        {% has_mi_report_download_permission user as has_mi_report_download_permission %}
-                        {% if has_mi_report_download_permission == True %}
+                    {% endif %}
+                    {% has_mi_report_download_permission user as has_mi_report_download_permission %}
+                    {% if has_mi_report_download_permission == True %}
                         <li class="internal-header__navigation__item {% if request.path == '/download/oscar-return/' %}govuk-header__navigation-item--active{% endif %}">
-                            <a class="internal-header__navigation__item__link" href="/download_file/download_mi_report/">
+                            <a class="internal-header__navigation__item__link"
+                               href="/download_file/download_mi_report/">
                                 Download Source for MI Reports
                             </a>
                         </li>
-                        {% endif %}
-                        {% has_oscar_download_permission user as has_oscar_download_permission %}
-                        {% if has_oscar_download_permission == True %}
+                    {% endif %}
+                    {% has_oscar_download_permission user as has_oscar_download_permission %}
+                    {% if has_oscar_download_permission == True %}
                         <li class="internal-header__navigation__item {% if request.path == '/download/mi-report/' %}govuk-header__navigation-item--active{% endif %}">
-                            <a class="internal-header__navigation__item__link" href="/download_file/download_oscar_report/">
+                            <a class="internal-header__navigation__item__link"
+                               href="/download_file/download_oscar_report/">
                                 Download OSCAR Return
                             </a>
                         </li>
-                        {% endif %}
+                    {% endif %}
                     {% has_upload_permission user as has_upload_permission %}
                     {% if has_upload_permission == True %}
-                    <li class="internal-header__navigation__item">
-                        <a class="internal-header__navigation__item__link  {% if request.path|startswith:'/upload/' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'uploaded_files' %}">
-                            Uploaded files
-                        </a>
-                    </li>
+                        <li class="internal-header__navigation__item">
+                            <a class="internal-header__navigation__item__link  {% if request.path|startswith:'/upload/' %}internal-header__navigation__item__link--active{% endif %}"
+                               href="{% url 'uploaded_files' %}">
+                                Uploaded files
+                            </a>
+                        </li>
                     {% endif %}
                 {% endif %}
 
-            {% if request.user.is_staff %}
-                <li class="internal-header__navigation__item">
-                    <a target="_blank" id="admin_page" class="internal-header__navigation__item__link" href="{% url 'admin:index' %}">
-                                Admin Site
-                    </a>
-                </li>
-            {% endif %}
+                {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
+                {% if has_end_of_month_archive_permissions == True %}
+                    <li class="internal-header__navigation__item">
+                        <a id="end_of_month" class="internal-header__navigation__item__link"
+                           href="{% url 'end_of_month' %}">
+                            Archive Monthly Forecast
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if request.user.is_staff %}
+                    <li class="internal-header__navigation__item">
+                        <a target="_blank" id="admin_page" class="internal-header__navigation__item__link"
+                           href="{% url 'admin:index' %}">
+                            Admin Site
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
     </div>

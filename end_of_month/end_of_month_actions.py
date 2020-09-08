@@ -68,7 +68,7 @@ def get_end_of_month(period_code):
         archived_period__financial_period_code=period_code
     )
     if end_of_month_info.archived:
-        error_msg = f'"The selected period {period_code} has already been archived."'
+        error_msg = f'"The selected period {period_code} has already been archived."'# noqa
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthAlreadyArchivedError(error_msg)
 

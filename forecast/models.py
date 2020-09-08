@@ -190,6 +190,9 @@ class FinancialPeriodManager(models.Manager):
     def reset_actuals(self):
         self.get_queryset().filter(actual_loaded=True,).update(actual_loaded=False,)
 
+    def get_max_period(self):
+        return self.get_queryset().order_by("-financial_period_code").first()
+
 
 class FinancialPeriod(BaseModel):
     """Financial periods: correspond
