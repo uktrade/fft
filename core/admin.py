@@ -382,6 +382,8 @@ class LogEntryAdmin(AdminReadOnly, AdminExport):
         "user",
         "content_type",
         "action_flag_",
+        "object_id",
+        "object_repr",
         "change_message",
     ]
 
