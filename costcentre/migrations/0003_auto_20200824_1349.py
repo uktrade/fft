@@ -14,34 +14,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='ArchivedCostCentre',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('archived', models.DateTimeField(auto_now_add=True)),
-                ('group_code', models.CharField(max_length=50, verbose_name='Group Code')),
-                ('group_name', models.CharField(max_length=300, verbose_name='Group Name')),
-                ('dg_fullname', models.CharField(blank=True, max_length=200, null=True, verbose_name='Director General')),
-                ('directorate_code', models.CharField(max_length=50, verbose_name='Directorate Code')),
-                ('directorate_name', models.CharField(max_length=300, verbose_name='Directorate Name')),
-                ('director_fullname', models.CharField(blank=True, max_length=200, null=True, verbose_name='Director')),
-                ('cost_centre_code', models.CharField(max_length=50, verbose_name='Cost Centre Code')),
-                ('cost_centre_name', models.CharField(max_length=300, verbose_name='Cost Centre Name')),
-                ('deputy_director_fullname', models.CharField(blank=True, max_length=200, null=True, verbose_name='Deputy Director')),
-                ('business_partner_fullname', models.CharField(blank=True, max_length=200, null=True, verbose_name='Business Partner')),
-                ('active', models.BooleanField(default='True')),
-                ('disabled_with_actual', models.BooleanField(default='False', verbose_name='Disabled (Actuals to be cleared)')),
-                ('bsce_email', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='costcentre.BSCEEmail', verbose_name='BSCE Email')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='costcentre_archivedcostcentre', to='core.FinancialYear')),
-            ],
-            options={
-                'verbose_name': 'Archived Cost Centre',
-                'verbose_name_plural': 'Archived Cost Centres',
-                'ordering': ['cost_centre_code'],
-                'unique_together': {('cost_centre_code', 'financial_year')},
-            },
+        migrations.RenameModel(
+            old_name='HistoricCostCentre',
+            new_name='ArchivedCostCentre',
         ),
         migrations.RenameModel(
             old_name='SimpleHistoryHistoricCostCentre',
@@ -50,8 +25,5 @@ class Migration(migrations.Migration):
         migrations.AlterModelOptions(
             name='simplehistoryarchivedcostcentre',
             options={'get_latest_by': 'history_date', 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical Archived Cost Centre'},
-        ),
-        migrations.DeleteModel(
-            name='HistoricCostCentre',
         ),
     ]
