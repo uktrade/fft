@@ -12,7 +12,11 @@ from forecast.views.view_forecast.programme_details import (
     GroupProgrammeDetailsView,
 )
 
-from previous_years.test.test_utils import DownloadPastYearForecastSetup
+from previous_years.test.test_utils import (
+    DownloadPastYearForecastSetup,
+    hide_adjustment_columns
+)
+
 
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
@@ -117,3 +121,9 @@ class ViewProgrammeDetailsTest(DownloadPastYearForecastSetup):
             period=self.archived_year,
         )
         self.check_response(resp)
+
+
+class ViewProgrammeDetailsAdjustmentColumnsTest(ViewProgrammeDetailsTest):
+    def setUp(self):
+        super().setUp()
+        hide_adjustment_columns()

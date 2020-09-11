@@ -119,17 +119,32 @@ class ForecastViewTableMixin(MultiTableMixin):
     def month_list(self):
         # returns the list of month with actuals in the selected period.
         if self._month_list is None:
-            period = self.period
-            if period:
-                # We are displaying historical forecast
-                self._month_list = FinancialPeriod.financial_period_info.month_sublist(
-                    period
+            if self.year:
+                # We are displaying historical data, so we need to include the Adj
+                self._month_list = (
+                    FinancialPeriod.financial_period_info.month_adj_display_list()
                 )
             else:
-                self._month_list = (
-                    FinancialPeriod.financial_period_info.actual_month_list()
-                )
+                period = self.period
+                if period:
+                    # We are displaying historical forecast
+                    self._month_list = \
+                        FinancialPeriod.financial_period_info.month_sublist(period)
+                else:
+                    self._month_list = \
+                        FinancialPeriod.financial_period_info.actual_month_list()
+
         return self._month_list
+
+    @property
+    def adj_visible_list(self):
+        list = []
+        if self.year:
+            # We need to show the Adj periods
+            list = FinancialPeriod.financial_period_info.all_adj_list()
+        else:
+            list = FinancialPeriod.financial_period_info.adj_display_list()
+        return list
 
     @property
     def data_model(self):

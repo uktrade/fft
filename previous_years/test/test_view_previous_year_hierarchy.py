@@ -13,7 +13,10 @@ from forecast.views.view_forecast.forecast_summary import (
     GroupView,
 )
 
-from previous_years.test.test_utils import DownloadPastYearForecastSetup
+from previous_years.test.test_utils import (
+    DownloadPastYearForecastSetup,
+    hide_adjustment_columns
+)
 
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
@@ -169,7 +172,6 @@ class ViewForecastHierarchyTest(DownloadPastYearForecastSetup):
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-
         assert last_hierarchy_cols[TOTAL_COLUMN].get_text().strip() == \
             format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
@@ -349,3 +351,9 @@ class ViewForecastHierarchyTest(DownloadPastYearForecastSetup):
 
         # Check that the second table displays the project and the correct totals
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
+
+
+class ViewForecastHierarchyAdjustmentColumnsTest(ViewForecastHierarchyTest):
+    def setUp(self):
+        super().setUp()
+        hide_adjustment_columns()

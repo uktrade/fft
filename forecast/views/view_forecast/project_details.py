@@ -66,7 +66,10 @@ class ForecastProjectDetailsMixin(ForecastViewTableMixin):
         )
 
         project_details_table = ForecastSubTotalTable(
-            columns, project_details_data, actual_month_list=self.month_list,
+            columns,
+            project_details_data,
+            actual_month_list=self.month_list,
+            adj_visible_list=self.adj_visible_list,
         )
         project_details_table.attrs["caption"] = "Project Report"
         project_details_table.tag = self.table_tag

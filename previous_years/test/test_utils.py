@@ -15,6 +15,10 @@ from core.test.test_base import RequestFactoryBase
 
 from costcentre.test.factories import ArchivedCostCentreFactory
 
+
+from forecast.models import FinancialPeriod
+
+
 from previous_years.models import (
     ArchivedFinancialCode,
     ArchivedForecastData,
@@ -147,3 +151,12 @@ class DownloadPastYearForecastSetup(TestCase, RequestFactoryBase):
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
+
+
+def hide_adjustment_columns():
+    for period_code in range(13, 16):
+        financial_period_obj = FinancialPeriod.objects.get(
+            financial_period_code=period_code
+        )
+        financial_period_obj.display_figure = False
+        financial_period_obj.save()

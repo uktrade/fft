@@ -3,9 +3,7 @@ from bs4 import BeautifulSoup
 
 from django.urls import reverse
 
-from forecast.test.test_utils import (
-    format_forecast_figure,
-)
+from forecast.test.test_utils import format_forecast_figure
 from forecast.views.view_forecast.expenditure_details import (
     CostCentreExpenditureDetailsView,
     DITExpenditureDetailsView,
@@ -13,7 +11,10 @@ from forecast.views.view_forecast.expenditure_details import (
     GroupExpenditureDetailsView,
 )
 
-from previous_years.test.test_utils import DownloadPastYearForecastSetup
+from previous_years.test.test_utils import (
+    DownloadPastYearForecastSetup,
+    hide_adjustment_columns,
+)
 
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
@@ -26,13 +27,10 @@ PROJECT_TABLE_INDEX = 3
 
 
 class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
-
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
         first_nac_cols = nac_rows[2].find_all("td")
-        assert (
-            first_nac_cols[0].get_text().strip() == self.natural_account_description
-        )
+        assert first_nac_cols[0].get_text().strip() == self.natural_account_description
 
         assert first_nac_cols[2].get_text().strip() == format_forecast_figure(
             self.budget
@@ -40,14 +38,17 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
+            self.year_total
+        )
         # Check the difference between budget and year total
-        assert last_nac_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_nac_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_nac_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_negative_value_formatted(self, soup, lenght):
         negative_values = soup.find_all("span", class_="negative")
@@ -76,9 +77,9 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
             reverse(
                 "expenditure_details_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'expenditure_category': self.expenditure_category_id,
-                    'budget_type': self.budget_type_id,
+                    "cost_centre_code": self.cost_centre_code,
+                    "expenditure_category": self.expenditure_category_id,
+                    "budget_type": self.budget_type_id,
                     "period": self.archived_year,
                 },
             ),
@@ -87,7 +88,6 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
             expenditure_category=self.expenditure_category_id,
             budget_type=self.budget_type_id,
             period=self.archived_year,
-
         )
         self.check_response(resp)
 
@@ -96,9 +96,9 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
             reverse(
                 "expenditure_details_directorate",
                 kwargs={
-                    'directorate_code': self.directorate_code,
-                    'expenditure_category': self.expenditure_category_id,
-                    'budget_type': self.budget_type_id,
+                    "directorate_code": self.directorate_code,
+                    "expenditure_category": self.expenditure_category_id,
+                    "budget_type": self.budget_type_id,
                     "period": self.archived_year,
                 },
             ),
@@ -115,9 +115,9 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
             reverse(
                 "expenditure_details_group",
                 kwargs={
-                    'group_code': self.group_code,
-                    'expenditure_category': self.expenditure_category_id,
-                    'budget_type': self.budget_type_id,
+                    "group_code": self.group_code,
+                    "expenditure_category": self.expenditure_category_id,
+                    "budget_type": self.budget_type_id,
                     "period": self.archived_year,
                 },
             ),
@@ -135,8 +135,8 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
             reverse(
                 "expenditure_details_dit",
                 kwargs={
-                    'expenditure_category': self.expenditure_category_id,
-                    'budget_type': self.budget_type_id,
+                    "expenditure_category": self.expenditure_category_id,
+                    "budget_type": self.budget_type_id,
                     "period": self.archived_year,
                 },
             ),
@@ -147,3 +147,11 @@ class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
         )
 
         self.check_response(resp)
+
+
+class ViewForecastNaturalAccountCodeAdjustmentColumnsTest(
+    ViewForecastNaturalAccountCodeTest
+):
+    def setUp(self):
+        super().setUp()
+        hide_adjustment_columns()

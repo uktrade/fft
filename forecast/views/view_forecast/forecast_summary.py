@@ -82,6 +82,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 self.field_infos.programme_columns,
                 programme_data,
                 actual_month_list=self.month_list,
+                adj_visible_list=self.adj_visible_list,
             )
         else:
             programme_table = ForecastWithLinkTable(
@@ -94,6 +95,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 self.field_infos.programme_columns,
                 programme_data,
                 actual_month_list=self.month_list,
+                adj_visible_list=self.adj_visible_list,
             )
 
         programme_table.attrs["caption"] = "Control total report"
@@ -111,6 +113,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             self.field_infos.expenditure_columns,
             expenditure_data,
             actual_month_list=self.month_list,
+            adj_visible_list=self.adj_visible_list,
         )
         expenditure_table.attrs["caption"] = "Expenditure report"
         expenditure_table.tag = self.table_tag
@@ -123,6 +126,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             self.field_infos.project_columns,
             project_data,
             actual_month_list=self.month_list,
+            adj_visible_list=self.adj_visible_list,
         )
         project_table.attrs["caption"] = "Project report"
         project_table.tag = self.table_tag
@@ -132,6 +136,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 hierarchy_columns,
                 hierarchy_data,
                 actual_month_list=self.month_list,
+                adj_visible_list=self.adj_visible_list,
             )
         else:
             hierarchy_table = ForecastWithLinkTable(
@@ -142,6 +147,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 hierarchy_columns,
                 hierarchy_data,
                 actual_month_list=self.month_list,
+                adj_visible_list=self.adj_visible_list,
             )
 
         hierarchy_table.attrs["caption"] = "Forecast hierarchy report"
