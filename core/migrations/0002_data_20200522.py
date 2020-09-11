@@ -15,7 +15,7 @@ financial_years = [
 
 def populate_financial_years(apps, schema_editor):
     financial_year_model = apps.get_model("core", "FinancialYear")
-    current_financial_year = get_current_financial_year()
+    current_financial_year = 2020
     for year in financial_years:
         d = dict(zip(fields, year))
 

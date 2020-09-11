@@ -83,12 +83,17 @@ class NaturalCodeTable(FadminTable):
 
 
 class HistoricalNaturalCodeTable(FadminTable):
+    budget_description = tables.Column(
+        verbose_name="Budget Category",
+        accessor="expenditure_category.grouping_description",
+    )
+
     class Meta(FadminTable.Meta):
         model = ArchivedNaturalCode
         fields = (
             "economic_budget_code",
             "NAC_category",
-            "expenditure_category",
+            "budget_description",
             "commercial_category",
             "account_L6_budget",
             "natural_account_code",

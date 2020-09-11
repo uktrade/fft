@@ -6,24 +6,25 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "DIT" "forecast_dit" view.period %}
-    {% breadcrumb view.cost_centre.directorate.group.group_name "forecast_group" view.cost_centre.directorate.group_id view.period %}
-    {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code view.period %}
-    {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code view.period %}
+    {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
+    {% breadcrumb view.directorate_name "forecast_directorate" view.directorate_code view.period %}
+    {% breadcrumb view.cost_centre_name "forecast_cost_centre" view.cost_centre_code view.period %}
 {% endblock %}
 
-{% block title %}Cost Centre - {{ view.cost_centre.cost_centre_name }}{% endblock %}
+{% block title %}Cost Centre - {{ view.cost_centre_name }}{% endblock %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }} </h1>
+    <h1 class="govuk-heading-l">{{ view.cost_centre_name }} - {{ view.cost_centre_code }} </h1>
     <div class="action-bar-wrapper">
         <div class="action-bar">
-            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre.cost_centre_code view.period %} ">Download raw data</a>
-
-            {% is_forecast_user user as is_forecast_user %}
-            {% if is_forecast_user == True %}
-                {% can_edit_cost_centre user view.cost_centre.cost_centre_code as can_edit_cost_centre %}
-                {% if can_edit_cost_centre == True %}
-                    <a class="govuk-button govuk-button--secondary edit-forecast-link" href="{% url 'edit_forecast' view.cost_centre.cost_centre_code  %}"> Edit Forecast </a>
+            <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre_code view.period %} ">Download raw data</a>
+            {% if view.year == 0 %}
+                {% is_forecast_user user as is_forecast_user %}
+                {% if is_forecast_user == True %}
+                    {% can_edit_cost_centre user view.cost_centre_code as can_edit_cost_centre %}
+                    {% if can_edit_cost_centre == True %}
+                        <a class="govuk-button govuk-button--secondary edit-forecast-link" href="{% url 'edit_forecast' view.cost_centre_code  %}"> Edit Forecast </a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
 

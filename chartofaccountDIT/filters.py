@@ -94,7 +94,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
             Q(economic_budget_code__icontains=value)
             | Q(NAC_category__icontains=value)
             | Q(account_L6_budget__icontains=value)
-            | Q(expenditure_category__icontains=value)
+            | Q(expenditure_category__grouping_description__icontains=value)
             | Q(commercial_category__icontains=value)
             | Q(natural_account_code__icontains=value)
             | Q(natural_account_code_description__icontains=value)
@@ -110,7 +110,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
         return qs_filtered.filter(active=True).order_by(
             "-economic_budget_code",
             "-NAC_category",
-            "-expenditure_category",
+            "-expenditure_category__grouping_description",
             "commercial_category",
             "natural_account_code",
         )

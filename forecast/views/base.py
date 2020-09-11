@@ -6,7 +6,7 @@ from django.views.generic.edit import FormView
 
 from django_tables2 import MultiTableMixin
 
-from end_of_month.models import forecast_budget_view_model
+from core.models import FinancialYear
 
 from forecast.forms import ForecastPeriodForm
 from forecast.models import FinancialPeriod
@@ -15,6 +15,24 @@ from forecast.utils.access_helpers import (
     can_forecast_be_edited,
     can_view_forecasts,
 )
+from forecast.utils.query_fields import (
+    ForecastQueryFields,
+    SHOW_COSTCENTRE,
+    SHOW_DIRECTORATE,
+    SHOW_DIT,
+    SHOW_GROUP,
+)
+
+
+def get_view_forecast_period_name(period):
+    if period < 2000:
+        # We are displaying historical forecast
+        forecast_period_obj = FinancialPeriod.objects.get(pk=period)
+        period_name = forecast_period_obj.period_long_name
+    else:
+        financial_year_obj = FinancialYear.objects.get(pk=period)
+        period_name = financial_year_obj.financial_year_display
+    return period_name
 
 
 class NoCostCentreCodeInURLError(Exception):
@@ -58,10 +76,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             return redirect(
                 reverse(
                     "forecast_cost_centre",
-                    kwargs={
-                        "cost_centre_code": self.cost_centre_code,
-                        "period": 0,
-                    },
+                    kwargs={"cost_centre_code": self.cost_centre_code, "period": 0, },
                 )
             )
 
@@ -69,13 +84,21 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 class ForecastViewTableMixin(MultiTableMixin):
     # It handles the differences caused by viewing
     # forecasts entered in different period.
+    # the period can also be a previous archived year
     def __init__(self, *args, **kwargs):
         self._period = None
         self._month_list = None
         self._datamodel = None
         self._table_tag = None
-
+        self._field_infos = None
+        self._year = None
         super().__init__(*args, **kwargs)
+
+    @property
+    def field_infos(self):
+        if self._field_infos is None:
+            self._field_infos = ForecastQueryFields(self.period)
+        return self._field_infos
 
     @property
     def period(self):
@@ -84,7 +107,17 @@ class ForecastViewTableMixin(MultiTableMixin):
         return self._period
 
     @property
+    def year(self):
+        if self._year is None:
+            if self.field_infos.current_year:
+                self._year = 0
+            else:
+                self._year = self.period
+        return self._year
+
+    @property
     def month_list(self):
+        # returns the list of month with actuals in the selected period.
         if self._month_list is None:
             period = self.period
             if period:
@@ -100,20 +133,15 @@ class ForecastViewTableMixin(MultiTableMixin):
 
     @property
     def data_model(self):
-        if self._datamodel is None:
-            self._datamodel = forecast_budget_view_model[self.period]
-        return self._datamodel
+        return self.field_infos.datamodel
 
     @property
     def table_tag(self):
         if self._table_tag is None:
             period = self.period
             if period:
-                # We are displaying historical forecast
-                forecast_period_obj = FinancialPeriod.objects.get(pk=period)
-                self._table_tag = (
-                    f"Historical data for {forecast_period_obj.period_long_name}"
-                )
+                self._table_tag = \
+                    f"Historical data for {get_view_forecast_period_name(period)}"
             else:
                 self._table_tag = ""
         return self._table_tag
@@ -130,5 +158,104 @@ class PeriodFormView(FormView):
 
 
 class PeriodView(TemplateView):
+    table_pagination = False
+
     def period_form(self):
         return ForecastPeriodForm(selected_period=self.period)
+
+
+class CostCentreForecastMixin(PeriodView):
+    hierarchy_type = SHOW_COSTCENTRE
+
+    @property
+    def cost_centre_code(self):
+        return self.kwargs["cost_centre_code"]
+
+    @property
+    def costcentre_code(self):
+        return self.kwargs["cost_centre_code"]
+
+    def cost_centre(self):
+        return self.field_infos.cost_centre(
+            cost_centre_code=self.costcentre_code,
+        )
+
+    @property
+    def cost_centre_name(self):
+        return self.cost_centre().cost_centre_name
+
+    @property
+    def directorate_code(self):
+        if self.field_infos.current_year:
+            return self.cost_centre().directorate.directorate_code
+        else:
+            return self.cost_centre().directorate_code
+
+    @property
+    def directorate_name(self):
+        if self.field_infos.current_year:
+            return self.cost_centre().directorate.directorate_name
+        else:
+            return self.cost_centre().directorate_name
+
+    @property
+    def group_code(self):
+        if self.field_infos.current_year:
+            return self.cost_centre().directorate.group.group_code
+        else:
+            return self.cost_centre().group_code
+
+    @property
+    def group_name(self):
+        if self.field_infos.current_year:
+            return self.cost_centre().directorate.group.group_name
+        else:
+            return self.cost_centre().group_name
+
+
+class DirectorateForecastMixin(PeriodView):
+    hierarchy_type = SHOW_DIRECTORATE
+
+    @property
+    def directorate_code(self):
+        return self.kwargs["directorate_code"]
+
+    def directorate(self):
+        return self.field_infos.directorate(self.directorate_code)
+
+    @property
+    def directorate_name(self):
+        return self.directorate().directorate_name
+
+    @property
+    def group_code(self):
+        if self.field_infos.current_year:
+            return self.directorate().group.group_code
+        else:
+            return self.directorate().group_code
+
+    @property
+    def group_name(self):
+        if self.field_infos.current_year:
+            return self.directorate().group.group_name
+        else:
+            return self.directorate().group_name
+
+
+class GroupForecastMixin(PeriodView):
+    hierarchy_type = SHOW_GROUP
+
+    def group(self):
+        return self.field_infos.group(self.group_code)
+
+    @property
+    def group_code(self):
+        return self.kwargs["group_code"]
+
+    @property
+    def group_name(self):
+        return self.group().group_name
+
+
+class DITForecastMixin(PeriodView):
+    hierarchy_type = SHOW_DIT

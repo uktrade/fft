@@ -1,14 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
-from django.views.generic.edit import CreateView
+from django.urls import reverse
 
 from django_filters.views import FilterView
 
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
-from core.models import Document
 from core.utils.export_helpers import EXC_TAB_NAME_LEN
 from core.utils.generic_helpers import (
     get_current_financial_year,
@@ -91,18 +89,6 @@ class HistoricalFilteredView(FAdminFilteredView):
         year_display = get_year_display(year)
         self.name = f"{self.name} {year_display}"
         return super().get(request, *args, **kwargs)
-
-
-class DocumentCreateView(CreateView):
-    model = Document
-    fields = ["upload"]
-    success_url = reverse_lazy("home")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
-        context["documents"] = documents
-        return context
 
 
 def logout(request):

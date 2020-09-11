@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import connection
 
 from chartofaccountDIT.models import (
@@ -26,7 +28,10 @@ from previous_years.models import (
     ArchivedForecastData,
     ArchivedForecastDataUpload,
 )
-from previous_years.utils import valid_year_for_archiving_actuals
+from previous_years.utils import (
+    ArchiveYearError,
+    validate_year_for_archiving_actuals,
+)
 
 from upload_file.models import FileUpload
 from upload_file.utils import (
@@ -65,10 +70,6 @@ ANALYSIS_HEADER = "analysis"
 ANALYSIS2_HEADER = "analysis2"
 
 VALID_WS_NAME = "Outturn"
-
-
-class ArchiveYearError(Exception):
-    pass
 
 
 class CheckArchivedFinancialCode(CheckFinancialCode):
@@ -191,6 +192,10 @@ def copy_uploaded_previous_year(year):
 
     with connection.cursor() as cursor:
         cursor.execute(sql_insert)
+    financial_year_obj = FinancialYear.objects.get(pk=year)
+    financial_year_obj.archived = True
+    financial_year_obj.archived_at = datetime.datetime.now()
+    financial_year_obj.save()
 
 
 def upload_previous_year_figures(
@@ -274,8 +279,13 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
     expected_headers.extend(DATA_HEADERS)
     check_header(header_dict, expected_headers)
 
-    if not valid_year_for_archiving_actuals(financial_year):
-        raise ArchiveYearError
+    try:
+        validate_year_for_archiving_actuals(financial_year)
+    except ArchiveYearError as ex:
+        set_file_upload_fatal_error(
+            file_upload, str(ex), str(ex),
+        )
+        raise ex
 
     financial_year_obj = FinancialYear.objects.get(pk=financial_year)
 
@@ -359,7 +369,10 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
         file_upload, f"Processed {rows_to_process} rows.", final_status
     )
 
-    return not check_financial_code.error_found
+    if check_financial_code.error_found:
+        raise UploadFileDataError(
+            "No data uploaded. Check the log in the file upload record."
+        )
 
 
 def upload_previous_year_from_file(file_upload, year):
@@ -372,7 +385,7 @@ def upload_previous_year_from_file(file_upload, year):
         raise ex
     try:
         upload_previous_year(worksheet, year, file_upload)
-    except (UploadFileDataError) as ex:
+    except (UploadFileDataError, ArchiveYearError) as ex:
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),
         )

@@ -28,7 +28,7 @@ def add_finance_admin_permissions(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [("core", "0006_data_20200810")]
+    dependencies = [("core", "0007_auto_20200826_0813")]
 
     operations = [
         migrations.RunPython(add_finance_admin_permissions),

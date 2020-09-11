@@ -13,8 +13,16 @@ from end_of_month.upload_archived_month import (
 )
 
 from forecast.import_csv import WrongChartOFAccountCodeException
+from forecast.utils.import_helpers import (
+    UploadFileDataError,
+    UploadFileFormatError,
+)
+
 
 from previous_years.import_previous_year import upload_previous_year_from_file
+from previous_years.utils import (
+    ArchiveYearError,
+)
 
 from upload_file.models import FileUpload
 
@@ -40,7 +48,12 @@ class Command(CommandUpload):
 
         try:
             upload_previous_year_from_file(fileobj, year)
-        except (WrongChartOFAccountCodeException, WrongArchivePeriodException) as ex:
+        except (WrongChartOFAccountCodeException,
+                WrongArchivePeriodException,
+                UploadFileDataError,
+                UploadFileFormatError,
+                ArchiveYearError
+                ) as ex:
             raise CommandError(f"Failure uploading historical actuals: {str(ex)}")
             return
 

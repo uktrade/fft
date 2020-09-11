@@ -156,7 +156,6 @@ urlpatterns = [
         DirectorateProjectDetailsView.as_view(),
         name="project_details_directorate",
     ),
-    #  directorate-project/10907T/310530/6/
     path(
         "cost-centre_project/<cost_centre_code>/<project_code>/<int:period>/",
         CostCentreProjectDetailsView.as_view(),

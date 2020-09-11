@@ -83,7 +83,7 @@ class ArchivedAnalysis2(Analysis2Abstract, ArchivedModel):
     chart_of_account_code_name = 'analysis2_code'
 
     def __str__(self):
-        return "{}{}".format(
+        return "{} {}".format(
             super().__str__(), self.financial_year.financial_year_display,
         )
 
@@ -142,6 +142,13 @@ class ExpenditureCategoryAbstract(models.Model):
     )
     description = models.CharField(max_length=5000, blank=True, null=True)
     further_description = models.CharField(max_length=5000, blank=True, null=True,)
+    NAC_category = models.ForeignKey(
+        NACCategory,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name="Budget Grouping",
+    )
 
     def __str__(self):
         return str(self.grouping_description)
@@ -162,13 +169,6 @@ class ExpenditureCategory(
         blank=True,
         null=True,
         verbose_name="Budget Code",
-    )
-    NAC_category = models.ForeignKey(
-        NACCategory,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-        verbose_name="Budget Grouping",
     )
     op_del_category = models.ForeignKey(
         OperatingDeliveryCategory,
@@ -191,14 +191,14 @@ class ArchivedExpenditureCategory(
     linked_budget_code_description = models.CharField(
         max_length=200, verbose_name="Budget Description", blank=True, null=True,
     )
-    NAC_category = models.CharField(
+    NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", blank=True, null=True,
     )
     active = models.BooleanField(default=False)
     chart_of_account_code_name = 'grouping_description'
 
     def __str__(self):
-        return "{}{}".format(
+        return "{} {}".format(
             super().__str__(), self.financial_year.financial_year_display,
         )
 
@@ -208,7 +208,7 @@ class ArchivedExpenditureCategory(
             financial_year=year_obj,
             active=obj.active,
             grouping_description=obj.grouping_description + suffix,
-            NAC_category=obj.NAC_category.NAC_category_description
+            NAC_category_description=obj.NAC_category.NAC_category_description
             if obj.NAC_category
             else None,
             description=obj.description,
@@ -353,7 +353,14 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     from other tables. The tables is not normalised by design."""
 
     natural_account_code = models.IntegerField(verbose_name="PO/Actuals NAC")
-    expenditure_category = models.CharField(
+    expenditure_category = models.ForeignKey(
+        ArchivedExpenditureCategory,
+        verbose_name="Budget Category",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    expenditure_category_description = models.CharField(
         max_length=255, verbose_name="Budget Category", blank=True, null=True
     )
     NAC_category = models.CharField(
@@ -379,9 +386,13 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):
         if obj.expenditure_category:
-            expenditure_category_value = (
-                obj.expenditure_category.grouping_description
-            )  # noqa
+            expenditure_category_value = obj.expenditure_category.grouping_description
+            # Find the archived equivalent
+            expenditure_category_obj = ArchivedExpenditureCategory.objects.get(
+                grouping_description=obj.expenditure_category.grouping_description
+            )
+            expenditure_category_id = expenditure_category_obj.id
+
             NAC_category_val = (
                 obj.expenditure_category.NAC_category.NAC_category_description
             )
@@ -411,7 +422,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             + suffix,  # noqa
             natural_account_code=obj.natural_account_code,
             used_for_budget=obj.used_for_budget,
-            expenditure_category=expenditure_category_value,
+            expenditure_category_id=expenditure_category_id,
+            expenditure_category_description=expenditure_category_value,
             NAC_category=NAC_category_val,
             commercial_category=commercial_category_val,
             account_L6_budget=account_L6_budget_val,

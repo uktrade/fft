@@ -146,8 +146,13 @@ class ImportPreviousYearForecastTest(TestCase, RequestFactoryBase):
             document_type=FileUpload.PREVIOUSYEAR,
             file_location=FileUpload.LOCALFILE,
         )
+        financial_year_obj = FinancialYear.objects.get(pk=self.archived_year)
+        self.assertEqual(financial_year_obj.archived, False)
         file_upload_obj.save()
         upload_previous_year(self.data_worksheet, self.archived_year, file_upload_obj,)
+
+        financial_year_obj = FinancialYear.objects.get(pk=self.archived_year)
+        self.assertEqual(financial_year_obj.archived, True)
 
         self.assertEqual(ArchivedFinancialCode.objects.all().count(), 1)
         self.assertEqual(ArchivedForecastData.objects.all().count(), 1)

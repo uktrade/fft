@@ -127,7 +127,7 @@ def _export_historical_exp_cat_iterator(queryset):
             obj.further_description,
             obj.linked_budget_code,
             obj.linked_budget_code_description,
-            obj.NAC_category,
+            obj.NAC_category_description,
             obj.financial_year.financial_year_display,
             obj.archived,
         ]
