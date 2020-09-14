@@ -94,7 +94,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
             Q(economic_budget_code__icontains=value)
             | Q(NAC_category__icontains=value)
             | Q(account_L6_budget__icontains=value)
-            | Q(expenditure_category__icontains=value)
+            | Q(expenditure_category__grouping_description__icontains=value)
             | Q(commercial_category__icontains=value)
             | Q(natural_account_code__icontains=value)
             | Q(natural_account_code_description__icontains=value)
@@ -110,7 +110,7 @@ class HistoricalNACFilter(ArchivedFilterSet):
         return qs_filtered.filter(active=True).order_by(
             "-economic_budget_code",
             "-NAC_category",
-            "-expenditure_category",
+            "-expenditure_category__grouping_description",
             "commercial_category",
             "natural_account_code",
         )
@@ -341,7 +341,7 @@ class ProgrammeFilter(MyFilterSet):
         return queryset.filter(
             Q(programme_code__icontains=value)
             | Q(programme_description__icontains=value)
-            | Q(budget_type_fk__budget_type__icontains=value)
+            | Q(budget_type__budget_type__icontains=value)
         )
 
     class Meta(MyFilterSet.Meta):
@@ -352,7 +352,7 @@ class ProgrammeFilter(MyFilterSet):
     def qs(self):
         qs_filtered = super(ProgrammeFilter, self).qs
         return qs_filtered.filter(active=True).order_by(
-            "programme_code", "programme_description", "budget_type_fk__budget_type"
+            "programme_code", "programme_description", "budget_type__budget_type"
         )
 
 

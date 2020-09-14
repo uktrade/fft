@@ -3,6 +3,7 @@ import factory
 from faker import Faker
 
 from costcentre.models import (
+    ArchivedCostCentre,
     CostCentre,
     DepartmentalGroup,
     Directorate,
@@ -50,3 +51,16 @@ class CostCentreFactory(factory.DjangoModelFactory):
     directorate = factory.SubFactory(DirectorateFactory)
     cost_centre_code = 999999
     cost_centre_name = "Test Cost Centre"
+
+
+class ArchivedCostCentreFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = ArchivedCostCentre
+        django_get_or_create = ('cost_centre_code',
+                                'financial_year',)
+
+    active = True
+    cost_centre_code = 999999
+    cost_centre_name = "Test Cost Centre"
+    financial_year = 2019

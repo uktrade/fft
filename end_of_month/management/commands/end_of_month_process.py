@@ -1,7 +1,12 @@
 from django.core.management.base import BaseCommand
 
 from end_of_month.end_of_month_actions import end_of_month_archive
-from end_of_month.models import EndOfMonthStatus
+from end_of_month.utils import (
+    InvalidPeriodError,
+    LaterPeriodAlreadyArchivedError,
+    PeriodAlreadyArchivedError,
+    validate_period_code,
+)
 
 
 class Command(BaseCommand):
@@ -13,31 +18,28 @@ class Command(BaseCommand):
         parser.add_argument("period", type=int)
 
     def handle(self, *args, **options):
-        period_code = options["period"]
-        if period_code > 15 or period_code < 1:
-            self.stdout.write(self.style.ERROR("Valid Period is between 1 and 15."))
-            return
-
-        end_of_month_info = EndOfMonthStatus.objects.filter(
-            archived_period__financial_period_code=period_code
-        ).first()
-        if end_of_month_info.archived:
+        try:
+            period_code = options["period"]
+            try:
+                validate_period_code(period_code)
+            except InvalidPeriodError:
+                self.stdout.write(self.style.ERROR("Valid Period is between 1 and 15."))
+                return
+            except PeriodAlreadyArchivedError:
+                self.stdout.write(
+                    self.style.ERROR("The selected period has already been archived.")
+                )
+                return
+            except LaterPeriodAlreadyArchivedError:
+                self.stdout.write(
+                    self.style.ERROR("A later period has already been archived.")
+                )
+                return
+            end_of_month_archive(period_code)
             self.stdout.write(
-                self.style.ERROR("The selected period has already been archived.")
+                self.style.SUCCESS(f'Period {period_code} archived.')
             )
-            return
-
-        highest_archived = EndOfMonthStatus.objects.filter(
-            archived=True, archived_period__financial_period_code=period_code
-        )
-
-        if highest_archived.count():
+        except Exception as ex:
             self.stdout.write(
-                self.style.ERROR("A later period has already been archived.")
+                self.style.ERROR(f"An error occured: {ex}")
             )
-            return
-
-        end_of_month_archive(period_code)
-        self.stdout.write(
-            self.style.SUCCESS(f'Period {period_code} archived.')
-        )

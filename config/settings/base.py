@@ -29,10 +29,10 @@ VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 INSTALLED_APPS = [
     "custom_usermodel",
     "authbroker_client",
+    "previous_years.apps.PreviousYearsConfig",
     "downloadsupport.apps.DownloadSupportConfig",
     "forecast.apps.ForecastConfig",
     "gifthospitality.apps.GifthospitalityConfig",
-    "payroll.apps.PayrollConfig",
     "costcentre.apps.CostCentreConfig",
     "chartofaccountDIT.apps.ChartAccountConfig",
     "treasuryCOA.apps.TreasuryCOAConfig",

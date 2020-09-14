@@ -262,7 +262,7 @@ PROG_KEY = {
     IMPORT_CSV_PK_KEY: "Code",
     IMPORT_CSV_FIELDLIST_KEY: {
         ProgrammeCode.programme_description.field_name: "Description",  # noqa: E501
-        ProgrammeCode.budget_type_fk.field.name: BUDGET_KEY,
+        ProgrammeCode.budget_type.field.name: BUDGET_KEY,
     },
 }
 

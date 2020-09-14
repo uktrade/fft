@@ -172,7 +172,7 @@ class CostCentre(IsActiveModel):
         )
 
 
-class HistoricCostCentre(ArchivedModel):
+class ArchivedCostCentre(ArchivedModel):
     """Repository for historical cost centres hierarchies.
     The table is not normalised, to make life easier when retrieving data"""
 
@@ -205,6 +205,7 @@ class HistoricCostCentre(ArchivedModel):
     disabled_with_actual = models.BooleanField(
         "Disabled (Actuals to be cleared)", default="False"
     )
+    chart_of_account_code_name = 'cost_centre_code'
 
     @classmethod
     def archive_year(cls, cc_obj, year_obj, suffix=""):
@@ -237,7 +238,7 @@ class HistoricCostCentre(ArchivedModel):
         )
 
     class Meta:
-        verbose_name = "Historic Cost Centre"
-        verbose_name_plural = "Historic Cost Centres"
+        verbose_name = "Archived Cost Centre"
+        verbose_name_plural = "Archived Cost Centres"
         ordering = ["cost_centre_code"]
         unique_together = ("cost_centre_code", "financial_year")

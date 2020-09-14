@@ -3,16 +3,16 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb view.group.group_name "forecast_group" view.group.group_code view.period %}
+    {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
     {% breadcrumb view.programme_code.programme_description "programme_details_group" view.period %}
 {% endblock %}
 
 {% block title %}Programme Details - Group - {{ view.group.group_code }}{% endblock %}
 
 {% block view_hierarchy_title %}
-    <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+    <h1 class="govuk-heading-l">{{ view.group_name }} - {{ view.group_code }}</h1>
 {% endblock %}
 
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_programme_details_group' view.group.group_code view.programme_code.programme_code  view.forecast_expenditure_type  view.period %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_programme_details_group' view.group_code view.programme_code.programme_code  view.forecast_expenditure_type  view.period %} ">Download raw data</a>
 {% endblock %}

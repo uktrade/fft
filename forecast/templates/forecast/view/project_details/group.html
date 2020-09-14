@@ -3,15 +3,15 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb view.group.group_name "forecast_group" view.group.group_code view.period %}
+    {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
     {% breadcrumb view.project_code.project_description "project_details_group" view.period %}
 {% endblock %}
 
 {% block title %}Project Details - Group - {{ view.group.group_code }}{% endblock %}
 
 {% block view_hierarchy_title %}
-    <h1 class="govuk-heading-l">{{ view.group.group_name }} - {{ view.group.group_code }}</h1>
+    <h1 class="govuk-heading-l">{{ view.group_name }} - {{ view.group_code }}</h1>
 {% endblock %}
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_project_detail_group' view.group.group_code view.project_code.project_code  view.period %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_project_detail_group' view.group_code view.project_code.project_code  view.period %} ">Download raw data</a>
 {% endblock %}

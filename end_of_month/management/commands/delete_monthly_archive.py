@@ -29,5 +29,5 @@ class Command(BaseCommand):
         else:
             delete_last_end_of_month_archive()
             self.stdout.write(
-                self.style.SUCCESS(f'Latest archive deleted.')
+                self.style.SUCCESS('Latest archive deleted.')
             )

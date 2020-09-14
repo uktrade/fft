@@ -4,16 +4,16 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "DIT" "forecast_dit" view.period %}
-    {% breadcrumb view.directorate.group.group_name "forecast_group" view.directorate.group_id view.period %}
-    {% breadcrumb view.directorate.directorate_name "forecast_directorate" view.directorate.directorate_code view.period %}
+    {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
+    {% breadcrumb view.directorate_name "forecast_directorate" view.directorate_code view.period %}
 {% endblock %}
 
-{% block title %}Directorate - {{ view.directorate.directorate_name }}{% endblock %}
+{% block title %}Directorate - {{ view.directorate_name }}{% endblock %}
 
 {% block hierarchy_title %}
-   {{ view.directorate.directorate_name }} - {{ view.directorate.directorate_code }}
+   {{ view.directorate_name }} - {{ view.directorate_code }}
 {% endblock %}
 
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_directorate' view.directorate.directorate_code view.period %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_directorate' view.directorate_code view.period %} ">Download raw data</a>
 {% endblock %}

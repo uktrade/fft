@@ -3,8 +3,10 @@ from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 
-from core.myutils import get_current_financial_year
-from core.utils import check_empty
+from core.utils.generic_helpers import (
+    check_empty,
+    get_current_financial_year,
+)
 
 from forecast.models import (
     FinancialCode,

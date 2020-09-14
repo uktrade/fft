@@ -23,7 +23,7 @@ from chartofaccountDIT.views import (
     quick_links,
 )
 
-from core.myutils import GetValidYear
+from core.utils.generic_helpers import GetValidYear
 
 
 register_converter(GetValidYear, 'yyyy')

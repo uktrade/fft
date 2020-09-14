@@ -7,7 +7,10 @@ from guardian.shortcuts import (
     get_users_with_perms,
 )
 
-from costcentre.models import CostCentre
+from costcentre.models import (
+    ArchivedCostCentre,
+    CostCentre,
+)
 
 
 class CostCentreViewModeForm(forms.Form):
@@ -44,22 +47,43 @@ class AllCostCentresForm(forms.Form):
 
 class DirectorateCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        directorate_code = kwargs.pop('directorate_code')
+        year = kwargs.pop('year')
         cost_centre_code = kwargs.pop('cost_centre_code')
-
         super(DirectorateCostCentresForm, self).__init__(
             *args,
             **kwargs,
         )
 
-        self.fields['cost_centre'] = forms.ModelChoiceField(
-            queryset=CostCentre.objects.filter(
+        if year:
+            directorate_code = ArchivedCostCentre.objects.get(
+                cost_centre_code=cost_centre_code,
+                financial_year_id=year,
+            ).directorate_code
+            cost_centre_queryset = ArchivedCostCentre.objects.filter(
+                directorate_code=directorate_code,
+                financial_year_id=year,
+                active=True,
+            )
+            self.fields['cost_centre'] = forms.ModelChoiceField(
+                queryset=cost_centre_queryset,
+                widget=Select(),
+                initial=cost_centre_code,
+                to_field_name='cost_centre_code'
+            )
+        else:
+            directorate_code = CostCentre.objects.get(
+                cost_centre_code=cost_centre_code)\
+                .directorate.directorate_code
+            cost_centre_queryset = CostCentre.objects.filter(
                 directorate__directorate_code=directorate_code,
                 active=True,
-            ),
-            widget=Select(),
-            initial=cost_centre_code
-        )
+            )
+            self.fields['cost_centre'] = forms.ModelChoiceField(
+                queryset=cost_centre_queryset,
+                widget=Select(),
+                initial=cost_centre_code
+            )
+
         self.fields["cost_centre"].widget.attrs.update(
             {
                 "class": "govuk-select",
@@ -96,6 +120,11 @@ class MyCostCentresForm(forms.Form):
             "class": "govuk-select",
         }
     )
+
+
+class UserModelChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.get_short_name()
 
 
 class GivePermissionAdminForm(forms.Form):
@@ -137,7 +166,7 @@ class GivePermissionAdminForm(forms.Form):
             **kwargs,
         )
 
-    user = forms.ModelChoiceField(
+    user = UserModelChoiceField(
         queryset=None,
         widget=Select(),
     )

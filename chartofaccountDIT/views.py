@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from core.models import FinancialYear
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 from core.views import FAdminFilteredView, HistoricalFilteredView
 
 from .filters import (

@@ -3,18 +3,18 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb view.cost_centre.directorate.group.group_name "forecast_group" view.cost_centre.directorate.group_id view.period %}
-    {% breadcrumb view.cost_centre.directorate.directorate_name "forecast_directorate" view.cost_centre.directorate.directorate_code view.period %}
-    {% breadcrumb view.cost_centre.cost_centre_name "forecast_cost_centre" view.cost_centre.cost_centre_code view.period %}
+    {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
+    {% breadcrumb view.directorate_name "forecast_directorate" view.directorate_code view.period %}
+    {% breadcrumb view.cost_centre_name "forecast_cost_centre" view.cost_centre_code view.period %}
     {% breadcrumb view.expenditure_category.grouping_description "expenditure_details_cost_centre"  view.period %}
 {% endblock %}
 
 {% block title %}Expenditure Details - Cost Centre - {{ view.cost_centre.cost_centre_code }}{% endblock %}
 
 {% block view_hierarchy_title %}
-    <h1 class="govuk-heading-l">{{ view.cost_centre.cost_centre_name }} - {{ view.cost_centre.cost_centre_code }}</h1>
+    <h1 class="govuk-heading-l">{{ view.cost_centre_name }} - {{ view.cost_centre_code }}</h1>
 {% endblock %}
 
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_expenditure_details_cost_centre' view.cost_centre.cost_centre_code view.expenditure_category.id  view.budget_type  view.period %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_expenditure_details_cost_centre' view.cost_centre_code view.expenditure_category.id  view.budget_type  view.period %} ">Download raw data</a>
 {% endblock %}

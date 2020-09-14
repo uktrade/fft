@@ -60,7 +60,7 @@ class SubSegmentFactory(factory.DjangoModelFactory):
     Define SubSegment Factory
     """
 
-    budget_type_fk = factory.Iterator(BudgetType.objects.all())
+    dit_budget_type = factory.Iterator(BudgetType.objects.all())
 
     Segment_code = factory.SubFactory(SegmentFactory)
     estimates_row_code = factory.SubFactory(EstimateRowFactory)

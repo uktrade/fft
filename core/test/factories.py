@@ -4,7 +4,7 @@ import factory
 
 from faker import Faker
 
-from core.models import Document, EventLog, FinancialYear
+from core.models import EventLog, FinancialYear
 
 fake = Faker()
 
@@ -32,12 +32,3 @@ class EventLogFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = EventLog
-
-
-class DocumentFactory(factory.DjangoModelFactory):
-    """
-    Define Document Factory
-    """
-
-    class Meta:
-        model = Document

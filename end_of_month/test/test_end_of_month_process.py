@@ -1,6 +1,8 @@
 from django.db.models import F
 from django.test import TestCase
 
+from core.test.test_base import RequestFactoryBase
+
 from end_of_month.end_of_month_actions import (
     ArchiveMonthAlreadyArchivedError,
     ArchiveMonthArchivedPastError,
@@ -14,8 +16,6 @@ from end_of_month.models import (
 from end_of_month.test.test_utils import (
     MonthlyFigureSetup,
 )
-
-from core.test.test_base import RequestFactoryBase
 
 from forecast.models import (
     BudgetMonthlyFigure,

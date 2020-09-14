@@ -1,13 +1,12 @@
 import os
 from datetime import datetime
-from typing import (
-    Dict,
-    TypeVar,
-)
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import (
+    Group,
+    Permission,
+)
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db.models import Sum
@@ -29,6 +28,10 @@ from chartofaccountDIT.test.factories import (
 
 from core.models import FinancialYear
 from core.test.test_base import RequestFactoryBase
+from core.utils.excel_test_helpers import (
+    FakeCell,
+    FakeWorkSheet
+)
 
 from costcentre.models import (
     CostCentre,
@@ -70,19 +73,6 @@ TEST_COST_CENTRE = 109189
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = '310940'
-_KT = TypeVar('_KT')
-_VT = TypeVar('_VT')
-
-
-class FakeWorkSheet(Dict[_KT, _VT]):
-    title = None
-
-
-class FakeCell:
-    value = None
-
-    def __init__(self, value):
-        self.value = value
 
 
 # Set file upload handlers back to default as
@@ -145,7 +135,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
         dummy_upload = FileUpload(
-            document_file='dummy.csv',
+            s3_document_file='dummy.csv',
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
         )
@@ -375,7 +365,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         # Check that BadZipFile is raised on
         # supply of incorrect file format
         bad_file_type_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/bad_file_type.csv',
             ),
@@ -391,7 +381,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             )
 
         bad_title_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/bad_title_upload_test.xlsx',
             ),
@@ -467,7 +457,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
             ).actual_loaded
         )
         bad_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/upload_bad_data.xlsx',
             ),
@@ -496,7 +486,7 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         )
 
         good_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__),
                 'test_assets/upload_test.xlsx',
             ),
@@ -608,6 +598,62 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         )
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
+
+        resp = self.factory_get(
+            uploaded_actuals_url,
+            UploadActualsView,
+        )
+
+        # Should have been permission now
+        self.assertEqual(resp.status_code, 200)
+
+        resp = self.factory_post(
+            uploaded_actuals_url,
+            {
+                "period": self.financial_period_code,
+                "year": self.financial_year_id,
+                'file': self.file_mock,
+            },
+            UploadActualsView,
+        )
+
+        # Make sure upload was process was kicked off
+        assert mock_process_uploaded_file.called
+
+        # Should have been redirected to document upload  page
+        self.assertEqual(resp.status_code, 302)
+        assert resp.url == '/upload/files/'
+
+        # Clean up file
+        file_path = 'uploaded/actuals/{}'.format(
+            self.file_mock.name
+        )
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+    @override_settings(ASYNC_FILE_UPLOAD=False)
+    @patch('forecast.views.upload_file.process_uploaded_file')
+    def test_finance_admin_can_upload_actuals(self, mock_process_uploaded_file):
+        assert not self.test_user.groups.filter(
+            name="Finance Administrator"
+        )
+
+        uploaded_actuals_url = reverse(
+            "upload_actuals_file",
+        )
+
+        # Should have been redirected (no permission)
+        with self.assertRaises(PermissionDenied):
+            self.factory_get(
+                uploaded_actuals_url,
+                UploadActualsView,
+            )
+
+        finance_admins = Group.objects.get(
+            name='Finance Administrator',
+        )
+        finance_admins.user_set.add(self.test_user)
+        finance_admins.save()
 
         resp = self.factory_get(
             uploaded_actuals_url,

@@ -1,6 +1,6 @@
 from chartofaccountDIT.models import NaturalCode
 
-from core.exportutils import export_to_csv, get_fk_value
+from core.utils.export_helpers import export_to_csv, get_fk_value
 
 from costcentre.models import CostCentre
 

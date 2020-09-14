@@ -53,7 +53,7 @@ from costcentre.models import (
     CostCentrePerson,
     DepartmentalGroup,
     Directorate,
-    HistoricCostCentre,
+    ArchivedCostCentre,
 )
 
 from forecast.permission_shortcuts import assign_perm
@@ -330,7 +330,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
     def has_change_permission(self, request, obj=None):
         if not obj:
-            return False
+            return True
 
         cost_centre = self.get_object(request, obj.pk)
 
@@ -572,4 +572,4 @@ admin.site.register(Directorate, DirectorateAdmin)
 admin.site.register(BSCEEmail, BSCEEmailAdmin)
 admin.site.register(BusinessPartner, BusinessPartnerAdmin)
 admin.site.register(CostCentrePerson, CostCentrePersonAdmin)
-admin.site.register(HistoricCostCentre, HistoricCostCentreAdmin)
+admin.site.register(ArchivedCostCentre, HistoricCostCentreAdmin)

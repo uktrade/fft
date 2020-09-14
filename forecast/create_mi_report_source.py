@@ -1,18 +1,12 @@
-from core.exportutils import export_to_excel
-from core.utils import today_string
+from core.utils.export_helpers import export_to_excel
+from core.utils.generic_helpers import today_string
 
 from forecast.models import (
     BudgetMonthlyFigure,
     ForecastingDataView,
 )
 from forecast.utils.query_fields import (
-    ANALYSIS1_CODE,
-    ANALYSIS2_CODE,
-    COST_CENTRE_CODE,
-    MI_REPORT_DOWNLOAD_COLUMNS,
-    NAC_CODE,
-    PROGRAMME_CODE,
-    PROJECT_CODE,
+    ForecastQueryFields,
 )
 
 
@@ -25,7 +19,7 @@ def get_obj_value(obj, name):
     return value
 
 
-def export_mi_iterator(queryset):
+def export_mi_iterator(queryset, fields):
     yield [
         "Entity",
         "Cost Centre",
@@ -87,12 +81,12 @@ def export_mi_iterator(queryset):
         )
         yield [
             "3000",
-            obj[COST_CENTRE_CODE],
-            obj[NAC_CODE],
-            obj[PROGRAMME_CODE],
-            obj[ANALYSIS1_CODE],
-            obj[ANALYSIS2_CODE],
-            obj[PROJECT_CODE],
+            obj[fields.cost_centre_code_field],
+            obj[fields.nac_code_field],
+            obj[fields.programme_code_field],
+            obj[fields.analysis1_code_field],
+            obj[fields.analysis2_code_field],
+            obj[fields.project_code_field],
             apr / 100,
             may / 100,
             jun / 100,
@@ -114,15 +108,17 @@ def export_mi_iterator(queryset):
 
 def create_mi_source_report():
     title = f"MI Report {today_string()}"
+    fields = ForecastQueryFields()
     queryset = ForecastingDataView.view_data.raw_data_annotated(
-        MI_REPORT_DOWNLOAD_COLUMNS
+        fields.MI_REPORT_DOWNLOAD_COLUMNS
     )
-    return export_to_excel(queryset, export_mi_iterator, title)
+    return export_to_excel(queryset, export_mi_iterator, title, fields)
 
 
 def create_mi_budget_report():
     title = f"MI Budget {today_string()}"
+    fields = ForecastQueryFields()
     queryset = BudgetMonthlyFigure.pivot.pivot_data(
-        MI_REPORT_DOWNLOAD_COLUMNS, {"archived_status__isnull": True}
+        fields.MI_REPORT_DOWNLOAD_COLUMNS, {"archived_status__isnull": True}
     )
-    return export_to_excel(queryset, export_mi_iterator, title)
+    return export_to_excel(queryset, export_mi_iterator, title, fields)
