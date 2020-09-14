@@ -92,18 +92,6 @@ class HistoricalFilteredView(FAdminFilteredView):
         self.name = f"{self.name} {year_display}"
         return super().get(request, *args, **kwargs)
 
- 
-class DocumentCreateView(CreateView):
-    model = Document
-    fields = ["upload"]
-    success_url = reverse_lazy("home")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
-        context["documents"] = documents
-        return context
-
 
 class AccessibilityPageView(TemplateView):
     template_name = "core/accessibility_statement.html"
