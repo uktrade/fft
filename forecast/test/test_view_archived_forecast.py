@@ -6,9 +6,9 @@ from django.contrib.auth.models import (
 from django.test import TestCase
 from django.urls import reverse
 
-from end_of_month.test.test_utils import SetFullYearArchive
-
 from core.test.test_base import RequestFactoryBase
+
+from end_of_month.test.test_utils import SetFullYearArchive
 
 from forecast.test.test_utils import (
     format_forecast_figure,

@@ -7,11 +7,11 @@ from openpyxl.utils import (
     get_column_letter,
 )
 
-from core.exportutils import (
+from core.utils.export_helpers import (
     EXCEL_TYPE,
     EXC_TAB_NAME_LEN,
 )
-from core.utils import today_string
+from core.utils.generic_helpers import today_string
 
 from forecast.models import FinancialPeriod
 from forecast.utils.view_header_definition import (
@@ -65,13 +65,14 @@ def create_headers(keys_dict, columns_dict, period_list):
     return k
 
 
-def export_to_excel(
+def export_forecast_to_excel(
     queryset,
     columns_dict,
     extra_columns_dict,
     protect,
     title,
-    include_month_total=False,
+    include_month_total,
+    last_actual_period,
 ):
     resp = HttpResponse(content_type=EXCEL_TYPE)
     filename = f"{title}  {today_string()} .xlsx"
@@ -99,7 +100,11 @@ def export_to_excel(
     first_figure_col = get_column_letter(first_figure_index)
     # Actual month starts at 1 for April,
     # so it can be used as counter of the actual periods
-    howmany_actuals = FinancialPeriod.financial_period_info.actual_month()
+    if last_actual_period:
+        howmany_actuals = last_actual_period
+    else:
+        # download the current period
+        howmany_actuals = FinancialPeriod.financial_period_info.actual_month()
     first_forecast_index = first_figure_index + howmany_actuals
     if howmany_actuals:
         last_actual_col = get_column_letter(budget_index + howmany_actuals)
@@ -150,9 +155,13 @@ def export_to_excel(
     return resp
 
 
-def export_query_to_excel(queryset, columns_dict, title):
-    return export_to_excel(queryset, columns_dict, {}, False, title)
+def export_query_to_excel(queryset, columns_dict, title, period):
+    return export_forecast_to_excel(
+        queryset, columns_dict, {}, False, title, False, period
+    )
 
 
 def export_edit_to_excel(queryset, key_dict, columns_dict, title):
-    return export_to_excel(queryset, key_dict, columns_dict, True, title, True)
+    return export_forecast_to_excel(
+        queryset, key_dict, columns_dict, True, title, True, 0
+    )

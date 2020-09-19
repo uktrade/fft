@@ -3,12 +3,12 @@ import logging
 from django.db import connection
 from django.utils import timezone
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from end_of_month.models import (
     EndOfMonthStatus,
     MonthlyTotalBudget,
 )
-
-from core.myutils import get_current_financial_year
 
 from forecast.models import (
     BudgetMonthlyFigure,
@@ -68,7 +68,7 @@ def get_end_of_month(period_code):
         archived_period__financial_period_code=period_code
     )
     if end_of_month_info.archived:
-        error_msg = f'"The selected period {period_code} has already been archived."'
+        error_msg = f'"The selected period {period_code} has already been archived."'# noqa
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthAlreadyArchivedError(error_msg)
 

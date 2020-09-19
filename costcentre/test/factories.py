@@ -2,7 +2,12 @@ import factory
 
 from faker import Faker
 
+from core.models import FinancialYear
+
 from costcentre.models import (
+    ArchivedCostCentre,
+    BSCEEmail,
+    BusinessPartner,
     CostCentre,
     DepartmentalGroup,
     Directorate,
@@ -37,6 +42,34 @@ class DirectorateFactory(factory.DjangoModelFactory):
     active = True
 
 
+class FinancialYearFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = FinancialYear
+        django_get_or_create = ('financial_year',)
+
+    financial_year = 2019
+
+
+class FinanceBusinessPartnerFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = BusinessPartner
+        django_get_or_create = ('name', 'surname')
+
+    name = "test"
+    surname = "FBP"
+
+
+class BSCEFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = BSCEEmail
+        django_get_or_create = ('bsce_email',)
+
+    bsce_email = "bsceuser@test.com"
+
+
 class CostCentreFactory(factory.DjangoModelFactory):
     """
         Define CostCentre Factory
@@ -50,3 +83,18 @@ class CostCentreFactory(factory.DjangoModelFactory):
     directorate = factory.SubFactory(DirectorateFactory)
     cost_centre_code = 999999
     cost_centre_name = "Test Cost Centre"
+    business_partner = factory.SubFactory(FinanceBusinessPartnerFactory)
+    bsce_email = factory.SubFactory(BSCEFactory)
+
+
+class ArchivedCostCentreFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = ArchivedCostCentre
+        django_get_or_create = ('cost_centre_code',
+                                'financial_year',)
+
+    active = True
+    cost_centre_code = 999999
+    cost_centre_name = "Test Cost Centre"
+    financial_year = 2019

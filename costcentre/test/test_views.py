@@ -9,13 +9,18 @@ from django.urls import reverse
 import pytest
 
 from core.test.test_base import RequestFactoryBase
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
+    ArchivedCostCentreFactory,
+    BSCEFactory,
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
+    FinanceBusinessPartnerFactory,
+    FinancialYearFactory,
 )
-from costcentre.views import FilteredCostListView
+from costcentre.views import FilteredCostListView, HistoricalFilteredCostListView
 
 
 @pytest.mark.django_db
@@ -43,6 +48,10 @@ class ViewCostCentreTest(TestCase, RequestFactoryBase):
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
         self.cost_centre_code = 109076
+        self.financial_year = FinancialYearFactory(financial_year=2019)
+        self.name = "Test"
+        self.surname = "FBP"
+        self.bsce_email = "bsceuser@test.com"
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code, group_name=self.group_name,
@@ -52,9 +61,30 @@ class ViewCostCentreTest(TestCase, RequestFactoryBase):
             directorate_name=self.directorate_name,
             group=self.group,
         )
-        self.cost_centre = CostCentreFactory(
-            directorate=self.directorate, cost_centre_code=self.cost_centre_code,
+
+        self.business_partner = FinanceBusinessPartnerFactory(
+            name=self.name,
+            surname=self.surname,
         )
+
+        self.bsce = BSCEFactory(
+            bsce_email=self.bsce_email
+        )
+
+        self.cost_centre = CostCentreFactory(
+            directorate=self.directorate,
+            cost_centre_code=self.cost_centre_code,
+            business_partner=self.business_partner,
+            bsce_email=self.bsce,
+        )
+
+        self.archive_cost_centre = ArchivedCostCentreFactory(
+            financial_year=self.financial_year,
+            cost_centre_code=self.cost_centre_code,
+        )
+
+        current_year = get_current_financial_year()
+        self.archive_year = current_year - 1
 
     def test_costcentre_view(self):
         url = (reverse("cost_centre_filter",),)
@@ -69,6 +99,43 @@ class ViewCostCentreTest(TestCase, RequestFactoryBase):
         url = reverse("cost_centre_filter",)
         # add the argument required for downloading to excel
         url = f"{url}?_export=xlsx"
-        print(url)
         response = self.factory_get(url, FilteredCostListView,)
         self.assertEqual(response.status_code, 200)
+
+    def test_archive_costcentre_view(self):
+        response = self.factory_get(
+            reverse(
+                "historical_cost_centre_filter", kwargs={"year": self.archive_year},
+            ),
+            HistoricalFilteredCostListView,
+            year=self.archive_year,
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        # Check cost centre is shown
+        assert str(self.cost_centre_code) in str(response.rendered_content)
+
+    def test_archive_costcentre_download(self):
+        url = reverse("historical_cost_centre_filter",
+                      kwargs={"year": self.archive_year},)
+        url = f"{url}?_export=xlsx"
+        response = self.factory_get(url,
+                                    HistoricalFilteredCostListView,
+                                    year=self.archive_year,
+                                    )
+        self.assertEqual(response.status_code, 200)
+
+    def test_fbp_bsce_view(self):
+        url = reverse("cost_centre_filter",)
+        response = self.factory_get(url, FilteredCostListView, )
+        self.assertEqual(response.status_code, 200)
+        assert str(self.business_partner) in str(response.rendered_content)
+        assert str(self.bsce) in str(response.rendered_content)
+
+    def test_group_directorate_view(self):
+        url = reverse("cost_centre_filter",)
+        response = self.factory_get(url, FilteredCostListView, )
+        self.assertEqual(response.status_code, 200)
+        assert str(self.group) in str(response.rendered_content)
+        assert str(self.directorate) in str(response.rendered_content)

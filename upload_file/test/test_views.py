@@ -35,9 +35,9 @@ class UploadedViewTests(TestCase, RequestFactoryBase):
         self.file_name_regex = "test_a_unique_name(.*).txt"
 
         file_upload = FileUploadFactory.create(
-            uploading_user=self.test_user, document_file=file_mock,
+            uploading_user=self.test_user, s3_document_file=file_mock,
         )
-        self.file_mock_name = file_upload.document_file.name
+        self.file_mock_name = file_upload.s3_document_file.name
 
     def test_upload_view(self):
         assert not self.test_user.has_perm("forecast.can_upload_files")

@@ -7,7 +7,7 @@ from django.test import (
 
 from core.models import FinancialYear
 from core.test.test_base import RequestFactoryBase
-from core.utils import log_object_change
+from core.utils.generic_helpers import log_object_change
 
 
 class ViewUtils(TestCase):

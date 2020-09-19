@@ -4,9 +4,7 @@ from custom_usermodel.admin import UserAdmin
 
 from django import forms
 from django.contrib import admin, messages
-from django.contrib.admin.models import (
-    LogEntry,
-)
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.files.uploadhandler import (
@@ -18,13 +16,13 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from core.export_data import export_logentry_iterator
-from core.exportutils import (
+from core.models import FinancialYear
+from core.utils.export_helpers import (
     export_csv_from_import,
+    export_to_csv,
     export_to_excel,
 )
-from core.exportutils import export_to_csv
-from core.models import FinancialYear
-from core.utils import log_object_change
+from core.utils.generic_helpers import log_object_change
 
 
 class AdminActiveField(admin.ModelAdmin):
@@ -40,9 +38,7 @@ class AdminActiveField(admin.ModelAdmin):
 
         for obj in q:
             log_object_change(
-                request.user.id,
-                msg,
-                obj=obj,
+                request.user.id, msg, obj=obj,
             )
 
         rows_updated = q.update(active=new_active_value)
@@ -60,8 +56,8 @@ class AdminActiveField(admin.ModelAdmin):
     def make_active(self, request, queryset):
         self.change_active_flag(request, queryset, True)
 
-    make_inactive.short_description = u"Deactivate the selected object(s)"
-    make_active.short_description = u"Activate the selected object(s)"
+    make_inactive.short_description = "Deactivate the selected object(s)"
+    make_active.short_description = "Activate the selected object(s)"
     actions = [make_inactive, make_active]
     list_filter = ("active",)
 
@@ -97,9 +93,7 @@ class AdminReadOnly(AdminEditOnly):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            self.readonly_fields = [
-                field.name for field in obj.__class__._meta.fields
-            ]
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
 
 
@@ -113,8 +107,7 @@ class AdminExport(admin.ModelAdmin):
 
     def export_all_xls(self, request):
         log_object_change(
-            request.user.id,
-            f"Export all as .xlsx from {self.__class__.__name__}",
+            request.user.id, f"Export all as .xlsx from {self.__class__.__name__}",
         )
 
         try:
@@ -125,8 +118,7 @@ class AdminExport(admin.ModelAdmin):
 
     def export_selection_xlsx(self, _, request, queryset):
         log_object_change(
-            request.user.id,
-            "Export selection as .xlsx",
+            request.user.id, "Export selection as .xlsx",
         )
 
         # _ is required because the
@@ -146,7 +138,7 @@ class AdminExport(admin.ModelAdmin):
             actions["export_selection_xlsx"] = (
                 self.export_selection_xlsx,
                 "export_selection_xlsx",
-                u"Export selected object(s) to Excel",
+                "Export selected object(s) to Excel",
             )
         return actions
 
@@ -185,8 +177,7 @@ class AdminImportExport(AdminExport):
 
     def export_csv(self, request):
         log_object_change(
-            request.user.id,
-            "Export CSV",
+            request.user.id, "Export CSV",
         )
 
         e = export_csv_from_import(self.import_info.key)
@@ -194,8 +185,7 @@ class AdminImportExport(AdminExport):
 
     def process_csv(self, request, import_info):
         log_object_change(
-            request.user.id,
-            "Processing CSV",
+            request.user.id, "Processing CSV",
         )
 
         import_file = request.FILES["csv_file"]
@@ -221,8 +211,7 @@ class AdminImportExport(AdminExport):
 
     def generic_import_csv(self, request, import_info):
         log_object_change(
-            request.user.id,
-            f"Import CSV: '{import_info.form_title}'",
+            request.user.id, f"Import CSV: '{import_info.form_title}'",
         )
 
         header_list = import_info.header_list
@@ -234,12 +223,7 @@ class AdminImportExport(AdminExport):
         request.upload_handlers.insert(0, MemoryFileUploadHandler(request))
 
         if request.method == "POST":
-            form = CsvImportForm(
-                header_list,
-                form_title,
-                request.POST,
-                request.FILES,
-            )
+            form = CsvImportForm(header_list, form_title, request.POST, request.FILES,)
             if form.is_valid():
                 success, message = self.process_csv(request, import_info)
                 if success:
@@ -270,28 +254,21 @@ User = get_user_model()
 
 
 class UserListFilter(admin.SimpleListFilter):
-    title = 'users'
-    parameter_name = 'users'
+    title = "users"
+    parameter_name = "users"
     default_value = None
 
     def lookups(self, request, model_admin):
         list_of_users = []
         users = User.objects.all()
 
-        for user in self.queryset(
-            request,
-            users,
-        ):
-            list_of_users.append(
-                (str(user.id), user.get_short_name())
-            )
+        for user in self.queryset(request, users,):
+            list_of_users.append((str(user.id), user.get_short_name()))
 
         return sorted(list_of_users, key=lambda tp: tp[1])
 
     def queryset(self, request, queryset):
-        if request.user.groups.filter(
-            name="Finance Administrator"
-        ).exists():
+        if request.user.groups.filter(name="Finance Administrator").exists():
             # Remove super users and fellow finance admins
             super_users = User.objects.filter(is_superuser=True)
             id_list = [user.id for user in super_users]
@@ -365,9 +342,7 @@ class LogEntryAdmin(AdminReadOnly, AdminExport):
     # make everything readonly
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            self.readonly_fields = [
-                field.name for field in obj.__class__._meta.fields
-            ]
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
 
     @property
@@ -383,6 +358,8 @@ class LogEntryAdmin(AdminReadOnly, AdminExport):
         "user",
         "content_type",
         "action_flag_",
+        "object_id",
+        "object_repr",
         "change_message",
     ]
 
@@ -400,8 +377,24 @@ class LogEntryAdmin(AdminReadOnly, AdminExport):
         return flags[obj.action_flag]
 
 
+class FinancialYearAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "financial_year",
+        "financial_year_display",
+        "current",
+        "archived",
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "financial_year",
+            ]
+
+
 admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(FinancialYear)
+admin.site.register(FinancialYear, FinancialYearAdmin)
 
 admin.site.unregister(User)
 admin.site.unregister(Group)

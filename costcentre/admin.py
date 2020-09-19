@@ -53,7 +53,7 @@ from costcentre.models import (
     CostCentrePerson,
     DepartmentalGroup,
     Directorate,
-    HistoricCostCentre,
+    ArchivedCostCentre,
 )
 
 from forecast.permission_shortcuts import assign_perm
@@ -572,4 +572,4 @@ admin.site.register(Directorate, DirectorateAdmin)
 admin.site.register(BSCEEmail, BSCEEmailAdmin)
 admin.site.register(BusinessPartner, BusinessPartnerAdmin)
 admin.site.register(CostCentrePerson, CostCentrePersonAdmin)
-admin.site.register(HistoricCostCentre, HistoricCostCentreAdmin)
+admin.site.register(ArchivedCostCentre, HistoricCostCentreAdmin)

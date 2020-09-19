@@ -90,13 +90,29 @@ class UploadFileDataError(Exception):
     pass
 
 
-def validate_excel_file(file_upload, worksheet_title_pattern=''):
+def check_header(header_dict, correct_header):
+    error_msg = ""
+    correct = True
+    for elem in correct_header:
+        if elem not in header_dict:
+            correct = False
+            error_msg += f"'{elem}' not found. "
+    if not correct:
+        raise UploadFileFormatError(f"Error in the header: {error_msg}")
+
+
+def validate_excel_file(file_upload, worksheet_title_pattern=""):
     try:
         # read_only=True makes the opening process much faster
         # data_only=True to read values from cells with formula.
         # otherwise the formula is returned instead of the value.
+        if file_upload.file_location == FileUpload.LOCALFILE:
+            excelname = file_upload.document_file_name
+        else:
+            excelname = file_upload.s3_document_file
+
         workbook = load_workbook(
-            file_upload.document_file, read_only=True, data_only=True,
+            excelname, read_only=True, data_only=True,
         )
     except BadZipFile as ex:
         set_file_upload_fatal_error(
@@ -169,11 +185,6 @@ def get_error_from_list(error_list):
     return error_message
 
 
-CODE_OK = 1
-CODE_ERROR = 2
-CODE_WARNING = 3
-IGNORE = 4
-
 obj_index = 0
 status_index = 1
 message_index = 2
@@ -182,6 +193,11 @@ VALID_ECONOMIC_CODE_LIST = ["RESOURCE", "CAPITAL"]
 
 
 class CheckFinancialCode:
+    CODE_OK = 1
+    CODE_ERROR = 2
+    CODE_WARNING = 3
+    IGNORE = 4
+
     display_error = ""
     display_warning = ""
     financial_code_obj = None
@@ -199,20 +215,26 @@ class CheckFinancialCode:
     analysis2_dict = {}
     project_dict = {}
 
+    cost_centre_model = CostCentre
+    programme_code_model = ProgrammeCode
+    analysis1_model = Analysis1
+    analysis2_model = Analysis2
+    project_code_model = ProjectCode
+    natural_code_model = NaturalCode
     error_row = 0
 
     def get_info_tuple(self, model, pk, make_active=True):
-        status = IGNORE
+        status = self.IGNORE
         obj, msg = get_fk(model, pk)
         if not obj:
-            status = CODE_ERROR
+            status = self.CODE_ERROR
         else:
             if obj.active:
-                status = CODE_OK
+                status = self.CODE_OK
                 msg = ""
             else:
                 if self.upload_type == FileUpload.BUDGET:
-                    status = CODE_ERROR
+                    status = self.CODE_ERROR
                     msg = (
                         f'{get_pk_verbose_name(model)} "{pk}" '
                         f"is not in the approved list. \n"
@@ -221,7 +243,7 @@ class CheckFinancialCode:
                 elif make_active:
                     obj.active = True
                     obj.save()
-                    status = CODE_WARNING
+                    status = self.CODE_WARNING
                     msg = (
                         f'{get_pk_verbose_name(model)} "{pk}" '
                         f"added to the approved list. \n"
@@ -250,11 +272,11 @@ class CheckFinancialCode:
         msg = info_tuple[message_index]
         obj = info_tuple[obj_index]
 
-        if status == CODE_ERROR:
+        if status == self.CODE_ERROR:
             self.error_found = True
             self.display_error = self.display_error + msg
         else:
-            if status == CODE_WARNING:
+            if status == self.CODE_WARNING:
                 self.warning_found = True
                 self.display_warning = self.display_warning + msg
         return obj
@@ -274,12 +296,12 @@ class CheckFinancialCode:
             nac = 0
         info_tuple = self.nac_dict.get(nac, None)
         if not info_tuple:
-            info_tuple = self.get_info_tuple(NaturalCode, nac)
-            if info_tuple[status_index] == CODE_OK:
+            info_tuple = self.get_info_tuple(self.natural_code_model, nac)
+            if info_tuple[status_index] == self.CODE_OK:
                 obj = info_tuple[obj_index]
                 #  test if the nac is a primary nac
                 if not obj.used_for_budget:
-                    status = CODE_WARNING
+                    status = self.CODE_WARNING
                     msg = f'Natural Account "{nac}" is not a primary NAC.\n'
                     info_tuple = (obj, status, msg)
 
@@ -291,8 +313,8 @@ class CheckFinancialCode:
         # we ignore it.
         info_tuple = self.nac_dict.get(nac, None)
         if not info_tuple:
-            info_tuple = self.get_info_tuple(NaturalCode, nac, False)
-            if info_tuple[status_index] != CODE_ERROR:
+            info_tuple = self.get_info_tuple(self.natural_code_model, nac, False)
+            if info_tuple[status_index] != self.CODE_ERROR:
                 obj = info_tuple[obj_index]
                 #  Check that the NAC is resource or capital
                 # If not, we skip the row
@@ -300,7 +322,7 @@ class CheckFinancialCode:
                     not obj.economic_budget_code
                     or obj.economic_budget_code.upper() not in VALID_ECONOMIC_CODE_LIST
                 ):
-                    status = IGNORE
+                    status = self.IGNORE
                     msg = ""
                     info_tuple = (None, status, msg)
                 elif not obj.active:
@@ -309,41 +331,49 @@ class CheckFinancialCode:
                     # but are present in the Trial Balance
                     obj.active = True
                     obj.save()
-                    status = CODE_WARNING
+                    status = self.CODE_WARNING
                     msg = (
                         f'Natural account code "{nac}" '
                         f"added to the approved list. \n"
                     )
                     info_tuple = (obj, status, msg)
             self.nac_dict[nac] = info_tuple
-        if info_tuple[status_index] == IGNORE:
+        if info_tuple[status_index] == self.IGNORE:
             self.ignore_row = True
         return self.validate_info_tuple(info_tuple)
 
     def validate_cost_centre(self, cost_centre):
-        return self.get_obj_code(self.cc_dict, cost_centre, CostCentre)
+        return self.get_obj_code(self.cc_dict, cost_centre, self.cost_centre_model)
 
     def validate_programme(self, programme_code):
-        return self.get_obj_code(self.prog_dict, programme_code, ProgrammeCode)
+        return self.get_obj_code(
+            self.prog_dict, programme_code, self.programme_code_model
+        )
 
     def validate_analysis1(self, analysis1):
         if analysis1 and int(analysis1):
             analysis1_code = get_id(analysis1, ANALYSIS1_CODE_LENGTH)
-            return self.get_obj_code(self.analysis1_dict, analysis1_code, Analysis1)
+            return self.get_obj_code(
+                self.analysis1_dict, analysis1_code, self.analysis1_model
+            )
         else:
             return None
 
     def validate_analysis2(self, analysis2):
         if analysis2 and int(analysis2):
             analysis2_code = get_id(analysis2, ANALYSIS1_CODE_LENGTH)
-            return self.get_obj_code(self.analysis2_dict, analysis2_code, Analysis2)
+            return self.get_obj_code(
+                self.analysis2_dict, analysis2_code, self.analysis2_model
+            )
         else:
             return None
 
     def validate_project(self, project):
         if project and int(project):
             project_code = get_id(project, PROJECT_CODE_LENGTH)
-            return self.get_obj_code(self.project_dict, project_code, ProjectCode)
+            return self.get_obj_code(
+                self.project_dict, project_code, self.project_code_model
+            )
         else:
             return None
 

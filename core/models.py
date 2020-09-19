@@ -17,21 +17,44 @@ class EventLog(IsActiveModel):
     EventType = models.CharField(max_length=500)
 
 
+class FinancialPeriodManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(archived=True)
+            .values(
+                "financial_year",
+                "financial_year_display",
+            )
+            .order_by("financial_year")
+        )
+
+    def archived_list(self):
+        return list(
+            super()
+            .get_queryset()
+            .filter(archived=True)
+            .values_list(
+                "financial_year",
+                "financial_year_display",
+            )
+            .order_by("-financial_year")
+        )
+
+
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""
     financial_year = models.IntegerField(primary_key=True)
     financial_year_display = models.CharField(max_length=20)
     current = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
+    archived_at = models.DateTimeField(blank=True, null=True)
+    objects = models.Manager()  # The default manager.
+    financial_year_objects = FinancialPeriodManager()
 
     def __str__(self):
         return str(self.financial_year_display)
-
-
-class Document(IsActiveModel):
-    """Used to test S3 upload"""
-
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-    upload = models.FileField()
 
 
 # Track changes to permissions

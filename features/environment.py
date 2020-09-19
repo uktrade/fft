@@ -24,7 +24,7 @@ from django.core.cache import cache
 from webdriver_manager.chrome import ChromeDriverManager
 
 from core.models import FinancialYear
-from core.myutils import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year
 from core.test.factories import FinancialYearFactory
 
 from costcentre.test.factories import (

@@ -4,12 +4,12 @@ from decimal import Decimal
 
 from django.db import connection
 
-from end_of_month.models import EndOfMonthStatus
-
 from core.import_csv import (
     csv_header_to_dict,
     get_fk,
 )
+
+from end_of_month.models import EndOfMonthStatus
 
 from forecast.import_csv import WrongChartOFAccountCodeException
 from forecast.models import (

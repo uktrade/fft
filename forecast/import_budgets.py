@@ -11,6 +11,7 @@ from forecast.utils.import_helpers import (
     CheckFinancialCode,
     UploadFileDataError,
     UploadFileFormatError,
+    check_header,
     get_forecast_month_dict,
     sql_for_data_copy,
     validate_excel_file,
@@ -44,17 +45,6 @@ EXPECTED_BUDGET_HEADERS = [
 ]
 
 
-def check_budget_header(header_dict, correct_header):
-    error_msg = ""
-    correct = True
-    for elem in correct_header:
-        if elem not in header_dict:
-            correct = False
-            error_msg += f"'{elem}' not found. "
-    if not correct:
-        raise UploadFileFormatError(f"Error in the header: {error_msg}")
-
-
 def copy_uploaded_budget(year, month_dict):
     for period_obj in month_dict.values():
         # Now copy the newly uploaded budgets to the monthly figure table
@@ -85,7 +75,12 @@ def upload_budget_figures(budget_row, year_obj, financialcode_obj, month_dict):
         if period_budget == '-':
             # we accept the '-' as it is a recognised value in Finance for 0
             period_budget = 0
-        if not str(period_budget).isnumeric():
+        try:
+            # to avoid problems with precision,
+            # we store the figures in pence
+            # If period_budget is not a number, it will give a value error
+            period_budget = period_budget * 100
+        except ValueError:
             raise UploadFileFormatError(
                 f"Non-numeric value in {budget_row[month_idx].coordinate}:{period_budget}"# noqa
             )
@@ -95,12 +90,10 @@ def upload_budget_figures(budget_row, year_obj, financialcode_obj, month_dict):
                 financial_code=financialcode_obj,
                 financial_period=period_obj,
             )
-            # to avoid problems with precision,
-            # we store the figures in pence
             if created:
-                budget_obj.amount = period_budget * 100
+                budget_obj.amount = period_budget
             else:
-                budget_obj.amount += period_budget * 100
+                budget_obj.amount += period_budget
             budget_obj.save()
 
 
@@ -195,7 +188,7 @@ def upload_budget_from_file(file_upload, year):
         raise ex
     header_dict = xslx_header_to_dict(worksheet[1])
     try:
-        check_budget_header(header_dict, EXPECTED_BUDGET_HEADERS)
+        check_header(header_dict, EXPECTED_BUDGET_HEADERS)
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),

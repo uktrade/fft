@@ -9,7 +9,7 @@ from django.db.models import (
     UniqueConstraint,
 )
 
-# https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py # noqa
+# https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py
 from django_pivot.pivot import pivot
 
 from chartofaccountDIT.models import (
@@ -23,12 +23,10 @@ from chartofaccountDIT.models import (
 
 from core.metamodels import BaseModel
 from core.models import FinancialYear
-from core.myutils import get_current_financial_year
-from core.utils import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL_CLASS
+from core.utils.generic_helpers import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL_CLASS
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.models import CostCentre
-
-from forecast.utils.query_fields import DEFAULT_PIVOT_COLUMNS
 
 GRAND_TOTAL_ROW = "grand_total"
 
@@ -122,10 +120,23 @@ class FinancialPeriodManager(models.Manager):
             .values_list("period_short_name", flat=True)
         )
 
+    def month_adj_display_list(self):
+        return list(
+            self.get_queryset()
+            .values_list("period_short_name", flat=True)
+        )
+
     def adj_display_list(self):
         return list(
             self.get_queryset()
             .filter(financial_period_code__gt=12, display_figure=True)
+            .values_list("period_short_name", flat=True)
+        )
+
+    def all_adj_list(self):
+        return list(
+            self.get_queryset()
+            .filter(financial_period_code__gt=12)
             .values_list("period_short_name", flat=True)
         )
 
@@ -151,6 +162,9 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def month_sublist(self, month):
+        if month > 15:
+            # needed for displaying previous year outturn
+            month = 15
         return self.period_display_list()[: month]
 
     def actual_month(self):
@@ -190,6 +204,9 @@ class FinancialPeriodManager(models.Manager):
     def reset_actuals(self):
         self.get_queryset().filter(actual_loaded=True,).update(actual_loaded=False,)
 
+    def get_max_period(self):
+        return self.get_queryset().order_by("-financial_period_code").first()
+
 
 class FinancialPeriod(BaseModel):
     """Financial periods: correspond
@@ -217,10 +234,11 @@ class FinancialPeriod(BaseModel):
         return self.period_long_name
 
 
-class FinancialCode(BaseModel):
+class FinancialCodeAbstract(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
-
     class Meta:
+
+        abstract = True
         # Several constraints required, to cover all the permutations of
         # fields that can be Null
         constraints = [
@@ -328,6 +346,24 @@ class FinancialCode(BaseModel):
             ("can_download_mi_reports", "Can download mi reports"),
         ]
 
+    def save(self, *args, **kwargs):
+        # Override save to calculate the forecast_expenditure_type.
+        if self.pk is None:
+            # calculate the forecast_expenditure_type
+            nac_economic_budget_code = self.natural_account_code.economic_budget_code
+            programme_budget_type = self.programme.budget_type
+
+            forecast_type = ForecastExpenditureType.objects.filter(
+                programme_budget_type=programme_budget_type,
+                nac_economic_budget_code=nac_economic_budget_code,
+            )
+
+            self.forecast_expenditure_type = forecast_type.first()
+
+        super(FinancialCodeAbstract, self).save(*args, **kwargs)
+
+
+class FinancialCode(FinancialCodeAbstract, BaseModel):
     programme = models.ForeignKey(ProgrammeCode, on_delete=models.PROTECT)
     cost_centre = models.ForeignKey(CostCentre, on_delete=models.PROTECT)
     natural_account_code = models.ForeignKey(NaturalCode, on_delete=models.PROTECT)
@@ -348,22 +384,6 @@ class FinancialCode(BaseModel):
         blank=True,
         null=True,
     )
-
-    def save(self, *args, **kwargs):
-        # Override save to calculate the forecast_expenditure_type.
-        if self.pk is None:
-            # calculate the forecast_expenditure_type
-            nac_economic_budget_code = self.natural_account_code.economic_budget_code
-            programme_budget_type = self.programme.budget_type_fk
-
-            forecast_type = ForecastExpenditureType.objects.filter(
-                programme_budget_type=programme_budget_type,
-                nac_economic_budget_code=nac_economic_budget_code,
-            )
-
-            self.forecast_expenditure_type = forecast_type.first()
-
-        super(FinancialCode, self).save(*args, **kwargs)
 
 
 class SubTotalForecast:
@@ -556,13 +576,9 @@ class SubTotalForecast:
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    default_columns = DEFAULT_PIVOT_COLUMNS
-
-    def pivot_data(self, columns={}, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns, filter_dict={}, year=0, order_list=[]):
         if year == 0:
             year = get_current_financial_year()
-        if columns == {}:
-            columns = self.default_columns
 
         q1 = (
             self.get_queryset()
@@ -578,8 +594,6 @@ class PivotManager(models.Manager):
 class DisplaySubTotalManager(models.Manager):
     """Managers returning the actual/forecast/budget data
     in a format suitable for display"""
-
-    default_columns = DEFAULT_PIVOT_COLUMNS
 
     def subtotal_data(
         self,
@@ -625,12 +639,10 @@ class DisplaySubTotalManager(models.Manager):
         )
 
     def raw_data_annotated(
-        self, columns={}, filter_dict={}, year=0, order_list=[], include_zeros=False
+        self, columns, filter_dict={}, year=0, order_list=[], include_zeros=False
     ):
         if year == 0:
             year = get_current_financial_year()
-        if columns == {}:
-            columns = self.default_columns
 
         annotations = {
             "Budget": Sum("budget"),
@@ -671,13 +683,12 @@ class ForecastingDataViewAbstract(models.Model):
     """Used for joining budgets and forecast.
     The view adds rows with 0 values across the year (zero-values rows),
     to be consistent with the Edit Forecast logic.
-    he zero-values rows have a null value for the year,
+    The zero-values rows have a null value for the year,
     because the year is linked to the figures, and they have none!
     Mapped to a view in the database, because
     the query is too complex"""
 
     id = models.IntegerField(primary_key=True,)
-    # The view is created by a migration. Its code is at the bottom of this file.
     financial_code = models.ForeignKey(FinancialCode, on_delete=models.DO_NOTHING,)
     financial_year = models.IntegerField()
     budget = models.BigIntegerField(default=0)
@@ -704,6 +715,7 @@ class ForecastingDataViewAbstract(models.Model):
 
 
 class ForecastingDataView(ForecastingDataViewAbstract):
+    # The view is created by a migration. Its code is at the bottom of this file.
     class Meta:
         managed = False
         db_table = "forecast_forecast_download_view"

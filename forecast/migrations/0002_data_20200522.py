@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                     ON ("costcentre_directorate"."group_id" = "costcentre_departmentalgroup"."group_code")
                     INNER JOIN "chartofaccountDIT_programmecode" ON ("forecast_financialcode"."programme_id" = "chartofaccountDIT_programmecode"."programme_code")
                     LEFT OUTER JOIN "treasurySS_subsegment" ON ("costcentre_departmentalgroup"."treasury_segment_fk_id" = "treasurySS_subsegment"."Segment_code_id"
-                    AND "chartofaccountDIT_programmecode"."budget_type_fk_id" = "treasurySS_subsegment"."dit_budget_type_id")
+                    AND "chartofaccountDIT_programmecode"."budget_type_id" = "treasurySS_subsegment"."dit_budget_type_id")
                     INNER JOIN "core_financialyear" ON ("forecast_forecastmonthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
                     WHERE "core_financialyear"."current" = TRUE 
                     GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
                     ON ("costcentre_directorate"."group_id" = "costcentre_departmentalgroup"."group_code")
                     INNER JOIN "chartofaccountDIT_programmecode" ON ("forecast_financialcode"."programme_id" = "chartofaccountDIT_programmecode"."programme_code")
                     LEFT OUTER JOIN "treasurySS_subsegment" ON ("costcentre_departmentalgroup"."treasury_segment_fk_id" = "treasurySS_subsegment"."Segment_code_id"
-                    AND "chartofaccountDIT_programmecode"."budget_type_fk_id" = "treasurySS_subsegment"."dit_budget_type_id")
+                    AND "chartofaccountDIT_programmecode"."budget_type_id" = "treasurySS_subsegment"."dit_budget_type_id")
                     INNER JOIN "core_financialyear" ON ("forecast_forecastmonthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
                     WHERE "core_financialyear"."current" = TRUE 
                     AND "forecast_forecastmonthlyfigure"."archived_status_id" is NULL

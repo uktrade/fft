@@ -6,8 +6,8 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
-from core.myutils import get_current_financial_year
 from core.test.test_base import RequestFactoryBase
+from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
     CostCentreFactory,

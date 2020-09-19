@@ -6,12 +6,12 @@
     {% breadcrumb view.group.group_name "" %}
 {% endblock %}
 
-{% block title %}Group - {{ view.group.group_name }}{% endblock %}
+{% block title %}Group - {{ view.group_name }}{% endblock %}
 
 {% block hierarchy_title %}
-   {{ view.group.group_name }} - {{ view.group.group_code }}
+   {{ view.group_name }} - {{ view.group_code }}
 {% endblock %}
 
 {% block download_link %}
-    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_group' view.group.group_code view.period %} ">Download raw data</a>
+    <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_group' view.group_code view.period %} ">Download raw data</a>
 {% endblock %}

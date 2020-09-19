@@ -97,7 +97,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         # Check that BadZipFile is raised on
         # supply of incorrect file format
         bad_file_type_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/bad_file_type.csv",
             ),
             uploading_user=self.test_user,
@@ -110,7 +110,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
             )
 
         bad_header_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/budget_upload_bad_header.xlsx",
             ),
             uploading_user=self.test_user,
@@ -124,7 +124,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
             )
         # Check that the error is raised, and no data is uploaded
         bad_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/budget_upload_bad_data.xlsx",
             ),
             uploading_user=self.test_user,
@@ -144,7 +144,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         )
 
         good_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
@@ -205,7 +205,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         )
 
         good_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
@@ -319,7 +319,7 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
         )
 
         good_file_upload = FileUpload(
-            document_file=os.path.join(
+            s3_document_file=os.path.join(
                 os.path.dirname(__file__), "test_assets/budget_upload_bad_dash.xlsx",
             ),
             uploading_user=self.test_user,

@@ -5,8 +5,8 @@ import django_filters
 from core.filters import ArchivedFilterSet, MyFilterSet
 
 from costcentre.models import (
+    ArchivedCostCentre,
     CostCentre,
-    HistoricCostCentre,
 )
 
 
@@ -81,7 +81,7 @@ class CostCentreHistoricalFilter(ArchivedFilterSet):
         )
 
     class Meta(MyFilterSet.Meta):
-        model = HistoricCostCentre
+        model = ArchivedCostCentre
         fields = ["search_all"]
 
     @property

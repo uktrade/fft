@@ -4,11 +4,11 @@ from django.contrib.auth.models import Permission
 from django.test import TestCase
 from django.urls import reverse
 
-from end_of_month.test.test_utils import SetFullYearArchive
-
 from openpyxl import load_workbook
 
 from core.test.test_base import RequestFactoryBase
+
+from end_of_month.test.test_utils import SetFullYearArchive
 
 from forecast.views.view_forecast.export_forecast_data import (
     export_forecast_data_cost_centre,

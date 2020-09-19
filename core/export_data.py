@@ -1,12 +1,15 @@
-from core.exportutils import get_fk_value
+from core.utils.export_helpers import get_fk_value
 
 
 def export_logentry_iterator(queryset):
-    yield ["Action Time", "Content Type", "Action Flag", "Change Message"]
+    yield ["Action Time", "User", "Content Type",
+           "Action Flag", "ID", "ID Name", "Change Message"]
     for obj in queryset:
         yield [
             obj.action_time,
             get_fk_value(obj.content_type, "name"),
             obj.action_flag,
+            obj.object_id,
+            obj.object_repr,
             obj.change_message
         ]

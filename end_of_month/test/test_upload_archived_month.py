@@ -2,13 +2,13 @@ from io import StringIO
 
 from django.test import TestCase
 
+from core.test.test_base import RequestFactoryBase
+
 from end_of_month.test.test_utils import SetFullYearArchive
 from end_of_month.upload_archived_month import (
     WrongArchivePeriodException,
     import_single_archived_period,
 )
-
-from core.test.test_base import RequestFactoryBase
 
 from forecast.import_csv import WrongChartOFAccountCodeException
 from forecast.models import (
