@@ -276,13 +276,17 @@ class UserListFilter(admin.SimpleListFilter):
             # Remove administering user
             id_list.append(request.user.id)
 
-            return queryset.exclude(pk__in=id_list).order_by("-email")
+            return queryset.exclude(
+                pk__in=id_list
+            ).order_by("-last_name")
 
         return queryset
 
 
 class UserAdmin(UserAdmin):
     list_filter = (UserListFilter,)
+    list_display = ('first_name', 'last_name',
+                    'is_active', 'is_staff', 'is_superuser')
 
     def save_model(self, request, obj, form, change):
         for group in form.cleaned_data["groups"]:
@@ -321,7 +325,6 @@ class UserAdmin(UserAdmin):
         return [
             "first_name",
             "last_name",
-            "email",
             "last_login",
             "is_superuser",
             "user_permissions",

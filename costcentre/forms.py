@@ -159,7 +159,7 @@ class GivePermissionAdminForm(forms.Form):
         # Set list of users removing administering user
         self.base_fields['user'].queryset = User.objects.exclude(
             pk__in=id_list
-        ).order_by("-email")
+        ).order_by("-first_name")
 
         super(GivePermissionAdminForm, self).__init__(
             *args,

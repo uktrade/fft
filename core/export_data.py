@@ -7,7 +7,6 @@ def export_logentry_iterator(queryset):
     for obj in queryset:
         yield [
             obj.action_time,
-            obj.user.email,
             get_fk_value(obj.content_type, "name"),
             obj.action_flag,
             obj.object_id,

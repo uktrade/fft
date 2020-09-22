@@ -84,7 +84,7 @@ class UnlockedForecastEditor(BaseModel):
     )
 
     def __str__(self):
-        return self.user.email
+        return self.user
 
 
 class ForecastExpenditureType(BaseModel):
