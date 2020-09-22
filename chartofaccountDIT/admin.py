@@ -22,8 +22,8 @@ from chartofaccountDIT.import_csv import (
     import_NAC_DIT_class,
     import_NAC_category_class,
     import_NAC_class,
-    import_a1_class,
-    import_a2_class,
+    import_analysis1_class,
+    import_analysis2_class,
     import_comm_cat_class,
     import_expenditure_category_class,
     import_fco_mapping_class,
@@ -59,6 +59,7 @@ from chartofaccountDIT.models import (
 
 from core.admin import (
     AdminActiveField,
+    AdminArchived,
     AdminExport,
     AdminImportExport,
     AdminImportExtraExport,
@@ -204,10 +205,10 @@ class Analysis1Admin(AdminActiveField, AdminImportExport):
 
     @property
     def import_info(self):
-        return import_a1_class
+        return import_analysis1_class
 
 
-class HistoricalAnalysis1Admin(AdminReadOnly, AdminExport):
+class HistoricalAnalysis1Admin(AdminArchived, AdminExport):
     search_fields = ["analysis1_description", "analysis1_code"]
     list_display = (
         "analysis1_code",
@@ -215,6 +216,7 @@ class HistoricalAnalysis1Admin(AdminReadOnly, AdminExport):
         "active",
         "financial_year",
     )
+
     list_filter = ("active", ("financial_year", RelatedDropdownFilter))
     fields = (
         "financial_year",
@@ -223,7 +225,21 @@ class HistoricalAnalysis1Admin(AdminReadOnly, AdminExport):
         "supplier",
         "pc_reference",
         "active",
+        "archived"
     )
+
+    # different fields editable if updating or creating the object
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "financial_year",
+                "analysis1_code",
+                "created",
+                "updated",
+                "archived"
+            ]  # don't allow to edit the code
+        else:
+            return ["created", "updated", "archived"]
 
     @property
     def export_func(self):
@@ -264,7 +280,7 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
 
     @property
     def import_info(self):
-        return import_a2_class
+        return import_analysis2_class
 
 
 class HistoricalAnalysis2Admin(AdminReadOnly, AdminExport):

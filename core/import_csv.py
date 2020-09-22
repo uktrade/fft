@@ -81,6 +81,7 @@ def get_pk_verbose_name(m):
     return pkname
 
 
+# TODO modified to handle two fields to make  unique key, for archived tables.
 def get_fk(m, pk_value):
     """Read an object to be used as
     foreign key in another record.
@@ -116,7 +117,14 @@ def get_fk_from_field(m, f_name, f_value):
     return obj, msg
 
 
-def read_csv_from_dict(d, row):
+def get_value_from_field(type, row_val):
+    if type == "BooleanField":
+        # convert the value to be True or False
+        return convert_to_bool_string(row_val)
+    return row_val
+
+
+def read_csv_from_dict(d, row, year):
     m = d[IMPORT_CSV_MODEL_KEY]
     if IMPORT_CSV_PK_NAME_KEY in d:
         unique_name = d[IMPORT_CSV_PK_NAME_KEY]
@@ -137,21 +145,30 @@ def read_csv_from_dict(d, row):
     default_list = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
         if type(v) is dict:
-            default_list[k], errormsg = read_csv_from_dict(v, row)
+            default_list[k], errormsg = read_csv_from_dict(v, row, year)
         else:
-            if m._meta.get_field(k).get_internal_type() == "BooleanField":
-                # convert the value to be True or False
-                default_list[k] = convert_to_bool_string(row[v].strip())
-            else:
-                default_list[k] = row[v].strip()
+            default_list[k] = get_value_from_field(
+                m._meta.get_field(k).get_internal_type(),
+                row[v].strip()
+            )
     try:
         if pk_header_name == "":
             obj = m.objects.create(**default_list)
         else:
-            obj, created = m.objects.update_or_create(
-                **{unique_name: row[pk_header_name].strip()},
-                defaults=default_list,
-            )
+            if year:
+                kwargs = {
+                    unique_name: row[pk_header_name].strip(),
+                    'financial_year_id': year
+                }
+                obj, created = m.objects.update_or_create(
+                    **kwargs,
+                    defaults=default_list,
+                )
+            else:
+                obj, created = m.objects.update_or_create(
+                    **{unique_name: row[pk_header_name].strip()},
+                    defaults=default_list,
+                )
     except ValueError:
         obj = None
         error_msg = "ValueError"
@@ -180,7 +197,7 @@ def always_true(a, b):
     return True
 
 
-def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
+def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1, year=0):
     reader = csv.reader(csv_file)
     header = csv_header_to_dict(next(reader))
     l1 = get_col_from_obj_key(obj_key)
@@ -198,7 +215,7 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
         row_number = row_number + 1
         # print (row_number)
         if op(row[pos], value):
-            obj, msg = read_csv_from_dict(d, row)
+            obj, msg = read_csv_from_dict(d, row, year)
     return True, msg
 
 
@@ -207,6 +224,13 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1):
 # when the primary key is
 # created by the system
 def import_list_obj(csv_file, model, fieldname):
+    reader = csv.reader(csv_file)
+    next(reader)  # skip the header
+    for row in reader:
+        obj, created = model.objects.update_or_create(**{fieldname: row[0].strip()})
+
+
+def import_list_archived_obj(csv_file, model, fieldname, year):
     reader = csv.reader(csv_file)
     next(reader)  # skip the header
     for row in reader:

@@ -5,15 +5,15 @@ from django.core.management.base import (
 )
 
 from chartofaccountDIT.import_csv import (
-    import_Analysis1,
-    import_Analysis2,
-    import_NAC,
-    import_NAC_DIT,
-    import_NAC_category,
-    import_NAC_expenditure_category,
+    import_analysis1,
+    import_analysis2,
     import_commercial_category,
     import_expenditure_category,
-    import_programme,
+    import_nac,
+    import_nac_category,
+    import_nac_dit_specific_fields,
+    import_nac_expenditure_category,
+    import_programme
 )
 
 from core.utils.command_helpers import (
@@ -34,13 +34,13 @@ IMPORT_TYPE = {
     # 'Segments' : import_treasury_segments,
     "Treasury_COA": import_treasury_COA,
     "Programmes": import_programme,
-    "NAC": import_NAC,  # import from the BICC file
-    "Analysis1": import_Analysis1,
-    "Analysis2": import_Analysis2,
-    "NAC_Dashboard_Group": import_NAC_expenditure_category,
+    "NAC": import_nac,  # import from the BICC file
+    "Analysis1": import_analysis1,
+    "Analysis2": import_analysis2,
+    "NAC_Dashboard_Group": import_nac_expenditure_category,
     "NAC_Dashboard_Budget": import_expenditure_category,
-    "NAC_Category": import_NAC_category,
-    "NAC_DIT_Setting": import_NAC_DIT,  # add extra fields defined by DIT
+    "NAC_Category": import_nac_category,
+    "NAC_DIT_Setting": import_nac_dit_specific_fields,
     "NAC_Dashboard_other": import_expenditure_category,
     "Commercial_Cat": import_commercial_category,
     "ADI": import_adi_file,

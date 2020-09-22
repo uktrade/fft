@@ -109,6 +109,21 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
             format_forecast_figure(self.archive.archived_forecast[period] / 100),
         )
 
+    def check_period_list(self, period_list):
+        self.assertIn("Current", period_list)
+        self.assertIn("April", period_list)
+        self.assertIn("May", period_list)
+        self.assertIn("June", period_list)
+        self.assertIn("July", period_list)
+        self.assertIn("August", period_list)
+        self.assertIn("September", period_list)
+        self.assertIn("October", period_list)
+        self.assertIn("November", period_list)
+        self.assertIn("December", period_list)
+        self.assertIn("January", period_list)
+        self.assertIn("February", period_list)
+        self.assertIn("March", period_list)
+
     def view_cost_centre_summary(self, test_period):
         resp = self.factory_get(
             reverse(
@@ -135,7 +150,8 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         select_period = soup.find(id="id_selected_period")
 
         # Check that all the months are in the dropdown.
-        assert len(select_period) == 27
+        self.check_period_list(str(select_period))
+
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
 
@@ -223,7 +239,7 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         select_period = soup.find(id="id_selected_period")
 
         # Check that all the months are in the dropdown.
-        assert len(select_period) == 27
+        self.check_period_list(str(select_period))
 
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
@@ -305,11 +321,11 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check that the month dropdown exists.
         self.assertContains(response, f'value="{test_period}"')
 
-        # Check that the selected period is in the view
+        # Check that the periods is in the view
         select_period = soup.find(id="id_selected_period")
 
         # Check that all the months are in the dropdown.
-        assert len(select_period) == 27
+        self.check_period_list(str(select_period))
 
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
@@ -396,7 +412,7 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         select_period = soup.find(id="id_selected_period")
 
         # Check that all the months are in the dropdown.
-        assert len(select_period) == 27
+        self.check_period_list(str(select_period))
 
         self.check_hierarchy_table(
             tables[HIERARCHY_TABLE_INDEX], self.archive.group_code, 0, test_period

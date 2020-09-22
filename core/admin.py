@@ -393,6 +393,14 @@ class FinancialYearAdmin(admin.ModelAdmin):
             ]
 
 
+class AdminArchived(admin.ModelAdmin):
+    # limit the entries to archived years
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "financial_year":
+            kwargs["queryset"] = FinancialYear.objects.filter(archived=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(FinancialYear, FinancialYearAdmin)
 

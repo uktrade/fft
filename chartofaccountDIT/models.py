@@ -13,8 +13,20 @@ from treasuryCOA.models import L5Account
 class Analysis1Abstract(models.Model):
     analysis1_code = models.CharField("Contract Code", primary_key=True, max_length=50,)
     analysis1_description = models.CharField("Contract Name", max_length=300,)
-    supplier = models.CharField("Supplier", max_length=300, default="",)
-    pc_reference = models.CharField("PC Reference", max_length=300, default="",)
+    supplier = models.CharField(
+        "Supplier",
+        max_length=300,
+        default="",
+        blank=True,
+        null=True,
+    )
+    pc_reference = models.CharField(
+        "PC Reference",
+        max_length=300,
+        default="",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return "{} - {}".format(self.analysis1_code, self.analysis1_description,)
