@@ -183,14 +183,19 @@
                     </li>
                 {% endif %}
 
-                {% if request.user.is_staff %}
-                    <li class="internal-header__navigation__item">
-                        <a target="_blank" id="admin_page" class="internal-header__navigation__item__link"
-                           href="{% url 'admin:index' %}">
-                            Admin Site
-                        </a>
-                    </li>
-                {% endif %}
+            {% if request.user.is_staff %}
+                <li class="internal-header__navigation__item">
+                    <a target="_blank" id="admin_page" class="internal-header__navigation__item__link" href="{% url 'admin:index' %}">
+                                Admin Site
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="internal-header__navigation__item">
+                <a class="internal-header__navigation__item__link {% if request.path|startswith:'/core/accessibility' %}internal-header__navigation__item__link--active{% endif %}" href="{% url 'accessibility' %}">
+                    Accessibility Statement
+                </a>
+            </li>
             </ul>
         </nav>
     </div>

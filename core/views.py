@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views.generic.base import TemplateView
 
 from django_filters.views import FilterView
 
@@ -89,6 +90,10 @@ class HistoricalFilteredView(FAdminFilteredView):
         year_display = get_year_display(year)
         self.name = f"{self.name} {year_display}"
         return super().get(request, *args, **kwargs)
+
+
+class AccessibilityPageView(TemplateView):
+    template_name = "core/accessibility_statement.html"
 
 
 def logout(request):
