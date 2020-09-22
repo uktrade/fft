@@ -6,11 +6,6 @@ from chartofaccountDIT.exportcsv import (
     _export_comm_cat_iterator,
     _export_exp_cat_iterator,
     _export_fco_mapping_iterator,
-    _export_historical_comm_cat_iterator,
-    _export_historical_exp_cat_iterator,
-    _export_historical_fco_mapping_iterator,
-    _export_historical_inter_entity_iterator,
-    _export_historical_nac_iterator,
     _export_inter_entity_iterator,
     _export_inter_entity_l1_iterator,
     _export_nac_cat_iterator,
@@ -35,15 +30,6 @@ from chartofaccountDIT.import_csv import (
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
-    ArchivedAnalysis1,
-    ArchivedAnalysis2,
-    ArchivedCommercialCategory,
-    ArchivedExpenditureCategory,
-    ArchivedFCOMapping,
-    ArchivedInterEntity,
-    ArchivedNaturalCode,
-    ArchivedProgrammeCode,
-    ArchivedProjectCode,
     BudgetType,
     CommercialCategory,
     ExpenditureCategory,
@@ -59,11 +45,9 @@ from chartofaccountDIT.models import (
 
 from core.admin import (
     AdminActiveField,
-    AdminArchived,
     AdminExport,
     AdminImportExport,
     AdminImportExtraExport,
-    AdminReadOnly,
 )
 from core.utils.export_helpers import generic_table_iterator
 
@@ -137,32 +121,6 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExtraExport):
         return import_NAC_DIT_class
 
 
-class HistoricalNaturalCodeAdmin(AdminReadOnly, AdminExport):
-    list_display = (
-        "natural_account_code",
-        "natural_account_code_description",
-        "active",
-    )
-
-    fields = [
-        "natural_account_code",
-        "natural_account_code_description",
-        "account_L5_code",
-        "expenditure_category",
-        "account_L5_code_upload",
-        "commercial_category",
-        "used_for_budget",
-        "active",
-    ]
-
-    search_fields = ["natural_account_code", "natural_account_code_description"]
-    list_filter = ("active", "used_for_budget")
-
-    @property
-    def export_func(self):
-        return _export_historical_nac_iterator
-
-
 class Analysis1Admin(AdminActiveField, AdminImportExport):
     search_fields = ["analysis1_description", "analysis1_code"]
     list_display = ("analysis1_code", "analysis1_description", "active")
@@ -208,44 +166,6 @@ class Analysis1Admin(AdminActiveField, AdminImportExport):
         return import_analysis1_class
 
 
-class HistoricalAnalysis1Admin(AdminArchived, AdminExport):
-    search_fields = ["analysis1_description", "analysis1_code"]
-    list_display = (
-        "analysis1_code",
-        "analysis1_description",
-        "active",
-        "financial_year",
-    )
-
-    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
-    fields = (
-        "financial_year",
-        "analysis1_code",
-        "analysis1_description",
-        "supplier",
-        "pc_reference",
-        "active",
-        "archived"
-    )
-
-    # different fields editable if updating or creating the object
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return [
-                "financial_year",
-                "analysis1_code",
-                "created",
-                "updated",
-                "archived"
-            ]  # don't allow to edit the code
-        else:
-            return ["created", "updated", "archived"]
-
-    @property
-    def export_func(self):
-        return generic_table_iterator
-
-
 class Analysis2Admin(AdminActiveField, AdminImportExport):
     search_fields = ["analysis2_description", "analysis2_code"]
     list_display = ("analysis2_code", "analysis2_description", "active")
@@ -281,17 +201,6 @@ class Analysis2Admin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_analysis2_class
-
-
-class HistoricalAnalysis2Admin(AdminReadOnly, AdminExport):
-    search_fields = ["analysis2_description", "analysis2_code"]
-    list_display = ("analysis2_code", "analysis2_description", "active")
-    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
-    fields = ("financial_year", "analysis2_code", "analysis2_description", "active")
-
-    @property
-    def export_func(self):
-        return generic_table_iterator
 
 
 class ExpenditureCategoryAdmin(AdminImportExport):
@@ -343,35 +252,6 @@ class ExpenditureCategoryAdmin(AdminImportExport):
         return import_expenditure_category_class
 
 
-class HistoricalExpenditureCategoryAdmin(AdminReadOnly, AdminExport):
-    search_fields = ["grouping_description", "description"]
-    list_display = [
-        "grouping_description",
-        "description",
-        "NAC_category_description",
-        "linked_budget_code",
-    ]
-    list_filter = (
-        "NAC_category_description",
-        ("financial_year", RelatedDropdownFilter),
-    )
-
-    fields = (
-        "financial_year",
-        "grouping_description",
-        "description",
-        "further_description",
-        "linked_budget_code",
-        "linked_budget_code_description",
-        "NAC_category_description",
-        "archived",
-    )
-
-    @property
-    def export_func(self):
-        return _export_historical_exp_cat_iterator
-
-
 class CommercialCategoryAdmin(AdminImportExport):
     search_fields = ["commercial_category", "description"]
     list_display = ["commercial_category", "description", "commercial_category"]
@@ -383,24 +263,6 @@ class CommercialCategoryAdmin(AdminImportExport):
     @property
     def import_info(self):
         return import_comm_cat_class
-
-
-class HistoricalCommercialCategoryAdmin(AdminReadOnly, AdminExport):
-    search_fields = ["commercial_category", "description"]
-    list_display = ["commercial_category", "description"]
-    list_filter = ("active", ("financial_year", RelatedDropdownFilter))
-
-    fields = (
-        "financial_year",
-        "commercial_category",
-        "description",
-        "active",
-        "archived",
-    )
-
-    @property
-    def export_func(self):
-        return _export_historical_comm_cat_iterator
 
 
 class NACCategoryAdmin(AdminImportExport):
@@ -466,23 +328,6 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
         return import_prog_class
 
 
-class HistoricalProgrammeAdmin(AdminReadOnly, AdminExport):
-    list_display = ("programme_code", "programme_description", "budget_type", "active")
-    search_fields = ["programme_code", "programme_description"]
-    list_filter = ["budget_type", "active", ("financial_year", RelatedDropdownFilter)]
-    fields = (
-        "financial_year",
-        "programme_code",
-        "programme_description",
-        "budget_type",
-        "active",
-    )
-
-    @property
-    def export_func(self):
-        return _export_programme_iterator
-
-
 class InterEntityL1Admin(AdminActiveField, AdminExport):
     search_fields = ["l1_value", "l1_description"]
 
@@ -503,24 +348,6 @@ class InterEntityAdmin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_inter_entity_class
-
-
-class HistoricalInterEntityAdmin(AdminReadOnly, AdminExport):
-    list_display = ("l2_value", "l2_description", "l1_value", "active")
-    search_fields = ["l2_value", "l2_description"]
-    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
-    fields = (
-        "financial_year",
-        "l2_value",
-        "l2_description",
-        "l1_value",
-        "l1_description",
-        "active",
-    )
-
-    @property
-    def export_func(self):
-        return _export_historical_inter_entity_iterator
 
 
 class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
@@ -558,38 +385,6 @@ class ProjectCodeAdmin(AdminActiveField, AdminImportExport):
     @property
     def import_info(self):
         return import_project_class
-
-
-class HistoricalProjectCodeAdmin(AdminReadOnly, AdminExport):
-    search_fields = ["project_description", "project_code"]
-    list_display = ("project_code", "project_description", "active")
-    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
-    fields = ("financial_year", "project_code", "project_description", "active")
-
-    @property
-    def export_func(self):
-        return generic_table_iterator
-
-
-class HistoricalFCOMappingAdmin(AdminReadOnly, AdminExport):
-    search_fields = ["fco_code", "fco_description"]
-    list_display = ("fco_code", "fco_description", "active")
-    list_filter = ["active", ("financial_year", RelatedDropdownFilter)]
-    fields = (
-        "financial_year",
-        "fco_code",
-        "fco_description",
-        "account_L6_code",
-        "account_L6_description",
-        "nac_category_description",
-        "budget_description",
-        "economic_budget_code",
-        "active",
-    )
-
-    @property
-    def export_func(self):
-        return _export_historical_fco_mapping_iterator
 
 
 class FCOMappingAdmin(AdminActiveField, AdminImportExport):
@@ -702,15 +497,4 @@ admin.site.register(InterEntity, InterEntityAdmin)
 admin.site.register(ProjectCode, ProjectCodeAdmin)
 admin.site.register(FCOMapping, FCOMappingAdmin)
 admin.site.register(OperatingDeliveryCategory, OpDelCategoryAdmin)
-
-admin.site.register(ArchivedAnalysis1, HistoricalAnalysis1Admin)
-admin.site.register(ArchivedAnalysis2, HistoricalAnalysis2Admin)
-admin.site.register(ArchivedExpenditureCategory, HistoricalExpenditureCategoryAdmin)
-admin.site.register(ArchivedCommercialCategory, HistoricalCommercialCategoryAdmin)
-admin.site.register(ArchivedNaturalCode, HistoricalNaturalCodeAdmin)
-admin.site.register(ArchivedProgrammeCode, HistoricalProgrammeAdmin)
-admin.site.register(ArchivedInterEntity, HistoricalInterEntityAdmin)
-admin.site.register(ArchivedProjectCode, HistoricalProjectCodeAdmin)
-admin.site.register(ArchivedFCOMapping, HistoricalFCOMappingAdmin)
-
 admin.site.register(BudgetType, BudgetTypeAdmin)
