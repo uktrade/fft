@@ -78,6 +78,12 @@ def import_archived_analysis1(csvfile, year):
 
 
 def import_archived_analysis2(csvfile, year):
+    try:
+        validate_year_for_archiving(year)
+    except ArchiveYearError as ex:
+        raise ArchiveYearError(
+            f"Failure import Importing archived Analysis2 (Market) error: {str(ex)}"
+        )
     success, msg = import_obj(csvfile, ANALYSIS2_HISTORICAL_KEY, year=year)
     if not success:
         raise WrongChartOFAccountCodeException(
@@ -87,18 +93,30 @@ def import_archived_analysis2(csvfile, year):
 
 
 def import_archived_project(csvfile, year):
+    try:
+        validate_year_for_archiving(year)
+    except ArchiveYearError as ex:
+        raise ArchiveYearError(
+            f"Failure import Importing archived Project error: {str(ex)}"
+        )
     success, msg = import_obj(csvfile, PROJECT_HISTORICAL_KEY, year=year)
     if not success:
         raise WrongChartOFAccountCodeException(
-            f"Importing Project error: " f"{msg}"
+            f"Importing archived Project error: " f"{msg}"
         )
     return success, msg
 
 
 def import_archived_programme(csvfile, year):
+    try:
+        validate_year_for_archiving(year)
+    except ArchiveYearError as ex:
+        raise ArchiveYearError(
+            f"Failure import Importing archived Programme error: {str(ex)}"
+        )
     success, msg = import_obj(csvfile, PROGRAMME_HISTORICAL_KEY, year=year)
     if not success:
         raise WrongChartOFAccountCodeException(
-            f"Importing Programme error: " f"{msg}"
+            f"Importing archived Programme error: " f"{msg}"
         )
     return success, msg

@@ -1,15 +1,7 @@
-import io
-
 from django.contrib import admin
-from django.core.files.uploadhandler import (
-    MemoryFileUploadHandler,
-    TemporaryFileUploadHandler,
-)
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
-from django.views.decorators.csrf import csrf_exempt
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
@@ -21,10 +13,10 @@ from guardian.shortcuts import (
 
 from core.admin import (
     AdminActiveField,
+    AdminArchived,
     AdminExport,
     AdminImportExport,
     AdminImportExtraExport,
-    AdminReadOnly,
 )
 
 from costcentre.exportcsv import (
@@ -517,7 +509,7 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
         return export_person_iterator
 
 
-class HistoricCostCentreAdmin(AdminReadOnly, AdminExport):
+class HistoricCostCentreAdmin(AdminArchived, AdminExport):
     list_display = (
         "cost_centre_code",
         "cost_centre_name",
@@ -560,6 +552,18 @@ class HistoricCostCentreAdmin(AdminReadOnly, AdminExport):
         "active",
         "archived",
     )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "financial_year",
+                "cost_centre_code",
+                "directorate_code",
+                "group_code",
+                "archived",
+            ]
+        else:
+            return ["created", "archived", "updated"]
 
     @property
     def export_func(self):

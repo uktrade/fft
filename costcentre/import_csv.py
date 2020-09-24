@@ -21,15 +21,15 @@ from .models import (
 GROUP_KEY = {
     IMPORT_CSV_MODEL_KEY: DepartmentalGroup,
     IMPORT_CSV_PK_KEY: "Group Code",
-    "fieldlist": {DepartmentalGroup.group_name.field_name: "Group Description"},
+    "fieldlist": {"group_name": "Group Description"},
 }
 
 DIR_KEY = {
     IMPORT_CSV_MODEL_KEY: Directorate,
     IMPORT_CSV_PK_KEY: "Directorate Code",
     IMPORT_CSV_FIELDLIST_KEY: {
-        Directorate.directorate_name.field_name: "Directorate Description",
-        Directorate.group.field.name: GROUP_KEY,
+        "directorate_name": "Directorate Description",
+        "group": GROUP_KEY,
     },
 }
 
@@ -37,9 +37,9 @@ CC_KEY = {
     IMPORT_CSV_MODEL_KEY: CostCentre,
     IMPORT_CSV_PK_KEY: "Cost Centre",
     IMPORT_CSV_FIELDLIST_KEY: {
-        CostCentre.cost_centre_name.field_name: "Cost Centre Description",
-        CostCentre.active.field_name: "Active",
-        CostCentre.directorate.field.name: DIR_KEY,
+        "cost_centre_name": "Cost Centre Description",
+        "active": "Active",
+        "directorate": DIR_KEY,
     },
 }
 
