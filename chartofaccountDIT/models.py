@@ -237,8 +237,8 @@ class ArchivedExpenditureCategory(
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Budget Category"
-        verbose_name_plural = "Historic Budget Categories"
+        verbose_name = "Archived Budget Category"
+        verbose_name_plural = "Archived Budget Categories"
         ordering = ["financial_year", "grouping_description"]
 
 
@@ -293,8 +293,8 @@ class ArchivedCommercialCategory(
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Commercial Category"
-        verbose_name_plural = "Historic Commercial Categories"
+        verbose_name = "Archived Commercial Category"
+        verbose_name_plural = "Archived Commercial Categories"
         ordering = ["financial_year", "commercial_category"]
 
 
@@ -451,8 +451,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Natural Account Code (NAC)"
-        verbose_name_plural = "Historic Natural Account Codes (NAC)"
+        verbose_name = "Archived Natural Account Code (NAC)"
+        verbose_name_plural = "Archived Natural Account Codes (NAC)"
         ordering = ["financial_year", "natural_account_code"]
 
 
@@ -518,8 +518,8 @@ class ArchivedProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
         return pc_hist
 
     class Meta:
-        verbose_name = "Historic Programme Code"
-        verbose_name_plural = "Historic Programme Codes"
+        verbose_name = "Archived Programme Code"
+        verbose_name_plural = "Archived Programme Codes"
         ordering = ["financial_year", "programme_code"]
 
 
@@ -585,8 +585,8 @@ class ArchivedInterEntity(InterEntityAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Inter-Entity"
-        verbose_name_plural = "Historic Inter-Entities"
+        verbose_name = "Archived Inter-Entity"
+        verbose_name_plural = "Archived Inter-Entities"
         ordering = ["financial_year", "l2_value"]
 
 
@@ -632,8 +632,8 @@ class ArchivedProjectCode(ProjectCodeAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Project"
-        verbose_name_plural = "Historic Projects"
+        verbose_name = "Archived Project"
+        verbose_name_plural = "Archived Projects"
         ordering = ["financial_year", "project_code"]
 
 
@@ -710,6 +710,6 @@ class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic FCO Mapping"
-        verbose_name_plural = "Historic FCO Mappings"
+        verbose_name = "Archived FCO Mapping"
+        verbose_name_plural = "Archived FCO Mappings"
         ordering = ["financial_year", "fco_code"]
