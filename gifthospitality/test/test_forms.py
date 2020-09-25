@@ -148,6 +148,8 @@ class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
         record_id = soup.find_all('td')
 
         self.assertTrue(record_id)
+        header_text = soup.find_all("th", class_="govuk-table__head meta-col")
+        assert len(header_text) == 0
 
         download_search_records_url = self.client.get("gifthospitality:?_export.xlsx")
         self.assertEqual(download_search_records_url.status_code, 200)

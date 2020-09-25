@@ -112,6 +112,8 @@ class ForecastSubTotalTable(tables.Table):
     """Define the month columns format.
     Used every time we need to display a forecast"""
     display_view_details = False
+    # Display actual/forecast labels
+    is_forecast = True
 
     def __init__(self, column_dict={}, *args, **kwargs):
         cols = [
