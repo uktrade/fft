@@ -6,32 +6,30 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
 
-from chartofaccountDIT.test.factories import ProgrammeCodeFactory
-from chartofaccountDIT.views import HistoricalFilteredProgrammeView
+from chartofaccountDIT.test.factories import ExpenditureCategoryFactory
+from chartofaccountDIT.views import HistoricalFilteredExpenditureCategoryListView
 
 from core.test.test_base import RequestFactoryBase
 from core.utils.generic_helpers import get_current_financial_year
 
 
-class ArchiveProgrammeCodeTest(TestCase, RequestFactoryBase):
+class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
     def setUp(self):
         self.out = StringIO()
         RequestFactoryBase.__init__(self)
 
-        obj = ProgrammeCodeFactory()
-        self.programme_code = obj.programme_code
-        self.programme_description = obj.programme_description
-        self.budget_type = obj.budget_type.budget_type
+        obj = ExpenditureCategoryFactory()
+        self.grouping_description = obj.grouping_description
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
         call_command(
-            "archive", type="Programmes", year=self.archive_year, stdout=self.out,
+            "archive", type="Expenditure_Cat", year=self.archive_year, stdout=self.out,
         )
 
-    def test_view_historical_programme(self):
+    def test_view_historical_financecategory(self):
         response = self.factory_get(
-            reverse("historical_programme_filter", kwargs={"year": self.archive_year},),
-            HistoricalFilteredProgrammeView,
+            reverse("historical_finance_category", kwargs={"year": self.archive_year},),
+            HistoricalFilteredExpenditureCategoryListView,
             year=self.archive_year,
         )
         self.assertEqual(response.status_code, 200)
@@ -48,18 +46,16 @@ class ArchiveProgrammeCodeTest(TestCase, RequestFactoryBase):
         header_text = soup.find_all("th", class_="govuk-table__head meta-col")
         assert len(header_text) == 0
         first_cols = table_rows[0].find_all("td")
-        assert first_cols[0].get_text().strip() == str(self.programme_code)
-        assert first_cols[1].get_text().strip() == self.programme_description
-        assert first_cols[2].get_text().strip() == self.budget_type
+        assert first_cols[1].get_text().strip() == self.grouping_description
 
-    def test_view_filtered_historical_programme(self):
-        filter_parameter = "?search_all=" + self.programme_description
+    def test_view_filtered_historical_financecategory(self):
+        filter_parameter = "?search_all=" + self.grouping_description
         response = self.factory_get(
-            reverse("historical_programme_filter", kwargs={"year": self.archive_year},)
+            reverse("historical_finance_category", kwargs={"year": self.archive_year},)
             + filter_parameter,
-            HistoricalFilteredProgrammeView,
+            HistoricalFilteredExpenditureCategoryListView,
             year=self.archive_year,
-            search_all=self.programme_description,
+            search_all=self.grouping_description,
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -75,6 +71,4 @@ class ArchiveProgrammeCodeTest(TestCase, RequestFactoryBase):
         header_text = soup.find_all("th", class_="govuk-table__head meta-col")
         assert len(header_text) == 0
         first_cols = table_rows[0].find_all("td")
-        assert first_cols[0].get_text().strip() == str(self.programme_code)
-        assert first_cols[1].get_text().strip() == self.programme_description
-        assert first_cols[2].get_text().strip() == self.budget_type
+        assert first_cols[1].get_text().strip() == self.grouping_description
