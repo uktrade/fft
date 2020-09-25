@@ -7,6 +7,7 @@ from django.core.management.base import (
 from chartofaccountDIT.import_archived_from_csv import (
     import_archived_analysis1,
     import_archived_analysis2,
+    import_archived_nac,
     import_archived_programme,
     import_archived_project,
 )
@@ -31,6 +32,7 @@ IMPORT_ARCHIVED_TYPE = {
     "Programmes": import_archived_programme,
     "Projects": import_archived_project,
     "CostCentre": import_archived_cost_centre,
+    "NAC": import_archived_nac,
 }
 
 

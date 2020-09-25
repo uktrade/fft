@@ -39,13 +39,13 @@ from costcentre.import_csv import (
     import_director_class,
 )
 from costcentre.models import (
+    ArchivedCostCentre,
     BSCEEmail,
     BusinessPartner,
     CostCentre,
     CostCentrePerson,
     DepartmentalGroup,
     Directorate,
-    ArchivedCostCentre,
 )
 
 from forecast.permission_shortcuts import assign_perm
@@ -115,7 +115,8 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
-        if request.user.groups.filter(name="Finance Administrator") or request.user.is_superuser:
+        if request.user.groups.filter(name="Finance Administrator") \
+                or request.user.is_superuser:
             if obj:
                 return [
                     "cost_centre_code",
@@ -225,7 +226,6 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
         return True
 
-    # flake8: noqa: C901
     def change_permission(self, request, cost_centre_id, *args, **kwargs):
         cost_centre = self.get_object(request, cost_centre_id)
         cost_centre_url = reverse(
