@@ -49,7 +49,8 @@ class ArchiveProgrammeCodeTest(TestCase, RequestFactoryBase):
         assert len(table_rows) == 1
         table_rows = soup.find_all("tr", class_="even")
         assert len(table_rows) == 1
-
+        header_text = soup.find_all("th", class_="govuk-table__head meta-col")
+        assert len(header_text) == 0
         first_cols = table_rows[0].find_all("td")
         assert first_cols[0].get_text().strip() == str(self.programme_code)
         assert first_cols[1].get_text().strip() == self.programme_description
