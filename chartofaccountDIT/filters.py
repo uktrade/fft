@@ -163,7 +163,7 @@ class HistoricalExpenditureCategoryFilter(ArchivedFilterSet):
 
     def search_all_filter(selfself, queryset, name, value):
         return queryset.filter(
-            Q(NAC_category__icontains=value)
+            Q(NAC_category_description__icontains=value)
             | Q(grouping_description__icontains=value)
             | Q(description__icontains=value)
             | Q(further_description__icontains=value)
@@ -356,31 +356,10 @@ class ProgrammeFilter(MyFilterSet):
         )
 
 
-class HistoricalProgrammeFilter(ArchivedFilterSet):
-    """Provide the filter definition for Programme. Inherit from current one,
-    but change the filter to ."""
-
-    search_all = django_filters.CharFilter(
-        field_name="", label="", method="search_all_filter"
-    )
-
-    def search_all_filter(self, queryset, name, value):
-        return queryset.filter(
-            Q(programme_code__icontains=value)
-            | Q(programme_description__icontains=value)
-            | Q(budget_type__icontains=value)
-        )
-
+class HistoricalProgrammeFilter(ArchivedFilterSet, ProgrammeFilter):
     class Meta(ArchivedFilterSet.Meta):
         model = ArchivedProgrammeCode
         fields = ["search_all"]
-
-    @property
-    def qs(self):
-        qs_filtered = super(HistoricalProgrammeFilter, self).qs
-        return qs_filtered.filter(active=True).order_by(
-            "programme_code", "programme_description", "budget_type"
-        )
 
 
 class InterEntityFilter(MyFilterSet):

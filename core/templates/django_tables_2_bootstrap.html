@@ -11,13 +11,15 @@
         {% block table.thead %}
         {% if table.show_header %}
             <thead {{ table.attrs.thead.as_html }}>
-                <tr>
-                    <th colspan="{{ table.num_meta_cols|add:"1" }}"></th>
-                    {% if table.num_actuals > 0 %}
-                        <th class="govuk-table__head meta-col" colspan="{{ table.num_actuals }}">Actuals</th>
-                    {% endif %}
-                    <th class="govuk-table__head meta-col" colspan="{{ table.forecast_cols }}">Forecast</th>
-                </tr>
+                {% if table.is_forecast %}
+                    <tr>
+                        <th colspan="{{ table.num_meta_cols|add:"1" }}"></th>
+                        {% if table.num_actuals > 0 %}
+                            <th class="govuk-table__head meta-col" colspan="{{ table.num_actuals }}">Actuals</th>
+                        {% endif %}
+                        <th class="govuk-table__head meta-col" colspan="{{ table.forecast_cols }}">Forecast</th>
+                    </tr>
+                {% endif %}
                 <tr class="govuk-table__row">
                 {% for column in table.columns %}
                     <th {{ column.attrs.th.as_html }}>

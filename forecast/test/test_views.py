@@ -606,7 +606,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         )
 
         self.assertEqual(response.status_code, 200)
-
         # Check group is shown
         assert self.group_name in str(response.rendered_content)
 
@@ -770,9 +769,11 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
+        # Check the existence of header showing Actual/Forecast labels
+        header_text = soup.find_all("th", class_="govuk-table__head meta-col")
+        assert len(header_text) != 0
 
         # Check that the first table displays the cost centre code
-
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 18

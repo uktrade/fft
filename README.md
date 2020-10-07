@@ -1,4 +1,4 @@
-# fido
+# FFT
 
 ## The Project
 
@@ -9,13 +9,13 @@ A database called "fido" will be automatically created.
 Run the following to perform initial migrations:
 
 ```
-docker-compose run fido python manage.py migrate
+make migrate
 ```
 
 In order to add stub data for local development purposes run:
 
 ```
-docker-compose run fido python manage.py create_stub_data All
+make create-stub-data
 ```
 
 You can add forecast data if you are developing forecast related functions:
@@ -27,7 +27,7 @@ docker-compose run fido python manage.py create_stub_forecast_data
 You can add Gift and Hospitality data if you are developing Gift and Hospitality related functions:
 
 ```
-docker-compose run fido python manage.py populate_gift_hospitality_table
+make gift-hospitality-table
 ```
 
 Now access any page within the site and log in with your single sign on credentials.
@@ -35,13 +35,12 @@ Now access any page within the site and log in with your single sign on credenti
 You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
 
 ```
-docker-compose run fido python manage.py elevate_sso_user_permissions
+make elevate
 ```
 
 ### Compile the front end
 ```
-docker-compose run fido python manage.py compilescss
-docker-compose run fido python manage.py collectstatic
+make compilescss & make collectstatic
 ```
 
 ### Environment variables
@@ -117,10 +116,10 @@ In order to get the node docker container working, this guide was followed: http
 ### Product URLs
 
 #### Dev URL
-https://fido.trade.uat.uktrade.io/core/
+https://fft.trade.dev.uktrade.digital/core/
 
 #### Production URL
-https://fido.trade.gov.uk/core/
+https://fft.trade.gov.uk/core/
 
 ### Managing user permissions
 
