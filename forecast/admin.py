@@ -27,7 +27,7 @@ def get_name(self):
     return '{} {}'.format(self.first_name, self.last_name)
 
 
-# TODO - swap user model to modern version, monkey patch for now
+#  TODO - swap user model to modern version, monkey patch for now
 User.add_to_class("__str__", get_name)
 
 
