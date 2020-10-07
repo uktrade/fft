@@ -147,6 +147,12 @@ class FinancialPeriodManager(models.Manager):
             .values_list("period_short_name", flat=True)
         )
 
+    def period_display_all_list(self):
+        return list(
+            self.get_queryset()
+            .values_list("period_short_name", flat=True)
+        )
+
     def period_display_code_list(self):
         return list(
             self.get_queryset()

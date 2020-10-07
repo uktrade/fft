@@ -44,7 +44,7 @@ class Analysis1(Analysis1Abstract, IsActiveModel):
 
 class ArchivedAnalysis1(Analysis1Abstract, ArchivedModel):
     analysis1_code = models.CharField("Contract Code", max_length=50)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'analysis1_code'
 
     def __str__(self):
@@ -91,7 +91,7 @@ class Analysis2(Analysis2Abstract, IsActiveModel):
 
 class ArchivedAnalysis2(Analysis2Abstract, ArchivedModel):
     analysis2_code = models.CharField("Contract Code", max_length=50)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'analysis2_code'
 
     def __str__(self):
@@ -206,7 +206,7 @@ class ArchivedExpenditureCategory(
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", blank=True, null=True,
     )
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'grouping_description'
 
     def __str__(self):
@@ -220,6 +220,7 @@ class ArchivedExpenditureCategory(
             financial_year=year_obj,
             active=obj.active,
             grouping_description=obj.grouping_description + suffix,
+            NAC_category=obj.NAC_category,
             NAC_category_description=obj.NAC_category.NAC_category_description
             if obj.NAC_category
             else None,
@@ -236,8 +237,8 @@ class ArchivedExpenditureCategory(
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Budget Category"
-        verbose_name_plural = "Historic Budget Categories"
+        verbose_name = "Archived Budget Category"
+        verbose_name_plural = "Archived Budget Categories"
         ordering = ["financial_year", "grouping_description"]
 
 
@@ -271,7 +272,7 @@ class ArchivedCommercialCategory(
         max_length=255, verbose_name="Commercial Category", unique=False,
     )
 
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'commercial_category'
 
     def __str__(self):
@@ -292,8 +293,8 @@ class ArchivedCommercialCategory(
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Commercial Category"
-        verbose_name_plural = "Historic Commercial Categories"
+        verbose_name = "Archived Commercial Category"
+        verbose_name_plural = "Archived Commercial Categories"
         ordering = ["financial_year", "commercial_category"]
 
 
@@ -389,7 +390,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     account_L5_code_upload = models.BigIntegerField(
         verbose_name="L5 for OSCAR upload", blank=True, null=True
     )
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'natural_account_code'
 
     def __str__(self):
@@ -450,8 +451,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Natural Account Code (NAC)"
-        verbose_name_plural = "Historic Natural Account Codes (NAC)"
+        verbose_name = "Archived Natural Account Code (NAC)"
+        verbose_name_plural = "Archived Natural Account Codes (NAC)"
         ordering = ["financial_year", "natural_account_code"]
 
 
@@ -497,7 +498,7 @@ class ProgrammeCode(ProgrammeCodeAbstract, IsActiveModel):
 
 class ArchivedProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
     programme_code = models.CharField("Programme Code", max_length=50)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'programme_code'
 
     def __str__(self):
@@ -517,8 +518,8 @@ class ArchivedProgrammeCode(ProgrammeCodeAbstract, ArchivedModel):
         return pc_hist
 
     class Meta:
-        verbose_name = "Historic Programme Code"
-        verbose_name_plural = "Historic Programme Codes"
+        verbose_name = "Archived Programme Code"
+        verbose_name_plural = "Archived Programme Codes"
         ordering = ["financial_year", "programme_code"]
 
 
@@ -562,7 +563,7 @@ class ArchivedInterEntity(InterEntityAbstract, ArchivedModel):
     l2_value = models.CharField("ORACLE - Inter Entity Code", max_length=10,)
     l1_value = models.CharField("Government Body", max_length=10,)
     l1_description = models.CharField("Government Body Description", max_length=100,)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'l2_value'
 
     def __str__(self):
@@ -584,8 +585,8 @@ class ArchivedInterEntity(InterEntityAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Inter-Entity"
-        verbose_name_plural = "Historic Inter-Entities"
+        verbose_name = "Archived Inter-Entity"
+        verbose_name_plural = "Archived Inter-Entities"
         ordering = ["financial_year", "l2_value"]
 
 
@@ -611,7 +612,7 @@ class ProjectCode(ProjectCodeAbstract, IsActiveModel):
 
 class ArchivedProjectCode(ProjectCodeAbstract, ArchivedModel):
     project_code = models.CharField("Project Code", max_length=50)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'project_code'
 
     def __str__(self):
@@ -631,8 +632,8 @@ class ArchivedProjectCode(ProjectCodeAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic Project"
-        verbose_name_plural = "Historic Projects"
+        verbose_name = "Archived Project"
+        verbose_name_plural = "Archived Projects"
         ordering = ["financial_year", "project_code"]
 
 
@@ -674,7 +675,7 @@ class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
         max_length=200, verbose_name="Expenditure Type"
     )
 
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
     chart_of_account_code_name = 'fco_code'
 
     def __str__(self):
@@ -709,6 +710,6 @@ class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
         return obj_hist
 
     class Meta:
-        verbose_name = "Historic FCO Mapping"
-        verbose_name_plural = "Historic FCO Mappings"
+        verbose_name = "Archived FCO Mapping"
+        verbose_name_plural = "Archived FCO Mappings"
         ordering = ["financial_year", "fco_code"]

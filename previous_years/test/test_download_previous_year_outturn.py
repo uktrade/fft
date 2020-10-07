@@ -22,7 +22,10 @@ from forecast.views.view_forecast.export_forecast_data import (
     export_forecast_data_project_detail_group,
 )
 
-from previous_years.test.test_utils import DownloadPastYearForecastSetup
+from previous_years.test.test_utils import (
+    DownloadPastYearForecastSetup,
+    hide_adjustment_columns,
+)
 
 
 class DownloadPastYearForecastTest(DownloadPastYearForecastSetup):
@@ -131,7 +134,7 @@ class DownloadPastYearForecastTest(DownloadPastYearForecastSetup):
                 "export_forecast_data_project_detail_dit",
                 kwargs={
                     "project_code_id": self.project_code,
-                    "period": self.archived_year
+                    "period": self.archived_year,
                 },
             ),
             export_forecast_data_project_detail_dit,
@@ -343,3 +346,9 @@ class DownloadPastYearForecastTest(DownloadPastYearForecastSetup):
 
         self.assertEqual(response.status_code, 200)
         self.check_response_content(response.content)
+
+
+class DownloadPastYearForecastAdjustmentColumnsTest(DownloadPastYearForecastTest):
+    def setUp(self):
+        super().setUp()
+        hide_adjustment_columns()

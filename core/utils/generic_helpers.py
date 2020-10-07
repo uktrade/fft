@@ -50,7 +50,7 @@ def get_year_display(year):
 
 
 class GetValidYear:
-    regex = '2017|2018|2019|2020'
+    regex = '20\d{2}'
 
     def to_python(self, value):
         return int(value)
@@ -101,6 +101,7 @@ def today_string():
     return today.strftime("%d %b %Y")
 
 
+# Classes used to display totals and subtotals when showing Forecast/Actuals
 SUB_TOTAL_CLASS = "sub-total"
 TOTAL_CLASS = "mid-total"
 GRAND_TOTAL_CLASS = "grand-total"
