@@ -91,20 +91,27 @@ def export_forecast_to_excel(
         ws.protection.formatRows = False
         ws.protection.formatColumns = False
     row_count = 1
-    period_list = FinancialPeriod.financial_period_info.period_display_list()
+    display_previous_years = last_actual_period > 2000
+    if display_previous_years:
+        period_list = FinancialPeriod.financial_period_info.period_display_all_list()
+    else:
+        period_list = FinancialPeriod.financial_period_info.period_display_list()
     howmany_periods = len(period_list)
     header = create_headers(columns_dict, extra_columns_dict, period_list)
     budget_index = header.index(budget_header) + 1
     budget_col = get_column_letter(budget_index)
     first_figure_index = budget_index + 1
     first_figure_col = get_column_letter(first_figure_index)
-    # Actual month starts at 1 for April,
-    # so it can be used as counter of the actual periods
-    if last_actual_period:
-        howmany_actuals = last_actual_period
+    if display_previous_years:
+        howmany_actuals = howmany_periods
     else:
-        # download the current period
-        howmany_actuals = FinancialPeriod.financial_period_info.actual_month()
+        # Actual month starts at 1 for April,
+        # so it can be used as counter of the actual periods
+        if last_actual_period:
+            howmany_actuals = last_actual_period
+        else:
+            # download the current period
+            howmany_actuals = FinancialPeriod.financial_period_info.actual_month()
     first_forecast_index = first_figure_index + howmany_actuals
     if howmany_actuals:
         last_actual_col = get_column_letter(budget_index + howmany_actuals)

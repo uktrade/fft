@@ -31,14 +31,18 @@ def set_file_upload_error(file_upload, user_error, error):
 
 
 def set_file_upload_warning(file_upload, user_warning):
+    """
+
+    :type file_upload: object
+    """
     if file_upload.user_warning_message:
         file_upload.warning_count += 1
-        file_upload.user_warning_message = user_warning
-    else:
-        file_upload.warning_count = 1
         file_upload.user_warning_message = (
             f"{file_upload.user_warning_message}{user_warning}"
         )
+    else:
+        file_upload.warning_count = 1
+        file_upload.user_warning_message = user_warning
     file_upload.save()
 
 

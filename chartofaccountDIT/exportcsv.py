@@ -71,7 +71,9 @@ def _export_historical_nac_iterator(queryset):
             obj.natural_account_code,
             obj.natural_account_code_description,
             obj.used_for_budget,
-            obj.expenditure_category,
+            obj.expenditure_category.grouping_description
+            if obj.expenditure_category
+            else "-",
             obj.NAC_category,
             obj.commercial_category,
             obj.account_L5_code,

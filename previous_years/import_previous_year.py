@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from django.db import connection
 
@@ -70,6 +71,8 @@ ANALYSIS_HEADER = "analysis"
 ANALYSIS2_HEADER = "analysis2"
 
 VALID_WS_NAME = "Outturn"
+
+logger = logging.getLogger(__name__)
 
 
 class CheckArchivedFinancialCode(CheckFinancialCode):
@@ -143,7 +146,7 @@ def copy_uploaded_previous_year(year):
     # Now copy the newly uploaded previous_years to the monthly figure table
     ArchivedForecastData.objects.filter(financial_year=year,).delete()
     sql_insert = (
-        "INSERT INTO previous_years_archivedforecastdata("
+        f"INSERT INTO previous_years_archivedforecastdata("
         "created, "
         "updated, "
         "archived, "
@@ -187,7 +190,8 @@ def copy_uploaded_previous_year(year):
         "adj3, "
         "financial_code_id, "
         "financial_year_id "
-        "FROM previous_years_archivedforecastdataupload;"
+        "FROM previous_years_archivedforecastdataupload "
+        f"WHERE financial_year_id = {year};"
     )
 
     with connection.cursor() as cursor:
@@ -322,6 +326,8 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
             set_file_upload_feedback(
                 file_upload, f"Processing row {row_number} of {rows_to_process}."
             )
+            logger.info(f"Processing row {row_number} of {rows_to_process}.")
+
         cost_centre = previous_year_row[cc_index].value
         if not cost_centre:
             # protection against empty rows
