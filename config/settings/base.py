@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "upload_file.apps.UploadFileConfig",
     "download_file.apps.DownloadFileConfig",
     "pingdom.apps.PingdomConfig",
+    "data_lake.apps.DataLakeConfig",
     "django_extensions",
     "django_tables2",
     "django_filters",
@@ -266,4 +267,11 @@ CLEAN_FILE_NAME = True
 MAX_FORECAST_FIGURE = 10000000000
 MIN_FORECAST_FIGURE = -10000000000
 
-AUTHBROKER_ANONYMOUS_PATHS = ["/pingdom/ping.xml", ]
+AUTHBROKER_ANONYMOUS_PATHS = [
+    "/pingdom/ping.xml",
+    "/data-lake/forecast/",
+]
+
+# Hawk
+HAWK_INCOMING_ACCESS_KEY = env.str('HAWK_INCOMING_ACCESS_KEY', default=None)
+HAWK_INCOMING_SECRET_KEY = env.str('HAWK_INCOMING_SECRET_KEY', default=None)
