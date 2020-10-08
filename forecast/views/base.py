@@ -85,6 +85,8 @@ class ForecastViewTableMixin(MultiTableMixin):
     # It handles the differences caused by viewing
     # forecasts entered in different period.
     # the period can also be a previous archived year
+    table_pagination = False
+
     def __init__(self, *args, **kwargs):
         self._period = None
         self._month_list = None
