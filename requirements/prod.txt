@@ -57,7 +57,7 @@ gevent==20.6.2            # via -r requirements.in/prod.in
 greenlet==0.4.16          # via gevent
 gunicorn==19.9.0          # via -r requirements.in/base.in
 idna==2.7                 # via -r requirements.in/base.in, requests
-importlib-metadata==1.6.0  # via -r requirements.in/base.in, kombu, pluggy
+importlib-metadata==1.6.0  # via -r requirements.in/base.in
 ipython-genutils==0.2.0   # via -r requirements.in/base.in, traitlets
 ipython==6.2.1            # via -r requirements.in/base.in
 jdcal==1.3                # via -r requirements.in/base.in, openpyxl
@@ -68,6 +68,7 @@ kubi-ecs-logger==0.0.6    # via -r requirements.in/base.in, django-log-formatter
 libsass==0.20.0           # via -r requirements.in/base.in
 marshmallow==2.19.2       # via -r requirements.in/base.in, kubi-ecs-logger
 mccabe==0.6.1             # via -r requirements.in/base.in, flake8
+mohawk==1.1.0             # via -r requirements.in/base.in
 more-itertools==4.3.0     # via -r requirements.in/base.in
 oauthlib==2.1.0           # via -r requirements.in/base.in, requests-oauthlib
 odfpy==1.3.6              # via -r requirements.in/base.in, tablib
@@ -103,7 +104,7 @@ s3chunkuploader==0.12     # via -r requirements.in/base.in
 s3transfer==0.3.3         # via -r requirements.in/base.in, boto3
 sentry-sdk==0.10.2        # via -r requirements.in/base.in
 simplegeneric==0.8.1      # via -r requirements.in/base.in, ipython
-six==1.15.0               # via -r requirements.in/base.in, django-bootstrap-breadcrumbs, django-compressor, django-extensions, django-pivot, django-simple-history, django-tablib, libsass, more-itertools, prompt-toolkit, python-dateutil, traitlets
+six==1.15.0               # via -r requirements.in/base.in, django-bootstrap-breadcrumbs, django-compressor, django-extensions, django-pivot, django-simple-history, django-tablib, libsass, mohawk, more-itertools, prompt-toolkit, python-dateutil, traitlets
 sqlparse==0.2.4           # via -r requirements.in/base.in, django
 tablib==0.12.1            # via -r requirements.in/base.in, django-import-export, django-tablib
 text-unidecode==1.3       # via -r requirements.in/base.in

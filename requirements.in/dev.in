@@ -12,3 +12,4 @@ pytest-xdist
 behave-django
 pyperclip
 webdriver-manager
+freezegun
