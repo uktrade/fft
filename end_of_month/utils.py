@@ -39,19 +39,19 @@ def validate_period_code(period_code, **options):
 
 
 def get_archivable_month():
-    first_month_no_actual = FinancialPeriod.financial_period_info.actual_month() + 1
-    if first_month_no_actual > FinancialPeriod.financial_period_info.get_max_period().financial_period_code:  # noqa
+    last_month_with_actual = FinancialPeriod.financial_period_info.actual_month()
+    if not last_month_with_actual:
         raise InvalidPeriodError()
     is_archived = EndOfMonthStatus.objects.filter(
         archived=True,
-        archived_period__financial_period_code=first_month_no_actual,
+        archived_period__financial_period_code=last_month_with_actual,
     ).first()
     if is_archived:
         financial_period = FinancialPeriod.objects.get(
-            financial_period_code=first_month_no_actual,
+            financial_period_code=last_month_with_actual,
         )
         raise PeriodAlreadyArchivedError(
             f"Period {financial_period.period_long_name} already archived"
         )
 
-    return first_month_no_actual
+    return last_month_with_actual
