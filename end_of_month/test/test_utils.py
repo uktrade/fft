@@ -178,10 +178,12 @@ class UtilsTests(TestCase, RequestFactoryBase):
             validate_period_code(period_code=2)
 
     def test_get_archivable_month(self):
-        first_month_no_actual = FinancialPeriod.financial_period_info.actual_month() + 1
-
+        obj = FinancialPeriod.objects.get(pk=2)
+        obj.actual_loaded = True
+        obj.save()
+        last_month_with_actual = FinancialPeriod.financial_period_info.actual_month()
         end_of_month_status = EndOfMonthStatus.objects.filter(
-            archived_period__financial_period_code=first_month_no_actual,
+            archived_period__financial_period_code=last_month_with_actual,
         ).first()
         end_of_month_status.archived = True
         end_of_month_status.save()
