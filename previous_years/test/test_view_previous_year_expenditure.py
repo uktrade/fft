@@ -12,7 +12,7 @@ from forecast.views.view_forecast.expenditure_details import (
 )
 
 from previous_years.test.test_utils import (
-    DownloadPastYearForecastSetup,
+    PastYearForecastSetup,
     hide_adjustment_columns,
 )
 
@@ -26,7 +26,7 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-class ViewForecastNaturalAccountCodeTest(DownloadPastYearForecastSetup):
+class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
         first_nac_cols = nac_rows[2].find_all("td")
@@ -155,3 +155,11 @@ class ViewForecastNaturalAccountCodeAdjustmentColumnsTest(
     def setUp(self):
         super().setUp()
         hide_adjustment_columns()
+
+
+class ViewForecastNaturalAccountCodeTwoYearDataTest(
+    ViewForecastNaturalAccountCodeTest
+):
+    def setUp(self):
+        super().setUp()
+        self.create_another_year()

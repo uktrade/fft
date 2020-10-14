@@ -41,7 +41,7 @@ ANALYSIS2_HISTORICAL_KEY = {
     IMPORT_CSV_MODEL_KEY: ArchivedAnalysis2,
     IMPORT_CSV_PK_KEY: "Market Code",
     IMPORT_CSV_PK_NAME_KEY: "analysis2_code",
-    IMPORT_CSV_FIELDLIST_KEY: {"analysis2_description": "Market Description", },
+    IMPORT_CSV_FIELDLIST_KEY: {"analysis2_description": "Market Description"},
 }
 
 PROJECT_HISTORICAL_KEY = {
@@ -140,15 +140,16 @@ def import_archived_nac(csvfile, year):
     success, msg = import_obj(csvfile, NAC_HISTORICAL_KEY, year=year)
     if not success:
         raise WrongChartOFAccountCodeException(f"{msgerror} {msg}")
+    else:
         # Use sql to initialise the NAC_Category_id foreign key in the archived table
         # this code will not be used in future, so it is not important
         # to make maintainable
         with connection.cursor() as cursor:
-            cursor.execute(
-                'update "chartofaccountDIT_archivedexpenditurecategory" '
-                'SET "NAC_category_id" = a.id '
-                'FROM "chartofaccountDIT_naccategory" a '
-                'WHERE a."NAC_category_description" = '
-                '"chartofaccountDIT_archivedexpenditurecategory"."NAC_category_description";'  # noqa
-            )
-    return success, msg
+            sql_query = f'update "chartofaccountDIT_archivedexpenditurecategory" ' \
+                        f'SET "NAC_category_id" = a.id ' \
+                        f'FROM "chartofaccountDIT_naccategory" a ' \
+                        f'WHERE financial_year_id = {year}  ' \
+                        f'AND a."NAC_category_description" = ' \
+                        f'"chartofaccountDIT_archivedexpenditurecategory"."NAC_category_description";'  # noqa
+            cursor.execute(sql_query)
+        return success, msg

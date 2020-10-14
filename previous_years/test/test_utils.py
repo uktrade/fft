@@ -25,7 +25,7 @@ from previous_years.models import (
 )
 
 
-class DownloadPastYearForecastSetup(TestCase, RequestFactoryBase):
+class PastYearForecastSetup(TestCase, RequestFactoryBase):
     def setUp(self):
         RequestFactoryBase.__init__(self)
         # 2019 is created when the database is created, so it exists
@@ -151,6 +151,104 @@ class DownloadPastYearForecastSetup(TestCase, RequestFactoryBase):
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
+
+    def create_another_year(self):
+        # Create data for another year. Use to test that only one year data is returned.
+        another_archived_year = self.archived_year + 1
+        another_archived_year_obj = FinancialYear.objects.filter(
+            financial_year=another_archived_year
+        ).first()
+        # Just in case other year does not exist
+        assert another_archived_year_obj is not None
+        cc_obj = ArchivedCostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code,
+            cost_centre_name=self.cost_centre_name,
+            directorate_code=self.directorate_code,
+            directorate_name=self.directorate_name,
+            group_code=self.group_code,
+            group_name=self.group_name,
+            financial_year=another_archived_year_obj,
+        )
+        project_obj = HistoricalProjectCodeFactory.create(
+            project_code=self.project_code,
+            financial_year=another_archived_year_obj,
+            project_description=self.project_description,
+        )
+        programme_obj = HistoricalProgrammeCodeFactory.create(
+            programme_code=self.programme_code,
+            programme_description=self.programme_description,
+            budget_type_id=self.budget_type_id,
+            financial_year=another_archived_year_obj,
+        )
+
+        expenditure_category_obj = HistoricalExpenditureCategoryFactory.create(
+            financial_year=another_archived_year_obj
+        )
+
+        nac_obj = HistoricalNaturalCodeFactory.create(
+            natural_account_code=self.natural_account_code,
+            natural_account_code_description=self.natural_account_description,
+            economic_budget_code="CAPITAL",
+            expenditure_category=expenditure_category_obj,
+            financial_year=another_archived_year_obj,
+        )
+
+        analysis2_obj = HistoricalAnalysis2Factory.create(
+            analysis2_code=self.analisys2, financial_year=another_archived_year_obj
+        )
+        analysis1_obj = HistoricalAnalysis1Factory.create(
+            analysis1_code=self.analisys1, financial_year=another_archived_year_obj
+        )
+        financial_code_obj = ArchivedFinancialCode.objects.create(
+            programme=programme_obj,
+            cost_centre=cc_obj,
+            natural_account_code=nac_obj,
+            analysis1_code=analysis1_obj,
+            analysis2_code=analysis2_obj,
+            project_code=project_obj,
+            financial_year=another_archived_year_obj,
+        )
+
+        another_year_obj = ArchivedForecastData.objects.create(
+            financial_year=another_archived_year_obj, financial_code=financial_code_obj,
+        )
+
+        outturn = {
+            "budget": 1234500,
+            "apr": -1200000,
+            "may": -3412000,
+            "jun": -9876000,
+            "jul": -5468970,
+            "aug": -3421900,
+            "sep": -6901110,
+            "oct": 7622200,
+            "nov": 6955501,
+            "dec": 8434422,
+            "jan": 5264091,
+            "feb": 4521111,
+            "mar": 9090111,
+            "adj01": 5464644,
+            "adj02": -2118976,
+            "adj03": 3135450,
+        }
+
+        another_year_obj.budget = outturn["budget"] * 100
+        another_year_obj.apr = outturn["apr"] * 100
+        another_year_obj.may = outturn["may"] * 100
+        another_year_obj.jun = outturn["jun"] * 100
+        another_year_obj.jul = outturn["jul"] * 100
+        another_year_obj.aug = outturn["aug"] * 100
+        another_year_obj.sep = outturn["sep"] * 100
+        another_year_obj.oct = outturn["oct"] * 100
+        another_year_obj.nov = outturn["nov"] * 100
+        another_year_obj.dec = outturn["dec"] * 100
+        another_year_obj.jan = outturn["jan"] * 100
+        another_year_obj.feb = outturn["feb"] * 100
+        another_year_obj.mar = outturn["mar"] * 100
+        another_year_obj.adj1 = outturn["adj01"] * 100
+        another_year_obj.adj2 = outturn["adj02"] * 100
+        another_year_obj.adj3 = outturn["adj03"] * 100
+        another_year_obj.save()
 
 
 def hide_adjustment_columns():
