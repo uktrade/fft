@@ -23,12 +23,12 @@ from forecast.views.view_forecast.export_forecast_data import (
 )
 
 from previous_years.test.test_utils import (
-    DownloadPastYearForecastSetup,
+    PastYearForecastSetup,
     hide_adjustment_columns,
 )
 
 
-class DownloadPastYearForecastTest(DownloadPastYearForecastSetup):
+class DownloadPastYearForecastTest(PastYearForecastSetup):
     def check_response_content(self, content):
         file = io.BytesIO(content)
         wb = load_workbook(filename=file)

@@ -6,6 +6,8 @@ from chartofaccountDIT.models import (ArchivedExpenditureCategory,
                                       ProgrammeCode,
                                       ProjectCode)
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from costcentre.models import (ArchivedCostCentre,
                                CostCentre,
                                DepartmentalGroup,
@@ -35,6 +37,10 @@ class ForecastQueryFields:
         self.current_year = period < 2000
         self.period = period
         self._datamodel = None
+        if self.current_year:
+            self.selected_year = get_current_financial_year()
+        else:
+            self.selected_year = period
 
     financial_code_prefix = "financial_code__"
     # indicates if DEL, AME, ADMIN

@@ -103,6 +103,7 @@ def export_forecast_to_excel(
     first_figure_index = budget_index + 1
     first_figure_col = get_column_letter(first_figure_index)
     if display_previous_years:
+        # For previous years, all the periods are actuals
         howmany_actuals = howmany_periods
     else:
         # Actual month starts at 1 for April,
