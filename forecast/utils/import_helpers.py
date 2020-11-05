@@ -377,6 +377,12 @@ class CheckFinancialCode:
         else:
             return None
 
+    def clean_data(self, data):
+        if type(data) == str:
+            return data.strip()
+        else:
+            return data
+
     def validate(
         self, cost_centre, nac, programme, analysis1, analysis2, project, row_number
     ):
@@ -384,16 +390,16 @@ class CheckFinancialCode:
         self.display_warning = ""
         self.ignore_row = False
         if self.upload_type == FileUpload.BUDGET:
-            self.nac_obj = self.validate_nac_for_budget(nac)
+            self.nac_obj = self.validate_nac_for_budget(self.clean_data(nac))
         else:
-            self.nac_obj = self.validate_nac_for_actual(nac)
+            self.nac_obj = self.validate_nac_for_actual(self.clean_data(nac))
             if self.ignore_row:
                 return
-        self.programme_obj = self.validate_programme(programme)
-        self.cc_obj = self.validate_cost_centre(cost_centre)
-        self.analysis1_obj = self.validate_analysis1(analysis1)
-        self.analysis2_obj = self.validate_analysis2(analysis2)
-        self.project_obj = self.validate_project(project)
+        self.programme_obj = self.validate_programme(self.clean_data(programme))
+        self.cc_obj = self.validate_cost_centre(self.clean_data(cost_centre))
+        self.analysis1_obj = self.validate_analysis1(self.clean_data(analysis1))
+        self.analysis2_obj = self.validate_analysis2(self.clean_data(analysis2))
+        self.project_obj = self.validate_project(self.clean_data(project))
 
         if self.display_warning and self.file_upload:
             set_file_upload_warning(
