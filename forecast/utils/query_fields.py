@@ -56,6 +56,7 @@ class ForecastQueryFields:
     )
 
     budget_category_name_field = f"{financial_code_prefix}natural_account_code__expenditure_category__grouping_description"  # noqa
+    budget_category_order_field = f"{financial_code_prefix}natural_account_code__expenditure_category__expenditurecategory_display_order"  # noqa
 
     # PAY, NON-PAY, CAPITAL, NON-CASH
     budget_grouping_field = f"{financial_code_prefix}natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
@@ -224,6 +225,7 @@ class ForecastQueryFields:
         return [
             self.budget_type_order_field,
             self.budget_grouping_order_field,
+            self.budget_category_order_field,
         ]
 
     # Project data

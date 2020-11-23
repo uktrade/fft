@@ -148,17 +148,22 @@ class UploadProgrammeTest(TestCase, RequestFactoryBase):
 
 
 class UploadNACTest(TestCase, RequestFactoryBase):
+    def setUp(self):
+        ArchivedExpenditureCategory.objects.create(
+            financial_year_id=2019,
+            grouping_description="Staff",
+            linked_budget_code="51111001"
+        )
+
     def test_correct_data(self):
         header_row = "Expenditure Type,Budget Grouping,Budget Category," \
                      "Natural Account,NAC desc"
         data_row = "Resource,Pay,Staff,51111001,Salaries"
 
         assert ArchivedNaturalCode.objects.all().count() == 0
-        assert ArchivedExpenditureCategory.objects.all().count() == 0
         csvfile = [header_row, data_row]
         import_archived_nac(csvfile, 2019)
         assert ArchivedNaturalCode.objects.all().count() == 1
-        assert ArchivedExpenditureCategory.objects.all().count() == 1
 
     def test_wrong_year(self):
         header_row = "Expenditure Type,Budget Grouping,Budget Category," \
@@ -166,12 +171,10 @@ class UploadNACTest(TestCase, RequestFactoryBase):
         data_row = "Resource,Pay,Staff,51111001,Salaries"
 
         assert ArchivedNaturalCode.objects.all().count() == 0
-        assert ArchivedExpenditureCategory.objects.all().count() == 0
         csvfile = [header_row, data_row]
         with self.assertRaises(ArchiveYearError):
             import_archived_nac(csvfile, 2000)
         assert ArchivedNaturalCode.objects.all().count() == 0
-        assert ArchivedExpenditureCategory.objects.all().count() == 0
 
     def test_wrong_header(self):
         header_row = "Expenditure Type,Budget Grouping,Budget Category," \
@@ -179,9 +182,7 @@ class UploadNACTest(TestCase, RequestFactoryBase):
         data_row = "Resource,Pay,Staff,51111001,Salaries"
 
         assert ArchivedNaturalCode.objects.all().count() == 0
-        assert ArchivedExpenditureCategory.objects.all().count() == 0
         csvfile = [header_row, data_row]
         with self.assertRaises(WrongChartOFAccountCodeException):
             import_archived_nac(csvfile, 2019)
         assert ArchivedNaturalCode.objects.all().count() == 0
-        assert ArchivedExpenditureCategory.objects.all().count() == 0
