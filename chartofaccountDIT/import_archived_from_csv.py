@@ -1,4 +1,4 @@
-from django.db import connection
+from django.core.exceptions import ObjectDoesNotExist
 
 from chartofaccountDIT.import_csv import BUDGET_KEY
 from chartofaccountDIT.models import (
@@ -76,6 +76,7 @@ NAC_HISTORICAL_KEY = {
     IMPORT_CSV_PK_KEY: "Natural Account",
     IMPORT_CSV_FIELDLIST_KEY: {
         "natural_account_code_description": "NAC desc",
+        "expenditure_category_description": "Budget Category",
         "NAC_category": "Budget Grouping",
         "economic_budget_code": "Expenditure Type",
         "expenditure_category": EXPENDITURE_CATEGORY_HISTORICAL_KEY,
@@ -141,15 +142,27 @@ def import_archived_nac(csvfile, year):
     if not success:
         raise WrongChartOFAccountCodeException(f"{msgerror} {msg}")
     else:
-        # Use sql to initialise the NAC_Category_id foreign key in the archived table
-        # this code will not be used in future, so it is not important
-        # to make maintainable
-        with connection.cursor() as cursor:
-            sql_query = f'update "chartofaccountDIT_archivedexpenditurecategory" ' \
-                        f'SET "NAC_category_id" = a.id ' \
-                        f'FROM "chartofaccountDIT_naccategory" a ' \
-                        f'WHERE financial_year_id = {year}  ' \
-                        f'AND a."NAC_category_description" = ' \
-                        f'"chartofaccountDIT_archivedexpenditurecategory"."NAC_category_description";'  # noqa
-            cursor.execute(sql_query)
+        # Update the budget NAC. Not optimised, but used only few times.
+        nac_qs = ArchivedNaturalCode.objects.filter(financial_year=year)
+        for nac_obj in nac_qs:
+            if nac_obj.expenditure_category:
+                account_L6_budget_val = nac_obj.expenditure_category.linked_budget_code
+                nac_obj.account_L6_budget = account_L6_budget_val
+                nac_obj.save()
+        category_qs = ArchivedExpenditureCategory.objects.filter(financial_year=year)
+        # Set the flag 'used_for_budget' in the nac used in ArchivedExpenditureCategory
+        for category_obj in category_qs:
+            account_L6_budget_val = category_obj.linked_budget_code
+            # use objects.get so it will break if the NAC does not exists.
+            # in such case, the data has to be fixed
+            try:
+                nac_obj = ArchivedNaturalCode.objects.get(
+                    financial_year=year, natural_account_code=account_L6_budget_val
+                )
+                nac_obj.used_for_budget = True
+                nac_obj.save()
+            except ObjectDoesNotExist as ex:
+                msg = f"NAC {account_L6_budget_val} not defined for year {year}"
+                raise WrongChartOFAccountCodeException(f"{msgerror} {msg}")
+
         return success, msg
