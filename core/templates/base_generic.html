@@ -132,7 +132,7 @@
                     <li class="internal-header__navigation__item">
                         <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}"
                            href="{% url 'forecast_dit' 0 %}">
-                            View forecast/outturn
+                            View forecast/historical outturn
                         </a>
                     </li>
                     {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
