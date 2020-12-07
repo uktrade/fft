@@ -116,14 +116,14 @@
                 <li class="internal-header__navigation__item">
                     <a class="internal-header__navigation__item__link {% if request.path|startswith:'/chartofaccountDIT/' %}internal-header__navigation__item__link--active{% endif %}"
                        href="{% url 'chart_of_account_choose_year' %}">
-                        Chart of Account
+                        Chart of account
                     </a>
                 </li>
 
                 <li class="internal-header__navigation__item">
                     <a class="internal-header__navigation__item__link hospitality {% if request.path|startswith:'/gifthospitality/' %}internal-header__navigation__item__link--active{% endif %}"
                        href="{% url 'gifthospitality:quick_links' %}">
-                        Gifts &amp; Hospitality Register
+                        Gifts &amp; hospitality register
                     </a>
                 </li>
 
@@ -132,7 +132,7 @@
                     <li class="internal-header__navigation__item">
                         <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/view/' %}internal-header__navigation__item__link--active{% endif %}"
                            href="{% url 'forecast_dit' 0 %}">
-                            View Forecast
+                            View forecast/historical outturn
                         </a>
                     </li>
                     {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
@@ -149,7 +149,7 @@
                         <li class="internal-header__navigation__item {% if request.path == '/download/oscar-return/' %}govuk-header__navigation-item--active{% endif %}">
                             <a class="internal-header__navigation__item__link"
                                href="/download_file/download_mi_report/">
-                                Download Source for MI Reports
+                                Download MI sources
                             </a>
                         </li>
                     {% endif %}
@@ -158,7 +158,7 @@
                         <li class="internal-header__navigation__item {% if request.path == '/download/mi-report/' %}govuk-header__navigation-item--active{% endif %}">
                             <a class="internal-header__navigation__item__link"
                                href="/download_file/download_oscar_report/">
-                                Download OSCAR Return
+                                Download OSCAR return
                             </a>
                         </li>
                     {% endif %}
@@ -178,7 +178,7 @@
                     <li class="internal-header__navigation__item">
                         <a id="end_of_month" class="internal-header__navigation__item__link"
                            href="{% url 'end_of_month' %}">
-                            Archive Monthly Forecast
+                            Archive monthly forecast
                         </a>
                     </li>
                 {% endif %}
@@ -186,7 +186,7 @@
             {% if request.user.is_staff %}
                 <li class="internal-header__navigation__item">
                     <a target="_blank" id="admin_page" class="internal-header__navigation__item__link" href="{% url 'admin:index' %}">
-                                Admin Site
+                                Admin site
                     </a>
                 </li>
             {% endif %}

@@ -6,6 +6,8 @@ from chartofaccountDIT.models import (ArchivedExpenditureCategory,
                                       ProgrammeCode,
                                       ProjectCode)
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from costcentre.models import (ArchivedCostCentre,
                                CostCentre,
                                DepartmentalGroup,
@@ -35,6 +37,10 @@ class ForecastQueryFields:
         self.current_year = period < 2000
         self.period = period
         self._datamodel = None
+        if self.current_year:
+            self.selected_year = get_current_financial_year()
+        else:
+            self.selected_year = period
 
     financial_code_prefix = "financial_code__"
     # indicates if DEL, AME, ADMIN
@@ -50,6 +56,7 @@ class ForecastQueryFields:
     )
 
     budget_category_name_field = f"{financial_code_prefix}natural_account_code__expenditure_category__grouping_description"  # noqa
+    budget_category_order_field = f"{financial_code_prefix}natural_account_code__expenditure_category__expenditurecategory_display_order"  # noqa
 
     # PAY, NON-PAY, CAPITAL, NON-CASH
     budget_grouping_field = f"{financial_code_prefix}natural_account_code__expenditure_category__NAC_category__NAC_category_description"  # noqa
@@ -218,6 +225,7 @@ class ForecastQueryFields:
         return [
             self.budget_type_order_field,
             self.budget_grouping_order_field,
+            self.budget_category_order_field,
         ]
 
     # Project data

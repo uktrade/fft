@@ -3,13 +3,13 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Download MI Report" "downloaded_files" %}
+    {% breadcrumb "Download MI sources" "downloaded_files" %}
 {% endblock %}
 
-{% block title %}MI Report download{% endblock %}
+{% block title %}Download MI sources{% endblock %}
 
 {% block content %}
-    <h3 class="govuk-heading-l">MI Report downloads</h3>
+    <h3 class="govuk-heading-l">Download MI sources</h3>
     <p class="govuk-body">
         <a class="govuk-link" href="{% url "download_mi_report_source" %}">
             <button class="govuk-button" data-module="govuk-button">

@@ -363,3 +363,52 @@ class ImportBudgetsTest(TestCase, RequestFactoryBase):
             .amount,
             2200,
         )
+
+    def test_budget_file_with_spaces_and_blanks(self):
+        good_file_upload = FileUpload(
+            s3_document_file=os.path.join(
+                os.path.dirname(__file__), "test_assets/budget_upload_blank_data.xlsx",
+            ),
+            uploading_user=self.test_user,
+            document_type=FileUpload.BUDGET,
+        )
+        good_file_upload.save()
+
+        upload_budget_from_file(
+            good_file_upload, self.test_year,
+        )
+
+        # # Check that existing figures for the same period have been deleted
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            24,
+        )
+        # # Check that existing figures for the same period have been deleted
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+            ).count(),
+            12,
+        )
+        # Check that figures for same budgets are added together
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=1,
+            )
+            .first()
+            .amount,
+            1100,
+        )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=12,
+            )
+            .first()
+            .amount,
+            2200,
+        )

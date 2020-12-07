@@ -17,7 +17,6 @@ from forecast.utils.query_fields import ForecastQueryFields
 from forecast.views.base import get_view_forecast_period_name
 
 
-# TODO display ADJ periods for previous years
 def get_period_for_title(period):
     if period:
         title = get_view_forecast_period_name(period)
@@ -26,11 +25,12 @@ def get_period_for_title(period):
     return f"({title})"
 
 
-def export_forecast_data_generic(period, filter, title):
+def export_forecast_data_generic(period, data_filter, title):
     fields = ForecastQueryFields(period)
+    year = fields.selected_year
     datamodel = fields.datamodel
     q = datamodel.view_data.raw_data_annotated(
-        fields.VIEW_FORECAST_DOWNLOAD_COLUMNS, filter
+        fields.VIEW_FORECAST_DOWNLOAD_COLUMNS, data_filter, year=year
     )
     return export_query_to_excel(
         q, fields.VIEW_FORECAST_DOWNLOAD_COLUMNS, title, period
