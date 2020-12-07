@@ -12,7 +12,7 @@ from forecast.views.view_forecast.project_details import (
 )
 
 from previous_years.test.test_utils import (
-    DownloadPastYearForecastSetup,
+    PastYearForecastSetup,
     hide_adjustment_columns
 )
 
@@ -27,7 +27,7 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-class ViewProjectDetailsTest(DownloadPastYearForecastSetup):
+class ViewProjectDetailsTest(PastYearForecastSetup):
     def check_project_details_table(self, table):
         details_rows = table.find_all("tr")
 
@@ -139,3 +139,9 @@ class ViewProjectDetailsAdjustmentColumnsTest(ViewProjectDetailsTest):
     def setUp(self):
         super().setUp()
         hide_adjustment_columns()
+
+
+class ViewProjectDetailsTwoYearDataTest(ViewProjectDetailsTest):
+            def setUp(self):
+                super().setUp()
+                self.create_another_year()

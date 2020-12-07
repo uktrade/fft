@@ -70,6 +70,7 @@ class ForecastExpenditureDetailsMixin(ForecastViewTableMixin):
             self.field_infos.nac_sub_total,
             self.field_infos.nac_columns.keys(),
             pivot_filter,
+            year=self.year,
             order_list=self.field_infos.nac_order_list,
             show_grand_total=False,
         )

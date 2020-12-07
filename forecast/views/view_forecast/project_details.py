@@ -61,6 +61,7 @@ class ForecastProjectDetailsMixin(ForecastViewTableMixin):
             self.field_infos.project_details_sub_total,
             columns.keys(),
             pivot_filter,
+            year=self.year,
             order_list=self.field_infos.project_details_hierarchy_order_list,
             show_grand_total=False,
         )

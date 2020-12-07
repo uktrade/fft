@@ -323,7 +323,7 @@ def quick_links(request, year):
                     "url": "{}natural_code".format(historical),
                 },
                 {
-                    "title": "Budget",
+                    "title": "Budget Categories",
                     "text": "view",
                     "url": "{}finance_category".format(historical),
                 },

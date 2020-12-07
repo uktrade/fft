@@ -14,7 +14,7 @@ from forecast.views.view_forecast.forecast_summary import (
 )
 
 from previous_years.test.test_utils import (
-    DownloadPastYearForecastSetup,
+    PastYearForecastSetup,
     hide_adjustment_columns
 )
 
@@ -28,7 +28,7 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-class ViewForecastHierarchyTest(DownloadPastYearForecastSetup):
+class ViewForecastHierarchyTest(PastYearForecastSetup):
     def test_dit_view(self):
         response = self.factory_get(
             reverse(
@@ -357,3 +357,9 @@ class ViewForecastHierarchyAdjustmentColumnsTest(ViewForecastHierarchyTest):
     def setUp(self):
         super().setUp()
         hide_adjustment_columns()
+
+
+class ViewForecastHierarchyTwoYearDataTest(ViewForecastHierarchyTest):
+    def setUp(self):
+        super().setUp()
+        self.create_another_year()

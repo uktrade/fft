@@ -7,11 +7,16 @@ from django.core.management.base import (
 from chartofaccountDIT.import_archived_from_csv import (
     import_archived_analysis1,
     import_archived_analysis2,
+    import_archived_nac,
+    import_archived_programme,
+    import_archived_project,
 )
 
 from core.utils.command_helpers import (
     CommandUpload,
 )
+
+from costcentre.import_archived_from_csv import import_archived_cost_centre
 
 from forecast.import_csv import WrongChartOFAccountCodeException
 
@@ -24,6 +29,10 @@ from previous_years.utils import (
 IMPORT_ARCHIVED_TYPE = {
     "Analysis1": import_archived_analysis1,
     "Analysis2": import_archived_analysis2,
+    "Programmes": import_archived_programme,
+    "Projects": import_archived_project,
+    "CostCentre": import_archived_cost_centre,
+    "NAC": import_archived_nac,
 }
 
 
@@ -47,7 +56,6 @@ class Command(CommandUpload):
         except ArchiveYearError as ex:
             raise CommandError(f"Failure import {import_type}: {str(ex)}")
 
-        # TODO Check that the year exists in the database
         file_name = self.path_to_upload(path, 'csv')
         # Windows-1252 or CP-1252, used because of a back quote
         csv_file = open(file_name, newline="", encoding="cp1252")
