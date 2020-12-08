@@ -1,6 +1,8 @@
 import copy
+import hashlib
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.db.models import (
     Max,
@@ -8,6 +10,7 @@ from django.db.models import (
     Sum,
     UniqueConstraint,
 )
+from django.template.defaultfilters import slugify
 
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py
 from django_pivot.pivot import pivot
@@ -645,9 +648,6 @@ class DisplaySubTotalManager(models.Manager):
     def raw_data_annotated(
         self, columns, filter_dict={}, year=0, order_list=[], include_zeros=False
     ):
-        if year == 0:
-            year = get_current_financial_year()
-
         annotations = {
             "Budget": Sum("budget"),
             "Apr": Sum("apr"),
@@ -669,20 +669,51 @@ class DisplaySubTotalManager(models.Manager):
         # Lines with 0 values across the year have no year specified:
         # they come from an outer join in the query.
         # So use financial_year = NULL to filter them in or out.
+
         if include_zeros:
             year_filter = Q(financial_year=year) | Q(financial_year__isnull=True)
         else:
             year_filter = Q(financial_year=year)
-        raw_data = (
-            self.get_queryset()
-            .values(*columns)
-            .filter(
-                year_filter,
-                **filter_dict,
+
+        # Current must NOT use year in query as this kills query performance
+        if year == 0 or year == get_current_financial_year():
+            raw_data = (
+                self.get_queryset()
+                    .values(*columns)
+                    .filter(
+                    **filter_dict,
+                )
+                .annotate(**annotations)
+                .order_by(*order_list)
             )
-            .annotate(**annotations)
-            .order_by(*order_list)
-        )
+        else:
+            # Get previous year from cache if possible
+            query_key = f'{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}'  # noqa
+            key_slug = slugify(query_key)
+            cache_key = hashlib.md5(str.encode(key_slug)).hexdigest()
+
+            raw_data = cache.get(cache_key)
+
+            if raw_data:
+                return raw_data
+
+            raw_data = (
+                self.get_queryset()
+                .values(*columns)
+                .filter(
+                    year_filter,
+                    **filter_dict,
+                )
+                .annotate(**annotations)
+                .order_by(*order_list)
+            )
+            # 7 day cache period
+            cache_invalidation_time = 7 * 24 * 60 * 60
+            cache.set(
+                cache_key,
+                raw_data,
+                cache_invalidation_time,
+            )
         return raw_data
 
 
