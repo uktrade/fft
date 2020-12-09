@@ -275,3 +275,10 @@ AUTHBROKER_ANONYMOUS_PATHS = [
 # Hawk
 HAWK_INCOMING_ACCESS_KEY = env.str('HAWK_INCOMING_ACCESS_KEY', default=None)
 HAWK_INCOMING_SECRET_KEY = env.str('HAWK_INCOMING_SECRET_KEY', default=None)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
+    }
+}
