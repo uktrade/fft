@@ -1,7 +1,5 @@
 from django.test import TestCase
 
-from core.test.test_base import RequestFactoryBase
-
 from end_of_month.end_of_month_actions import (
     ArchiveMonthInvalidPeriodError,
     DeleteNonExistingArchiveError,
@@ -21,9 +19,8 @@ from forecast.models import (
 )
 
 
-class DeleteEndOfMonthArchiveTest(TestCase, RequestFactoryBase):
+class DeleteEndOfMonthArchiveTest(TestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
 

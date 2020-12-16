@@ -1,7 +1,6 @@
 import io
 
 from django.contrib.auth.models import Permission
-from django.test import TestCase
 from django.urls import reverse
 
 from openpyxl import load_workbook
@@ -12,8 +11,8 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
+from core.test.test_base import BaseTestCase
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -28,17 +27,11 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.test.test_utils import create_budget
-from forecast.views.view_forecast.export_forecast_data import (
-    export_forecast_data_project_detail_cost_centre,
-    export_forecast_data_project_detail_directorate,
-    export_forecast_data_project_detail_dit,
-    export_forecast_data_project_detail_group,
-)
 
 
-class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
+class DownloadProjectDetailTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
@@ -91,6 +84,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
             financial_year=year_obj,
         )
         may_figure.save
+
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
@@ -112,14 +106,11 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         assert ws["W2"].value == self.project_code
 
     def test_dit_download(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "export_forecast_data_project_detail_dit",
                 kwargs={"project_code_id": self.project_code, "period": 0},
             ),
-            export_forecast_data_project_detail_dit,
-            project_code_id=self.project_code,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -127,7 +118,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         self.check_response_content(response.content)
 
     def test_group_download(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "export_forecast_data_project_detail_group",
                 kwargs={
@@ -135,11 +126,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                     "project_code_id": self.project_code,
                     "period": 0,
                 },
-            ),
-            export_forecast_data_project_detail_group,
-            group_code=self.group_code,
-            project_code_id=self.project_code,
-            period=0,
+            )
         )
 
         self.assertEqual(response.status_code, 200)
@@ -147,7 +134,7 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
         self.check_response_content(response.content)
 
     def test_directorate_download(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "export_forecast_data_project_detail_directorate",
                 kwargs={
@@ -156,17 +143,13 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                     "period": 0,
                 },
             ),
-            export_forecast_data_project_detail_directorate,
-            directorate_code=self.directorate.directorate_code,
-            project_code_id=self.project_code,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
         self.check_response_content(response.content)
 
     def test_cost_centre_download(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "export_forecast_data_project_detail_cost_centre",
                 kwargs={
@@ -175,10 +158,6 @@ class DownloadProjectDetailyTest(TestCase, RequestFactoryBase):
                     "period": 0,
                 },
             ),
-            export_forecast_data_project_detail_cost_centre,
-            cost_centre=self.cost_centre_code,
-            project_code_id=self.project_code,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)

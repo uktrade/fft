@@ -27,7 +27,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 
 INSTALLED_APPS = [
-    "custom_usermodel",
+    "user",
     "authbroker_client",
     "previous_years.apps.PreviousYearsConfig",
     "downloadsupport.apps.DownloadSupportConfig",
@@ -54,13 +54,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bootstrap4",
+    "django_bootstrap_breadcrumbs",
     "dal",
     "dal_select2",
-    "bootstrap_datepicker_plus",  # https://pypi.org/project/django-bootstrap-datepicker-plus/  # noqa
     "storages",
     "sass_processor",
-    "django_bootstrap_breadcrumbs",
     "guardian",
     "reversion",
     "rest_framework",
@@ -144,7 +142,7 @@ def FILTERS_VERBOSE_LOOKUPS():
     return verbose_lookups
 
 
-AUTH_USER_MODEL = "custom_usermodel.User"
+AUTH_USER_MODEL = "user.User"
 AUTHBROKER_URL = env("AUTHBROKER_URL", default=None)
 AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)

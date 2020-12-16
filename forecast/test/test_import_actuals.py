@@ -7,12 +7,9 @@ from django.contrib.auth.models import (
     Group,
     Permission,
 )
-from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db.models import Sum
 from django.test import (
-    RequestFactory,
-    TestCase,
     override_settings,
 )
 from django.urls import reverse
@@ -27,7 +24,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.excel_test_helpers import (
     FakeCell,
     FakeWorkSheet
@@ -63,9 +60,6 @@ from forecast.utils.import_helpers import (
     CheckFinancialCode,
     VALID_ECONOMIC_CODE_LIST,
 )
-from forecast.views.upload_file import (
-    UploadActualsView,
-)
 
 from upload_file.models import FileUpload
 
@@ -84,14 +78,12 @@ TEST_PROGRAMME_CODE = '310940'
     ],
     DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
 )
-class ImportActualsTest(TestCase, RequestFactoryBase):
+class ImportActualsTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         self.test_year = 2019
         self.test_period = 9
 
-        self.factory = RequestFactory()
         self.cost_centre_code = TEST_COST_CENTRE
         self.valid_natural_account_code = TEST_VALID_NATURAL_ACCOUNT_CODE
         self.not_valid_natural_account_code = TEST_NOT_VALID_NATURAL_ACCOUNT_CODE
@@ -567,10 +559,9 @@ class ImportActualsTest(TestCase, RequestFactoryBase):
         "django.core.files.uploadhandler.TemporaryFileUploadHandler",
     ]
 )
-class UploadActualsTest(TestCase, RequestFactoryBase):
+class UploadActualsTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         self.financial_period_code = 1
         self.financial_year_id = 2019
 
@@ -587,11 +578,12 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         )
 
         # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                uploaded_actuals_url,
-                UploadActualsView,
-            )
+        resp = self.client.get(
+            uploaded_actuals_url,
+            follow=False,
+        )
+
+        assert resp.status_code == 403
 
         can_upload_files = Permission.objects.get(
             codename='can_upload_files'
@@ -599,22 +591,20 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
 
-        resp = self.factory_get(
+        resp = self.client.get(
             uploaded_actuals_url,
-            UploadActualsView,
         )
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
 
-        resp = self.factory_post(
+        resp = self.client.post(
             uploaded_actuals_url,
-            {
+            data={
                 "period": self.financial_period_code,
                 "year": self.financial_year_id,
                 'file': self.file_mock,
             },
-            UploadActualsView,
         )
 
         # Make sure upload was process was kicked off
@@ -638,16 +628,15 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
             name="Finance Administrator"
         )
 
-        uploaded_actuals_url = reverse(
-            "upload_actuals_file",
-        )
+        uploaded_actuals_url = reverse("upload_actuals_file")
 
         # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                uploaded_actuals_url,
-                UploadActualsView,
-            )
+        resp = self.client.get(
+            uploaded_actuals_url,
+            follow=False,
+        )
+
+        assert resp.status_code == 403
 
         finance_admins = Group.objects.get(
             name='Finance Administrator',
@@ -655,22 +644,18 @@ class UploadActualsTest(TestCase, RequestFactoryBase):
         finance_admins.user_set.add(self.test_user)
         finance_admins.save()
 
-        resp = self.factory_get(
-            uploaded_actuals_url,
-            UploadActualsView,
-        )
+        resp = self.client.get(uploaded_actuals_url)
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
 
-        resp = self.factory_post(
+        resp = self.client.post(
             uploaded_actuals_url,
-            {
+            data={
                 "period": self.financial_period_code,
                 "year": self.financial_year_id,
                 'file': self.file_mock,
             },
-            UploadActualsView,
         )
 
         # Make sure upload was process was kicked off

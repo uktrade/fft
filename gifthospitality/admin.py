@@ -1,16 +1,9 @@
 from django.contrib import admin
 
-from core.admin import AdminActiveField, AdminImportExport
+from core.admin import AdminActiveField, AdminExport
 from core.utils.export_helpers import generic_table_iterator
 
 from gifthospitality.export_csv import _export_gh_iterator
-from gifthospitality.import_csv import (
-    import_gh_category_class,
-    import_gh_class,
-    import_gh_classification_class,
-    import_gh_company_class,
-    import_grade_class,
-)
 from gifthospitality.models import (
     GiftAndHospitality,
     GiftAndHospitalityCategory,
@@ -20,7 +13,7 @@ from gifthospitality.models import (
 )
 
 
-class GiftAndHospitalityCompanyAdmin(AdminActiveField, AdminImportExport):
+class GiftAndHospitalityCompanyAdmin(AdminActiveField, AdminExport):
     list_display = ("gif_hospitality_company", "sequence_no", "active")
     list_editable = ("sequence_no",)
     search_fields = ["gif_hospitality_company"]
@@ -32,12 +25,8 @@ class GiftAndHospitalityCompanyAdmin(AdminActiveField, AdminImportExport):
     def export_func(self):
         return generic_table_iterator
 
-    @property
-    def import_info(self):
-        return import_gh_company_class
 
-
-class GiftAndHospitalityCategoryAdmin(AdminActiveField, AdminImportExport):
+class GiftAndHospitalityCategoryAdmin(AdminActiveField, AdminExport):
     list_display = ("gif_hospitality_category", "sequence_no", "active")
     list_editable = ("sequence_no",)
     search_fields = ["gif_hospitality_category"]
@@ -49,12 +38,8 @@ class GiftAndHospitalityCategoryAdmin(AdminActiveField, AdminImportExport):
     def export_func(self):
         return generic_table_iterator
 
-    @property
-    def import_info(self):
-        return import_gh_category_class
 
-
-class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport):
+class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminExport):
     list_display = (
         "gift_type",
         "gif_hospitality_classification",
@@ -71,10 +56,6 @@ class GiftAndHospitalityClassificationAdmin(AdminActiveField, AdminImportExport)
     def export_func(self):
         return generic_table_iterator
 
-    @property
-    def import_info(self):
-        return import_gh_classification_class
-
 
 def _export_grade_iterator(queryset):
     yield ["Grade", "Grade Description"]
@@ -82,19 +63,15 @@ def _export_grade_iterator(queryset):
         yield [obj.grade, obj.gradedescription]
 
 
-class GradeAdmin(AdminImportExport):
+class GradeAdmin(AdminExport):
     list_display = ("grade", "gradedescription")
 
     @property
     def export_func(self):
         return _export_grade_iterator
 
-    @property
-    def import_info(self):
-        return import_grade_class
 
-
-class GiftAndHospitalityAdmin(AdminImportExport):
+class GiftAndHospitalityAdmin(AdminExport):
     def gift_or_hospitality(
         self, instance
     ):  # required to display the field from a foreign key
@@ -159,10 +136,6 @@ class GiftAndHospitalityAdmin(AdminImportExport):
     @property
     def export_func(self):
         return _export_gh_iterator
-
-    @property
-    def import_info(self):
-        return import_gh_class
 
 
 admin.site.register(GiftAndHospitality, GiftAndHospitalityAdmin)

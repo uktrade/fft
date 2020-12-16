@@ -1,10 +1,5 @@
 import io
 
-from django.test import (
-    RequestFactory,
-    TestCase,
-)
-
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
     Analysis2Factory,
@@ -14,7 +9,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -28,12 +23,11 @@ from forecast.models import (
 )
 
 
-class ImportBudgetsTest(TestCase, RequestFactoryBase):
+class ImportBudgetsTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
         self.test_year = 2019
         self.test_period = 9
-        self.factory = RequestFactory()
         self.cost_centre_code = "109189"
         self.natural_account_code = 52191003
         self.programme_code = "310940"

@@ -11,7 +11,7 @@ STATICFILES_DIRS = (
 SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 AUTHENTICATION_BACKENDS += [
-    "authbroker_client.backends.AuthbrokerBackend",
+    "user.backends.CustomAuthbrokerBackend",
 ]
 
 ASYNC_FILE_UPLOAD = False

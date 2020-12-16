@@ -11,7 +11,7 @@ MIDDLEWARE += [
 ]
 
 AUTHENTICATION_BACKENDS += [
-    "authbroker_client.backends.AuthbrokerBackend",
+    "user.backends.CustomAuthbrokerBackend",
 ]
 
 INSTALLED_APPS += [

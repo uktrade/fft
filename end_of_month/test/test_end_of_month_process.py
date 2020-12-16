@@ -1,8 +1,6 @@
 from django.db.models import F
 from django.test import TestCase
 
-from core.test.test_base import RequestFactoryBase
-
 from end_of_month.end_of_month_actions import (
     ArchiveMonthAlreadyArchivedError,
     ArchiveMonthArchivedPastError,
@@ -23,9 +21,8 @@ from forecast.models import (
 )
 
 
-class EndOfMonthForecastTest(TestCase, RequestFactoryBase):
+class EndOfMonthForecastTest(TestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
 
@@ -123,11 +120,10 @@ class EndOfMonthForecastTest(TestCase, RequestFactoryBase):
         self.assertEqual(count, 129)
 
 
-class ReadArchivedForecastTest(TestCase, RequestFactoryBase):
+class ReadArchivedForecastTest(TestCase):
     archived_figure = []
 
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
         for period in range(0, 16):
@@ -236,9 +232,8 @@ class ReadArchivedForecastTest(TestCase, RequestFactoryBase):
         self.check_archive_period(tested_period)
 
 
-class EndOfMonthBudgetTest(TestCase, RequestFactoryBase):
+class EndOfMonthBudgetTest(TestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
 
@@ -344,11 +339,10 @@ class EndOfMonthBudgetTest(TestCase, RequestFactoryBase):
         self.assertEqual(budget_total_count, 12)
 
 
-class ReadArchivedBudgetTest(TestCase, RequestFactoryBase):
+class ReadArchivedBudgetTest(TestCase):
     archived_figure = []
 
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
         for period in range(0, 16):

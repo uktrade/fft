@@ -1,7 +1,6 @@
 import io
 
 from django.contrib.auth.models import Permission
-from django.test import TestCase
 from django.urls import reverse
 
 from openpyxl import load_workbook
@@ -13,7 +12,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import CostCentreFactory
@@ -23,15 +22,14 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
-from forecast.views.export.mi_report_source import export_mi_report
-from forecast.views.export.oscar_return import export_oscar_report
 
 from treasuryCOA.test.factories import L5AccountFactory
 
 
-class DownloadMIReportTest(TestCase, RequestFactoryBase):
+class DownloadMIReportTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
+
         self.cost_centre_code = 109076
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
@@ -81,8 +79,8 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         self.year_total = self.amount_apr + self.amount_may
 
     def test_download(self):
-        response = self.factory_get(
-            reverse("download_mi_report_source"), export_mi_report,
+        response = self.client.get(
+            reverse("download_mi_report_source"),
         )
 
         self.assertEqual(response.status_code, 200)
@@ -105,9 +103,9 @@ class DownloadMIReportTest(TestCase, RequestFactoryBase):
         assert ws["I2"].value == self.amount_may / 100
 
 
-class DownloadOscarReportTest(TestCase, RequestFactoryBase):
+class DownloadOscarReportTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
         self.cost_centre_code = 109076
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
@@ -156,7 +154,9 @@ class DownloadOscarReportTest(TestCase, RequestFactoryBase):
         self.year_total = self.amount_apr + self.amount_may
 
     def test_download(self):
-        response = self.factory_get(reverse("download_oscar"), export_oscar_report,)
+        response = self.client.get(
+            reverse("download_oscar"),
+        )
 
         self.assertEqual(response.status_code, 200)
 

@@ -9,10 +9,6 @@ from django.contrib.auth.models import (
     Group,
     Permission,
 )
-from django.core.exceptions import PermissionDenied
-from django.test import (
-    TestCase,
-)
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -25,7 +21,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -48,29 +44,7 @@ from forecast.test.test_utils import (
     create_budget,
     format_forecast_figure,
 )
-from forecast.views.edit_forecast import (
-    AddRowView,
-    ChooseCostCentreView,
-    EditForecastFigureView,
-    EditForecastView,
-)
-from forecast.views.view_forecast.expenditure_details import (
-    CostCentreExpenditureDetailsView,
-    DITExpenditureDetailsView,
-    DirectorateExpenditureDetailsView,
-    GroupExpenditureDetailsView,
-)
-from forecast.views.view_forecast.forecast_summary import (
-    CostCentreView,
-    DITView,
-    DirectorateView,
-    GroupView,
-)
-from forecast.views.view_forecast.programme_details import (
-    DITProgrammeDetailsView,
-    DirectorateProgrammeDetailsView,
-    GroupProgrammeDetailsView,
-)
+
 
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
@@ -82,10 +56,9 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-class ViewPermissionsTest(TestCase, RequestFactoryBase):
+class ViewPermissionsTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         self.test_cost_centre = 888812
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
@@ -100,11 +73,8 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
             }
         )
 
-        resp = self.factory_get(
+        resp = self.client.get(
             edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
-            period=0,
         )
 
         assert resp.status_code == 302
@@ -138,10 +108,8 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
             }
         )
 
-        resp = self.factory_get(
+        resp = self.client.get(
             edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
         )
 
         # Should have been redirected (no permission)
@@ -151,20 +119,17 @@ class ViewPermissionsTest(TestCase, RequestFactoryBase):
 
         self.assertTrue(self.test_user.has_perm("change_costcentre", self.cost_centre))
 
-        resp = self.factory_get(
+        resp = self.client.get(
             edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
         )
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
 
 
-class AddForecastRowTest(TestCase, RequestFactoryBase):
+class AddForecastRowTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         self.nac_code = 999999
         self.cost_centre_code = 888812
         self.analysis_1_code = "1111111"
@@ -181,18 +146,12 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
         )
 
     def add_row_get_response(self, url):
-        return self.factory_get(
-            url,
-            AddRowView,
-            cost_centre_code=self.cost_centre_code,
-        )
+        return self.client.get(url)
 
-    def add_row_post_response(self, url, post_content, cost_centre_code):
-        return self.factory_post(
+    def add_row_post_response(self, url, post_content):
+        return self.client.post(
             url,
-            post_content,
-            AddRowView,
-            cost_centre_code=cost_centre_code,
+            data=post_content,
         )
 
     def edit_row_get_response(self):
@@ -203,11 +162,7 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
             },
         )
 
-        return self.factory_get(
-            edit_view_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
-        )
+        return self.client.get(edit_view_url)
 
     def test_view_add_row(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
@@ -237,7 +192,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac.natural_account_code,
             },
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(add_row_resp.status_code, 302)
@@ -268,7 +222,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac.natural_account_code,
             },
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(add_row_resp.status_code, 302)
@@ -297,7 +250,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
             },
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(response.status_code, 302)
@@ -317,7 +269,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
             },
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(response_2.status_code, 200)
@@ -352,7 +303,6 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
             },
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(response.status_code, 302)
@@ -372,16 +322,15 @@ class AddForecastRowTest(TestCase, RequestFactoryBase):
                 "analysis2_code": self.analysis_2_code,
                 "project_code": self.project_code,
             },
-            cost_centre_code=cost_centre_code_2,
         )
 
         self.assertEqual(response_2.status_code, 302)
         self.assertEqual(FinancialCode.objects.count(), 2)
 
 
-class ChooseCostCentreTest(TestCase, RequestFactoryBase):
+class ChooseCostCentreTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.cost_centre_code = 109076
         self.cost_centre = CostCentreFactory.create(
@@ -391,14 +340,10 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
     def test_choose_cost_centre(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "choose_cost_centre"
-            ),
-            ChooseCostCentreView,
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },  # required because factory does not pass kwargs to request
+            )
         )
 
         self.assertEqual(
@@ -406,16 +351,13 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
             200,
         )
 
-        response = self.factory_post(
+        response = self.client.post(
             reverse(
                 "choose_cost_centre"
-            ), {
+            ),
+            data={
                 "cost_centre": self.cost_centre_code
             },
-            ChooseCostCentreView,
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },  # required because factory does not pass kwargs to request
         )
 
         self.assertEqual(
@@ -429,14 +371,10 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
     def test_cost_centre_json(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "choose_cost_centre"
-            ),
-            ChooseCostCentreView,
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },  # required because factory does not pass kwargs to request
+            )
         )
 
         self.assertEqual(
@@ -462,14 +400,10 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         )
 
         # Check that no cost centres can be accessed
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "choose_cost_centre"
-            ),
-            ChooseCostCentreView,
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },  # required because factory does not pass kwargs to request
+            )
         )
 
         self.assertEqual(
@@ -490,27 +424,19 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         )
 
         # Check that no cost centres can be accessed
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                reverse(
-                    "choose_cost_centre"
-                ),
-                ChooseCostCentreView,
-                kwargs={
-                    'cost_centre_code': self.cost_centre_code
-                },  # required because factory does not pass kwargs to request
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
             )
+        )
+        assert response.status_code == 403
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "choose_cost_centre"
             ),
-            ChooseCostCentreView,
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },  # required because factory does not pass kwargs to request
         )
 
         self.assertEqual(
@@ -519,9 +445,9 @@ class ChooseCostCentreTest(TestCase, RequestFactoryBase):
         )
 
 
-class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
+class ViewForecastHierarchyTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
@@ -594,15 +520,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.spend_to_date_total = self.amount_apr
 
     def test_dit_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_dit",
                 kwargs={
                     'period': 0,
                 },
             ),
-            DITView,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -610,7 +534,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert self.group_name in str(response.rendered_content)
 
     def test_group_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={
@@ -618,9 +542,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            GroupView,
-            group_code=self.group.group_code,
-            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -628,7 +549,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert self.directorate_name in str(response.rendered_content)
 
     def test_directorate_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
@@ -636,9 +557,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            DirectorateView,
-            directorate_code=self.directorate.directorate_code,
-            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -646,7 +564,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
     def test_cost_centre_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
@@ -654,9 +572,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     "period": 0,
                 },
             ),
-            CostCentreView,
-            cost_centre_code=self.cost_centre.cost_centre_code,
-            period=0,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -750,7 +665,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         assert len(negative_values) == 42
 
     def test_view_cost_centre_summary(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
@@ -758,9 +673,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     "period": 0,
                 },
             ),
-            CostCentreView,
-            cost_centre_code=self.cost_centre_code,
-            period=0,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -795,7 +707,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_directorate_summary(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
@@ -803,9 +715,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            DirectorateView,
-            directorate_code=self.directorate.directorate_code,
-            period=0,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -837,7 +746,7 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_group_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={
@@ -845,9 +754,6 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            GroupView,
-            group_code=self.group.group_code,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -878,15 +784,13 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_dit_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_dit",
                 kwargs={
                     'period': 0,
                 },
             ),
-            DITView,
-            period=0,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -917,10 +821,9 @@ class ViewForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
 
-class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
+class ViewForecastNaturalAccountCodeTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         self.group_name = "Test Group"
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
@@ -1067,7 +970,7 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
         self.check_nac_table(tables[0])
 
     def test_view_cost_centre_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_cost_centre",
                 kwargs={
@@ -1077,17 +980,11 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            CostCentreExpenditureDetailsView,
-            cost_centre_code=self.cost_centre_code,
-            expenditure_category=self.expenditure_id,
-            budget_type=self.budget_type,
-            period=0,
-
         )
         self.check_response(resp)
 
     def test_view_directory_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_directorate",
                 kwargs={
@@ -1097,16 +994,11 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'period': 0,
                 },
             ),
-            DirectorateExpenditureDetailsView,
-            directorate_code=self.directorate.directorate_code,
-            expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type,
-            period=0,
         )
         self.check_response(resp)
 
     def test_view_group_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_group",
                 kwargs={
@@ -1115,18 +1007,13 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'budget_type': self.budget_type,
                     'period': 0,
                 },
-            ),
-            GroupExpenditureDetailsView,
-            group_code=self.group.group_code,
-            expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type,
-            period=0,
+            )
         )
 
         self.check_response(resp)
 
     def test_view_dit_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_dit",
                 kwargs={
@@ -1134,19 +1021,15 @@ class ViewForecastNaturalAccountCodeTest(TestCase, RequestFactoryBase):
                     'budget_type': self.budget_type,
                     'period': 0,
                 },
-            ),
-            DITExpenditureDetailsView,
-            expenditure_category=self.nac1_obj.expenditure_category_id,
-            budget_type=self.budget_type,
-            period=0,
+            )
         )
 
         self.check_response(resp)
 
 
-class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
+class ViewProgrammeDetailsTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
@@ -1269,7 +1152,7 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
         self.check_programme_details_table(tables[0])
 
     def test_view_directory_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_directorate",
                 kwargs={
@@ -1278,17 +1161,12 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
                     'period': 0,
                 },
-            ),
-            DirectorateProgrammeDetailsView,
-            directorate_code=self.directorate.directorate_code,
-            programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=0,
+            )
         )
         self.check_response(resp)
 
     def test_view_group_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_group",
                 kwargs={
@@ -1297,18 +1175,13 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
                     'period': 0,
                 },
-            ),
-            GroupProgrammeDetailsView,
-            group_code=self.group_code,
-            programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=0,
+            )
         )
 
         self.check_response(resp)
 
     def test_view_dit_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_dit",
                 kwargs={
@@ -1316,18 +1189,14 @@ class ViewProgrammeDetailsTest(TestCase, RequestFactoryBase):
                     'forecast_expenditure_type': self.forecast_expenditure_type_id,
                     'period': 0,
                 },
-            ),
-            DITProgrammeDetailsView,
-            programme_code=self.programme_obj.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=0,
+            )
         )
         self.check_response(resp)
 
 
-class EditForecastLockTest(TestCase, RequestFactoryBase):
+class EditForecastLockTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.cost_centre_code = 888812
         self.cost_centre = CostCentreFactory.create(
@@ -1352,11 +1221,7 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
         )
 
         # Should be allowed
-        resp = self.factory_get(
-            edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
-        )
+        resp = self.client.get(edit_forecast_url)
 
         self.assertEqual(resp.status_code, 200)
 
@@ -1366,11 +1231,7 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
         edit_lock.save()
 
         # Should be redirected to lock page
-        resp = self.factory_get(
-            edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
-        )
+        resp = self.client.get(edit_forecast_url)
 
         editing_locked_url = reverse("edit_unavailable")
 
@@ -1385,19 +1246,15 @@ class EditForecastLockTest(TestCase, RequestFactoryBase):
         self.test_user.save()
 
         # User should not be allowed to view page
-        resp = self.factory_get(
-            edit_forecast_url,
-            EditForecastView,
-            cost_centre_code=self.cost_centre_code,
-        )
+        resp = self.client.get(edit_forecast_url)
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
 
 
-class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
+class EditForecastFigureViewTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.nac_code = 999999
         self.cost_centre_code = 888812
@@ -1438,15 +1295,14 @@ class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
         amount = 999999999999999999
         assert amount > settings.MAX_FORECAST_FIGURE
 
-        resp = self.factory_post(
-            update_forecast_figure_url, {
+        resp = self.client.post(
+            update_forecast_figure_url,
+            data={
                 "natural_account_code": self.nac_code,
                 "programme_code": self.programme.programme_code,
                 "month": 5,
                 "amount": amount,
             },
-            EditForecastFigureView,
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -1464,15 +1320,14 @@ class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
         amount = -999999999999999999
         assert amount < settings.MIN_FORECAST_FIGURE
 
-        resp = self.factory_post(
-            update_forecast_figure_url, {
+        resp = self.client.post(
+            update_forecast_figure_url,
+            data={
                 "natural_account_code": self.nac_code,
                 "programme_code": self.programme.programme_code,
                 "month": 5,
                 "amount": amount,
             },
-            EditForecastFigureView,
-            cost_centre_code=self.cost_centre_code,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -1480,10 +1335,8 @@ class EditForecastFigureViewTest(TestCase, RequestFactoryBase):
         assert ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE  # noqa
 
 
-class ViewEditTest(TestCase, RequestFactoryBase):
+class ViewEditTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
         # Add forecast view permission
         can_view_forecasts = Permission.objects.get(
             codename='can_view_forecasts'
@@ -1492,10 +1345,7 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
-        self.client.login(
-            username=self.test_user_email,
-            password=self.test_password,
-        )
+        self.client.force_login(self.test_user)
 
         self.group = DepartmentalGroupFactory()
 
@@ -1570,9 +1420,8 @@ class ViewEditTest(TestCase, RequestFactoryBase):
         assert directorate_code_links[0]['href'] == view_directorate_forecast_url
 
 
-class ViewEditButtonTest(TestCase, RequestFactoryBase):
+class ViewEditButtonTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         # Add forecast view permission
         can_view_forecasts = Permission.objects.get(
             codename='can_view_forecasts'
@@ -1581,10 +1430,7 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
-        self.client.login(
-            username=self.test_user_email,
-            password=self.test_password,
-        )
+        self.client.force_login(self.test_user)
 
         self.group = DepartmentalGroupFactory()
 
@@ -1683,12 +1529,10 @@ class ViewEditButtonTest(TestCase, RequestFactoryBase):
         assert len(edit_forecast_links) == 0
 
 
-class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
+class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
     # Test that nothing is displayed when there are values
     # that aggregate to 0
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
         self.group_name = "Test Group"
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
@@ -1787,18 +1631,17 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
+        self.client.force_login(self.test_user)
+
     def test_view_directorate_summary(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
                     'directorate_code': self.directorate.directorate_code,
                     'period': 0,
                 },
-            ),
-            DirectorateView,
-            directorate_code=self.directorate.directorate_code,
-            period=0,
+            )
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -1814,17 +1657,14 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
         assert len(table_rows) == 8
 
     def test_view_group_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={
                     'group_code': self.group.group_code,
                     'period': 0,
                 },
-            ),
-            GroupView,
-            group_code=self.group.group_code,
-            period=0
+            )
         )
 
         self.assertEqual(response.status_code, 200)
@@ -1839,15 +1679,13 @@ class ViewForecastHierarchyZeroProjectTest(TestCase, RequestFactoryBase):
         assert len(table_rows) == 4
 
     def test_view_dit_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_dit",
                 kwargs={
                     'period': 0,
                 },
-            ),
-            DITView,
-            period=0,
+            )
         )
 
         self.assertEqual(response.status_code, 200)

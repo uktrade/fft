@@ -1,19 +1,13 @@
 from django.contrib.admin.models import (
     LogEntry,
 )
-from django.test import (
-    TestCase,
-)
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import log_object_change
 
 
-class ViewUtils(TestCase):
-    def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+class ViewUtils(BaseTestCase):
     def test_log_object_change_no_object(self):
         log_object_change(
             self.test_user.id,

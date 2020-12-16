@@ -6,11 +6,7 @@ from django.urls import reverse
 from forecast.test.test_utils import (
     format_forecast_figure,
 )
-from forecast.views.view_forecast.programme_details import (
-    DITProgrammeDetailsView,
-    DirectorateProgrammeDetailsView,
-    GroupProgrammeDetailsView,
-)
+
 
 from previous_years.test.test_utils import (
     PastYearForecastSetup,
@@ -67,7 +63,7 @@ class ViewProgrammeDetailsTest(PastYearForecastSetup):
         self.check_programme_details_table(tables[0])
 
     def test_view_directory_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_directorate",
                 kwargs={
@@ -77,16 +73,11 @@ class ViewProgrammeDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DirectorateProgrammeDetailsView,
-            directorate_code=self.directorate_code,
-            programme_code=self.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
     def test_view_group_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_group",
                 kwargs={
@@ -96,17 +87,12 @@ class ViewProgrammeDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            GroupProgrammeDetailsView,
-            group_code=self.group_code,
-            programme_code=self.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=self.archived_year,
         )
 
         self.check_response(resp)
 
     def test_view_dit_programme_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "programme_details_dit",
                 kwargs={
@@ -115,10 +101,6 @@ class ViewProgrammeDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DITProgrammeDetailsView,
-            programme_code=self.programme_code,
-            forecast_expenditure_type=self.forecast_expenditure_type_id,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
