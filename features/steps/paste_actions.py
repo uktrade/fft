@@ -125,7 +125,7 @@ def step_impl(context):
 
     file = io.BytesIO(response.content)
     wb = load_workbook(filename=file, read_only=True, data_only=True,)
-    ws = wb.get_active_sheet()
+    ws = wb.active
 
     paste_text = ""
 

@@ -3,20 +3,18 @@ from io import StringIO
 from bs4 import BeautifulSoup
 
 from django.core.management import call_command
-from django.test import TestCase
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import ExpenditureCategoryFactory
-from chartofaccountDIT.views import HistoricalFilteredExpenditureCategoryListView
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 
-class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
+class ArchiveExpenditureCategoryTest(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         obj = ExpenditureCategoryFactory()
         self.grouping_description = obj.grouping_description
@@ -27,10 +25,11 @@ class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
         )
 
     def test_view_historical_financecategory(self):
-        response = self.factory_get(
-            reverse("historical_finance_category", kwargs={"year": self.archive_year},),
-            HistoricalFilteredExpenditureCategoryListView,
-            year=self.archive_year,
+        response = self.client.get(
+            reverse(
+                "historical_finance_category",
+                kwargs={"year": self.archive_year},
+            ),
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -50,12 +49,9 @@ class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
 
     def test_view_filtered_historical_financecategory(self):
         filter_parameter = "?search_all=" + self.grouping_description
-        response = self.factory_get(
+        response = self.client.get(
             reverse("historical_finance_category", kwargs={"year": self.archive_year},)
             + filter_parameter,
-            HistoricalFilteredExpenditureCategoryListView,
-            year=self.archive_year,
-            search_all=self.grouping_description,
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")

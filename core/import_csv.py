@@ -213,7 +213,6 @@ def import_obj(csv_file, obj_key, op=always_true, pos=1, value=1, year=0):
     row_number = 1
     for row in reader:
         row_number = row_number + 1
-        # print (row_number)
         if op(row[pos], value):
             obj, msg = read_csv_from_dict(d, row, year)
     return True, msg

@@ -1,11 +1,8 @@
 from bs4 import BeautifulSoup
 
-from django.test import (
-    TestCase,
-)
 from django.urls import reverse
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 
 from gifthospitality.forms import GiftAndHospitalityOfferedForm,\
     GiftAndHospitalityReceivedForm
@@ -14,14 +11,9 @@ from gifthospitality.models import DepartmentalGroup, GiftAndHospitality,\
     GiftAndHospitalityCompany, Grade
 
 
-class GiftHospitalityFormTest(TestCase, RequestFactoryBase):
+class GiftHospitalityFormTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.client.login(
-            username=self.test_user_email,
-            password=self.test_password,
-        )
+        self.client.force_login(self.test_user)
 
         self.classification = GiftAndHospitalityClassification(sequence_no="10",
                                                                gif_hospitality_classification="98", # noqa

@@ -2,12 +2,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.test import TestCase
 
-from core.test.test_base import RequestFactoryBase
 
-
-class LogEntryTest(TestCase, RequestFactoryBase):
+class LogEntryTest(TestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         self.test_user, created = get_user_model().objects.get_or_create(
             email='test@test.com'
         )

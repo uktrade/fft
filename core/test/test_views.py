@@ -1,23 +1,13 @@
-# TODO - Test that the index page actually renders
-
 from bs4 import BeautifulSoup
 
-from django.test import (
-    TestCase,
-)
 from django.urls import reverse
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 
 
-class ViewAdminLink(TestCase, RequestFactoryBase):
+class ViewAdminLink(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.client.login(
-            username=self.test_user_email,
-            password=self.test_password,
-        )
+        self.client.force_login(self.test_user)
 
     def test_user_can_view_admin_link(self):
         """

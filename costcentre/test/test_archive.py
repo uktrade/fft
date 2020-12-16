@@ -3,10 +3,9 @@ from io import StringIO
 from bs4 import BeautifulSoup
 
 from django.core.management import call_command
-from django.test import TestCase
 from django.urls import reverse
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -14,13 +13,13 @@ from costcentre.test.factories import (
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-from costcentre.views import HistoricalFilteredCostListView
 
 
-class ArchiveCostCentreTest(TestCase, RequestFactoryBase):
+class ArchiveCostCentreTest(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
+
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
@@ -43,12 +42,10 @@ class ArchiveCostCentreTest(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "historical_cost_centre_filter", kwargs={"year": self.archive_year},
             ),
-            HistoricalFilteredCostListView,
-            year=self.archive_year,
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
