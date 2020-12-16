@@ -1,7 +1,5 @@
 from django.test import TestCase
 
-from core.test.test_base import RequestFactoryBase
-
 from costcentre.import_archived_from_csv import import_archived_cost_centre
 from costcentre.models import ArchivedCostCentre
 
@@ -10,7 +8,7 @@ from forecast.import_csv import WrongChartOFAccountCodeException
 from previous_years.utils import ArchiveYearError
 
 
-class UploadArchiveCostCentreTest(TestCase, RequestFactoryBase):
+class UploadArchiveCostCentreTest(TestCase):
     def test_correct_data(self):
         # I could use 'get_col_from_obj_key' to generate the header from the key
         # used to upload the data, but for the sake of clarity I decided to

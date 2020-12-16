@@ -3,21 +3,13 @@ from bs4 import BeautifulSoup
 from django.contrib.auth.models import (
     Permission,
 )
-from django.test import TestCase
 from django.urls import reverse
-
-from core.test.test_base import RequestFactoryBase
 
 from end_of_month.test.test_utils import SetFullYearArchive
 
+from core.test.test_base import BaseTestCase
 from forecast.test.test_utils import (
     format_forecast_figure,
-)
-from forecast.views.view_forecast.forecast_summary import (
-    CostCentreView,
-    DITView,
-    DirectorateView,
-    GroupView,
 )
 
 TOTAL_COLUMN = -5
@@ -28,10 +20,9 @@ EXPENDITURE_TABLE_INDEX = 2
 PROJECT_TABLE_INDEX = 3
 
 
-class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
+class ViewArchivedForecastHierarchyTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
+        self.client.force_login(self.test_user)
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
@@ -125,7 +116,7 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.assertIn("March", period_list)
 
     def view_cost_centre_summary(self, test_period):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
@@ -133,9 +124,6 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
                     "period": test_period,
                 },
             ),
-            CostCentreView,
-            cost_centre_code=self.archive.cost_centre_code,
-            period=test_period,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -215,7 +203,7 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.view_cost_centre_summary(0)
 
     def view_directorate_summary(self, test_period):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
@@ -223,9 +211,6 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
                     "period": test_period,
                 },
             ),
-            DirectorateView,
-            directorate_code=self.archive.directorate_code,
-            period=test_period,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -304,14 +289,11 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.view_directorate_summary(0)
 
     def view_group_summary(self, test_period):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={"group_code": self.archive.group_code, "period": test_period, },
-            ),
-            GroupView,
-            group_code=self.archive.group_code,
-            period=test_period,
+            )
         )
 
         self.assertEqual(response.status_code, 200)
@@ -387,10 +369,8 @@ class ViewArchivedForecastHierarchyTest(TestCase, RequestFactoryBase):
         self.view_group_summary(0)
 
     def view_dit_summary(self, test_period):
-        response = self.factory_get(
-            reverse("forecast_dit", kwargs={"period": test_period, }, ),
-            DITView,
-            period=test_period,
+        response = self.client.get(
+            reverse("forecast_dit", kwargs={"period": test_period, })
         )
 
         self.assertEqual(response.status_code, 200)

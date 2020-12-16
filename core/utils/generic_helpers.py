@@ -50,7 +50,7 @@ def get_year_display(year):
 
 
 class GetValidYear:
-    regex = '20\d{2}'
+    regex = r'20\d{2}'
 
     def to_python(self, value):
         return int(value)
@@ -115,9 +115,9 @@ def check_empty(value):
 
 
 def log_object_change(
-    requesting_user_id,
-    message,
-    obj=None,
+        requesting_user_id,
+        message,
+        obj=None,
 ):
     if obj:
         content_type_id = ContentType.objects.get_for_model(

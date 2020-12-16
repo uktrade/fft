@@ -59,9 +59,9 @@ SEGMENT_GP_KEY = {
     IMPORT_CSV_MODEL_KEY: SegmentGrandParent,
     IMPORT_CSV_PK_KEY: "Segment Grand Parent Code",
     IMPORT_CSV_FIELDLIST_KEY: {
-        SegmentGrandParent.segment_grand_parent_long_name.field_name: "Segment Grand Parent Long Name",  # noqa: E501
-        SegmentGrandParent.segment_department_code.field_name: "Segment Department Code",  # noqa: E501
-        SegmentGrandParent.segment_department_long_name.field_name: "Segment Department Long Name",  # noqa: E501
+        "segment_grand_parent_long_name": "Segment Grand Parent Long Name",  # noqa: E501
+        "segment_department_code": "Segment Department Code",  # noqa: E501
+        "segment_department_long_name": "Segment Department Long Name",  # noqa: E501
     },
 }
 
@@ -69,7 +69,7 @@ SEGMENT_P_KEY = {
     IMPORT_CSV_MODEL_KEY: SegmentParent,
     IMPORT_CSV_PK_KEY: "Segment Parent Code",
     IMPORT_CSV_FIELDLIST_KEY: {
-        SegmentParent.segment_parent_long_name.field_name: "Segment Parent Long Name",  # noqa: E501
+        "segment_parent_long_name": "Segment Parent Long Name",  # noqa: E501
         SegmentParent.segment_grand_parent_code.field.name: SEGMENT_GP_KEY,
     },
 }
@@ -78,7 +78,7 @@ SEGMENT_KEY = {
     IMPORT_CSV_MODEL_KEY: Segment,
     IMPORT_CSV_PK_KEY: "Segment Code",
     IMPORT_CSV_FIELDLIST_KEY: {
-        Segment.segment_long_name.field_name: "Segment Long Name",
+        "segment_long_name": "Segment Long Name",
         Segment.segment_parent_code.field.name: SEGMENT_P_KEY,
     },
 }
@@ -87,7 +87,7 @@ ESTIMATE_ROW_KEY = {
     IMPORT_CSV_MODEL_KEY: EstimateRow,
     IMPORT_CSV_PK_KEY: "Estimates Row Code",
     IMPORT_CSV_FIELDLIST_KEY: {
-        EstimateRow.estimate_row_long_name.field_name: "Estimates Row Long Name"
+        "estimate_row_long_name": "Estimates Row Long Name"
     },
 }
 
@@ -99,8 +99,8 @@ SUB_SEGMENT_KEY = {
         SubSegment.Segment_code.field.name: SEGMENT_KEY,
         "control_budget_detail_code": "Control Budget Detail Code",
         SubSegment.estimates_row_code.field.name: ESTIMATE_ROW_KEY,
-        SubSegment.accounting_authority_code.field_name: "Accounting Authority Code",
-        SubSegment.accounting_authority_DetailCode.field_name: "Accounting Authority Detail Code",  # noqa: E501
+        "accounting_authority_code": "Accounting Authority Code",
+        "accounting_authority_DetailCode": "Accounting Authority Detail Code",  # noqa: E501
     },
 }
 

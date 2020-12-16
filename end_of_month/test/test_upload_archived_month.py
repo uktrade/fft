@@ -2,8 +2,6 @@ from io import StringIO
 
 from django.test import TestCase
 
-from core.test.test_base import RequestFactoryBase
-
 from end_of_month.test.test_utils import SetFullYearArchive
 from end_of_month.upload_archived_month import (
     WrongArchivePeriodException,
@@ -17,9 +15,8 @@ from forecast.models import (
 )
 
 
-class UploadSingleMonthTest(TestCase, RequestFactoryBase):
+class UploadSingleMonthTest(TestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
         # Archive April, May and June
         self.init_data = SetFullYearArchive(3)
 

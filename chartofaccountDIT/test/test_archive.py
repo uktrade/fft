@@ -3,7 +3,6 @@ from io import StringIO
 from bs4 import BeautifulSoup
 
 from django.core.management import call_command
-from django.test import TestCase
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -13,22 +12,15 @@ from chartofaccountDIT.test.factories import (
     ExpenditureCategoryFactory,
     ProgrammeCodeFactory,
 )
-from chartofaccountDIT.views import (
-    HistoricalFilteredAnalysis1ListView,
-    HistoricalFilteredAnalysis2ListView,
-    HistoricalFilteredCommercialCategoryListView,
-    HistoricalFilteredExpenditureCategoryListView,
-    HistoricalFilteredProgrammeView,
-)
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 
-class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
+class ArchiveAnalysis1Test(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         self.analysis1_code = 123456
         self.analysis1_description = "Analysis1 description"
@@ -40,10 +32,8 @@ class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse("historical_analysis_1", kwargs={"year": self.archive_year},),
-            HistoricalFilteredAnalysis1ListView,
-            year=self.archive_year,
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -93,10 +83,10 @@ class ArchiveAnalysis1Test(TestCase, RequestFactoryBase):
         assert first_cols[1].get_text().strip() == self.analysis1_description
 
 
-class ArchiveAnalysis2Test(TestCase, RequestFactoryBase):
+class ArchiveAnalysis2Test(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         self.analysis2_code = 123456
         self.analysis2_description = "analysis2 description"
@@ -108,10 +98,8 @@ class ArchiveAnalysis2Test(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
-            reverse("historical_analysis_2", kwargs={"year": self.archive_year},),
-            HistoricalFilteredAnalysis2ListView,
-            year=self.archive_year,
+        response = self.client.get(
+            reverse("historical_analysis_2", kwargs={"year": self.archive_year},)
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -161,10 +149,10 @@ class ArchiveAnalysis2Test(TestCase, RequestFactoryBase):
         assert first_cols[1].get_text().strip() == self.analysis2_description
 
 
-class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
+class ArchiveExpenditureCategoryTest(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         self.grouping_description = "grouping description"
         self.category_description = "Longer description"
@@ -176,10 +164,11 @@ class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
-            reverse("historical_finance_category", kwargs={"year": self.archive_year},),
-            HistoricalFilteredExpenditureCategoryListView,
-            year=self.archive_year,
+        response = self.client.get(
+            reverse(
+                "historical_finance_category",
+                kwargs={"year": self.archive_year},
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -232,10 +221,11 @@ class ArchiveExpenditureCategoryTest(TestCase, RequestFactoryBase):
         assert first_cols[2].get_text().strip() == self.category_description
 
 
-class ArchiveCommercialCategoryTest(TestCase, RequestFactoryBase):
+class ArchiveCommercialCategoryTest(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
+
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         self.commercial_category = "commercial category"
         self.description = "Longer description"
@@ -246,12 +236,11 @@ class ArchiveCommercialCategoryTest(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
-                "historical_commercial_category", kwargs={"year": self.archive_year},
-            ),
-            HistoricalFilteredCommercialCategoryListView,
-            year=self.archive_year,
+                "historical_commercial_category",
+                kwargs={"year": self.archive_year},
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -259,7 +248,6 @@ class ArchiveCommercialCategoryTest(TestCase, RequestFactoryBase):
         soup = BeautifulSoup(response.content, features="html.parser")
         # Check that there is 1 table
         tables = soup.find_all("table", class_="govuk-table")
-        print()
         assert len(tables) == 1
         return soup
 
@@ -305,10 +293,10 @@ class ArchiveCommercialCategoryTest(TestCase, RequestFactoryBase):
         assert first_cols[1].get_text().strip() == self.description
 
 
-class ArchiveProgrammeTest(TestCase, RequestFactoryBase):
+class ArchiveProgrammeTest(BaseTestCase):
     def setUp(self):
+        self.client.force_login(self.test_user)
         self.out = StringIO()
-        RequestFactoryBase.__init__(self)
 
         obj = ProgrammeCodeFactory()
         self.programme_code = obj.programme_code
@@ -320,10 +308,11 @@ class ArchiveProgrammeTest(TestCase, RequestFactoryBase):
         self.archive_year = current_year - 1
 
     def show_historical_view(self):
-        response = self.factory_get(
-            reverse("historical_programme_filter", kwargs={"year": self.archive_year},),
-            HistoricalFilteredProgrammeView,
-            year=self.archive_year,
+        response = self.client.get(
+            reverse(
+                "historical_programme_filter",
+                kwargs={"year": self.archive_year},
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")

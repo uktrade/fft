@@ -1,12 +1,7 @@
 import io
 
 from django.contrib.auth.models import Permission
-from django.core.exceptions import PermissionDenied
-from django.test import TestCase
 from django.urls import reverse
-
-from download_file.views.mi_report_download import DownloadMIReportView
-from download_file.views.oscar_return import DownloadOscarReturnView
 
 from openpyxl import load_workbook
 
@@ -17,9 +12,8 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 
 from costcentre.test.factories import CostCentreFactory
 
@@ -28,12 +22,11 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
 )
-from forecast.views.export.mi_report_source import export_mi_budget_report
 
 
-class DownloadViewTests(TestCase, RequestFactoryBase):
+class DownloadViewTests(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
         self.cost_centre_code = 109076
         self.cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
@@ -76,16 +69,14 @@ class DownloadViewTests(TestCase, RequestFactoryBase):
         downloaded_files_url = reverse("download_mi_report",)
 
         # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                downloaded_files_url, DownloadMIReportView,
-            )
+        resp = self.client.get(downloaded_files_url, follow=False)
+        assert resp.status_code == 403
 
         can_download_files = Permission.objects.get(codename="can_download_mi_reports",)
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 
-        resp = self.factory_get(downloaded_files_url, DownloadMIReportView,)
+        resp = self.client.get(downloaded_files_url)
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
 
@@ -93,12 +84,12 @@ class DownloadViewTests(TestCase, RequestFactoryBase):
         assert not self.test_user.has_perm("forecast.can_download_mi_reports")
         downloaded_files_url = reverse("download_mi_budget",)
 
-        response = self.factory_get(downloaded_files_url, export_mi_budget_report,)
+        response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 302)
         can_download_files = Permission.objects.get(codename="can_download_mi_reports",)
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
-        response = self.factory_get(downloaded_files_url, export_mi_budget_report,)
+        response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 200)
         file = io.BytesIO(response.content)
         wb = load_workbook(filename=file, read_only=True,)
@@ -119,24 +110,25 @@ class DownloadViewTests(TestCase, RequestFactoryBase):
         downloaded_files_url = reverse("download_oscar_report",)
 
         # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                downloaded_files_url, DownloadOscarReturnView,
-            )
+        resp = self.client.get(
+            downloaded_files_url,
+            follow=False,
+        )
+        resp.status_code == 403
 
         can_download_files = Permission.objects.get(codename="can_download_oscar",)
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 
-        resp = self.factory_get(downloaded_files_url, DownloadOscarReturnView,)
+        resp = self.client.get(downloaded_files_url)
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
 
 
-class DownloadMIBudgetViewTests(TestCase, RequestFactoryBase):
+class DownloadMIBudgetViewTests(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
         self.cost_centre_code = 109076
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
@@ -193,12 +185,12 @@ class DownloadMIBudgetViewTests(TestCase, RequestFactoryBase):
         assert not self.test_user.has_perm("forecast.can_download_mi_reports")
         downloaded_files_url = reverse("download_mi_budget",)
 
-        response = self.factory_get(downloaded_files_url, export_mi_budget_report,)
+        response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 302)
         can_download_files = Permission.objects.get(codename="can_download_mi_reports",)
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
-        response = self.factory_get(downloaded_files_url, export_mi_budget_report,)
+        response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 200)
         file = io.BytesIO(response.content)
         wb = load_workbook(filename=file, read_only=True,)
@@ -217,16 +209,17 @@ class DownloadMIBudgetViewTests(TestCase, RequestFactoryBase):
         downloaded_files_url = reverse("download_oscar_report",)
 
         # Should have been redirected (no permission)
-        with self.assertRaises(PermissionDenied):
-            self.factory_get(
-                downloaded_files_url, DownloadOscarReturnView,
-            )
+        resp = self.client.get(
+            downloaded_files_url
+        )
+
+        assert resp.status_code == 403
 
         can_download_files = Permission.objects.get(codename="can_download_oscar",)
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 
-        resp = self.factory_get(downloaded_files_url, DownloadOscarReturnView,)
+        resp = self.client.get(downloaded_files_url)
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)

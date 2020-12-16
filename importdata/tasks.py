@@ -7,7 +7,6 @@ from importdata.models import AsyncImportLog
 
 @shared_task
 def import_task(requester, type, file, import_func):
-    print("Started")
     log = AsyncImportLog(
         import_type=type,
         import_status=AsyncImportLog.STATUS_STARTED,
@@ -33,5 +32,4 @@ def import_task(requester, type, file, import_func):
         import_end=datetime.now(),
     )
     log.save
-    print("Completed")
     return result

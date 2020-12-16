@@ -9,7 +9,6 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -158,7 +157,7 @@ class SetFullYearArchive(MonthlyFigureSetup):
         self.set_archive_period(last_archived_period)
 
 
-class UtilsTests(TestCase, RequestFactoryBase):
+class UtilsTests(TestCase):
     def test_validate_period_code(self):
         with self.assertRaises(InvalidPeriodError):
             validate_period_code(period_code=0)

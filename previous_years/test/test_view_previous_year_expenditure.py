@@ -1,15 +1,8 @@
 from bs4 import BeautifulSoup
 
-
 from django.urls import reverse
 
 from forecast.test.test_utils import format_forecast_figure
-from forecast.views.view_forecast.expenditure_details import (
-    CostCentreExpenditureDetailsView,
-    DITExpenditureDetailsView,
-    DirectorateExpenditureDetailsView,
-    GroupExpenditureDetailsView,
-)
 
 from previous_years.test.test_utils import (
     PastYearForecastSetup,
@@ -73,7 +66,7 @@ class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
         self.check_nac_table(tables[0])
 
     def test_view_cost_centre_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_cost_centre",
                 kwargs={
@@ -83,16 +76,11 @@ class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            CostCentreExpenditureDetailsView,
-            cost_centre_code=self.cost_centre_code,
-            expenditure_category=self.expenditure_category_id,
-            budget_type=self.budget_type_id,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
     def test_view_directory_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_directorate",
                 kwargs={
@@ -102,16 +90,11 @@ class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DirectorateExpenditureDetailsView,
-            directorate_code=self.directorate_code,
-            expenditure_category=self.expenditure_category_id,
-            budget_type=self.budget_type_id,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
     def test_view_group_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_group",
                 kwargs={
@@ -121,17 +104,12 @@ class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            GroupExpenditureDetailsView,
-            group_code=self.group_code,
-            expenditure_category=self.expenditure_category_id,
-            budget_type=self.budget_type_id,
-            period=self.archived_year,
         )
 
         self.check_response(resp)
 
     def test_view_dit_nac_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "expenditure_details_dit",
                 kwargs={
@@ -140,10 +118,6 @@ class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DITExpenditureDetailsView,
-            expenditure_category=self.expenditure_category_id,
-            budget_type=self.budget_type_id,
-            period=self.archived_year,
         )
 
         self.check_response(resp)
