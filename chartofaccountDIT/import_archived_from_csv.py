@@ -164,7 +164,7 @@ def import_archived_nac(csvfile, year):
                 )
                 nac_obj.used_for_budget = True
                 nac_obj.save()
-            except ObjectDoesNotExist as ex:
+            except ObjectDoesNotExist:
                 msg = f"NAC {account_L6_budget_val} not defined for year {year}"
                 raise WrongChartOFAccountCodeException(f"{msgerror} {msg}")
 

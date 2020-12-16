@@ -121,7 +121,6 @@ def fix_L5_ref():
         account_L5_code=None
     )
     for r in q:
-        print(r.account_L5_code)
         r.account_L5_code = r.account_L5_code_upload
         r.save()
 

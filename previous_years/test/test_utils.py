@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Permission
-from django.test import TestCase
 
 from chartofaccountDIT.test.factories import (
     HistoricalAnalysis1Factory,
@@ -11,7 +10,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 
 from costcentre.test.factories import ArchivedCostCentreFactory
 
@@ -25,9 +24,10 @@ from previous_years.models import (
 )
 
 
-class PastYearForecastSetup(TestCase, RequestFactoryBase):
+class PastYearForecastSetup(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
+
         # 2019 is created when the database is created, so it exists
         self.archived_year = 2019
         archived_year_obj = FinancialYear.objects.filter(

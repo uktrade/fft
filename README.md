@@ -107,8 +107,6 @@ docker-compose exec fido bash
 python manage.py behave --settings=config.settings.bdd
 ```
 
-## TODO
-Add setup steps to make file and amend readme
 
 ### Notes
 In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
@@ -140,3 +138,10 @@ The names of the management commands denote their function.
  * Download Oscar report file
  * View forecast (permission to view all forecast data)
  * Edit 1 - n cost centres (specific user can edit cost centre data)
+
+#### Migrating to new user model (to be removed once complete)
+ * Take the system off line
+ * Add username field to HistoricalUser table (max length 150, allow null)
+ * Amend the custom_usermodel table to be the same as the new User app one
+ * Add the user app initial migration to the list of django migrations that have been run
+ * Deploy new codebase

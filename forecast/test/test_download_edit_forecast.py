@@ -1,7 +1,6 @@
 import io
 
 from django.contrib.auth.models import Permission
-from django.test import TestCase
 from django.urls import reverse
 
 from openpyxl import load_workbook
@@ -13,7 +12,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -29,12 +28,11 @@ from forecast.models import (
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.test_utils import create_budget
-from forecast.views.view_forecast.export_forecast_data import export_edit_forecast_data
 
 
-class DownloadEditForecastTest(TestCase, RequestFactoryBase):
+class DownloadEditForecastTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
+        self.client.force_login(self.test_user)
 
         self.group_name = "Test Group"
         self.group_code = "TestGG"
@@ -56,7 +54,8 @@ class DownloadEditForecastTest(TestCase, RequestFactoryBase):
             group=self.group,
         )
         self.cost_centre = CostCentreFactory(
-            directorate=self.directorate, cost_centre_code=self.cost_centre_code,
+            directorate=self.directorate,
+            cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
@@ -120,15 +119,12 @@ class DownloadEditForecastTest(TestCase, RequestFactoryBase):
         """
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        self.cost_centre_code = self.cost_centre
 
-        download_forecast_url = self.factory_get(
+        download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
                 kwargs={"cost_centre": self.cost_centre_code},
             ),
-            export_edit_forecast_data,
-            cost_centre=self.cost_centre.cost_centre_code,
         )
         self.assertEqual(download_forecast_url.status_code, 200)
 
@@ -166,15 +162,11 @@ class DownloadEditForecastTest(TestCase, RequestFactoryBase):
         """
         User can't access download URL if they have no editing permission
         """
-        self.cost_centre_code = self.cost_centre
-
-        download_forecast_url = self.factory_get(
+        download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
                 kwargs={"cost_centre": self.cost_centre_code},
-            ),
-            export_edit_forecast_data,
-            cost_centre=self.cost_centre.cost_centre_code,
+            )
         )
         self.assertEqual(download_forecast_url.status_code, 302)
 
@@ -187,33 +179,28 @@ class DownloadEditForecastTest(TestCase, RequestFactoryBase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # Changes cost_centre_code to one that user can view but NOT edit
-        self.test_cost_centre = 888332
-        self.cost_centre_code = self.test_cost_centre
-        self.cost_centre = CostCentreFactory.create(
-            cost_centre_code=self.cost_centre_code
+        test_cost_centre_code = 888332
+
+        CostCentreFactory.create(
+            cost_centre_code=test_cost_centre_code
         )
 
-        download_forecast_url = self.factory_get(
+        download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
-                kwargs={"cost_centre": self.cost_centre_code},
-            ),
-            export_edit_forecast_data,
-            cost_centre=self.cost_centre.cost_centre_code,
+                kwargs={"cost_centre": test_cost_centre_code},
+            )
         )
         self.assertEqual(download_forecast_url.status_code, 302)
 
     def test_download(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
-        self.cost_centre_code = self.cost_centre
 
-        download_forecast_url = self.factory_get(
+        download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
                 kwargs={"cost_centre": self.cost_centre_code},
-            ),
-            export_edit_forecast_data,
-            cost_centre=self.cost_centre.cost_centre_code,
+            )
         )
         self.assertEqual(download_forecast_url.status_code, 200)
         file = io.BytesIO(download_forecast_url.content)

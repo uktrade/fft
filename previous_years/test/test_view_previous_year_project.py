@@ -1,15 +1,8 @@
 from bs4 import BeautifulSoup
 
-
 from django.urls import reverse
 
 from forecast.test.test_utils import format_forecast_figure
-from forecast.views.view_forecast.project_details import (
-    CostCentreProjectDetailsView,
-    DITProjectDetailsView,
-    DirectorateProjectDetailsView,
-    GroupProjectDetailsView,
-)
 
 from previous_years.test.test_utils import (
     PastYearForecastSetup,
@@ -68,7 +61,7 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
         self.check_project_details_table(tables[0])
 
     def test_view_cost_Centre_project_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "project_details_costcentre",
                 kwargs={
@@ -77,15 +70,11 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            CostCentreProjectDetailsView,
-            cost_centre_code=self.cost_centre_code,
-            project_code=self.project_code,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
     def test_view_directory_project_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "project_details_directorate",
                 kwargs={
@@ -94,15 +83,11 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DirectorateProjectDetailsView,
-            directorate_code=self.directorate_code,
-            project_code=self.project_code,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
     def test_view_group_project_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "project_details_group",
                 kwargs={
@@ -111,16 +96,12 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            GroupProjectDetailsView,
-            group_code=self.group_code,
-            project_code=self.project_code,
-            period=self.archived_year,
         )
 
         self.check_response(resp)
 
     def test_view_dit_project_details(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "project_details_dit",
                 kwargs={
@@ -128,9 +109,6 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DITProjectDetailsView,
-            project_code=self.project_code,
-            period=self.archived_year,
         )
         self.check_response(resp)
 
@@ -142,6 +120,6 @@ class ViewProjectDetailsAdjustmentColumnsTest(ViewProjectDetailsTest):
 
 
 class ViewProjectDetailsTwoYearDataTest(ViewProjectDetailsTest):
-            def setUp(self):
-                super().setUp()
-                self.create_another_year()
+    def setUp(self):
+        super().setUp()
+        self.create_another_year()

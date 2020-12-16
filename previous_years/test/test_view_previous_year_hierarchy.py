@@ -1,16 +1,9 @@
 from bs4 import BeautifulSoup
 
-
 from django.urls import reverse
 
 from forecast.test.test_utils import (
     format_forecast_figure,
-)
-from forecast.views.view_forecast.forecast_summary import (
-    CostCentreView,
-    DITView,
-    DirectorateView,
-    GroupView,
 )
 
 from previous_years.test.test_utils import (
@@ -30,15 +23,13 @@ PROJECT_TABLE_INDEX = 3
 
 class ViewForecastHierarchyTest(PastYearForecastSetup):
     def test_dit_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_dit",
                 kwargs={
                     "period": self.archived_year,
                 },
             ),
-            DITView,
-            period=self.archived_year,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -47,7 +38,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         assert self.group_name in str(response.rendered_content)
 
     def test_group_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={
@@ -55,9 +46,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            GroupView,
-            group_code=self.group_code,
-            period=self.archived_year,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -65,7 +53,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         assert self.directorate_name in str(response.rendered_content)
 
     def test_directorate_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
@@ -73,9 +61,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DirectorateView,
-            directorate_code=self.directorate_code,
-            period=self.archived_year,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -83,7 +68,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         assert str(self.cost_centre_code) in str(response.rendered_content)
 
     def test_cost_centre_view(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
@@ -91,9 +76,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            CostCentreView,
-            cost_centre_code=self.cost_centre_code,
-            period=self.archived_year,
         )
         self.assertEqual(response.status_code, 200)
 
@@ -186,7 +168,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         assert len(negative_values) == 42
 
     def test_view_cost_centre_summary(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_cost_centre",
                 kwargs={
@@ -194,9 +176,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            CostCentreView,
-            cost_centre_code=self.cost_centre_code,
-            period=self.archived_year,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -231,7 +210,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_directorate_summary(self):
-        resp = self.factory_get(
+        resp = self.client.get(
             reverse(
                 "forecast_directorate",
                 kwargs={
@@ -239,9 +218,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            DirectorateView,
-            directorate_code=self.directorate_code,
-            period=self.archived_year,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -273,7 +249,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_group_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_group",
                 kwargs={
@@ -281,9 +257,6 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
                     "period": self.archived_year,
                 },
             ),
-            GroupView,
-            group_code=self.group_code,
-            period=self.archived_year,
         )
 
         self.assertEqual(response.status_code, 200)
@@ -314,15 +287,13 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
     def test_view_dit_summary(self):
-        response = self.factory_get(
+        response = self.client.get(
             reverse(
                 "forecast_dit",
                 kwargs={
                     "period": self.archived_year,
                 },
             ),
-            DITView,
-            period=self.archived_year,
         )
 
         self.assertEqual(response.status_code, 200)

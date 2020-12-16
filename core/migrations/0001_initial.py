@@ -134,6 +134,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(blank=True, max_length=254, verbose_name='first name')),
                 ('last_name', models.CharField(blank=True, max_length=254, verbose_name='last name')),
                 ('email', models.EmailField(db_index=True, max_length=254, verbose_name='email address')),
+                ('username', models.CharField(max_length=150,)),
                 ('history_id', models.AutoField(primary_key=True, serialize=False)),
                 ('history_date', models.DateTimeField()),
                 ('history_change_reason', models.CharField(max_length=100, null=True)),

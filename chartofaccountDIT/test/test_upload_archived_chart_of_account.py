@@ -16,14 +16,12 @@ from chartofaccountDIT.models import (
     ArchivedProjectCode,
 )
 
-from core.test.test_base import RequestFactoryBase
-
 from forecast.import_csv import WrongChartOFAccountCodeException
 
 from previous_years.utils import ArchiveYearError
 
 
-class UploadArchiveAnalysis1Test(TestCase, RequestFactoryBase):
+class UploadArchiveAnalysis1Test(TestCase):
     def test_correct_data(self):
         header_row = "Analysis 1 Code,Contract Name,Supplier,PC Reference"
         data_row = "00012,Test Contract,Test Supplier,Test PC Reference"
@@ -54,7 +52,7 @@ class UploadArchiveAnalysis1Test(TestCase, RequestFactoryBase):
         assert ArchivedAnalysis1.objects.all().count() == 0
 
 
-class UploadArchiveAnalysis2Test(TestCase, RequestFactoryBase):
+class UploadArchiveAnalysis2Test(TestCase):
     def test_correct_data(self):
         header_row = "Market Code,Market Description"
         data_row = "00012,NeverLand"
@@ -85,7 +83,7 @@ class UploadArchiveAnalysis2Test(TestCase, RequestFactoryBase):
         assert ArchivedAnalysis2.objects.all().count() == 0
 
 
-class UploadProjectTest(TestCase, RequestFactoryBase):
+class UploadProjectTest(TestCase):
     def test_correct_data(self):
         header_row = "Project Code,Project Description"
         data_row = "00012,Cyber Security"
@@ -116,7 +114,7 @@ class UploadProjectTest(TestCase, RequestFactoryBase):
         assert ArchivedProjectCode.objects.all().count() == 0
 
 
-class UploadProgrammeTest(TestCase, RequestFactoryBase):
+class UploadProgrammeTest(TestCase):
     def test_correct_data(self):
         header_row = "Programme Code,Programme Description,Type"
         data_row = "00012,Ame Programme,AME"
@@ -147,7 +145,7 @@ class UploadProgrammeTest(TestCase, RequestFactoryBase):
         assert ArchivedProgrammeCode.objects.all().count() == 0
 
 
-class UploadNACTest(TestCase, RequestFactoryBase):
+class UploadNACTest(TestCase):
     def setUp(self):
         ArchivedExpenditureCategory.objects.create(
             financial_year_id=2019,

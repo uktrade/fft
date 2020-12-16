@@ -1,22 +1,14 @@
 
 from bs4 import BeautifulSoup
 
-from django.test import (
-    TestCase,
-)
 from django.urls import reverse
 
-from core.test.test_base import RequestFactoryBase
+from core.test.test_base import BaseTestCase
 
 
-class ViewGiftandHospitalityRegisterTest(TestCase, RequestFactoryBase):
+class ViewGiftandHospitalityRegisterTest(BaseTestCase):
     def setUp(self):
-        RequestFactoryBase.__init__(self)
-
-        self.client.login(
-            username=self.test_user_email,
-            password=self.test_password,
-        )
+        self.client.force_login(self.test_user)
 
     def test_user_can_see_g_h_tab(self):
         """
@@ -31,9 +23,6 @@ class ViewGiftandHospitalityRegisterTest(TestCase, RequestFactoryBase):
         assert response.status_code == 200
 
         soup = BeautifulSoup(response.content, features="html.parser")
-
-        # print(soup)
-
         gifts_hospitality_links = soup.find_all("a", class_="hospitality")
 
         assert len(gifts_hospitality_links) == 1

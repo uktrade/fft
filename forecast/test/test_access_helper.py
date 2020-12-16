@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
+from core.test.test_base import BaseTestCase
+
 from costcentre.test.factories import (
     CostCentreFactory,
 )
@@ -32,15 +34,6 @@ User = get_user_model()
 
 class PermissionTestBase(TestCase):
     def setUp(self):
-        self.test_user_email = "test@test.com"
-        test_password = "test_password"
-
-        self.test_user, _ = User.objects.get_or_create(
-            email=self.test_user_email
-        )
-        self.test_user.set_password(test_password)
-        self.test_user.save()
-
         self.cost_centre_code = 888332
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -58,11 +51,11 @@ class PermissionTestBase(TestCase):
 
         # Needed to bust permission cache
         self.test_user = User.objects.get(
-            email=self.test_user_email
+            email=self.test_user.email
         )
 
 
-class TestSimpleAccessHelpers(PermissionTestBase):
+class TestSimpleAccessHelpers(BaseTestCase, PermissionTestBase):
     def setUp(self):
         super().setUp()
 
@@ -139,6 +132,13 @@ class TestCanForecastBeEdited(PermissionTestBase):
     def setUp(self):
         super().setUp()
 
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            username="test_user",
+            email="test@test.com",
+        )
+        self.test_user.set_password("test_password")
+        self.test_user.save()
+
     def lock(self):
         self.forecast_edit_state.lock_date = datetime.today() - timedelta(days=1)
         self.forecast_edit_state.save()
@@ -209,7 +209,7 @@ class TestCanForecastBeEdited(PermissionTestBase):
         assert can_forecast_be_edited(self.test_user)
 
 
-class TestCanEditCostCentre(PermissionTestBase):
+class TestCanEditCostCentre(BaseTestCase, PermissionTestBase):
     def setUp(self):
         super().setUp()
 
