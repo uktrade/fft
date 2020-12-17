@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='historicaluser',
             name='sso_contact_email',
-            field=models.EmailField(blank=True, max_length=254),
+            field=models.EmailField(null=True, blank=True, max_length=254),
         ),
     ]
