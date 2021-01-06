@@ -23,49 +23,45 @@ class DepartmentalGroupFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = DepartmentalGroup
-        django_get_or_create = ('group_code',)
-
-    group_name = fake.company()
+        django_get_or_create = ("group_code",)
+    # Remove commas, because they break the test exporting csv data.
+    group_name = fake.company().replace("'", " ")
     group_code = str(fake.pyint())
     active = True
 
 
 class DirectorateFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = Directorate
-        django_get_or_create = ('directorate_code',)
+        django_get_or_create = ("directorate_code",)
 
-    directorate_name = fake.company()
+    directorate_name = fake.company().replace("'", " ")
     directorate_code = str(fake.pyint())
     group = factory.SubFactory(DepartmentalGroupFactory)
     active = True
 
 
 class FinancialYearFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = FinancialYear
-        django_get_or_create = ('financial_year',)
+        django_get_or_create = ("financial_year",)
 
     financial_year = 2019
 
 
 class FinanceBusinessPartnerFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = BusinessPartner
-        django_get_or_create = ('name', 'surname')
+        django_get_or_create = ("name", "surname")
 
     name = "test"
     surname = "FBP"
 
 
 class BSCEFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = BSCEEmail
-        django_get_or_create = ('bsce_email',)
+        django_get_or_create = ("bsce_email",)
 
     bsce_email = "bsceuser@test.com"
 
@@ -77,7 +73,7 @@ class CostCentreFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = CostCentre
-        django_get_or_create = ('cost_centre_code',)
+        django_get_or_create = ("cost_centre_code",)
 
     active = True
     directorate = factory.SubFactory(DirectorateFactory)
@@ -88,13 +84,9 @@ class CostCentreFactory(factory.DjangoModelFactory):
 
 
 class ArchivedCostCentreFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = ArchivedCostCentre
-        django_get_or_create = ('cost_centre_code',
-                                'financial_year',)
 
     active = True
     cost_centre_code = 999999
     cost_centre_name = "Test Cost Centre"
-    financial_year = 2019

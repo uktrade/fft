@@ -95,6 +95,7 @@ class HistoricalNaturalCodeTable(FadminTable):
             "NAC_category",
             "budget_description",
             "commercial_category",
+            "op_delivery_plan",
             "account_L6_budget",
             "natural_account_code",
             "natural_account_code_description",
