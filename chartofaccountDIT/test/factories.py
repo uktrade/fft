@@ -38,9 +38,6 @@ class Analysis1Factory(factory.DjangoModelFactory):
 
 
 class HistoricalAnalysis1Factory(factory.DjangoModelFactory):
-    """
-    Define ArchivedAnalysis1 Factory
-    """
 
     class Meta:
         model = ArchivedAnalysis1
@@ -58,10 +55,6 @@ class Analysis2Factory(factory.DjangoModelFactory):
 
 
 class HistoricalAnalysis2Factory(factory.DjangoModelFactory):
-    """
-    Define ArchivedAnalysis2 Factory
-    """
-
     class Meta:
         model = ArchivedAnalysis2
 
@@ -99,10 +92,7 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
 
 
 class HistoricalExpenditureCategoryFactory(factory.DjangoModelFactory):
-    """
-    Define ArchivedExpenditureCategory Factory
-    """
-    grouping_description = 'Test Budget Category'
+    grouping_description = 'Test Archived Budget Category'
 
     class Meta:
         model = ArchivedExpenditureCategory
@@ -118,10 +108,6 @@ class CommercialCategoryFactory(factory.DjangoModelFactory):
 
 
 class HistoricalCommercialCategoryFactory(factory.DjangoModelFactory):
-    """
-    Define ArchivedCommercialCategory Factory
-    """
-
     class Meta:
         model = ArchivedCommercialCategory
 
@@ -144,8 +130,8 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
 class HistoricalNaturalCodeFactory(factory.DjangoModelFactory):
 
     active = True
-    natural_account_code = 999999
-    natural_account_code_description = "NAC description"
+    natural_account_code = 87654321
+    natural_account_code_description = "Historical NAC description"
     used_for_budget = False
 
     class Meta:
@@ -172,7 +158,7 @@ class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):
     Define ArchivedProgrammeCode Factory
     """
     active = True
-    programme_code = "123456"
+    programme_code = "654321"
     programme_description = "Programme Test description"
     budget_type = factory.Iterator(BudgetType.objects.all())
 
@@ -199,10 +185,6 @@ class InterEntityFactory(factory.DjangoModelFactory):
 
 
 class HistoricalInterEntityFactory(factory.DjangoModelFactory):
-    """
-    Define ArchivedInterEntity Factory
-    """
-
     class Meta:
         model = ArchivedInterEntity
 
@@ -214,6 +196,7 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = ProjectCode
+        django_get_or_create = ('project_code',)
 
     active = True
     project_code = "5000"
@@ -245,6 +228,5 @@ class HistoricalFCOMappingFactory(factory.DjangoModelFactory):
     """
     Define ArchivedFCOMapping Factory
     """
-
     class Meta:
         model = ArchivedFCOMapping

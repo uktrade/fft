@@ -387,6 +387,11 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     account_L5_code_upload = models.BigIntegerField(
         verbose_name="L5 for OSCAR upload", blank=True, null=True
     )
+    op_delivery_plan = models.CharField(
+        max_length=255, verbose_name="Operational Delivery Plan",
+        blank=True,
+        null=True
+    )
     active = models.BooleanField(default=True)
     chart_of_account_code_name = "natural_account_code"
 
@@ -395,6 +400,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):
+        op_delivery_plan_value = None
         if obj.expenditure_category:
             expenditure_category_value = obj.expenditure_category.grouping_description
             # Find the archived equivalent
@@ -403,30 +409,35 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             )
             expenditure_category_id = expenditure_category_obj.id
 
-            NAC_category_val = (
+            NAC_category_value = (
                 obj.expenditure_category.NAC_category.NAC_category_description
             )
-            account_L6_budget_val = (
+            account_L6_budget_value = (
                 obj.expenditure_category.linked_budget_code.natural_account_code
             )
+            if obj.expenditure_category.op_del_category:
+                op_delivery_plan_value = obj.expenditure_category.\
+                    op_del_category.operating_delivery_description
         else:
+            expenditure_category_id = None
             expenditure_category_value = None
-            NAC_category_val = None
-            account_L6_budget_val = None
+            NAC_category_value = None
+            account_L6_budget_value = None
+
         if obj.commercial_category:
-            commercial_category_val = obj.commercial_category.commercial_category
+            commercial_category_value = obj.commercial_category.commercial_category
         else:
-            commercial_category_val = None
+            commercial_category_value = None
         if obj.account_L5_code_upload:
-            account_L5_code_upload_val = obj.account_L5_code_upload.account_l5_code
+            account_L5_code_upload_value = obj.account_L5_code_upload.account_l5_code
         else:
-            account_L5_code_upload_val = None
+            account_L5_code_upload_value = None
         if obj.account_L5_code:
-            account_L5_code_val = obj.account_L5_code.account_l5_code
-            account_L5_description_val = obj.account_L5_code.account_l5_long_name
+            account_L5_code_value = obj.account_L5_code.account_l5_code
+            account_L5_description_value = obj.account_L5_code.account_l5_long_name
         else:
-            account_L5_code_val = None
-            account_L5_description_val = None
+            account_L5_code_value = None
+            account_L5_description_value = None
         obj_hist = cls(
             natural_account_code_description=obj.natural_account_code_description
             + suffix,  # noqa
@@ -434,13 +445,14 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             used_for_budget=obj.used_for_budget,
             expenditure_category_id=expenditure_category_id,
             expenditure_category_description=expenditure_category_value,
-            NAC_category=NAC_category_val,
-            commercial_category=commercial_category_val,
-            account_L6_budget=account_L6_budget_val,
-            account_L5_code=account_L5_code_val,
-            account_L5_description=account_L5_description_val,
-            account_L5_code_upload=account_L5_code_upload_val,
+            NAC_category=NAC_category_value,
+            commercial_category=commercial_category_value,
+            account_L6_budget=account_L6_budget_value,
+            account_L5_code=account_L5_code_value,
+            account_L5_description=account_L5_description_value,
+            account_L5_code_upload=account_L5_code_upload_value,
             economic_budget_code=obj.economic_budget_code,
+            op_delivery_plan=op_delivery_plan_value,
             financial_year=year_obj,
             active=obj.active,
         )

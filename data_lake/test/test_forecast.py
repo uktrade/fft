@@ -1,4 +1,4 @@
-from data_lake.tests.test_hawk import (
+from data_lake.test.test_hawk import (
     hawk_auth_sender,
     test_url,
 )
