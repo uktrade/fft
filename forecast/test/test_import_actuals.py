@@ -550,6 +550,75 @@ class ImportActualsTest(BaseTestCase):
                 2019,
             )
 
+    def test_check_trial_balance_format_jan(self):
+        # The year on the trial balance is the calendar year,
+        # and the upload year is the financial year
+        # They don't match in Jan, Feb, March
+        upload_month = 1
+        fake_work_sheet = FakeWorkSheet()
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
+        fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2020, upload_month, 1))
+        # wrong month
+        self.assertTrue(
+            check_trial_balance_format(
+                fake_work_sheet,
+                upload_month,
+                2019,
+            )
+        )
+
+    def test_check_trial_balance_format_dec(self):
+        upload_month = 12
+        fake_work_sheet = FakeWorkSheet()
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
+        fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2019, upload_month, 1))
+        # wrong month
+        self.assertTrue(
+            check_trial_balance_format(
+                fake_work_sheet,
+                upload_month,
+                2019,
+            )
+        )
+
+    def test_check_trial_balance_format_feb(self):
+        # The year on the trial balance is the calendar year,
+        # and the upload year is the financial year
+        # They don't match in Jan, Feb, March
+        upload_month = 2
+        fake_work_sheet = FakeWorkSheet()
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
+        fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2020, upload_month, 1))
+        # wrong month
+        self.assertTrue(
+            check_trial_balance_format(
+                fake_work_sheet,
+                upload_month,
+                2019,
+            )
+        )
+
+    def test_check_trial_balance_format_mar(self):
+        # The year on the trial balance is the calendar year,
+        # and the upload year is the financial year
+        # They don't match in Jan, Feb, March
+        upload_month = 3
+        fake_work_sheet = FakeWorkSheet()
+        fake_work_sheet.title = CORRECT_TRIAL_BALANCE_WORKSHEET_NAME
+        fake_work_sheet[TITLE_CELL] = FakeCell(CORRECT_TRIAL_BALANCE_TITLE)
+        fake_work_sheet[MONTH_CELL] = FakeCell(datetime(2020, upload_month, 1))
+        # wrong month
+        self.assertTrue(
+            check_trial_balance_format(
+                fake_work_sheet,
+                upload_month,
+                2019,
+            )
+        )
+
 
 # Set file upload handlers back to default as
 # we need to remove S3 interactions for test purposes
