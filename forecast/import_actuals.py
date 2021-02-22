@@ -117,9 +117,9 @@ def save_trial_balance_row(
         monthlyfigure_obj.save()
 
 
-def check_trial_balance_format(worksheet, period, year):
+def check_trial_balance_format(worksheet, calendar_month_number, financial_year):
     """Check that the file is really the trial
-    balance and it is the correct period"""
+    balance and it is the correct month"""
 
     try:
         if worksheet[TITLE_CELL].value != CORRECT_TRIAL_BALANCE_TITLE:
@@ -138,7 +138,15 @@ def check_trial_balance_format(worksheet, period, year):
 
     try:
         report_date = worksheet[MONTH_CELL].value
-        if report_date.year != year:
+        # The year on the trial balance is the calendar year,
+        # and the upload year is the financial year
+        # They don't match in Jan, Feb, March
+        if calendar_month_number < 4:
+            year_to_check = financial_year + 1
+        else:
+            year_to_check = financial_year
+
+        if report_date.year != year_to_check:
             # wrong date
             raise UploadFileFormatError("File is for wrong year")
     except TypeError:
@@ -151,9 +159,9 @@ def check_trial_balance_format(worksheet, period, year):
             "This file appears to be corrupt and it cannot be read"
         )
 
-    if report_date.month != period:
+    if report_date.month != calendar_month_number:
         # wrong date
-        raise UploadFileFormatError("File is for wrong period")
+        raise UploadFileFormatError("File is for wrong month")
 
     return True
 
