@@ -4,7 +4,6 @@ from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.models import LogEntry
 
-from django.contrib.auth.models import Group
 from django.core.files.uploadhandler import (
     MemoryFileUploadHandler,
     TemporaryFileUploadHandler,
@@ -333,6 +332,3 @@ class AdminArchived(admin.ModelAdmin):
 
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(FinancialYear, FinancialYearAdmin)
-
-# Remove default group administration
-admin.site.unregister(Group)
