@@ -268,6 +268,13 @@ MIN_FORECAST_FIGURE = -10000000000
 AUTHBROKER_ANONYMOUS_PATHS = [
     "/pingdom/ping.xml",
     "/data-lake/forecast/",
+    "/data-lake/hierarchy/",
+    "/data-lake//naturalcode/",
+    "/data-lake//programmecode/",
+    "/data-lake//projectcode/",
+    "/data-lake/analysis1code/",
+    "/data-lake/analysis2code/",
+    "/data-lake/expenditurecategory/",    
 ]
 
 # Hawk
