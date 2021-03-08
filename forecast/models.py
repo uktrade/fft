@@ -32,6 +32,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from costcentre.models import CostCentre
 
 GRAND_TOTAL_ROW = "grand_total"
+MAX_PERIOD_CODE = 15
 
 
 class SubTotalFieldDoesNotExistError(Exception):
@@ -171,9 +172,9 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def month_sublist(self, month):
-        if month > 15:
+        if month > MAX_PERIOD_CODE:
             # needed for displaying previous year outturn
-            month = 15
+            month = MAX_PERIOD_CODE
         return self.period_display_list()[: month]
 
     def actual_month(self):

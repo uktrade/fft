@@ -1,7 +1,7 @@
 from end_of_month.models import (
     EndOfMonthStatus)
 
-from forecast.models import FinancialPeriod
+from forecast.models import MAX_PERIOD_CODE, FinancialPeriod
 
 
 class InvalidPeriodError(Exception):
@@ -23,7 +23,7 @@ def user_has_archive_access(user):
 
 def validate_period_code(period_code, **options):
     period_code = int(period_code)
-    if period_code > 15 or period_code < 1:
+    if period_code > MAX_PERIOD_CODE or period_code < 1:
         raise InvalidPeriodError()
     current_end_of_month_status = EndOfMonthStatus.objects.filter(
         archived_period__financial_period_code=period_code
