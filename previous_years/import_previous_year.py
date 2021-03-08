@@ -3,21 +3,11 @@ import logging
 
 from django.db import connection
 
-from chartofaccountDIT.models import (
-    ArchivedAnalysis1,
-    ArchivedAnalysis2,
-    ArchivedNaturalCode,
-    ArchivedProgrammeCode,
-    ArchivedProjectCode,
-)
-
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
 
-from costcentre.models import ArchivedCostCentre
 
 from forecast.utils.import_helpers import (
-    CheckFinancialCode,
     UploadFileDataError,
     UploadFileFormatError,
     check_header,
@@ -25,12 +15,12 @@ from forecast.utils.import_helpers import (
 )
 
 from previous_years.models import (
-    ArchivedFinancialCode,
     ArchivedForecastData,
     ArchivedForecastDataUpload,
 )
 from previous_years.utils import (
     ArchiveYearError,
+    CheckArchivedFinancialCode,
     validate_year_for_archiving_actuals,
 )
 
@@ -73,73 +63,6 @@ ANALYSIS2_HEADER = "analysis2"
 VALID_WS_NAME = "Outturn"
 
 logger = logging.getLogger(__name__)
-
-
-class CheckArchivedFinancialCode(CheckFinancialCode):
-    """Uses the logic in CheckFinancialCode, but extract
-    the chart of account from the archived tables"""
-
-    def __init__(self, financial_year, file_upload):
-        self.cost_centre_model = ArchivedCostCentre
-        self.programme_code_model = ArchivedProgrammeCode
-        self.analysis1_model = ArchivedAnalysis1
-        self.analysis2_model = ArchivedAnalysis2
-        self.project_code_model = ArchivedProjectCode
-        self.natural_code_model = ArchivedNaturalCode
-        self.financial_year = financial_year
-        super().__init__(file_upload)
-
-    def get_chart_of_account_object(self, m, value):
-        msg = ""
-        try:
-            field_name = m.chart_of_account_code_name
-            kwargs = {}
-            kwargs[field_name] = value
-            kwargs["financial_year_id"] = self.financial_year
-            obj = m.objects.get(**kwargs)
-        except m.DoesNotExist:
-            msg = f'{field_name} "{value}" does not exist.\n'
-            obj = None
-        except ValueError:
-            msg = f'{field_name} "{value}" is the wrong type.\n'
-            obj = None
-        return obj, msg
-
-    def get_info_tuple(self, model, pk, make_active=True):
-        status = self.IGNORE
-        obj, msg = self.get_chart_of_account_object(model, pk)
-        if not obj:
-            status = self.CODE_ERROR
-        else:
-            if obj.active:
-                status = self.CODE_OK
-                msg = ""
-            else:
-                if make_active:
-                    obj.active = True
-                    obj.save()
-                    status = self.CODE_WARNING
-                    msg = (
-                        f'{(model.chart_of_account_code_name)} "{pk}" '
-                        f"added to the approved list. \n"
-                    )
-        info_tuple = (obj, status, msg)
-        return info_tuple
-
-    def get_financial_code(self):
-        if self.error_found:
-            return None
-        financial_code_obj, created = ArchivedFinancialCode.objects.get_or_create(
-            programme=self.programme_obj,
-            cost_centre=self.cc_obj,
-            natural_account_code=self.nac_obj,
-            analysis1_code=self.analysis1_obj,
-            analysis2_code=self.analysis2_obj,
-            project_code=self.project_obj,
-            financial_year_id=self.financial_year,
-        )
-        financial_code_obj.save()
-        return financial_code_obj
 
 
 def copy_uploaded_previous_year(year):

@@ -246,7 +246,6 @@ class FinancialPeriod(BaseModel):
 class FinancialCodeAbstract(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
     class Meta:
-
         abstract = True
         # Several constraints required, to cover all the permutations of
         # fields that can be Null
@@ -691,11 +690,13 @@ class DisplaySubTotalManager(models.Manager):
             query_key = f'{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}'  # noqa
             key_slug = slugify(query_key)
             cache_key = hashlib.md5(str.encode(key_slug)).hexdigest()
+            try:
+                raw_data = cache.get(cache_key)
 
-            raw_data = cache.get(cache_key)
-
-            if raw_data:
-                return raw_data
+                if raw_data:
+                    return raw_data
+            except:     # noqa E722
+                pass
 
             raw_data = (
                 self.get_queryset()
@@ -709,11 +710,14 @@ class DisplaySubTotalManager(models.Manager):
             )
             # 7 day cache period
             cache_invalidation_time = 7 * 24 * 60 * 60
-            cache.set(
-                cache_key,
-                raw_data,
-                cache_invalidation_time,
-            )
+            try:
+                cache.set(
+                    cache_key,
+                    raw_data,
+                    cache_invalidation_time,
+                )
+            except:     # noqa E722
+                pass
 
         return raw_data
 
