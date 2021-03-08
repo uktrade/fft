@@ -5,6 +5,8 @@ from end_of_month.end_of_month_actions import (
     delete_last_end_of_month_archive,
 )
 
+from forecast.models import MAX_PERIOD_CODE
+
 
 class Command(BaseCommand):
     help = (
@@ -17,8 +19,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         period_code = options["period"]
-        if period_code > 15 or period_code < 0:
-            self.stdout.write(self.style.ERROR("Valid Period is between 1 and 15."))
+        if period_code > MAX_PERIOD_CODE or period_code < 0:
+            self.stdout.write(
+                self.style.ERROR("Valid Period is between 0 and MAX_PERIOD_CODE.")
+            )
             return
 
         if period_code:
