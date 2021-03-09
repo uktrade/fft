@@ -65,7 +65,7 @@ VALID_WS_NAME = "Outturn"
 logger = logging.getLogger(__name__)
 
 
-def copy_uploaded_previous_year(year):
+def copy_previous_year_figure_from_temp_table(year):
     # Now copy the newly uploaded previous_years to the monthly figure table
     ArchivedForecastData.objects.filter(financial_year=year,).delete()
     sql_insert = (
@@ -290,7 +290,7 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
     else:
         # No errors, so we can copy the figures
         # from the temporary table to the previous_years
-        copy_uploaded_previous_year(financial_year)
+        copy_previous_year_figure_from_temp_table(financial_year)
         if check_financial_code.warning_found:
             final_status = FileUpload.PROCESSEDWITHWARNING
 

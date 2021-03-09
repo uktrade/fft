@@ -87,12 +87,12 @@ class ArchiveYearError(Exception):
     pass
 
 
-def validate_year_for_archiving(financial_year):
+def validate_year_for_archiving(financial_year, exclude_current=True):
     current_year = get_current_financial_year()
-    if financial_year == current_year:
+    if exclude_current and financial_year == current_year:
         raise (ArchiveYearError(f"{financial_year} is the current year."))
 
-    if financial_year == current_year:
+    if financial_year > current_year:
         raise (ArchiveYearError(f"{financial_year} is in the future."))
 
     try:
@@ -102,9 +102,9 @@ def validate_year_for_archiving(financial_year):
     return obj
 
 
-def validate_year_for_archiving_actuals(financial_year):
-    obj = validate_year_for_archiving(financial_year)
+def validate_year_for_archiving_actuals(financial_year, exclude_current=True):
 
+    obj = validate_year_for_archiving(financial_year, exclude_current)
     # Checks if there are cost centres archived for this year
     # and all the mandatory members of the Chart of Account
     # check that the chart of account has been archived.

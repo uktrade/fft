@@ -62,7 +62,7 @@ class ArchiveCostCentreTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="CostCentre", year=self.archive_year, stdout=self.out,
+            "archive", "CostCentre", year=self.archive_year, stdout=self.out,
         )
         soup = self.show_historical_view()
         table_rows = soup.find_all("tr", class_="govuk-table__row")
