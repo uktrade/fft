@@ -405,7 +405,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             expenditure_category_value = obj.expenditure_category.grouping_description
             # Find the archived equivalent
             expenditure_category_obj = ArchivedExpenditureCategory.objects.get(
-                grouping_description=obj.expenditure_category.grouping_description
+                grouping_description=obj.expenditure_category.grouping_description,
+                financial_year=year_obj,
             )
             expenditure_category_id = expenditure_category_obj.id
 

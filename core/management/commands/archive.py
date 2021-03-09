@@ -13,6 +13,8 @@ from chartofaccountDIT.archive import (
     archive_project_code,
 )
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from costcentre.archive import archive_cost_centre
 
 from treasuryCOA.archive import archive_treasury_l5
@@ -35,17 +37,22 @@ ARCHIVE_TYPE = {
 class Command(BaseCommand):
     help = (
         "archive element of Chart of Account. "
-        "Allowed types are - All - {} - ".format(" - ".join(ARCHIVE_TYPE.keys()))
+        "Allowed arguments are - All - {} - ".format(" - ".join(ARCHIVE_TYPE.keys()))
     )
+    arg_name = "type"
 
     def add_arguments(self, parser):
-        parser.add_argument("--type")
-        parser.add_argument("--year", type=int, nargs="?", default=2018)
+        parser.add_argument(self.arg_name, nargs="*", default=["All"])
+        parser.add_argument("--year", type=int, nargs="?", default=0)
 
     # pass the year an argument
     def handle(self, *args, **options):
         financial_year = options.get("year")
+        if financial_year == 0:
+            financial_year = get_current_financial_year()
         archive_type = options.get("type")
+        for arg in options[self.arg_name]:
+            archive_type = arg
 
         if archive_type == "All":
             archive_all(financial_year)

@@ -59,6 +59,9 @@ def archive_natural_code(year):
 
 
 def archive_all(year):
+    # Delete the archived NAC first, otherwise they stop the deletion of
+    # expenditure_category and commercial_category
+    ArchivedNaturalCode.objects.filter(financial_year_id=year).delete()
     archive_project_code(year)
     archive_programme_code(year)
     archive_expenditure_category(year)
