@@ -29,6 +29,7 @@ from core.utils.excel_test_helpers import (
     FakeCell,
     FakeWorkSheet
 )
+from core.utils.generic_helpers import make_financial_year_current
 
 from costcentre.models import (
     CostCentre,
@@ -46,7 +47,7 @@ from forecast.import_actuals import (
     TITLE_CELL,
     UploadFileFormatError,
     check_trial_balance_format,
-    copy_actuals_to_monthly_figure,
+    copy_current_year_actuals_to_monthly_figure,
     save_trial_balance_row,
     upload_trial_balance_report,
 )
@@ -82,6 +83,7 @@ class ImportActualsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.test_year = 2019
+        make_financial_year_current(self.test_year)
         self.test_period = 9
 
         self.cost_centre_code = TEST_COST_CENTRE
@@ -428,7 +430,7 @@ class ImportActualsTest(BaseTestCase):
             1,
         )
 
-        copy_actuals_to_monthly_figure(self.period_obj, self.test_year)
+        copy_current_year_actuals_to_monthly_figure(self.period_obj, self.test_year)
         self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre=cost_centre_code_1,
@@ -633,7 +635,7 @@ class UploadActualsTest(BaseTestCase):
         self.client.force_login(self.test_user)
         self.financial_period_code = 1
         self.financial_year_id = 2019
-
+        make_financial_year_current(self.financial_year_id)
         self.file_mock = MagicMock(spec=File)
         self.file_mock.name = 'test.txt'
 

@@ -11,6 +11,7 @@ from end_of_month.models import (
 )
 
 from forecast.models import (
+    MAX_PERIOD_CODE,
     BudgetMonthlyFigure,
     ForecastMonthlyFigure,
 )
@@ -59,8 +60,9 @@ def insert_total_budget_query(archived_status_id, archived_period_id):
 
 
 def get_end_of_month(period_code):
-    if period_code > 15 or period_code < 1:
-        error_msg = f'Invalid period {period_code}: Valid Period is between 1 and 15.'
+    if period_code > MAX_PERIOD_CODE or period_code < 1:
+        error_msg = f'Invalid period {period_code}: ' \
+                    f'Valid Period is between 1 and {MAX_PERIOD_CODE}.'
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthInvalidPeriodError(error_msg)
 
@@ -131,8 +133,9 @@ def end_of_month_archive(period_id):
 
 
 def delete_end_of_month_archive(period_id):
-    if period_id > 15 or period_id < 1:
-        error_msg = f'Invalid period {period_id}: Valid Period is between 1 and 15.'
+    if period_id > MAX_PERIOD_CODE or period_id < 1:
+        error_msg = f'Invalid period {period_id}: ' \
+                    f'Valid Period is between 1 and {MAX_PERIOD_CODE}.'
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthInvalidPeriodError(error_msg)
 

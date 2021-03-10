@@ -311,12 +311,10 @@ class FinancialYearAdmin(admin.ModelAdmin):
     )
 
     def get_readonly_fields(self, request, obj=None):
+        read_list = ["created", "updated", "current", "archived", "archived_at"]
         if obj:
-            return [
-                "financial_year", "created", "updated",
-            ]
-        else:
-            return ["created", "updated"]
+            read_list.append("financial_year")
+        return read_list
 
 
 class AdminArchived(admin.ModelAdmin):

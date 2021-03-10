@@ -14,6 +14,7 @@ from end_of_month.upload_archived_month import (
 )
 
 from forecast.import_csv import WrongChartOFAccountCodeException
+from forecast.models import MAX_PERIOD_CODE
 
 
 class Command(CommandUpload):
@@ -31,13 +32,17 @@ class Command(CommandUpload):
         archive_period = options["archive_period"]
         year = options["financial_year"]
 
-        if period > 15 or period < 1:
-            self.stdout.write(self.style.ERROR("Valid Period is between 1 and 15."))
+        if period > MAX_PERIOD_CODE or period < 1:
+            self.stdout.write(
+                self.style.ERROR("Valid Period is between 1 and {MAX_PERIOD_CODE}.")
+            )
             return
 
-        if archive_period > 15 or archive_period < 1:
+        if archive_period > MAX_PERIOD_CODE or archive_period < 1:
             self.stdout.write(
-                self.style.ERROR("Valid archive Period is between 1 and 15.")
+                self.style.ERROR(
+                    "Valid archive Period is between 1 and MAX_PERIOD_CODE."
+                )
             )
             return
         file_name = self.path_to_upload(path, 'csv')
