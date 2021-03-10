@@ -31,7 +31,7 @@ def get_month_dict():
     identify the period"""
     q = FinancialPeriod.objects.filter(
         period_calendar_code__gt=0,
-        period_calendar_code__lt=15
+        period_calendar_code__lt=13
     ).values(
         "period_short_name"
     )

@@ -2,6 +2,7 @@ from django.db import connection
 
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
+from core.utils.generic_helpers import create_financial_year_display
 
 from forecast.models import (
     BudgetMonthlyFigure,
@@ -105,7 +106,7 @@ def upload_budget_figures(budget_row, year_obj, financialcode_obj, month_dict):
 def upload_budget(worksheet, year, header_dict, file_upload):# noqa
     year_obj, created = FinancialYear.objects.get_or_create(financial_year=year)
     if created:
-        year_obj.financial_year_display = f"{year}/{year - 1999}"
+        year_obj.financial_year_display = create_financial_year_display(year)
         year_obj.save()
 
     forecast_months = get_forecast_month_dict()

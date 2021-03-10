@@ -49,6 +49,17 @@ def get_year_display(year):
         return "Invalid year"
 
 
+def create_financial_year_display(year):
+    if year < 2000:
+        return "Invalid year"
+    return f"{year}/{year - 1999}"
+
+
+def make_financial_year_current(financial_year):
+    FinancialYear.objects.all().update(current=False)
+    FinancialYear.objects.filter(financial_year=financial_year).update(current=True)
+
+
 class GetValidYear:
     regex = r'20\d{2}'
 

@@ -21,7 +21,7 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
         call_command(
-            "archive", type="Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
         )
 
     def test_view_historical_financecategory(self):
