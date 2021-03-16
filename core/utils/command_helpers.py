@@ -49,3 +49,15 @@ class CommandUpload(BaseCommand):
             )
 
         return file_name
+
+
+def get_no_answer():
+    answer = None
+    while not answer or answer not in "yn":
+        answer = input("Do you wish to proceed? [yN] ")
+        if not answer:
+            answer = "n"
+            break
+        else:
+            answer = answer[0].lower()
+    return answer != "y"

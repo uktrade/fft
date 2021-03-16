@@ -112,6 +112,7 @@ def archive_current_year():
         document_file_name="dummy",
         document_type=FileUpload.PREVIOUSYEAR,
         file_location=FileUpload.LOCALFILE,
+        status=FileUpload.PROCESSING
     )
 
     check_financial_code = CheckArchivedFinancialCode(financial_year, file_upload)
