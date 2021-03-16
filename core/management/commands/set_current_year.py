@@ -10,7 +10,9 @@ from core.utils.generic_helpers import create_financial_year_display
 
 
 class Command(BaseCommand):
-    help = "Set the current financial year."
+    help = "Set the current financial year to the year passed as argument.\n" \
+           "If no argument is given, set the current financial year " \
+           "to the current calendar year"
 
     def add_arguments(self, parser):
         parser.add_argument("year", type=int, nargs="?", default=0)

@@ -59,7 +59,7 @@ class Command(BaseCommand):
             archive_cost_centre(financial_year)
             archive_treasury_l5(financial_year)
             self.stdout.write(
-                self.style.SUCCESS("Archived all rows")
+                self.style.SUCCESS("Archived full chart of account.")
             )
         else:
             row = ARCHIVE_TYPE[archive_type](financial_year)
