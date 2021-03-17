@@ -13,7 +13,10 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from core.export_data import export_logentry_iterator
-from core.models import FinancialYear
+from core.models import (
+    CommandLog,
+    FinancialYear,
+)
 from core.utils.export_helpers import (
     export_csv_from_import,
     export_to_csv,
@@ -328,5 +331,39 @@ class AdminArchived(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class CustomLogModelAdmin(AdminReadOnly, AdminExport):
+    # make everything readonly
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            self.readonly_fields = [field.name for field in
+                                    obj.__class__._meta.fields]
+        return self.readonly_fields
+
+    @property
+    def export_func(self):
+        return export_logentry_iterator
+
+    list_filter = ["command_name", "executed_by", "executed_at"]
+
+    search_fields = ["command_name", "executed_by"]
+
+    list_display = [
+        "command_name",
+        "executed_at",
+        "executed_by",
+        "comment",
+    ]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(FinancialYear, FinancialYearAdmin)
+admin.site.register(CommandLog, CustomLogModelAdmin)

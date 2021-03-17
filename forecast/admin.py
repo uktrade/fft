@@ -40,6 +40,7 @@ class FinancialPeriodAdmin(AdminReadOnly):
         "financial_period_code",
         "period_calendar_code",
         "actual_loaded",
+        "actual_loaded_previous_year",
         "display_figure"
     )
 
@@ -51,6 +52,7 @@ class FinancialPeriodAdmin(AdminReadOnly):
                 "financial_period_code",
                 "period_calendar_code",
                 "actual_loaded",
+                "actual_loaded_previous_year",
             ]
 
 

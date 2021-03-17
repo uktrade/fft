@@ -1,7 +1,10 @@
 from django.core.management import call_command
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 
-from core.utils.command_helpers import get_no_answer
+from core.utils.command_helpers import (
+    CommandWithUserCheck,
+    get_no_answer,
+)
 from core.utils.generic_helpers import (
     create_financial_year_display,
     get_current_financial_year,
@@ -9,21 +12,23 @@ from core.utils.generic_helpers import (
 )
 
 
-class Command(BaseCommand):
+class Command(CommandWithUserCheck):
     help = "Run all the operations required to prepare for the new financial year"
+    command_name = __name__
 
     def run_command(self, message, command_name, *arg, **options):
         self.stdout.write(self.style.WARNING(f"{message}..."))
         try:
             call_command(command_name, *arg, **options)
-        except CommandError:
-            full_error_message = f"{message} failed. \n {self.error_message}"
+        except CommandError as ex:
+            full_error_message = f"{message} failed. " \
+                                 f"Ex '{ex}'\nMessage: '{self.error_message}'"
             self.stdout.write(self.style.ERROR(full_error_message))
             raise CommandError(full_error_message)
             return False
         return True
 
-    def handle(self, *args, **options):
+    def handle_user(self, *args, **options):
         current_financial_year = get_current_financial_year()
         current_financial_year_display = get_year_display(current_financial_year)
         new_financial_year = current_financial_year + 1
@@ -59,9 +64,7 @@ class Command(BaseCommand):
             "set_current_year",
         ):
             return
-        if not self.run_command(
-            "Clear actual flags", "set_actual_period", "--clear", 1
-        ):
+        if not self.run_command("Clear actual flags", "actual_new_financial_year"):
             return
 
         self.stdout.write(
