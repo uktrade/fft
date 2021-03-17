@@ -300,9 +300,9 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
                 financial_period_code__lte=period_obj.financial_period_code
             ).update(actual_loaded=True)
         else:
-            # When uploading data for a previous year, all data is actuals
-            # (we cannot forecast for the previous year).
-            # Therefore we don't update the actuals flag.
+            FinancialPeriod.objects.filter(
+                financial_period_code__lte=period_obj.financial_period_code
+            ).update(actual_loaded_previous_year=True)
             copy_previous_year_actuals_to_monthly_figure(period_obj, financial_year)
 
         if check_financial_code.warning_found:
