@@ -11,6 +11,7 @@ from forecast.views.edit_forecast import (
 )
 from forecast.views.export.mi_report_source import (
     export_mi_budget_report,
+    export_mi_previous_year_report,
     export_mi_report,
 )
 from forecast.views.export.oscar_return import export_oscar_report
@@ -201,6 +202,11 @@ urlpatterns = [
     path("download_oscar/", export_oscar_report, name="download_oscar"),
     path(
         "download_mi_report_source/", export_mi_report, name="download_mi_report_source"
+    ),
+    path(
+        "download_previous_year_mi_report_source/",
+        export_mi_previous_year_report,
+        name="download_mi_previous_year_report_source"
     ),
     path("download_mi_budget/", export_mi_budget_report, name="download_mi_budget"),
     path(

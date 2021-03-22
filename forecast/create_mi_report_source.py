@@ -1,9 +1,12 @@
+from core.models import FinancialYear
 from core.utils.export_helpers import export_to_excel
-from core.utils.generic_helpers import today_string
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    today_string,
+)
 
 from forecast.models import (
     BudgetMonthlyFigure,
-    ForecastingDataView,
 )
 from forecast.utils.query_fields import (
     ForecastQueryFields,
@@ -109,8 +112,20 @@ def export_mi_iterator(queryset, fields):
 def create_mi_source_report():
     title = f"MI Report {today_string()}"
     fields = ForecastQueryFields()
-    queryset = ForecastingDataView.view_data.raw_data_annotated(
+    queryset = fields.datamodel.view_data.raw_data_annotated(
         fields.MI_REPORT_DOWNLOAD_COLUMNS
+    )
+    return export_to_excel(queryset, export_mi_iterator, title, fields)
+
+
+def create_mi_previous_year_source_report():
+    previous_year = get_current_financial_year() - 1
+    title = \
+        f"MI {FinancialYear.objects.get(pk=previous_year).financial_year_display} " \
+        f"Report {today_string()}"
+    fields = ForecastQueryFields(previous_year)
+    queryset = fields.datamodel.view_data.raw_data_annotated(
+        fields.MI_REPORT_DOWNLOAD_COLUMNS, year=previous_year
     )
     return export_to_excel(queryset, export_mi_iterator, title, fields)
 
