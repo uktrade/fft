@@ -4,7 +4,7 @@ import factory
 
 from faker import Faker
 
-from core.models import EventLog, FinancialYear
+from core.models import FinancialYear
 
 fake = Faker()
 
@@ -23,12 +23,3 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     email = fake.email()
     password = factory.PostGenerationMethodCall("set_password", "test_password")
-
-
-class EventLogFactory(factory.DjangoModelFactory):
-    """
-    Define EventLog Factory
-    """
-
-    class Meta:
-        model = EventLog

@@ -50,7 +50,7 @@ class ArchiveAnalysis1Test(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="Analysis1", year=self.archive_year, stdout=self.out,
+            "archive", "Analysis1", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -65,11 +65,11 @@ class ArchiveAnalysis1Test(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", type="Analysis1", year=self.archive_year, stdout=self.out,
+            "archive", "Analysis1", year=self.archive_year, stdout=self.out,
         )
 
         call_command(
-            "archive", type="Analysis1", year=self.archive_year + 1, stdout=self.out,
+            "archive", "Analysis1", year=self.archive_year + 1, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -116,7 +116,7 @@ class ArchiveAnalysis2Test(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="Analysis2", year=self.archive_year, stdout=self.out,
+            "archive", "Analysis2", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -131,11 +131,11 @@ class ArchiveAnalysis2Test(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", type="Analysis2", year=self.archive_year, stdout=self.out,
+            "archive", "Analysis2", year=self.archive_year, stdout=self.out,
         )
 
         call_command(
-            "archive", type="Analysis2", year=self.archive_year + 1, stdout=self.out,
+            "archive", "Analysis2", year=self.archive_year + 1, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -185,7 +185,7 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -200,12 +200,12 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", type="Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
         )
 
         call_command(
             "archive",
-            type="Expenditure_Cat",
+            "Expenditure_Cat",
             year=self.archive_year + 1,
             stdout=self.out,
         )
@@ -257,7 +257,7 @@ class ArchiveCommercialCategoryTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="Commercial_Cat", year=self.archive_year, stdout=self.out,
+            "archive", "Commercial_Cat", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -272,14 +272,11 @@ class ArchiveCommercialCategoryTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", type="Commercial_Cat", year=self.archive_year, stdout=self.out,
+            "archive", "Commercial_Cat", year=self.archive_year, stdout=self.out,
         )
 
         call_command(
-            "archive",
-            type="Commercial_Cat",
-            year=self.archive_year + 1,
-            stdout=self.out,
+            "archive", "Commercial_Cat", year=self.archive_year + 1, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -329,7 +326,7 @@ class ArchiveProgrammeTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", type="Programmes", year=self.archive_year, stdout=self.out,
+            "archive", "Programmes", year=self.archive_year, stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -345,11 +342,11 @@ class ArchiveProgrammeTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", type="Programmes", year=self.archive_year, stdout=self.out,
+            "archive", "Programmes", year=self.archive_year, stdout=self.out,
         )
 
         call_command(
-            "archive", type="Programmes", year=self.archive_year + 1, stdout=self.out,
+            "archive", "Programmes", year=self.archive_year + 1, stdout=self.out,
         )
 
         soup = self.show_historical_view()

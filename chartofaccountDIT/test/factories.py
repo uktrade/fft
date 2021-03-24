@@ -102,12 +102,15 @@ class CommercialCategoryFactory(factory.DjangoModelFactory):
     """
     Define CommercialCategory Factory
     """
+    active = True
 
     class Meta:
         model = CommercialCategory
 
 
 class HistoricalCommercialCategoryFactory(factory.DjangoModelFactory):
+    active = True
+
     class Meta:
         model = ArchivedCommercialCategory
 
@@ -116,7 +119,6 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
     """
     Define NaturalCode Factory
     """
-
     class Meta:
         model = NaturalCode
         django_get_or_create = ('natural_account_code',)
@@ -179,12 +181,16 @@ class InterEntityFactory(factory.DjangoModelFactory):
     """
     Define InterEntity Factory
     """
+    active = True
+    l1_value = factory.SubFactory(InterEntityL1Factory)
 
     class Meta:
         model = InterEntity
 
 
 class HistoricalInterEntityFactory(factory.DjangoModelFactory):
+    active = True
+
     class Meta:
         model = ArchivedInterEntity
 
@@ -219,6 +225,9 @@ class FCOMappingFactory(factory.DjangoModelFactory):
     """
     Define FCOMapping Factory
     """
+    fco_code = 123456
+    active = True
+    account_L6_code_fk = factory.SubFactory(NaturalCodeFactory)
 
     class Meta:
         model = FCOMapping
@@ -228,5 +237,9 @@ class HistoricalFCOMappingFactory(factory.DjangoModelFactory):
     """
     Define ArchivedFCOMapping Factory
     """
+    fco_code = 7891011
+    account_L6_code = 98765432
+    active = True
+
     class Meta:
         model = ArchivedFCOMapping

@@ -17,13 +17,15 @@ class FileDownload(BaseModel):
         (ERROR, 'Error'),
     ]
 
-    OSCAR_RETURN = 'Oscar'
+    OSCAR_RETURN = 'Oscar Return'
     MI_REPORT = 'Forecast'
+    MI_PREVIOUS_YEAR_REPORT = 'Previous Year Actuals'
     MI_BUDGET_REPORT = 'Budget'
 
     DOWNLOAD_TYPE_CHOICES = [
         (OSCAR_RETURN, 'OSCAR Return'),
         (MI_REPORT, 'Forecast'),
+        (MI_PREVIOUS_YEAR_REPORT, 'Previous Year Forecast/Actuals'),
         (MI_BUDGET_REPORT, 'Budget'),
     ]
 

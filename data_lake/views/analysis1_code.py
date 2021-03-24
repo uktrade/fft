@@ -8,7 +8,7 @@ from chartofaccountDIT.models import (
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
-class Analysis1CodeViewSet(DataLakeViewSet,):
+class Analysis1CodeViewSet(DataLakeViewSet):
     filename = "contract_code"
     title_list = [
         "Contract Code",

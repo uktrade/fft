@@ -32,6 +32,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from costcentre.models import CostCentre
 
 GRAND_TOTAL_ROW = "grand_total"
+MAX_PERIOD_CODE = 15
 
 
 class SubTotalFieldDoesNotExistError(Exception):
@@ -171,23 +172,38 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def month_sublist(self, month):
-        if month > 15:
+        if month > MAX_PERIOD_CODE:
             # needed for displaying previous year outturn
-            month = 15
+            month = MAX_PERIOD_CODE
         return self.period_display_list()[: month]
 
     def actual_month(self):
         # use the Max to protect us from the situation of
         # non contiguous actual month.
-        m = (
+        aggregate_queryset = (
             self.get_queryset()
             .filter(actual_loaded=True)
+            .aggregate(Max("financial_period_code"))
+        )
+        return aggregate_queryset["financial_period_code__max"] or 0
+
+    def actual_month_previous_year(self):
+        # use the Max to protect us from the situation of
+        # non contiguous actual month.
+        m = (
+            self.get_queryset()
+            .filter(actual_loaded_previous_year=True)
             .aggregate(Max("financial_period_code"))
         )
         return m["financial_period_code__max"] or 0
 
     def actual_month_list(self):
         return self.month_sublist(self.actual_month())
+
+    def actual_month_previous_year_list(self):
+        # use period_display_all_list because adjustement (ADJxx) periods
+        # must be included when showing  previous year data
+        return self.period_display_all_list()[: self.actual_month_previous_year()]
 
     def periods(self):
         return (
@@ -231,6 +247,7 @@ class FinancialPeriod(BaseModel):
     # the "actuals" are manually uploaded, so it is not
     # guaranteed on which date they are uploaded
     actual_loaded = models.BooleanField(default=False)
+    actual_loaded_previous_year = models.BooleanField(default=False)
     display_figure = models.BooleanField(default=True)
 
     objects = models.Manager()  # The default manager.
@@ -246,7 +263,6 @@ class FinancialPeriod(BaseModel):
 class FinancialCodeAbstract(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
     class Meta:
-
         abstract = True
         # Several constraints required, to cover all the permutations of
         # fields that can be Null
@@ -691,11 +707,13 @@ class DisplaySubTotalManager(models.Manager):
             query_key = f'{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}'  # noqa
             key_slug = slugify(query_key)
             cache_key = hashlib.md5(str.encode(key_slug)).hexdigest()
+            try:
+                raw_data = cache.get(cache_key)
 
-            raw_data = cache.get(cache_key)
-
-            if raw_data:
-                return raw_data
+                if raw_data:
+                    return raw_data
+            except:     # noqa E722
+                pass
 
             raw_data = (
                 self.get_queryset()
@@ -709,11 +727,14 @@ class DisplaySubTotalManager(models.Manager):
             )
             # 7 day cache period
             cache_invalidation_time = 7 * 24 * 60 * 60
-            cache.set(
-                cache_key,
-                raw_data,
-                cache_invalidation_time,
-            )
+            try:
+                cache.set(
+                    cache_key,
+                    raw_data,
+                    cache_invalidation_time,
+                )
+            except:     # noqa E722
+                pass
 
         return raw_data
 
