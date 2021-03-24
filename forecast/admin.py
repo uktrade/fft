@@ -40,15 +40,19 @@ class FinancialPeriodAdmin(AdminReadOnly):
         "financial_period_code",
         "period_calendar_code",
         "actual_loaded",
+        "actual_loaded_previous_year",
         "display_figure"
     )
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return [
+                "period_short_name",
                 "period_long_name",
                 "financial_period_code",
                 "period_calendar_code",
+                "actual_loaded",
+                "actual_loaded_previous_year",
             ]
 
 

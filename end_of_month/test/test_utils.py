@@ -99,12 +99,18 @@ class MonthlyFigureSetup:
         self.financial_code_obj.save
 
     def setup_forecast(self):
+        self.value_dict = {}
         for period in range(1, 16):
-            self.monthly_figure_create(period, period * 100000)
+            amount = period * 100000
+            self.value_dict[period] = amount
+            self.monthly_figure_create(period, amount)
 
     def setup_budget(self):
+        self.total_budget = 0
         for period in range(1, 16):
-            self.monthly_figure_create(period, period * 100000, "Budget")
+            amount = period * 100000
+            self.total_budget += amount
+            self.monthly_figure_create(period, amount, "Budget")
 
 
 class SetFullYearArchive(MonthlyFigureSetup):

@@ -8,7 +8,7 @@ from costcentre.models import (
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
-class HierarchyViewSet(DataLakeViewSet,):
+class HierarchyViewSet(DataLakeViewSet):
     filename = "hierarchy"
     title_list = [
         "Group No.",
