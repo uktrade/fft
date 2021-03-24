@@ -2,6 +2,7 @@ from django.urls import path
 
 from data_lake.views.forecast import ForecastViewSet
 
+from data_lake.views.commercial_category import CommercialCategoryViewSet
 from data_lake.views.cost_centre_hierarchy import HierarchyViewSet
 from data_lake.views.natural_code import NaturalCodeViewSet
 from data_lake.views.programme_code import ProgrammeCodeViewSet
@@ -9,8 +10,26 @@ from data_lake.views.project_code import ProjectCodeViewSet
 from data_lake.views.analysis1_code import Analysis1CodeViewSet
 from data_lake.views.analysis2_code import Analysis2CodeViewSet
 from data_lake.views.expenditure_category import ExpenditureCategoryViewSet
+from data_lake.views.fco_mapping import FCOMappingViewSet
+from data_lake.views.inter_entity import InterEntityViewSet
+
 
 urlpatterns = [
+    path(
+        "interentity/",
+        InterEntityViewSet.as_view({"get": "list"}),
+        name="data_lake_inter_entity",
+    ),
+    path(
+        "fcomapping/",
+        FCOMappingViewSet.as_view({"get": "list"}),
+        name="data_lake_fco_mapping",
+    ),
+    path(
+        "commercialcategory/",
+        CommercialCategoryViewSet.as_view({"get": "list"}),
+        name="data_lake_commercial_category",
+    ),
     path(
         "forecast/",
         ForecastViewSet.as_view({"get": "list"}),

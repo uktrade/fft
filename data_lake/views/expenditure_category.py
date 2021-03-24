@@ -8,7 +8,7 @@ from chartofaccountDIT.models import (
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
-class ExpenditureCategoryViewSet(DataLakeViewSet,):
+class ExpenditureCategoryViewSet(DataLakeViewSet):
     filename = "budget_category"
     title_list = [
         "Budget Grouping",

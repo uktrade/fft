@@ -8,7 +8,7 @@ from chartofaccountDIT.models import (
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
-class NaturalCodeViewSet(DataLakeViewSet,):
+class NaturalCodeViewSet(DataLakeViewSet):
     filename = "natural_account"
     title_list = [
         "Expenditure Type",
