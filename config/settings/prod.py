@@ -8,6 +8,7 @@ from django_log_formatter_ecs import ECSFormatter
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
+    "django_audit_log_middleware.AuditLogMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS += [
@@ -16,6 +17,7 @@ AUTHENTICATION_BACKENDS += [
 
 INSTALLED_APPS += [
     "elasticapm.contrib.django",
+    "django_audit_log_middleware",
 ]
 
 STATICFILES_DIRS = (
@@ -135,3 +137,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Set anti XSS header
 SECURE_BROWSER_XSS_FILTER = True
+
+# Audit log middleware user field
+AUDIT_LOG_USER_FIELD = "username"

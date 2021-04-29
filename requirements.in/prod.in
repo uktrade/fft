@@ -2,3 +2,4 @@
 
 gevent==20.6.2
 psycogreen==1.0.2
+django-audit-log-middleware
