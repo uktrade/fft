@@ -87,9 +87,9 @@ bash:
 	docker-compose run --rm fido bash
 
 all-requirements:
-	pip-compile --output-file requirements/base.txt requirements.in/base.in
-	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+	docker-compose run --rm fido pip-compile --output-file requirements/base.txt requirements.in/base.in
+	docker-compose run --rm fido pip-compile --output-file requirements/dev.txt requirements.in/dev.in
+	docker-compose run --rm fido pip-compile --output-file requirements/prod.txt requirements.in/prod.in
 
 test:
 	docker-compose run --rm fido python manage.py test $(test)

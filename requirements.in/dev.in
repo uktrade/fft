@@ -13,3 +13,4 @@ behave-django
 pyperclip
 webdriver-manager
 freezegun
+pip-tools>=6.0.1
