@@ -1,5 +1,6 @@
 import logging
 
+from django.core.cache import cache
 from django.db import connection
 
 from previous_years.models import (
@@ -58,3 +59,7 @@ def copy_previous_year_actuals_to_monthly_figure(period_obj, financial_year):
     ArchivedActualUploadMonthlyFigure.objects.filter(
         financial_year=financial_year
     ).delete()
+    # clear the caches, used to store the forecast data for performance reason
+    # otherwise the new data will not appear on the view forecast page until
+    # the cache expires, up to a week!
+    cache.clear()
