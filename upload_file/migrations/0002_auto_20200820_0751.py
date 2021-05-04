@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import s3chunkuploader.fields
 
 
 class Migration(migrations.Migration):
@@ -34,7 +33,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='fileupload',
             name='s3_document_file',
-            field=s3chunkuploader.fields.S3FileField(blank=True, max_length=1000, null=True, upload_to=''),
+            field=models.FileField(blank=True, max_length=1000, null=True, upload_to=''),
         ),
         migrations.AddField(
             model_name='simplehistoryfileupload',

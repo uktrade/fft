@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "adv_cache_tag",
+    "django_chunk_upload_handlers",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -225,7 +226,8 @@ NUM_META_COLS = 8
 
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
-CLAM_AV_URL = env("CLAM_AV_URL", default=None)
+CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+
 GTM_CODE = env("GTM_CODE", default=None)
 
 SETTINGS_EXPORT = [
@@ -257,9 +259,12 @@ AXES_LOGIN_FAILURE_LIMIT = 5
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-# s3chunkuploader
-FILE_UPLOAD_HANDLERS = ('s3chunkuploader.file_handler.S3FileUploadHandler',)
-CLEAN_FILE_NAME = True
+FILE_UPLOAD_HANDLERS = (
+    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+)  # Order is important
+
+CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = False
 
 # Max and min for forecast entry values (in pence)
 MAX_FORECAST_FIGURE = 10000000000
