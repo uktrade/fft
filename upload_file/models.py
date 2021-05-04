@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from s3chunkuploader.fields import S3FileField
+from django_chunk_upload_handlers.clam_av import validate_virus_check_result
 
 from core.metamodels import BaseModel
 
@@ -50,7 +50,12 @@ class FileUpload(BaseModel):
         max_length=100, choices=DOCUMENT_TYPE_CHOICES, default=S3FILE,
     )
 
-    s3_document_file = S3FileField(max_length=1000, null=True, blank=True,)
+    s3_document_file = models.FileField(
+        max_length=1000,
+        null=True,
+        blank=True,
+        validators=[validate_virus_check_result, ],
+    )
 
     document_file_name = models.CharField(max_length=1000, null=True, blank=True,)
 

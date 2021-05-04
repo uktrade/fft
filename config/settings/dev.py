@@ -66,9 +66,6 @@ LOGGING = {
     },
 }
 
-# Use anti virus check on uploaded files
-IGNORE_ANTI_VIRUS = False
-
 # Set async file uploading
 ASYNC_FILE_UPLOAD = True
 

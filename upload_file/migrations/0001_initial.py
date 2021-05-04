@@ -3,7 +3,6 @@
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
-import s3chunkuploader.fields
 import simple_history.models
 
 
@@ -52,7 +51,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('document_type', models.CharField(choices=[('actuals', 'Actuals'), ('budget', 'Budget')], default='actuals', max_length=100)),
-                ('document_file', s3chunkuploader.fields.S3FileField(max_length=1000, upload_to='')),
+                ('document_file', models.FileField(max_length=1000, upload_to='')),
                 ('status', models.CharField(choices=[('unprocessed', 'Unprocessed'), ('antivirus', 'Checking for viruses'), ('processed_error', 'Processed. Not uploaded, error(s) found.'), ('processed_warning', 'Processed. Uploaded, warning(s) found.'), ('processing', 'Processing'), ('parsing', 'Processing after error'), ('processed', 'Processed and uploaded.'), ('error', 'Fatal error.')], default='unprocessed', max_length=100)),
                 ('user_error_message', models.TextField(blank=True, null=True)),
                 ('user_warning_message', models.TextField(blank=True, null=True)),

@@ -99,3 +99,7 @@ pytest:
 
 black:
 	docker-compose run --rm fido black .
+
+superuser:
+	docker-compose run --rm fido python manage.py createsuperuser
+

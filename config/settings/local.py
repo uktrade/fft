@@ -26,8 +26,6 @@ AUTHENTICATION_BACKENDS += [
 
 ASYNC_FILE_UPLOAD = False
 
-IGNORE_ANTI_VIRUS = True
-
 LOG_TO_ELK = env.bool("LOG_TO_ELK", default=False)
 ELK_ADDRESS = env("ELK_ADDRESS", default=None)
 

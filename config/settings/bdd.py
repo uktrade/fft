@@ -18,8 +18,6 @@ SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="selenium-hub")
 
 ASYNC_FILE_UPLOAD = True
 
-IGNORE_ANTI_VIRUS = False
-
 USE_SELENIUM_HUB = env("USE_SELENIUM_HUB", default=True)
 
 AXES_ENABLED = False
