@@ -50,7 +50,6 @@ jobs:
       - run:
           name: Collect static
           command: |
-            . venv/bin/activate
             python manage.py collectstatic --noinput
       - run:
           name: Compile CSS
