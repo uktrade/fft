@@ -35,18 +35,10 @@ jobs:
           command: |
             java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
           background: true
-      - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
       - run:
           name: Install Python deps
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
             pip install -r requirements/dev.txt
-      - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
-          paths:
-            - "venv"
       - run:
           name: Install latest NPM
           command:
@@ -63,22 +55,18 @@ jobs:
       - run:
           name: Compile CSS
           command: |
-            . venv/bin/activate
             python manage.py compilescss
       - run:
           name: Run tests
           command: |
-            . venv/bin/activate
             pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
       - run:
           name: Run BDD tests
           command: |
-            . venv/bin/activate
             python manage.py behave --settings=config.settings.bdd
       - run:
           name: Run Flake8
           command: |
-            . venv/bin/activate
             python -m flake8
 
       - store_artifacts:
