@@ -1,8 +1,12 @@
 version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@1.1
+
 jobs:
   build:
     docker:
-      - image: cimg/python:3.9.5-node-browsers
+      - image: cimg/python:3.9.5-node
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
@@ -12,14 +16,14 @@ jobs:
           SELENIUM_ADDRESS: localhost
           SELENIUM_HOST: localhost
           USE_SELENIUM_HUB: False
-
-      - image: circleci/postgres:9.6.5-alpine-ram
+      - image: circleci/postgres:11-alpine-ram
         environment:
           POSTGRES_USER: ubuntu
           POSTGRES_DB: fido_test
           POSTGRES_PASSWORD: ""
 
     steps:
+      - browser-tools/install-browser-tools      
       - checkout
       - run: mkdir test-reports
       - run:
