@@ -31,6 +31,7 @@ urlpatterns = [
     path("pingdom/", include("pingdom.urls")),
     path("upload/", include("upload_file.urls")),
     path("data-lake/", include("data_lake.urls")),
+    path("split_project/", include("split_project.urls")),
     path("admin/", admin.site.urls),
      # TODO - split below out into develop only?
     path(

@@ -110,7 +110,7 @@ def archive_current_year():
     # It is useful for keeping the log of errors
     file_upload = FileUpload(
         document_file_name="dummy",
-        document_type=FileUpload.PREVIOUSYEAR,
+        document_type=FileUpload.PREVIOUS_YEAR,
         file_location=FileUpload.LOCALFILE,
         status=FileUpload.PROCESSING
     )

@@ -14,7 +14,7 @@ from forecast.models import (
 from forecast.utils.import_helpers import (
     CheckFinancialCode,
     UploadFileFormatError,
-    sql_for_data_copy,
+    sql_for_actual_copy,
     validate_excel_file,
 )
 
@@ -28,6 +28,8 @@ from previous_years.import_actuals import (
 from previous_years.models import (
     ArchivedActualUploadMonthlyFigure,
 )
+
+from split_project.split_figure import handle_split_project
 
 from upload_file.models import FileUpload
 from upload_file.utils import (
@@ -69,9 +71,8 @@ def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
         financial_year=financial_year,
         financial_period=period_obj,
         archived_status__isnull=True,
-    ).update(amount=0, starting_amount=0)
-    sql_update, sql_insert = sql_for_data_copy(
-        FileUpload.ACTUALS,
+    ).update(amount=0, starting_amount=0, oracle_amount=0)
+    sql_update, sql_insert = sql_for_actual_copy(
         period_obj.pk,
         financial_year
     )
@@ -83,12 +84,16 @@ def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
         financial_period=period_obj,
         amount=0,
         starting_amount=0,
+        oracle_amount=0,
         archived_status__isnull=True,
     ).delete()
 
     ActualUploadMonthlyFigure.objects.filter(
         financial_year=financial_year, financial_period=period_obj
     ).delete()
+
+    # See if the actuals should be split to different projects
+    handle_split_project(period_obj.financial_period_code)
 
 
 def save_trial_balance_row(
@@ -139,7 +144,7 @@ def save_trial_balance_row(
             monthlyfigure_obj.amount = value * 100
         else:
             monthlyfigure_obj.amount += value * 100
-
+        monthlyfigure_obj.oracle_amount = monthlyfigure_obj.amount
         monthlyfigure_obj.save()
 
 

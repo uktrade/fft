@@ -37,6 +37,17 @@ class ArchivedPeriodManager(models.Manager):
             .order_by("-archived_period__financial_period_code")
         )
 
+    def not_archived_period_list(self):
+        return list(
+            super()
+            .get_queryset()
+            .filter(archived=False)
+            .values(
+                "archived_period",
+            )
+            .order_by("archived_period__financial_period_code")
+        )
+
 
 class EndOfMonthStatus(BaseModel):
     archived = models.BooleanField(default=False)

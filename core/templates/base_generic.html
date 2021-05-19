@@ -172,6 +172,16 @@
                         </li>
                     {% endif %}
                 {% endif %}
+                {% has_project_percentage_permission user as has_project_percentage_permission %}
+                {% if has_project_percentage_permission == True %}
+                    <li class="internal-header__navigation__item
+                    {% if request.path == '/split_project/project_percentage/' %}govuk-header__navigation-item--active{% endif %}">
+                        <a class="internal-header__navigation__item__link"
+                           href="/split_project/project_percentage/">
+                            Project Percentages
+                        </a>
+                    </li>
+                {% endif %}
 
                 {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
                 {% if has_end_of_month_archive_permissions == True %}

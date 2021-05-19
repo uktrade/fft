@@ -1,21 +1,23 @@
-from django.contrib.admin.widgets import AutocompleteSelect
+from django import forms
+from django.forms.widgets import (
+    Textarea,
+    Select,
+    CheckboxInput,
+    TextInput,
+    EmailInput
+)
 
 
-class FormAutocompleteSelect(AutocompleteSelect):
-    """Use the admin autocomplete class in a form,
-    by passing the name of the model to use in
-    the auto complete dropdown.
-    Unfortunately, it only works for people with Admin access"""
-
-    class admin_site:
-        pass
-
-    class rel:
-        pass
-
-    def __init__(self, model, **kwargs):
-        self.admin_site.name = "admin"
-        self.rel.model = model
-        super(FormAutocompleteSelect, self).__init__(
-            self.rel, self.admin_site, **kwargs
-        )
+class GovFormattedModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(forms.ModelForm, self).__init__(*args, **kwargs)
+        for field in self.fields.items():
+            widget = field[1].widget
+            if isinstance(widget, Textarea):
+                widget.attrs.update({'class': 'govuk-textarea'})
+            elif isinstance(widget, Select):
+                widget.attrs.update({'class': 'govuk-select'})
+            elif isinstance(widget, CheckboxInput):
+                widget.attrs.update({'class': 'govuk-checkboxes__input'})
+            elif isinstance(widget, TextInput) or isinstance(widget, EmailInput):
+                widget.attrs.update({'class': 'govuk-input'})

@@ -68,6 +68,7 @@ def monthly_figures_create():
                         financial_period=period,
                         financial_code=financial_code,
                         amount=monthly_amount,
+                        starting_amount=monthly_amount,
                     )
                     monthly_amount += 10
                     BudgetMonthlyFigure.objects.create(
@@ -78,11 +79,15 @@ def monthly_figures_create():
                     )
                     budget_amount += 1
 
-    for period_id in range(1, 3):
-        end_of_month_archive(period_id)
-        actual = FinancialPeriod.objects.get(financial_period_code=period_id)
-        actual.actual_loaded = True
-        actual.save()
+    # Set the system with 1 months archived
+    end_of_month_archive(1)
+    actual = FinancialPeriod.objects.get(financial_period_code=1)
+    actual.actual_loaded = True
+    actual.save()
+    # and 2 months with actuals
+    actual = FinancialPeriod.objects.get(financial_period_code=2)
+    actual.actual_loaded = True
+    actual.save()
 
 
 class Command(BaseCommand):

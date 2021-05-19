@@ -22,6 +22,15 @@ from forecast.utils.view_header_definition import (
 )
 
 
+def get_obj_value(obj, name):
+    value = 0
+    if name in obj:
+        value = obj[name]
+        if value is None:
+            value = 0
+    return value
+
+
 def format_numbers(ws, row, start):
     for c in range(start, start + 16):
         ws.cell(column=c, row=row).number_format = "#,##0.00"

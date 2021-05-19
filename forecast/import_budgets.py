@@ -14,7 +14,7 @@ from forecast.utils.import_helpers import (
     UploadFileFormatError,
     check_header,
     get_forecast_month_dict,
-    sql_for_data_copy,
+    sql_for_budget_copy,
     validate_excel_file,
 )
 
@@ -54,9 +54,7 @@ def copy_uploaded_budget(year, month_dict):
             financial_period=period_obj,
             archived_status__isnull=True,
         ).update(amount=0, starting_amount=0)
-        sql_update, sql_insert = sql_for_data_copy(
-            FileUpload.BUDGET, period_obj.pk, year
-        )
+        sql_update, sql_insert = sql_for_budget_copy(period_obj.pk, year)
         with connection.cursor() as cursor:
             cursor.execute(sql_insert)
             cursor.execute(sql_update)

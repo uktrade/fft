@@ -17,17 +17,18 @@ from upload_file.utils import user_has_upload_permission
 logger = logging.getLogger(__name__)
 
 
-class UploadActualsView(UserPassesTestMixin, FormView):
+class UploadViewBase(UserPassesTestMixin, FormView):
     template_name = "forecast/file_upload.html"
-    form_class = UploadActualsForm
-    success_url = reverse_lazy("uploaded_files")
 
+    # form_class = UploadActualsForm
+    # success_url = reverse_lazy("uploaded_files")
+    # context = "Upload Actuals"
     def test_func(self):
         return user_has_upload_permission(self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["section_name"] = "Upload Actuals"
+        context["section_name"] = self.context
         return context
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +52,7 @@ class UploadActualsView(UserPassesTestMixin, FormView):
             file_upload = FileUpload(
                 s3_document_file=s3_file_name,
                 uploading_user=request.user,
-                document_type=FileUpload.ACTUALS,
+                document_type=self.upload_type,
             )
             file_upload.save()
 
@@ -60,64 +61,34 @@ class UploadActualsView(UserPassesTestMixin, FormView):
             # Process file async
             if settings.ASYNC_FILE_UPLOAD:
                 logger.info("Using worker to upload file")
-                process_uploaded_file.delay(
-                    data['period'].period_calendar_code,
-                    data['year'].financial_year,
-                )
+                args = self.get_args(data)
+                process_uploaded_file.delay(*args)
             else:
-                process_uploaded_file(
-                    data['period'].period_calendar_code,
-                    data['year'].financial_year,
-                )
+                process_uploaded_file(*args)
 
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
 
-class UploadBudgetView(UserPassesTestMixin, FormView):
-    template_name = "forecast/file_upload.html"
+class UploadActualsView(UploadViewBase):
+    form_class = UploadActualsForm
+    success_url = reverse_lazy("uploaded_files")
+    context = "Upload Actuals"
+    upload_type = FileUpload.ACTUALS
+
+    def get_args(data):
+        return [data['period'].period_calendar_code,
+                data['year'].financial_year,
+                ]
+
+
+class UploadBudgetView(UploadViewBase):
     form_class = UploadBudgetsForm
     success_url = reverse_lazy("uploaded_files")
 
-    def test_func(self):
-        return user_has_upload_permission(self.request.user)
+    context = "Upload Budgets"
+    upload_type = FileUpload.BUDGET
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["section_name"] = "Upload Budgets"
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-
-        if form.is_valid():
-            data = form.cleaned_data
-
-            # When using a model form, you must use the
-            # name attribute of the file rather than
-            # passing the request file var directly as this is the
-            # required when using the chunk uploader project
-            s3_file_name = request.FILES['file'].name
-
-            file_upload = FileUpload(
-                s3_document_file=s3_file_name,
-                uploading_user=request.user,
-                document_type=FileUpload.BUDGET,
-            )
-            file_upload.save()
-            # Process file async
-
-            if settings.ASYNC_FILE_UPLOAD:
-                process_uploaded_file.delay(
-                    data['year'].financial_year,
-                )
-            else:
-                process_uploaded_file(
-                    data['year'].financial_year,
-                )
-
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+    def get_args(data):
+        return [data['year'].financial_year, ]

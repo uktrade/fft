@@ -123,7 +123,7 @@ class ImportPreviousYearForecastTest(TestCase):
     def test_upload_wrong(self):
         file_upload_obj = FileUpload(
             document_file_name=self.excel_file_name,
-            document_type=FileUpload.PREVIOUSYEAR,
+            document_type=FileUpload.PREVIOUS_YEAR,
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
@@ -138,7 +138,7 @@ class ImportPreviousYearForecastTest(TestCase):
 
         file_upload_obj = FileUpload(
             document_file_name=self.excel_file_name,
-            document_type=FileUpload.PREVIOUSYEAR,
+            document_type=FileUpload.PREVIOUS_YEAR,
             file_location=FileUpload.LOCALFILE,
         )
         financial_year_obj = FinancialYear.objects.get(pk=self.archived_year)

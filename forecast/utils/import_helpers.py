@@ -37,21 +37,12 @@ ANALYSIS2_CODE_LENGTH = 5
 PROJECT_CODE_LENGTH = 4
 
 
-def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
-    if data_type == FileUpload.ACTUALS:
-        temp_data_file = "forecast_actualuploadmonthlyfigure"
-        target = "forecast_forecastmonthlyfigure"
-    else:
-        if data_type == FileUpload.BUDGET:
-            temp_data_file = "forecast_budgetuploadmonthlyfigure"
-            target = "forecast_budgetmonthlyfigure"
-        else:
-            raise UploadFileDataError("Unknown upload type.")
-
+def sql_for_actual_copy(financial_period_id, financial_year_id):
     sql_update = (
-        f"UPDATE {target} t "
-        f"SET  updated=now(), amount=u.amount, starting_amount=u.amount	"
-        f"FROM {temp_data_file} u "
+        f"UPDATE forecast_forecastmonthlyfigure t "
+        f"SET  updated=now(), "
+        f"amount=u.amount, starting_amount=u.amount, oracle_amount=u.oracle_amount "
+        f"FROM forecast_actualuploadmonthlyfigure u "
         f"WHERE  "
         f"t.financial_code_id = u.financial_code_id and "
         f"t.financial_period_id = u.financial_period_id and "
@@ -62,23 +53,57 @@ def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
     )
 
     sql_insert = (
-        f"INSERT INTO {target}(created, "
-        f"updated, amount, starting_amount, financial_code_id, "
+        f"INSERT INTO forecast_forecastmonthlyfigure(created, updated, "
+        f"amount, starting_amount, oracle_amount, financial_code_id, "
         f"financial_period_id, financial_year_id) "
-        f"SELECT now(), now(), amount, amount, financial_code_id, "
+        f"SELECT now(), now(), "
+        f"amount, amount, oracle_amount, financial_code_id, "
         f"financial_period_id, financial_year_id "
-        f"FROM {temp_data_file} "
+        f"FROM forecast_actualuploadmonthlyfigure "
         f"WHERE "
         f"financial_period_id = {financial_period_id} and "
         f"financial_year_id = {financial_year_id}  and "
         f" financial_code_id "
         f"not in (select financial_code_id "
-        f"from {target} where "
+        f"from forecast_forecastmonthlyfigure where "
         f"financial_period_id = {financial_period_id} and "
         f"archived_status_id is NULL and "
         f"financial_year_id = {financial_year_id});"
     )
+    return sql_update, sql_insert
 
+
+def sql_for_budget_copy(financial_period_id, financial_year_id):
+    sql_update = (
+        f"UPDATE forecast_budgetmonthlyfigure t "
+        f"SET  updated=now(), amount=u.amount, starting_amount=u.amount	"
+        f"FROM forecast_budgetuploadmonthlyfigure u "
+        f"WHERE  "
+        f"t.financial_code_id = u.financial_code_id and "
+        f"t.financial_period_id = u.financial_period_id and "
+        f"t.financial_year_id = u.financial_year_id and "
+        f"t.financial_period_id = {financial_period_id} and "
+        f"t.archived_status_id is NULL and "
+        f"t.financial_year_id = {financial_year_id};"
+    )
+
+    sql_insert = (
+        f"INSERT INTO forecast_budgetmonthlyfigure(created, "
+        f"updated, amount, starting_amount, financial_code_id, "
+        f"financial_period_id, financial_year_id) "
+        f"SELECT now(), now(), amount, amount, financial_code_id, "
+        f"financial_period_id, financial_year_id "
+        f"FROM forecast_budgetuploadmonthlyfigure "
+        f"WHERE "
+        f"financial_period_id = {financial_period_id} and "
+        f"financial_year_id = {financial_year_id}  and "
+        f" financial_code_id "
+        f"not in (select financial_code_id "
+        f"from forecast_budgetmonthlyfigure where "
+        f"financial_period_id = {financial_period_id} and "
+        f"archived_status_id is NULL and "
+        f"financial_year_id = {financial_year_id});"
+    )
     return sql_update, sql_insert
 
 
@@ -260,6 +285,7 @@ class CheckFinancialCode:
             self.upload_type = "Forecast"
         self.error_found = False
         self.warning_found = False
+        self.non_fatal_error_found = False
         self.nac_dict = {}
         self.cc_dict = {}
         self.prog_dict = {}
@@ -369,7 +395,8 @@ class CheckFinancialCode:
             return None
 
     def validate_project(self, project):
-        if project and int(project):
+        if self.upload_type == FileUpload.PROJECT_PERCENTAGE \
+                or (project and int(project)):
             project_code = get_id(project, PROJECT_CODE_LENGTH)
             return self.get_obj_code(
                 self.project_dict, project_code, self.project_code_model
@@ -429,8 +456,25 @@ class CheckFinancialCode:
         financial_code_obj.save()
         return financial_code_obj
 
-    def record_error(self, row_number, error_message):
-        self.error_found = True
+    def get_financial_code_no_project(self):
+        if self.error_found:
+            return None
+        financial_code_obj, created = FinancialCode.objects.get_or_create(
+            programme=self.programme_obj,
+            cost_centre=self.cc_obj,
+            natural_account_code=self.nac_obj,
+            analysis1_code=self.analysis1_obj,
+            analysis2_code=self.analysis2_obj,
+            project_code=None,
+        )
+        financial_code_obj.save()
+        return financial_code_obj
+
+    def record_error(self, row_number, error_message, fatal=True):
+        if fatal:
+            self.error_found = True
+        else:
+            self.non_fatal_error_found = True
         if self.file_upload:
             set_file_upload_error(
                 self.file_upload,

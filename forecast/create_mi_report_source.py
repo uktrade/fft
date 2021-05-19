@@ -11,15 +11,7 @@ from forecast.models import (
 from forecast.utils.query_fields import (
     ForecastQueryFields,
 )
-
-
-def get_obj_value(obj, name):
-    value = 0
-    if name in obj:
-        value = obj[name]
-        if value is None:
-            value = 0
-    return value
+from forecast.utils.export_helpers import get_obj_value
 
 
 def export_mi_iterator(queryset, fields):

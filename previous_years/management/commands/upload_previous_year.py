@@ -41,7 +41,7 @@ class Command(CommandUpload):
         file_name = self.path_to_upload(path, 'xlsx')
         fileobj = FileUpload(
             document_file_name=file_name,
-            document_type=FileUpload.PREVIOUSYEAR,
+            document_type=FileUpload.PREVIOUS_YEAR,
             file_location=FileUpload.LOCALFILE,
         )
         fileobj.save()
