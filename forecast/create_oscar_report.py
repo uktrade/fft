@@ -51,7 +51,10 @@ def export_oscarreport_iterator(queryset):
                 obj.dec,
                 obj.jan,
                 obj.feb,
-                obj.mar,
+                (obj.mar if obj.mar else 0)
+                + (obj.adj1 if obj.adj1 else 0)
+                + (obj.adj2 if obj.adj2 else 0)
+                + (obj.adj3 if obj.adj3 else 0),
             ]
         except OSCARReturn.account_l5_code.RelatedObjectDoesNotExist:
             pass

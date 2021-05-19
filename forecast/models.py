@@ -948,6 +948,9 @@ class OSCARReturn(models.Model):
     jan = models.BigIntegerField(default=0)
     feb = models.BigIntegerField(default=0)
     mar = models.BigIntegerField(default=0)
+    adj1 = models.BigIntegerField(default=0)
+    adj2 = models.BigIntegerField(default=0)
+    adj3 = models.BigIntegerField(default=0)
 
     class Meta:
         managed = False
