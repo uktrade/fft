@@ -462,7 +462,6 @@ class CheckFinancialCode:
                     f"Row {row_number} error: {self.display_error}",
                     "Upload aborted: Data error.",
                 )
-        return self.error_found
 
     def get_financial_code(self):
         if self.error_found:

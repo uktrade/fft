@@ -18,7 +18,10 @@ from split_project.models import (
     PaySplitCoefficient,
     UploadPaySplitCoefficient,
 )
-from split_project.split_figure import handle_split_project
+from split_project.split_figure import (
+    PAY_CODE,
+    handle_split_project,
+)
 
 from upload_file.utils import (
     set_file_upload_fatal_error,
@@ -48,7 +51,7 @@ MAX_COEFFICIENT = 10000
 
 
 class UploadProjectPercentages:
-    def __init__(self, worksheet, header_dict, file_upload):
+    def __init__(self, worksheet, header_dict, file_upload, expenditure_type):
         self.worksheet = worksheet
         self.cc_index = header_dict[COST_CENTRE_CODE]
         self.nac_index = header_dict[NAC_CODE]
@@ -59,6 +62,8 @@ class UploadProjectPercentages:
         self.file_upload = file_upload
         self.row_to_process = self.worksheet.max_row + 1
         self.create_month_dict(header_dict)
+        self.expenditure_type = expenditure_type
+        self.directorate_code = ""
 
     def create_month_dict(self, header_dict):
         # Not all months are available in the excel file
@@ -87,7 +92,7 @@ class UploadProjectPercentages:
             self.check_financial_code.error_found
             or self.check_financial_code.non_fatal_error_found
         ):
-            raise UploadFileDataError("Error founds. Upload aborted.\n")
+            raise UploadFileDataError("Errors found. Upload aborted.\n")
 
         # No errors, but check that are data to be used
         for month_idx, month_info in self.month_data_found_dict.items():
@@ -223,7 +228,8 @@ class UploadProjectPercentages:
                 percentage_row[self.proj_index].value,
                 self.current_row,
             )
-            self.upload_project_percentage_row(percentage_row)
+            if not self.check_financial_code.error_found:
+                self.upload_project_percentage_row(percentage_row)
         self.final_checks()
 
 
@@ -246,7 +252,7 @@ def upload_project_percentage_from_file(file_upload):
         return
 
     try:
-        upload = UploadProjectPercentages(worksheet, header_dict, file_upload)
+        upload = UploadProjectPercentages(worksheet, header_dict, file_upload, PAY_CODE)
         upload.read_percentages()
         upload.validate_percentages()
         upload.copy_uploaded_percentage()
