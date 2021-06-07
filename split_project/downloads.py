@@ -7,7 +7,7 @@ from split_project.import_project_percentage import (
     EXPECTED_PERCENTAGE_HEADERS,
     WORKSHEET_PROJECT_TITLE
 )
-from split_project.models import ProjectSplitCoefficient
+from split_project.models import PaySplitCoefficient
 
 
 def export_template(queryset):
@@ -65,7 +65,7 @@ def create_percentage_download():
     }
 
     return export_to_excel(
-        ProjectSplitCoefficient.pivot.pivot_data(columns),
+        PaySplitCoefficient.pivot.pivot_data(columns),
         export_percentage,
         title,
         columns,

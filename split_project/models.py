@@ -11,22 +11,19 @@ from forecast.models import FinancialCode, FinancialPeriod
 from previous_years.models import ArchivedFinancialCode
 
 
-class ProjectSplitCoefficientAbstract(BaseModel):
+class PaySplitCoefficientAbstract(BaseModel):
     financial_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
-    )
-    financial_code_from = models.ForeignKey(
-        FinancialCode,
-        on_delete=models.PROTECT,
-        related_name="from_%(app_label)s_%(class)ss",
     )
     financial_code_to = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
         related_name="to_%(app_label)s_%(class)ss",
     )
+    # Added for convenience. Used to calculate the Pay to be split
+    directorate_code = models.CharField("Directorate Code", max_length=6)
     # The coefficient is passed as a percentage with 2 decimal places
     # store it as integer to avoid rounding problems
     split_coefficient = models.IntegerField(
@@ -37,18 +34,12 @@ class ProjectSplitCoefficientAbstract(BaseModel):
         abstract = True
         unique_together = (
             "financial_period",
-            "financial_code_from",
             "financial_code_to",
         )
 
 
-class PreviousYearProjectSplitCoefficient(ProjectSplitCoefficientAbstract):
+class PreviousYearPaySplitCoefficient(PaySplitCoefficientAbstract):
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
-    financial_code_from = models.ForeignKey(
-        ArchivedFinancialCode,
-        on_delete=models.PROTECT,
-        related_name="from_%(app_label)s_%(class)ss",
-    )
     financial_code_to = models.ForeignKey(
         ArchivedFinancialCode,
         on_delete=models.PROTECT,
@@ -59,7 +50,6 @@ class PreviousYearProjectSplitCoefficient(ProjectSplitCoefficientAbstract):
         unique_together = (
             "financial_year",
             "financial_period",
-            "financial_code_from",
             "financial_code_to",
         )
 
@@ -76,7 +66,7 @@ class PivotManager(models.Manager):
         return pivot_data
 
 
-class ProjectSplitCoefficient(ProjectSplitCoefficientAbstract):
+class PaySplitCoefficient(PaySplitCoefficientAbstract):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
     permissions = [
@@ -84,9 +74,8 @@ class ProjectSplitCoefficient(ProjectSplitCoefficientAbstract):
     ]
 
 
-class UploadProjectSplitCoefficient(ProjectSplitCoefficientAbstract):
+class UploadPaySplitCoefficient(PaySplitCoefficientAbstract):
     row_number = models.IntegerField(default=0)
-    pass
 
 
 class TemporaryCalculatedValues(BaseModel):

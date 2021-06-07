@@ -1,12 +1,12 @@
 from django.contrib import admin
 from core.admin import AdminReadOnly
 
-from split_project.models import ProjectSplitCoefficient
+from split_project.models import PaySplitCoefficient
 
 
-class ProjectSplitCoefficientAdmin(AdminReadOnly):
+class PaySplitCoefficientAdmin(AdminReadOnly):
     pass
 
 
 # Register your models here.
-admin.site.register(ProjectSplitCoefficient, ProjectSplitCoefficientAdmin)
+admin.site.register(PaySplitCoefficient, PaySplitCoefficientAdmin)

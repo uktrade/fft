@@ -1,6 +1,7 @@
 from django.db import connection
 from django.db.models import Sum
 
+
 from core.import_csv import xslx_header_to_dict
 
 from end_of_month.models import EndOfMonthStatus
@@ -14,8 +15,8 @@ from forecast.utils.import_helpers import (
 )
 
 from split_project.models import (
-    ProjectSplitCoefficient,
-    UploadProjectSplitCoefficient,
+    PaySplitCoefficient,
+    UploadPaySplitCoefficient,
 )
 from split_project.split_figure import handle_split_project
 
@@ -78,7 +79,7 @@ class UploadProjectPercentages:
             # Display the number of rows processed every 100 rows
             set_file_upload_feedback(
                 self.file_upload,
-                f"Processing row {self.current_row} " f"of {self.rows_to_process}.",
+                f"Processing row {self.current_row} of {self.rows_to_process}.",
             )
 
     def final_checks(self):
@@ -94,35 +95,30 @@ class UploadProjectPercentages:
                 del self.month_dict[month_idx]
         if not self.month_dict:
             raise UploadFileDataError(
-                "Error: no data specified.\n", "Upload aborted: Data error.\n",
+                "Error: no data specified.\nUpload aborted: Data error.\n",
             )
 
     def copy_uploaded_percentage(self):
         for period_obj in self.month_dict.values():
             # Now copy the newly uploaded budgets to the monthly figure table
-            ProjectSplitCoefficient.objects.filter(
-                financial_period=period_obj,
-            ).delete()
+            PaySplitCoefficient.objects.filter(financial_period=period_obj,).delete()
             sql_insert = (
-                f"INSERT INTO public.split_project_projectsplitcoefficient"
+                f"INSERT INTO public.split_project_paysplitcoefficient "
                 f"(created, updated, "
-                f"split_coefficient, financial_code_from_id, "
+                f"split_coefficient, directorate_code, "
                 f"financial_code_to_id, financial_period_id)	"
                 f"SELECT now(), now(), "
-                f"split_coefficient, financial_code_from_id, "
+                f"split_coefficient, directorate_code, "
                 f"financial_code_to_id, financial_period_id "
-                f"FROM public.split_project_uploadprojectsplitcoefficient "
+                f"FROM public.split_project_uploadsplit_project_paysplitcoefficient "
                 f"WHERE financial_period_id = "
                 f"{period_obj.financial_period_code};"
             )
             with connection.cursor() as cursor:
                 cursor.execute(sql_insert)
-            UploadProjectSplitCoefficient.objects.filter(
+            UploadPaySplitCoefficient.objects.filter(
                 financial_period=period_obj,
             ).delete()
-
-    def save_month_percentage(self):
-        pass
 
     def get_valid_percentage_value(self, period_percentage):
         # We import from Excel, and the user
@@ -133,8 +129,8 @@ class UploadProjectPercentages:
             # we accept the '-' as it is a recognised value in Finance for 0
             period_percentage = 0
         try:
-            period_percentage = int(period_percentage * MAX_COEFFICIENT)
             # there is a numeric value for this month.
+            period_percentage = int(period_percentage * MAX_COEFFICIENT)
         except ValueError:
             raise UploadFileDataError("Non-numeric value")
         if period_percentage < 0:
@@ -145,6 +141,19 @@ class UploadProjectPercentages:
         return period_percentage
 
     def upload_project_percentage_row(self, percentage_row):
+        financialcode_obj = self.check_financial_code.get_financial_code()
+        if self.directorate_code:
+            financialcode_obj.cost_centre.directorate.directorate_code
+        else:
+            self.directorate_code = \
+                financialcode_obj.cost_centre.directorate.directorate_code
+
+        if financialcode_obj.cost_centre.directorate.directorate_code \
+                != self.directorate_code:
+            err_msg = "Cost centre is part of a different directorate.\n"
+            self.check_financial_code.record_error(self.current_row, err_msg, False)
+            return
+
         for month_idx, month_obj in self.month_dict.items():
             period_percentage = percentage_row[month_idx].value
             if period_percentage is None:
@@ -156,34 +165,22 @@ class UploadProjectPercentages:
                 self.check_financial_code.record_error(self.current_row, err_msg, False)
                 continue
 
-            if period_percentage:
+            if period_percentage and financialcode_obj:
                 self.month_data_found_dict[month_idx] = True
-                financialcode_obj_to = self.check_financial_code.get_financial_code()
-                financialcode_obj_from = (
-                    self.check_financial_code.get_financial_code_no_project()
-                )
                 (
                     percentage_obj,
                     created,
-                ) = UploadProjectSplitCoefficient.objects.get_or_create(
+                ) = UploadPaySplitCoefficient.objects.get_or_create(
                     financial_period=month_obj,
-                    financial_code_from=financialcode_obj_from,
-                    financial_code_to=financialcode_obj_to,
+                    financial_code_to=financialcode_obj,
+                    directorate_code=self.directorate_code,
                 )
                 if created:
                     percentage_obj.split_coefficient = period_percentage
-                    percentage_obj.row_number = self.current_row
-                    percentage_obj.save()
                 else:
-                    err_msg = (
-                        f"Chart of account data "
-                        f"in row {self.current_row} "
-                        f"is a duplicate of "
-                        f"{percentage_obj.row_number}.\n"
-                    )
-                    self.check_financial_code.record_error(
-                        self.current_row, err_msg, False
-                    )
+                    percentage_obj.split_coefficient += period_percentage
+                percentage_obj.row_number = self.current_row
+                percentage_obj.save()
 
     def apply_percentages(self):
         for month_obj in self.month_dict.values():
@@ -191,41 +188,20 @@ class UploadProjectPercentages:
                 handle_split_project(month_obj.financial_period_code)
 
     def validate_percentages(self):
-        total_queryset = (
-            UploadProjectSplitCoefficient.objects.values(
-                "financial_period",
-                "financial_period__period_long_name",
-                "financial_code_from",
-            )
-            .annotate(percentage=Sum("split_coefficient"))
-            .filter(percentage__gte=MAX_COEFFICIENT)
-        )
-        if total_queryset:
-            err_msg = ""
-            for code in total_queryset:
-                row_list = (
-                    UploadProjectSplitCoefficient.objects.filter(
-                        financial_period=code["financial_period"],
-                        financial_code_from=code["financial_code_from"],
-                    )
-                    .order_by("row_number")
-                    .values_list("row_number", flat=True)
-                )
-
-                err_msg = (
-                    f"{err_msg}The sum of percentages in rows {list(row_list)} "
-                    f"for {code['financial_period__period_long_name']} "
-                    f"is greater than 100%.\n"
-                )
-        raise UploadFileDataError(f"{err_msg}")
+        total_percentage = UploadPaySplitCoefficient.objects.\
+            filter(directorate_code=self.directorate_code)\
+            .aggregate(Sum("split_coefficient"))
+        if total_percentage["split_coefficient__sum"] != MAX_COEFFICIENT:
+            raise UploadFileDataError("The sum of the percentages is higher than 100%")
 
     def read_percentages(self):
         # Clear the table used to upload the percentages.
         # The percentages are uploaded to to a temporary storage, and copied
         # when the upload is completed successfully.
         # This means that we always have a full upload.
-        UploadProjectSplitCoefficient.objects.all().delete()
-        self.check_financial_code = CheckFinancialCode(self.file_upload)
+        UploadPaySplitCoefficient.objects.all().delete()
+        self.check_financial_code = CheckFinancialCode(self.file_upload,
+                                                       self.expenditure_type)
         self.current_row = 0
         for percentage_row in self.worksheet.rows:
             self.current_row += 1

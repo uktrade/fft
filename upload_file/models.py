@@ -31,12 +31,13 @@ class FileUpload(BaseModel):
     BUDGET = "budget"
     PREVIOUS_YEAR = "previousyear"
     PROJECT_PERCENTAGE = "projectpercentage"
-
+    FORECAST = "forecast"
     DOCUMENT_TYPE_CHOICES = [
         (ACTUALS, "Actuals"),
         (BUDGET, "Budget"),
         (PREVIOUS_YEAR, "Previous Year"),
         (PROJECT_PERCENTAGE, "Project Percentages"),
+        {FORECAST, "Forecast"}
     ]
 
     LOCALFILE = "local"

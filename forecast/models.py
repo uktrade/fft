@@ -829,20 +829,20 @@ class MonthlyFigureAbstract(BaseModel):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
 
-    # TODO don't save to month that have actuals
     class Meta:
         abstract = True
 
     def __str__(self):
         return (
-            f"{self.financial_code.cost_centre}"
-            f"--{self.financial_code.programme}"
-            f"--{self.financial_code.natural_account_code}"
-            f"--{self.financial_code.analysis1_code}"
-            f"--{self.financial_code.analysis2_code}"
-            f"--{self.financial_code.project_code}:"
-            f"{self.financial_year} "
-            f"{self.financial_period} "
+            f"{self.financial_code.cost_centre.directorate.directorate_code}; "
+            f"{self.financial_code.cost_centre}; "
+            f"{self.financial_code.programme}; "
+            f"{self.financial_code.natural_account_code}; "
+            f"{self.financial_code.analysis1_code}; "
+            f"{self.financial_code.analysis2_code}; "
+            f"{self.financial_code.project_code}: "
+            f"{self.financial_year}, "
+            f"{self.financial_period}, "
             f"{self.amount}"
         )
 

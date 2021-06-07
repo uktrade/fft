@@ -1,0 +1,180 @@
+from chartofaccountDIT.test.factories import (
+    ExpenditureCategoryFactory,
+    NaturalCodeFactory,
+    ProgrammeCodeFactory,
+    ProjectCodeFactory,
+)
+from chartofaccountDIT.models import (
+    NaturalCode,
+    ProgrammeCode,
+    ProjectCode,
+)
+
+from core.models import FinancialYear
+from core.test.test_base import BaseTestCase
+from core.utils.generic_helpers import make_financial_year_current
+
+from costcentre.test.factories import (
+    CostCentreFactory,
+    DirectorateFactory,
+)
+from costcentre.models import CostCentre
+
+from forecast.models import (
+    FinancialCode,
+    FinancialPeriod,
+    ForecastMonthlyFigure,
+)
+from forecast.utils.import_helpers import (
+    VALID_ECONOMIC_CODE_LIST,
+)
+
+
+from split_project.models import PaySplitCoefficient
+
+from split_project.split_figure import PAY_CODE
+
+
+def create_financial_code(
+    cost_centre, nac, programme_code, project_code,
+):
+    programme_obj = ProgrammeCode.objects.get(pk=programme_code)
+    costcentre_obj = CostCentre.objects.get(pk=cost_centre)
+    nac_obj = NaturalCode.objects.get(pk=nac)
+    if project_code:
+        project_obj = ProjectCode.objects.get(pk=project_code)
+    else:
+        project_obj = None
+    financial_code_obj, _ = FinancialCode.objects.get_or_create(
+        programme=programme_obj,
+        cost_centre=costcentre_obj,
+        natural_account_code=nac_obj,
+        project_code=project_obj,
+        analysis1_code=None,
+        analysis2_code=None,
+    )
+    financial_code_obj.save()
+    return financial_code_obj
+
+
+def create_monthly_amount(
+    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+):
+    financial_code_obj = create_financial_code(
+        cost_centre, nac, programme_code, project_code,
+    )
+    forecast_figure_obj = ForecastMonthlyFigure.objects.create(
+        financial_year=FinancialYear.objects.get(current=True),
+        financial_period=period_obj,
+        financial_code=financial_code_obj,
+        amount=monthly_amount,
+        starting_amount=monthly_amount,
+        oracle_amount=monthly_amount,
+    )
+    return forecast_figure_obj
+
+
+def create_split_data(
+    cost_centre, nac, programme_code, project_code, coefficient, period_obj
+):
+    financial_code_obj = create_financial_code(
+        cost_centre, nac, programme_code, project_code,
+    )
+    directorate_code = financial_code_obj.cost_centre.directorate.directorate_code
+    project_split_obj = PaySplitCoefficient.objects.create(
+        financial_period=period_obj,
+        financial_code_to=financial_code_obj,
+        directorate_code=directorate_code,
+        split_coefficient=coefficient,
+    )
+    project_split_obj.save()
+    return project_split_obj
+
+
+class SplitDataSetup(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        self.test_year = 2019
+        make_financial_year_current(self.test_year)
+        self.test_period = 9
+
+        self.cost_centre_code = 109189
+        self.cost_centre_code1 = 109190
+        self.cost_centre_code2 = 109191
+        self.cost_centre_code_different_directorate = 234567
+
+        self.natural_account_code_pay = 52191003
+        self.natural_account_code_pay1 = 52191004
+        self.natural_account_code_pay2 = 52191005
+        self.natural_account_code_non_pay = 52191006
+
+        self.programme_code = "310940"
+        self.project_code1 = 12341
+        self.project_code2 = 12342
+        self.project_code3 = 12343
+        self.directorate_code = "T123"
+        self.directorate_code1 = "T125"
+        expenditure_pay_obj = ExpenditureCategoryFactory.create(
+            grouping_description=PAY_CODE
+        )
+
+        self.directorate_obj = DirectorateFactory.create(
+            directorate_code=self.directorate_code
+        )
+        directorate_obj1 = DirectorateFactory.create(
+            directorate_code=self.directorate_code1
+        )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code,
+            directorate=self.directorate_obj,
+            active=False,
+        )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code1,
+            directorate=self.directorate_obj,
+            active=False,
+        )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code2,
+            directorate=self.directorate_obj,
+            active=False,
+        )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code_different_directorate,
+            directorate=directorate_obj1,
+            active=False,
+        )
+
+        NaturalCodeFactory.create(
+            natural_account_code=self.natural_account_code_pay,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            expenditure_category=expenditure_pay_obj,
+            active=False,
+        )
+        NaturalCodeFactory.create(
+            natural_account_code=self.natural_account_code_pay1,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            expenditure_category=expenditure_pay_obj,
+            active=False,
+        )
+        NaturalCodeFactory.create(
+            natural_account_code=self.natural_account_code_pay2,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            expenditure_category=expenditure_pay_obj,
+            active=False,
+        )
+        NaturalCodeFactory.create(
+            natural_account_code=self.natural_account_code_non_pay,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            active=False,
+        )
+        ProgrammeCodeFactory.create(
+            programme_code=self.programme_code, active=False,
+        )
+        ProjectCodeFactory.create(project_code=self.project_code1)
+        ProjectCodeFactory.create(project_code=self.project_code2)
+        ProjectCodeFactory.create(project_code=self.project_code3)
+
+        self.period_obj = FinancialPeriod.objects.get(
+            period_calendar_code=self.test_period
+        )
