@@ -22,7 +22,7 @@ class CommandLog(BaseModel):
         return str(self.command_name)
 
 
-class FinancialPeriodManager(models.Manager):
+class FinancialYearManager(models.Manager):
     def get_queryset(self):
         return (
             super()
@@ -56,7 +56,7 @@ class FinancialYear(BaseModel):
     archived = models.BooleanField(default=False)
     archived_at = models.DateTimeField(blank=True, null=True)
     objects = models.Manager()  # The default manager.
-    financial_year_objects = FinancialPeriodManager()
+    financial_year_objects = FinancialYearManager()
 
     def __str__(self):
         return str(self.financial_year_display)
