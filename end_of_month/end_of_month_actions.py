@@ -35,6 +35,10 @@ class DeleteNonExistingArchiveError(Exception):
     pass
 
 
+class RestoreNonExistingArchiveError(Exception):
+    pass
+
+
 def insert_query(table_name, archived_status_id):
     return (
         f"INSERT INTO public.{table_name}("
@@ -168,7 +172,7 @@ def delete_end_of_month_archive(period_id):
     end_of_month_info.save()
 
 
-def delete_last_end_of_month_archive():
+def get_last_restore_period_id():
     end_of_month_queryset = EndOfMonthStatus.objects.filter(
         archived=True
     ).order_by('-archived_period')
@@ -178,4 +182,8 @@ def delete_last_end_of_month_archive():
         raise DeleteNonExistingArchiveError(error_msg)
     latest_end_of_month = end_of_month_queryset.first()
     period_id = latest_end_of_month.archived_period_id
-    delete_end_of_month_archive(period_id)
+    return period_id
+
+
+def delete_last_end_of_month_archive():
+    delete_end_of_month_archive(get_last_restore_period_id())
