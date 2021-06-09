@@ -263,7 +263,7 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
         self.column_name = column_name
         # Find the column to be linked
         for item in arg_link:
-            link_args.append(tables.A(item))
+            link_args.append(tables.A(str(item)))
 
         self.link_col = ForecastLinkCol(
             column_dict.get(column_name),

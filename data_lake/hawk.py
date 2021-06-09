@@ -102,15 +102,13 @@ class HawkAuthentication(BaseAuthentication):
 
 
 class HawkResponseMiddleware:
-    """Adds the Server-Authorization header to the response, so the originator
-    of the request can authenticate the response
-    """
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_response(self, viewset, response):
-        """Adds the Server-Authorization header to the response, so the originator
-        of the request can authenticate the response
-        """
-        response['Server-Authorization'] = viewset.request.auth.respond(
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        response['Server-Authorization'] = request.auth.respond(
             content=response.content,
             content_type=response['Content-Type'],
         )
