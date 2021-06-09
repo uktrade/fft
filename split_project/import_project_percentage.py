@@ -244,14 +244,7 @@ class UploadProjectPercentages:
         self.final_checks()
 
 
-def upload_project_percentage_from_file(file_upload):
-    try:
-        workbook, worksheet = validate_excel_file(file_upload, WORKSHEET_PROJECT_TITLE)
-    except (UploadFileFormatError, UploadFileDataError) as ex:
-        set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
-        )
-        return
+def upload_project_percentage_from_file(worksheet, file_upload):
     header_dict = xslx_header_to_dict(worksheet[1])
     try:
         check_header(header_dict, EXPECTED_PERCENTAGE_HEADERS)
@@ -259,7 +252,6 @@ def upload_project_percentage_from_file(file_upload):
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),
         )
-        workbook.close
         return
 
     try:
@@ -273,4 +265,15 @@ def upload_project_percentage_from_file(file_upload):
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),
         )
+
+
+def upload_project_percentage(file_upload):
+    try:
+        workbook, worksheet = validate_excel_file(file_upload, WORKSHEET_PROJECT_TITLE)
+    except (UploadFileFormatError, UploadFileDataError) as ex:
+        set_file_upload_fatal_error(
+            file_upload, str(ex), str(ex),
+        )
+        return
+    upload_project_percentage_from_file(worksheet, file_upload)
     workbook.close

@@ -83,7 +83,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
         assert (
             f"Row 2 error: The budget category of "
             f"'{self.natural_account_code_non_pay}' is not '{PAY_CODE}'"
@@ -115,7 +115,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
 
         assert (
             f"Row 3 error: Cost centre "
@@ -141,7 +141,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
 
         assert (
             "Row 2 error: Negative value in cell" in file_upload_obj.user_error_message
@@ -165,7 +165,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
 
         assert (
             "Row 2 error: Value higher than 100% in cell"
@@ -197,7 +197,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
 
         assert (
             "The sum of the percentages is higher than 100%"
@@ -229,7 +229,7 @@ class ImportPercentageTest(SplitDataSetup):
             file_location=FileUpload.LOCALFILE,
         )
         file_upload_obj.save()
-        upload_project_percentage_from_file(file_upload_obj)
+        upload_project_percentage_from_file(self.data_worksheet, file_upload_obj)
 
         assert (
             "The sum of the percentages is lower than 100%"
