@@ -350,7 +350,8 @@ class CheckFinancialCode:
                         != self.expenditure_type:
                     status = self.CODE_ERROR
                     msg = \
-                        f"The NAC budget category is not '{self.expenditure_type}'."
+                        f"The budget category of \'{nac}\' " \
+                        f"is not '{self.expenditure_type}'."
                     info_tuple = (obj, status, msg)
         return self.validate_info_tuple(info_tuple)
 
