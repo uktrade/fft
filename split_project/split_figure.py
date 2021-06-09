@@ -51,9 +51,9 @@ def copy_values(period_id, directorate_code, expenditure_code):
         f"INNER JOIN costcentre_costcentre  ON "
         f"(fc.cost_centre_id = costcentre_costcentre.cost_centre_code) "
         f'INNER JOIN  "chartofaccountDIT_naturalcode" nac '
-        f'ON (fc.natural_account_code_id = nac.natural_account_code) '
+        f"ON (fc.natural_account_code_id = nac.natural_account_code) "
         f'INNER JOIN "chartofaccountDIT_expenditurecategory" ec '
-        f'ON (nac.expenditure_category_id = ec.id) '
+        f"ON (nac.expenditure_category_id = ec.id) "
         f"WHERE fm.financial_period_id = {period_id} "
         f"AND fm.archived_status_id is null "
         f"AND costcentre_costcentre.directorate_id = '{directorate_code}' "

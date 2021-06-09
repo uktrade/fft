@@ -25,9 +25,7 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
-from forecast.utils.import_helpers import (
-    VALID_ECONOMIC_CODE_LIST,
-)
+from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST
 
 
 from split_project.models import PaySplitCoefficient

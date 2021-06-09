@@ -1,8 +1,6 @@
 from django.db.models import Sum
 
-from forecast.models import (
-    ForecastMonthlyFigure,
-)
+from forecast.models import ForecastMonthlyFigure
 from split_project.split_figure import (
     PAY_CODE,
     calculate_expenditure_type_total,
@@ -97,27 +95,19 @@ class SplitDataTest(SplitDataSetup):
             2,
         )
         spend_directorate_before = calculate_expenditure_type_total(
-            self.directorate_code,
-            self.test_period,
-            PAY_CODE,
+            self.directorate_code, self.test_period, PAY_CODE,
         )
         spend_directorate1_before = calculate_expenditure_type_total(
-            self.directorate_code1,
-            self.test_period,
-            PAY_CODE,
+            self.directorate_code1, self.test_period, PAY_CODE,
         )
 
         handle_split_project(self.period_obj.financial_period_code)
 
         spend_directorate_after = calculate_expenditure_type_total(
-            self.directorate_code,
-            self.test_period,
-            PAY_CODE,
+            self.directorate_code, self.test_period, PAY_CODE,
         )
         spend_directorate1_after = calculate_expenditure_type_total(
-            self.directorate_code1,
-            self.test_period,
-            PAY_CODE,
+            self.directorate_code1, self.test_period, PAY_CODE,
         )
 
         # Check that the total for pay has not changed

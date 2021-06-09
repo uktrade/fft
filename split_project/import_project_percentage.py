@@ -148,16 +148,22 @@ class UploadProjectPercentages:
     def upload_project_percentage_row(self, percentage_row):
         financialcode_obj = self.check_financial_code.get_financial_code()
         if not self.directorate_code:
-            self.directorate_code = \
+            self.directorate_code = (
                 financialcode_obj.cost_centre.directorate.directorate_code
-            self.directorate_name = \
+            )
+            self.directorate_name = (
                 financialcode_obj.cost_centre.directorate.directorate_name
+            )
 
-        if financialcode_obj.cost_centre.directorate.directorate_code \
-                != self.directorate_code:
-            err_msg = f"Cost centre '{financialcode_obj.cost_centre.cost_centre_code}' " \
-                      f"is not part of directorate " \
-                      f"{self.directorate_code} - {self.directorate_name}.\n"
+        if (
+            financialcode_obj.cost_centre.directorate.directorate_code
+            != self.directorate_code
+        ):
+            err_msg = (
+                f"Cost centre '{financialcode_obj.cost_centre.cost_centre_code}' "
+                f"is not part of directorate "
+                f"{self.directorate_code} - {self.directorate_name}.\n"
+            )
             self.check_financial_code.record_error(self.current_row, err_msg, False)
             return
 
@@ -195,14 +201,13 @@ class UploadProjectPercentages:
                 handle_split_project(month_obj.financial_period_code)
 
     def validate_percentages(self):
-        total_percentage = UploadPaySplitCoefficient.objects.\
-            filter(directorate_code=self.directorate_code)\
-            .aggregate(Sum("split_coefficient"))
+        total_percentage = UploadPaySplitCoefficient.objects.filter(
+            directorate_code=self.directorate_code
+        ).aggregate(Sum("split_coefficient"))
         if total_percentage["split_coefficient__sum"] >= MAX_COEFFICIENT:
             raise UploadFileDataError("The sum of the percentages is higher than 100%")
         if total_percentage["split_coefficient__sum"] <= MAX_COEFFICIENT:
             raise UploadFileDataError("The sum of the percentages is lower than 100%")
-
 
     def read_percentages(self):
         # Clear the table used to upload the percentages.
@@ -210,8 +215,9 @@ class UploadProjectPercentages:
         # when the upload is completed successfully.
         # This means that we always have a full upload.
         UploadPaySplitCoefficient.objects.all().delete()
-        self.check_financial_code = CheckFinancialCode(self.file_upload,
-                                                       self.expenditure_type)
+        self.check_financial_code = CheckFinancialCode(
+            self.file_upload, self.expenditure_type
+        )
         self.current_row = 0
         for percentage_row in self.worksheet.rows:
             self.current_row += 1
