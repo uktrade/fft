@@ -32,11 +32,16 @@ class ProgrammeCodeViewSet(DataLakeViewSet):
                 "budget_type__budget_type",
             )
         )
+
         for obj in current_queryset:
+            if obj.budget_type:
+                budget_type = obj.budget_type.budget_type
+            else:
+                budget_type = None
             row = [
                 obj.programme_code,
                 obj.programme_description,
-                obj.budget_type.budget_type,
+                budget_type,
                 current_year,
             ]
             writer.writerow(row)
