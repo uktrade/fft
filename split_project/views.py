@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class UploadPercentageView(UploadViewBase):
+    template_name = "percentage_file_upload.html"
     form_class = UploadPercentageForm
     success_url = reverse_lazy("project_percentage")
 
