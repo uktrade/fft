@@ -117,9 +117,10 @@ def handle_split_project_by_directorate(
     for coefficient in coefficient_queryset:
         value_to_transfer = round((total_value * coefficient.split_coefficient) / 10000)
         transferred_value += value_to_transfer
-        if transferred_value > total_value:
+        if transferred_value > (total_value * 1.01):
             # This error should never happen, because the percentages are checked
             # when uploading the data file.
+
             raise TransferTooLargeError("Pay split percentage higher that 100%.")
             return
         transferred_to_obj, created = TemporaryCalculatedValues.objects.get_or_create(
@@ -142,7 +143,8 @@ def handle_split_project_by_directorate(
     copy_values(financial_period_id, directorate_code, expenditure_code)
 
 
-def handle_split_project(financial_period_id):
+def handle_split_project(fi
+    nancial_period_id):
     coefficient_queryset = (
         PaySplitCoefficient.objects.filter(financial_period_id=financial_period_id)
         .order_by("directorate_code")

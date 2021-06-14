@@ -48,7 +48,7 @@ EXPECTED_PERCENTAGE_HEADERS = [
 # We allow 2 decimal figures, like 20.12%
 # So to get an integer we need to multiply the float point in the file by 10000
 MAX_COEFFICIENT = 10000
-
+TOLERANCE = 100
 
 class UploadProjectPercentages:
     def __init__(self, worksheet, header_dict, file_upload, expenditure_type):
@@ -144,6 +144,7 @@ class UploadProjectPercentages:
             raise UploadFileDataError("Negative value")
 
         if period_percentage > MAX_COEFFICIENT:
+            print(f"row {self.current_row}  value too high {period_percentage}")
             raise UploadFileDataError("Value higher than 100%")
         return period_percentage
 
@@ -206,9 +207,9 @@ class UploadProjectPercentages:
         total_percentage = UploadPaySplitCoefficient.objects.filter(
             directorate_code=self.directorate_code
         ).aggregate(Sum("split_coefficient"))
-        if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT:
+        if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
             raise UploadFileDataError("The sum of the percentages is higher than 100%")
-        if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT:
+        if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
             raise UploadFileDataError("The sum of the percentages is lower than 100%")
 
     def read_percentages(self):
