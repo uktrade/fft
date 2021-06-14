@@ -71,7 +71,9 @@ class UploadProjectPercentages:
         # Also, we may have the case of a month header, and no data in the columns
         self.month_dict = {}
         self.month_data_found_dict = {}
-        for month in EndOfMonthStatus.objects.filter(archived=False):
+        # for month in EndOfMonthStatus.objects.filter(archived=False):
+        # for the moment, allow to change archived months
+        for month in EndOfMonthStatus.objects.all():
             month_name = month.archived_period.period_short_name.lower()
             if month_name in header_dict:
                 self.month_dict[header_dict[month_name]] = month.archived_period
@@ -115,7 +117,7 @@ class UploadProjectPercentages:
                 f"SELECT now(), now(), "
                 f"split_coefficient, directorate_code, "
                 f"financial_code_to_id, financial_period_id "
-                f"FROM public.split_project_uploadsplit_project_paysplitcoefficient "
+                f"FROM public.split_project_uploadpaysplitcoefficient "
                 f"WHERE financial_period_id = "
                 f"{period_obj.financial_period_code};"
             )
@@ -135,7 +137,7 @@ class UploadProjectPercentages:
             period_percentage = 0
         try:
             # there is a numeric value for this month.
-            period_percentage = int(period_percentage * MAX_COEFFICIENT)
+            period_percentage = round(period_percentage * MAX_COEFFICIENT)
         except ValueError:
             raise UploadFileDataError("Non-numeric value")
         if period_percentage < 0:
@@ -204,9 +206,9 @@ class UploadProjectPercentages:
         total_percentage = UploadPaySplitCoefficient.objects.filter(
             directorate_code=self.directorate_code
         ).aggregate(Sum("split_coefficient"))
-        if total_percentage["split_coefficient__sum"] >= MAX_COEFFICIENT:
+        if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT:
             raise UploadFileDataError("The sum of the percentages is higher than 100%")
-        if total_percentage["split_coefficient__sum"] <= MAX_COEFFICIENT:
+        if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT:
             raise UploadFileDataError("The sum of the percentages is lower than 100%")
 
     def read_percentages(self):

@@ -416,8 +416,7 @@ class CheckFinancialCode:
             return None
 
     def validate_project(self, project):
-        if self.upload_type == FileUpload.PROJECT_PERCENTAGE \
-                or (project and int(project)):
+        if (project and int(project)):
             project_code = get_id(project, PROJECT_CODE_LENGTH)
             return self.get_obj_code(
                 self.project_dict, project_code, self.project_code_model

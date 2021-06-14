@@ -29,6 +29,9 @@ class UploadPercentageView(UploadViewBase):
     context = "Upload Percentages"
     upload_type = FileUpload.PROJECT_PERCENTAGE
 
+    def get_args(self, data):
+        return []
+
     def test_func(self):
         return user_has_upload_permission(self.request.user)
 
