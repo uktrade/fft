@@ -23,6 +23,7 @@ from split_project.split_figure import (
     handle_split_project,
 )
 
+from upload_file.models import FileUpload
 from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
@@ -212,6 +213,16 @@ class UploadProjectPercentages:
         if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
             raise UploadFileDataError("The sum of the percentages is lower than 100%")
 
+    def complete(self):
+        final_status = FileUpload.PROCESSED
+        if self.check_financial_code.error_found:
+            final_status = FileUpload.PROCESSEDWITHERROR
+        elif self.check_financial_code.warning_found:
+            final_status = FileUpload.PROCESSEDWITHWARNING
+        set_file_upload_feedback(
+            self.file_upload, f"Processed {self.current_row} rows.", final_status
+        )
+
     def read_percentages(self):
         # Clear the table used to upload the percentages.
         # The percentages are uploaded to to a temporary storage, and copied
@@ -263,12 +274,11 @@ def upload_project_percentage_from_file(worksheet, file_upload):
         upload.validate_percentages()
         upload.copy_uploaded_percentage()
         upload.apply_percentages()
-
     except (UploadFileDataError) as ex:
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),
         )
-
+    upload.complete()
 
 def upload_project_percentage(file_upload):
     try:
