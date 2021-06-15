@@ -1,8 +1,6 @@
 from django.db.models import F
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
+from core.utils.command_helpers import CommandUpload
 from core.utils.generic_helpers import get_current_financial_year
 
 from forecast.models import (
@@ -27,8 +25,9 @@ class Command(CommandUpload):
             )
             return
 
-        financial_period_obj = \
-            FinancialPeriod.objects.get(financial_period_code=financial_period)
+        financial_period_obj = FinancialPeriod.objects.get(
+            financial_period_code=financial_period
+        )
 
         if not financial_period_obj.actual_loaded:
             self.stdout.write(
@@ -44,6 +43,8 @@ class Command(CommandUpload):
         ).update(amount=F("oracle_amount"))
 
         self.stdout.write(
-            self.style.SUCCESS(f"Deleted project split "
-                               f"for {financial_period_obj.period_long_name}.")
+            self.style.SUCCESS(
+                f"Deleted project split "
+                f"for {financial_period_obj.period_long_name}."
+            )
         )

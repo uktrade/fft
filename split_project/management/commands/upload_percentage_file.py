@@ -1,8 +1,6 @@
 import os
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
+from core.utils.command_helpers import CommandUpload
 
 from split_project.import_project_percentage import upload_project_percentage
 
@@ -17,7 +15,7 @@ class Command(CommandUpload):
 
     def handle(self, *args, **options):
         path = options["path"]
-        file_name = self.path_to_upload(path, 'xslx')
+        file_name = self.path_to_upload(path, "xslx")
 
         fileobj = FileUpload(
             document_file_name=file_name,
@@ -29,6 +27,4 @@ class Command(CommandUpload):
         if self.upload_s3:
             os.remove(file_name)
 
-        self.stdout.write(
-            self.style.SUCCESS("Percentage uploaded.")
-        )
+        self.stdout.write(self.style.SUCCESS("Percentage uploaded."))
