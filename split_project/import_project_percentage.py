@@ -51,6 +51,7 @@ EXPECTED_PERCENTAGE_HEADERS = [
 MAX_COEFFICIENT = 10000
 TOLERANCE = 100
 
+
 class UploadProjectPercentages:
     def __init__(self, worksheet, header_dict, file_upload, expenditure_type):
         self.worksheet = worksheet
@@ -280,6 +281,7 @@ def upload_project_percentage_from_file(worksheet, file_upload):
             file_upload, str(ex), str(ex),
         )
     upload.complete()
+
 
 def upload_project_percentage(file_upload):
     try:

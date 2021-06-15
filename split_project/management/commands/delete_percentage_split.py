@@ -11,8 +11,6 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
-from split_project.import_project_percentage import upload_project_percentage
-
 
 class Command(CommandUpload):
     help = "Remove the project split"
