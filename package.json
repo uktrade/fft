@@ -2,6 +2,9 @@
   "name": "fido",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.5.0",
     "govuk-frontend": "^3.8.0",
