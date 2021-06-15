@@ -145,7 +145,7 @@ class UploadProjectPercentages:
             raise UploadFileDataError("Negative value")
 
         if period_percentage > MAX_COEFFICIENT:
-            print(f"row {self.current_row}  value too high {period_percentage}")
+            print(f"row {self.current_row}  percentage value too high.")
             raise UploadFileDataError("Value higher than 100%")
         return period_percentage
 
@@ -215,7 +215,8 @@ class UploadProjectPercentages:
 
     def complete(self):
         final_status = FileUpload.PROCESSED
-        if self.check_financial_code.error_found:
+        if self.check_financial_code.error_found or \
+                self.check_financial_code.non_fatal_error_found:
             final_status = FileUpload.PROCESSEDWITHERROR
         elif self.check_financial_code.warning_found:
             final_status = FileUpload.PROCESSEDWITHWARNING
