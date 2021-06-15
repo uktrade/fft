@@ -143,8 +143,7 @@ def handle_split_project_by_directorate(
     copy_values(financial_period_id, directorate_code, expenditure_code)
 
 
-def handle_split_project(fi
-    nancial_period_id):
+def handle_split_project(financial_period_id):
     coefficient_queryset = (
         PaySplitCoefficient.objects.filter(financial_period_id=financial_period_id)
         .order_by("directorate_code")
