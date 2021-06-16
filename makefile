@@ -54,6 +54,7 @@ first-use:
 	docker-compose run --rm fido python manage.py create_test_user --password=password
 	docker-compose run --rm fido python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password
 	docker-compose run --rm fido python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password
+	docker-compose up
 
 gift-hospitality-table:
 	docker-compose run fido python manage.py populate_gift_hospitality_table
