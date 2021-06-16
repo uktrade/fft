@@ -13,6 +13,12 @@ FRONT_END_SERVER = env(
     default="http://localhost:3000",
 )
 
+FILE_UPLOAD_HANDLERS = (
+    # "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+)  # Order is important
+
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "front_end/build/static"),
     os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
