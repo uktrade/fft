@@ -69,9 +69,11 @@ class PivotManager(models.Manager):
 class PaySplitCoefficient(PaySplitCoefficientAbstract):
     objects = models.Manager()  # The default manager.
     pivot = PivotManager()
-    permissions = [
-        ("can_upload_files", "Can upload files"),
-    ]
+
+    class Meta(PaySplitCoefficientAbstract.Meta):
+        permissions = [
+            ("can_upload_percentage_files", "Can upload percentage files"),
+        ]
 
 
 class UploadPaySplitCoefficient(PaySplitCoefficientAbstract):

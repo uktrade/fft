@@ -59,10 +59,10 @@ gift-hospitality-table:
 	docker-compose run fido python manage.py populate_gift_hospitality_table
 
 migrations:
-	docker-compose run --rm fido python manage.py makemigrations
+	docker-compose run --rm fido python manage.py makemigrations $(app)
 
 migrate:
-	docker-compose run --rm fido python manage.py migrate
+	docker-compose run --rm fido python manage.py migrate $(app)
 
 compilescss:
 	docker-compose run --rm fido python manage.py compilescss
