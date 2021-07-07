@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import (
+    Max,
+)
 
 from core.metamodels import BaseModel
 from core.models import FinancialYear
@@ -47,6 +50,14 @@ class ArchivedPeriodManager(models.Manager):
             )
             .order_by("archived_period__financial_period_code")
         )
+
+    def get_latest_archived_period(self):
+        max_archived_period = (
+            self.get_queryset()
+            .filter(archived=True)
+            .aggregate(Max("archived_period__financial_period_code"))
+        )
+        return max_archived_period["archived_period__financial_period_code__max"] or 0
 
 
 class EndOfMonthStatus(BaseModel):

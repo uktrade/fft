@@ -6,6 +6,7 @@ from core.import_csv import xslx_header_to_dict
 
 from end_of_month.models import EndOfMonthStatus
 
+from forecast.models import FinancialPeriod
 from forecast.utils.import_helpers import (
     CheckFinancialCode,
     UploadFileDataError,
@@ -53,7 +54,14 @@ TOLERANCE = 100
 
 
 class UploadProjectPercentages:
-    def __init__(self, worksheet, header_dict, file_upload, expenditure_type):
+    def __init__(
+            self,
+            worksheet,
+            header_dict,
+            file_upload,
+            expenditure_type,
+            include_archived=False
+    ):
         self.worksheet = worksheet
         self.cc_index = header_dict[COST_CENTRE_CODE]
         self.nac_index = header_dict[NAC_CODE]
@@ -63,9 +71,10 @@ class UploadProjectPercentages:
         self.proj_index = header_dict[PROJECT_CODE]
         self.file_upload = file_upload
         self.row_to_process = self.worksheet.max_row + 1
-        self.create_month_dict(header_dict)
+        self.include_archived = include_archived
         self.expenditure_type = expenditure_type
         self.directorate_code = ""
+        self.create_month_dict(header_dict)
 
     def create_month_dict(self, header_dict):
         # Not all months are available in the excel file
@@ -73,12 +82,18 @@ class UploadProjectPercentages:
         # Also, we may have the case of a month header, and no data in the columns
         self.month_dict = {}
         self.month_data_found_dict = {}
-        # for month in EndOfMonthStatus.objects.filter(archived=False):
-        # for the moment, allow to change archived months
-        for month in EndOfMonthStatus.objects.all():
-            month_name = month.archived_period.period_short_name.lower()
+        if self.include_archived:
+            month_queryset = FinancialPeriod.objects.all()
+        else:
+            max_archived_period = EndOfMonthStatus.\
+                archived_period_objects.get_latest_archived_period()
+            month_queryset = FinancialPeriod.\
+                objects.filter(financial_period_code__gt=max_archived_period)
+
+        for month in month_queryset:
+            month_name = month.period_short_name.lower()
             if month_name in header_dict:
-                self.month_dict[header_dict[month_name]] = month.archived_period
+                self.month_dict[header_dict[month_name]] = month
                 self.month_data_found_dict[header_dict[month_name]] = False
         if not self.month_dict:
             raise UploadFileFormatError("Error: no period specified.\n")
@@ -146,7 +161,6 @@ class UploadProjectPercentages:
             raise UploadFileDataError("Negative value")
 
         if period_percentage > MAX_COEFFICIENT:
-            print(f"row {self.current_row}  percentage value too high.")
             raise UploadFileDataError("Value higher than 100%")
         return period_percentage
 
@@ -262,7 +276,7 @@ class UploadProjectPercentages:
         self.final_checks()
 
 
-def upload_project_percentage_from_file(worksheet, file_upload):
+def upload_project_percentage_from_file(worksheet, file_upload, include_archived=False):
     header_dict = xslx_header_to_dict(worksheet[1])
     try:
         check_header(header_dict, EXPECTED_PERCENTAGE_HEADERS)
@@ -273,7 +287,13 @@ def upload_project_percentage_from_file(worksheet, file_upload):
         return
 
     try:
-        upload = UploadProjectPercentages(worksheet, header_dict, file_upload, PAY_CODE)
+        upload = UploadProjectPercentages(
+            worksheet,
+            header_dict,
+            file_upload,
+            PAY_CODE,
+            include_archived,
+        )
         upload.read_percentages()
         upload.validate_percentages()
         upload.copy_uploaded_percentage()
@@ -285,7 +305,7 @@ def upload_project_percentage_from_file(worksheet, file_upload):
     upload.complete()
 
 
-def upload_project_percentage(file_upload):
+def upload_project_percentage(file_upload, include_archived=False):
     try:
         workbook, worksheet = validate_excel_file(file_upload, WORKSHEET_PROJECT_TITLE)
     except (UploadFileFormatError, UploadFileDataError) as ex:
@@ -293,5 +313,5 @@ def upload_project_percentage(file_upload):
             file_upload, str(ex), str(ex),
         )
         return
-    upload_project_percentage_from_file(worksheet, file_upload)
+    upload_project_percentage_from_file(worksheet, file_upload, include_archived)
     workbook.close

@@ -1,3 +1,7 @@
+import os
+
+from openpyxl import Workbook
+
 from chartofaccountDIT.test.factories import (
     ExpenditureCategoryFactory,
     NaturalCodeFactory,
@@ -28,9 +32,28 @@ from forecast.models import (
 from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST
 
 
+from split_project.import_project_percentage import (
+    WORKSHEET_PROJECT_TITLE,
+    COST_CENTRE_CODE,
+    NAC_CODE,
+    PROGRAMME_CODE,
+    ANALYSIS1_CODE,
+    ANALYSIS2_CODE,
+    PROJECT_CODE,
+)
+
 from split_project.models import PaySplitCoefficient
 
 from split_project.split_figure import PAY_CODE
+
+COST_CENTRE_CODE_INDEX = 1
+NAC_CODE_INDEX = 2
+PROGRAMME_CODE_INDEX = 3
+ANALYSIS1_CODE_INDEX = 4
+ANALYSIS2_CODE_INDEX = 5
+PROJECT_CODE_INDEX = 6
+MONTH1_INDEX = 7
+MONTH2_INDEX = 8
 
 
 def create_financial_code(
@@ -87,6 +110,29 @@ def create_split_data(
     )
     project_split_obj.save()
     return project_split_obj
+
+
+def create_workbook(data_dictionary):
+    wb = Workbook()
+    data_worksheet = wb.active
+    data_worksheet.title = WORKSHEET_PROJECT_TITLE
+    data_worksheet.cell(column=COST_CENTRE_CODE_INDEX, row=1, value=COST_CENTRE_CODE)
+    data_worksheet.cell(column=NAC_CODE_INDEX, row=1, value=NAC_CODE)
+    data_worksheet.cell(column=PROGRAMME_CODE_INDEX, row=1, value=PROGRAMME_CODE)
+    data_worksheet.cell(column=PROJECT_CODE_INDEX, row=1, value=PROJECT_CODE)
+    data_worksheet.cell(column=ANALYSIS1_CODE_INDEX, row=1, value=ANALYSIS1_CODE)
+    data_worksheet.cell(column=ANALYSIS2_CODE_INDEX, row=1, value=ANALYSIS2_CODE)
+    data_worksheet.cell(column=MONTH1_INDEX, row=1, value="May")
+    data_worksheet.cell(column=MONTH2_INDEX, row=1, value="Jun")
+    row = 2
+    for data_row in data_dictionary:
+        for data_col, data_value in data_row.items():
+            data_worksheet.cell(column=data_col, row=row, value=data_value)
+        row += 1
+
+    excel_file_name = os.path.join(os.path.dirname(__file__), "dummy.xlsx",)
+    wb.save(filename=excel_file_name)
+    return data_worksheet, excel_file_name
 
 
 class SplitDataSetup(BaseTestCase):

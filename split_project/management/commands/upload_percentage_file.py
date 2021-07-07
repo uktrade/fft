@@ -23,7 +23,8 @@ class Command(CommandUpload):
             file_location=FileUpload.LOCALFILE,
         )
         fileobj.save()
-        upload_project_percentage(fileobj)
+        # When uploading from a command, allow to change archived months.
+        upload_project_percentage(fileobj, True)
         if self.upload_s3:
             os.remove(file_name)
 
