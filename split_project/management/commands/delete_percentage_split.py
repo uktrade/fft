@@ -9,6 +9,8 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
+from split_project.models import PaySplitCoefficient
+
 
 class Command(CommandUpload):
     help = "Remove the project split"
@@ -17,7 +19,7 @@ class Command(CommandUpload):
         parser.add_argument("financial_period")
 
     def handle(self, *args, **options):
-        financial_period = options["financial_period"]
+        financial_period = int(options["financial_period"])
 
         if financial_period > MAX_PERIOD_CODE or financial_period < 0:
             self.stdout.write(
@@ -31,16 +33,25 @@ class Command(CommandUpload):
 
         if not financial_period_obj.actual_loaded:
             self.stdout.write(
-                self.style.ERROR("There are no actual for the selected period.")
+                self.style.ERROR(
+                    f"This command can only be applied to actuals and "
+                    f"there are no actuals for the selected period "
+                    f"{financial_period_obj.period_long_name}."
+                )
             )
             return
 
         current_year = get_current_financial_year()
+
         ForecastMonthlyFigure.objects.filter(
             financial_year_id=current_year,
             financial_period=financial_period_obj,
             archived_status__isnull=True,
         ).update(amount=F("oracle_amount"))
+
+        PaySplitCoefficient.objects.filter(
+            financial_period=financial_period_obj,
+        ).delete()
 
         self.stdout.write(
             self.style.SUCCESS(
