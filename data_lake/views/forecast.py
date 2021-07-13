@@ -66,10 +66,9 @@ class ForecastViewSet(
             "Cost Centre name",
             "Cost Centre code",
             "Budget grouping",
-            "Expenditure type"
+            "Expenditure type",
             "Expenditure type description",
             "Budget Type",
-            "Budget category",
             "Budget category",
             "Budget/Forecast NAC",
             "Budget/Forecast NAC description",

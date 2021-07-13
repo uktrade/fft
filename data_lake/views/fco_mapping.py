@@ -48,23 +48,29 @@ class FCOMappingViewSet(DataLakeViewSet):
             )
         )
         for obj in current_queryset:
-            if obj.account_L6_code_fk.expenditure_category:
-                expenditure_category_value = (
-                    obj.expenditure_category.grouping_description
-                )
-                NAC_category_value = (
-                    obj.expenditure_category.NAC_category.NAC_category_description
-                )
-            else:
-                expenditure_category_value = None
-                NAC_category_value = None
+            expenditure_category_value = None
+            NAC_category_value = None
+            economic_budget_code = None
+            natural_account_code = None
+            natural_account_code_description = None
+
+            if obj.account_L6_code_fk:
+                economic_budget_code = obj.account_L6_code_fk.economic_budget_code
+                natural_account_code = obj.account_L6_code_fk.natural_account_code
+                natural_account_code_description = \
+                    obj.account_L6_code_fk.natural_account_code_description
+                if obj.account_L6_code_fk.expenditure_category:
+                    expenditure_category_value = obj.account_L6_code_fk.\
+                        expenditure_category.grouping_description
+                    NAC_category_value = obj.account_L6_code_fk.expenditure_category.\
+                        NAC_category.NAC_category_description
 
             row = [
-                obj.account_L6_code_fk.economic_budget_code,
+                economic_budget_code,
                 NAC_category_value,
                 expenditure_category_value,
-                obj.account_L6_code_fk.natural_account_code,
-                obj.account_L6_code_fk.natural_account_code_description,
+                natural_account_code,
+                natural_account_code_description,
                 obj.fco_code,
                 obj.fco_description,
                 current_year,
