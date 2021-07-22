@@ -164,13 +164,6 @@ class FinancialPeriodManager(models.Manager):
             .values_list("financial_period_code", flat=True)
         )
 
-    def actual_period_code_list(self):
-        return list(
-            self.get_queryset()
-            .filter(actual_loaded=True)
-            .values_list("financial_period_code", flat=True,)
-        )
-
     def month_sublist(self, month):
         if month > MAX_PERIOD_CODE:
             # needed for displaying previous year outturn
@@ -186,6 +179,22 @@ class FinancialPeriodManager(models.Manager):
             .aggregate(Max("financial_period_code"))
         )
         return aggregate_queryset["financial_period_code__max"] or 0
+
+    def actual_period_code_list(self):
+        last_actual_month = self.actual_month()
+        return list(
+            self.get_queryset()
+            .filter(financial_period_code__lte=last_actual_month)
+            .values_list("financial_period_code", flat=True,)
+        )
+
+    def forecast_period_code_list(self):
+        last_actual_month = self.actual_month()
+        return list(
+            self.get_queryset()
+            .filter(financial_period_code__gt=last_actual_month)
+            .values_list("financial_period_code", flat=True,)
+        )
 
     def actual_month_previous_year(self):
         # use the Max to protect us from the situation of

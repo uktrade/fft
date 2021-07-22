@@ -1,126 +1,68 @@
-import csv
-
-from data_lake.hawk import (
-    HawkAuthentication,
-    HawkResponseMiddleware,
-)
-
-from django.http import HttpResponse
-from django.utils.decorators import decorator_from_middleware
-
-from rest_framework.viewsets import ViewSet
-
 from core.utils.generic_helpers import get_current_financial_year
 
-from end_of_month.models import forecast_budget_view_model
+from data_lake.views.data_lake_view import DataLakeViewSet
+from data_lake.views.utils import FigureFieldData
 
-from forecast.models import FinancialPeriod
-from forecast.utils.query_fields import ForecastQueryFields
-
-
-def forecast_query_iterator(queryset, keys_dict, period_list, forecast_period, year):
-    for obj in queryset:
-        row = []
-        for field in keys_dict.keys():
-            val = obj[field]
-            if val is None:
-                val = ""
-            row.append(val)
-        row.append(obj["Budget"])
-
-        for period in period_list:
-            row.append(obj[period])
-
-        row.append(forecast_period)
-        row.append(year)
-
-        yield row
+from forecast.models import FinancialPeriod, ForecastMonthlyFigure
 
 
-class ForecastViewSet(
-    ViewSet,
-):
-    authentication_classes = (HawkAuthentication,)
-    permission_classes = ()
+class ForecastViewSet(DataLakeViewSet, FigureFieldData):
+    filename = "forecast"
+    forecast_title = [
+        "Forecast",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Year",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
 
-    @decorator_from_middleware(HawkResponseMiddleware)
-    def list(self, request):
-        # get relevant financial periods
-        actual_periods_qs = FinancialPeriod.objects.filter(
-            actual_loaded=True
-        ).values_list("financial_period_code", flat=True)
-
-        # add current month to period list
-        actual_periods = [0, ] + list(actual_periods_qs)
-
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = "attachment; filename=forecast.csv"
-        writer = csv.writer(response, csv.excel)
-
-        # Titles
-        writer.writerow([
-            "Group name",
-            "Group code",
-            "Directorate name",
-            "Directorate code",
-            "Cost Centre name",
-            "Cost Centre code",
-            "Budget grouping",
-            "Expenditure type",
-            "Expenditure type description",
-            "Budget Type",
-            "Budget category",
-            "Budget/Forecast NAC",
-            "Budget/Forecast NAC description",
-            "PO/Actual NAC",
-            "Natural Account code description",
-            "NAC Expenditure type",
-            "Programme code",
-            "Programme code description",
-            "Contract code",
-            "Contract description",
-            "Market code",
-            "Market description",
-            "Project code",
-            "Project description",
-            "Budget",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-            "Jan",
-            "Feb",
-            "Mar",
-            "Adj1",
-            "Adj2",
-            "Adj3",
-            "Period",
-            "Year",
-        ])
-
-        period_list = FinancialPeriod.financial_period_info.period_display_list()
+    def write_data(self, writer):
         current_year = get_current_financial_year()
-
-        for forecast_period in actual_periods:
-            fields = ForecastQueryFields(forecast_period)
-
-            data_model = forecast_budget_view_model[forecast_period]
-            period_query = data_model.view_data.raw_data_annotated(
-                fields.VIEW_FORECAST_DOWNLOAD_COLUMNS,
+        self.set_fields()
+        # Current forecast
+        forecast_period_list = (
+            FinancialPeriod.financial_period_info.forecast_period_code_list()
+        )
+        actual_queryset = (
+            ForecastMonthlyFigure.objects.exclude(amount=0)
+            .select_related(*self.select_related_list)
+            .filter(archived_status__isnull=True)
+            .filter(financial_year_id=current_year)
+            .filter(financial_period_id__in=forecast_period_list)
+            .values_list(
+                *self.chart_of_account_field_list,
+                "amount",
+                "financial_period__financial_period_code",
+                "financial_period__period_short_name",
+                "financial_year_id",
             )
+        )
 
-            for data_row in forecast_query_iterator(
-                    period_query,
-                    fields.VIEW_FORECAST_DOWNLOAD_COLUMNS,
-                    period_list,
-                    forecast_period,
-                    current_year,
-            ):
-                writer.writerow(data_row)
+        for row in actual_queryset:
+            writer.writerow(row)
 
-        return response
+        # Archived  forecast for the previous part of the year
+        budget_queryset = (
+            (
+                ForecastMonthlyFigure.objects.exclude(amount=0).select_related(
+                    *self.select_related_list
+                )
+            )
+            .filter(archived_status__isnull=False)
+            .filter(financial_year_id=current_year)
+            .values_list(
+                *self.chart_of_account_field_list,
+                "amount",
+                "financial_period__financial_period_code",
+                "financial_period__period_short_name",
+                "financial_year_id",
+                "archived_status__archived_period__financial_period_code",
+                "archived_status__archived_period__period_short_name",
+            )
+        )
+
+        for row in budget_queryset:
+            writer.writerow(row)

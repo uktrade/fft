@@ -18,17 +18,19 @@ class DataLakeTesting(TestCase):
     @override_settings(
         HAWK_INCOMING_ACCESS_KEY="some-id", HAWK_INCOMING_SECRET_KEY="some-secret",
     )
-    def check_data(self):
+    def get_data(self):
         test_url = f"http://testserver{reverse(self.url_name)}"
 
         sender = hawk_auth_sender(url=test_url)
-        response = APIClient().get(
+        return APIClient().get(
             test_url,
             content_type="",
             HTTP_AUTHORIZATION=sender.request_header,
             HTTP_X_FORWARDED_FOR="1.2.3.4, 123.123.123.123",
         )
 
+    def check_data(self):
+        response = self.get_data()
         assert response["Content-Type"] == "text/csv"
         content = response.content.decode("utf-8")
         data = csv.reader(io.StringIO(content))
