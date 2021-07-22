@@ -14,10 +14,10 @@ class FCOMappingViewSet(DataLakeViewSet):
         "Expenditure Type",
         "Budget Grouping",
         "Budget Category",
-        "DIT(Oracle) Code",
-        "DIT(Oracle) Description",
-        "FCO(Prism) Code",
-        "FCO(Prism) Description",
+        "DIT Oracle Code",
+        "DIT Oracle Description",
+        "FCO Prism Code",
+        "FCO Prism Description",
         "Year",
     ]
 

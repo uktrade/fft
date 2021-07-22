@@ -15,7 +15,7 @@ class FigureFieldData:
     ]
     chart_of_account_titles = [
         "Cost Centre code",
-        "PO/Actual NAC",
+        "Actual NAC",
         "Programme code",
         "Contract code",
         "Market code",

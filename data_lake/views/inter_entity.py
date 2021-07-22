@@ -15,7 +15,7 @@ class InterEntityViewSet(DataLakeViewSet):
         "L1 Description",
         "ORACLE - Inter Entity Code",
         "ORACLE - Inter Entity Description",
-        "Treasury - CPID(Departmental Code No.) ",
+        "Treasury - CPID Departmental Code No. ",
         "Year",
     ]
 
