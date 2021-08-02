@@ -102,51 +102,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(populate_period),
         migrations.RunPython(create_forecast_expenditure_types),
         migrations.RunPython(create_forecast_lock),
-        # 0038_auto_create_view_forecast_oscar_return
-        migrations.RunSQL(
-            """DROP VIEW  if exists "forecast_oscarreturn";
-            CREATE VIEW "forecast_oscarreturn" as 
-
-            SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
-            coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id")
-            account_l5_code,
-            "treasurySS_subsegment"."sub_segment_code" ,
-            "treasurySS_subsegment"."sub_segment_long_name" ,                    
-                       ROUND(SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END)/100000) AS apr,
-                       ROUND(SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END)/100000) AS may,
-                       ROUND(SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END)/100000) AS jun,
-                       ROUND(SUM(CASE WHEN financial_period_id = 4 THEN amount ELSE NULL END)/100000) AS jul,
-                       ROUND(SUM(CASE WHEN financial_period_id = 5 THEN amount ELSE NULL END)/100000) AS aug,
-                       ROUND(SUM(CASE WHEN financial_period_id = 6 THEN amount ELSE NULL END)/100000) AS sep,
-                       ROUND(SUM(CASE WHEN financial_period_id = 7 THEN amount ELSE NULL END)/100000) AS oct,
-                       ROUND(SUM(CASE WHEN financial_period_id = 8 THEN amount ELSE NULL END)/100000) AS nov,
-                       ROUND(SUM(CASE WHEN financial_period_id = 9 THEN amount ELSE NULL END)/100000) AS "dec",
-                       ROUND(SUM(CASE WHEN financial_period_id = 10 THEN amount ELSE NULL END)/100000) AS jan,
-                       ROUND(SUM(CASE WHEN financial_period_id = 11 THEN amount ELSE NULL END)/100000) AS feb,
-                       ROUND(SUM(CASE WHEN financial_period_id = 12 THEN amount ELSE NULL END)/100000) AS mar,
-                       ROUND(SUM(CASE WHEN financial_period_id = 13 THEN amount ELSE NULL END)/100000) AS adj1 ,
-                       ROUND(SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END)/100000) AS adj2 ,
-                       ROUND(SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END)/100000) AS adj3
-        FROM "forecast_forecastmonthlyfigure"
-                INNER JOIN "forecast_financialcode" on (forecast_forecastmonthlyfigure.financial_code_id = forecast_financialcode.id)
-                    LEFT OUTER JOIN "chartofaccountDIT_naturalcode"
-                    ON ("forecast_financialcode"."natural_account_code_id" = "chartofaccountDIT_naturalcode"."natural_account_code")
-                    INNER JOIN "costcentre_costcentre"
-                    ON ("forecast_financialcode"."cost_centre_id" = "costcentre_costcentre"."cost_centre_code")
-                    INNER JOIN "costcentre_directorate"
-                    ON ("costcentre_costcentre"."directorate_id" = "costcentre_directorate"."directorate_code")
-                    INNER JOIN "costcentre_departmentalgroup"
-                    ON ("costcentre_directorate"."group_id" = "costcentre_departmentalgroup"."group_code")
-                    INNER JOIN "chartofaccountDIT_programmecode" ON ("forecast_financialcode"."programme_id" = "chartofaccountDIT_programmecode"."programme_code")
-                    LEFT OUTER JOIN "treasurySS_subsegment" ON ("costcentre_departmentalgroup"."treasury_segment_fk_id" = "treasurySS_subsegment"."Segment_code_id"
-                    AND "chartofaccountDIT_programmecode"."budget_type_id" = "treasurySS_subsegment"."dit_budget_type_id")
-                    INNER JOIN "core_financialyear" ON ("forecast_forecastmonthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
-                    WHERE "core_financialyear"."current" = TRUE 
-                    GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
-                    "treasurySS_subsegment"."sub_segment_code" ;  
-        """,
-            'DROP VIEW "forecast_oscarreturn";',
-        ),
         # 0050_auto_20200116_1204
         migrations.RunSQL("""UPDATE public."chartofaccountDIT_budgettype"
                                             SET budget_type_display_order=1
@@ -220,51 +175,6 @@ class Migration(migrations.Migration):
                 DROP VIEW if exists yearly_budget;
                     DROP VIEW if exists annual_forecast;
                 """,
-        ),
-        migrations.RunSQL(
-            """
-            DROP VIEW  if exists "forecast_oscarreturn";
-            CREATE VIEW "forecast_oscarreturn" as 
-    
-            SELECT ROW_NUMBER () OVER (ORDER BY "treasurySS_subsegment"."sub_segment_code"),
-            coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id")
-            account_l5_code,
-            "treasurySS_subsegment"."sub_segment_code" ,
-            "treasurySS_subsegment"."sub_segment_long_name" ,                    
-                       ROUND(SUM(CASE WHEN financial_period_id = 1 THEN amount ELSE NULL END)/100000) AS apr,
-                       ROUND(SUM(CASE WHEN financial_period_id = 2 THEN amount ELSE NULL END)/100000) AS may,
-                       ROUND(SUM(CASE WHEN financial_period_id = 3 THEN amount ELSE NULL END)/100000) AS jun,
-                       ROUND(SUM(CASE WHEN financial_period_id = 4 THEN amount ELSE NULL END)/100000) AS jul,
-                       ROUND(SUM(CASE WHEN financial_period_id = 5 THEN amount ELSE NULL END)/100000) AS aug,
-                       ROUND(SUM(CASE WHEN financial_period_id = 6 THEN amount ELSE NULL END)/100000) AS sep,
-                       ROUND(SUM(CASE WHEN financial_period_id = 7 THEN amount ELSE NULL END)/100000) AS oct,
-                       ROUND(SUM(CASE WHEN financial_period_id = 8 THEN amount ELSE NULL END)/100000) AS nov,
-                       ROUND(SUM(CASE WHEN financial_period_id = 9 THEN amount ELSE NULL END)/100000) AS "dec",
-                       ROUND(SUM(CASE WHEN financial_period_id = 10 THEN amount ELSE NULL END)/100000) AS jan,
-                       ROUND(SUM(CASE WHEN financial_period_id = 11 THEN amount ELSE NULL END)/100000) AS feb,
-                       ROUND(SUM(CASE WHEN financial_period_id = 12 THEN amount ELSE NULL END)/100000) AS mar,
-                       ROUND(SUM(CASE WHEN financial_period_id = 13 THEN amount ELSE NULL END)/100000) AS adj1 ,
-                       ROUND(SUM(CASE WHEN financial_period_id = 14 THEN amount ELSE NULL END)/100000) AS adj2 ,
-                       ROUND(SUM(CASE WHEN financial_period_id = 15 THEN amount ELSE NULL END)/100000) AS adj3
-        FROM "forecast_forecastmonthlyfigure"
-                INNER JOIN "forecast_financialcode" on (forecast_forecastmonthlyfigure.financial_code_id = forecast_financialcode.id)
-                    LEFT OUTER JOIN "chartofaccountDIT_naturalcode"
-                    ON ("forecast_financialcode"."natural_account_code_id" = "chartofaccountDIT_naturalcode"."natural_account_code")
-                    INNER JOIN "costcentre_costcentre"
-                    ON ("forecast_financialcode"."cost_centre_id" = "costcentre_costcentre"."cost_centre_code")
-                    INNER JOIN "costcentre_directorate"
-                    ON ("costcentre_costcentre"."directorate_id" = "costcentre_directorate"."directorate_code")
-                    INNER JOIN "costcentre_departmentalgroup"
-                    ON ("costcentre_directorate"."group_id" = "costcentre_departmentalgroup"."group_code")
-                    INNER JOIN "chartofaccountDIT_programmecode" ON ("forecast_financialcode"."programme_id" = "chartofaccountDIT_programmecode"."programme_code")
-                    LEFT OUTER JOIN "treasurySS_subsegment" ON ("costcentre_departmentalgroup"."treasury_segment_fk_id" = "treasurySS_subsegment"."Segment_code_id"
-                    AND "chartofaccountDIT_programmecode"."budget_type_id" = "treasurySS_subsegment"."dit_budget_type_id")
-                    INNER JOIN "core_financialyear" ON ("forecast_forecastmonthlyfigure"."financial_year_id" = "core_financialyear"."financial_year")
-                    WHERE "core_financialyear"."current" = TRUE 
-                    AND "forecast_forecastmonthlyfigure"."archived_status_id" is NULL
-                    GROUP BY coalesce("chartofaccountDIT_naturalcode"."account_L5_code_upload_id", "chartofaccountDIT_naturalcode"."account_L5_code_id"),
-                    "treasurySS_subsegment"."sub_segment_code" ;  
-        """,
         ),
         migrations.RunSQL(
             """

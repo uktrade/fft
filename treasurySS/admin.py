@@ -7,14 +7,20 @@ from django.http import HttpResponseRedirect
 
 from core.admin import (
     AdminEditOnly,
+    AdminExport,
     AdminImportExport,
     AdminReadOnly,
 )
+from core.utils.export_helpers import generic_table_iterator
 
-from treasurySS.export_csv import _export_sub_segment_iterator
+from treasurySS.export_csv import (
+    _export_segment_iterator,
+    _export_sub_segment_iterator,
+)
 from treasurySS.import_csv import import_SS_class
 from treasurySS.models import (
     EstimateRow,
+    OrganizationCode,
     Segment,
     SegmentGrandParent,
     SegmentParent,
@@ -22,8 +28,31 @@ from treasurySS.models import (
 )
 
 
-class SegmentAdmin(AdminReadOnly):
-    list_display = ("segment_code", "segment_long_name", "segment_parent_code")
+class SegmentAdmin(AdminEditOnly, AdminExport):
+    list_display = ("segment_code", "segment_long_name",
+                    "segment_parent_code", "organization_code")
+
+    def organization_code(self, instance):
+        return instance.organization.organization_code
+
+    def get_readonly_fields(self, request, obj=None):
+        return [
+            "segment_code",
+            "segment_long_name",
+            "segment_parent_code",
+        ]
+
+    def get_fields(self, request, obj=None):
+        return [
+            "segment_code",
+            "segment_long_name",
+            "segment_parent_code",
+            "organization",
+        ]
+
+    @property
+    def export_func(self):
+        return _export_segment_iterator
 
 
 class SegmentGrandParentAdmin(AdminReadOnly):
@@ -95,6 +124,9 @@ class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
             "estimates_row_code",
         ]
 
+    # Give a user friendly message if
+    # giving the same budget code to two subsegment
+    # in the same segment
     def change_view(self, request, object_id, form_url='', extra_context=None):
         try:
             return super(SubSegmentAdmin, self).change_view(
@@ -116,6 +148,15 @@ class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
         return _export_sub_segment_iterator
 
 
+class OrganizationCodeAdmin(AdminExport):
+    list_display = ("organization_code", "organization_alias")
+
+    @property
+    def export_func(self):
+        return generic_table_iterator
+
+
+admin.site.register(OrganizationCode, OrganizationCodeAdmin)
 admin.site.register(Segment, SegmentAdmin)
 admin.site.register(SegmentGrandParent, SegmentGrandParentAdmin)
 admin.site.register(SegmentParent, SegmentParentAdmin)

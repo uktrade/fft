@@ -5,6 +5,21 @@ from chartofaccountDIT.models import BudgetType
 from core.metamodels import IsActiveModel
 
 
+class OrganizationCode(IsActiveModel):
+    organization_code = models.CharField(
+        max_length=50,
+        verbose_name="Organization"
+    )
+    organization_alias = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return f"{self.organization_code} - {self.organization_alias}"
+
+
 # Treasury data
 class SegmentGrandParent(IsActiveModel):
     segment_grand_parent_code = models.CharField(
@@ -47,6 +62,10 @@ class Segment(IsActiveModel):
         max_length=255, verbose_name="segment long name"
     )
     segment_parent_code = models.ForeignKey(SegmentParent, on_delete=models.PROTECT)
+
+    organization = models.ForeignKey(
+        OrganizationCode, on_delete=models.PROTECT, blank=True, null=True,
+    )
 
     def __str__(self):
         return self.segment_long_name
@@ -142,4 +161,4 @@ class SubSegment(IsActiveModel):
         unique_together = ("Segment_code", "dit_budget_type")
 
     def __str__(self):
-        return "{} - {}".format(self.sub_segment_code, self.sub_segment_long_name)
+        return f"{self.sub_segment_code} - {self.sub_segment_long_name}"

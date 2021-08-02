@@ -1,7 +1,7 @@
 from core.utils.export_helpers import export_to_excel
 from core.utils.generic_helpers import today_string
 
-from forecast.models import OSCARReturn
+from oscar_return.models import OSCARReturn
 
 
 def export_oscarreport_iterator(queryset):
@@ -32,8 +32,8 @@ def export_oscarreport_iterator(queryset):
         try:
             yield [
                 obj.row_number,
-                "UKT013",
-                "UK TRADE & INVESTMENT",
+                obj.organization_code,
+                obj.organization_alias,
                 obj.account_l5_code.account_l5_code if obj.account_l5_code else "",
                 obj.account_l5_code.account_l5_long_name if obj.account_l5_code else "",
                 obj.sub_segment_code,
