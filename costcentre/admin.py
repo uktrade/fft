@@ -497,7 +497,7 @@ class BusinessPartnerAdmin(AdminActiveField, AdminExport):
 
 class CostCentrePersonAdmin(AdminActiveField, AdminExport):
     list_display = ("full_name", "is_dg", "is_director", "active")
-    search_fields = ["name", "last_name"]
+    search_fields = ["name", "surname"]
 
     list_filter = ("active", "is_director", "is_dg")
 
