@@ -10,7 +10,6 @@
   "dependencies": {
     "braces": "^3.0.2",
     "dot-prop": "^5.2.0",
-    "eslint": "^7.8.1",
     "mem": "^6.1.1",
     "minimist": "^1.2.5",
     "react-scripts": "^4.0.3"
