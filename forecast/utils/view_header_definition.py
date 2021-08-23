@@ -4,3 +4,4 @@ variance_header = 'Variance -overspend/underspend'
 variance_percentage_header = 'Variance %'
 year_to_date_header = 'Year to Date Actuals'
 budget_spent_percentage_header = '% of budget spent to date'
+variance_outturn_header = "Forecast movement"

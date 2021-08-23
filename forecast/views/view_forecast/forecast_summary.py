@@ -81,12 +81,12 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             order_list=self.field_infos.project_order_list,
         )
 
+        # Build the table structures
         if self.field_infos.hierarchy_type == SHOW_COSTCENTRE:
             programme_table = ForecastSubTotalTable(
                 self.field_infos.programme_columns,
                 programme_data,
-                actual_month_list=self.month_list,
-                adj_visible_list=self.adj_visible_list,
+                **self.table_kwargs,
             )
         else:
             programme_table = ForecastWithLinkTable(
@@ -98,8 +98,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 filter_code,
                 self.field_infos.programme_columns,
                 programme_data,
-                actual_month_list=self.month_list,
-                adj_visible_list=self.adj_visible_list,
+                **self.table_kwargs,
             )
 
         programme_table.attrs["caption"] = "Control total report"
@@ -116,8 +115,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             filter_code,
             self.field_infos.expenditure_columns,
             expenditure_data,
-            actual_month_list=self.month_list,
-            adj_visible_list=self.adj_visible_list,
+            **self.table_kwargs,
         )
         expenditure_table.attrs["caption"] = "Expenditure report"
         expenditure_table.tag = self.table_tag
@@ -129,8 +127,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             filter_code,
             self.field_infos.project_columns,
             project_data,
-            actual_month_list=self.month_list,
-            adj_visible_list=self.adj_visible_list,
+            **self.table_kwargs,
         )
         project_table.attrs["caption"] = "Project report"
         project_table.tag = self.table_tag
@@ -139,8 +136,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
             hierarchy_table = ForecastSubTotalTable(
                 hierarchy_columns,
                 hierarchy_data,
-                actual_month_list=self.month_list,
-                adj_visible_list=self.adj_visible_list,
+                **self.table_kwargs,
             )
         else:
             hierarchy_table = ForecastWithLinkTable(
@@ -150,8 +146,7 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
                 "",
                 hierarchy_columns,
                 hierarchy_data,
-                actual_month_list=self.month_list,
-                adj_visible_list=self.adj_visible_list,
+                **self.table_kwargs,
             )
 
         hierarchy_table.attrs["caption"] = "Forecast hierarchy report"

@@ -77,8 +77,7 @@ class ForecastExpenditureDetailsMixin(ForecastViewTableMixin):
 
         nac_table = ForecastSubTotalTable(
             self.field_infos.nac_columns, nac_data,
-            actual_month_list=self.month_list,
-            adj_visible_list=self.adj_visible_list,
+            **self.table_kwargs,
         )
         nac_table.attrs["caption"] = "Expenditure Report"
         nac_table.tag = self.table_tag

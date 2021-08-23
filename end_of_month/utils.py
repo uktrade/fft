@@ -55,3 +55,15 @@ def get_archivable_month():
         )
 
     return last_month_with_actual
+
+
+def monthly_variance_exists(period):
+    # The monthly variance is not relevant when we display previous years
+    # or we display the April archived period
+    # or there are no archived period (happens in April)
+    # period 0 is used for the current period
+    if period > 2000 or period == 1 \
+            or not EndOfMonthStatus.archived_period_objects.archived_list():
+        return False
+    else:
+        return True

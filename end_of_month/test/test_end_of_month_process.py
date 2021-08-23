@@ -348,23 +348,23 @@ class ReadArchivedBudgetTest(TestCase):
         for period in range(0, 16):
             self.archived_figure.append(0)
 
-    def get_period_total(self, period):
+    def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.all()
         return tot_q[0].budget
 
-    def get_current_total(self):
-        return self.get_period_total(0)
+    def get_current_budget_total(self):
+        return self.get_period_budget_total(0)
 
     def check_archive_period(self, tested_period):
-        total_before = self.get_current_total()
+        total_before = self.get_current_budget_total()
         end_of_month_archive(tested_period)
         # run a query giving the full total
-        archived_total = self.get_period_total(tested_period)
+        archived_total = self.get_period_budget_total(tested_period)
         self.assertEqual(total_before, archived_total)
         change_amount = tested_period * 10000
         self.init_data.monthly_figure_update(tested_period + 1, change_amount, "budget")
-        current_total = self.get_current_total()
+        current_total = self.get_current_budget_total()
         self.archived_figure[tested_period] = archived_total
         self.assertNotEqual(current_total, archived_total)
         self.assertNotEqual(current_total, archived_total)
@@ -379,7 +379,7 @@ class ReadArchivedBudgetTest(TestCase):
             )
             # Check that nothig has corrupted the archived figures
             self.assertEqual(
-                self.archived_figure[period], self.get_period_total(period)
+                self.archived_figure[period], self.get_period_budget_total(period)
             )
 
     # The following tests check that the archived figures are not changed by
