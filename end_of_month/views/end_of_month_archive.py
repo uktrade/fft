@@ -55,7 +55,7 @@ class EndOfMonthProcessView(
 
     def form_valid(self, form):
         archivable_period = get_archivable_month()
-        end_of_month_archive(archivable_period)
+        end_of_month_archive(archivable_period, True)
         self.period_code = archivable_period
         return super().form_valid(form)
 

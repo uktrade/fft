@@ -75,8 +75,7 @@ class ForecastProgrammeDetailsMixin(ForecastViewTableMixin):
         programme_details_table = ForecastSubTotalTable(
             columns,
             programme_details_data,
-            actual_month_list=self.month_list,
-            adj_visible_list=self.adj_visible_list,
+            **self.table_kwargs,
         )
         programme_details_table.attrs["caption"] = "Programme Report"
         programme_details_table.tag = self.table_tag

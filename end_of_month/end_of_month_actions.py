@@ -9,6 +9,7 @@ from end_of_month.models import (
     EndOfMonthStatus,
     MonthlyTotalBudget,
 )
+from end_of_month.monthly_outturn import create_outturn_for_variance
 
 from forecast.models import (
     MAX_PERIOD_CODE,
@@ -89,8 +90,7 @@ def get_end_of_month(period_code):
     return end_of_month_info
 
 
-# TODO add transaction
-def end_of_month_archive(period_id):
+def end_of_month_archive(period_id, used_for_current_month=False):
     end_of_month_info = get_end_of_month(period_id)
 
     current_year = get_current_financial_year()
@@ -134,6 +134,9 @@ def end_of_month_archive(period_id):
     end_of_month_info.archived = True
     end_of_month_info.archived_date = timezone.now()
     end_of_month_info.save()
+
+    # create the outturn for the archived period.
+    create_outturn_for_variance(period_id, current_year, used_for_current_month)
 
 
 def delete_end_of_month_archive(period_id):

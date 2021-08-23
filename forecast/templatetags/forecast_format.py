@@ -7,6 +7,7 @@ from forecast.utils.view_header_definition import (
     variance_header,
     variance_percentage_header,
     year_to_date_header,
+    variance_outturn_header,
 )
 register = template.Library()
 
@@ -15,6 +16,7 @@ forecast_figure_cols = [
     year_to_date_header,
     forecast_total_header,
     variance_header,
+    variance_outturn_header,
     'Apr',
     'May',
     'Jun',
@@ -43,7 +45,7 @@ def is_forecast_figure(_, column):
 
 @register.filter()
 def format_figure(value, column):
-    if is_forecast_figure(value, column):
+    if value and is_forecast_figure(value, column):
         try:
             figure_value = int(value) / 100
             return f'{round(figure_value):,d}'

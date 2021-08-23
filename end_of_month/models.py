@@ -62,6 +62,42 @@ class EndOfMonthStatus(BaseModel):
         return f"{str(self.archived_period.period_long_name)} - {self.archived}"
 
 
+class MonthlyOutturn(BaseModel):
+    # Used to calculate the total outturn for a period, needed for showing
+    # the variance between periods.
+    # It could be calculated when displayed
+    # but the computational overhead would be too much.
+    previous_outturn = models.BigIntegerField(default=0)  # stored in pence
+    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
+    used_for_current_month = models.BooleanField(default=False)
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.PROTECT,
+        related_name="%(app_label)s_%(class)ss",
+    )
+    # Period for which the outturn is calculated.
+    outturn_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+        related_name="end_of_month_outturn_period",
+    )
+
+    # Period using this outturn to calculate the variance.
+    # It is the successive period, ie if the outturn is calculated for May,
+    # the next forecast period will be June
+    next_forecast_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+        related_name="%(app_label)s_%(class)ss",
+    )
+
+    class Meta:
+        verbose_name = "Archived outturn"
+        verbose_name_plural = "Archived outturns"
+        ordering = ["outturn_period"]
+        unique_together = ("financial_code", "outturn_period")
+
+
 class MonthlyTotalBudget(BaseModel):
     # Used to store the budget for each archived month.
     # It could be calculated from the archived budget,

@@ -12,7 +12,7 @@ from forecast.test.test_utils import (
     format_forecast_figure,
 )
 
-TOTAL_COLUMN = -5
+TOTAL_COLUMN = -6
 
 HIERARCHY_TABLE_INDEX = 0
 PROGRAMME_TABLE_INDEX = 1
@@ -30,6 +30,14 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
 
         self.archive = SetFullYearArchive()
 
+    def total_column_index(self, period):
+        if period == 1:
+            # Previous month variance is not displayed when showing April data,
+            # because there is not a previous month.
+            # So the total is at a different position.
+            return TOTAL_COLUMN + 1
+        return TOTAL_COLUMN
+
     def check_programme_table(self, table, prog_index, period=0):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[2].find_all("td")
@@ -38,11 +46,12 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
             first_prog_cols[prog_index + 2].get_text().strip(),
             format_forecast_figure(self.archive.archived_budget[period] / 100),
         )
+        total_col_pos = self.total_column_index(period)
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
         self.assertEqual(
-            last_programme_cols[TOTAL_COLUMN].get_text().strip(),
+            last_programme_cols[total_col_pos].get_text().strip(),
             format_forecast_figure(self.archive.archived_forecast[period] / 100),
         )
 
@@ -55,9 +64,11 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
         )
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
+        total_col_pos = self.total_column_index(period)
+
         # Check the total for the year
         self.assertEqual(
-            last_expenditure_cols[TOTAL_COLUMN].get_text().strip(),
+            last_expenditure_cols[total_col_pos].get_text().strip(),
             format_forecast_figure(self.archive.archived_forecast[period] / 100),
         )
 
@@ -74,9 +85,11 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
         )
 
         last_project_cols = project_rows[-1].find_all("td")
+        total_col_pos = self.total_column_index(period)
+
         # Check the total for the year
         self.assertEqual(
-            last_project_cols[TOTAL_COLUMN].get_text().strip(),
+            last_project_cols[total_col_pos].get_text().strip(),
             format_forecast_figure(self.archive.archived_forecast[period] / 100),
         )
 
@@ -94,9 +107,11 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
         )
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
+        total_col_pos = self.total_column_index(period)
+
         # Check the total for the year
         self.assertEqual(
-            last_hierarchy_cols[TOTAL_COLUMN].get_text().strip(),
+            last_hierarchy_cols[total_col_pos].get_text().strip(),
             format_forecast_figure(self.archive.archived_forecast[period] / 100),
         )
 

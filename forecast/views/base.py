@@ -9,6 +9,8 @@ from django_tables2 import MultiTableMixin
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 
+from end_of_month.utils import monthly_variance_exists
+
 from forecast.forms import ForecastPeriodForm
 from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import (
@@ -90,11 +92,13 @@ class ForecastViewTableMixin(MultiTableMixin):
 
     def __init__(self, *args, **kwargs):
         self._period = None
-        self._month_list = None
+        self._actual_month_list = None
         self._datamodel = None
         self._table_tag = None
         self._field_infos = None
         self._year = None
+        self._show_monthly_variance = None
+        self._table_kwargs = None
         super().__init__(*args, **kwargs)
 
     @property
@@ -110,6 +114,13 @@ class ForecastViewTableMixin(MultiTableMixin):
         return self._period
 
     @property
+    def show_monthly_variance(self):
+
+        if self._show_monthly_variance is None:
+            self._show_monthly_variance = monthly_variance_exists(self.period)
+        return self._show_monthly_variance
+
+    @property
     def year(self):
         if self._year is None:
             if self.field_infos.current_year:
@@ -119,33 +130,33 @@ class ForecastViewTableMixin(MultiTableMixin):
         return self._year
 
     @property
-    def month_list(self):
+    def actual_month_list(self):
         # returns the list of month with actuals in the selected period.
-        if self._month_list is None:
+        if self._actual_month_list is None:
             if self.year:
                 if self.year == get_current_financial_year() - 1:
                     # We are displaying the last year before the current one.
                     # It is possible that the actuals for march and the adjustments
                     # have not been loaded yet, so get the list from
                     # the FinancialPeriod
-                    self._month_list = FinancialPeriod.financial_period_info.\
+                    self._actual_month_list = FinancialPeriod.financial_period_info.\
                         actual_month_previous_year_list()
                 else:
                     # We are displaying historical data, so we need to include
                     # the adjustment periods (ADJxx), and everything is actuals
-                    self._month_list = \
+                    self._actual_month_list = \
                         FinancialPeriod.financial_period_info.month_adj_display_list()
             else:
                 period = self.period
                 if period:
                     # We are displaying historical forecast
-                    self._month_list = \
+                    self._actual_month_list = \
                         FinancialPeriod.financial_period_info.month_sublist(period)
                 else:
-                    self._month_list = \
+                    self._actual_month_list = \
                         FinancialPeriod.financial_period_info.actual_month_list()
 
-        return self._month_list
+        return self._actual_month_list
 
     @property
     def adj_visible_list(self):
@@ -156,6 +167,16 @@ class ForecastViewTableMixin(MultiTableMixin):
         else:
             list = FinancialPeriod.financial_period_info.adj_display_list()
         return list
+
+    @property
+    def table_kwargs(self):
+        if self._table_kwargs is None:
+            self._table_kwargs = {
+                "actual_month_list": self.actual_month_list,
+                "adj_visible_list": self.adj_visible_list,
+                "show_monthly_variance": self.show_monthly_variance,
+            }
+        return self._table_kwargs
 
     @property
     def data_model(self):

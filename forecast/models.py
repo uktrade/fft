@@ -6,6 +6,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import (
     Max,
+    F,
     Q,
     Sum,
     UniqueConstraint,
@@ -30,6 +31,12 @@ from core.utils.generic_helpers import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.models import CostCentre
+
+from forecast.utils.view_field_definition import (
+    budget_field,
+    outturn_field,
+    outturn_variance_field,
+)
 
 GRAND_TOTAL_ROW = "grand_total"
 MAX_PERIOD_CODE = 15
@@ -537,7 +544,10 @@ class SubTotalForecast:
         self.period_list = [
             value for value in self.full_list if value in self.display_data[0].keys()
         ]
-        self.period_list.append("Budget")
+        self.period_list.append(budget_field)
+        self.period_list.append("Previous_outturn")
+        self.period_list.append(outturn_field)
+        self.period_list.append(outturn_variance_field)
         self.remove_empty_rows()
         # Check that there are rows left. Maybe they were all
         # with values of 0.
@@ -674,7 +684,7 @@ class DisplaySubTotalManager(models.Manager):
         self, columns, filter_dict={}, year=0, order_list=[], include_zeros=False
     ):
         annotations = {
-            "Budget": Sum("budget"),
+            budget_field: Sum("budget"),
             "Apr": Sum("apr"),
             "May": Sum("may"),
             "Jun": Sum("jun"),
@@ -690,6 +700,42 @@ class DisplaySubTotalManager(models.Manager):
             "Adj1": Sum("adj1"),
             "Adj2": Sum("adj2"),
             "Adj3": Sum("adj3"),
+            outturn_field: Sum(
+                F("apr")
+                + F("may")
+                + F("jun")
+                + F("jul")
+                + F("aug")
+                + F("sep")
+                + F("oct")
+                + F("nov")
+                + F("dec")
+                + F("jan")
+                + F("feb")
+                + F("mar")
+                + F("adj1")
+                + F("adj2")
+                + F("adj3")
+            ),
+            outturn_variance_field: Sum(
+                F("apr")
+                + F("may")
+                + F("jun")
+                + F("jul")
+                + F("aug")
+                + F("sep")
+                + F("oct")
+                + F("nov")
+                + F("dec")
+                + F("jan")
+                + F("feb")
+                + F("mar")
+                + F("adj1")
+                + F("adj2")
+                + F("adj3")
+                - F("previous_outturn")
+            ),
+            "Previous_outturn": Sum("previous_outturn"),
         }
         # Lines with 0 values across the year have no year specified:
         # they come from an outer join in the query.
@@ -777,6 +823,7 @@ class ForecastingDataViewAbstract(models.Model):
     adj1 = models.BigIntegerField(default=0)
     adj2 = models.BigIntegerField(default=0)
     adj3 = models.BigIntegerField(default=0)
+    previous_outturn = models.BigIntegerField(default=0, blank=True, null=True,)
     objects = models.Manager()  # The default manager.
     view_data = DisplaySubTotalManager()
 
