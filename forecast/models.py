@@ -517,7 +517,7 @@ class SubTotalForecast:
             else:
                 break
 
-    def subtotal_data(
+    def calculate_subtotal_data(
         self, display_total_column, subtotal_columns_arg, show_grand_total,
     ):
         # Make a copy so that modifying this will not touch
@@ -538,16 +538,18 @@ class SubTotalForecast:
             FinancialPeriod.objects.values_list("period_short_name", flat=True)
         )
 
+        self.full_list.append(budget_field)
+        self.full_list.append("Previous_outturn")
+        self.full_list.append(outturn_field)
+        self.full_list.append(outturn_variance_field)
+
         # remove missing periods (like Adj1,
         # etc from the list used to add the
         # periods together.
         self.period_list = [
             value for value in self.full_list if value in self.display_data[0].keys()
         ]
-        self.period_list.append(budget_field)
-        self.period_list.append("Previous_outturn")
-        self.period_list.append(outturn_field)
-        self.period_list.append(outturn_variance_field)
+
         self.remove_empty_rows()
         # Check that there are rows left. Maybe they were all
         # with values of 0.
@@ -676,7 +678,7 @@ class DisplaySubTotalManager(models.Manager):
         if not raw_data:
             return []
         r = SubTotalForecast(raw_data)
-        return r.subtotal_data(
+        return r.calculate_subtotal_data(
             display_total_column, subtotal_columns, show_grand_total,
         )
 
