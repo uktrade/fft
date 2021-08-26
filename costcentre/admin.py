@@ -17,6 +17,7 @@ from core.admin import (
     AdminExport,
     AdminImportExport,
     AdminImportExtraExport,
+    AdminReadOnly,
 )
 
 from costcentre.exportcsv import (
@@ -509,7 +510,7 @@ class CostCentrePersonAdmin(AdminActiveField, AdminExport):
         return export_person_iterator
 
 
-class HistoricCostCentreAdmin(AdminArchived, AdminExport):
+class HistoricCostCentreAdmin(AdminArchived, AdminReadOnly, AdminExport):
     list_display = (
         "cost_centre_code",
         "cost_centre_name",
@@ -545,6 +546,7 @@ class HistoricCostCentreAdmin(AdminArchived, AdminExport):
         "group_code",
         "group_name",
         "dg_fullname",
+        "treasury_segment_code",
         "deputy_director_fullname",
         "business_partner_fullname",
         "bsce_email",
@@ -552,18 +554,6 @@ class HistoricCostCentreAdmin(AdminArchived, AdminExport):
         "active",
         "archived",
     )
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return [
-                "financial_year",
-                "cost_centre_code",
-                "directorate_code",
-                "group_code",
-                "archived",
-            ]
-        else:
-            return ["created", "archived", "updated"]
 
     @property
     def export_func(self):

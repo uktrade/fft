@@ -89,6 +89,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'abstract': False,
+                'unique_together': {
+                    ('Segment_code', 'dit_budget_type')},
             },
         ),
         migrations.CreateModel(

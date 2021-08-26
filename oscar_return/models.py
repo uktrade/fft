@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class OSCARReturn(models.Model):
+class OSCARReturnAbstract(models.Model):
     """Used for downloading the Oscar return.
     Mapped to a view in the database, because
     the query is too complex"""
@@ -40,6 +40,22 @@ class OSCARReturn(models.Model):
     adj3 = models.BigIntegerField(default=0)
 
     class Meta:
+        abstract = True
+        db_table = "oscar_return_oscarreturn"
+        ordering = ["sub_segment_code"]
+
+
+class OSCARReturn(OSCARReturnAbstract):
+    class Meta:
         managed = False
         db_table = "oscar_return_oscarreturn"
+        ordering = ["sub_segment_code"]
+
+
+class HistoricOSCARReturn(OSCARReturnAbstract):
+    financial_year = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = "oscar_return_historicaloscarreturn"
         ordering = ["sub_segment_code"]

@@ -201,6 +201,9 @@ class ArchivedCostCentre(ArchivedModel):
         null=True,
         blank=True,
     )
+    treasury_segment_code = models.CharField(max_length=8,
+                                             verbose_name="Treasury segment code",
+                                             null=True, blank=True)
     active = models.BooleanField(default="True")
     disabled_with_actual = models.BooleanField(
         "Disabled (Actuals to be cleared)", default="False"
@@ -209,6 +212,10 @@ class ArchivedCostCentre(ArchivedModel):
 
     @classmethod
     def archive_year(cls, cc_obj, year_obj, suffix=""):
+        if cc_obj.directorate.group.treasury_segment_fk:
+            segment_code = cc_obj.directorate.group.treasury_segment_fk.segment_code
+        else:
+            segment_code = ""
         cc_hist = cls(
             group_code=cc_obj.directorate.group.group_code,
             group_name=cc_obj.directorate.group.group_name + suffix,
@@ -222,6 +229,7 @@ class ArchivedCostCentre(ArchivedModel):
             business_partner_fullname=cc_obj.business_partner,
             financial_year=year_obj,
             bsce_email=cc_obj.bsce_email,
+            treasury_segment_code=segment_code,
             active=cc_obj.active,
             disabled_with_actual=cc_obj.disabled_with_actual,
         )
