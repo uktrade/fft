@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from django.views.generic.base import TemplateView
 
 from download_file.decorators import has_download_oscar_permission
@@ -13,6 +15,7 @@ class DownloadOscarReturnView(TemplateView):
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(
-            document_type=FileDownload.OSCAR_RETURN
+            Q(document_type=FileDownload.OSCAR_RETURN)
+            | Q(document_type=FileDownload.OSCAR_RETURN_PREVIOUS_YEAR)
         ).order_by("-created")
         return downloaded_files

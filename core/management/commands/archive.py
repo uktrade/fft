@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.archive import (
-    archive_all,
+    archive_all_chart_of_account,
     archive_analysis_1,
     archive_analysis_2,
     archive_commercial_category,
@@ -19,9 +19,12 @@ from costcentre.archive import archive_cost_centre
 
 from treasuryCOA.archive import archive_treasury_l5
 
+from treasurySS.archive import archive_treasury_segment
+
 ARCHIVE_TYPE = {
     "CostCentre": archive_cost_centre,
     "Treasury_COA": archive_treasury_l5,
+    "Treasury_SS": archive_treasury_segment,
     "Programmes": archive_programme_code,
     "NAC": archive_natural_code,
     "Analysis1": archive_analysis_1,
@@ -55,11 +58,12 @@ class Command(BaseCommand):
             archive_type = arg
 
         if archive_type == "All":
-            archive_all(financial_year)
+            archive_all_chart_of_account(financial_year)
             archive_cost_centre(financial_year)
             archive_treasury_l5(financial_year)
+            archive_treasury_segment(financial_year)
             self.stdout.write(
-                self.style.SUCCESS("Archived full chart of account.")
+                self.style.SUCCESS("Archived all.")
             )
         else:
             row = ARCHIVE_TYPE[archive_type](financial_year)

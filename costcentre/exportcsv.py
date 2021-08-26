@@ -120,16 +120,21 @@ def export_historic_costcentre_iterator(queryset):
         "Group",
         "Group Description",
         "Director General",
+        "Treasury Segment Code"
         "Financial Year",
         "Date archived",
     ]
     for obj in queryset:
+        if obj.bsce_email:
+            bsce_email = str(obj.bsce_email)
+        else:
+            bsce_email = ""
         yield [
             obj.cost_centre_code,
             obj.cost_centre_name,
             obj.deputy_director_fullname,
             obj.business_partner_fullname,
-            obj.bsce_email,
+            bsce_email,
             obj.active,
             obj.disabled_with_actual,
             obj.directorate_code,
@@ -138,6 +143,7 @@ def export_historic_costcentre_iterator(queryset):
             obj.group_code,
             obj.group_name,
             obj.dg_fullname,
+            obj.treasury_segment_code,
             obj.financial_year.financial_year_display,
             obj.archived,
         ]

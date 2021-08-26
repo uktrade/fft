@@ -17,6 +17,13 @@
             </button>
         </a>
     </p>
+    <p class="govuk-body">
+        <a class="govuk-link" href="{% url "download_previous_year_oscar" %}">
+            <button class="govuk-button" data-module="govuk-button">
+                Download last year OSCAR Return
+            </button>
+        </a>
+    </p>
     {% for document in view.downloaded_files %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">

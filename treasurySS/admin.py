@@ -19,6 +19,7 @@ from treasurySS.export_csv import (
 )
 from treasurySS.import_csv import import_SS_class
 from treasurySS.models import (
+    ArchivedSubSegment,
     EstimateRow,
     OrganizationCode,
     Segment,
@@ -156,9 +157,30 @@ class OrganizationCodeAdmin(AdminExport):
         return generic_table_iterator
 
 
+class ArchivedSubSegmentAdmin(AdminReadOnly, AdminExport):
+    search_fields = [
+        "sub_segment_code",
+        "sub_segment_long_name",
+        "Segment_code__segment_code",
+        "Segment_code__segment_long_name",
+        "control_budget_detail_code",
+        "dit_budget_type__budget_type",
+        "accounting_authority_DetailCode",
+    ]
+    list_filter = (
+        "control_budget_detail_code",
+        "dit_budget_type",
+    )
+
+    @property
+    def export_func(self):
+        return generic_table_iterator
+
+
 admin.site.register(OrganizationCode, OrganizationCodeAdmin)
 admin.site.register(Segment, SegmentAdmin)
 admin.site.register(SegmentGrandParent, SegmentGrandParentAdmin)
 admin.site.register(SegmentParent, SegmentParentAdmin)
 admin.site.register(SubSegment, SubSegmentAdmin)
+admin.site.register(ArchivedSubSegment, ArchivedSubSegmentAdmin)
 admin.site.register(EstimateRow, EstimateRowAdmin)

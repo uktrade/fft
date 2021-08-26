@@ -1,7 +1,16 @@
-from core.utils.export_helpers import export_to_excel
-from core.utils.generic_helpers import today_string
+from django.db.models import Q
 
-from oscar_return.models import OSCARReturn
+from core.models import FinancialYear
+from core.utils.export_helpers import export_to_excel
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    today_string,
+)
+
+from oscar_return.models import (
+    HistoricOSCARReturn,
+    OSCARReturn,
+)
 
 
 def export_oscarreport_iterator(queryset):
@@ -61,6 +70,36 @@ def export_oscarreport_iterator(queryset):
 
 
 def create_oscar_report():
-    title = f"OSCAR {today_string()}"
+    current_year = get_current_financial_year()
+    title = (
+        f"OSCAR {FinancialYear.objects.get(pk=current_year).financial_year_display} "
+        f" {today_string()}"
+    )
     queryset = OSCARReturn.objects.all()
+    return export_to_excel(queryset, export_oscarreport_iterator, title)
+
+
+def create_previous_year_oscar_report():
+    previous_year = get_current_financial_year() - 1
+    title = (
+        f"OSCAR {FinancialYear.objects.get(pk=previous_year).financial_year_display} "
+        f" {today_string()}"
+    )
+    queryset = HistoricOSCARReturn.objects.filter(financial_year=previous_year).exclude(
+        Q(apr=0)
+        & Q(may=0)
+        & Q(jun=0)
+        & Q(jul=0)
+        & Q(aug=0)
+        & Q(sep=0)
+        & Q(oct=0)
+        & Q(nov=0)
+        & Q(dec=0)
+        & Q(jan=0)
+        & Q(feb=0)
+        & Q(mar=0)
+        & Q(adj1=0)
+        & Q(adj2=0)
+        & Q(adj3=0)
+    )
     return export_to_excel(queryset, export_oscarreport_iterator, title)

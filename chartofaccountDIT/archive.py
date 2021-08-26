@@ -58,7 +58,7 @@ def archive_natural_code(year):
     return archive_generic(year, ArchivedNaturalCode, NaturalCode)
 
 
-def archive_all(year):
+def archive_all_chart_of_account(year):
     # Delete the archived NAC first, otherwise they stop the deletion of
     # expenditure_category and commercial_category
     ArchivedNaturalCode.objects.filter(financial_year_id=year).delete()
