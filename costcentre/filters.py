@@ -33,6 +33,8 @@ class CostCentreFilter(MyFilterSet):
             | Q(directorate__director__surname__icontains=value)
             | Q(business_partner__name__icontains=value)
             | Q(business_partner__surname__icontains=value)
+            | Q(deputy_director__name__icontains=value)
+            | Q(deputy_director__surname__icontains=value)
         )
 
     class Meta(MyFilterSet.Meta):
@@ -78,6 +80,7 @@ class CostCentreHistoricalFilter(ArchivedFilterSet):
             | Q(dg_fullname__icontains=value)
             | Q(director_fullname__icontains=value)
             | Q(business_partner_fullname__icontains=value)
+            | Q(deputy_director_fullname__icontains=value)
         )
 
     class Meta(MyFilterSet.Meta):
