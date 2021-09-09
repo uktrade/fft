@@ -33,6 +33,8 @@ help:
 build:
 	docker-compose build
 
+ first name is doris
+
 up:
 	docker-compose up
 
