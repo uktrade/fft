@@ -63,7 +63,7 @@ class BSCEFactory(factory.DjangoModelFactory):
         model = BSCEEmail
         django_get_or_create = ("bsce_email",)
 
-    bsce_email = "bsceuser@test.com"
+    bsce_email = "bsceuser@test.com"    # #PS-IGNORE
 
 
 class CostCentreFactory(factory.DjangoModelFactory):

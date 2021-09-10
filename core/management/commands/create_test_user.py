@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
+from core.test.test_base import TEST_EMAIL
+
 
 class Command(BaseCommand):
     help = "Create test user"
@@ -39,7 +41,7 @@ class Command(BaseCommand):
             password = options["password"]
 
             if not email:
-                email = "test@test.com"
+                email = TEST_EMAIL
 
             if not password:
                 self.stdout.write(

@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
 
+from core.test.test_base import TEST_EMAIL
+
 from upload_file.templatetags.upload_permissions import (
     has_upload_permission,
 )
@@ -10,7 +12,7 @@ from upload_file.templatetags.upload_permissions import (
 class UploadPermissionTestTestCase(TestCase):
     def test_has_upload_permission(self):
         test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         assert not has_upload_permission(test_user)
@@ -22,8 +24,6 @@ class UploadPermissionTestTestCase(TestCase):
         test_user.save()
 
         # Bust permissions cache (refresh_from_db does not work)
-        test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
-        )
+        test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         assert has_upload_permission(test_user) is True

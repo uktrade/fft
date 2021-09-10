@@ -5,6 +5,8 @@ from django.test import (
     TestCase,
 )
 
+from core.test.test_base import TEST_EMAIL
+
 from forecast.tasks import process_uploaded_file
 
 from upload_file.models import FileUpload
@@ -14,7 +16,7 @@ from upload_file.test.factories import FileUploadFactory
 class ProcessUploadTest(TestCase):
     def setUp(self):
         test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         self.file_upload = FileUploadFactory(

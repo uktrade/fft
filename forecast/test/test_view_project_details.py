@@ -12,7 +12,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_EMAIL
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -116,7 +116,7 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
 
         # Bust permissions cache (refresh_from_db does not work)
         self.test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         self.year_total = self.amount_apr + self.amount_may

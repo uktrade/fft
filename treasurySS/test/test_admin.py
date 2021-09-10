@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory, TestCase
 
+from core.test.test_base import TEST_EMAIL
+
 from treasurySS.admin import SubSegmentAdmin
 from treasurySS.models import SubSegment
 
@@ -8,7 +10,7 @@ from treasurySS.models import SubSegment
 class AdminDownloadSusbsegmentTest(TestCase):
     def setUp(self):
         self.test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
     def test_download_subsegment(self):
