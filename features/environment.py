@@ -26,6 +26,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 from core.test.factories import FinancialYearFactory
+from core.test.test_base import TEST_EMAIL
 
 from costcentre.test.factories import (
     CostCentreFactory,
