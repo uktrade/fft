@@ -49,7 +49,7 @@ class ViewCostCentreTest(BaseTestCase):
         self.financial_year = FinancialYearFactory(financial_year=2019)
         self.name = "Test"
         self.surname = "FBP"
-        self.bsce_email = "bsceuser@test.com"
+        self.bsce_email = "bsceuser@test.com"    # /PS-IGNORE
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code, group_name=self.group_name,

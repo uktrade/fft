@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 
+from core.test.test_base import TEST_EMAIL
+
 from costcentre.test.factories import CostCentreFactory
 
 from forecast.permission_shortcuts import assign_perm
@@ -14,7 +16,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
         self.out = StringIO()
 
         self.cost_centre_code = 888812
-        self.test_user_email = "test@test.com"
+        self.test_user_email = TEST_EMAIL
         self.test_password = "test_password"
 
         self.cost_centre = CostCentreFactory.create(
