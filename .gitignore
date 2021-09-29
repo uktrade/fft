@@ -158,3 +158,6 @@ test_*.txt
 
 # Webpack config
 front_end/config/*
+
+# PII secrets
+ner_output_file.txt

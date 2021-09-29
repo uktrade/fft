@@ -26,6 +26,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 from core.test.factories import FinancialYearFactory
+from core.test.test_base import TEST_EMAIL
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -153,7 +154,7 @@ def set_up_test_objects(context):
 
 def create_test_user(context):
     if not hasattr(context, 'user'):
-        test_user_email = "test@test.com"
+        test_user_email = TEST_EMAIL
         test_password = "test_password"
 
         test_user, _ = get_user_model().objects.get_or_create(

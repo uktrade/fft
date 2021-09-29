@@ -6,6 +6,8 @@ from forecast.templatetags.forecast_permissions import (
     is_forecast_user,
 )
 
+from core.test.test_base import TEST_EMAIL
+
 
 class EditPermissionTest(TestCase):
     def setUp(self):
@@ -13,7 +15,7 @@ class EditPermissionTest(TestCase):
 
     def test_is_forecast_user(self):
         test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         assert not is_forecast_user(test_user)
@@ -27,7 +29,7 @@ class EditPermissionTest(TestCase):
 
         # Bust permissions cache (refresh_from_db does not work)
         test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         assert is_forecast_user(test_user)

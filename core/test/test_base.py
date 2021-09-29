@@ -6,6 +6,8 @@ from django.test import (
     TestCase,
 )
 
+TEST_EMAIL = "test@test.com"     # /PS-IGNORE
+
 
 @modify_settings(
     MIDDLEWARE={
@@ -19,7 +21,7 @@ from django.test import (
 class BaseTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_user_email = "test@test.com"
+        cls.test_user_email = TEST_EMAIL
         cls.test_password = "test_password"
 
         cls.test_user, _ = get_user_model().objects.get_or_create(

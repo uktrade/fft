@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='historicaluser',
             name='first_name',
-            field=models.CharField(blank=True, max_length=30, verbose_name='first name'),
+            field=models.CharField(blank=True, max_length=30, verbose_name='first name'),   # /PS-IGNORE
         ),
         migrations.AlterField(
             model_name='historicaluser',
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='historicaluser',
             name='last_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),
+            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),  # /PS-IGNORE
         ),
         migrations.AlterField(
             model_name='historicaluser',

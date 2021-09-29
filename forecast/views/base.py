@@ -197,7 +197,7 @@ class ForecastViewTableMixin(MultiTableMixin):
 class PeriodFormView(FormView):
     form_class = ForecastPeriodForm
 
-    # https://gist.github.com/vero4karu/ec0f82bb3d302961503d
+    # https://gist.github.com/vero4karu/ec0f82bb3d302961503d      /PS-IGNORE
     def get_form_kwargs(self):
         kwargs = super(PeriodFormView, self).get_form_kwargs()
         kwargs.update({"selected_period": self.period})

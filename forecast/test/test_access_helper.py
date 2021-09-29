@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_EMAIL
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -134,7 +134,7 @@ class TestCanForecastBeEdited(PermissionTestBase):
 
         self.test_user, _ = get_user_model().objects.get_or_create(
             username="test_user",
-            email="test@test.com",
+            email=TEST_EMAIL,
         )
         self.test_user.set_password("test_password")
         self.test_user.save()

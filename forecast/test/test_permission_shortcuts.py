@@ -6,6 +6,8 @@ from guardian.shortcuts import (
     get_objects_for_user as guardian_get_objects_for_user,
 )
 
+from core.test.test_base import TEST_EMAIL
+
 from costcentre.test.factories import (
     CostCentreFactory,
 )
@@ -22,7 +24,7 @@ class PermissionShortcutsTest(
         test_cost_centre = 888812
 
         self.test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=test_cost_centre
@@ -37,7 +39,7 @@ class PermissionShortcutsTest(
 
         # Bust permissions cache (refresh_from_db does not work)
         self.test_user, _ = get_user_model().objects.get_or_create(
-            email="test@test.com"
+            email=TEST_EMAIL
         )
 
         assert self.test_user.has_perm("forecast.can_view_forecasts")

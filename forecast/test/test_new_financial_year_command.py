@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
+from core.test.test_base import TEST_EMAIL
 from core.utils.generic_helpers import get_current_financial_year
 
 from end_of_month.test.test_utils import MonthlyFigureSetup
@@ -74,7 +75,7 @@ class NewFinancialYearTest(TestCase):
         assert current_year_after_command != self.current_year
 
     def create_user(self, is_super_user=False):
-        self.user_email = "test@test.com"
+        self.user_email = TEST_EMAIL
         self.test_user, _ = get_user_model().objects.get_or_create(
             email=self.user_email, is_superuser=is_super_user
         )
