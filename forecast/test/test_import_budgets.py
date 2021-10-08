@@ -404,3 +404,70 @@ class ImportBudgetsTest(BaseTestCase):
             .amount,
             2200,
         )
+
+    def test_upload_budget_adj_columns(self):
+        adj_file_upload = FileUpload(
+            s3_document_file=os.path.join(
+                os.path.dirname(__file__), "test_assets/budget_upload_adj_columns.xlsx",
+            ),
+            uploading_user=self.test_user,
+            document_type=FileUpload.BUDGET,
+        )
+        adj_file_upload.save()
+
+        upload_budget_from_file(
+            adj_file_upload, self.test_year,
+        )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            30,
+        )
+
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+            ).count(),
+            15,
+        )
+        # Check that figures for same budgets are added together
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=13,
+            )
+            .first()
+            .amount,
+            1010000,
+        )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=14,
+            )
+            .first()
+            .amount,
+            2020000,
+        )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=15,
+            )
+            .first()
+            .amount,
+            3030000,
+        )
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year,
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_period=12,
+            )
+            .first()
+            .amount,
+            2200,
+        )
