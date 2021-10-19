@@ -163,7 +163,7 @@ def get_forecast_month_dict():
     Exclude months were actuals have been uploaded."""
     actual_month = FinancialPeriod.financial_period_info.actual_month()
     q = FinancialPeriod.objects.filter(
-        financial_period_code__gt=actual_month, financial_period_code__lt=13
+        financial_period_code__gt=actual_month
     ).values("period_short_name")
     period_dict = {}
     for e in q:

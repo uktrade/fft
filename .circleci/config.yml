@@ -5,7 +5,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/python:3.9.5-browsers
+      - image: cimg/python:3.9.6-browsers
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
