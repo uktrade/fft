@@ -80,7 +80,7 @@ bdd:
 	docker-compose exec fido sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
 
 elevate:
-	docker-compose run --rm fido exit
+	docker-compose run --rm fido python manage.py elevate_sso_user_permissions
 
 collectstatic:
 	docker-compose run --rm fido python manage.py collectstatic
