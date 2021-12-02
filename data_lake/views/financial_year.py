@@ -1,8 +1,7 @@
-from core.models import (
-    FinancialYear,
-)
+from core.models import FinancialYear
 
 from data_lake.views.data_lake_view import DataLakeViewSet
+
 
 class FinancialYearViewSet(DataLakeViewSet):
     filename = "financial_year"

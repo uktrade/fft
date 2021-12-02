@@ -11,6 +11,7 @@ from chartofaccountDIT.models import ProgrammeCode
 class ProgrammeCodeTests(DataLakeTesting):
     row_lenght = 5
     code_position = 0
+
     def test_data_returned_in_response(self):
         self.current_code = "123456"
         ProgrammeCodeFactory.create(programme_code=self.current_code)
