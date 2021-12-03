@@ -20,7 +20,7 @@ urlpatterns = [
     path(
         "financialyear/",
         FinancialYearViewSet.as_view({"get": "list"}),
-        name="data_lake_financialyear",
+        name="data_lake_financial_year",
     ),
     path(
         "actual/",
