@@ -9,6 +9,9 @@ from chartofaccountDIT.models import ProgrammeCode
 
 
 class ProgrammeCodeTests(DataLakeTesting):
+    row_lenght = 5
+    code_position = 0
+
     def test_data_returned_in_response(self):
         self.current_code = "123456"
         ProgrammeCodeFactory.create(programme_code=self.current_code)
@@ -17,9 +20,6 @@ class ProgrammeCodeTests(DataLakeTesting):
         ).programme_code
 
         self.url_name = "data_lake_programme_code"
-
-        self.row_lenght = 4
-        self.code_position = 0
         self.check_data()
 
     def test_programme_no_budget_code(self):
@@ -32,7 +32,4 @@ class ProgrammeCodeTests(DataLakeTesting):
             financial_year_id=2019
         ).programme_code
         self.url_name = "data_lake_programme_code"
-
-        self.row_lenght = 4
-        self.code_position = 0
         self.check_data()

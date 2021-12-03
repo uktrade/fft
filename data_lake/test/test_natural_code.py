@@ -15,6 +15,6 @@ class NaturalCodeTests(DataLakeTesting):
         ).natural_account_code
 
         self.url_name = "data_lake_natural_code"
-        self.row_lenght = 9
-        self.code_position = 6
+        self.row_lenght = 10
+        self.code_position = 7
         self.check_data()

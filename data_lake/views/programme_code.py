@@ -14,6 +14,7 @@ class ProgrammeCodeViewSet(DataLakeViewSet):
         "Programme Code",
         "Programme Name",
         "Budget Type",
+        "Budget Type Display",
         "Year",
     ]
 
@@ -36,21 +37,32 @@ class ProgrammeCodeViewSet(DataLakeViewSet):
         for obj in current_queryset:
             if obj.budget_type:
                 budget_type = obj.budget_type.budget_type
+                budget_type_display = obj.budget_type.budget_type_display
             else:
                 budget_type = None
+                budget_type_display = None
+
             row = [
                 obj.programme_code,
                 obj.programme_description,
                 budget_type,
+                budget_type_display,
                 current_year,
             ]
             writer.writerow(row)
 
         for obj in historical_queryset:
+            if obj.budget_type:
+                budget_type = obj.budget_type.budget_type
+                budget_type_display = obj.budget_type.budget_type_display
+            else:
+                budget_type = None
+                budget_type_display = None
             row = [
                 obj.programme_code,
                 obj.programme_description,
-                obj.budget_type.budget_type,
+                budget_type,
+                budget_type_display,
                 obj.financial_year.financial_year,
             ]
             writer.writerow(row)

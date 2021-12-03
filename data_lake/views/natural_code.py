@@ -17,6 +17,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
         "Commercial category",
         "Operational Delivery Plan",
         "Budget / Forecast NAC",
+        "Budget / Forecast NAC Description",
         "PO / Actuals NAC",
         "NAC Description",
         "Year",
@@ -60,6 +61,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 account_L6_budget_value = (
                     obj.expenditure_category.linked_budget_code.natural_account_code
                 )
+                account_L6_budget_description = (
+                    obj.expenditure_category.linked_budget_code.natural_account_code_description  # noqa E501
+                )
                 if obj.expenditure_category.op_del_category:
                     op_delivery_plan_value = (
                         obj.expenditure_category.op_del_category.operating_delivery_description  # noqa E501
@@ -68,6 +72,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 expenditure_category_value = None
                 NAC_category_value = None
                 account_L6_budget_value = None
+                account_L6_budget_description = None
 
             if obj.commercial_category:
                 commercial_category_value = obj.commercial_category.commercial_category
@@ -81,6 +86,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 commercial_category_value,
                 op_delivery_plan_value,
                 account_L6_budget_value,
+                account_L6_budget_description,
                 obj.natural_account_code,
                 obj.natural_account_code_description,
                 current_year,
@@ -88,6 +94,11 @@ class NaturalCodeViewSet(DataLakeViewSet):
             writer.writerow(row)
 
         for obj in historical_queryset:
+            if obj.expenditure_category:
+                account_L6_budget_description = \
+                    obj.expenditure_category.account_L6_budget_description
+            else:
+                account_L6_budget_description = ""
             row = [
                 obj.economic_budget_code,
                 obj.NAC_category,
@@ -95,6 +106,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 obj.commercial_category,
                 obj.op_delivery_plan,
                 obj.account_L6_budget,
+                account_L6_budget_description,
                 obj.natural_account_code,
                 obj.natural_account_code_description,
                 obj.financial_year.financial_year,
