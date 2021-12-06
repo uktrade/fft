@@ -288,6 +288,7 @@ AUTHBROKER_ANONYMOUS_PATHS = [
     "/data-lake/interentity/",
     "/data-lake/fcomapping/",
     "/data-lake/commercialcategory/",
+    "/data-lake/financialyear/",
 ]
 
 # Hawk
