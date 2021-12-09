@@ -176,9 +176,9 @@
                 {% has_project_percentage_permission user as has_project_percentage_permission %}
                 {% if has_project_percentage_permission == True %}
                     <li class="internal-header__navigation__item
-                    {% if request.path == '/split_project/project_percentage/' %}govuk-header__navigation-item--active{% endif %}">
+                    {% if request.path == '/upload_split_file/project_percentage/' %}govuk-header__navigation-item--active{% endif %}">
                         <a id="split_project"  class="internal-header__navigation__item__link"
-                           href="/split_project/project_percentage/">
+                           href="/upload_split_file/project_percentage/">
                             Project Percentages
                         </a>
                     </li>
