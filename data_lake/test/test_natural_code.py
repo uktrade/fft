@@ -1,6 +1,7 @@
 from data_lake.test.utils import DataLakeTesting
 
 from chartofaccountDIT.test.factories import (
+    HistoricalExpenditureCategoryFactory,
     HistoricalNaturalCodeFactory,
     NaturalCodeFactory,
 )
@@ -9,9 +10,13 @@ from chartofaccountDIT.test.factories import (
 class NaturalCodeTests(DataLakeTesting):
     def test_data_returned_in_response(self):
         self.current_code = "12345678"
+        past_year = 2019
         NaturalCodeFactory.create(natural_account_code=self.current_code)
         self.archived_code = HistoricalNaturalCodeFactory.create(
-            financial_year_id=2019
+            financial_year_id=past_year,
+            expenditure_category=HistoricalExpenditureCategoryFactory.create(
+                financial_year_id=past_year
+            ),
         ).natural_account_code
 
         self.url_name = "data_lake_natural_code"
