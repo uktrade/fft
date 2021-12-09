@@ -29,6 +29,7 @@ VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 INSTALLED_APPS = [
     "user",
     "authbroker_client",
+    "upload_split_file.apps.UploadSplitFileConfig",
     "oscar_return.apps.OscarReturnConfig",
     "previous_years.apps.PreviousYearsConfig",
     "downloadsupport.apps.DownloadSupportConfig",
