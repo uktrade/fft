@@ -251,21 +251,25 @@ class CheckFinancialCode:
         info_tuple = (obj, status, msg)
         return info_tuple
 
-    def __init__(self, file_upload):
+    def __init__(self, file_upload, expenditure_type=None):
         self.file_upload = file_upload
         if self.file_upload:
             self.upload_type = self.file_upload.document_type
         else:
             # This is uploaded from a command, and there is no document type defined
-            self.upload_type = "Forecast"
+            self.upload_type = FileUpload.FORECAST
         self.error_found = False
         self.warning_found = False
+        self.non_fatal_error_found = False
         self.nac_dict = {}
         self.cc_dict = {}
         self.prog_dict = {}
         self.analysis1_dict = {}
         self.analysis2_dict = {}
         self.project_dict = {}
+        # Only used when uploading percentage
+        if self.upload_type == FileUpload.PROJECT_PERCENTAGE:
+            self.expenditure_type = expenditure_type
 
     def validate_info_tuple(self, info_tuple):
         status = info_tuple[status_index]
@@ -306,6 +310,24 @@ class CheckFinancialCode:
                     info_tuple = (obj, status, msg)
 
             self.nac_dict[nac] = info_tuple
+        return self.validate_info_tuple(info_tuple)
+
+    def validate_nac_for_percentage(self, nac):
+        info_tuple = self.nac_dict.get(nac, None)
+        if not info_tuple:
+            info_tuple = self.get_info_tuple(self.natural_code_model, nac, False)
+            if info_tuple[status_index] != self.CODE_ERROR:
+                obj = info_tuple[obj_index]
+                # Check the type of the NAC
+                if obj.expenditure_category is None \
+                        or self.expenditure_type is None \
+                        or obj.expenditure_category.grouping_description \
+                        != self.expenditure_type:
+                    status = self.CODE_ERROR
+                    msg = \
+                        f"The budget category of \'{nac}\' " \
+                        f"is not '{self.expenditure_type}'."
+                    info_tuple = (obj, status, msg)
         return self.validate_info_tuple(info_tuple)
 
     def validate_nac_for_actual(self, nac):
@@ -369,7 +391,7 @@ class CheckFinancialCode:
             return None
 
     def validate_project(self, project):
-        if project and int(project):
+        if (project and int(project)):
             project_code = get_id(project, PROJECT_CODE_LENGTH)
             return self.get_obj_code(
                 self.project_dict, project_code, self.project_code_model
@@ -391,6 +413,8 @@ class CheckFinancialCode:
         self.ignore_row = False
         if self.upload_type == FileUpload.BUDGET:
             self.nac_obj = self.validate_nac_for_budget(self.clean_data(nac))
+        elif self.upload_type == FileUpload.PROJECT_PERCENTAGE:
+            self.nac_obj = self.validate_nac_for_percentage(self.clean_data(nac))
         else:
             self.nac_obj = self.validate_nac_for_actual(self.clean_data(nac))
             if self.ignore_row:
@@ -413,7 +437,7 @@ class CheckFinancialCode:
                     f"Row {row_number} error: {self.display_error}",
                     "Upload aborted: Data error.",
                 )
-        return self.error_found
+
 
     def get_financial_code(self):
         if self.error_found:
@@ -429,8 +453,11 @@ class CheckFinancialCode:
         financial_code_obj.save()
         return financial_code_obj
 
-    def record_error(self, row_number, error_message):
-        self.error_found = True
+    def record_error(self, row_number, error_message, fatal=True):
+        if fatal:
+            self.error_found = True
+        else:
+            self.non_fatal_error_found = True
         if self.file_upload:
             set_file_upload_error(
                 self.file_upload,

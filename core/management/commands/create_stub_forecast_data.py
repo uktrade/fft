@@ -83,6 +83,10 @@ def monthly_figures_create():
         actual = FinancialPeriod.objects.get(financial_period_code=period_id)
         actual.actual_loaded = True
         actual.save()
+        # and 2 months with actuals
+        actual = FinancialPeriod.objects.get(financial_period_code=2)
+        actual.actual_loaded = True
+        actual.save()
 
 
 class Command(BaseCommand):

@@ -4,6 +4,7 @@
 {% load forecast_permissions %}
 {% load upload_permissions %}
 {% load download_permissions %}
+{% load upload_percentage_permissions %}
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
@@ -171,6 +172,16 @@
                             </a>
                         </li>
                     {% endif %}
+                {% endif %}
+                {% has_project_percentage_permission user as has_project_percentage_permission %}
+                {% if has_project_percentage_permission == True %}
+                    <li class="internal-header__navigation__item
+                    {% if request.path == '/split_project/project_percentage/' %}govuk-header__navigation-item--active{% endif %}">
+                        <a id="split_project"  class="internal-header__navigation__item__link"
+                           href="/split_project/project_percentage/">
+                            Project Percentages
+                        </a>
+                    </li>
                 {% endif %}
 
                 {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
