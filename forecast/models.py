@@ -451,6 +451,7 @@ class FinancialCode(FinancialCodeAbstract, BaseModel):
     def __str__(self):
         return self.human_readable_format()
 
+
 class SubTotalForecast:
     result_table = []
     period_list = []

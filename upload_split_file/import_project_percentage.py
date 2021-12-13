@@ -42,7 +42,11 @@ EXPECTED_PERCENTAGE_HEADERS = [
     PROJECT_CODE,
 ]
 
-PAY_CODE = "Staff UK (Pay)"
+from upload_split_file.split_actuals import (
+    PAY_CODE,
+    handle_split_project,
+)
+
 
 # The percentages are stored as integers in the database.
 # We allow 2 decimal figures, like 20.12%
@@ -125,14 +129,14 @@ class UploadProjectPercentages:
             # Now copy the newly uploaded budgets to the monthly figure table
             PaySplitCoefficient.objects.filter(financial_period=period_obj,).delete()
             sql_insert = (
-                f"INSERT INTO public.split_project_paysplitcoefficient "
+                f"INSERT INTO public.upload_split_file_paysplitcoefficient "
                 f"(created, updated, "
                 f"split_coefficient, directorate_code, "
                 f"financial_code_to_id, financial_period_id)	"
                 f"SELECT now(), now(), "
                 f"split_coefficient, directorate_code, "
                 f"financial_code_to_id, financial_period_id "
-                f"FROM public.split_project_uploadpaysplitcoefficient "
+                f"FROM public.upload_split_file_uploadpaysplitcoefficient "
                 f"WHERE financial_period_id = "
                 f"{period_obj.financial_period_code};"
             )
@@ -212,6 +216,11 @@ class UploadProjectPercentages:
                 percentage_obj.row_number = self.current_row
                 percentage_obj.save()
 
+    def apply_percentages(self):
+        for month_obj in self.month_dict.values():
+            if month_obj.actual_loaded:
+                handle_split_project(month_obj.financial_period_code)
+
     def validate_percentages(self):
         total_percentage = UploadPaySplitCoefficient.objects.filter(
             directorate_code=self.directorate_code
@@ -290,6 +299,8 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
         upload.read_percentages()
         upload.validate_percentages()
         upload.copy_uploaded_percentage()
+        upload.apply_percentages()
+
     except (UploadFileDataError) as ex:
         set_file_upload_fatal_error(
             file_upload, str(ex), str(ex),

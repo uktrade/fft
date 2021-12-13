@@ -24,7 +24,6 @@ from previous_years.utils import (
 from previous_years.import_actuals import (
     copy_previous_year_actuals_to_monthly_figure,
 )
-
 from previous_years.models import (
     ArchivedActualUploadMonthlyFigure,
 )
@@ -34,6 +33,8 @@ from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
 )
+
+from upload_split_file.split_actuals import handle_split_project
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +90,9 @@ def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
     ActualUploadMonthlyFigure.objects.filter(
         financial_year=financial_year, financial_period=period_obj
     ).delete()
+
+# See if the actuals should be split to different projects
+    handle_split_project(period_obj.financial_period_code)
 
 
 def save_trial_balance_row(

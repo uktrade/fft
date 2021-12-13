@@ -6,7 +6,12 @@ from django_pivot.pivot import pivot
 from core.metamodels import BaseModel
 from core.models import FinancialYear
 
-from forecast.models import FinancialCode, FinancialPeriod
+from forecast.models import (
+    FinancialCode,
+    FinancialPeriod,
+    MonthlyFigureAbstract,
+)
+
 
 from previous_years.models import ArchivedFinancialCode
 
@@ -78,3 +83,17 @@ class PaySplitCoefficient(PaySplitCoefficientAbstract):
 
 class UploadPaySplitCoefficient(PaySplitCoefficientAbstract):
     row_number = models.IntegerField(default=0)
+
+
+class TemporaryCalculatedValues(BaseModel):
+    # temporary storage for the value calculated.
+    financial_code = models.OneToOneField(FinancialCode, on_delete=models.CASCADE,)
+    calculated_amount = models.BigIntegerField(null=True, blank=True)
+
+
+class SplitPayActualFigure(MonthlyFigureAbstract):
+    # Used to store the actual after they have been split
+    # using the percentage in PaySplitCoefficient
+    # This data is not used in FFT, it is passed to the data lake
+    # where the report is created
+    pass
