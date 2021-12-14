@@ -225,18 +225,21 @@ class UploadProjectPercentages:
         error_found = False
         error_msg = ""
         for month_obj in self.month_dict.values():
-           total_percentage = UploadPaySplitCoefficient.objects.filter(
-                directorate_code=self.directorate_code,
-                financial_period=month_obj,
+            total_percentage = UploadPaySplitCoefficient.objects.filter(
+                directorate_code=self.directorate_code, financial_period=month_obj,
             ).aggregate(Sum("split_coefficient"))
-           if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
-                    error_msg = f"{error_msg}The sum of the percentages is higher " \
-                                f"than 100% for {month_obj.period_long_name}.\n"
-                    error_found = True
-           if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
-                   error_msg = f"{error_msg}The sum of the percentages is lower " \
-                               f"than 100% for  {month_obj.period_long_name}.\n"
-                   error_found = True
+            if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
+                error_msg = (
+                    f"{error_msg}The sum of the percentages is higher "
+                    f"than 100% for {month_obj.period_long_name}.\n"
+                )
+                error_found = True
+            if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
+                error_msg = (
+                    f"{error_msg}The sum of the percentages is lower "
+                    f"than 100% for  {month_obj.period_long_name}.\n"
+                )
+                error_found = True
         if error_found:
             raise UploadFileDataError(error_msg)
 

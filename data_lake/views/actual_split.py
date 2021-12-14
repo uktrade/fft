@@ -5,6 +5,7 @@ from data_lake.views.utils import FigureFieldData
 
 from upload_split_file.models import SplitPayActualFigure
 
+
 class ActualSplitViewSet(DataLakeViewSet, FigureFieldData):
     filename = "actual_split"
     actual_title = [
