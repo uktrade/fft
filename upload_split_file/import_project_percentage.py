@@ -222,13 +222,21 @@ class UploadProjectPercentages:
                 handle_split_project(month_obj.financial_period_code)
 
     def validate_percentages(self):
-        total_percentage = UploadPaySplitCoefficient.objects.filter(
-            directorate_code=self.directorate_code
-        ).aggregate(Sum("split_coefficient"))
-        if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
-            raise UploadFileDataError("The sum of the percentages is higher than 100%")
-        if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
-            raise UploadFileDataError("The sum of the percentages is lower than 100%")
+        error_found = False
+        error_msg = ""
+        for month_obj in self.month_dict.values():
+           total_percentage = UploadPaySplitCoefficient.objects.filter(
+                directorate_code=self.directorate_code,
+                financial_period=month_obj,
+            ).aggregate(Sum("split_coefficient"))
+           if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
+                    error_msg = f"{error_msg}The sum of the percentages is higher " \
+                                f"than 100% for month {month_obj.period_long_name}.\n"
+           if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
+                   error_msg = f"{error_msg}The sum of the percentages is lower " \
+                               f"than 100% for month {month_obj.period_long_name}.\n"
+        if error_found:
+            raise UploadFileDataError(error_msg)
 
     def complete(self):
         final_status = FileUpload.PROCESSED
