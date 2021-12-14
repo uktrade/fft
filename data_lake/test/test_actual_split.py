@@ -25,7 +25,7 @@ from upload_split_file.models import SplitPayActualFigure
 
 
 class ActualSplitTests(DataLakeTesting):
-    def SetUp(self):
+    def setUp(self):
         group_name = "Test Group"
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
@@ -58,7 +58,6 @@ class ActualSplitTests(DataLakeTesting):
             project_code=project_obj,
         )
         self.financial_code_obj.save
-
         financial_period_queryset = \
             FinancialPeriod.objects.filter(financial_period_code__lt=4)
 
@@ -73,12 +72,10 @@ class ActualSplitTests(DataLakeTesting):
             amount += 10000
 
     def test_actual_split_data_returned_in_response(self):
-        self.url_name = "data_lake_actual"
+        self.url_name = "data_lake_actual_split"
         response = self.get_data()
         assert response['Content-Type'] == 'text/csv'
         rows = response.content.decode("utf-8").split("\n")
-        print(f"row count {len(rows)}")
         cols = rows[0].split(",")
-        print(f"cols count {len(cols)}")
         assert len(cols) == 12
         assert len(rows) == 5

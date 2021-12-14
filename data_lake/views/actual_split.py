@@ -7,16 +7,14 @@ from upload_split_file.models import SplitPayActualFigure
 
 class ActualSplitViewSet(DataLakeViewSet, FigureFieldData):
     filename = "actual_split"
-    forecast_title = [
+    actual_title = [
         "Actual",
         "Financial Period Code",
         "Financial Period Name",
         "Year",
-        "Archived Financial Period Code",
-        "Archived Financial Period Name",
     ]
     title_list = FigureFieldData.chart_of_account_titles.copy()
-    title_list.extend(forecast_title)
+    title_list.extend(actual_title)
 
     def write_data(self, writer):
         current_year = get_current_financial_year()
