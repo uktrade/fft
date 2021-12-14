@@ -10,7 +10,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.utils.import_helpers import CheckFinancialCode
-
+from upload_split_file.models import SplitPayActualFigure
 from upload_split_file.test.test_utils import (
     SplitDataSetup,
     create_split_data,
@@ -58,6 +58,11 @@ class SplitImportActualsTest(SplitDataSetup):
 
     def test_upload_trial_balance_report(self):
         test_amount = 100
+        # Check that the table with split figures is empty
+        self.assertEqual(
+            SplitPayActualFigure.objects.all().count(),
+            0
+        )
 
         save_trial_balance_row(
             f"3000-30000-"
@@ -95,13 +100,22 @@ class SplitImportActualsTest(SplitDataSetup):
         )
 
         # Check for existence of monthly figures: 1 uploaded from file,
-        # and 2 created by splitting by project code
         self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
+            1,
+        )
+
+        # and 2 created by splitting by project code
+        self.assertEqual(
+            SplitPayActualFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             3,
         )
+
+
         result = ForecastMonthlyFigure.objects.filter(
             financial_code__cost_centre__directorate__directorate_code=self.directorate_code  # noqa: E501
         ).aggregate(total=Sum("amount"))
@@ -109,4 +123,13 @@ class SplitImportActualsTest(SplitDataSetup):
         # Check that figures have correct values
         self.assertEqual(
             result["total"], test_amount * 100,
+        )
+
+        result_split = SplitPayActualFigure.objects.filter(
+            financial_code__cost_centre__directorate__directorate_code=self.directorate_code  # noqa: E501
+        ).aggregate(total=Sum("amount"))
+
+        # Check that figures have correct values
+        self.assertEqual(
+            result_split["total"], test_amount * 100,
         )

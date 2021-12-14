@@ -6,7 +6,7 @@ from upload_split_file.split_actuals import (
     calculate_expenditure_type_total,
     handle_split_project,
 )
-
+from upload_split_file.models import SplitPayActualFigure
 from upload_split_file.test.test_utils import (
     SplitDataSetup,
     create_split_data,
@@ -101,28 +101,33 @@ class SplitDataTest(SplitDataSetup):
             self.directorate_code1, self.test_period, PAY_CODE,
         )
 
+        # Check that the table with split figures is empty
+        self.assertEqual(
+            SplitPayActualFigure.objects.all().count(),
+            0
+        )
         handle_split_project(self.period_obj.financial_period_code)
 
         spend_directorate_after = calculate_expenditure_type_total(
-            self.directorate_code, self.test_period, PAY_CODE,
+            self.directorate_code, self.test_period, PAY_CODE, True
         )
         spend_directorate1_after = calculate_expenditure_type_total(
-            self.directorate_code1, self.test_period, PAY_CODE,
+            self.directorate_code1, self.test_period, PAY_CODE, True
         )
 
         # Check that the total for pay has not changed
         self.assertEqual(spend_directorate_before, spend_directorate_after)
         self.assertEqual(spend_directorate1_before, spend_directorate1_after)
 
-        # Check for existence of monthly figures: 2 created,
-        # and 1 created by splitting by project code
+
+        # Check for existence of split figures
         self.assertEqual(
-            ForecastMonthlyFigure.objects.filter(
+            SplitPayActualFigure.objects.filter(
                 financial_code__cost_centre=self.cost_centre_code
             ).count(),
-            3,
+            2,
         )
-
+        # The total in the unsplit data has not been changed
         result = ForecastMonthlyFigure.objects.all().aggregate(total=Sum("amount"))
         self.assertEqual(
             result["total"], self.total_amount,

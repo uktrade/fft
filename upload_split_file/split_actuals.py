@@ -6,7 +6,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from forecast.models import ForecastMonthlyFigure
 from forecast.utils.query_fields import ForecastQueryFields
 
-from upload_split_file.models import PaySplitCoefficient, TemporaryCalculatedValues
+from upload_split_file.models import PaySplitCoefficient, TemporaryCalculatedValues, SplitPayActualFigure
 
 
 class TransferTooLargeError(Exception):
@@ -17,7 +17,7 @@ PAY_CODE = "Staff UK (Pay)"
 
 
 def calculate_expenditure_type_total(
-    directorate_code, financial_period_id, expenditure_type_code, current_year=True
+    directorate_code, financial_period_id, expenditure_type_code, current_year=True, unsplit=True
 ):
     if current_year:
         query_fields = ForecastQueryFields()
@@ -34,8 +34,11 @@ def calculate_expenditure_type_total(
         directorate_field: directorate_code,
         "archived_status__isnull": True,
     }
-
-    pay_total = ForecastMonthlyFigure.objects.filter(**kwargs).aggregate(Sum("amount"))
+    if unsplit:
+        amount_model = ForecastMonthlyFigure
+    else:
+        amount_model = SplitPayActualFigure
+    pay_total = amount_model.objects.filter(**kwargs).aggregate(Sum("amount"))
     return pay_total["amount__sum"]
 
 
