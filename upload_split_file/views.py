@@ -54,7 +54,7 @@ class UploadedPercentageView(UserPassesTestMixin, TemplateView):
     def uploaded_files(self):
         uploaded_files = FileUpload.objects.filter(
             Q(document_type=FileUpload.PROJECT_PERCENTAGE)
-        ).order_by("-created")[:1]
+        ).order_by("-created")
 
         return uploaded_files
 

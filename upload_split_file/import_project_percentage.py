@@ -231,10 +231,12 @@ class UploadProjectPercentages:
             ).aggregate(Sum("split_coefficient"))
            if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
                     error_msg = f"{error_msg}The sum of the percentages is higher " \
-                                f"than 100% for month {month_obj.period_long_name}.\n"
+                                f"than 100% for {month_obj.period_long_name}.\n"
+                    error_found = True
            if total_percentage["split_coefficient__sum"] < MAX_COEFFICIENT - TOLERANCE:
                    error_msg = f"{error_msg}The sum of the percentages is lower " \
-                               f"than 100% for month {month_obj.period_long_name}.\n"
+                               f"than 100% for  {month_obj.period_long_name}.\n"
+                   error_found = True
         if error_found:
             raise UploadFileDataError(error_msg)
 
