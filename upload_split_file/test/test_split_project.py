@@ -102,10 +102,7 @@ class SplitDataTest(SplitDataSetup):
         )
 
         # Check that the table with split figures is empty
-        self.assertEqual(
-            SplitPayActualFigure.objects.all().count(),
-            0
-        )
+        self.assertEqual(SplitPayActualFigure.objects.all().count(), 0)
         handle_split_project(self.period_obj.financial_period_code)
 
         spend_directorate_after = calculate_expenditure_type_total(
@@ -118,7 +115,6 @@ class SplitDataTest(SplitDataSetup):
         # Check that the total for pay has not changed
         self.assertEqual(spend_directorate_before, spend_directorate_after)
         self.assertEqual(spend_directorate1_before, spend_directorate1_after)
-
 
         # Check for existence of split figures
         self.assertEqual(

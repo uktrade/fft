@@ -9,82 +9,185 @@ import simple_history.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0011_alter_historicaluser_first_name'),
+        ("core", "0011_alter_historicaluser_first_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('forecast', '0008_amend_views_20210802_1439'),
-        ('upload_split_file', '0001_initial'),
+        ("forecast", "0008_amend_views_20210802_1439"),
+        ("upload_split_file", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TemporaryCalculatedValues',
+            name="TemporaryCalculatedValues",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('calculated_amount', models.BigIntegerField(blank=True, null=True)),
-                ('financial_code', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='forecast.financialcode')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("calculated_amount", models.BigIntegerField(blank=True, null=True)),
+                (
+                    "financial_code",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="forecast.financialcode",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='SplitPayActualFigure',
+            name="SplitPayActualFigure",
             fields=[
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('amount', models.BigIntegerField(default=0)),
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('financial_code', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='upload_split_file_splitpayactualfigures', to='forecast.financialcode')),
-                ('financial_period', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='upload_split_file_splitpayactualfigures', to='forecast.financialperiod')),
-                ('financial_year', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.financialyear')),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("amount", models.BigIntegerField(default=0)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "financial_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="upload_split_file_splitpayactualfigures",
+                        to="forecast.financialcode",
+                    ),
+                ),
+                (
+                    "financial_period",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="upload_split_file_splitpayactualfigures",
+                        to="forecast.financialperiod",
+                    ),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.financialyear",
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.CreateModel(
-            name='SimpleHistoryTemporaryCalculatedValues',
+            name="SimpleHistoryTemporaryCalculatedValues",
             fields=[
-                ('id', models.BigIntegerField(auto_created=True, blank=True, db_index=True, verbose_name='ID')),
-                ('created', models.DateTimeField(blank=True, editable=False)),
-                ('updated', models.DateTimeField(blank=True, editable=False)),
-                ('calculated_amount', models.BigIntegerField(blank=True, null=True)),
-                ('history_id', models.AutoField(primary_key=True, serialize=False)),
-                ('history_date', models.DateTimeField()),
-                ('history_change_reason', models.CharField(max_length=100, null=True)),
-                ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
-                ('financial_code', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='forecast.financialcode')),
-                ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigIntegerField(
+                        auto_created=True, blank=True, db_index=True, verbose_name="ID"
+                    ),
+                ),
+                ("created", models.DateTimeField(blank=True, editable=False)),
+                ("updated", models.DateTimeField(blank=True, editable=False)),
+                ("calculated_amount", models.BigIntegerField(blank=True, null=True)),
+                ("history_id", models.AutoField(primary_key=True, serialize=False)),
+                ("history_date", models.DateTimeField()),
+                ("history_change_reason", models.CharField(max_length=100, null=True)),
+                (
+                    "history_type",
+                    models.CharField(
+                        choices=[("+", "Created"), ("~", "Changed"), ("-", "Deleted")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "financial_code",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="forecast.financialcode",
+                    ),
+                ),
+                (
+                    "history_user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'historical temporary calculated values',
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
+                "verbose_name": "historical temporary calculated values",
+                "ordering": ("-history_date", "-history_id"),
+                "get_latest_by": "history_date",
             },
             bases=(simple_history.models.HistoricalChanges, models.Model),
         ),
         migrations.CreateModel(
-            name='SimpleHistorySplitPayActualFigure',
+            name="SimpleHistorySplitPayActualFigure",
             fields=[
-                ('created', models.DateTimeField(blank=True, editable=False)),
-                ('updated', models.DateTimeField(blank=True, editable=False)),
-                ('amount', models.BigIntegerField(default=0)),
-                ('id', models.IntegerField(blank=True, db_index=True)),
-                ('history_id', models.AutoField(primary_key=True, serialize=False)),
-                ('history_date', models.DateTimeField()),
-                ('history_change_reason', models.CharField(max_length=100, null=True)),
-                ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
-                ('financial_code', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='forecast.financialcode')),
-                ('financial_period', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='forecast.financialperiod')),
-                ('financial_year', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='core.financialyear')),
-                ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
+                ("created", models.DateTimeField(blank=True, editable=False)),
+                ("updated", models.DateTimeField(blank=True, editable=False)),
+                ("amount", models.BigIntegerField(default=0)),
+                ("id", models.IntegerField(blank=True, db_index=True)),
+                ("history_id", models.AutoField(primary_key=True, serialize=False)),
+                ("history_date", models.DateTimeField()),
+                ("history_change_reason", models.CharField(max_length=100, null=True)),
+                (
+                    "history_type",
+                    models.CharField(
+                        choices=[("+", "Created"), ("~", "Changed"), ("-", "Deleted")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "financial_code",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="forecast.financialcode",
+                    ),
+                ),
+                (
+                    "financial_period",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="forecast.financialperiod",
+                    ),
+                ),
+                (
+                    "financial_year",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="core.financialyear",
+                    ),
+                ),
+                (
+                    "history_user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'historical split pay actual figure',
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
+                "verbose_name": "historical split pay actual figure",
+                "ordering": ("-history_date", "-history_id"),
+                "get_latest_by": "history_date",
             },
             bases=(simple_history.models.HistoricalChanges, models.Model),
         ),

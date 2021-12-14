@@ -6,7 +6,11 @@ from core.utils.generic_helpers import get_current_financial_year
 from forecast.models import ForecastMonthlyFigure
 from forecast.utils.query_fields import ForecastQueryFields
 
-from upload_split_file.models import PaySplitCoefficient, TemporaryCalculatedValues, SplitPayActualFigure
+from upload_split_file.models import (
+    PaySplitCoefficient,
+    TemporaryCalculatedValues,
+    SplitPayActualFigure,
+)
 
 
 class TransferTooLargeError(Exception):
@@ -17,7 +21,11 @@ PAY_CODE = "Staff UK (Pay)"
 
 
 def calculate_expenditure_type_total(
-    directorate_code, financial_period_id, expenditure_type_code, current_year=True, unsplit=True
+    directorate_code,
+    financial_period_id,
+    expenditure_type_code,
+    current_year=True,
+    unsplit=True,
 ):
     if current_year:
         query_fields = ForecastQueryFields()
@@ -47,29 +55,29 @@ def copy_values(period_id, directorate_code, expenditure_code):
     # clear the previously calculated values
     sql_delete = (
         f"DELETE from public.upload_split_file_splitpayactualfigure "
-                  f"WHERE financial_period_id = {period_id}"
-                  )
+        f"WHERE financial_period_id = {period_id}"
+    )
 
     # copy the relevant values from main table,
     # setting them to 0
     sql_reset_amount = (
-            f"INSERT INTO public.upload_split_file_splitpayactualfigure"
-            f"(created, updated, amount, financial_code_id, "
-            f"financial_period_id, financial_year_id) "            
-            f"SELECT now(), now(), 0, financial_code_id, "
-            f"financial_period_id, financial_year_id "            
-            f"FROM forecast_forecastmonthlyfigure AS fm "
-            f"INNER JOIN forecast_financialcode fc ON (fm.financial_code_id= fc.id) "
-            f"INNER JOIN costcentre_costcentre  ON "
-            f"(fc.cost_centre_id = costcentre_costcentre.cost_centre_code) "
-            f'INNER JOIN  "chartofaccountDIT_naturalcode" nac '
-            f"ON (fc.natural_account_code_id = nac.natural_account_code) "
-            f'INNER JOIN "chartofaccountDIT_expenditurecategory" ec '
-            f"ON (nac.expenditure_category_id = ec.id) "
-            f"WHERE fm.financial_period_id = {period_id} "
-            f"AND fm.archived_status_id is null "
-            f"AND costcentre_costcentre.directorate_id = '{directorate_code}' "
-            f"AND ec.grouping_description = '{expenditure_code}' ;"
+        f"INSERT INTO public.upload_split_file_splitpayactualfigure"
+        f"(created, updated, amount, financial_code_id, "
+        f"financial_period_id, financial_year_id) "
+        f"SELECT now(), now(), 0, financial_code_id, "
+        f"financial_period_id, financial_year_id "
+        f"FROM forecast_forecastmonthlyfigure AS fm "
+        f"INNER JOIN forecast_financialcode fc ON (fm.financial_code_id= fc.id) "
+        f"INNER JOIN costcentre_costcentre  ON "
+        f"(fc.cost_centre_id = costcentre_costcentre.cost_centre_code) "
+        f'INNER JOIN  "chartofaccountDIT_naturalcode" nac '
+        f"ON (fc.natural_account_code_id = nac.natural_account_code) "
+        f'INNER JOIN "chartofaccountDIT_expenditurecategory" ec '
+        f"ON (nac.expenditure_category_id = ec.id) "
+        f"WHERE fm.financial_period_id = {period_id} "
+        f"AND fm.archived_status_id is null "
+        f"AND costcentre_costcentre.directorate_id = '{directorate_code}' "
+        f"AND ec.grouping_description = '{expenditure_code}' ;"
     )
 
     sql_update = (

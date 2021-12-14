@@ -57,12 +57,12 @@ TOLERANCE = 100
 
 class UploadProjectPercentages:
     def __init__(
-            self,
-            worksheet,
-            header_dict,
-            file_upload,
-            expenditure_type,
-            include_archived=False
+        self,
+        worksheet,
+        header_dict,
+        file_upload,
+        expenditure_type,
+        include_archived=False,
     ):
         self.worksheet = worksheet
         self.cc_index = header_dict[COST_CENTRE_CODE]
@@ -87,10 +87,12 @@ class UploadProjectPercentages:
         if self.include_archived:
             month_queryset = FinancialPeriod.objects.all()
         else:
-            max_archived_period = EndOfMonthStatus.\
-                archived_period_objects.get_latest_archived_period()
-            month_queryset = FinancialPeriod.\
-                objects.filter(financial_period_code__gt=max_archived_period)
+            max_archived_period = (
+                EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
+            )
+            month_queryset = FinancialPeriod.objects.filter(
+                financial_period_code__gt=max_archived_period
+            )
 
         for month in month_queryset:
             month_name = month.period_short_name.lower()
@@ -290,11 +292,7 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
 
     try:
         upload = UploadProjectPercentages(
-            worksheet,
-            header_dict,
-            file_upload,
-            PAY_CODE,
-            include_archived,
+            worksheet, header_dict, file_upload, PAY_CODE, include_archived,
         )
         upload.read_percentages()
         upload.validate_percentages()

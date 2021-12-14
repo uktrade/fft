@@ -4,8 +4,8 @@ from django.contrib.auth.management import create_permissions
 
 from django.db import migrations
 
-Permission = apps.get_model('auth', 'Permission')
-Group = apps.get_model('auth', 'Group')
+Permission = apps.get_model("auth", "Permission")
+Group = apps.get_model("auth", "Group")
 
 
 def add_all_permissions():
@@ -17,34 +17,29 @@ def add_all_permissions():
 
 def assign_permissions(group, permission_codenames):
     for permission_codename in permission_codenames:
-        permission = Permission.objects.get(
-            codename=permission_codename,
-        )
-        group.permissions.add(
-            permission,
-        )
+        permission = Permission.objects.get(codename=permission_codename,)
+        group.permissions.add(permission,)
 
 
 def add_split_project_admin_permissions(apps, schema_editor):
     add_all_permissions()
 
     split_project_adminstrators, _ = Group.objects.get_or_create(
-        name='Project Split Administrator',
+        name="Project Split Administrator",
     )
 
     assign_permissions(
-        split_project_adminstrators, [
-            "can_upload_percentage_files"
-        ],
+        split_project_adminstrators, ["can_upload_percentage_files"],
     )
-
-
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('upload_split_file', '0002_simplehistorysplitpayactualfigure_simplehistorytemporarycalculatedvalues_splitpayactualfigure_tempor'),
+        (
+            "upload_split_file",
+            "0002_simplehistorysplitpayactualfigure_simplehistorytemporarycalculatedvalues_splitpayactualfigure_tempor",
+        ),
     ]
 
     operations = [

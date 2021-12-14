@@ -14,9 +14,7 @@ class ViewSplitProjectTest(BaseTestCase):
         self.test_user.is_superuser = True
         self.test_user.save()
 
-        view_homepage = reverse(
-            "index",
-        )
+        view_homepage = reverse("index",)
 
         response = self.client.get(view_homepage)
         assert response.status_code == 200
@@ -29,9 +27,7 @@ class ViewSplitProjectTest(BaseTestCase):
     def test_project_admin_user_can_view_project_split_page(self):
         g = Group.objects.get(name="Project Split Administrator")
         g.user_set.add(self.test_user)
-        view_homepage = reverse(
-            "index",
-        )
+        view_homepage = reverse("index",)
         response = self.client.get(view_homepage)
         assert response.status_code == 200
 
@@ -41,9 +37,7 @@ class ViewSplitProjectTest(BaseTestCase):
         assert len(admin_link) == 1
 
     def test_user_cannot_view_project_split_page(self):
-        view_homepage = reverse(
-            "index",
-        )
+        view_homepage = reverse("index",)
         response = self.client.get(view_homepage)
         assert response.status_code == 200
 

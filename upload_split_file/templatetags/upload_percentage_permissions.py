@@ -9,9 +9,7 @@ def has_project_percentage_permission(user):
         return True
     elif user.has_perm(
         "upload_split_file.can_upload_percentage_files"
-    ) or user.groups.filter(
-        name="Project Split Administrator"
-    ):
+    ) or user.groups.filter(name="Project Split Administrator"):
         return True
     else:
         return False

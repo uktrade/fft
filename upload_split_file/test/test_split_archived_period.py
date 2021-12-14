@@ -6,7 +6,9 @@ from end_of_month.end_of_month_actions import get_end_of_month
 
 from upload_file.models import FileUpload
 
-from upload_split_file.import_project_percentage import upload_project_percentage_from_file
+from upload_split_file.import_project_percentage import (
+    upload_project_percentage_from_file,
+)
 from upload_split_file.test.test_utils import (
     COST_CENTRE_CODE_INDEX,
     NAC_CODE_INDEX,

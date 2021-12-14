@@ -59,10 +59,7 @@ class SplitImportActualsTest(SplitDataSetup):
     def test_upload_trial_balance_report(self):
         test_amount = 100
         # Check that the table with split figures is empty
-        self.assertEqual(
-            SplitPayActualFigure.objects.all().count(),
-            0
-        )
+        self.assertEqual(SplitPayActualFigure.objects.all().count(), 0)
 
         save_trial_balance_row(
             f"3000-30000-"
@@ -114,7 +111,6 @@ class SplitImportActualsTest(SplitDataSetup):
             ).count(),
             3,
         )
-
 
         result = ForecastMonthlyFigure.objects.filter(
             financial_code__cost_centre__directorate__directorate_code=self.directorate_code  # noqa: E501
