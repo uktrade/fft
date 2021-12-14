@@ -16,6 +16,7 @@ from upload_file.utils import user_has_upload_permission
 
 logger = logging.getLogger(__name__)
 
+
 class UploadViewBase(UserPassesTestMixin, FormView):
     template_name = "forecast/file_upload.html"
 

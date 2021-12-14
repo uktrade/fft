@@ -1,7 +1,6 @@
 from django.db import connection
 from django.db.models import Sum
 
-
 from core.import_csv import xslx_header_to_dict
 
 from end_of_month.models import EndOfMonthStatus
@@ -15,15 +14,19 @@ from forecast.utils.import_helpers import (
     validate_excel_file,
 )
 
-from upload_split_file.models import (
-    PaySplitCoefficient,
-    UploadPaySplitCoefficient,
-)
-
 from upload_file.models import FileUpload
 from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
+)
+
+from upload_split_file.models import (
+    PaySplitCoefficient,
+    UploadPaySplitCoefficient,
+)
+from upload_split_file.split_actuals import (
+    PAY_CODE,
+    handle_split_project,
 )
 
 WORKSHEET_PROJECT_TITLE = "Project Percentages"
@@ -41,11 +44,6 @@ EXPECTED_PERCENTAGE_HEADERS = [
     ANALYSIS2_CODE,
     PROJECT_CODE,
 ]
-
-from upload_split_file.split_actuals import (
-    PAY_CODE,
-    handle_split_project,
-)
 
 
 # The percentages are stored as integers in the database.

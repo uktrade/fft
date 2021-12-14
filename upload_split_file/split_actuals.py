@@ -84,8 +84,10 @@ def copy_values(period_id, directorate_code, expenditure_code):
         f"UPDATE upload_split_file_splitpayactualfigure "
         f"SET amount = c.calculated_amount "
         f"FROM upload_split_file_temporarycalculatedvalues c "
-        f"WHERE upload_split_file_splitpayactualfigure.financial_period_id = {period_id} "
-        f"AND upload_split_file_splitpayactualfigure.financial_code_id = c.financial_code_id;"
+        f"WHERE upload_split_file_splitpayactualfigure.financial_period_id "
+        f"= {period_id} "
+        f"AND upload_split_file_splitpayactualfigure.financial_code_id "
+        f"= c.financial_code_id;"
     )
 
     sql_insert = (

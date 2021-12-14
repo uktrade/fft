@@ -36,18 +36,30 @@ def create_percentage_download():
     title = WORKSHEET_PROJECT_TITLE
 
     columns = {
-        "financial_code_to__cost_centre__cost_centre_code": "Cost centre code",
-        "financial_code_to__cost_centre__cost_centre_name": "Cost centre description",
-        "financial_code_to__natural_account_code__natural_account_code": "Natural Account code",
-        "financial_code_to__natural_account_code__natural_account_code_description": "Natural Account description",
-        "financial_code_to__programme__programme_code": "Programme code",
-        "financial_code_to__programme__programme_description": "Programme description",
-        "financial_code_to__analysis1_code__analysis1_code": "Contract Code",
-        "financial_code_to__analysis1_code__analysis1_description": "Contract description",
-        "financial_code_to__analysis2_code__analysis2_code": "Market Code",
-        "financial_code_to__analysis2_code__analysis2_description": "Market description",
-        "financial_code_to__project_code__project_code": "Project Code",
-        "financial_code_to__project_code__project_description": "Project description",
+        "financial_code_to__cost_centre__cost_centre_code":
+            "Cost centre code",
+        "financial_code_to__cost_centre__cost_centre_name":
+            "Cost centre description",
+        "financial_code_to__natural_account_code__natural_account_code":
+            "Natural Account code",
+        "financial_code_to__natural_account_code__natural_account_code_description":
+            "Natural Account description",
+        "financial_code_to__programme__programme_code":
+            "Programme code",
+        "financial_code_to__programme__programme_description":
+            "Programme description",
+        "financial_code_to__analysis1_code__analysis1_code":
+            "Contract Code",
+        "financial_code_to__analysis1_code__analysis1_description":
+            "Contract description",
+        "financial_code_to__analysis2_code__analysis2_code":
+            "Market Code",
+        "financial_code_to__analysis2_code__analysis2_description":
+            "Market description",
+        "financial_code_to__project_code__project_code":
+            "Project Code",
+        "financial_code_to__project_code__project_description":
+            "Project description",
     }
 
     return export_to_excel(

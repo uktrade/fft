@@ -438,7 +438,6 @@ class CheckFinancialCode:
                     "Upload aborted: Data error.",
                 )
 
-
     def get_financial_code(self):
         if self.error_found:
             return None
