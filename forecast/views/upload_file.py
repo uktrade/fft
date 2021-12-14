@@ -20,9 +20,6 @@ logger = logging.getLogger(__name__)
 class UploadViewBase(UserPassesTestMixin, FormView):
     template_name = "forecast/file_upload.html"
 
-    # form_class = UploadActualsForm
-    # success_url = reverse_lazy("uploaded_files")
-    # context = "Upload Actuals"
     def test_func(self):
         return user_has_upload_permission(self.request.user)
 
