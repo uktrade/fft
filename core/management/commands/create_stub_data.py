@@ -26,6 +26,7 @@ from forecast.models import (
 
 from upload_split_file.split_actuals import PAY_CODE
 
+
 class CostHierarchy:
     name = "Cost Centre Hierarchy"
     counter = 0
