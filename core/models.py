@@ -47,6 +47,18 @@ class FinancialYearManager(models.Manager):
             .order_by("-financial_year")
         )
 
+    def future_list(self):
+        return list(
+            super()
+            .get_queryset()
+            .filter(archived=False, current=False)
+            .values_list(
+                "financial_year",
+                "financial_year_display",
+            )
+            .order_by("-financial_year")
+        )
+
 
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""

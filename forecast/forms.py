@@ -279,8 +279,15 @@ class ForecastPeriodForm(forms.Form):
             *args,
             **kwargs,
         )
-        period_list = EndOfMonthStatus.archived_period_objects.archived_list()
-        period_list.insert(0, (0, 'Current'))
+        period_list = FinancialYear.financial_year_objects.future_list()
+        if period_list:
+            period_list.extend([(0, 'Current')])
+        else:
+            period_list = [(0, 'Current')]
+
+        archived_list = EndOfMonthStatus.archived_period_objects.archived_list()
+        if archived_list:
+            period_list.extend(archived_list)
         year_list = FinancialYear.financial_year_objects.archived_list()
         if year_list:
             period_list.extend(year_list)

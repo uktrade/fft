@@ -123,10 +123,11 @@ class ForecastViewTableMixin(MultiTableMixin):
     @property
     def year(self):
         if self._year is None:
-            if self.field_infos.current_year:
-                self._year = 0
-            else:
-                self._year = self.period
+            self._year = self.field_infos.selected_year
+            # if self.field_infos.current_year:
+            #     self._year = 0
+            # else:
+            #     self._year = self.period
         return self._year
 
     @property
@@ -233,28 +234,28 @@ class CostCentreForecastMixin(PeriodView):
 
     @property
     def directorate_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.cost_centre().directorate.directorate_code
         else:
             return self.cost_centre().directorate_code
 
     @property
     def directorate_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.cost_centre().directorate.directorate_name
         else:
             return self.cost_centre().directorate_name
 
     @property
     def group_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.cost_centre().directorate.group.group_code
         else:
             return self.cost_centre().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.cost_centre().directorate.group.group_name
         else:
             return self.cost_centre().group_name
@@ -276,14 +277,14 @@ class DirectorateForecastMixin(PeriodView):
 
     @property
     def group_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.directorate().group.group_code
         else:
             return self.directorate().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.year_with_forecast:
             return self.directorate().group.group_name
         else:
             return self.directorate().group_name

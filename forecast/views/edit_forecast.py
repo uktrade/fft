@@ -188,15 +188,24 @@ class AddRowView(
 
         # Create "actual" monthly figures for past months
         actual_months = FinancialPeriod.financial_period_info.actual_period_code_list()
+        financial_year = get_current_financial_year()
 
         if len(actual_months) > 0:
-            financial_year = get_current_financial_year()
 
             for actual_month in actual_months:
                 ForecastMonthlyFigure.objects.create(
                     financial_code=financial_code,
                     financial_year_id=financial_year,
                     financial_period_id=actual_month,
+                )
+        else:
+            # Create at least one entry, to help some of the queries used to view
+            # the forecast
+            for actual_month in actual_months:
+                ForecastMonthlyFigure.objects.create(
+                    financial_code=financial_code,
+                    financial_year_id=financial_year,
+                    financial_period_id=1,
                 )
 
         return super().form_valid(form)
