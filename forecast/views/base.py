@@ -134,28 +134,33 @@ class ForecastViewTableMixin(MultiTableMixin):
     def actual_month_list(self):
         # returns the list of month with actuals in the selected period.
         if self._actual_month_list is None:
-            if self.year:
-                if self.year == get_current_financial_year() - 1:
+            current_year = get_current_financial_year()
+            if self.year == 0 or self.year == current_year:
+                period = self.period
+                if period:
+                    # We are displaying previous month forecast
+                    self._actual_month_list = \
+                        FinancialPeriod.financial_period_info.month_sublist(period)
+                else:
+                    self._actual_month_list = \
+                        FinancialPeriod.financial_period_info.actual_month_list()
+
+            elif self.year == get_current_financial_year() - 1:
                     # We are displaying the last year before the current one.
                     # It is possible that the actuals for march and the adjustments
                     # have not been loaded yet, so get the list from
                     # the FinancialPeriod
                     self._actual_month_list = FinancialPeriod.financial_period_info.\
                         actual_month_previous_year_list()
-                else:
-                    # We are displaying historical data, so we need to include
-                    # the adjustment periods (ADJxx), and everything is actuals
-                    self._actual_month_list = \
-                        FinancialPeriod.financial_period_info.month_adj_display_list()
+            elif self.year > current_year:
+                    # Future forecast
+                self._actual_month_list = []
             else:
-                period = self.period
-                if period:
-                    # We are displaying historical forecast
-                    self._actual_month_list = \
-                        FinancialPeriod.financial_period_info.month_sublist(period)
-                else:
-                    self._actual_month_list = \
-                        FinancialPeriod.financial_period_info.actual_month_list()
+                # We are displaying historical data, so we need to include
+                # the adjustment periods (ADJxx), and everything is actuals
+                self._actual_month_list = \
+                    FinancialPeriod.financial_period_info.month_adj_display_list()
+
 
         return self._actual_month_list
 
