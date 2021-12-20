@@ -11,6 +11,7 @@ from .metamodels import (
     BaseModel,
 )
 
+
 class CommandLog(BaseModel):
     command_name = models.CharField(max_length=500)
     executed_at = models.DateTimeField(auto_now_add=True)
@@ -47,7 +48,8 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_list(self):
-        current_year = super().get_queryset().filter(current=True).first().financial_year
+        current_year = \
+            super().get_queryset().filter(current=True).first().financial_year
 
         return list(
             super()

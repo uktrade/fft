@@ -49,7 +49,11 @@ class ForecastViewPermissionMixin(UserPassesTestMixin):
         return can_view_forecasts(self.request.user)
 
     def handle_no_permission(self):
-        return redirect(reverse("index",))
+        return redirect(
+            reverse(
+                "index",
+            )
+        )
 
 
 class CostCentrePermissionTest(UserPassesTestMixin):
@@ -62,7 +66,10 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
         self.cost_centre_code = self.kwargs["cost_centre_code"]
 
-        has_permission = can_edit_cost_centre(self.request.user, self.cost_centre_code,)
+        has_permission = can_edit_cost_centre(
+            self.request.user,
+            self.cost_centre_code,
+        )
 
         user_can_edit = can_forecast_be_edited(self.request.user)
 
@@ -79,7 +86,10 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             return redirect(
                 reverse(
                     "forecast_cost_centre",
-                    kwargs={"cost_centre_code": self.cost_centre_code, "period": 0, },
+                    kwargs={
+                        "cost_centre_code": self.cost_centre_code,
+                        "period": 0,
+                    },
                 )
             )
 
@@ -134,27 +144,32 @@ class ForecastViewTableMixin(MultiTableMixin):
                 period = self.period
                 if period:
                     # We are displaying previous month forecast
-                    self._actual_month_list = \
+                    self._actual_month_list = (
                         FinancialPeriod.financial_period_info.month_sublist(period)
+                    )
                 else:
-                    self._actual_month_list = \
+                    self._actual_month_list = (
                         FinancialPeriod.financial_period_info.actual_month_list()
+                    )
 
             elif self.year == get_current_financial_year() - 1:
-                    # We are displaying the last year before the current one.
-                    # It is possible that the actuals for march and the adjustments
-                    # have not been loaded yet, so get the list from
-                    # the FinancialPeriod
-                    self._actual_month_list = FinancialPeriod.financial_period_info.\
-                        actual_month_previous_year_list()
+                # We are displaying the last year before the current one.
+                # It is possible that the actuals for march and the adjustments
+                # have not been loaded yet, so get the list from
+                # the FinancialPeriod
+                self._actual_month_list = (
+                    FinancialPeriod.
+                    financial_period_info.actual_month_previous_year_list()
+                )
             elif self.year > current_year:
-                    # Future forecast
+                # Future forecast
                 self._actual_month_list = []
             else:
                 # We are displaying historical data, so we need to include
                 # the adjustment periods (ADJxx), and everything is actuals
-                self._actual_month_list = \
+                self._actual_month_list = (
                     FinancialPeriod.financial_period_info.month_adj_display_list()
+                )
         return self._actual_month_list
 
     @property
@@ -165,7 +180,7 @@ class ForecastViewTableMixin(MultiTableMixin):
         elif self.year == current_year:
             list = FinancialPeriod.financial_period_info.adj_display_list()
         else:
-        # We need to show the Adj periods
+            # We need to show the Adj periods
             list = FinancialPeriod.financial_period_info.all_adj_list()
         return list
 
@@ -188,8 +203,9 @@ class ForecastViewTableMixin(MultiTableMixin):
         if self._table_tag is None:
             period = self.period
             if period:
-                self._table_tag = \
+                self._table_tag = (
                     f"Historical data for {get_view_forecast_period_name(period)}"
+                )
             else:
                 self._table_tag = ""
         return self._table_tag

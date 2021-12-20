@@ -7,7 +7,6 @@ from core.utils.generic_helpers import create_financial_year_display
 from costcentre.models import CostCentre
 
 from end_of_month.models import (
-    EndOfMonthStatus,
     MonthlyTotalBudget,
 )
 
@@ -69,7 +68,9 @@ def future_year_figure_create(future_financial_year):
 
 
 class Command(BaseCommand):
-    help = "Create stub forecast data for future 3 years. Use --delete to clear the data"
+    help = (
+        "Create stub forecast data for future 3 years. Use --delete to clear the data"
+    )
     arg_name = "what"
 
     def add_arguments(self, parser):
@@ -90,8 +91,8 @@ class Command(BaseCommand):
             action = future_year_figure_create
             msg = "created"
 
-        for interval in range(1,4):
-            year_obj, created  = FinancialYear.objects.get_or_create(
+        for interval in range(1, 4):
+            year_obj, created = FinancialYear.objects.get_or_create(
                 financial_year=financial_year + interval,
             )
             if created:
@@ -102,9 +103,5 @@ class Command(BaseCommand):
 
             action(year_obj)
         self.stdout.write(
-            self.style.SUCCESS(
-                "Successfully {} stub future forecast data.".format(
-                    msg
-                )
-            )
+            self.style.SUCCESS("Successfully {} stub future forecast data.".format(msg))
         )
