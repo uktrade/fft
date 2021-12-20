@@ -1,6 +1,7 @@
 from django.urls import path
 
 from data_lake.views.actual import ActualViewSet
+from data_lake.views.actual_split import ActualSplitViewSet
 from data_lake.views.forecast import ForecastViewSet
 from data_lake.views.budget import BudgetViewSet
 from data_lake.views.commercial_category import CommercialCategoryViewSet
@@ -17,6 +18,11 @@ from data_lake.views.inter_entity import InterEntityViewSet
 
 
 urlpatterns = [
+    path(
+        "actual_split/",
+        ActualSplitViewSet.as_view({"get": "list"}),
+        name="data_lake_actual_split",
+    ),
     path(
         "financialyear/",
         FinancialYearViewSet.as_view({"get": "list"}),

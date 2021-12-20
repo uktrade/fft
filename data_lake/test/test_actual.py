@@ -11,12 +11,11 @@ from previous_years.test.test_utils import PastYearForecastSetup
 
 class ActualTests(DataLakeTesting, PastYearForecastSetup):
 
-    def test_forecast_data_returned_in_response(self):
+    def test_actual_data_returned_in_response(self):
         SetFullYearArchive()
         obj = FinancialPeriod.objects.get(financial_period_code=4)
         obj.actual_loaded = True
         obj.save()
-
         self.url_name = "data_lake_actual"
         response = self.get_data()
         assert response['Content-Type'] == 'text/csv'

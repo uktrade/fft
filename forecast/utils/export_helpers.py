@@ -35,6 +35,15 @@ def unlock_forecast_cells(ws, row, start, end):
         ws.cell(column=c, row=row).protection = Protection(locked=False)
 
 
+def get_obj_value(obj, name):
+    value = 0
+    if name in obj:
+        value = obj[name]
+        if value is None:
+            value = 0
+    return value
+
+
 def forecast_query_iterator(
         queryset,
         keys_dict,

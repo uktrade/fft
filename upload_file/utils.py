@@ -33,7 +33,7 @@ def set_file_upload_fatal_error(file_upload, user_error, error):
 
 
 def set_file_upload_feedback(file_upload, feedback, status=""):
-    if status:
+    if status and file_upload.status != FileUpload.ERROR:
         file_upload.status = status
     file_upload.row_process_message = feedback
     file_upload.save()
