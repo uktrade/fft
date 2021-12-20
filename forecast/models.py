@@ -710,7 +710,7 @@ class DisplaySubTotalManager(models.Manager):
         )
 
     def raw_data_annotated(
-        self, columns, filter_dict={}, year=0, order_list=[], include_zeros=False
+        self, columns, filter_dict={}, year=0, order_list=[]
     ):
         annotations = {
             budget_field: Sum("budget"),
@@ -766,21 +766,18 @@ class DisplaySubTotalManager(models.Manager):
             ),
             "Previous_outturn": Sum("previous_outturn"),
         }
+        if year == 0:
+            year = get_current_financial_year()
+        year_filter = Q(financial_year=year)
         # # Lines with 0 values across the year have no year specified:
         # # they come from an outer join in the query.
         # # So use financial_year = NULL to filter them in or out.
-        #
         # if include_zeros:
         #     year_filter = Q(financial_year=year) | Q(financial_year__isnull=True)
         # else:
         #     year_filter = Q(financial_year=year)
-
-        # Current must NOT use year in query as this kills query performance
-        if year == 0:
-            year = get_current_financial_year()
-        year_filter = Q(financial_year=year)
-
-        if year == 0 or year == get_current_financial_year():
+        # TODO fix performance when including year filter
+        if year == get_current_financial_year():
             raw_data = (
                 self.get_queryset()
                     .values(*columns)
