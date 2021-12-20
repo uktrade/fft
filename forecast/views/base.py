@@ -115,7 +115,6 @@ class ForecastViewTableMixin(MultiTableMixin):
 
     @property
     def show_monthly_variance(self):
-
         if self._show_monthly_variance is None:
             self._show_monthly_variance = monthly_variance_exists(self.period)
         return self._show_monthly_variance
@@ -124,10 +123,6 @@ class ForecastViewTableMixin(MultiTableMixin):
     def year(self):
         if self._year is None:
             self._year = self.field_infos.selected_year
-            # if self.field_infos.current_year:
-            #     self._year = 0
-            # else:
-            #     self._year = self.period
         return self._year
 
     @property
@@ -160,18 +155,18 @@ class ForecastViewTableMixin(MultiTableMixin):
                 # the adjustment periods (ADJxx), and everything is actuals
                 self._actual_month_list = \
                     FinancialPeriod.financial_period_info.month_adj_display_list()
-
-
         return self._actual_month_list
 
     @property
     def adj_visible_list(self):
-        list = []
-        if self.year:
-            # We need to show the Adj periods
-            list = FinancialPeriod.financial_period_info.all_adj_list()
-        else:
+        current_year = get_current_financial_year()
+        if self.year > current_year:
+            list = []
+        elif self.year == current_year:
             list = FinancialPeriod.financial_period_info.adj_display_list()
+        else:
+        # We need to show the Adj periods
+            list = FinancialPeriod.financial_period_info.all_adj_list()
         return list
 
     @property

@@ -41,6 +41,7 @@ class ForecastQueryFields:
         self.selected_year = period
         self.period = 0
         if period < 2000:
+            # This apply to years in the past and the current years/month
             self.selected_year = current_year
             self.period = period
             self.year_with_forecast = True
