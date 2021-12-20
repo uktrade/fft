@@ -142,7 +142,7 @@ def generic_export_to_csv(queryset):
     return export_to_csv(queryset, generic_table_iterator)
 
 
-def export_to_excel(queryset, func, title="", field_list=None):
+def export_to_excel(queryset, func, title="", field_list=None, style_name=""):
     if title == "":
         title = queryset.model._meta.verbose_name_plural.title()
     resp = HttpResponse(content_type=EXCEL_TYPE)
@@ -159,6 +159,10 @@ def export_to_excel(queryset, func, title="", field_list=None):
         for row in func(queryset):
             ws.append(display_yes_no(row))
 
+    if style_name:
+        for row in range(0, ws.max_row):
+            for col in range(0, ws.max_column):
+                ws.cell(column=col + 1, row=row + 1,).style = style_name
     wb.save(resp)
     return resp
 

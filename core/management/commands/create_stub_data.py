@@ -24,6 +24,8 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
+from upload_split_file.split_actuals import PAY_CODE
+
 
 class CostHierarchy:
     name = "Cost Centre Hierarchy"
@@ -211,8 +213,6 @@ class ProjectCodes:
         )
 
 
-# TODO rename model NaturalCode to NaturalAccountCode
-# TODO check CASCADE in model
 class NaturalAccountCodes:
     name = "Natural Account Codes"
 
@@ -274,7 +274,7 @@ class NaturalAccountCodes:
         self.create_natural_account_code_expenditure_group(
             nac_category,
             "RESOURCE",
-            "Contractors (Pay)",
+            PAY_CODE,
             71111000,
             5,
         )

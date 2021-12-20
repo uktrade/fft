@@ -26,7 +26,7 @@ class ForecastViewSet(DataLakeViewSet, FigureFieldData):
         forecast_period_list = (
             FinancialPeriod.financial_period_info.forecast_period_code_list()
         )
-        actual_queryset = (
+        forecast_queryset = (
             ForecastMonthlyFigure.objects.exclude(amount=0)
             .select_related(*self.select_related_list)
             .filter(archived_status__isnull=True)
@@ -41,11 +41,11 @@ class ForecastViewSet(DataLakeViewSet, FigureFieldData):
             )
         )
 
-        for row in actual_queryset:
+        for row in forecast_queryset:
             writer.writerow(row)
 
         # Archived  forecast for the previous part of the year
-        budget_queryset = (
+        forecast_queryset = (
             (
                 ForecastMonthlyFigure.objects.exclude(amount=0).select_related(
                     *self.select_related_list
@@ -64,5 +64,5 @@ class ForecastViewSet(DataLakeViewSet, FigureFieldData):
             )
         )
 
-        for row in budget_queryset:
+        for row in forecast_queryset:
             writer.writerow(row)
