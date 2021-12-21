@@ -175,8 +175,6 @@ def get_month_budget_to_upload(include_all_months):
             FinancialPeriod, "period_short_name", e["period_short_name"]
         )
         period_dict[e["period_short_name"].lower()] = per_obj
-
-    print(f"=========== period_dict = {period_dict} ")
     return period_dict
 
 

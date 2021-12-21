@@ -53,7 +53,6 @@ EXPECTED_BUDGET_HEADERS = [
 
 
 def copy_uploaded_budget(year, month_dict):
-    print(f" ============= month_dict.values() ")
     for period_obj in month_dict.values():
         # Now copy the newly uploaded budgets to the monthly figure table
         BudgetMonthlyFigure.objects.filter(
