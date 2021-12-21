@@ -156,15 +156,19 @@ def get_id(value, length=0):
     return None
 
 
-def get_forecast_month_dict():
-    """Link the column names in the budget file to
-    the foreign key used in the budget model to
-    identify the period.
-    Exclude months were actuals have been uploaded."""
-    actual_month = FinancialPeriod.financial_period_info.actual_month()
-    q = FinancialPeriod.objects.filter(
-        financial_period_code__gt=actual_month
-    ).values("period_short_name")
+def get_month_budget_to_upload(include_all_months):
+    # Link the column names in the budget file to
+    #  the foreign key used in the budget model to
+    #  identify the period.
+    #  Exclude months were actuals have been uploaded.
+    if include_all_months:
+        q = FinancialPeriod.objects.all().values("period_short_name")
+    else:
+        actual_month = FinancialPeriod.financial_period_info.actual_month()
+        q = FinancialPeriod.objects.filter(
+            financial_period_code__gt=actual_month
+        ).values("period_short_name")
+
     period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
@@ -172,6 +176,7 @@ def get_forecast_month_dict():
         )
         period_dict[e["period_short_name"].lower()] = per_obj
 
+    print(f"=========== period_dict = {period_dict} ")
     return period_dict
 
 
