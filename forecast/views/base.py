@@ -109,6 +109,7 @@ class ForecastViewTableMixin(MultiTableMixin):
         self._year = None
         self._show_monthly_variance = None
         self._table_kwargs = None
+        self._editable_year = None
         super().__init__(*args, **kwargs)
 
     @property
@@ -134,6 +135,12 @@ class ForecastViewTableMixin(MultiTableMixin):
         if self._year is None:
             self._year = self.field_infos.selected_year
         return self._year
+
+    @property
+    def editable_year(self):
+        if self._editable_year is None:
+            self._editable_year = self.field_infos.year_with_forecast
+        return self._editable_year
 
     @property
     def actual_month_list(self):
