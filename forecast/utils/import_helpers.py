@@ -157,13 +157,10 @@ def get_id(value, length=0):
 
 
 def get_month_budget_to_upload(include_all_months):
-    # Link the column names in the budget file to
-    #  the foreign key used in the budget model to
-    #  identify the period.
-    #  Exclude months were actuals have been uploaded.
     if include_all_months:
         q = FinancialPeriod.objects.all().values("period_short_name")
     else:
+        #  Exclude months were actuals have been uploaded.
         actual_month = FinancialPeriod.financial_period_info.actual_month()
         q = FinancialPeriod.objects.filter(
             financial_period_code__gt=actual_month

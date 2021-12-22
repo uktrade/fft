@@ -139,7 +139,7 @@ class ForecastViewTableMixin(MultiTableMixin):
     @property
     def editable_year(self):
         if self._editable_year is None:
-            self._editable_year = self.field_infos.year_with_forecast
+            self._editable_year = self.field_infos.not_archived_year
         return self._editable_year
 
     @property
@@ -257,28 +257,28 @@ class CostCentreForecastMixin(PeriodView):
 
     @property
     def directorate_code(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.directorate_code
         else:
             return self.cost_centre().directorate_code
 
     @property
     def directorate_name(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.directorate_name
         else:
             return self.cost_centre().directorate_name
 
     @property
     def group_code(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.group.group_code
         else:
             return self.cost_centre().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.group.group_name
         else:
             return self.cost_centre().group_name
@@ -300,14 +300,14 @@ class DirectorateForecastMixin(PeriodView):
 
     @property
     def group_code(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.directorate().group.group_code
         else:
             return self.directorate().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.directorate().group.group_name
         else:
             return self.directorate().group_name
