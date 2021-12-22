@@ -1,17 +1,10 @@
 import os
-from unittest.mock import MagicMock, patch
-from zipfile import BadZipFile
 
-from django.contrib.auth.models import (
-    Group,
-)
-from django.core.files import File
 from django.db.models import Max
 
 from django.test import (
     override_settings,
 )
-from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
@@ -31,11 +24,6 @@ from forecast.models import (
     BudgetMonthlyFigure,
     FinancialPeriod,
 )
-from forecast.utils.import_helpers import (
-    UploadFileFormatError,
-)
-
-# .all().aggregate(Max('price'))
 
 from upload_file.models import FileUpload
 from core.utils.generic_helpers import (
