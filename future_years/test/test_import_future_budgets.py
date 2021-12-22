@@ -49,6 +49,15 @@ TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = "310940"
 
 
+def non_existing_future_year():
+    return (
+        FinancialYear.objects.all().aggregate(Max("financial_year"))[
+            "financial_year__max"
+        ]
+        + 1
+    )
+
+
 # Set file upload handlers back to default as
 # we need to remove S3 interactions for test purposes
 @override_settings(
@@ -58,12 +67,6 @@ TEST_PROGRAMME_CODE = "310940"
     ],
     DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
 )
-
-def non_existing_future_year():
-    return FinancialYear.objects.all() \
-        .aggregate(Max('financial_year'))["financial_year__max"] + 1
-
-
 class ImportBudgetsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
@@ -90,19 +93,13 @@ class ImportBudgetsTest(BaseTestCase):
             natural_account_code=self.not_valid_natural_account_code
         )
         ProgrammeCodeFactory.create(programme_code=self.programme_code)
-
         ProgrammeCodeFactory.create(programme_code="333333")
 
-        self.year_obj, _ = FinancialYear.objects.get_or_create(financial_year=2019)
-        self.year_obj.current = True
-        self.year_obj.save()
-
-
     def test_upload_budget_report(self):
-
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -110,32 +107,32 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         # Check that the future year does not exist
-        assert(
-                FinancialYear.objects.filter(financial_year=self.future_year).count()
-                == 0
+        assert (
+            FinancialYear.objects.filter(financial_year=self.future_year).count() == 0
         )
         upload_budget_from_file(
-            good_file_upload, self.future_year,
+            good_file_upload,
+            self.future_year,
         )
         # Check that the future year  exists
-        assert(
-                FinancialYear.objects.filter(financial_year=self.future_year).count()
-                == 1
+        assert (
+            FinancialYear.objects.filter(financial_year=self.future_year).count() == 1
         )
 
-        # # Check that existing figures for the same period have been deleted
+        # Check that no figures have been uploaded to the current year
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.current_year
+            ).count(),
+            0,
+        )
+
+        # Check that the figures have been uploaded
         self.assertEqual(
             BudgetMonthlyFigure.objects.filter(financial_year=self.future_year).count(),
             24,
         )
-        # # Check that existing figures for the same period have been deleted
-        self.assertEqual(
-            BudgetMonthlyFigure.objects.filter(
-                financial_year=self.future_year,
-                financial_code__cost_centre=self.cost_centre_code,
-            ).count(),
-            12,
-        )
+
         # Check that figures for same budgets are added together
         self.assertEqual(
             BudgetMonthlyFigure.objects.filter(
@@ -173,7 +170,8 @@ class ImportBudgetsTest(BaseTestCase):
 
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -181,38 +179,11 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         upload_budget_from_file(
-            good_file_upload, self.future_year,
+            good_file_upload,
+            self.future_year,
         )
 
         self.assertEqual(
             BudgetMonthlyFigure.objects.filter(financial_year=self.future_year).count(),
-            16,
-        )
-        # # Check that existing figures for the same period have been deleted
-        self.assertEqual(
-            BudgetMonthlyFigure.objects.filter(
-                financial_year=self.future_year,
-                financial_code__cost_centre=self.cost_centre_code,
-            ).count(),
-            8,
-        )
-        # Check that there are no entry for the actual periods
-        for period in range(1, actual_month + 1):
-            self.assertEqual(
-                BudgetMonthlyFigure.objects.filter(
-                    financial_year=self.future_year,
-                    financial_code__cost_centre=self.cost_centre_code,
-                    financial_period=period,
-                ).first(),
-                None,
-            )
-        self.assertEqual(
-            BudgetMonthlyFigure.objects.filter(
-                financial_year=self.future_year,
-                financial_code__cost_centre=self.cost_centre_code,
-                financial_period=12,
-            )
-            .first()
-            .amount,
-            2200,
+            24,
         )
