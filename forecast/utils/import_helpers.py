@@ -38,7 +38,7 @@ PROJECT_CODE_LENGTH = 4
 
 
 def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
-    if data_type == FileUpload.ACTUALS:
+    if data_type == FileUpload.ACTUALS or data_type == FileUpload.FORECAST:
         temp_data_file = "forecast_actualuploadmonthlyfigure"
         target = "forecast_forecastmonthlyfigure"
     else:
@@ -156,11 +156,8 @@ def get_id(value, length=0):
     return None
 
 
-def get_month_budget_to_upload(include_all_months):
-    # Link the column names in the budget file to
-    #  the foreign key used in the budget model to
-    #  identify the period.
-    #  Exclude months were actuals have been uploaded.
+def get_month_to_upload(include_all_months):
+     #  Exclude months were actuals have been uploaded.
     if include_all_months:
         q = FinancialPeriod.objects.all().values("period_short_name")
     else:

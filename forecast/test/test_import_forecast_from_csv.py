@@ -23,7 +23,7 @@ from forecast.models import (
 )
 
 
-class ImportBudgetsTest(BaseTestCase):
+class ImportForecastTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.test_year = 2019
@@ -61,7 +61,7 @@ class ImportBudgetsTest(BaseTestCase):
                 f"0,200,300,400,500,600,700,800,900,1000,1100,1200,0,0,0"
         return io.StringIO(f"{header}\n{line1}\n")
 
-    def test_upload_budget_report(self):
+    def test_upload_forecast_report(self):
         result = import_adi_file(self.get_csv_data())
         assert result
         self.assertEqual(
