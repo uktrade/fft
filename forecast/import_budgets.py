@@ -118,7 +118,7 @@ def upload_figures(uploadmodel, data_row, year_obj, financialcode_obj, month_dic
             figure_obj.save()
 
 
-def upload_financial_figures(uploadmodel, worksheet, year, header_dict, file_upload):# noqa
+def upload_financial_figures(worksheet, year, header_dict, file_upload):# noqa
     year_obj, created = FinancialYear.objects.get_or_create(financial_year=year)
     if created:
         year_obj.financial_year_display = create_financial_year_display(year)
@@ -198,7 +198,7 @@ def upload_financial_figures(uploadmodel, worksheet, year, header_dict, file_upl
         final_status = FileUpload.PROCESSEDWITHERROR
     else:
         # No errors, so we can copy the figures from the temporary table to the final
-        copy_uploaded_figures(year, month_dict)
+        copy_uploaded_figures(year, month_dict, file_upload.document_type)
         if check_financial_code.warning_found:
             final_status = FileUpload.PROCESSEDWITHWARNING
 
@@ -209,7 +209,7 @@ def upload_financial_figures(uploadmodel, worksheet, year, header_dict, file_upl
     return not check_financial_code.error_found
 
 
-def upload_figure_from_file(file_upload, year, what):
+def upload_figure_from_file(file_upload, year):
     if file_upload.document_type == FileUpload.BUDGET:
         title = "Budgets"
     else:
@@ -242,4 +242,9 @@ def upload_figure_from_file(file_upload, year, what):
 
 
 def upload_budget_from_file(file_upload, year):
+    if file_upload.document_type != FileUpload.BUDGET:
+        raise UploadFileFormatError(
+            f"Wrong setting for Budget upload = {file_upload.document_type}"
+        )
+
     upload_figure_from_file(file_upload, year)
