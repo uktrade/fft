@@ -257,7 +257,7 @@ class CostCentreForecastMixin(PeriodView):
 
     @property
     def directorate_code(self):
-        if self.field_infos.year_with_forecast:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.directorate_code
         else:
             return self.cost_centre().directorate_code
