@@ -769,13 +769,6 @@ class DisplaySubTotalManager(models.Manager):
         if year == 0:
             year = get_current_financial_year()
         year_filter = Q(financial_year=year)
-        # # Lines with 0 values across the year have no year specified:
-        # # they come from an outer join in the query.
-        # # So use financial_year = NULL to filter them in or out.
-        # if include_zeros:
-        #     year_filter = Q(financial_year=year) | Q(financial_year__isnull=True)
-        # else:
-        #     year_filter = Q(financial_year=year)
         # TODO fix performance when including year filter
         if year == get_current_financial_year():
             raw_data = (

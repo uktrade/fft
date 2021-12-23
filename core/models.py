@@ -23,18 +23,6 @@ class CommandLog(BaseModel):
 
 
 class FinancialYearManager(models.Manager):
-    # def get_queryset(self):
-    #     return (
-    #         super()
-    #         .get_queryset()
-    #         .filter(archived=True)
-    #         .values(
-    #             "financial_year",
-    #             "financial_year_display",
-    #         )
-    #         .order_by("financial_year")
-    #     )
-
     def archived_list(self):
         return list(
             super()
