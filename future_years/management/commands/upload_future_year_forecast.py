@@ -25,10 +25,7 @@ class Command(CommandUpload):
     def handle(self, *args, **options):
         path = options["path"]
         year = options["financial_year"]
-        error_message = (
-            f"forecast figures "
-            f"for {year} not uploaded."
-        )
+        error_message = f"forecast figures " f"for {year} not uploaded."
 
         # Validate the year. It must be in the future
         current_year = get_current_financial_year()
