@@ -3,8 +3,8 @@ from django.db import connection
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
 from core.utils.generic_helpers import (
-    create_financial_year_display,
     get_current_financial_year,
+    get_financial_year_obj,
 )
 
 from forecast.models import (
@@ -117,13 +117,9 @@ def upload_figures(uploadmodel, data_row, year_obj, financialcode_obj, month_dic
 
 
 def upload_financial_figures(worksheet, year, header_dict, file_upload):  # noqa
-    year_obj, created = FinancialYear.objects.get_or_create(financial_year=year)
-    if created:
-        year_obj.financial_year_display = create_financial_year_display(year)
-        year_obj.save()
-
+    year_obj = get_financial_year_obj(year)
     include_all_month = year > get_current_financial_year()
-
+    
     forecast_months = get_month_to_upload(include_all_month)
 
     month_dict = {header_dict[k]: v for (k, v) in forecast_months.items()}

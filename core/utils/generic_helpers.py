@@ -49,6 +49,19 @@ def create_financial_year_display(year):
     return f"{year}-{year - 1999}"
 
 
+def get_financial_year_obj(financial_year):
+    year_obj, created = FinancialYear.objects.get_or_create(
+        financial_year=financial_year
+    )
+    if created:
+        year_obj.financial_year_display = create_financial_year_display(
+            financial_year
+        )
+    year_obj.current = True
+    year_obj.save()
+    return year_obj
+
+
 def make_financial_year_current(financial_year):
     FinancialYear.objects.all().update(current=False)
     FinancialYear.objects.filter(financial_year=financial_year).update(current=True)

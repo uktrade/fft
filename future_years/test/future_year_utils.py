@@ -9,7 +9,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year, get_financial_year_obj
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -63,7 +63,10 @@ class FutureFigureSetup:
         )
         month_figure.save()
 
-    def __init__(self, year):
+    def __init__(self, test_year):
+        self.year_period_dict = {}
+        self.year_total_budget_dict = {}
+
         group_name = "Test Group"
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
@@ -81,7 +84,6 @@ class FutureFigureSetup:
         cost_centre_obj = CostCentreFactory(
             directorate=directorate_obj, cost_centre_code=self.cost_centre_code,
         )
-        test_year = get_current_financial_year()
         
         programme_obj = ProgrammeCodeFactory()
         self.programme_code = programme_obj.programme_code
@@ -89,7 +91,8 @@ class FutureFigureSetup:
         self.nac = nac_obj.natural_account_code
         project_obj = ProjectCodeFactory()
         self.project_code = project_obj.project_code
-        self.test_year_obj = FinancialYear.objects.get(financial_year=test_year)
+        self.test_year = test_year
+        self._test_year_obj = None
         self.current_year_obj = FinancialYear.objects.get(current=True)
 
         self.financial_code_obj = FinancialCode.objects.create(
@@ -100,22 +103,40 @@ class FutureFigureSetup:
         )
         self.financial_code_obj.save
 
+    @property
+    def test_year_obj(self):
+        if self._test_year_obj:
+            return self._test_year_obj
+        else:
+            self._test_year_obj = get_financial_year_obj(self.test_year)
+
+
     def setup_forecast(self, future:bool):
-        self.value_dict = {}
+        value_dict = {}
         if future:
             year_obj = self.test_year_obj
+            factor = 100000
         else:
-            year_obj = self.test_year_obj
-
+            year_obj = self.current_year_obj
+            factor = 200000
+            
         for period in range(1, 16):
-            amount = period * 100000
-            self.value_dict[period] = amount
-            self.monthly_figure_create(period, amount)
+            amount = period * factor
+            value_dict[period] = amount
+            self.monthly_figure_create(period, amount, year_obj)
+        self.year_period_dict[year_obj.financial_year] = value_dict
 
     def setup_budget(self, future:bool):
-        self.total_budget = 0
+        total_budget = 0
+        if future:
+            year_obj = self.test_year_obj
+            factor = 100000
+        else:
+            year_obj = self.test_year_obj
+            factor = 300000
         for period in range(1, 16):
-            amount = period * 100000
-            self.total_budget += amount
-            self.monthly_figure_create(period, amount, "Budget")
+            amount = period * factor
+            total_budget += amount
+            self.monthly_figure_create(period, amount, year_obj, "Budget")
+        self.year_total_budget_dict[year_obj.financial_year] = total_budget
 

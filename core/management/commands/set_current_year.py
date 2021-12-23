@@ -6,7 +6,7 @@ from django.core.management.base import (
 )
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import create_financial_year_display
+from core.utils.generic_helpers import get_financial_year_obj
 
 
 class Command(BaseCommand):
@@ -18,13 +18,13 @@ class Command(BaseCommand):
         parser.add_argument("year", type=int, nargs="?", default=0)
 
     def handle(self, *args, **options):
-        calendar_year = options.get("year")
-        if not calendar_year:
+        new_financial_year = options.get("year")
+        if not new_financial_year:
             today = datetime.datetime.now()
-            calendar_year = today.year
-        if calendar_year < 2000:
+            new_financial_year = today.year
+        if new_financial_year < 2000:
             raise CommandError(
-                f"argument year '{calendar_year}' invalid. " f"Use xxxx format."
+                f"argument year '{new_financial_year}' invalid. " f"Use xxxx format."
             )
 
         # Clear the current flag
@@ -34,20 +34,13 @@ class Command(BaseCommand):
             year_obj.update(current=False)
         else:
             previous_financial_year = "Current year undefined"
-        year_obj, created = FinancialYear.objects.get_or_create(
-            financial_year=calendar_year
-        )
-        if created:
-            year_obj.financial_year_display = create_financial_year_display(
-                calendar_year
-            )
-        new_financial_year = year_obj.financial_year_display
-        year_obj.current = True
-        year_obj.save()
+        new_year_obj = get_financial_year_obj(new_financial_year)
+        new_year_obj.current = True
+        new_year_obj.save()
         self.stdout.write(
             self.style.SUCCESS(
                 f"Current financial year changed from "
                 f"'{previous_financial_year}'"
-                f" to '{new_financial_year}'."
+                f" to '{new_year_obj.financial_year_display}'."
             )
         )

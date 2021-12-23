@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import create_financial_year_display
+from core.utils.generic_helpers import get_financial_year_obj
 from costcentre.models import CostCentre
 
 from end_of_month.models import (
@@ -92,14 +92,7 @@ class Command(BaseCommand):
             msg = "created"
 
         for interval in range(1, 4):
-            year_obj, created = FinancialYear.objects.get_or_create(
-                financial_year=financial_year + interval,
-            )
-            if created:
-                year_obj.financial_year_display = create_financial_year_display(
-                    financial_year + interval,
-                )
-                year_obj.save()
+            year_obj = get_financial_year_obj(financial_year + interval)
 
             action(year_obj)
         self.stdout.write(
