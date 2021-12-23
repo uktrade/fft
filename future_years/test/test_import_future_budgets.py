@@ -102,7 +102,7 @@ class ImportBudgetsTest(BaseTestCase):
             good_file_upload,
             self.future_year,
         )
-        # Check that the future year  exists
+        # Check that the future year exists
         assert (
             FinancialYear.objects.filter(financial_year=self.future_year).count() == 1
         )
