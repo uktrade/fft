@@ -10,7 +10,7 @@ from core.utils.generic_helpers import (
     get_current_financial_year,
 )
 
-from forecast.import_budget_or_forecast import upload_figure_from_file
+from forecast.import_budget_or_forecast import upload_forecast_from_file
 
 from upload_file.models import FileUpload
 
@@ -55,7 +55,7 @@ class Command(CommandUpload):
             file_location=FileUpload.LOCALFILE,
         )
         fileobj.save()
-        upload_figure_from_file(fileobj, year)
+        upload_forecast_from_file(fileobj, year)
         if self.upload_s3:
             os.remove(file_name)
 

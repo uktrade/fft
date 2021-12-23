@@ -255,5 +255,12 @@ def upload_budget_from_file(file_upload, year):
         raise UploadFileFormatError(
             f"Wrong setting for Budget upload = {file_upload.document_type}"
         )
+    upload_figure_from_file(file_upload, year)
 
+
+def upload_forecast_from_file(file_upload, year):
+    if file_upload.document_type != FileUpload.FORECAST:
+        raise UploadFileFormatError(
+            f"Wrong setting for Forecast upload = {file_upload.document_type}"
+        )
     upload_figure_from_file(file_upload, year)
