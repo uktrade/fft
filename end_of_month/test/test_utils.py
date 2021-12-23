@@ -63,7 +63,7 @@ class MonthlyFigureSetup:
         )
         month_figure.save()
 
-    def __init__(self):
+    def __init__(self, year=0):
         group_name = "Test Group"
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
