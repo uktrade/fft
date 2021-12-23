@@ -73,7 +73,7 @@ def copy_uploaded_budget(year, month_dict):
             starting_amount=0,
             archived_status__isnull=True,
         ).delete()
-    # BudgetUploadMonthlyFigure.objects.filter(financial_year=year).delete()
+    BudgetUploadMonthlyFigure.objects.filter(financial_year=year).delete()
 
 
 def upload_budget_figures(budget_row, year_obj, financialcode_obj, month_dict):
