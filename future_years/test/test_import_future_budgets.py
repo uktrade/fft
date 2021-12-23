@@ -59,7 +59,6 @@ class ImportFutureBudgetsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.current_year = get_current_financial_year()
-        print(f"in set up self.current_year = {self.current_year}")
         self.future_year = non_existing_future_year()
         self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre_code_1 = 888888

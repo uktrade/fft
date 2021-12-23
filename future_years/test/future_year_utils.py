@@ -36,21 +36,7 @@ from forecast.models import (
 
 
 class FutureFigureSetup:
-    def figure_update(self, period, amount, year_obj, what="Forecast"):
-        if what == "Forecast":
-            data_model = ForecastMonthlyFigure
-        else:
-            data_model = BudgetMonthlyFigure
-        month_figure = data_model.objects.get(
-            financial_period=FinancialPeriod.objects.get(financial_period_code=period),
-            financial_code=self.financial_code_obj,
-            financial_year=year_obj,
-            archived_status=None,
-        )
-        month_figure.amount += amount
-        month_figure.save()
-
-    def figure_create(self, period, amount, year_obj, what="Forecast"):
+    def monthly_figure_create(self, period, amount, year_obj, what="Forecast"):
         if what == "Forecast":
             data_model = ForecastMonthlyFigure
         else:
@@ -103,18 +89,11 @@ class FutureFigureSetup:
         )
         self.financial_code_obj.save
 
-    @property
-    def test_year_obj(self):
-        if self._test_year_obj:
-            return self._test_year_obj
-        else:
-            self._test_year_obj = get_financial_year_obj(self.test_year)
-
 
     def setup_forecast(self, future:bool):
         value_dict = {}
         if future:
-            year_obj = self.test_year_obj
+            year_obj = get_financial_year_obj(self.test_year)
             factor = 100000
         else:
             year_obj = self.current_year_obj
@@ -129,10 +108,10 @@ class FutureFigureSetup:
     def setup_budget(self, future:bool):
         total_budget = 0
         if future:
-            year_obj = self.test_year_obj
+            year_obj = get_financial_year_obj(self.test_year)
             factor = 100000
         else:
-            year_obj = self.test_year_obj
+            year_obj = self.current_year_obj
             factor = 300000
         for period in range(1, 16):
             amount = period * factor
