@@ -94,6 +94,10 @@ class DownloadEditForecastTest(BaseTestCase):
         may_figure.save
 
         # This will create a row with no figures.
+        # Changed to create a record with value 0
+        # The financial codes without figures are ignored,
+        # because they don't have a year,
+        # and can create problems when we have multi year forecast
         project_obj1 = ProjectCodeFactory.create(project_code="123456")
         financial_code_obj1 = FinancialCode.objects.create(
             programme=self.programme_obj,
@@ -102,7 +106,19 @@ class DownloadEditForecastTest(BaseTestCase):
             project_code=project_obj1,
         )
         financial_code_obj1.save
-
+        ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
+            financial_code=financial_code_obj1,
+            financial_year=year_obj,
+            amount=0,
+        )
+        # This row will be ignored
+        financial_code_obj2 = FinancialCode.objects.create(
+            programme=self.programme_obj,
+            cost_centre=self.cost_centre,
+            natural_account_code=self.nac_obj,
+        )
+        financial_code_obj2.save()
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)

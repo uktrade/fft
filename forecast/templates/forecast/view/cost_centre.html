@@ -18,7 +18,7 @@
     <div class="action-bar-wrapper">
         <div class="action-bar">
             <a class="govuk-button govuk-button" href="{% url 'export_forecast_data_cost_centre' view.cost_centre_code view.period %} ">Download raw data</a>
-            {% if view.year == 0 %}
+            {% if view.editable_year %}
                 {% is_forecast_user user as is_forecast_user %}
                 {% if is_forecast_user == True %}
                     {% can_edit_cost_centre user view.cost_centre_code as can_edit_cost_centre %}

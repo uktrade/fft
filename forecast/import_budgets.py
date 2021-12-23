@@ -2,7 +2,10 @@ from django.db import connection
 
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
-from core.utils.generic_helpers import create_financial_year_display
+from core.utils.generic_helpers import (
+    create_financial_year_display,
+    get_current_financial_year,
+)
 
 from forecast.models import (
     BudgetMonthlyFigure,
@@ -13,7 +16,7 @@ from forecast.utils.import_helpers import (
     UploadFileDataError,
     UploadFileFormatError,
     check_header,
-    get_forecast_month_dict,
+    get_month_budget_to_upload,
     sql_for_data_copy,
     validate_excel_file,
 )
@@ -112,7 +115,10 @@ def upload_budget(worksheet, year, header_dict, file_upload):# noqa
         year_obj.financial_year_display = create_financial_year_display(year)
         year_obj.save()
 
-    forecast_months = get_forecast_month_dict()
+    include_all_month = (year > get_current_financial_year())
+
+    forecast_months = get_month_budget_to_upload(include_all_month)
+
     month_dict = {header_dict[k]: v for (k, v) in forecast_months.items()}
     # Clear the table used to upload the budgets.
     # The budgets are uploaded to to a temporary storage, and copied

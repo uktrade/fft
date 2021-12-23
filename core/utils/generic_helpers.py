@@ -46,7 +46,7 @@ def get_year_display(year):
 def create_financial_year_display(year):
     if year < 2000:
         return "Invalid year"
-    return f"{year}/{year - 1999}"
+    return f"{year}-{year - 1999}"
 
 
 def make_financial_year_current(financial_year):
