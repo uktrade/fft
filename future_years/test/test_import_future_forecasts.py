@@ -30,7 +30,7 @@ class ImportFutureForecastTest(TestCase):
             ).count(),
             0,
         )
-        self.assertNotEqual(
+        self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
                 financial_year=self.test_year
             ).count(),
@@ -51,7 +51,7 @@ class ImportFutureForecastTest(TestCase):
             ).count(),
             0,
         )
-        self.assertNotEqual(
+        self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
                 financial_year=self.test_year
             ).count(),

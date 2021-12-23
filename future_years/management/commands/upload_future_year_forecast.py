@@ -8,10 +8,9 @@ from core.utils.command_helpers import (
 from core.utils.command_helpers import get_no_answer
 from core.utils.generic_helpers import (
     get_current_financial_year,
-    get_year_display,
 )
 
-from forecast.import_budget_or_forecast import upload_budget_from_file
+from forecast.import_budget_or_forecast import upload_figure_from_file
 
 from upload_file.models import FileUpload
 
@@ -26,10 +25,9 @@ class Command(CommandUpload):
     def handle(self, *args, **options):
         path = options["path"]
         year = options["financial_year"]
-        year_display = get_year_display(year)
         error_message = (
             f"forecast figures "
-            f"for {year_display} not uploaded."
+            f"for {year} not uploaded."
         )
 
         # Validate the year. It must be in the future
@@ -41,7 +39,7 @@ class Command(CommandUpload):
 
         prompt = (
             f"All the forecast figures "
-            f"for {year_display} will be overwritten.\n"
+            f"for {year} will be overwritten.\n"
             f"This operation cannot be undone.\n"
         )
 
