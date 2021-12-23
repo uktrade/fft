@@ -35,6 +35,7 @@ class Command(CommandUpload):
         if year <= current_year:
             self.stdout.write(self.style.ERROR("The year must be in the future."))
             self.stdout.write(self.style.ERROR(error_message))
+            raise CommandError(error_message)
             return
 
         prompt = (

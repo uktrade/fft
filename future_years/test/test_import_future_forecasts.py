@@ -15,6 +15,7 @@ from core.models import FinancialYear
 
 from forecast.models import (
     BudgetMonthlyFigure,
+    FinancialPeriod,
     ForecastMonthlyFigure,
 )
 
@@ -72,6 +73,27 @@ class ImportFutureForecastTest(TestCase):
             0,
         )
 
+    def test_wrong_year(self):
+        self.assertEqual(
+            ForecastMonthlyFigure.objects.filter(
+                financial_year=self.test_year
+            ).count(),
+            0,
+        )
+        with captured_stdin() as stdin:
+            stdin.write("y\n")
+            stdin.seek(0)
+            with self.assertRaises(CommandError):
+                call_command(
+                    "upload_future_year_forecast",
+                    self.path,
+                    self.current_year)
+        self.assertEqual(
+            ForecastMonthlyFigure.objects.filter(
+                financial_year=self.test_year
+            ).count(),
+            0,
+        )
 
     def test_no_previous_data(self):
         self.assertEqual(
@@ -110,8 +132,7 @@ class ImportFutureForecastTest(TestCase):
             year_forecast_total(self.test_year)
         )
 
-
-    def test_with_data_in_year(self):
+    def test_with_data_in_future_year(self):
         self.init_data.setup_forecast(True)
         previous_total = year_forecast_total(self.test_year)
         with captured_stdin() as stdin:
@@ -136,6 +157,61 @@ class ImportFutureForecastTest(TestCase):
             year_forecast_total(self.test_year)
         )
 
+    def test_with_data_in_current_year(self):
+        # Create data in the current year
+        self.init_data.setup_forecast(False)
+        previous_total = year_forecast_total(self.current_year)
+        with captured_stdin() as stdin:
+            stdin.write("y\n")
+            stdin.seek(0)
+            call_command(
+                    "upload_future_year_forecast",
+                    self.path,
+                    self.test_year)
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year
+            ).count(),
+            0,
+        )
+        # The current year data has not been changed
+        self.assertEqual(
+            previous_total,
+            year_forecast_total(self.current_year)
+        )
+        self.assertEqual(
+            TOTAL_FROM_FILE,
+            year_forecast_total(self.test_year)
+        )
+    def test_with_actuals(self):
+        # Create data in the current year
+        self.init_data.setup_forecast(False)
+        previous_total = year_forecast_total(self.current_year)
+        FinancialPeriod.objects.filter(financial_period_code=1).update(
+            actual_loaded=True
+        )
+        with captured_stdin() as stdin:
+            stdin.write("y\n")
+            stdin.seek(0)
+            call_command(
+                    "upload_future_year_forecast",
+                    self.path,
+                    self.test_year)
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.test_year
+            ).count(),
+            0,
+        )
+        # The current year data has not been changed
+        self.assertEqual(
+            previous_total,
+            year_forecast_total(self.current_year)
+        )
+        self.assertEqual(
+            TOTAL_FROM_FILE,
+            year_forecast_total(self.test_year)
+        )
 
     def test_year_created(self):
         # Check that the test year does not exist
@@ -155,3 +231,4 @@ class ImportFutureForecastTest(TestCase):
         assert (
             FinancialYear.objects.filter(financial_year=self.test_year).count() == 1
         )
+
