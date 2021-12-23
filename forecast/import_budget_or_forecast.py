@@ -119,7 +119,7 @@ def upload_figures(uploadmodel, data_row, year_obj, financialcode_obj, month_dic
 def upload_financial_figures(worksheet, year, header_dict, file_upload):  # noqa
     year_obj = get_financial_year_obj(year)
     include_all_month = year > get_current_financial_year()
-    
+
     forecast_months = get_month_to_upload(include_all_month)
 
     month_dict = {header_dict[k]: v for (k, v) in forecast_months.items()}

@@ -57,7 +57,6 @@ def get_financial_year_obj(financial_year):
         year_obj.financial_year_display = create_financial_year_display(
             financial_year
         )
-    year_obj.current = True
     year_obj.save()
     return year_obj
 

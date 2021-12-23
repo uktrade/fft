@@ -11,7 +11,7 @@ from core.utils.generic_helpers import (
     get_year_display,
 )
 
-from forecast.import_budgets import upload_figure_from_file
+from forecast.import_budget_or_forecast import upload_budget_from_file
 
 from upload_file.models import FileUpload
 

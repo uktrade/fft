@@ -19,7 +19,7 @@ from costcentre.test.factories import (
     DirectorateFactory,
 )
 
-from forecast.import_budgets import upload_budget_from_file
+from forecast.import_budget_or_forecast import upload_budget_from_file
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialPeriod,
@@ -55,10 +55,11 @@ def non_existing_future_year():
     ],
     DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
 )
-class ImportBudgetsTest(BaseTestCase):
+class ImportFutureBudgetsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.current_year = get_current_financial_year()
+        print(f"in set up self.current_year = {self.current_year}")
         self.future_year = non_existing_future_year()
         self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre_code_1 = 888888
