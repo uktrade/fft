@@ -72,7 +72,12 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
         )
 
         # In the project report, exclude rows without a project code.
-
+        # The easy and logical approach (filter on project_code_id is not null)
+        # generates an SQL query that takes almost 2 seconds.
+        # Changing the WHERE clause to use 'Coalesce(project_code_id, 0) != 0
+        # reduces the speed to 0.3 seconds.
+        # The following ugly code is needed to make Django generate the faster
+        # query
         annotations = {
             "project_id":Coalesce(self.field_infos.project_code_field , Cast(0, CharField()))
         }
