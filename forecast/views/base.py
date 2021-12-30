@@ -210,9 +210,9 @@ class ForecastViewTableMixin(MultiTableMixin):
         if self._table_tag is None:
             current_year = get_current_financial_year()
             if self.year > current_year:
-                    self._table_tag = (
-                        f"Future forecast for {get_view_forecast_period_name(self.year)}"
-                    )
+                self._table_tag = (
+                    f"Future forecast for {get_view_forecast_period_name(self.year)}"
+                )
             else:
                 period = self.period
                 if period:

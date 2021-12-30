@@ -15,6 +15,7 @@ from previous_years.test.test_utils import (
     hide_adjustment_columns,
 )
 
+
 class ViewForecastNaturalAccountCodeTest(PastYearForecastSetup):
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")

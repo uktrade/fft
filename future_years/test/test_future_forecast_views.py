@@ -108,7 +108,6 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
             format_forecast_figure(self.forecast_data.total_forecast / 100),
         )
 
-
     def test_view_cost_centre_summary(self):
         resp = self.client.get(
             reverse(
@@ -128,7 +127,6 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
 
         # Check that the year dropdown exists.
         self.assertContains(resp, f'value="{self.test_year}"')
-
 
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
@@ -171,7 +169,6 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
         # Check that the month dropdown exists.
         self.assertContains(resp, f'value="{self.test_year}"')
 
-
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
         assert len(tables) == 4
@@ -195,12 +192,14 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
         # Check that the second table displays the project and the correct totals
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
-
     def test_view_group_summary(self):
         response = self.client.get(
             reverse(
                 "forecast_group",
-                kwargs={"group_code": self.forecast_data.group_code, "period": self.test_year, },
+                kwargs={
+                    "group_code": self.forecast_data.group_code,
+                    "period": self.test_year,
+                },
             )
         )
 
@@ -210,7 +209,6 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
 
         # Check that the month dropdown exists.
         self.assertContains(response, f'value="{self.test_year}"')
-
 
         # Check that there are 4 tables on the page
         tables = soup.find_all("table", class_="govuk-table")
@@ -232,10 +230,14 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
         # Check that the second table displays the project and the correct totals
         self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
-
     def test_view_dit_summary(self):
         response = self.client.get(
-            reverse("forecast_dit", kwargs={"period": self.test_year, })
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    "period": self.test_year,
+                },
+            )
         )
 
         self.assertEqual(response.status_code, 200)
@@ -275,4 +277,3 @@ class ViewFutureForecastHierarchyWithOtherDataTest(ViewFutureForecastHierarchyTe
         self.forecast_data.set_year(self.test_year)
         self.forecast_data.setup_forecast()
         self.forecast_data.setup_budget()
-

@@ -18,6 +18,7 @@ from previous_years.test.test_utils import (
     hide_adjustment_columns
 )
 
+
 class ViewForecastHierarchyTest(PastYearForecastSetup):
     def test_dit_view(self):
         response = self.client.get(

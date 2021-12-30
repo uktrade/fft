@@ -15,6 +15,7 @@ from previous_years.test.test_utils import (
     hide_adjustment_columns
 )
 
+
 class ViewProgrammeDetailsTest(PastYearForecastSetup):
 
     def check_programme_details_table(self, table):

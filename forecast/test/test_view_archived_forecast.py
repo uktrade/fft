@@ -19,6 +19,7 @@ from forecast.test.test_utils import (
 
 TOTAL_COLUMN = -6
 
+
 class ViewArchivedForecastHierarchyTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
