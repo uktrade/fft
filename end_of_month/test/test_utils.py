@@ -110,10 +110,13 @@ class MonthlyFigureSetup:
 
     def setup_forecast(self):
         self.value_dict = {}
+        self.total_forecast = 0
         for period in range(1, 16):
             amount = period * self.factor
+            self.total_forecast += amount
             self.value_dict[period] = amount
             self.monthly_figure_create(period, amount)
+
 
     def setup_budget(self):
         self.total_budget = 0
