@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+from core.test.test_base import BaseTestCase
+
 from django.contrib.auth.models import (
     Permission,
 )
@@ -11,7 +13,6 @@ from core.utils.generic_helpers import (
 
 from end_of_month.test.test_utils import MonthlyFigureSetup
 
-from core.test.test_base import BaseTestCase
 from forecast.test.test_utils import (
     HIERARCHY_TABLE_INDEX,
     PROGRAMME_TABLE_INDEX,
