@@ -8,8 +8,10 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
-from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -63,7 +65,7 @@ class MonthlyFigureSetup:
         )
         month_figure.save()
 
-    def __init__(self):
+    def __init__(self, year=0):
         group_name = "Test Group"
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
@@ -81,14 +83,12 @@ class MonthlyFigureSetup:
         cost_centre_obj = CostCentreFactory(
             directorate=directorate_obj, cost_centre_code=self.cost_centre_code,
         )
-        current_year = get_current_financial_year()
         programme_obj = ProgrammeCodeFactory()
         self.programme_code = programme_obj.programme_code
         nac_obj = NaturalCodeFactory(economic_budget_code="RESOURCE")
         self.nac = nac_obj.natural_account_code
         project_obj = ProjectCodeFactory()
         self.project_code = project_obj.project_code
-        self.year_obj = FinancialYear.objects.get(financial_year=current_year)
 
         self.financial_code_obj = FinancialCode.objects.create(
             programme=programme_obj,
@@ -98,17 +98,27 @@ class MonthlyFigureSetup:
         )
         self.financial_code_obj.save
 
+        if year == 0:
+            year = get_current_financial_year()
+
+        self.set_year(year)
+
+    def set_year(self, year):
+        self.year_obj = get_financial_year_obj(year)
+        # Create different results for different years
+        self.factor = 100000 * (year - get_current_financial_year() + 1)
+
     def setup_forecast(self):
         self.value_dict = {}
         for period in range(1, 16):
-            amount = period * 100000
+            amount = period * self.factor
             self.value_dict[period] = amount
             self.monthly_figure_create(period, amount)
 
     def setup_budget(self):
         self.total_budget = 0
         for period in range(1, 16):
-            amount = period * 100000
+            amount = period * self.factor/2
             self.total_budget += amount
             self.monthly_figure_create(period, amount, "Budget")
 

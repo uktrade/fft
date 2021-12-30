@@ -4,25 +4,16 @@ from bs4 import BeautifulSoup
 from django.urls import reverse
 
 from forecast.test.test_utils import (
+    TOTAL_COLUMN,
+    SPEND_TO_DATE_COLUMN,
+    UNDERSPEND_COLUMN,
     format_forecast_figure,
 )
-
 
 from previous_years.test.test_utils import (
     PastYearForecastSetup,
     hide_adjustment_columns
 )
-
-
-TOTAL_COLUMN = -5
-SPEND_TO_DATE_COLUMN = -2
-UNDERSPEND_COLUMN = -4
-
-HIERARCHY_TABLE_INDEX = 0
-PROGRAMME_TABLE_INDEX = 1
-EXPENDITURE_TABLE_INDEX = 2
-PROJECT_TABLE_INDEX = 3
-
 
 class ViewProgrammeDetailsTest(PastYearForecastSetup):
 
