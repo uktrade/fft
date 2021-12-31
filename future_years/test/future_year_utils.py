@@ -118,7 +118,6 @@ class FutureFigureSetup:
 
 
 class FutureYearForecastSetup(BaseTestCase):
-
     def setUp(self):
         self.client.force_login(self.test_user)
         self.cost_centre_code = "109189"
@@ -185,7 +184,7 @@ class FutureYearForecastSetup(BaseTestCase):
 
         self.expenditure_type_name = self.financial_code_obj.forecast_expenditure_type
         self.forecast_expenditure_type_id = (
-            self.financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name # noqa
+            self.financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name  # noqa
         )
 
         # Assign forecast view permission
@@ -196,7 +195,7 @@ class FutureYearForecastSetup(BaseTestCase):
         self.set_year_data(get_current_financial_year() + 1)
 
     def create_another_year(self):
-        self.set_year_data(self.future_year+1)
+        self.set_year_data(self.future_year + 1)
 
     def set_year_data(self, year):
         self.future_year = year
@@ -208,8 +207,6 @@ class FutureYearForecastSetup(BaseTestCase):
 
         self.underspend_total = self.total_budget - self.year_total
         self.spend_to_date_total = 0
-
-
 
     def monthly_figure_create(self, period, amount, what="Forecast"):
         if what == "Forecast":

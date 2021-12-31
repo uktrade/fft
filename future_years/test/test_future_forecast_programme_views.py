@@ -14,20 +14,22 @@ from future_years.test.future_year_utils import FutureYearForecastSetup
 
 
 class ViewProgrammeDetailsTest(FutureYearForecastSetup):
-
     def check_programme_details_table(self, table):
         details_rows = table.find_all("tr")
 
         last_details_cols = details_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_details_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_details_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
-        assert last_details_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_details_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_details_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_response(self, resp):
         self.assertEqual(resp.status_code, 200)
@@ -51,9 +53,9 @@ class ViewProgrammeDetailsTest(FutureYearForecastSetup):
             reverse(
                 "programme_details_directorate",
                 kwargs={
-                    'directorate_code': self.directorate_code,
-                    'programme_code': self.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    "directorate_code": self.directorate_code,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
                     "period": self.future_year,
                 },
             ),
@@ -65,9 +67,9 @@ class ViewProgrammeDetailsTest(FutureYearForecastSetup):
             reverse(
                 "programme_details_group",
                 kwargs={
-                    'group_code': self.group_code,
-                    'programme_code': self.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    "group_code": self.group_code,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
                     "period": self.future_year,
                 },
             ),
@@ -80,8 +82,8 @@ class ViewProgrammeDetailsTest(FutureYearForecastSetup):
             reverse(
                 "programme_details_dit",
                 kwargs={
-                    'programme_code': self.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
                     "period": self.future_year,
                 },
             ),
