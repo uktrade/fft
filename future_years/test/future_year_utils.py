@@ -233,6 +233,7 @@ class FutureYearForecastSetup(BaseTestCase):
             self.year_total += amount
             self.value_dict[period] = amount
             self.monthly_figure_create(period, amount)
+        self.year_total /= 100
 
     def setup_budget(self):
         self.total_budget = 0
@@ -240,6 +241,6 @@ class FutureYearForecastSetup(BaseTestCase):
             amount = period * self.factor / 2
             self.total_budget += amount
             self.monthly_figure_create(period, amount, "Budget")
-
+        self.total_budget /= 100
 
 
