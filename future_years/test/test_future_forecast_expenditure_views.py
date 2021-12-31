@@ -108,3 +108,9 @@ class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
         )
 
         self.check_response(resp)
+
+
+class ViewForecastNaturalAccountCodeTwoYearDataTest(ViewForecastNaturalAccountCodeTest):
+    def setUp(self):
+        super().setUp()
+        self.create_another_year()

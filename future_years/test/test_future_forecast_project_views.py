@@ -98,3 +98,9 @@ class ViewProjectDetailsTest(FutureYearForecastSetup):
             ),
         )
         self.check_response(resp)
+
+
+class ViewProjectsDetailsTwoYearDataTest(ViewProjectDetailsTest):
+    def setUp(self):
+        super().setUp()
+        self.create_another_year()
