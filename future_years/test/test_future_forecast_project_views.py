@@ -18,7 +18,9 @@ class ViewProjectDetailsTest(FutureYearForecastSetup):
 
         last_details_cols = details_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_details_cols[TOTAL_COLUMN].get_text().strip() == format_forecast_figure(self.year_total)
+        assert last_details_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
         assert last_details_cols[
             UNDERSPEND_COLUMN
@@ -96,7 +98,3 @@ class ViewProjectDetailsTest(FutureYearForecastSetup):
             ),
         )
         self.check_response(resp)
-
-
-
-

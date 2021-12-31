@@ -125,7 +125,6 @@ class MonthlyFigureSetup:
             self.monthly_figure_create(period, amount, "Budget")
 
 
-
 class SetFullYearArchive(MonthlyFigureSetup):
     archived_forecast = []
     archived_budget = []

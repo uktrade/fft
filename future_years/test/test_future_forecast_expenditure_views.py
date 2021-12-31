@@ -6,7 +6,7 @@ from forecast.test.test_utils import (
     TOTAL_COLUMN,
     SPEND_TO_DATE_COLUMN,
     UNDERSPEND_COLUMN,
-    format_forecast_figure
+    format_forecast_figure,
 )
 
 from future_years.test.future_year_utils import FutureYearForecastSetup
@@ -18,8 +18,9 @@ class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
         first_nac_cols = nac_rows[2].find_all("td")
         assert first_nac_cols[0].get_text().strip() == self.natural_account_description
 
-        assert first_nac_cols[2].get_text().strip() \
-               == format_forecast_figure(self.total_budget)
+        assert first_nac_cols[2].get_text().strip() == format_forecast_figure(
+            self.total_budget
+        )
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
@@ -47,7 +48,6 @@ class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 3
-
 
         # Check that the only table displays the nac and the correct totals
         self.check_nac_table(tables[0])

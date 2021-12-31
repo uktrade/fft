@@ -117,9 +117,7 @@ class FutureFigureSetup:
         self.year_total_budget_dict[year_obj.financial_year] = total_budget
 
 
-
 class FutureYearForecastSetup(BaseTestCase):
-
     def set_year(self, year):
         self.future_year = year
         self.future_year_obj = get_financial_year_obj(year)
@@ -170,8 +168,7 @@ class FutureYearForecastSetup(BaseTestCase):
             budget_type_id=self.budget_type_id,
         )
 
-        expenditure_category_obj = ExpenditureCategoryFactory.create(
-        )
+        expenditure_category_obj = ExpenditureCategoryFactory.create()
 
         self.expenditure_category_id = expenditure_category_obj.id
         nac_obj = NaturalCodeFactory.create(
@@ -181,12 +178,8 @@ class FutureYearForecastSetup(BaseTestCase):
             expenditure_category=expenditure_category_obj,
         )
 
-        analysis2_obj = Analysis2Factory.create(
-            analysis2_code=self.analisys2
-        )
-        analysis1_obj = Analysis1Factory.create(
-            analysis1_code=self.analisys1
-        )
+        analysis2_obj = Analysis2Factory.create(analysis2_code=self.analisys2)
+        analysis1_obj = Analysis1Factory.create(analysis1_code=self.analisys1)
         self.financial_code_obj = FinancialCode.objects.create(
             programme=programme_obj,
             cost_centre=cc_obj,
@@ -198,7 +191,7 @@ class FutureYearForecastSetup(BaseTestCase):
 
         self.expenditure_type_name = self.financial_code_obj.forecast_expenditure_type
         self.forecast_expenditure_type_id = (
-            self.financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name
+            self.financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name # noqa
         )
 
         self.setup_forecast()
@@ -242,5 +235,3 @@ class FutureYearForecastSetup(BaseTestCase):
             self.total_budget += amount
             self.monthly_figure_create(period, amount, "Budget")
         self.total_budget /= 100
-
-
