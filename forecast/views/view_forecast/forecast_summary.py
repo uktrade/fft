@@ -25,6 +25,7 @@ from forecast.views.base import (
 from django.db.models.functions import Coalesce, Cast
 from django.db.models import CharField
 
+
 class ForecastMultiTableMixin(ForecastViewTableMixin):
 
     def class_name(self):
@@ -79,12 +80,11 @@ class ForecastMultiTableMixin(ForecastViewTableMixin):
         # The following ugly code is needed to make Django generate the faster
         # query
         annotations = {
-            "project_id":Coalesce(self.field_infos.project_code_field , Cast(0, CharField()))
+            "project_id":
+                Coalesce(self.field_infos.project_code_field, Cast(0, CharField()))
         }
-        # k = f"{self.field_infos.project_code_field}__isnull"
-        # # pivot_filter.update({k: False})
-        # pivot_filter.update({"project_id":Cast(0, CharField())})
-        exclusion_dict = {"project_id":Cast(0, CharField())}
+
+        exclusion_dict = {"project_id": Cast(0, CharField())}
         project_data = self.data_model.view_data.subtotal_data(
             self.field_infos.project_display_sub_total_column,
             self.field_infos.project_sub_total,

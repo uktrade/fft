@@ -88,10 +88,10 @@ else:
                 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
             },
-            # 'django.db':{
-            #     'handlers': ['stdout', ],
-            #     'level': 'DEBUG',
-            # },
+            'django.db':{
+                'handlers': ['stdout', ],
+                'level': 'DEBUG',
+            },
             'forecast.import_csv': {
                 'handlers': ['stdout', ],
                 'level': 'INFO',
