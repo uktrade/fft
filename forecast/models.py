@@ -769,8 +769,15 @@ class DisplaySubTotalManager(models.Manager):
         if year == 0:
             year = get_current_financial_year()
         year_filter = Q(financial_year=year)
-        # TODO fix performance when including year filter
-        if year == get_current_financial_year():
+
+        if self.model.__name__ == "ForecastingDataView":
+            # The data changes only in the tables used by ForecastingDataView
+            # so use it as indicator for caches
+            dont_use_cache = True
+        else:
+            dont_use_cache = False
+
+        if dont_use_cache:
             raw_data = (
                 self.get_queryset()
                     .values(*columns)
