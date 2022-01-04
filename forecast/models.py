@@ -675,6 +675,8 @@ class DisplaySubTotalManager(models.Manager):
         year=0,
         order_list=[],
         show_grand_total=True,
+        annotation_dict={},
+        exclusions={}
     ):
         # If requesting a subtotal, the
         # list of columns must be specified
@@ -699,7 +701,7 @@ class DisplaySubTotalManager(models.Manager):
             )
 
         data_returned = self.raw_data_annotated(
-            data_columns, filter_dict, year, order_list
+            data_columns, filter_dict, year, order_list, annotation_dict, exclusions
         )
         raw_data = list(data_returned)
         if not raw_data:
@@ -710,7 +712,7 @@ class DisplaySubTotalManager(models.Manager):
         )
 
     def raw_data_annotated(
-        self, columns, filter_dict={}, year=0, order_list=[]
+        self, columns, filter_dict={}, year=0, order_list=[], annotation_dict={}, exclusions={}
     ):
         annotations = {
             budget_field: Sum("budget"),
@@ -766,22 +768,30 @@ class DisplaySubTotalManager(models.Manager):
             ),
             "Previous_outturn": Sum("previous_outturn"),
         }
+        annotations.update(annotation_dict)
+        current_year = get_current_financial_year()
+        model_name = self.model.__name__
+        print(f"======= {model_name}")
+        print(f"===== {self.model._meta.db_table}")
         if year == 0:
-            year = get_current_financial_year()
+            year = current_year
         year_filter = Q(financial_year=year)
-        # TODO fix performance when including year filter
-        if year == get_current_financial_year():
+        dont_use_cache = model_name == "ForecastingDataView"
+        # dont_use_cache = year == current_year
+        if dont_use_cache:
             raw_data = (
                 self.get_queryset()
                     .values(*columns)
+                .annotate(**annotations)
                     .filter(
                     year_filter,
                     **filter_dict,
                 )
-                .annotate(**annotations)
+                .exclude(**exclusions)
                 .order_by(*order_list)
             )
         else:
+            print("===== Using caches")
             # Get previous year from cache if possible
             query_key = f'{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}'  # noqa
             key_slug = slugify(query_key)
@@ -793,6 +803,7 @@ class DisplaySubTotalManager(models.Manager):
                     return raw_data
             except:     # noqa E722
                 pass
+            print("===== Cache data not found")
 
             raw_data = (
                 self.get_queryset()
