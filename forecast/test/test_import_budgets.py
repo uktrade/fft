@@ -24,7 +24,7 @@ from costcentre.test.factories import (
     DirectorateFactory,
 )
 
-from forecast.import_budgets import upload_budget_from_file
+from forecast.import_budget_or_forecast import upload_budget_from_file
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialPeriod,

@@ -38,7 +38,7 @@ PROJECT_CODE_LENGTH = 4
 
 
 def sql_for_data_copy(data_type, financial_period_id, financial_year_id):
-    if data_type == FileUpload.ACTUALS:
+    if data_type == FileUpload.ACTUALS or data_type == FileUpload.FORECAST:
         temp_data_file = "forecast_actualuploadmonthlyfigure"
         target = "forecast_forecastmonthlyfigure"
     else:
@@ -112,7 +112,9 @@ def validate_excel_file(file_upload, worksheet_title_pattern=""):
             excelname = file_upload.s3_document_file
 
         workbook = load_workbook(
-            excelname, read_only=True, data_only=True,
+            excelname,
+            read_only=True,
+            data_only=True,
         )
     except BadZipFile as ex:
         set_file_upload_fatal_error(
@@ -156,11 +158,11 @@ def get_id(value, length=0):
     return None
 
 
-def get_month_budget_to_upload(include_all_months):
+def get_month_to_upload(include_all_months):
+    #  Exclude months were actuals have been uploaded.
     if include_all_months:
         q = FinancialPeriod.objects.all().values("period_short_name")
     else:
-        #  Exclude months were actuals have been uploaded.
         actual_month = FinancialPeriod.financial_period_info.actual_month()
         q = FinancialPeriod.objects.filter(
             financial_period_code__gt=actual_month
@@ -319,14 +321,17 @@ class CheckFinancialCode:
             if info_tuple[status_index] != self.CODE_ERROR:
                 obj = info_tuple[obj_index]
                 # Check the type of the NAC
-                if obj.expenditure_category is None \
-                        or self.expenditure_type is None \
-                        or obj.expenditure_category.grouping_description \
-                        != self.expenditure_type:
+                if (
+                    obj.expenditure_category is None
+                    or self.expenditure_type is None
+                    or obj.expenditure_category.grouping_description
+                    != self.expenditure_type
+                ):
                     status = self.CODE_ERROR
-                    msg = \
-                        f"The budget category of \'{nac}\' " \
+                    msg = (
+                        f"The budget category of '{nac}' "
                         f"is not '{self.expenditure_type}'."
+                    )
                     info_tuple = (obj, status, msg)
         return self.validate_info_tuple(info_tuple)
 
@@ -391,7 +396,7 @@ class CheckFinancialCode:
             return None
 
     def validate_project(self, project):
-        if (project and int(project)):
+        if project and int(project):
             project_code = get_id(project, PROJECT_CODE_LENGTH)
             return self.get_obj_code(
                 self.project_dict, project_code, self.project_code_model
