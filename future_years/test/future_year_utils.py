@@ -5,10 +5,10 @@ from django.contrib.auth.models import Permission
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
     Analysis2Factory,
+    ExpenditureCategoryFactory,
     NaturalCodeFactory,
     ProgrammeCodeFactory,
     ProjectCodeFactory,
-    ExpenditureCategoryFactory,
 )
 
 from core.models import FinancialYear
