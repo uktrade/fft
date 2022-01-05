@@ -103,11 +103,13 @@ def export_mi_iterator(queryset, fields):
         ]
 
 
-def create_mi_source_report():
-    title = f"MI Report {today_string()}"
+def create_mi_source_report(financial_year):
+    title = \
+        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display} " \
+        f"Report {today_string()}"
     fields = ForecastQueryFields()
     queryset = fields.datamodel.view_data.raw_data_annotated(
-        fields.MI_REPORT_DOWNLOAD_COLUMNS
+        fields.MI_REPORT_DOWNLOAD_COLUMNS, year=financial_year
     )
     return export_to_excel(queryset, export_mi_iterator, title, fields)
 

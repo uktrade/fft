@@ -10,8 +10,12 @@
 
 {% block content %}
     <h3 class="govuk-heading-l">Download MI sources</h3>
+    <h1 class="govuk-heading-l">{{ view.financial_year }}</h1>
+
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url "download_mi_report_source" %}">
+        <a class="govuk-link"
+           href="{% url 'download_mi_report_source' view.financial_year  %}"
+        >
             <button class="govuk-button" data-module="govuk-button">
                 Download actual/forecast report
             </button>

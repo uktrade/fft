@@ -199,7 +199,9 @@ urlpatterns = [
         name="export_edit_forecast_data_cost_centre",
     ),
     path(
-        "download_mi_report_source/", export_mi_report, name="download_mi_report_source"
+        " download_mi_report_source/<financial_year>",
+        export_mi_report,
+         name="download_mi_report_source"
     ),
     path(
         "download_previous_year_mi_report_source/",
