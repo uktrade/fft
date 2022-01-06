@@ -2,19 +2,28 @@ from django.db.models import Q
 from django.views.generic.base import TemplateView
 
 from download_file.decorators import has_download_mi_report_permission
+from download_file.forms import DownloadMIForm
 from download_file.models import FileDownload
 
 
 
-class YearView(TemplateView):
-    table_pagination = False
+import logging
 
-    def period_form(self):
-        return ForecastPeriodForm(selected_period=self.period)
+from django.conf import settings
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
+
+
+logger = logging.getLogger(__name__)
+
 
 
 class DownloadMIReportView(TemplateView):
     template_name = "download_file/downloaded_mi_reports.html"
+
+    def year_form(self):
+        return DownloadMIForm(selected_year=self.financial_year)
 
     @has_download_mi_report_permission
     def dispatch(self, request, *args, **kwargs):

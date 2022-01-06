@@ -16,6 +16,8 @@
         <a class="govuk-link"
            href="{% url 'download_mi_report_source' view.financial_year  %}"
         >
+            {% include "forecast/view/sub_section_form.html"  with form=view.year_form %}
+
             <button class="govuk-button" data-module="govuk-button">
                 Download actual/forecast report
             </button>

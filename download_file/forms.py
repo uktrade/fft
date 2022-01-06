@@ -4,6 +4,8 @@ from django import forms
 
 from core.models import FinancialYear
 
+
+
 class DownloadMIForm(forms.Form):
     def __init__(self, *args, **kwargs):
         selected_year = kwargs.pop('selected_year', 0)
@@ -17,11 +19,11 @@ class DownloadMIForm(forms.Form):
         else:
             display_list = [(0, 'Current')]
 
-        self.fields['selected_year'] = forms.ChoiceField(
+        self.fields['download_year'] = forms.ChoiceField(
             choices=display_list,
             initial=selected_year
         )
-        self.fields["selected_year"].widget.attrs.update(
+        self.fields["download_year"].widget.attrs.update(
             {
                 "class": "govuk-select",
             }
