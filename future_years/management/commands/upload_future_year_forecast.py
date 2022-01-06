@@ -47,7 +47,8 @@ class Command(CommandUpload):
             raise CommandError(error_message)
             return
 
-        file_name = self.path_to_upload(path, "xslx")
+        file_name = self.path_to_upload(path, "xlsx")
+        self.stdout.write(self.style.WARNING(f"Starting to process '{file_name}'."))
 
         fileobj = FileUpload(
             document_file_name=file_name,

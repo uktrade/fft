@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+
 from django.urls import reverse
 
 from forecast.test.test_utils import (
@@ -9,14 +10,11 @@ from forecast.test.test_utils import (
     format_forecast_figure,
 )
 
-from previous_years.test.test_utils import (
-    PastYearForecastSetup,
-    hide_adjustment_columns
-)
+from future_years.test.future_year_utils import FutureYearForecastSetup
 
 
-class ViewProjectDetailsTest(PastYearForecastSetup):
-    def check_project_details_table(self, table):
+class ViewProgrammeDetailsTest(FutureYearForecastSetup):
+    def check_programme_details_table(self, table):
         details_rows = table.find_all("tr")
 
         last_details_cols = details_rows[-1].find_all("td")
@@ -33,10 +31,6 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
             SPEND_TO_DATE_COLUMN
         ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
-    def check_negative_value_formatted(self, soup, lenght):
-        negative_values = soup.find_all("span", class_="negative")
-        assert len(negative_values) == lenght
-
     def check_response(self, resp):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
@@ -50,71 +44,54 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 3
-        self.check_negative_value_formatted(soup, 6)
 
         # Check that the only table displays  the correct totals
-        self.check_project_details_table(tables[0])
+        self.check_programme_details_table(tables[0])
 
-    def test_view_cost_Centre_project_details(self):
+    def test_view_directory_programme_details(self):
         resp = self.client.get(
             reverse(
-                "project_details_costcentre",
-                kwargs={
-                    "cost_centre_code": self.cost_centre_code,
-                    "project_code": self.project_code,
-                    "period": self.archived_year,
-                },
-            ),
-        )
-        self.check_response(resp)
-
-    def test_view_directory_project_details(self):
-        resp = self.client.get(
-            reverse(
-                "project_details_directorate",
+                "programme_details_directorate",
                 kwargs={
                     "directorate_code": self.directorate_code,
-                    "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": self.future_year,
                 },
             ),
         )
         self.check_response(resp)
 
-    def test_view_group_project_details(self):
+    def test_view_group_programme_details(self):
         resp = self.client.get(
             reverse(
-                "project_details_group",
+                "programme_details_group",
                 kwargs={
                     "group_code": self.group_code,
-                    "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": self.future_year,
                 },
             ),
         )
 
         self.check_response(resp)
 
-    def test_view_dit_project_details(self):
+    def test_view_dit_programme_details(self):
         resp = self.client.get(
             reverse(
-                "project_details_dit",
+                "programme_details_dit",
                 kwargs={
-                    "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "programme_code": self.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": self.future_year,
                 },
             ),
         )
         self.check_response(resp)
 
 
-class ViewProjectDetailsAdjustmentColumnsTest(ViewProjectDetailsTest):
-    def setUp(self):
-        super().setUp()
-        hide_adjustment_columns()
-
-
-class ViewProjectDetailsTwoYearDataTest(ViewProjectDetailsTest):
+class ViewProgrammeDetailsTwoYearDataTest(ViewProgrammeDetailsTest):
     def setUp(self):
         super().setUp()
         self.create_another_year()

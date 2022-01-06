@@ -26,12 +26,12 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
-from forecast.test.test_views import format_forecast_figure
-
-
-TOTAL_COLUMN = -5
-SPEND_TO_DATE_COLUMN = -2
-UNDERSPEND_COLUMN = -4
+from forecast.test.test_utils import (
+    TOTAL_COLUMN,
+    SPEND_TO_DATE_COLUMN,
+    UNDERSPEND_COLUMN,
+    format_forecast_figure,
+)
 
 
 class ViewForecastProjectDetailsTest(BaseTestCase):

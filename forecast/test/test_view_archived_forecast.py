@@ -9,15 +9,15 @@ from end_of_month.test.test_utils import SetFullYearArchive
 
 from core.test.test_base import BaseTestCase
 from forecast.test.test_utils import (
+    HIERARCHY_TABLE_INDEX,
+    PROGRAMME_TABLE_INDEX,
+    EXPENDITURE_TABLE_INDEX,
+    PROJECT_TABLE_INDEX,
+
     format_forecast_figure,
 )
 
 TOTAL_COLUMN = -6
-
-HIERARCHY_TABLE_INDEX = 0
-PROGRAMME_TABLE_INDEX = 1
-EXPENDITURE_TABLE_INDEX = 2
-PROJECT_TABLE_INDEX = 3
 
 
 class ViewArchivedForecastHierarchyTest(BaseTestCase):

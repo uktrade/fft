@@ -9,13 +9,10 @@ from forecast.test.test_utils import (
     format_forecast_figure,
 )
 
-from previous_years.test.test_utils import (
-    PastYearForecastSetup,
-    hide_adjustment_columns
-)
+from future_years.test.future_year_utils import FutureYearForecastSetup
 
 
-class ViewProjectDetailsTest(PastYearForecastSetup):
+class ViewProjectDetailsTest(FutureYearForecastSetup):
     def check_project_details_table(self, table):
         details_rows = table.find_all("tr")
 
@@ -33,10 +30,6 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
             SPEND_TO_DATE_COLUMN
         ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
-    def check_negative_value_formatted(self, soup, lenght):
-        negative_values = soup.find_all("span", class_="negative")
-        assert len(negative_values) == lenght
-
     def check_response(self, resp):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, "govuk-table")
@@ -50,7 +43,6 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
         # Check that all the subtotal hierachy_rows exist
         table_rows = soup.find_all("tr", class_="govuk-table__row")
         assert len(table_rows) == 3
-        self.check_negative_value_formatted(soup, 6)
 
         # Check that the only table displays  the correct totals
         self.check_project_details_table(tables[0])
@@ -62,7 +54,7 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                 kwargs={
                     "cost_centre_code": self.cost_centre_code,
                     "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "period": self.future_year,
                 },
             ),
         )
@@ -75,7 +67,7 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                 kwargs={
                     "directorate_code": self.directorate_code,
                     "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "period": self.future_year,
                 },
             ),
         )
@@ -88,7 +80,7 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                 kwargs={
                     "group_code": self.group_code,
                     "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "period": self.future_year,
                 },
             ),
         )
@@ -101,20 +93,14 @@ class ViewProjectDetailsTest(PastYearForecastSetup):
                 "project_details_dit",
                 kwargs={
                     "project_code": self.project_code,
-                    "period": self.archived_year,
+                    "period": self.future_year,
                 },
             ),
         )
         self.check_response(resp)
 
 
-class ViewProjectDetailsAdjustmentColumnsTest(ViewProjectDetailsTest):
-    def setUp(self):
-        super().setUp()
-        hide_adjustment_columns()
-
-
-class ViewProjectDetailsTwoYearDataTest(ViewProjectDetailsTest):
+class ViewProjectsDetailsTwoYearDataTest(ViewProjectDetailsTest):
     def setUp(self):
         super().setUp()
         self.create_another_year()

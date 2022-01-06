@@ -208,13 +208,19 @@ class ForecastViewTableMixin(MultiTableMixin):
     @property
     def table_tag(self):
         if self._table_tag is None:
-            period = self.period
-            if period:
+            current_year = get_current_financial_year()
+            if self.year > current_year:
                 self._table_tag = (
-                    f"Historical data for {get_view_forecast_period_name(period)}"
+                    f"Future forecast for {get_view_forecast_period_name(self.year)}"
                 )
             else:
-                self._table_tag = ""
+                period = self.period
+                if period:
+                    self._table_tag = (
+                        f"Historical data for {get_view_forecast_period_name(period)}"
+                    )
+                else:
+                    self._table_tag = ""
         return self._table_tag
 
 
