@@ -10,26 +10,24 @@
 
 {% block content %}
     <h3 class="govuk-heading-l">Download MI sources</h3>
-    <h1 class="govuk-heading-l">{{ view.financial_year }}</h1>
 
     <p class="govuk-body">
         <a class="govuk-link"
            href="{% url 'download_mi_report_source' view.financial_year  %}"
         >
-            {% include "forecast/view/sub_section_form.html"  with form=view.year_form %}
-
             <button class="govuk-button" data-module="govuk-button">
                 Download actual/forecast report
             </button>
         </a>
     </p>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url "download_mi_previous_year_report_source" %}">
+        <a class="govuk-link" href="{% url "download_future_forecast" %}">
             <button class="govuk-button" data-module="govuk-button">
-                Download last year actual/forecast report
+                Download future year forecast report
             </button>
         </a>
     </p>
+
     <p class="govuk-body">
         <a class="govuk-link" href="{% url "download_mi_budget" %}">
             <button class="govuk-button" data-module="govuk-button">
@@ -37,6 +35,14 @@
             </button>
         </a>
     </p>
+    <p class="govuk-body">
+        <a class="govuk-link" href="{% url "download_mi_previous_year_report_source" %}">
+            <button class="govuk-button" data-module="govuk-button">
+                Download future year budget report
+            </button>
+        </a>
+    </p>
+
     {% for document in view.downloaded_files %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">

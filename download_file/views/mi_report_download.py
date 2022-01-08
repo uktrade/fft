@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.views.generic.base import TemplateView
 
+from core.utils.generic_helpers import get_current_financial_year
 from download_file.decorators import has_download_mi_report_permission
 from download_file.forms import DownloadMIForm
 from download_file.models import FileDownload
@@ -31,7 +32,7 @@ class DownloadMIReportView(TemplateView):
 
     @property
     def financial_year(self):
-        return 2022
+        return get_current_financial_year()
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(
