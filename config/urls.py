@@ -26,7 +26,6 @@ urlpatterns = [
     path("chartofaccountDIT/", include("chartofaccountDIT.urls")),
     path("end_of_month/", include("end_of_month.urls")),
     path("forecast/", include("forecast.urls")),
-    path("future_years/", include("future_years.urls")),
     path("gifthospitality/", include("gifthospitality.urls")),
     path("download_file/", include("download_file.urls")),
     path("pingdom/", include("pingdom.urls")),
