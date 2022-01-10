@@ -126,10 +126,14 @@ def create_mi_previous_year_source_report():
     return export_to_excel(queryset, export_mi_iterator, title, fields)
 
 
-def create_mi_budget_report():
-    title = f"MI Budget {today_string()}"
+def create_mi_budget_report(financial_year):
+    title = \
+        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display}  " \
+        f"Budget {today_string()}"
     fields = ForecastQueryFields()
     queryset = BudgetMonthlyFigure.pivot.pivot_data(
-        fields.MI_REPORT_DOWNLOAD_COLUMNS, {"archived_status__isnull": True}
+        fields.MI_REPORT_DOWNLOAD_COLUMNS,
+        {"archived_status__isnull": True},
+        year=financial_year,
     )
     return export_to_excel(queryset, export_mi_iterator, title, fields)

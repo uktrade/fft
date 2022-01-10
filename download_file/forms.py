@@ -1,9 +1,6 @@
-import json
-
 from django import forms
 
 from core.models import FinancialYear
-
 
 
 class DownloadMIForm(forms.Form):

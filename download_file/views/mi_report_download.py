@@ -12,7 +12,8 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.urls import reverse_lazy
+from django.http.response import HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic.edit import FormView
 
 
@@ -20,8 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 
-class DownloadMIReportView(TemplateView):
+class DownloadMIReportView(FormView):
     template_name = "download_file/downloaded_mi_reports.html"
+    form_class = DownloadMIForm
 
     def year_form(self):
         return DownloadMIForm(selected_year=self.financial_year)
@@ -30,9 +32,18 @@ class DownloadMIReportView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super(DownloadMIReportView, self).dispatch(request, *args, **kwargs)
 
-    @property
-    def financial_year(self):
-        return get_current_financial_year()
+    def post(self, request, *args, **kwargs):
+        self.financial_year = request.POST.get("download_year", None,)
+
+        if request.POST.get("download_budget_name", None,):
+            self.success_name = "download_mi_budget"
+        else:
+            self.success_name = "download_mi_report_source"
+
+        return HttpResponseRedirect(
+            reverse(self.success_name,kwargs={"financial_year": self.financial_year})
+        )
+
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(

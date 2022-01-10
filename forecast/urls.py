@@ -201,14 +201,18 @@ urlpatterns = [
     path(
         " download_mi_report_source/<financial_year>",
         export_mi_report,
-         name="download_mi_report_source"
+        name="download_mi_report_source"
     ),
     path(
-        "download_previous_year_mi_report_source/",
+        " download_mi_budget/<financial_year>",
+        export_mi_budget_report,
+        name="download_mi_budget"
+    ),
+    path(
+        "download_previous_year_mi_report_source",
         export_mi_previous_year_report,
         name="download_mi_previous_year_report_source"
     ),
-    path("download_mi_budget/", export_mi_budget_report, name="download_mi_budget"),
     path(
         "export-expenditure-details/dit/<expenditure_category_id>/<budget_type_id>/<int:period>", # noqa
         export_forecast_data_expenditure_dit,
