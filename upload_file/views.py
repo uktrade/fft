@@ -8,9 +8,6 @@ from upload_file.models import FileUpload
 from upload_file.utils import user_has_upload_permission
 
 
-
-
-
 class UploadedView(UserPassesTestMixin, TemplateView):
     template_name = "upload_file/uploaded_files.html"
 

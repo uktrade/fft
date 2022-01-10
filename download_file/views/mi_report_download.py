@@ -1,24 +1,12 @@
 from django.db.models import Q
-from django.views.generic.base import TemplateView
 
-from core.utils.generic_helpers import get_current_financial_year
 from download_file.decorators import has_download_mi_report_permission
 from download_file.forms import DownloadMIForm
 from download_file.models import FileDownload
 
-
-
-import logging
-
-from django.conf import settings
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.edit import FormView
-
-
-logger = logging.getLogger(__name__)
-
 
 
 class DownloadMIReportView(FormView):
@@ -41,9 +29,8 @@ class DownloadMIReportView(FormView):
             self.success_name = "download_mi_report_source"
 
         return HttpResponseRedirect(
-            reverse(self.success_name,kwargs={"financial_year": self.financial_year})
+            reverse(self.success_name, kwargs={"financial_year": self.financial_year})
         )
-
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(
