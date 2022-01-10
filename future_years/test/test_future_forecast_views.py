@@ -266,7 +266,7 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
         self.check_expenditure_table(tables[EXPENDITURE_TABLE_INDEX])
         #
         # # Check that the fourth table displays the project and the correct totals
-        # self.check_project_table(tables[PROJECT_TABLE_INDEX])
+        self.check_project_table(tables[PROJECT_TABLE_INDEX])
 
 
 class ViewFutureForecastHierarchyWithOtherDataTest(ViewFutureForecastHierarchyTest):
