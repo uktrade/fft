@@ -13,9 +13,6 @@ class DownloadMIReportView(FormView):
     template_name = "download_file/downloaded_mi_reports.html"
     form_class = DownloadMIForm
 
-    def year_form(self):
-        return DownloadMIForm(selected_year=self.financial_year)
-
     @has_download_mi_report_permission
     def dispatch(self, request, *args, **kwargs):
         return super(DownloadMIReportView, self).dispatch(request, *args, **kwargs)
