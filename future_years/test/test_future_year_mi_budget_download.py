@@ -42,8 +42,6 @@ class DownloadFutureMIBudgetViewTests(BaseTestCase):
         self.programme_code = project_obj.project_code
         year_obj = get_financial_year_obj(self.future_year)
 
-        # If you use the MonthlyFigureFactory the test fails.
-        # I cannot work out why, it may be due to using a random year....
         financial_code_obj = FinancialCode.objects.create(
             programme=self.programme_obj,
             cost_centre=cost_centre,

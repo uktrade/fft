@@ -21,12 +21,12 @@ class DownloadMIReportView(FormView):
         self.financial_year = request.POST.get("download_year", None,)
 
         if request.POST.get("download_budget_name", None,):
-            self.success_name = "download_mi_budget"
+            url_name = "download_mi_budget"
         else:
-            self.success_name = "download_mi_report_source"
+            url_name = "download_mi_report_source"
 
         return HttpResponseRedirect(
-            reverse(self.success_name, kwargs={"financial_year": self.financial_year})
+            reverse(url_name, kwargs={"financial_year": self.financial_year})
         )
 
     def downloaded_files(self):
