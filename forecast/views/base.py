@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import FormView
 
 from django_tables2 import MultiTableMixin
 
@@ -222,16 +221,6 @@ class ForecastViewTableMixin(MultiTableMixin):
                 else:
                     self._table_tag = ""
         return self._table_tag
-
-
-class PeriodFormView(FormView):
-    form_class = ForecastPeriodForm
-
-    # https://gist.github.com/vero4karu/ec0f82bb3d302961503d      /PS-IGNORE
-    def get_form_kwargs(self):
-        kwargs = super(PeriodFormView, self).get_form_kwargs()
-        kwargs.update({"selected_period": self.period})
-        return kwargs
 
 
 class PeriodView(TemplateView):

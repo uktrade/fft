@@ -16,7 +16,6 @@ from upload_split_file.downloads import (
     create_percentage_download,
     create_template,
 )
-
 from upload_split_file.forms import UploadPercentageForm
 from upload_split_file.templatetags.upload_percentage_permissions import (
     has_project_percentage_permission,

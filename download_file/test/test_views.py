@@ -82,7 +82,10 @@ class DownloadViewTests(BaseTestCase):
 
     def test_download_mi_budget(self):
         assert not self.test_user.has_perm("forecast.can_download_mi_reports")
-        downloaded_files_url = reverse("download_mi_budget",)
+        downloaded_files_url = reverse(
+            "download_mi_budget",
+            kwargs={"financial_year": get_current_financial_year()}
+        )
 
         response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 302)
@@ -183,7 +186,10 @@ class DownloadMIBudgetViewTests(BaseTestCase):
 
     def test_download_mi_budget(self):
         assert not self.test_user.has_perm("forecast.can_download_mi_reports")
-        downloaded_files_url = reverse("download_mi_budget",)
+        downloaded_files_url = reverse(
+            "download_mi_budget",
+            kwargs={"financial_year": get_current_financial_year()}
+        )
 
         response = self.client.get(downloaded_files_url)
         self.assertEqual(response.status_code, 302)

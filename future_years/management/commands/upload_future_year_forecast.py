@@ -49,7 +49,6 @@ class Command(CommandUpload):
 
         file_name = self.path_to_upload(path, "xlsx")
         self.stdout.write(self.style.WARNING(f"Starting to process '{file_name}'."))
-
         fileobj = FileUpload(
             document_file_name=file_name,
             document_type=FileUpload.FORECAST,
