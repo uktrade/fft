@@ -29,7 +29,7 @@ from forecast.models import (
 class DownloadFutureMIBudgetViewTests(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 109076
+        self.cost_centre_code = 679001
         cost_centre = CostCentreFactory(
             cost_centre_code=self.cost_centre_code,
         )
