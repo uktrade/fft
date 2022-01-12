@@ -106,7 +106,7 @@ class MonthlyFigureSetup:
     def set_year(self, year):
         self.year_used = year
         self.year_obj = get_financial_year_obj(self.year_used)
-        # Create different results for different years
+        # Create different amount for different years
         self.factor = 100000 * (self.year_used - get_current_financial_year() + 1)
 
     def setup_forecast(self):
