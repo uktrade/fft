@@ -6,18 +6,23 @@ from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.end_of_month_actions import (
     end_of_month_archive,
 )
-from end_of_month.models import (
-    MonthlyTotalBudget,
-    forecast_budget_view_model,
-)
+from end_of_month.test.test_end_of_month_process import  ReadArchivedForecastTest
 from end_of_month.test.test_utils import (
     MonthlyFigureSetup,
 )
 
 from forecast.models import (
-    BudgetMonthlyFigure,
     ForecastMonthlyFigure,
 )
+
+class ReadArchivedFutureDataForecast(ReadArchivedForecastTest):
+    def setUp(self):
+        super().setUp()
+        current_year = get_current_financial_year()
+        # Create a set of data for the future
+        self.init_data.set_year(current_year + 2)
+        self.init_data.setup_forecast()
+        self.init_data.set_year(current_year)
 
 
 class EndOfMonthFutureDataForecastTest(TestCase):
