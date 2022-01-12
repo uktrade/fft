@@ -1,4 +1,3 @@
-from django.db.models import F
 from django.test import TestCase
 
 from core.utils.generic_helpers import get_current_financial_year
@@ -6,7 +5,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.end_of_month_actions import (
     end_of_month_archive,
 )
-from end_of_month.test.test_end_of_month_process import  ReadArchivedForecastTest
+from end_of_month.test.test_end_of_month_process import ReadArchivedForecastTest
 from end_of_month.test.test_utils import (
     MonthlyFigureSetup,
 )
@@ -14,6 +13,7 @@ from end_of_month.test.test_utils import (
 from forecast.models import (
     ForecastMonthlyFigure,
 )
+
 
 class ReadArchivedFutureDataForecast(ReadArchivedForecastTest):
     def setUp(self):
@@ -34,21 +34,21 @@ class EndOfMonthFutureDataForecastTest(TestCase):
         # Create data for future forecasts
         self.init_data.set_year(self.future_year)
         self.init_data.setup_forecast()
-        self.count_future_year = \
-            ForecastMonthlyFigure.objects.filter(
-                financial_year_id=self.future_year
-            ).count()
-
+        self.count_future_year = ForecastMonthlyFigure.objects.filter(
+            financial_year_id=self.future_year
+        ).count()
 
     # The following tests that no future data is archived
     def check_period(self, period):
         archived_count = 0
         for month in range(0, period):
             archived_count += 15 - month
-            end_of_month_archive(month+1)
+            end_of_month_archive(month + 1)
         self.assertEqual(
-            ForecastMonthlyFigure.objects.filter(financial_year_id=self.future_year).count(),
-                         self.count_future_year
+            ForecastMonthlyFigure.objects.filter(
+                financial_year_id=self.future_year
+            ).count(),
+            self.count_future_year,
         )
         count_archived_figures = ForecastMonthlyFigure.objects.filter(
             archived_status__isnull=False

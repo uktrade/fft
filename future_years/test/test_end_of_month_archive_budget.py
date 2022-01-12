@@ -1,4 +1,3 @@
-from django.db.models import F
 from django.test import TestCase
 
 from core.utils.generic_helpers import get_current_financial_year
@@ -36,21 +35,21 @@ class EndOfMonthFutureDataBudgetTest(TestCase):
         # Create data for future forecasts
         self.init_data.set_year(self.future_year)
         self.init_data.setup_budget()
-        self.count_future_year = \
-            BudgetMonthlyFigure.objects.filter(
-                financial_year_id=self.future_year
-            ).count()
-
+        self.count_future_year = BudgetMonthlyFigure.objects.filter(
+            financial_year_id=self.future_year
+        ).count()
 
     # The following tests that no future data is archived
     def check_period(self, period):
         archived_count = 0
         for month in range(0, period):
             archived_count += 15 - month
-            end_of_month_archive(month+1)
+            end_of_month_archive(month + 1)
         self.assertEqual(
-            BudgetMonthlyFigure.objects.filter(financial_year_id=self.future_year).count(),
-                         self.count_future_year
+            BudgetMonthlyFigure.objects.filter(
+                financial_year_id=self.future_year
+            ).count(),
+            self.count_future_year,
         )
         count_archived_figures = BudgetMonthlyFigure.objects.filter(
             archived_status__isnull=False
