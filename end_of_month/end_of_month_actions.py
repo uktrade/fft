@@ -53,14 +53,19 @@ def insert_query(table_name, archived_status_id):
     )
 
 
-def insert_total_budget_query(archived_status_id, archived_period_id):
+def insert_total_budget_query(
+        archived_status_id,
+        archived_period_id,
+        financial_year_id
+):
     return (
         f"INSERT INTO public.end_of_month_monthlytotalbudget ("
         f"created, updated, amount, archived_period_id, "
         f"financial_code_id, financial_year_id, archived_status_id)"
         f"SELECT now(), now(), budget, {archived_period_id},"
         f"financial_code_id, financial_year_id, {archived_status_id}"
-        f"FROM public.yearly_budget;"
+        f"FROM public.yearly_budget "
+        f"WHERE financial_year_id = {financial_year_id};"
     )
 
 
@@ -117,6 +122,7 @@ def end_of_month_archive(period_id, used_for_current_month=False):
     # Archive the budget. Use the same logic used for Forecast.
     budget_periods = BudgetMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gte=period_id,
+        financial_year_id=current_year,    
         archived_status__isnull=True,
     )
     budget_periods.update(archived_status=end_of_month_info)
@@ -127,7 +133,10 @@ def end_of_month_archive(period_id, used_for_current_month=False):
 
     # Save the yearly total for the budgets. It makes the queries
     # used to display the forecast/budget much easier.
-    budget_total_sql = insert_total_budget_query(end_of_month_info.id, period_id)
+    budget_total_sql = insert_total_budget_query(
+        end_of_month_info.id,
+        period_id,
+        current_year)
     with connection.cursor() as cursor:
         cursor.execute(budget_total_sql)
 
