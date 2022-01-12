@@ -1,0 +1,86 @@
+from django.db.models import F
+from django.test import TestCase
+
+from core.utils.generic_helpers import get_current_financial_year
+
+from end_of_month.end_of_month_actions import (
+    end_of_month_archive,
+)
+from end_of_month.models import (
+    MonthlyTotalBudget,
+    forecast_budget_view_model,
+)
+from end_of_month.test.test_utils import (
+    MonthlyFigureSetup,
+)
+
+from forecast.models import (
+    BudgetMonthlyFigure,
+)
+
+
+class EndOfMonthFutureDataBudgetTest(TestCase):
+    def setUp(self):
+        self.init_data = MonthlyFigureSetup()
+        self.init_data.setup_budget()
+        self.current_year = get_current_financial_year()
+        self.future_year = self.current_year + 2
+        # Create data for future forecasts
+        self.init_data.set_year(self.future_year)
+        self.init_data.setup_budget()
+        self.count_future_year = \
+            BudgetMonthlyFigure.objects.filter(
+                financial_year_id=self.future_year
+            ).count()
+
+
+    # The following tests that no future data is archived
+    def check_period(self, period):
+        archived_count = 0
+        for month in range(0, period):
+            archived_count += 15 - month
+            end_of_month_archive(month+1)
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year_id=self.future_year).count(),
+                         self.count_future_year
+        )
+        count_archived_figures = BudgetMonthlyFigure.objects.filter(
+            archived_status__isnull=False
+        ).count()
+        self.assertEqual(count_archived_figures, archived_count)
+
+    def test_end_of_month_apr(self):
+        self.check_period(1)
+
+    def test_end_of_month_may(self):
+        self.check_period(2)
+
+    def test_end_of_month_jun(self):
+        self.check_period(3)
+
+    def test_end_of_month_jul(self):
+        self.check_period(4)
+
+    def test_end_of_month_aug(self):
+        self.check_period(5)
+
+    def test_end_of_month_sep(self):
+        self.check_period(6)
+
+    def test_end_of_month_oct(self):
+        self.check_period(7)
+
+    def test_end_of_month_nov(self):
+        self.check_period(8)
+
+    def test_end_of_month_dec(self):
+        self.check_period(9)
+
+    def test_end_of_month_jan(self):
+        self.check_period(10)
+
+    def test_end_of_month_feb(self):
+        self.check_period(11)
+
+    def test_end_of_month_mar(self):
+        self.check_period(12)
