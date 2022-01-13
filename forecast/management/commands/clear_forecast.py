@@ -104,11 +104,14 @@ class Command(BaseCommand):
             # Don't remove financial codes still in use by future forecast and budget
             sql_delete = "DELETE FROM forecast_financialcode " \
                          "WHERE forecast_financialcode NOT IN " \
-                         "(SELECT forecast_financialcode FROM  forecast_forecastmonthlyfigure " \
+                         "(SELECT forecast_financialcode " \
+                         "FROM  forecast_forecastmonthlyfigure " \
                          "UNION " \
-                         "SELECT forecast_financialcode FROM  end_of_month_monthlytotalbudget " \
+                         "SELECT forecast_financialcode " \
+                         "FROM  end_of_month_monthlytotalbudget " \
                          "UNION " \
-                         "SELECT forecast_financialcode FROM forecast_budgetmonthlyfigure);"
+                         "SELECT forecast_financialcode " \
+                         "FROM forecast_budgetmonthlyfigure);"
             cursor.execute(sql_delete)
 
         self.stdout.write(
