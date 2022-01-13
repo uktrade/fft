@@ -665,7 +665,7 @@ class FCOMappingAbstract(models.Model):
 
 class FCOMapping(FCOMappingAbstract, IsActiveModel):
     account_L6_code_fk = models.ForeignKey(
-        NaturalCode, on_delete=models.PROTECT, blank=True, null=True
+        NaturalCode, on_delete=models.PROTECT
     )
 
 
