@@ -126,12 +126,15 @@ class ReadArchivedForecastTest(TestCase):
     def setUp(self):
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
+
         for period in range(0, 16):
             self.archived_figure.append(0)
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
-        tot_q = data_model.objects.annotate(
+        tot_q = data_model.objects.filter(
+            financial_year=self.init_data.year_used
+        ).annotate(
             total=F("apr")
             + F("may")
             + F("jun")
@@ -350,7 +353,7 @@ class ReadArchivedBudgetTest(TestCase):
 
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
-        tot_q = data_model.objects.all()
+        tot_q = data_model.objects.filter(financial_year=self.init_data.year_used)
         return tot_q[0].budget
 
     def get_current_budget_total(self):
