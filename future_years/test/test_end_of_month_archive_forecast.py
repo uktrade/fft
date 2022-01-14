@@ -19,7 +19,7 @@ class ReadArchivedFutureDataForecast(ReadArchivedForecastTest):
     def setUp(self):
         super().setUp()
         current_year = get_current_financial_year()
-        # Create a set of data for the future
+        # Create a set of future forecast data
         self.init_data.set_year(current_year + 2)
         self.init_data.setup_forecast()
         self.init_data.set_year(current_year)
