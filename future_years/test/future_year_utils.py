@@ -32,8 +32,6 @@ from forecast.models import (
 
 
 FUTURE_TOTAL_COLUMN = -3
-# TOTAL_COLUMN = -5
-# SPEND_TO_DATE_COLUMN = -2
 FUTURE_UNDERSPEND_COLUMN = -2
 
 class FutureFigureSetup:
