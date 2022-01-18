@@ -204,7 +204,7 @@ class ForecastSubTotalTable(tables.Table):
                 ),
             ]
         )
-        
+
         if show_year_to_date_actuals:
             extra_column_to_display.extend(
                 [
