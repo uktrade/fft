@@ -5,7 +5,6 @@ from django.views.generic.base import TemplateView
 
 from django_tables2 import MultiTableMixin
 
-from core.models import FinancialYear
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,

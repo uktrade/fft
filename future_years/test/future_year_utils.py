@@ -34,6 +34,7 @@ from forecast.models import (
 FUTURE_TOTAL_COLUMN = -3
 FUTURE_UNDERSPEND_COLUMN = -2
 
+
 class FutureFigureSetup:
     def monthly_figure_create(self, period, amount, year_obj, what="Forecast"):
         if what == "Forecast":

@@ -6,7 +6,7 @@ from forecast.test.test_utils import format_forecast_figure
 
 
 from future_years.test.future_year_utils import (
-    FutureYearForecastSetup, 
+    FutureYearForecastSetup,
     FUTURE_TOTAL_COLUMN,
     FUTURE_UNDERSPEND_COLUMN,
 )

@@ -25,9 +25,9 @@ class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[FUTURE_TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
-            self.year_total
-        )
+        assert last_nac_cols[
+            FUTURE_TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
         assert last_nac_cols[
             FUTURE_UNDERSPEND_COLUMN

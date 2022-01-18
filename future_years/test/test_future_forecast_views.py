@@ -22,6 +22,7 @@ from forecast.test.test_utils import (
 
 from future_years.test.future_year_utils import FUTURE_TOTAL_COLUMN
 
+
 class ViewFutureForecastHierarchyTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)

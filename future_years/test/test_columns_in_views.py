@@ -25,7 +25,6 @@ class ViewFutureForecastColumnTest(FutureYearForecastSetup):
         )
         self.check_response(response)
 
-
     def test_view_directorate_summary(self):
         response = self.client.get(
             reverse(
