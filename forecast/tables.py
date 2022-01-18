@@ -161,6 +161,9 @@ class ForecastSubTotalTable(tables.Table):
         self.num_actuals = len(actual_month_list)
 
         show_monthly_variance = kwargs.pop("show_monthly_variance", True)
+        show_year_to_date_actuals = kwargs.pop("show_year_to_date_actuals", True)
+
+
         # See if Adjustment periods should be displayed.
         # Add them as extra columns, otherwise they remain visible even after
         # their field 'display_figure' is set to False.
@@ -199,7 +202,13 @@ class ForecastSubTotalTable(tables.Table):
                         "spend", "Budget", variance_percentage_header, empty_values=()
                     ),
                 ),
-                (
+            ]
+        )
+        
+        if show_year_to_date_actuals:
+            extra_column_to_display.extend(
+                [
+                    (
                     "year_to_date",
                     SummingMonthCol(
                         actual_month_list, year_to_date_header, empty_values=(),

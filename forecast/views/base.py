@@ -109,6 +109,7 @@ class ForecastViewTableMixin(MultiTableMixin):
         self._show_monthly_variance = None
         self._table_kwargs = None
         self._editable_year = None
+        self._show_year_to_date_actuals = None
         super().__init__(*args, **kwargs)
 
     @property
@@ -128,6 +129,14 @@ class ForecastViewTableMixin(MultiTableMixin):
         if self._show_monthly_variance is None:
             self._show_monthly_variance = monthly_variance_exists(self.period)
         return self._show_monthly_variance
+
+    @property
+    def show_year_to_date_actuals(self):
+        if self._show_year_to_date_actuals is None:
+            # Don't show the year to date spend for future years
+            # there is no spending in the future years
+            self._show_year_to_date_actuals = self.year <= get_current_financial_year()
+        return self._show_year_to_date_actuals
 
     @property
     def year(self):
@@ -197,6 +206,7 @@ class ForecastViewTableMixin(MultiTableMixin):
                 "actual_month_list": self.actual_month_list,
                 "adj_visible_list": self.adj_visible_list,
                 "show_monthly_variance": self.show_monthly_variance,
+                "show_year_to_date_actuals": self.show_year_to_date_actuals,
             }
         return self._table_kwargs
 
