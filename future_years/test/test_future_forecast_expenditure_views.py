@@ -3,13 +3,14 @@ from bs4 import BeautifulSoup
 from django.urls import reverse
 
 from forecast.test.test_utils import (
-    TOTAL_COLUMN,
-    SPEND_TO_DATE_COLUMN,
-    UNDERSPEND_COLUMN,
     format_forecast_figure,
 )
 
-from future_years.test.future_year_utils import FutureYearForecastSetup
+from future_years.test.future_year_utils import (
+    FutureYearForecastSetup,
+    FUTURE_TOTAL_COLUMN,
+    FUTURE_UNDERSPEND_COLUMN,
+)
 
 
 class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
@@ -24,17 +25,13 @@ class ViewForecastNaturalAccountCodeTest(FutureYearForecastSetup):
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
+        assert last_nac_cols[FUTURE_TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
             self.year_total
         )
         # Check the difference between budget and year total
         assert last_nac_cols[
-            UNDERSPEND_COLUMN
+            FUTURE_UNDERSPEND_COLUMN
         ].get_text().strip() == format_forecast_figure(self.underspend_total)
-        # Check the spend to date
-        assert last_nac_cols[
-            SPEND_TO_DATE_COLUMN
-        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_response(self, resp):
         self.assertEqual(resp.status_code, 200)

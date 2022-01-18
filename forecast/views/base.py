@@ -6,7 +6,10 @@ from django.views.generic.base import TemplateView
 from django_tables2 import MultiTableMixin
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from end_of_month.utils import monthly_variance_exists
 
@@ -32,7 +35,7 @@ def get_view_forecast_period_name(period):
         forecast_period_obj = FinancialPeriod.objects.get(pk=period)
         period_name = forecast_period_obj.period_long_name
     else:
-        financial_year_obj = FinancialYear.objects.get(pk=period)
+        financial_year_obj = get_financial_year_obj(period)
         period_name = financial_year_obj.financial_year_display
     return period_name
 
