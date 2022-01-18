@@ -8,6 +8,8 @@ from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.edit import FormView
 
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
+
 
 class DownloadMIReportView(FormView):
     template_name = "download_file/downloaded_mi_reports.html"
@@ -36,3 +38,6 @@ class DownloadMIReportView(FormView):
             | Q(document_type=FileDownload.MI_BUDGET_REPORT)
         ).order_by("-created")
         return downloaded_files
+
+    def previous_year(self):
+        return get_year_display(get_current_financial_year() - 1)

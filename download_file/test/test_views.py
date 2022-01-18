@@ -1,5 +1,7 @@
 import io
 
+from bs4 import BeautifulSoup
+
 from django.contrib.auth.models import Permission
 from django.urls import reverse
 
@@ -13,7 +15,10 @@ from chartofaccountDIT.test.factories import (
 
 from core.models import FinancialYear
 from core.test.test_base import BaseTestCase
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from costcentre.test.factories import CostCentreFactory
 
@@ -21,13 +26,14 @@ from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
+    ForecastMonthlyFigure,
 )
 
 
 class DownloadViewTests(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 109076
+        self.cost_centre_code = 670911
         self.cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -234567
@@ -47,14 +53,14 @@ class DownloadViewTests(BaseTestCase):
             project_code=project_obj,
         )
         financial_code_obj.save
-        apr_figure = BudgetMonthlyFigure.objects.create(
+        apr_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_apr,
         )
         apr_figure.save
-        may_figure = BudgetMonthlyFigure.objects.create(
+        may_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
             amount=self.amount_may,
             financial_code=financial_code_obj,
@@ -80,10 +86,10 @@ class DownloadViewTests(BaseTestCase):
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
 
-    def test_download_mi_budget(self):
+    def test_download_mi_report(self):
         assert not self.test_user.has_perm("forecast.can_download_mi_reports")
         downloaded_files_url = reverse(
-            "download_mi_budget",
+            "download_mi_report_source",
             kwargs={"financial_year": get_current_financial_year()}
         )
 
@@ -107,32 +113,11 @@ class DownloadViewTests(BaseTestCase):
         self.assertEqual(ws["W2"].value, self.year_total / 100)
         wb.close()
 
-    def test_download_oscar_view(self):
-        assert not self.test_user.has_perm("forecast.can_download_oscar")
-
-        downloaded_files_url = reverse("download_oscar_report",)
-
-        # Should have been redirected (no permission)
-        resp = self.client.get(
-            downloaded_files_url,
-            follow=False,
-        )
-        resp.status_code == 403
-
-        can_download_files = Permission.objects.get(codename="can_download_oscar",)
-        self.test_user.user_permissions.add(can_download_files)
-        self.test_user.save()
-
-        resp = self.client.get(downloaded_files_url)
-
-        # Should have been permission now
-        self.assertEqual(resp.status_code, 200)
-
 
 class DownloadMIBudgetViewTests(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 109076
+        self.cost_centre_code = 670911
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -234567
@@ -209,10 +194,15 @@ class DownloadMIBudgetViewTests(BaseTestCase):
         self.assertEqual(ws["W2"].value, self.year_total / 100)
         wb.close()
 
+
+class DownloadOscarPermissionTests():
+    def setUp(self):
+        self.client.force_login(self.test_user)
+
     def test_download_oscar_view(self):
         assert not self.test_user.has_perm("forecast.can_download_oscar")
 
-        downloaded_files_url = reverse("download_oscar_report",)
+        downloaded_files_url = reverse("download_oscar_report", )
 
         # Should have been redirected (no permission)
         resp = self.client.get(
@@ -221,7 +211,7 @@ class DownloadMIBudgetViewTests(BaseTestCase):
 
         assert resp.status_code == 403
 
-        can_download_files = Permission.objects.get(codename="can_download_oscar",)
+        can_download_files = Permission.objects.get(codename="can_download_oscar", )
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 
@@ -229,3 +219,22 @@ class DownloadMIBudgetViewTests(BaseTestCase):
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
+
+
+class DownloadMIViewLabelTests(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        can_download_files = Permission.objects.get(codename="can_download_mi_reports",)
+        self.test_user.user_permissions.add(can_download_files)
+        self.test_user.save()
+
+    def test_previous_year_label(self):
+        previous_year_obj = get_financial_year_obj(get_current_financial_year() - 1)
+        previous_year_display = previous_year_obj.financial_year_display
+        downloaded_files_url = reverse("download_mi_report",)
+        response = self.client.get(downloaded_files_url, follow=False)
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        # Check that the text of the button shows the previous year
+        previous_year_button = soup.find(id="id_previous_year_button")
+        self.assertIn(previous_year_display, str(previous_year_button))

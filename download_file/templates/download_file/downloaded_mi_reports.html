@@ -29,8 +29,9 @@
 
     <p class="govuk-body">
         <a class="govuk-link" href="{% url "download_mi_previous_year_report_source" %}">
-            <button class="govuk-button" data-module="govuk-button">
-                Download previous year forecast/actual report
+            <button class="govuk-button" data-module="govuk-button"
+                    id="id_previous_year_button">
+                Download {{ view.previous_year }} forecast/actual report
             </button>
         </a>
     </p>
