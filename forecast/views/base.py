@@ -5,8 +5,10 @@ from django.views.generic.base import TemplateView
 
 from django_tables2 import MultiTableMixin
 
-from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from end_of_month.utils import monthly_variance_exists
 
@@ -32,7 +34,7 @@ def get_view_forecast_period_name(period):
         forecast_period_obj = FinancialPeriod.objects.get(pk=period)
         period_name = forecast_period_obj.period_long_name
     else:
-        financial_year_obj = FinancialYear.objects.get(pk=period)
+        financial_year_obj = get_financial_year_obj(period)
         period_name = financial_year_obj.financial_year_display
     return period_name
 
@@ -109,6 +111,7 @@ class ForecastViewTableMixin(MultiTableMixin):
         self._show_monthly_variance = None
         self._table_kwargs = None
         self._editable_year = None
+        self._show_year_to_date_actuals = None
         super().__init__(*args, **kwargs)
 
     @property
@@ -128,6 +131,14 @@ class ForecastViewTableMixin(MultiTableMixin):
         if self._show_monthly_variance is None:
             self._show_monthly_variance = monthly_variance_exists(self.period)
         return self._show_monthly_variance
+
+    @property
+    def show_year_to_date_actuals(self):
+        if self._show_year_to_date_actuals is None:
+            # Don't show the year to date spend for future years
+            # there is no spending in the future years
+            self._show_year_to_date_actuals = self.year <= get_current_financial_year()
+        return self._show_year_to_date_actuals
 
     @property
     def year(self):
@@ -197,6 +208,7 @@ class ForecastViewTableMixin(MultiTableMixin):
                 "actual_month_list": self.actual_month_list,
                 "adj_visible_list": self.adj_visible_list,
                 "show_monthly_variance": self.show_monthly_variance,
+                "show_year_to_date_actuals": self.show_year_to_date_actuals,
             }
         return self._table_kwargs
 

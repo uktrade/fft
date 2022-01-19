@@ -17,9 +17,10 @@ from forecast.test.test_utils import (
     PROGRAMME_TABLE_INDEX,
     EXPENDITURE_TABLE_INDEX,
     PROJECT_TABLE_INDEX,
-    TOTAL_COLUMN,
     format_forecast_figure,
 )
+
+from future_years.test.future_year_utils import FUTURE_TOTAL_COLUMN
 
 
 class ViewFutureForecastHierarchyTest(BaseTestCase):
@@ -47,7 +48,7 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
         self.assertEqual(
-            last_programme_cols[TOTAL_COLUMN].get_text().strip(),
+            last_programme_cols[FUTURE_TOTAL_COLUMN].get_text().strip(),
             format_forecast_figure(self.forecast_data.total_forecast / 100),
         )
 
@@ -63,7 +64,7 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
 
         # Check the total for the year
         self.assertEqual(
-            last_expenditure_cols[TOTAL_COLUMN].get_text().strip(),
+            last_expenditure_cols[FUTURE_TOTAL_COLUMN].get_text().strip(),
             format_forecast_figure(self.forecast_data.total_forecast / 100),
         )
 
@@ -83,12 +84,13 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
 
         # Check the total for the year
         self.assertEqual(
-            last_project_cols[TOTAL_COLUMN].get_text().strip(),
+            last_project_cols[FUTURE_TOTAL_COLUMN].get_text().strip(),
             format_forecast_figure(self.forecast_data.total_forecast / 100),
         )
 
     def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
+
         first_hierarchy_cols = hierarchy_rows[2].find_all("td")
         self.assertEqual(
             first_hierarchy_cols[2 + offset].get_text().strip(), str(hierarchy_element)
@@ -104,7 +106,7 @@ class ViewFutureForecastHierarchyTest(BaseTestCase):
 
         # Check the total for the year
         self.assertEqual(
-            last_hierarchy_cols[TOTAL_COLUMN].get_text().strip(),
+            last_hierarchy_cols[FUTURE_TOTAL_COLUMN].get_text().strip(),
             format_forecast_figure(self.forecast_data.total_forecast / 100),
         )
 
