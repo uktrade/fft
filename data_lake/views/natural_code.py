@@ -94,9 +94,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
             writer.writerow(row)
 
         for obj in historical_queryset:
-            if obj.expenditure_category and obj.expenditure_category.linked_budget_code:
+            if obj.expenditure_category:
                 account_L6_budget_description = \
-                    obj.expenditure_category.linked_budget_code.account_L6_budget_description    # noqa E501
+                    obj.expenditure_category.linked_budget_code_description
             else:
                 account_L6_budget_description = ""
             row = [
