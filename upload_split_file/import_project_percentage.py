@@ -159,8 +159,6 @@ class UploadProjectPercentages:
             period_percentage = round(period_percentage * MAX_COEFFICIENT)
         except ValueError:
             raise UploadFileDataError("Non-numeric value")
-        # if period_percentage < 0:
-        #     raise UploadFileDataError("Negative value")
 
         if period_percentage > MAX_COEFFICIENT:
             raise UploadFileDataError("Value higher than 100%")
