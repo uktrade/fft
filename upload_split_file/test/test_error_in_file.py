@@ -83,31 +83,6 @@ class ImportPercentageTest(SplitDataSetup):
             in file_upload_obj.user_error_message
         )
 
-    # def test_negative_percentage(self):
-    #     data_dictionary = [
-    #         {
-    #             COST_CENTRE_CODE_INDEX: self.cost_centre_code,
-    #             NAC_CODE_INDEX: self.natural_account_code_pay,
-    #             PROGRAMME_CODE_INDEX: self.programme_code,
-    #             PROJECT_CODE_INDEX: self.project_code1,
-    #             MONTH1_INDEX: -0.50,
-    #         },
-    #     ]
-    #     data_worksheet, self.excel_file_name = create_workbook(data_dictionary)
-    #
-    #     file_upload_obj = FileUpload(
-    #         document_file_name=self.excel_file_name,
-    #         document_type=FileUpload.PROJECT_PERCENTAGE,
-    #         file_location=FileUpload.LOCALFILE,
-    #     )
-    #     file_upload_obj.save()
-    #     upload_project_percentage_from_file(data_worksheet, file_upload_obj)
-    #
-    #     assert (
-    #         "Row 2 error: Negative value in cell"
-    #         in file_upload_obj.user_error_message
-    #     )
-
     def test_percentage_too_high(self):
         data_dictionary = [
             {
