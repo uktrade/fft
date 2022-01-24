@@ -70,7 +70,7 @@ class UploadProjectPercentages:
         self.a2_index = header_dict[ANALYSIS2_CODE]
         self.proj_index = header_dict[PROJECT_CODE]
         self.file_upload = file_upload
-        self.row_to_process = self.worksheet.max_row + 1
+        self.rows_to_process = self.worksheet.max_row + 1
         self.include_archived = include_archived
         self.expenditure_type = expenditure_type
         self.directorate_code = ""
@@ -159,8 +159,8 @@ class UploadProjectPercentages:
             period_percentage = round(period_percentage * MAX_COEFFICIENT)
         except ValueError:
             raise UploadFileDataError("Non-numeric value")
-        if period_percentage < 0:
-            raise UploadFileDataError("Negative value")
+        # if period_percentage < 0:
+        #     raise UploadFileDataError("Negative value")
 
         if period_percentage > MAX_COEFFICIENT:
             raise UploadFileDataError("Value higher than 100%")
