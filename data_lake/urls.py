@@ -4,6 +4,8 @@ from data_lake.views.actual import ActualViewSet
 from data_lake.views.actual_split import ActualSplitViewSet
 from data_lake.views.forecast import ForecastViewSet
 from data_lake.views.budget import BudgetViewSet
+from data_lake.views.budget_profiled_actual import BudgetActualViewSet
+from data_lake.views.budget_profiled_forecast import BudgetForecastViewSet
 from data_lake.views.commercial_category import CommercialCategoryViewSet
 from data_lake.views.cost_centre_hierarchy import HierarchyViewSet
 from data_lake.views.financial_year import FinancialYearViewSet
@@ -18,6 +20,16 @@ from data_lake.views.inter_entity import InterEntityViewSet
 
 
 urlpatterns = [
+    path(
+        "budget_forecast/",
+        BudgetForecastViewSet.as_view({"get": "list"}),
+        name="data_lake_budget_forecast",
+    ),
+    path(
+        "budget_actual/",
+        BudgetActualViewSet.as_view({"get": "list"}),
+        name="data_lake_budget_actual",
+    ),
     path(
         "actual_split/",
         ActualSplitViewSet.as_view({"get": "list"}),
