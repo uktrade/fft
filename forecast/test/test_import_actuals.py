@@ -44,6 +44,7 @@ from forecast.import_actuals import (
     CORRECT_TRIAL_BALANCE_WORKSHEET_NAME,
     GENERIC_PROGRAMME_CODE,
     MONTH_CELL,
+    NAC_NOT_VALID_WITH_GENERIC_PROGRAMME,
     TITLE_CELL,
     UploadFileFormatError,
     check_trial_balance_format,
@@ -619,6 +620,126 @@ class ImportActualsTest(BaseTestCase):
                 upload_month,
                 2019,
             )
+        )
+
+
+class ImportActualsExcludeRowTest(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        self.test_year = 2019
+        make_financial_year_current(self.test_year)
+        self.test_period = 9
+
+        self.cost_centre_code = TEST_COST_CENTRE
+        self.valid_natural_account_code = TEST_VALID_NATURAL_ACCOUNT_CODE
+        self.programme_code = TEST_PROGRAMME_CODE
+        self.test_amount = 100
+        self.directorate_obj = DirectorateFactory.create(
+            directorate_code='T123'
+        )
+        CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code,
+            directorate=self.directorate_obj,
+            active=False,
+        )
+        NaturalCodeFactory.create(
+            natural_account_code=self.valid_natural_account_code,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            active=False,
+        )
+        NaturalCodeFactory.create(
+            natural_account_code=NAC_NOT_VALID_WITH_GENERIC_PROGRAMME,
+            economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+            active=False,
+        )
+        ProgrammeCodeFactory.create(
+            programme_code=self.programme_code,
+            active=False,
+        )
+        ProgrammeCodeFactory.create(
+            programme_code=GENERIC_PROGRAMME_CODE
+        )
+
+        self.period_obj = FinancialPeriod.objects.get(
+            period_calendar_code=self.test_period
+        )
+        self.year_obj = FinancialYear.objects.get(financial_year=2019)
+        dummy_upload = FileUpload(
+            s3_document_file='dummy.csv',
+            uploading_user=self.test_user,
+            document_type=FileUpload.ACTUALS,
+        )
+        dummy_upload.save()
+        self.check_financial_code = CheckFinancialCode(dummy_upload)
+
+    def test_save_row_special_nac_correct_programme_code(self):
+        self.assertEqual(
+            FinancialCode.objects.filter(
+                cost_centre=self.cost_centre_code
+            ).count(),
+            0,
+        )
+        self.assertEqual(
+            ForecastMonthlyFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
+            0,
+        )
+        chart_of_account_line_correct = \
+            f'3000-30000-{self.cost_centre_code}' \
+            f'-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}' \
+            f'-{self.programme_code}-00000-00000-0000-0000-0000'
+
+
+        save_trial_balance_row(
+            chart_of_account_line_correct,
+            self.test_amount,
+            self.period_obj,
+            self.year_obj,
+            self.check_financial_code,
+            2
+        )
+
+        self.assertEqual(
+            FinancialCode.objects.filter(
+                cost_centre=self.cost_centre_code
+            ).count(),
+            1
+        )
+        q = ActualUploadMonthlyFigure.objects.get(
+            financial_code__cost_centre=self.cost_centre_code,
+        )
+
+        self.assertEqual(
+            q.amount,
+            self.test_amount * 100,
+        )
+
+
+    def test_save_row_special_nac_no_programme(self):
+        self.assertEqual(
+            ActualUploadMonthlyFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code).count(),
+            0,
+        )
+        chart_of_account_line_no_programme = \
+            f'3000-30000-{self.cost_centre_code}' \
+            f'-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}' \
+            '-000000-00000-00000-0000-0000-0000'
+
+        save_trial_balance_row(
+            chart_of_account_line_no_programme,
+            self.test_amount,
+            self.period_obj,
+            self.year_obj,
+            self.check_financial_code,
+            2
+        )
+        # The line should not be saved, because of the combination of NAC an 0 programme
+        self.assertEqual(
+            ActualUploadMonthlyFigure.objects.filter(
+                financial_code__cost_centre=self.cost_centre_code).count(),
+            0,
         )
 
 
