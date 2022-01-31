@@ -690,7 +690,6 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             f'-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}' \
             f'-{self.programme_code}-00000-00000-0000-0000-0000'
 
-
         save_trial_balance_row(
             chart_of_account_line_correct,
             self.test_amount,
@@ -714,7 +713,6 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             q.amount,
             self.test_amount * 100,
         )
-
 
     def test_save_row_special_nac_no_programme(self):
         self.assertEqual(

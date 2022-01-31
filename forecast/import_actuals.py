@@ -110,7 +110,6 @@ def save_trial_balance_row(
     """Parse the long strings containing the
     chart of account information. Return errors
     if the elements of the chart of account are missing from database."""
-    print(f"{chart_of_account}")
     # Don't save zero values
     if not value:
         return True, ""
