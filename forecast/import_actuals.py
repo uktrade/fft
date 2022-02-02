@@ -63,6 +63,9 @@ CHART_ACCOUNT_SEPARATOR = "-"
 # Used when the programme code is 0
 GENERIC_PROGRAMME_CODE = 310940
 
+# If the following nac is in a row with programme code 0, don't save the row
+NAC_NOT_VALID_WITH_GENERIC_PROGRAMME = "23893002"
+
 
 def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
     # Now copy the newly uploaded actuals to the monthly figure table
@@ -107,23 +110,25 @@ def save_trial_balance_row(
     """Parse the long strings containing the
     chart of account information. Return errors
     if the elements of the chart of account are missing from database."""
-
     # Don't save zero values
     if not value:
         return True, ""
 
     chart_account_list = chart_of_account.split(CHART_ACCOUNT_SEPARATOR)
-    programme_code = chart_account_list[PROGRAMME_INDEX]
-
-    # Handle lines without programme code
-    if not int(programme_code):
-        programme_code = GENERIC_PROGRAMME_CODE
 
     cost_centre = chart_account_list[CC_INDEX]
     nac = chart_account_list[NAC_INDEX]
     analysis1 = chart_account_list[ANALYSIS1_INDEX]
     analysis2 = chart_account_list[ANALYSIS2_INDEX]
     project_code = chart_account_list[PROJECT_INDEX]
+    programme_code = chart_account_list[PROGRAMME_INDEX]
+
+    # Handle lines without programme code
+    if not int(programme_code):
+        programme_code = GENERIC_PROGRAMME_CODE
+        if nac == NAC_NOT_VALID_WITH_GENERIC_PROGRAMME:
+            return
+
     check_financial_code.validate(
         cost_centre, nac, programme_code, analysis1, analysis2, project_code, row
     )
