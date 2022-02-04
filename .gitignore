@@ -161,3 +161,4 @@ front_end/config/*
 
 # PII secrets
 ner_output_file.txt
+.pii-secret-hook
