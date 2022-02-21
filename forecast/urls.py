@@ -194,7 +194,7 @@ urlpatterns = [
         name="export_forecast_data_cost_centre",
     ),
     path(
-        "export-edit-forecast-data/<cost_centre>",
+        "export-edit-forecast-data/<cost_centre>/<financial_year>",
         export_edit_forecast_data,
         name="export_edit_forecast_data_cost_centre",
     ),

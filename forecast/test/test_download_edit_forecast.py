@@ -57,12 +57,12 @@ class DownloadEditForecastTest(BaseTestCase):
             directorate=self.directorate,
             cost_centre_code=self.cost_centre_code,
         )
-        current_year = get_current_financial_year()
+        self.current_year = get_current_financial_year()
         self.amount_apr = -9876543
         self.programme_obj = ProgrammeCodeFactory()
         self.nac_obj = NaturalCodeFactory()
         self.project_obj = ProjectCodeFactory()
-        year_obj = FinancialYear.objects.get(financial_year=current_year)
+        year_obj = FinancialYear.objects.get(financial_year=self.current_year)
 
         apr_period = FinancialPeriod.objects.get(financial_period_code=1)
         apr_period.actual_loaded = True
@@ -139,7 +139,10 @@ class DownloadEditForecastTest(BaseTestCase):
         download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
-                kwargs={"cost_centre": self.cost_centre_code},
+                kwargs={
+                    "cost_centre": self.cost_centre_code,
+                    "financial_year": self.current_year
+                },
             ),
         )
         self.assertEqual(download_forecast_url.status_code, 200)
@@ -181,7 +184,10 @@ class DownloadEditForecastTest(BaseTestCase):
         download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
-                kwargs={"cost_centre": self.cost_centre_code},
+                kwargs={
+                    "cost_centre": self.cost_centre_code,
+                    "financial_year": self.current_year
+                },
             )
         )
         self.assertEqual(download_forecast_url.status_code, 302)
@@ -204,7 +210,10 @@ class DownloadEditForecastTest(BaseTestCase):
         download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
-                kwargs={"cost_centre": test_cost_centre_code},
+                kwargs={
+                    "cost_centre": self.cost_centre_code,
+                    "financial_year": self.current_year
+                },
             )
         )
         self.assertEqual(download_forecast_url.status_code, 302)
@@ -215,7 +224,10 @@ class DownloadEditForecastTest(BaseTestCase):
         download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
-                kwargs={"cost_centre": self.cost_centre_code},
+                kwargs={
+                    "cost_centre": self.cost_centre_code,
+                    "financial_year": self.current_year
+                },
             )
         )
         self.assertEqual(download_forecast_url.status_code, 200)
