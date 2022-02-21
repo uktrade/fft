@@ -120,7 +120,7 @@ class ChooseCostCentreView(
             kwargs={"cost_centre_code": self.cost_centre.cost_centre_code},
         )
 
-
+# TODO add financial_year to kwargs
 class AddRowView(
     CostCentrePermissionTest, FormView,
 ):
@@ -364,7 +364,7 @@ class EditForecastFigureView(
             cost_centre_code=cost_centre_code,
         ).first()
 
-        financial_year = get_current_financial_year()
+        financial_year = self.kwargs["financial_year"]
 
         financial_code = FinancialCode.objects.filter(
             cost_centre=cost_centre,

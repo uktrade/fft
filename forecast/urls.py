@@ -169,7 +169,7 @@ urlpatterns = [
         name="paste_forecast",
     ),
     path(
-        "update-forecast/<cost_centre_code>/",
+        "update-forecast/<cost_centre_code>/<financial_year>",
         EditForecastFigureView.as_view(),
         name="update_forecast_figure",
     ),
