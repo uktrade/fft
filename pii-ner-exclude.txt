@@ -1985,4 +1985,59 @@ financial_code__cost_centre
 financial_code__forecast_expenditure_type
 self.contract_field
 TEST_EMAIL
+643210"
+financial_row_unique_5a
+financial_row_unique_5c
+financial_row_unique_4b
+ActualUploadMonthlyFigure_unique1
+BudgetUploadMonthlyFigure_unique1
+actual_split/
+T123
+Upload Percentages
+Home 2
+chartofaccountDIT/"
+Project Split Administrator
+Programme DEL
+Programme AME
+f'{context.base_url}/
+document.body.appendChild(input
+history_id"
+f"MI Budget
+0.0.0.34
+Financial Year Display
+Project Percentages
+f"ON
+f"{period_id}
+PingdomConfig
+dal_select2
+DjangoTemplates
+ELASTIC_APM_ENVIRONMENT
+ELASTIC_APM_SECRET_TOKEN
+NAME
+VERBOSE_LOOKUPS
+GIT_COMMIT
+CacheControl
+CssFinder
+WhiteNoiseMiddleware
+Budget / Forecast NAC Description
+E501
+Budget Type Display
+Project Codes{%
+Project Codes</h3
+Content-Disposition"
+u"\ufeff
+3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'
+3000-30000-{}-{}-000000-00000-00000-0000-0000-0000'
+Wrong Title'
+Project Percentages'
+Upload Percentage
+"Clear the Cost Centre, Directorate and Group
+self.create_departmental_group('8213CC
+Admin DEL'
+Project 1
+Project 2
+Project 3
+Project 4
+Project 5
+Staff Welfare
 ner_output_file.txt
