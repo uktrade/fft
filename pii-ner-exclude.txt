@@ -2041,3 +2041,11 @@ Project 4
 Project 5
 Staff Welfare
 ner_output_file.txt
+Breakfast
+Lunch
+Sporting/Cultural Event'
+Hotel
+Drinks
+Grade 7'
+EO
+Delete Gift and

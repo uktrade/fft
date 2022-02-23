@@ -54,52 +54,52 @@ class GiftAndHospitalityCompanies:
     def create(self):
         self.clear()
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='ADS',
+            gif_hospitality_company='Company 1',
             active=True,
             sequence_no=10,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Augusta Westland',
+            gif_hospitality_company='Company 2',
             active=True,
             sequence_no=30,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='BAES',
+            gif_hospitality_company='Company 3',
             active=True,
             sequence_no=40,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Ernst & Young',
+            gif_hospitality_company='Company 4',
             active=True,
             sequence_no=90,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Lockheed Martin',
+            gif_hospitality_company='Company 5',
             active=True,
             sequence_no=120,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='MBDA',
+            gif_hospitality_company='Company 6',
             active=True,
             sequence_no=130,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='PWC',
+            gif_hospitality_company='Company 7',
             active=True,
             sequence_no=150,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Rolls Royce',
+            gif_hospitality_company='Company 8',
             active=True,
             sequence_no=170,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Selex Galileo',
+            gif_hospitality_company='Company 9',
             active=True,
             sequence_no=180,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Thales UK',
+            gif_hospitality_company='Company 10',
             active=True,
             sequence_no=190,
         )
