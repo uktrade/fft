@@ -1,6 +1,6 @@
 import React, {Fragment, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import shortid from  "shortid"
+import { nanoid } from 'nanoid'
 import TableCell from '../../Components/TableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
 import CellValue from '../../Components/CellValue/index'
@@ -102,7 +102,7 @@ function Table({rowData, sheetUpdating}) {
                 </thead>
                 <tbody className="govuk-table__body">
                     {rows.map((cells, rowIndex) => {
-                        return <tr key={rowIndex} index={shortid.generate()}>
+                        return <tr key={rowIndex} index={nanoid()}>
                             <td id={"select_" + rowIndex} className="handle govuk-table__cell indicate-action">
                                 <button
                                     className="select_row_btn govuk-link link-button"
@@ -167,7 +167,7 @@ function Table({rowData, sheetUpdating}) {
                                 <CellValue rowIndex={rowIndex} cellKey={"budget"} format={true} />
                             </InfoCell>
                             {window.period_display.map((value, index) => {
-                                return <TableCell key={shortid.generate()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />
+                                return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />
                             })}
                             <InfoCell className="figure-cell" rowIndex={rowIndex}>
                                 <AggregateValue rowIndex={rowIndex} actualsOnly={false} extraClasses="" />
@@ -194,7 +194,7 @@ function Table({rowData, sheetUpdating}) {
                         <InfoCell cellKey={"project_code"} ignoreSelection={true} />
                         <TotalBudget id="total-budget" cellKey={"budget"} />
                         {window.period_display && window.period_display.map((value, index) => {
-                            return <TotalCol key={shortid.generate()} month={value} />
+                            return <TotalCol key={nanoid()} month={value} />
                         })}
                         <TotalAggregate actualsOnly={false} id="year-total" extraClasses="" />
                         <TotalOverspendUnderspend id="overspend-underspend-total" />
