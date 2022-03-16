@@ -15,7 +15,7 @@ class Command(CommandUpload):
 
     def handle(self, *args, **options):
         path = options["path"]
-        file_name = self.path_to_upload(path, "xslx")
+        file_name = self.path_to_upload(path, "xlsx")
 
         fileobj = FileUpload(
             document_file_name=file_name,
