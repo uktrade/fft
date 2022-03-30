@@ -92,9 +92,6 @@ class FCOMappingCodes:
             fco_description="123456 description",
             account_L6_code_fk=nac_obj,
         )
-        FCOMapping.objects.create(
-            active=True, fco_code=987654, fco_description="987654 description",
-        )
 
 
 def create_all():

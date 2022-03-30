@@ -24,7 +24,7 @@ from costcentre.test.factories import (
     DirectorateFactory,
 )
 
-from forecast.import_budgets import upload_budget_from_file
+from forecast.import_budget_or_forecast import upload_budget_from_file
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialPeriod,
@@ -471,3 +471,8 @@ class ImportBudgetsTest(BaseTestCase):
             .amount,
             2200,
         )
+
+
+# TODO Multiyear test
+# test that future years upload the 15 months
+# test that only the required year is uploaded

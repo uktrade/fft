@@ -80,7 +80,10 @@ class DownloadMIReportTest(BaseTestCase):
 
     def test_download(self):
         response = self.client.get(
-            reverse("download_mi_report_source"),
+            reverse(
+                "download_mi_report_source",
+                kwargs={"financial_year": get_current_financial_year()}
+            ),
         )
 
         self.assertEqual(response.status_code, 200)

@@ -2,12 +2,13 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import FormView
 
 from django_tables2 import MultiTableMixin
 
-from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from end_of_month.utils import monthly_variance_exists
 
@@ -33,7 +34,7 @@ def get_view_forecast_period_name(period):
         forecast_period_obj = FinancialPeriod.objects.get(pk=period)
         period_name = forecast_period_obj.period_long_name
     else:
-        financial_year_obj = FinancialYear.objects.get(pk=period)
+        financial_year_obj = get_financial_year_obj(period)
         period_name = financial_year_obj.financial_year_display
     return period_name
 
@@ -49,7 +50,11 @@ class ForecastViewPermissionMixin(UserPassesTestMixin):
         return can_view_forecasts(self.request.user)
 
     def handle_no_permission(self):
-        return redirect(reverse("index",))
+        return redirect(
+            reverse(
+                "index",
+            )
+        )
 
 
 class CostCentrePermissionTest(UserPassesTestMixin):
@@ -62,7 +67,10 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
         self.cost_centre_code = self.kwargs["cost_centre_code"]
 
-        has_permission = can_edit_cost_centre(self.request.user, self.cost_centre_code,)
+        has_permission = can_edit_cost_centre(
+            self.request.user,
+            self.cost_centre_code,
+        )
 
         user_can_edit = can_forecast_be_edited(self.request.user)
 
@@ -79,7 +87,10 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             return redirect(
                 reverse(
                     "forecast_cost_centre",
-                    kwargs={"cost_centre_code": self.cost_centre_code, "period": 0, },
+                    kwargs={
+                        "cost_centre_code": self.cost_centre_code,
+                        "period": 0,
+                    },
                 )
             )
 
@@ -99,6 +110,8 @@ class ForecastViewTableMixin(MultiTableMixin):
         self._year = None
         self._show_monthly_variance = None
         self._table_kwargs = None
+        self._editable_year = None
+        self._show_year_to_date_actuals = None
         super().__init__(*args, **kwargs)
 
     @property
@@ -115,57 +128,77 @@ class ForecastViewTableMixin(MultiTableMixin):
 
     @property
     def show_monthly_variance(self):
-
         if self._show_monthly_variance is None:
             self._show_monthly_variance = monthly_variance_exists(self.period)
         return self._show_monthly_variance
 
     @property
+    def show_year_to_date_actuals(self):
+        if self._show_year_to_date_actuals is None:
+            # Don't show the year to date spend for future years
+            # there is no spending in the future years
+            self._show_year_to_date_actuals = self.year <= get_current_financial_year()
+        return self._show_year_to_date_actuals
+
+    @property
     def year(self):
         if self._year is None:
-            if self.field_infos.current_year:
-                self._year = 0
-            else:
-                self._year = self.period
+            self._year = self.field_infos.selected_year
         return self._year
+
+    @property
+    def editable_year(self):
+        if self._editable_year is None:
+            self._editable_year = self.field_infos.not_archived_year
+        return self._editable_year
 
     @property
     def actual_month_list(self):
         # returns the list of month with actuals in the selected period.
         if self._actual_month_list is None:
-            if self.year:
-                if self.year == get_current_financial_year() - 1:
-                    # We are displaying the last year before the current one.
-                    # It is possible that the actuals for march and the adjustments
-                    # have not been loaded yet, so get the list from
-                    # the FinancialPeriod
-                    self._actual_month_list = FinancialPeriod.financial_period_info.\
-                        actual_month_previous_year_list()
-                else:
-                    # We are displaying historical data, so we need to include
-                    # the adjustment periods (ADJxx), and everything is actuals
-                    self._actual_month_list = \
-                        FinancialPeriod.financial_period_info.month_adj_display_list()
-            else:
+            current_year = get_current_financial_year()
+            if self.year == 0 or self.year == current_year:
                 period = self.period
                 if period:
-                    # We are displaying historical forecast
-                    self._actual_month_list = \
+                    # We are displaying previous month forecast
+                    self._actual_month_list = (
                         FinancialPeriod.financial_period_info.month_sublist(period)
+                    )
                 else:
-                    self._actual_month_list = \
+                    self._actual_month_list = (
                         FinancialPeriod.financial_period_info.actual_month_list()
+                    )
 
+            elif self.year == get_current_financial_year() - 1:
+                # We are displaying the last year before the current one.
+                # It is possible that the actuals for march and the adjustments
+                # have not been loaded yet, so get the list from
+                # the FinancialPeriod
+                self._actual_month_list = (
+                    FinancialPeriod.
+                    financial_period_info.actual_month_previous_year_list()
+                )
+            elif self.year > current_year:
+                # Future forecast
+                self._actual_month_list = []
+            else:
+                # We are displaying historical data, so we need to include
+                # the adjustment periods (ADJxx), and everything is actuals
+                self._actual_month_list = (
+                    FinancialPeriod.financial_period_info.month_adj_display_list()
+                )
         return self._actual_month_list
 
     @property
     def adj_visible_list(self):
-        list = []
-        if self.year:
+        current_year = get_current_financial_year()
+        if self.year > current_year:
+            list = []
+        elif self.year == current_year:
+            list = FinancialPeriod.financial_period_info.adj_display_list()
+        else:
             # We need to show the Adj periods
             list = FinancialPeriod.financial_period_info.all_adj_list()
-        else:
-            list = FinancialPeriod.financial_period_info.adj_display_list()
         return list
 
     @property
@@ -175,6 +208,7 @@ class ForecastViewTableMixin(MultiTableMixin):
                 "actual_month_list": self.actual_month_list,
                 "adj_visible_list": self.adj_visible_list,
                 "show_monthly_variance": self.show_monthly_variance,
+                "show_year_to_date_actuals": self.show_year_to_date_actuals,
             }
         return self._table_kwargs
 
@@ -185,23 +219,20 @@ class ForecastViewTableMixin(MultiTableMixin):
     @property
     def table_tag(self):
         if self._table_tag is None:
-            period = self.period
-            if period:
-                self._table_tag = \
-                    f"Historical data for {get_view_forecast_period_name(period)}"
+            current_year = get_current_financial_year()
+            if self.year > current_year:
+                self._table_tag = (
+                    f"Future forecast for {get_view_forecast_period_name(self.year)}"
+                )
             else:
-                self._table_tag = ""
+                period = self.period
+                if period:
+                    self._table_tag = (
+                        f"Historical data for {get_view_forecast_period_name(period)}"
+                    )
+                else:
+                    self._table_tag = ""
         return self._table_tag
-
-
-class PeriodFormView(FormView):
-    form_class = ForecastPeriodForm
-
-    # https://gist.github.com/vero4karu/ec0f82bb3d302961503d      /PS-IGNORE
-    def get_form_kwargs(self):
-        kwargs = super(PeriodFormView, self).get_form_kwargs()
-        kwargs.update({"selected_period": self.period})
-        return kwargs
 
 
 class PeriodView(TemplateView):
@@ -233,28 +264,28 @@ class CostCentreForecastMixin(PeriodView):
 
     @property
     def directorate_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.directorate_code
         else:
             return self.cost_centre().directorate_code
 
     @property
     def directorate_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.directorate_name
         else:
             return self.cost_centre().directorate_name
 
     @property
     def group_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.group.group_code
         else:
             return self.cost_centre().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.cost_centre().directorate.group.group_name
         else:
             return self.cost_centre().group_name
@@ -276,14 +307,14 @@ class DirectorateForecastMixin(PeriodView):
 
     @property
     def group_code(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.directorate().group.group_code
         else:
             return self.directorate().group_code
 
     @property
     def group_name(self):
-        if self.field_infos.current_year:
+        if self.field_infos.not_archived_year:
             return self.directorate().group.group_name
         else:
             return self.directorate().group_name

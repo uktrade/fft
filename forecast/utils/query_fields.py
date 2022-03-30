@@ -34,15 +34,20 @@ class ForecastQueryFields:
     # This class return the correct field using 'current' to decide
     # what to return.
     def __init__(self, period=CURRENT_PERIOD):
+        current_year = get_current_financial_year()
+        self.not_archived_year = False
         # period : between 0 and 15 it refers to the current financial year,
         # otherwise it contains the archived year to be used.
-        self.current_year = period < 2000
-        self.period = period
+        self.selected_year = period
+        self.period = 0
+        if period < 2000:
+            # This indicates the current year and the archived months
+            self.selected_year = current_year
+            self.period = period
+            self.not_archived_year = True
+        if period > current_year:
+            self.not_archived_year = True
         self._datamodel = None
-        if self.current_year:
-            self.selected_year = get_current_financial_year()
-        else:
-            self.selected_year = period
 
     financial_code_prefix = "financial_code__"
     # indicates if DEL, AME, ADMIN
@@ -67,7 +72,7 @@ class ForecastQueryFields:
 
     @property
     def budget_nac_description_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}natural_account_code__expenditure_category__linked_budget_code__natural_account_code_description"  # noqa
         return f"{financial_code_prefix}natural_account_code__expenditure_category__linked_budget_code_description"  # noqa
 
@@ -81,37 +86,37 @@ class ForecastQueryFields:
 
     @property
     def cost_centre_name_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__cost_centre_name"
         return f"{financial_code_prefix}cost_centre__cost_centre_name"
 
     @property
     def cost_centre_code_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__cost_centre_code"
         return f"{financial_code_prefix}cost_centre__cost_centre_code"
 
     @property
     def directorate_name_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__directorate__directorate_name"
         return f"{financial_code_prefix}cost_centre__directorate_name"
 
     @property
     def directorate_code_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__directorate__directorate_code"
         return f"{financial_code_prefix}cost_centre__directorate_code"
 
     @property
     def group_name_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__directorate__group__group_name"
         return f"{financial_code_prefix}cost_centre__group_name"
 
     @property
     def group_code_field(self):
-        if self.current_year:
+        if self.not_archived_year:
             return f"{financial_code_prefix}cost_centre__directorate__group__group_code"
         return f"{financial_code_prefix}cost_centre__group_code"
 
@@ -667,7 +672,7 @@ class ForecastQueryFields:
     @property
     def datamodel(self):
         if self._datamodel is None:
-            if self.current_year:
+            if self.not_archived_year:
                 self._datamodel = forecast_budget_view_model[self.period]
             else:
                 self._datamodel = ArchivedForecastData
@@ -676,57 +681,57 @@ class ForecastQueryFields:
     # The next methods return the correct objects (archived or not)
     # using the period to decide which one to use
     def group(self, group_code):
-        if self.current_year:
+        if self.not_archived_year:
             return DepartmentalGroup.objects.get(
                 group_code=group_code
             )
         queryset = ArchivedCostCentre.objects.filter(
             group_code=group_code,
-            financial_year_id=self.period,
+            financial_year_id=self.selected_year,
         )
         return queryset.first()
 
     def directorate(self, directorate_code):
-        if self.current_year:
+        if self.not_archived_year:
             return Directorate.objects.get(
                 directorate_code=directorate_code,
             )
         queryset = ArchivedCostCentre.objects.filter(
             directorate_code=directorate_code,
-            financial_year_id=self.period,
+            financial_year_id=self.selected_year,
         )
         return queryset.first()
 
     def cost_centre(self, cost_centre_code):
-        if self.current_year:
+        if self.not_archived_year:
             return CostCentre.objects.get(cost_centre_code=cost_centre_code, )
         queryset = ArchivedCostCentre.objects.filter(
             cost_centre_code=cost_centre_code,
-            financial_year_id=self.period,
+            financial_year_id=self.selected_year,
         )
         return queryset.first()
 
     def expenditure_category(self, expenditure_category_id):
-        if self.current_year:
+        if self.not_archived_year:
             return ExpenditureCategory.objects.get(pk=expenditure_category_id)
         return ArchivedExpenditureCategory.objects.get(pk=expenditure_category_id)
 
     def programme_code(self, programme_code):
-        if self.current_year:
+        if self.not_archived_year:
             return ProgrammeCode.objects.get(pk=programme_code)
 
         return ArchivedProgrammeCode.objects.get(
             programme_code=programme_code,
-            financial_year_id=self.period,
+            financial_year_id=self.selected_year,
         )
 
     def project_code(self, project_code):
-        if self.current_year:
+        if self.not_archived_year:
             return ProjectCode.objects.get(pk=project_code)
 
         return ArchivedProjectCode.objects.get(
             project_code=project_code,
-            financial_year_id=self.period,
+            financial_year_id=self.selected_year,
         )
 
 

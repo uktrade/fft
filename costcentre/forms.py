@@ -7,6 +7,8 @@ from guardian.shortcuts import (
     get_users_with_perms,
 )
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from costcentre.models import (
     ArchivedCostCentre,
     CostCentre,
@@ -54,7 +56,7 @@ class DirectorateCostCentresForm(forms.Form):
             **kwargs,
         )
 
-        if year:
+        if year < get_current_financial_year():
             directorate_code = ArchivedCostCentre.objects.get(
                 cost_centre_code=cost_centre_code,
                 financial_year_id=year,

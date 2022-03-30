@@ -26,9 +26,9 @@ from costcentre.models import (
 class NewFinancialYearTest(TestCase):
     def setUp(self):
         self.out = StringIO()
-        init_data = MonthlyFigureSetup()
-        init_data.setup_forecast()
-        init_data.setup_budget()
+        self.init_data = MonthlyFigureSetup()
+        self.init_data.setup_forecast()
+        self.init_data.setup_budget()
         self.current_year = get_current_financial_year()
 
     def checks_before_command(self):

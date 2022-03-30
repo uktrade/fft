@@ -56,9 +56,9 @@ class UploadViewBase(UserPassesTestMixin, FormView):
             logger.info("Saved file to S3")
 
             # Process file async
+            args = self.get_args(data)
             if settings.ASYNC_FILE_UPLOAD:
                 logger.info("Using worker to upload file")
-                args = self.get_args(data)
                 process_uploaded_file.delay(*args)
             else:
                 process_uploaded_file(*args)

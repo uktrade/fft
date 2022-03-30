@@ -10,27 +10,32 @@
 
 {% block content %}
     <h3 class="govuk-heading-l">Download MI sources</h3>
+
+
+    <form novalidate method='post'>
+                    {% csrf_token %}
+                    {% include "core/govt_uk_form.html" with form=form %}
+
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url "download_mi_report_source" %}">
-            <button class="govuk-button" data-module="govuk-button">
-                Download actual/forecast report
-            </button>
-        </a>
+        <input id="download_forecast" name="download_forecast_name" type="submit"
+               value="Download selected year actual/forecast report"
+               class="govuk-button govuk-button" data-module="govuk-button"/>
     </p>
+    <p class="govuk-body">
+        <input id="download_budget"  name="download_budget_name"    type="submit"
+               value="Download selected year budget report"
+               class="govuk-button govuk-button" data-module="govuk-button"/>
+    </p>
+
     <p class="govuk-body">
         <a class="govuk-link" href="{% url "download_mi_previous_year_report_source" %}">
-            <button class="govuk-button" data-module="govuk-button">
-                Download last year actual/forecast report
+            <button class="govuk-button" data-module="govuk-button"
+                    id="id_previous_year_button">
+                Download {{ view.previous_year }} forecast/actual report
             </button>
         </a>
     </p>
-    <p class="govuk-body">
-        <a class="govuk-link" href="{% url "download_mi_budget" %}">
-            <button class="govuk-button" data-module="govuk-button">
-                Download budget report
-            </button>
-        </a>
-    </p>
+</form>
     {% for document in view.downloaded_files %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">

@@ -3,6 +3,15 @@ from forecast.models import (
     FinancialPeriod,
 )
 
+TOTAL_COLUMN = -5
+SPEND_TO_DATE_COLUMN = -2
+UNDERSPEND_COLUMN = -4
+
+HIERARCHY_TABLE_INDEX = 0
+PROGRAMME_TABLE_INDEX = 1
+EXPENDITURE_TABLE_INDEX = 2
+PROJECT_TABLE_INDEX = 3
+
 
 def create_budget(financial_code_obj, year_obj):
     budget_apr = 1000000

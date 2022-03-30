@@ -224,7 +224,6 @@ def export_edit_forecast_data(request, cost_centre):
             {**fields.EDIT_KEYS_DOWNLOAD, **fields.EDIT_FORECAST_DOWNLOAD_COLUMNS},
             filter,
             order_list=fields.EDIT_FORECAST_DOWNLOAD_ORDER,
-            include_zeros=True,
         )
         title = f"Edit forecast {cost_centre}"
         return export_edit_to_excel(

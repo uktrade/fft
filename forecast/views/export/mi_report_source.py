@@ -13,14 +13,14 @@ from forecast.utils.access_helpers import (
 
 
 @user_passes_test(can_download_mi_reports, login_url='index')
-def export_mi_report(request):
+def export_mi_report(request, financial_year):
     file_download = FileDownload(
         downloading_user=request.user,
         document_type=FileDownload.MI_REPORT,
         status=FileDownload.UNPROCESSED
     )
     file_download.save()
-    mi_report_source = create_mi_source_report()
+    mi_report_source = create_mi_source_report(financial_year)
     file_download.status = FileDownload.DOWNLOADED
     file_download.save()
     return mi_report_source
@@ -41,14 +41,14 @@ def export_mi_previous_year_report(request):
 
 
 @user_passes_test(can_download_mi_reports, login_url='index')
-def export_mi_budget_report(request):
+def export_mi_budget_report(request, financial_year):
     file_download = FileDownload(
         downloading_user=request.user,
         document_type=FileDownload.MI_BUDGET_REPORT,
         status=FileDownload.UNPROCESSED
     )
     file_download.save()
-    mi_budget_report_source = create_mi_budget_report()
+    mi_budget_report_source = create_mi_budget_report(financial_year)
     file_download.status = FileDownload.DOWNLOADED
     file_download.save()
     return mi_budget_report_source

@@ -4,7 +4,7 @@ from celery import shared_task
 
 
 from forecast.import_actuals import upload_trial_balance_report
-from forecast.import_budgets import upload_budget_from_file
+from forecast.import_budget_or_forecast import upload_budget_from_file
 
 from previous_years.import_previous_year import upload_previous_year_from_file
 

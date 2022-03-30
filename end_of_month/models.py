@@ -144,7 +144,7 @@ class MonthlyTotalBudget(BaseModel):
         verbose_name = "Archived total budget"
         verbose_name_plural = "Archived total budget"
         ordering = ["archived_status"]
-        unique_together = ("financial_code", "archived_status")
+        unique_together = ("financial_code", "archived_status", "financial_year")
 
 
 class PreviousMonthForecast(ForecastingDataViewAbstract):
