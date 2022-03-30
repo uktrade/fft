@@ -100,13 +100,17 @@ class UploadProjectPercentages:
         if not self.month_dict:
             raise UploadFileFormatError("Error: no period specified.\n")
 
+    def display_feedback(self, message):
+        set_file_upload_feedback(
+            self.file_upload,
+            message
+        )
+
     def display_row_count(self):
         if not self.current_row % 100:
             # Display the number of rows processed every 100 rows
-            set_file_upload_feedback(
-                self.file_upload,
-                f"Processing row {self.current_row} of {self.rows_to_process}.",
-            )
+            self.display_feedback(f"Processing row {self.current_row} of {self.rows_to_process}.")
+
 
     def final_checks(self):
         if (
@@ -185,7 +189,6 @@ class UploadProjectPercentages:
             )
             self.check_financial_code.record_error(self.current_row, err_msg, False)
             return
-
         for month_idx, month_obj in self.month_dict.items():
             period_percentage = percentage_row[month_idx].value
             if period_percentage is None:
@@ -255,6 +258,7 @@ class UploadProjectPercentages:
         )
 
     def read_percentages(self):
+
         # Clear the table used to upload the percentages.
         # The percentages are uploaded to to a temporary storage, and copied
         # when the upload is completed successfully.
@@ -263,6 +267,7 @@ class UploadProjectPercentages:
         self.check_financial_code = CheckFinancialCode(
             self.file_upload, self.expenditure_type
         )
+
         self.current_row = 0
         for percentage_row in self.worksheet.rows:
             self.current_row += 1
@@ -304,9 +309,13 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
             worksheet, header_dict, file_upload, PAY_CODE, include_archived,
         )
         upload.read_percentages()
+        upload.display_feedback("Read completed.")
         upload.validate_percentages()
+        upload.display_feedback("Validation completed.")
         upload.copy_uploaded_percentage()
+        upload.display_feedback("Applying percentage split.")
         upload.apply_percentages()
+        upload.display_feedback("Completed.")
 
     except (UploadFileDataError) as ex:
         set_file_upload_fatal_error(

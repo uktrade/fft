@@ -78,13 +78,9 @@ def monthly_figures_create():
                     )
                     budget_amount += 1
 
-    for period_id in range(1, 3):
+    for period_id in range(1, 6):
         end_of_month_archive(period_id)
         actual = FinancialPeriod.objects.get(financial_period_code=period_id)
-        actual.actual_loaded = True
-        actual.save()
-        # and 2 months with actuals
-        actual = FinancialPeriod.objects.get(financial_period_code=2)
         actual.actual_loaded = True
         actual.save()
 
