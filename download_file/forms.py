@@ -1,6 +1,7 @@
 from django import forms
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
 
 
 class DownloadMIForm(forms.Form):
@@ -10,11 +11,12 @@ class DownloadMIForm(forms.Form):
             *args,
             **kwargs,
         )
+        current_year = get_current_financial_year()
         display_list = FinancialYear.financial_year_objects.future_list()
         if display_list:
-            display_list.extend([(0, 'Current')])
+            display_list.extend([(current_year, 'Current')])
         else:
-            display_list = [(0, 'Current')]
+            display_list = [(current_year, 'Current')]
 
         self.fields['download_year'] = forms.ChoiceField(
             choices=display_list,
