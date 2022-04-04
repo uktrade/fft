@@ -449,3 +449,28 @@ FCO Mapping
 Action Time
 Content Type
 message)s
+CREATE VIEW mi_report_data_forecast_actual_query
+f.financial_period_id
+mi_report_data_query
+SELECT coalesce(b.financial_code_id
+OscarReturnConfig
+ForecastConfig
+CoreConfig
+DownloadFileConfig
+PingdomConfig
+MiReportDataConfig
+dal_select2
+DjangoTemplates
+OPTIONS
+ELASTIC_APM_ENVIRONMENT
+ELASTIC_APM_SECRET_TOKEN
+NAME
+VERBOSE_LOOKUPS
+GIT_COMMIT
+TEMP_FILE_AWS_ACCESS_KEY_ID
+CacheControl
+CssFinder
+WhiteNoiseMiddleware
+core.no_cache_middleware
+SessionStorage
+DatabaseCache

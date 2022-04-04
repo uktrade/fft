@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "download_file.apps.DownloadFileConfig",
     "pingdom.apps.PingdomConfig",
     "data_lake.apps.DataLakeConfig",
+    "mi_report_data.apps.MiReportDataConfig",
     "django_extensions",
     "django_tables2",
     "django_filters",
