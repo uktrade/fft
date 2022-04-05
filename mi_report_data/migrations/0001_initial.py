@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
                 CREATE VIEW  mi_report_data_forecast_actual_query as
                 SELECT financial_code_id, 0 as forecast, amount as actual, f.financial_period_id, financial_year_id, fp.archived_period_id
                     FROM public.forecast_forecastmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
-                    WHERE financial_year_id = 2021 and 
+                    WHERE 
                     archived_status_id is null
                      and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
                                                     where actual_loaded  = true )
@@ -26,8 +26,8 @@ class Migration(migrations.Migration):
                 financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
                     FROM public.forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as current_period
                     FROM public.end_of_month_endofmonthstatus where archived = false) as m
-                    WHERE financial_year_id = 2021 
-                     and (
+                    WHERE 
+                      (
                          (financial_period_id  in (select financial_period_code from forecast_financialperiod 
                                                     where actual_loaded  = false ) and archived_status_id is null)
                      or financial_period_id != archived_status_id);
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             CREATE VIEW  mi_report_data_budget_query as
             SELECT financial_code_id,  amount as budget, f.financial_period_id, financial_year_id, fp.archived_period_id
                 FROM public.forecast_budgetmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
-                WHERE financial_year_id = 2021 and 
+                WHERE 
                 archived_status_id is null
                  and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
                                                 where actual_loaded  = true )
@@ -55,8 +55,8 @@ class Migration(migrations.Migration):
             financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
                 FROM public.forecast_budgetmonthlyfigure, (SELECT min(archived_period_id) as current_period
                 FROM public.end_of_month_endofmonthstatus where archived = false) as m
-                WHERE financial_year_id = 2021 
-                 and (
+                WHERE 
+                 (
                      (financial_period_id  in (select financial_period_code from forecast_financialperiod 
                                                 where actual_loaded  = false ) and archived_status_id is null)
                  or financial_period_id != archived_status_id);

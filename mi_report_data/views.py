@@ -25,7 +25,6 @@ class MIReportDataSet(ViewSet, FigureFieldData):
     title_list = FigureFieldData.chart_of_account_titles.copy()
     title_list.extend(forecast_title)
 
-
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
@@ -33,7 +32,6 @@ class MIReportDataSet(ViewSet, FigureFieldData):
         writer.writerow(self.title_list)
         self.write_data(writer)
         return response
-
 
     def write_data(self, writer):
         current_year = get_current_financial_year()
