@@ -32,3 +32,7 @@ class ReportDataView(models.Model):
     class Meta:
         managed = False
         db_table = "mi_report_data_query"
+        default_permissions = "view"
+        permissions = [
+            ("can_view_mi_report_data", "Can view MI report data"),
+        ]
