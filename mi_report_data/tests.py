@@ -1,17 +1,10 @@
-import csv
-
-import io
-
 from rest_framework.reverse import reverse
-
-from data_lake.test.test_hawk import hawk_auth_sender
 
 from django.test import (
     TestCase,
 )
 
 from rest_framework.test import APIClient
-
 
 from end_of_month.test.test_utils import (
     SetFullYearArchive,
