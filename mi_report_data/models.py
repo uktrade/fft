@@ -20,7 +20,7 @@ class ReportDataView(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="mi_report_data_financial_period",
     )
-    archived_period_id = models.ForeignKey(
+    archived_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.DO_NOTHING,
         related_name="mi_report_data_archived_period",

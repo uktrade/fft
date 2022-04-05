@@ -1,3 +1,62 @@
-from django.shortcuts import render
+from data_lake.views.utils import FigureFieldData
+import csv
 
-# Create your views here.
+from core.utils.generic_helpers import get_current_financial_year
+
+from django.http import HttpResponse
+
+from rest_framework.viewsets import ViewSet
+
+from mi_report_data.models import ReportDataView
+
+
+class MIReportDataSet(ViewSet, FigureFieldData):
+    filename = "mi_data"
+    forecast_title = [
+        "Budget",
+        "Actual",
+        "Forecast",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+
+
+    def list(self, request):
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
+        writer = csv.writer(response, csv.excel)
+        writer.writerow(self.title_list)
+        self.write_data(writer)
+        return response
+
+
+    def write_data(self, writer):
+        current_year = get_current_financial_year()
+        self.set_fields()
+
+        forecast_queryset = (
+            ReportDataView.objects
+            .select_related(*self.select_related_list)
+            .select_related("financial_period", "archived_period")
+            .filter(financial_year_id=current_year)
+            .filter(archived_period_id__lte=12)
+            .values_list(
+                *self.chart_of_account_field_list,
+                "budget",
+                "actual",
+                "forecast",
+                "financial_period__financial_period_code",
+                "financial_period__period_short_name",
+                "archived_period__financial_period_code",
+                "archived_period__period_short_name",
+                "financial_year_id",
+            )
+        )
+
+        for row in forecast_queryset:
+            writer.writerow(row)

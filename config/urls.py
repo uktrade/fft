@@ -31,6 +31,7 @@ urlpatterns = [
     path("pingdom/", include("pingdom.urls")),
     path("upload/", include("upload_file.urls")),
     path("data-lake/", include("data_lake.urls")),
+    path("mi-report-data/", include("mi_report_data.urls")),
     path("oscar_return/",include("oscar_return.urls")),
     path("upload_split_file/", include("upload_split_file.urls")),
     path("admin/", admin.site.urls),
