@@ -1,0 +1,22 @@
+{% extends "standard_content.html" %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Experimental download MI data" "downloaded_files" %}
+{% endblock %}
+
+{% block title %}Experimental download for MI reports{% endblock %}
+
+{% block content %}
+    <h3 class="govuk-heading-l">Experimental download for MI reports</h3>
+    <p class="govuk-body">The download is a csv file. It takes a long time!</p>
+    <p class="govuk-body">
+        <a class="govuk-link" href="{% url "data_lake_mi_report_data" %}">
+            <button class="govuk-button" data-module="govuk-button">
+                Download MI Data (csv)
+            </button>
+        </a>
+    </p>
+
+{% endblock %}

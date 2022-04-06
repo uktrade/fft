@@ -9,6 +9,18 @@ from rest_framework.viewsets import ViewSet
 
 from mi_report_data.models import ReportDataView
 
+from django.views.generic.base import TemplateView
+
+from download_file.decorators import has_download_mi_report_permission
+
+
+class DownloadMIDataView(TemplateView):
+    template_name = "mi_report_data/download_mi_data.html"
+
+    @has_download_mi_report_permission
+    def dispatch(self, request, *args, **kwargs):
+        return super(DownloadMIDataView, self).dispatch(request, *args, **kwargs)
+
 
 class MIReportDataSet(ViewSet, FigureFieldData):
     filename = "mi_data"

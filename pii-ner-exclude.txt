@@ -482,3 +482,27 @@ Financial Period Code
 Financial Period Name
 Content-Disposition"
 filename={self.filename}.csv
+gtm.start
+Date().getTime
+https://www.googletagmanager.com/gtm.js?id=
+charset="utf-8"/
+sizes="167x167
+sizes="152x152
+Forecast Tool</span></a
+aria-controls="navigation
+navigation">Menu
+request.path|startswith:'/chartofaccountDIT/
+request.path|startswith:'/gifthospitality/
+Gifts &amp
+href="/download_file
+Download MI
+MI
+Download OSCAR
+Project Percentages
+target="_blank
+Accessibility Statement
+viewBox="0 0 483.2
+height="17
+8.7 39.7 21.8l42.7-27.2A97.63
+GOVUKFrontend.initAll
+Download MI Data
