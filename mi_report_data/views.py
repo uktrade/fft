@@ -13,6 +13,7 @@ from django.views.generic.base import TemplateView
 
 from download_file.decorators import has_download_mi_report_permission
 
+from end_of_month.models import EndOfMonthStatus
 
 class DownloadMIDataView(TemplateView):
     template_name = "mi_report_data/download_mi_data.html"
@@ -48,13 +49,17 @@ class MIReportDataSet(ViewSet, FigureFieldData):
     def write_data(self, writer):
         current_year = get_current_financial_year()
         self.set_fields()
-
+        # Download all the archived period, plus 1.
+        # The plus 1 is the current period.
+        max_period_id = (
+            EndOfMonthStatus.archived_period_objects.get_latest_archived_period() + 1
+        )
         forecast_queryset = (
             ReportDataView.objects
             .select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
             .filter(financial_year_id=current_year)
-            .filter(archived_period_id__lte=12)
+            .filter(archived_period_id__lte=max_period_id)
             .values_list(
                 *self.chart_of_account_field_list,
                 "budget",
