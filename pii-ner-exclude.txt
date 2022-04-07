@@ -449,3 +449,8 @@ FCO Mapping
 Action Time
 Content Type
 message)s
+Compile
+npm
+Dev
+Hospitality Register
+Download Oscar
