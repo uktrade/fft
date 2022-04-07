@@ -145,3 +145,4 @@ The names of the management commands denote their function.
  * Amend the custom_usermodel table to be the same as the new User app one
  * Add the user app initial migration to the list of django migrations that have been run
  * Deploy new codebase
+
