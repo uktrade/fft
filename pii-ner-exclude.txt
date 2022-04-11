@@ -454,3 +454,6 @@ npm
 Dev
 Hospitality Register
 Download Oscar
+handle_validated_user
+Control
+Sub Segment

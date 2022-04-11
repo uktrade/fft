@@ -103,7 +103,7 @@ class CommandWithUserCheck(BaseCommand):
             user_email = input("Please enter your email: (exit to stop) ")
 
         try:
-            user_obj = UserModel.objects.get(email=user_email)
+            user_obj = UserModel.objects.filter(email=user_email).first()
         except UserModel.DoesNotExist:
             CommandLog.objects.create(
                 command_name=self.command_name,
