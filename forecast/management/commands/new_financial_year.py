@@ -68,5 +68,5 @@ class Command(CommandWithUserCheck):
             return
 
         self.stdout.write(
-            self.style.SUCCESS(f"FFT ready for {current_financial_year_display} ")
+            self.style.SUCCESS(f"FFT ready for {new_financial_year_display} ")
         )
