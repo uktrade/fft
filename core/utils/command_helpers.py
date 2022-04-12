@@ -102,7 +102,6 @@ class CommandWithUserCheck(BaseCommand):
         while not user_email:
             user_email = input("Please enter your email: (exit to stop) ")
 
-
         user_obj = UserModel.objects.filter(email=user_email).first()
         if not user_obj:
             CommandLog.objects.create(
