@@ -83,7 +83,6 @@ def bulk_delete_users(file_obj: FileUpload) -> int:
             str(ex),
         )
 
-
     rows_to_process = worksheet.max_row + 1
     row_count = 0
     user_first_name_index = header_dict["first name"]     # /PS-IGNORE
