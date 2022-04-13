@@ -1,7 +1,6 @@
 from io import StringIO
 
 from django.contrib.auth import get_user_model
-from django.core.management import call_command
 from django.test import TestCase
 
 from core.test.test_base import TEST_EMAIL
@@ -45,23 +44,13 @@ class CostCentrePermissionsCommandsTest(TestCase):
         )
 
     def test_delete_user(self):
-        self.assertTrue(
-            self.test_user.has_perm(
-                "change_costcentre",
-                self.cost_centre,
-            )
-        )
-
         delete_user(self.first_name, self.last_name)
         self.test_user.refresh_from_db()
 
         assert (
-            self.test_user.has_perm(
-                "change_costcentre",
-                self.cost_centre,
-            )
-            == False
+            self.test_user.has_perm("change_costcentre", self.cost_centre,)
+            is False
         )
-        assert self.test_user.is_active == False
-        assert self.test_user.is_staff == False
-        assert self.test_user.is_superuser == False
+        assert self.test_user.is_active is False
+        assert self.test_user.is_staff is False
+        assert self.test_user.is_superuser is False

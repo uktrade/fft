@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 
 from guardian.shortcuts import remove_perm
 from guardian.shortcuts import get_objects_for_user
@@ -30,8 +31,6 @@ UserModel = get_user_model()
 
 class UserNotFoundError(Exception):
     pass
-
-from django.utils.crypto import get_random_string
 
 
 def delete_user(first_name: str, last_name: str):
