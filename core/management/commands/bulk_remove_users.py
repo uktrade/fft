@@ -17,7 +17,7 @@ class Command(CommandUpload):
 
     def handle(self, *args, **options):
         path = options["path"]
-        file_name = self.path_to_upload(path, 'xslx')
+        file_name = self.path_to_upload(path, "xslx")
 
         fileobj = FileUpload(
             document_file_name=file_name,
@@ -29,7 +29,4 @@ class Command(CommandUpload):
         if self.upload_s3:
             os.remove(file_name)
 
-        self.stdout.write(
-            self.style.SUCCESS( f"Deleted {howmany} users.")
-            )
-
+        self.stdout.write(self.style.SUCCESS(f"Deleted {howmany} users."))

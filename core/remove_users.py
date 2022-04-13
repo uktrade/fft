@@ -19,8 +19,8 @@ from upload_file.utils import (
 )
 
 EXPECTED_USER_HEADERS = [
-    "first name",   # /PS-IGNORE
-    "last name",    # /PS-IGNORE
+    "first name",  # /PS-IGNORE
+    "last name",  # /PS-IGNORE
 ]
 
 permission = "costcentre.change_costcentre"
@@ -34,7 +34,7 @@ class UserNotFoundError(Exception):
 
 def delete_user(first_name: str, last_name: str):
     user_queryset = UserModel.objects.filter(first_name=first_name, last_name=last_name)
-    message =f"User {first_name} {last_name} deleted."
+    message = f"User {first_name} {last_name} deleted."
     if user_queryset.count() == 0:
         raise UserNotFoundError(f"User {first_name} {last_name} not found.")
         pass
@@ -57,14 +57,16 @@ def delete_user(first_name: str, last_name: str):
     return message
 
 
-def validate_user_file (file_upload: FileUpload):
+def validate_user_file(file_upload: FileUpload):
     try:
         workbook, worksheet = validate_excel_file(
             file_upload,
         )
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         raise ex
     return workbook, worksheet
@@ -85,8 +87,8 @@ def bulk_delete_users(file_obj: FileUpload) -> int:
 
     rows_to_process = worksheet.max_row + 1
     row_count = 0
-    user_first_name_index = header_dict["first name"]     # /PS-IGNORE
-    user_last_name_index = header_dict["last name"]    # /PS-IGNORE
+    user_first_name_index = header_dict["first name"]  # /PS-IGNORE
+    user_last_name_index = header_dict["last name"]  # /PS-IGNORE
     error_found = False
     for user_row in worksheet.rows:
         row_count += 1
