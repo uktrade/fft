@@ -31,6 +31,8 @@ UserModel = get_user_model()
 class UserNotFoundError(Exception):
     pass
 
+from django.utils.crypto import get_random_string
+
 
 def delete_user(first_name: str, last_name: str):
     user_queryset = UserModel.objects.filter(first_name=first_name, last_name=last_name)
@@ -49,7 +51,11 @@ def delete_user(first_name: str, last_name: str):
 
         user_obj.groups.clear()
         user_obj.user_permissions.clear()
-
+        if not user_obj.username:
+            # A user may not have a username defined,
+            # but without a username you cannot save the user.
+            # Generate a random string to fill the username
+            user_obj.username = get_random_string(length=32)
         user_obj.is_superuser = False
         user_obj.is_staff = False
         user_obj.is_active = False
@@ -85,6 +91,8 @@ def bulk_delete_users(file_obj: FileUpload) -> int:
             str(ex),
         )
 
+    file_obj.status = FileUpload.PROCESSING
+    file_obj.save()
     rows_to_process = worksheet.max_row + 1
     row_count = 0
     user_first_name_index = header_dict["first name"]  # /PS-IGNORE
