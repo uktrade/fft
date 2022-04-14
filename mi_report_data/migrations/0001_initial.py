@@ -14,23 +14,43 @@ class Migration(migrations.Migration):
             """
                 DROP VIEW if exists mi_report_data_forecast_actual_query;
                 CREATE VIEW  mi_report_data_forecast_actual_query as
-                SELECT financial_code_id, 0 as forecast, amount as actual, f.financial_period_id, financial_year_id, fp.archived_period_id
-                    FROM public.forecast_forecastmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
-                    WHERE 
-                    archived_status_id is null
-                     and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                                    where actual_loaded  = true )
-                     and fp.archived_period_id >= f.financial_period_id                   
-                UNION	                   
-                SELECT financial_code_id, amount as forecast, 0 as actual, financial_period_id, 
-                financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
-                    FROM public.forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as current_period
-                    FROM public.end_of_month_endofmonthstatus where archived = false) as m
-                    WHERE 
-                      (
-                         (financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                                    where actual_loaded  = false ) and archived_status_id is null)
-                     or financial_period_id != archived_status_id);
+
+        select sum(forecast) as forecast, sum(actual) as actual, financial_code_id, a.financial_period_id, a.financial_year_id, a.archived_period_id
+        from
+        (
+            SELECT financial_code_id, 0 as forecast, amount as actual, f.financial_period_id, financial_year_id, fp.archived_period_id
+            FROM public.forecast_forecastmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
+            WHERE 
+            archived_status_id is null
+             and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
+                                            where actual_loaded  = true )
+             and fp.archived_period_id >= f.financial_period_id           
+        UNION	           
+        SELECT financial_code_id, amount as forecast, 0 as actual, financial_period_id, 
+        financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
+            FROM public.forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as current_period
+            FROM public.end_of_month_endofmonthstatus where archived = false) as m
+            WHERE 
+             (
+                 (financial_period_id  in (select financial_period_code from forecast_financialperiod 
+                                            where actual_loaded  = false ) and archived_status_id is null)
+             or financial_period_id != archived_status_id)
+        UNION
+        
+        SELECT f.financial_code_id,
+            0 AS forecast,
+            0 AS actual,
+            f.financial_period_id,
+            f.financial_year_id,
+            fp.archived_period_id
+           FROM forecast_forecastmonthlyfigure f
+             CROSS JOIN end_of_month_endofmonthstatus fp
+          WHERE f.archived_status_id IS NULL AND (f.financial_period_id IN ( SELECT forecast_financialperiod.financial_period_code
+                   FROM forecast_financialperiod
+                  WHERE forecast_financialperiod.actual_loaded = true)) 
+                  AND fp.archived_period_id < f.financial_period_id
+        ) a group by a.financial_code_id, a.financial_period_id, a.financial_year_id, a.archived_period_id;
+
     
         """,
             """
