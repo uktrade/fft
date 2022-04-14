@@ -8,7 +8,7 @@ from core.remove_users import bulk_delete_users
 
 from upload_file.models import FileUpload
 
-EXPECTED_EXTENSION = "xslx"
+EXPECTED_EXTENSION = "xlsx"
 
 
 class Command(CommandUpload):
