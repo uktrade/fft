@@ -24,7 +24,7 @@ EXPECTED_USER_HEADERS = [
     "last name",  # /PS-IGNORE
 ]
 
-permission = "costcentre.change_costcentre"
+PERMISSION = "costcentre.change_costcentre"
 
 UserModel = get_user_model()
 
@@ -33,20 +33,20 @@ class UserNotFoundError(Exception):
     pass
 
 
-def delete_user(first_name: str, last_name: str):
+def delete_user(first_name: str, last_name: str) -> str:
     user_queryset = UserModel.objects.filter(first_name=first_name, last_name=last_name)
     message = f"User {first_name} {last_name} deleted."
     if user_queryset.count() == 0:
         raise UserNotFoundError(f"User {first_name} {last_name} not found.")
-        pass
+
     if user_queryset.count() > 1:
         # warning,  multiple users with same email
         message = f"{user_queryset.count} users named {first_name} {last_name} deleted."
     # Remove access to cost centres
     for user_obj in user_queryset:
-        cost_centre_list = get_objects_for_user(user_obj, permission)
+        cost_centre_list = get_objects_for_user(user_obj, PERMISSION)
         for cost_centre in cost_centre_list:
-            remove_perm(permission, user_obj, cost_centre)
+            remove_perm(PERMISSION, user_obj, cost_centre)
 
         user_obj.groups.clear()
         user_obj.user_permissions.clear()
@@ -57,6 +57,7 @@ def delete_user(first_name: str, last_name: str):
             user_obj.username = get_random_string(length=32)
         user_obj.is_superuser = False
         user_obj.is_staff = False
+        # The user is not removed from the database, it is made non active
         user_obj.is_active = False
         user_obj.save()
     return message
@@ -103,7 +104,7 @@ def bulk_delete_users(file_obj: FileUpload) -> int:
             # There is no way to start reading rows from a specific place.
             # so keep reading until the first row with data
             continue
-        if not row_count % 100:
+        if row_count % 100 == 0:
             # Display the number of rows processed every 100 rows
             set_file_upload_feedback(
                 file_obj, f"Processing row {row_count} of {rows_to_process}."
