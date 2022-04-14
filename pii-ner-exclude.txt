@@ -449,6 +449,7 @@ FCO Mapping
 Action Time
 Content Type
 message)s
+<<<<<<< HEAD
 CREATE VIEW mi_report_data_forecast_actual_query
 f.financial_period_id
 mi_report_data_query
@@ -506,3 +507,14 @@ height="17
 8.7 39.7 21.8l42.7-27.2A97.63
 GOVUKFrontend.initAll
 Download MI Data
+Compile
+npm
+Dev
+Hospitality Register
+Download Oscar
+handle_validated_user
+Control
+Sub Segment
+Project Percentages
+Excel
+

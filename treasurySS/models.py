@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 
 from chartofaccountDIT.models import BudgetType
@@ -214,7 +216,10 @@ class ArchivedSubSegment(SubSegmentAbstract, ArchivedModel):
 
     @classmethod
     def archive_year(cls, obj, year_obj, suffix=""):
+        archived_time = datetime.datetime.now()
         segment_hist = cls(
+            created=obj.created,
+            archived=archived_time,
             financial_year=year_obj,
             sub_segment_code=obj.sub_segment_code,
             sub_segment_long_name=obj.sub_segment_long_name + suffix,
