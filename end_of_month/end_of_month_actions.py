@@ -98,13 +98,10 @@ def get_end_of_month(period_code):
 def end_of_month_archive(period_id, used_for_current_month=False):
     end_of_month_info = get_end_of_month(period_id)
 
-    current_year = get_current_financial_year()
-
     # Add archive period to all the active forecast.
     # The actuals are not archived, because they don't change from one month to another
     forecast_periods = ForecastMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gte=period_id,
-        financial_year_id=current_year,
         archived_status__isnull=True,
     )
     forecast_periods.update(archived_status=end_of_month_info)
@@ -122,7 +119,6 @@ def end_of_month_archive(period_id, used_for_current_month=False):
     # Archive the budget. Use the same logic used for Forecast.
     budget_periods = BudgetMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gte=period_id,
-        financial_year_id=current_year,
         archived_status__isnull=True,
     )
     budget_periods.update(archived_status=end_of_month_info)
@@ -131,8 +127,10 @@ def end_of_month_archive(period_id, used_for_current_month=False):
     with connection.cursor() as cursor:
         cursor.execute(budget_sql)
 
+    current_year = get_current_financial_year()
     # Save the yearly total for the budgets. It makes the queries
     # used to display the forecast/budget much easier.
+    # This is only required for the current year.
     budget_total_sql = insert_total_budget_query(
         end_of_month_info.id,
         period_id,

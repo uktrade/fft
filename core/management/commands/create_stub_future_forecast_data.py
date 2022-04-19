@@ -18,14 +18,14 @@ from forecast.models import (
 )
 
 
-def future_year_figures_clear(future_financial_year):
-    ForecastMonthlyFigure.objects.filter(financial_year=future_financial_year).delete()
-    BudgetMonthlyFigure.objects.filter(financial_year=future_financial_year).delete()
-    MonthlyTotalBudget.objects.filter(financial_year=future_financial_year).delete()
+def figures_clear(financial_year):
+    ForecastMonthlyFigure.objects.filter(financial_year=financial_year).delete()
+    BudgetMonthlyFigure.objects.filter(financial_year=financial_year).delete()
+    MonthlyTotalBudget.objects.filter(financial_year=financial_year).delete()
 
 
 def future_year_figure_create(future_financial_year):
-    future_year_figures_clear(future_financial_year)
+    figures_clear(future_financial_year)
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
     project_list = ProjectCode.objects.all()

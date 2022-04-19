@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
 
+from core.management.commands.create_stub_future_forecast_data import figures_clear
 from core.models import FinancialYear
 
 from costcentre.models import CostCentre
@@ -21,9 +22,8 @@ from forecast.models import (
 
 
 def monthly_figures_clear():
-    ForecastMonthlyFigure.objects.all().delete()
-    BudgetMonthlyFigure.objects.all().delete()
-    MonthlyTotalBudget.objects.all().delete()
+    current_financial_year = FinancialYear.objects.get(current=True)
+    figures_clear(current_financial_year)
 
     financial_period_queryset = FinancialPeriod.objects.all()
     for financial_period in financial_period_queryset:
@@ -34,7 +34,6 @@ def monthly_figures_clear():
     for month_status in month_status_q:
         month_status.archived = False
         month_status.save()
-    FinancialCode.objects.all().delete()
 
 
 def monthly_figures_create():
@@ -54,7 +53,7 @@ def monthly_figures_create():
         for programme_fk in programme_list:
             monthly_amount += 10
             for natural_account_code_fk in natural_account_list:
-                financial_code = FinancialCode.objects.create(
+                financial_code, _ = FinancialCode.objects.get_or_create(
                     programme=programme_fk,
                     cost_centre=cost_centre_fk,
                     natural_account_code=natural_account_code_fk,
@@ -81,10 +80,6 @@ def monthly_figures_create():
     for period_id in range(1, 3):
         end_of_month_archive(period_id)
         actual = FinancialPeriod.objects.get(financial_period_code=period_id)
-        actual.actual_loaded = True
-        actual.save()
-        # and 2 months with actuals
-        actual = FinancialPeriod.objects.get(financial_period_code=2)
         actual.actual_loaded = True
         actual.save()
 
