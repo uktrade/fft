@@ -47,14 +47,24 @@ class EndOfMonthFutureDataBudgetTest(TestCase):
             end_of_month_archive(month + 1)
         self.assertEqual(
             BudgetMonthlyFigure.objects.filter(
-                financial_year_id=self.future_year
+                financial_year_id=self.future_year,
+                archived_status__isnull=True,
             ).count(),
             self.count_future_year,
         )
+        # Check the archive figures for current year.
+        # the actuals are not archived
         count_archived_figures = BudgetMonthlyFigure.objects.filter(
-            archived_status__isnull=False
+            archived_status__isnull=False,
+            financial_year_id=self.current_year,
         ).count()
         self.assertEqual(count_archived_figures, archived_count)
+
+        count_future_archived_figures = BudgetMonthlyFigure.objects.filter(
+            archived_status__isnull=False,
+            financial_year_id=self.future_year,
+        ).count()
+        self.assertEqual(count_future_archived_figures, period * 15)
 
     def test_end_of_month_apr(self):
         self.check_period(1)

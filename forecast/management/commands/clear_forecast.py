@@ -106,14 +106,14 @@ class Command(BaseCommand):
             # Delete archived forecast for the future years
             sql_delete = (
                 "DELETE FROM forecast_forecastmonthlyfigure "
-                "WHERE archived_status IS NOT NULL;"
+                "WHERE archived_status_id IS NOT NULL;"
             )
             cursor.execute(sql_delete)
 
             # Delete archived budgets for the future years
             sql_delete = (
                 "DELETE FROM forecast_budgetmonthlyfigure "
-                "WHERE archived_status IS NOT NULL;"
+                "WHERE archived_status_id IS NOT NULL;"
             )
             cursor.execute(sql_delete)
 

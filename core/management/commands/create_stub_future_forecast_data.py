@@ -85,7 +85,7 @@ class Command(BaseCommand):
         financial_year = FinancialYear.objects.get(current=True).financial_year
 
         if options["delete"]:
-            action = future_year_figures_clear
+            action = figures_clear
             msg = "cleared"
         else:
             action = future_year_figure_create
