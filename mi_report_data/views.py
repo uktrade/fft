@@ -9,6 +9,8 @@ from rest_framework.viewsets import ViewSet
 
 from mi_report_data.models import ReportDataView
 
+from django.db.models import Value, ExpressionWrapper, IntegerField, CharField
+from django.db.models.functions import Coalesce
 from django.views.generic.base import TemplateView
 
 from download_file.decorators import has_download_mi_report_permission
@@ -34,6 +36,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
         "Archived Financial Period Code",
         "Archived Financial Period Name",
         "Year",
+        "Archiving Year"
     ]
     title_list = FigureFieldData.chart_of_account_titles.copy()
     title_list.extend(forecast_title)
@@ -54,12 +57,27 @@ class MIReportDataSet(ViewSet, FigureFieldData):
         max_period_id = (
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period() + 1
         )
+
+        market_field = "market_field"
+        self.chart_of_account_field_list = [
+            self.cost_centre_field,
+            self.nac_field,
+            self.programme_field,
+            self.contract_field,
+            market_field,
+            self.project_field,
+            self.expenditure_type_field,
+            self.expenditure_type_description_field,
+        ]
+
         forecast_queryset = (
             ReportDataView.objects
             .select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
             .filter(financial_year_id=current_year)
             .filter(archived_period_id__lte=max_period_id)
+            .annotate(archiving_year=ExpressionWrapper(Value(current_year), output_field=IntegerField()))
+            .annotate(market_field=Coalesce(self.market_field, Value('0')))
             .values_list(
                 *self.chart_of_account_field_list,
                 "budget",
@@ -70,6 +88,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
                 "archived_period__financial_period_code",
                 "archived_period__period_short_name",
                 "financial_year_id",
+                "archiving_year",
             )
         )
 
