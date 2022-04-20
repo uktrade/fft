@@ -238,3 +238,26 @@ class DownloadMIViewLabelTests(BaseTestCase):
         # Check that the text of the button shows the previous year
         previous_year_button = soup.find(id="id_previous_year_button")
         self.assertIn(previous_year_display, str(previous_year_button))
+
+
+class DownloadMICurrentYearDropdownTests(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        can_download_files = Permission.objects.get(codename="can_download_mi_reports",)
+        self.test_user.user_permissions.add(can_download_files)
+        self.test_user.save()
+
+        self.current_year = get_current_financial_year()
+        # Create future years
+        get_financial_year_obj(self.current_year + 1)
+        get_financial_year_obj(self.current_year + 2)
+        get_financial_year_obj(self.current_year + 3)
+
+    def test_selectedyear(self):
+        downloaded_files_url = reverse("download_mi_report",)
+        response = self.client.get(downloaded_files_url, follow=False)
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+        download_year_option = soup.find_all('option', selected=True)
+        selected_year = download_year_option[0]['value']
+        assert (int(selected_year) == self.current_year)
