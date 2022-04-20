@@ -100,7 +100,7 @@ def end_of_month_archive(period_id, used_for_current_month=False):
 
     current_year = get_current_financial_year()
 
-    # Add archive period to all the active forecast for the current year..
+    # Add archive period to all the active forecasts for the current year.
     # The actuals are not archived, because they don't change from one month to another
     forecast_periods = ForecastMonthlyFigure.objects.filter(
         financial_period__financial_period_code__gte=period_id,
