@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
 
-from core.management.commands.create_stub_future_forecast_data import figures_clear
+from core.management.commands.create_stub_future_forecast_data import clear_figures
 from core.models import FinancialYear
 
 from costcentre.models import CostCentre
@@ -20,9 +20,9 @@ from forecast.models import (
 )
 
 
-def monthly_figures_clear():
+def clear_monthly_figures():
     current_financial_year = FinancialYear.objects.get(current=True)
-    figures_clear(current_financial_year)
+    clear_figures(current_financial_year)
 
     financial_period_queryset = FinancialPeriod.objects.all()
     for financial_period in financial_period_queryset:
@@ -35,8 +35,8 @@ def monthly_figures_clear():
         month_status.save()
 
 
-def monthly_figures_create():
-    monthly_figures_clear()
+def create_monthly_figures():
+    clear_monthly_figures()
     current_financial_year = FinancialYear.objects.get(current=True)
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
@@ -97,10 +97,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["delete"]:
-            monthly_figures_clear()
+            clear_monthly_figures()
             msg = "cleared"
         else:
-            monthly_figures_create()
+            create_monthly_figures()
             msg = "created"
         self.stdout.write(
             self.style.SUCCESS(
