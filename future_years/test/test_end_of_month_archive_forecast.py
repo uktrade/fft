@@ -38,7 +38,7 @@ class EndOfMonthFutureDataForecastTest(TestCase):
             financial_year_id=self.future_year
         ).count()
 
-    # The following tests that no future data is archived
+    # The following tests that all the periods in the future data are archived
     def check_period(self, period):
         archived_count = 0
         for month in range(0, period):
@@ -46,14 +46,23 @@ class EndOfMonthFutureDataForecastTest(TestCase):
             end_of_month_archive(month + 1)
         self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
-                financial_year_id=self.future_year
+                financial_year_id=self.future_year,
+                archived_status__isnull=True,
             ).count(),
             self.count_future_year,
         )
+
         count_archived_figures = ForecastMonthlyFigure.objects.filter(
-            archived_status__isnull=False
+            archived_status__isnull=False,
+            financial_year_id=self.current_year,
         ).count()
         self.assertEqual(count_archived_figures, archived_count)
+
+        count_future_archived_figures = ForecastMonthlyFigure.objects.filter(
+            archived_status__isnull=False,
+            financial_year_id=self.future_year,
+        ).count()
+        self.assertEqual(count_future_archived_figures, period * 15)
 
     def test_end_of_month_apr(self):
         self.check_period(1)
