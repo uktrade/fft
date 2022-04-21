@@ -24,7 +24,7 @@ def export_user_iterator(queryset):
 
 
 def download_users_queryset():
-  return (
+    return (
         User.objects.filter(is_active=True, groups__isnull=False)
         .annotate(group_list=StringAgg("groups__name", delimiter=", ", distinct=True))
         .values("first_name", "last_name", "group_list", "last_login")
@@ -32,4 +32,6 @@ def download_users_queryset():
 
 
 def download_users_to_excel(request):
-    return export_to_excel(download_users_queryset(), export_user_iterator, "FFT User List")
+    return export_to_excel(
+        download_users_queryset(), export_user_iterator, "FFT User List"
+    )

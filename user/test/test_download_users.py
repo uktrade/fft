@@ -6,12 +6,11 @@ from core.test.test_base import TEST_EMAIL
 
 from user.download_users import download_users_queryset
 
+
 class DownloadUserTest(TestCase):
     def setUp(self):
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
-        self.group, _ = Group.objects.get_or_create(name='test role')
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
+        self.group, _ = Group.objects.get_or_create(name="test role")
 
     def test_user_no_role(self):
         queryset = download_users_queryset()
@@ -28,5 +27,3 @@ class DownloadUserTest(TestCase):
         self.test_user.save()
         queryset = download_users_queryset()
         assert queryset.count() == 0
-
-
