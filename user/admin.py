@@ -6,6 +6,9 @@ from core.utils.generic_helpers import (
     log_object_change,
 )
 
+from django.urls import path
+
+from user.download_users import download_users_to_excel
 
 User = get_user_model()
 
@@ -41,6 +44,8 @@ class UserListFilter(admin.SimpleListFilter):
 
 
 class UserAdmin(UserAdmin):
+    change_list_template = "admin/export_user_changelist.html"
+
     list_filter = (UserListFilter,)
     list_display = (
         'email',
@@ -98,5 +103,11 @@ class UserAdmin(UserAdmin):
             "date_joined",
         ]
 
+    def get_urls(self):
+        urls = super().get_urls()
+        export_urls = [
+            path('export-users/', download_users_to_excel),
+        ]
+        return export_urls + urls
 
 admin.site.register(User, UserAdmin)
