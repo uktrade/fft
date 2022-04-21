@@ -16,5 +16,5 @@ class User(AbstractUser):
 
     class Meta(AbstractUser.Meta):
         permissions = [
-            ('can_download', "Can download active users"),
+            ("can_download", "Can download active users"),
         ]

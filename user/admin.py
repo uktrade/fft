@@ -110,4 +110,5 @@ class UserAdmin(UserAdmin):
         ]
         return export_urls + urls
 
+
 admin.site.register(User, UserAdmin)
