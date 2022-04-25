@@ -449,7 +449,6 @@ FCO Mapping
 Action Time
 Content Type
 message)s
-<<<<<<< HEAD
 CREATE VIEW mi_report_data_forecast_actual_query
 f.financial_period_id
 mi_report_data_query
@@ -517,4 +516,13 @@ Control
 Sub Segment
 Project Percentages
 Excel
+SQL
+Forecast
+COLOUR_GREEN=\033[32;01
+COLOUR_YELLOW=\033[33;01
+migrate$(COLOUR_NONE
+Compile SCSS
+elevate$(COLOUR_NONE
+test$(COLOUR_NONE
+create_data_lake_stub_data
 

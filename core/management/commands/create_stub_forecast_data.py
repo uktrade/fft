@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
 
+from core.management.commands.create_stub_future_forecast_data import clear_figures
 from core.models import FinancialYear
 
 from costcentre.models import CostCentre
@@ -9,7 +10,6 @@ from costcentre.models import CostCentre
 from end_of_month.end_of_month_actions import end_of_month_archive
 from end_of_month.models import (
     EndOfMonthStatus,
-    MonthlyTotalBudget,
 )
 
 from forecast.models import (
@@ -20,10 +20,9 @@ from forecast.models import (
 )
 
 
-def monthly_figures_clear():
-    ForecastMonthlyFigure.objects.all().delete()
-    BudgetMonthlyFigure.objects.all().delete()
-    MonthlyTotalBudget.objects.all().delete()
+def clear_monthly_figures():
+    current_financial_year = FinancialYear.objects.get(current=True)
+    clear_figures(current_financial_year)
 
     financial_period_queryset = FinancialPeriod.objects.all()
     for financial_period in financial_period_queryset:
@@ -34,11 +33,10 @@ def monthly_figures_clear():
     for month_status in month_status_q:
         month_status.archived = False
         month_status.save()
-    FinancialCode.objects.all().delete()
 
 
-def monthly_figures_create():
-    monthly_figures_clear()
+def create_monthly_figures():
+    clear_monthly_figures()
     current_financial_year = FinancialYear.objects.get(current=True)
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
@@ -54,7 +52,7 @@ def monthly_figures_create():
         for programme_fk in programme_list:
             monthly_amount += 10
             for natural_account_code_fk in natural_account_list:
-                financial_code = FinancialCode.objects.create(
+                financial_code, _ = FinancialCode.objects.get_or_create(
                     programme=programme_fk,
                     cost_centre=cost_centre_fk,
                     natural_account_code=natural_account_code_fk,
@@ -83,10 +81,6 @@ def monthly_figures_create():
         actual = FinancialPeriod.objects.get(financial_period_code=period_id)
         actual.actual_loaded = True
         actual.save()
-        # and 2 months with actuals
-        actual = FinancialPeriod.objects.get(financial_period_code=2)
-        actual.actual_loaded = True
-        actual.save()
 
 
 class Command(BaseCommand):
@@ -103,10 +97,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["delete"]:
-            monthly_figures_clear()
+            clear_monthly_figures()
             msg = "cleared"
         else:
-            monthly_figures_create()
+            create_monthly_figures()
             msg = "created"
         self.stdout.write(
             self.style.SUCCESS(
