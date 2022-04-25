@@ -11,7 +11,7 @@ chardet==3.0.4
 decorator==4.2.1
 diff-match-patch==20121119
 dj-database-url==0.5.0
-django>=3.2.12
+django>=3.2.13
 django-admin-list-filter-dropdown
 django-adv-cache-tag
 django-appconf
