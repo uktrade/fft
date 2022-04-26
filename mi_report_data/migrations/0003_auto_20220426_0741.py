@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                     forecast_forecastmonthlyfigure.financial_year_id
                    FROM forecast_forecastmonthlyfigure
                 ) a
-                     CROSS JOIN mi_report_materialised_periods;
+                     CROSS JOIN mi_report_periods;
 
         """,
             """
