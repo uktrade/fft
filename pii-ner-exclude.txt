@@ -1,307 +1,263 @@
-GiftsHospitalityCommandsTest(TestCase
-FinancialPeriod
-row_type
-col1
-col2
-self.col2
-No Budget"
-"Define the month
-empty_values=
-self.link_col
-kwargs.pop("adj_visible_list
-Column(adj
-SubtractCol
-PercentageCol
-code=
-Save
-FCO Mapping'
-NAC
-Archived Natural Account Codes
-name='archivedprogrammecode'
-name='archivedprojectcode'
-Project'
-Archived Commercial Category'
-Archived Budget Category'
-Archived Inter-Entity'
-Archived Natural Account Code
-Archived Programme Code'
-Archived Project'
-BeautifulSoup
-GiftAndHospitalityReceivedForm
-DepartmentalGroup
-GiftAndHospitality,\
-Grade
-self.assertEqual(response.status_code
-Normal Venue'
-FD
-DIT
-assert
-assert gift_hospitality_offered_form.is_valid
-assert len(header_text
-Operational Delivery Plan
-Expenditure Type
-Expenditure Category
-obj.op_del_category
-Commercial Category
-Approvers
-Operating Delivery Plan Category
-Budget Type
-Financial Year
-Archived Date"
-L1 Value
-L1 Description"]
-L1 Description"
-ORACLE - Inter Entity Description
-MonthlyFigureSetup
-MagicMock
-# Set
-MemoryFileUploadHandler
-# File
-assert response['Content-Type'
-assert len(rows
-IPv6
-' && '
-SW
-URL(process.env
-PWA
-navigator.serviceWorker
-config && config.onUpdate
-config && config.onSuccess
-JS
-&& contentType.indexOf('javascript'
-App
-django.contrib import
-instance.archived_period.period_long_name
-selenium.webdriver.common.by import
-ec
-FFT
-WebDriverWait(context.browser
-@then(u'I
-context.browser.find_element_by_id
-allCells
-appReducer
-__ &&
-localStorage.clear(
-super().setUp
+MonthlyFigureFactory
+export_edit_forecast_data_cost_centre
+Apr/May
+I3
+X3
+SUM(I3
+X4
+Y4
+Z1
 Cost Centre
-ws["N1"].value
-PO/Actual NAC
-ws["W1"].value
-assert ws["Z2"].value
-assert ws["AE2"].value
-export_forecast_data_project_detail_cost_centre
-CreateModel
-CharField(max_length=255
-IntegerField(default=9999
-CharField(default=
-max_length=20
-CharField(choices=[('NON-BUDGET'
-NON-BUDGET'
-NON-DEPT AME'
-default='NON-BUDGET'
-accounting_authority_DetailCode
-CharField(choices=[('VT
-NVT
-NON-VOTED_NIF'
-NON-VOTED_CEX'
-N/A'
-Oscar
+CommandLog
+executed_by
 history_id
 history_change_reason
-CharField(choices=[('+'
-HistoricalChanges
-old_name='HistoricCostCentre
-new_name='ArchivedCostCentre
-new_name='SimpleHistoryArchivedCostCentre'
-Archived Cost Centre'
-var otherCompany =
-Gift &amp
-class="col-md-12
-Hospitality - Search Records{%
-treasurySS
-Helvetica Neue
-Helvetica
-Logo
-1px !
-Navigation
-@media
-min-width
-240px
-100px
-480px
+EventLog
+RedisCache
+DefaultClient
+StreamHandler
+HSTS
+JS
+CRSF
+Tells Django
+FFT
+NULL
+is_staff
+Treasury
+l2 long
+l3
+l3 long
+l4
+l4 long
+GROSS
+N/A'
+OUTTURN
+SimpleHistoryHistoricL5Account
+L2 Long Name
+Control Budget Code
+Control Budget Long Name
+Control Budget Detail Code
+Row Sort Order
+Row Long Name
+PESA Regional Code
+Flake8
+Segment Grand Parent Code
+Segment Grand Parent Long Name
+Segment Long Name
+accounting_authority_DetailCode
+UKT013.GROUP
+" Define SegmentGrandParent Factory
+" Define SegmentParent Factory
+" Define Segment Factory
+Define EstimateRow Factory
+" Define SubSegment Factory
+u'I
+f'{context.base_url}/
 ROW_NUMBER
 f'OVER
-o.financial_code_id
+mar
 f'coalesce(adj3
 f'on b.financial_code_id
 b.financial_year_id =
 f'WHERE coalesce(f.archived_period_id
-generate_view_forecast_drop_query('jun
-RunSQL(generate_create_view_forecast_query('sep
-RunSQL(generate_create_view_forecast_query('oct
-generate_view_forecast_drop_query('feb
-generate_view_forecast_drop_query('mar
-RunSQL(generate_create_view_forecast_query('adj2
-RunSQL(generate_create_view_forecast_query('adj3
-core.models
-FinancialYear
-argument.\n
-TotalOverspendUnderspend
-rowTotal
-name='Finance Administrator'
-add_commercialcategory
-FormView
-FilteredGiftHospitalityView(LoginRequiredMixin, FAdminFilteredView
-Search Gifts
-Hospitality Records
-kwargs={"gift_id
-Add Gift/Hospitality Received
-Register
-GiftHospitalityOfferedView(GiftHospitalityReceivedView
-Add Gift/Hospitality
-GiftHospitalityOfferedDoneView(TemplateView
-Completed Gift/Hospitality Offered Form
-GiftHospitalityReceivedDoneView(TemplateView
-Completed Gift/Hospitality Received Form
-Add Gift/Hosp Received
-Add Gift/Hosp
-can_edit_cost_centre
-CostCentrePermissionTest(UserPassesTestMixin
-forecast_cost_centre
-self._show_monthly_variance
-FinancialPeriod.financial_period_info.actual_month_list
-self._table_kwargs
-kwargs = super(PeriodFormView
-PeriodView(TemplateView
-self.directorate().group_code
-FileUpload
-L1 Code
-Economic Budget
-Estimate Column
-l5_hierarchy_obj(obj
-l4
-l4 long
-l3
-l3 long
-l2 long
-l0
-name='archivedcostcentre
-AlterField
-model_name='archivedcostcentre
-related_name='costcentre_archivedcostcentre
-forecast.test.factories
-Forecasting Report
-appnope==0.1.0
-behave-django==1.4.0
-black==19.10b0
-celery==4.4.4
-colorama==0.4.3
-configparser==5.0.0
-coverage==5.2
-django-adv-cache-tag==1.1.3
-django-appconf==1.0.4
-django-axes==5.9.0
-django-filter==2.4.0
-django-guardian==2.2.0
-django-pivot==1.7
-django-storages==1.11.1
-django-tables2==2.4.0
-docutils==0.14
-jedi==0.11.1
-parse-type==0.5.2
-pathspec==0.8.0
-pep517==0.10.0
-pluggy==0.13.1
-pytest-xdist==1.33.0
-pytest==5.4.3
-rjsmin==1.1.0
-selenium==3.141.0
-vine==1.3.0
-#   amqp
-xlrd==1.1.0
-LogEntry
-assert len(cost_centres
-name='BusinessPartner
-max_length=254
-Business Partner'
-verbose_name='Email
-verbose_name='Group Name'
-CostCentrePerson
-verbose_name='Treasury Segment'
-Departmental Group'
-Departmental Groups'
-name='SimpleHistoryHistoricCostCentre'
-cost_centre_code
-Centre Code'
-Centre Name'
-Partner
-to='costcentre
-BSCEEmail
-Historic Cost Centre'
-Directorate'
-name='SimpleHistoryCostCentrePerson'
-Hierarchy Responsibility'
-Travel
-BusinessPartner
-verbose_name='Finance Business Partner'
-Cost Centre'
-DateFilter
-MyFilterSet
-lookup_expr="gte
-Meta(MyFilterSet
-entered_date_stamp_to
-name='archived_at
-gtm.start
-Date().getTime
-https://www.googletagmanager.com/gtm.js?id=
-charset="utf-8"/
-sizes="167x167
-sizes="152x152
-Forecast Tool</span></a
-aria-controls="navigation
-navigation">Menu
-request.path|startswith:'/chartofaccountDIT/
-request.path|startswith:'/gifthospitality/
-Gifts &amp
-choose_cost_centre
-href="/download_file
-Download MI
-Download OSCAR
-target="_blank
-Admin
-Accessibility Statement
-viewBox="0 0 483.2
-height="17
-8.7 39.7 21.8l42.7-27.2A97.63
-GOVUKFrontend.initAll
-period_obj.save
-max_length=1000
-OutturnInvalidPeriodError
-get_current_financial_year
-CostCentre
-Cost Centre Code
-Cost Centre Name
-directorate__group__group_code
-obj.bsce_email
-range(1
-end_of_month
-CommercialCategories
-Commercial Categories
-Category 1
-Category 2
-Category 3
-InterEntities
-InterEntityL1.objects.all().delete
-FCO Mapping
-fco_description="123456
-CommercialCategoryFactory
-assert len(tables
-assert len(table_rows
-assert first_cols[0].get_text().strip
-first_cols[1].get_text().strip
-assert first_cols[2].get_text().strip
+DROP VIEW
+monthly_forecast_sep CASCADE
+monthly_forecast_jan CASCADE
+monthly_forecast_feb CASCADE
+monthly_forecast_mar CASCADE
+monthly_forecast_adj1 CASCADE
+a.id GROUP
+CREATE VIEW
+a.archived_period_id
+CREATE VIEW monthly_forecast_aug
+CREATE VIEW monthly_forecast_dec
+CREATE VIEW monthly_forecast_mar
+CREATE VIEW monthly_forecast_adj1
+CREATE VIEW monthly_forecast_adj2
+MonthlyOutturn
+NAC
+Provide
+Historical NAC
+Expenditure
+the Expenditure Category
+Historical Expenditure Category
+the Commercial Category
+Analysis 1
+Analysis 2
+Upload the Trial Balance for a specific month
+treasurySS
+DEL ADMIN'
+DEL PROG'
+NON-BUDGET'
+NON-DEPT AME'
+NVT
+NON-VOTED_NIF'
+NON-VOTED_CEX'
+Oscar
+Raises
+HawkFail
+HAWK_INCOMING_ACCESS_KEY
+access_key_id}'
+sha256
+access_key_id
+WWW
+AuthenticationFailed
+DRF
+Hawk
+Server-Authorization'
+Content-Type'
+costcentre.change_costcentre
+analysis_1
+historicalnaturalcode/<year>/
+historicalfinancecategory/<year>/
+historicalcommercialcategory/<year>/
+historicalanalysis1/<year>/
+historical_analysis_2
+historicalprogrammefilter/<year>/
 historical_programme_filter
-ERROR(f"Valid Period
+historicalprojectfilter/<year>/
+historicalfcofilter/<year>/
+historical_fco_filter
+C901
+r"\t
+CC
+choose_cost_centre
+Define Analysis1 Factory
+" Define Analysis2 Factory
+" Define NACCategory Factory
+" Define OperatingDeliveryCategory Factory
+Define ExpenditureCategory Factory
+Test Archived Budget Category'
+" Define CommercialCategory Factory
+" Define NaturalCode Factory
+Programme Test
+" Define ArchivedProgrammeCode Factory
+" Define InterEntityL1 Factory
+Define InterEntity Factory
+Define ProjectCode Factory
+Project Description
+" Define ArchivedProjectCode Factory
+Define FCOMapping Factory
+" Define ArchivedFCOMapping Factory
+Programme Description
+chartofaccountDIT.ArchivedAnalysis1
+csv
+Account L5 Description'
+PESA Economic Group Code'
+Account L1 Code
+Account L1 Long Name
+Account L0 Code"
+Account L3 Code
+Account L3 Long Name
+Account L5 Code"
+Account L5 Long Name
+Account L5 Description"
+Economic Budget Code
+Estimates Column Code
+forecast.can_archive_end_of_month
+Supplier
+BudgetType
+Government Bodies'
+NAC Description'
+ProjectCode
+Project Code'
+Project Description'
+Project'
+Programme Code'
+Budget Grouping'
+ORACLE - Inter Entity Code'
+ORACLE - Inter Entity Description'
+Treasury - CPID (Departmental Code No
+Inter-Entity'
+FCO Mapping'
+Historic Programme Code'
+PO/Actuals NAC'
+Budget/Forecast NAC'
+Historic Natural Account Code
+Historic Inter-Entity'
+Historic FCO Mapping'
+Historic Budget Category'
+Historic Commercial Category'
+Archived Market (Analysis 2
+ProgrammeCode
+InterEntity
+Inter-Entities'
+FCO Mappings'
+Historic Project'
+Historic Programme Codes'
+Historic Natural Account Codes
+Historic Inter-Entities'
+Historic Budget Categories'
+is_superuser
+Gift and Hospitality Admin
+Authorization
+Programme
+F1"
+MAY
+K1
+M1"
+SEP
+N1
+OCT
+DEC
+JAN
+Q2
+R2"
+MAR
+Gift
+Hospitality
+Hospitality Types'
+Gift Hospitality
+Grade
+Grade Description'
+Gift and Hospitality Company'
+DIT
+DIT Staff'
+Action3
+DIT Group'
+coalesce(budget
+coalesce(sep
+coalesce(oct
+coalesce(jan
+coalesce(mar
+fc.id
+FRONT_END_SERVER
+LOG_TO_ELK
+L1 Code
+Estimate Column
+L3 Account
+l0
+0.00
+Description Natural Account code
+Date Actuals Group
+Group code Directorate
+Cost Centre code Budget Grouping Expenditure
+\\n123456 Test 111111 Test
+Description Programme
+\\n123456 Test 999999 Test
+April"
+111111 Test 333444 Test
+UK TRADE & INVESTMENT
+Project Code
+Expenditure Type
+Project
+entered_date_stamp_to
+Date Entered From:
+gte
+Max
+costcentre.add_businesspartner
+DownloadLog
+CC TRAV'
+Trainline
+Admin Tool'
+NAC H'
+NAC Hierarchy
+Download Type'
+Download
+Download Log'
+Download Logs'
+Grade Description"
+entered_by
 the Financial Forecast Tool</h1
 the Live Services Team
 Digital
@@ -322,1689 +278,185 @@ the Financial Forecast System
 ARIA
 HTML5
 Accessibility Guidelines
-29.04.2021.</p
-DownloadEditForecastTest(BaseTestCase
-Test Directorate
-directorate_code=
-MonthlyFigureFactory
-financial_code_obj1
-# Assign
-year_obj
-self.test_user
-export_edit_forecast_data_cost_centre
-Apr/May
-May
-assert ws["X1"].value
-SUM(I3
-X3
-chooseBlock
-chooseBlock.style.width
-document.querySelectorAll("div.form-row")[1
-Treasury
-csv
-newline=
-Group
-assert col_5_total_value
-RequestFactory
-SubSegment
-Gifts
-Hospitality
-assert len(gifts_hospitality_links
-Upload the Trial Balance
-LOCALFILE
-HistoricalFilteredView
-CommercialCategoryFilter
-HistoricalInterEntityFilter
-CommercialCategoryTable
-Common Chart
-FilteredExpenditureCategoryListView(FAdminFilteredView
-Budget Categories
-Contract Reconciliation (Analysis 1
-Markets (Analysis 2
-the Overseas Team
-FilteredProgrammeView(FAdminFilteredView
-ProgrammeTable
-ProgrammeFilter
-Programme Codes
-EU
-ODA
-DEL/AME
-Admin/Programme
-HistoricalProgrammeTable
-Purchase Orders
-FilteredInterEntityView
-Project Codes (Spare 1
-TPG
-Cost Centre Hierarchy
-Projects (Spare 1
-user.groups.filter
-cost_centre
-Gift
-Hospitality Admin
-Hospitality Admin'
-ADI
-Admin Tool'
-Import Log'
-Import Logs'
-UploadActualsView(UserPassesTestMixin
-user_has_upload_permission(self.request.user
-Upload Actuals
-Upload Budgets
-BUDGET
-TotalVariancePercentage
-CharField(choices=[('DEL
-CharField(max_length=8
-verbose_name='Organization'
-remove_user_from_cost_centre
-core.import_csv
-CheckArchivedFinancialCode
-previous_years.import_actuals
-Detail Trial Balance
-# Sample
-ANALYSIS2_INDEX
-chart_of_account
-MonthlyFigure
-worksheet.max_row + 1
-save_to
-FinancialPeriod.objects.filter
-ProgrammeCode
-self.archived_code
-financial_year_id=2019
-643210
-data</a>
-MAY
-SEP
-OCT
-DEC
-MAR
-Jul
-Oct
-mar = get_obj_value(obj
-Mar
-adj2 / 100
-ForecastQueryFields
-Sum
-FakeCell
-MONTH_CELL
-TITLE_CELL
-s3_document_file='dummy.csv'
-3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format
-3000-30000-{}-{}-000000-00000-00000-0000-0000-0000'.format
-chart_of_account_line_no_programme
-os.path.dirname(__file
-# Prepare
-cost_centre_code_1
-copy_current_year_actuals_to_monthly_figure(self.period_obj
-self.financial_year_id
-mock_process_uploaded_file.called
-assert resp.url
-A1
-self.dit_download(1
-self.dit_download(9
-self.cost_centre_download(1
-self.cost_centre_download(6
-CLAM_AV_PASSWORD
-LOG_TO_ELK
-HAWK_INCOMING_ACCESS_KEY
-download_previous_year_oscar/
-export_previous_year_oscar_report
-@reduxjs
-TemplateResponse
-AdminExport
-costcentre.exportcsv
-GivePermissionAdminForm
-directorate__group__group_name
-group_code.admin_order_field
-self.get_fields(request
+02.02.2022.</p
+uploaded_at
+EventType
+financial_year_display'
+HistoricalUser
+HistoricalPermission
+HistoricalGroup
+CostCentre
+OSCAR
+SimpleHistoryFinancialCode
+financial_row_unique_5a'
+financial_row_unique_5c
+BudgetUploadMonthlyFigure_unique1
+ActualUploadMonthlyFigure_unique1
+" Define L1Account Factory
+" Define L2Account Factory
+Define L3Account Factory
+" Define L4Account Factory
+" Define L5Account Factory
+" Define HistoricL5Account Factory
+Define DepartmentalGroup Factory
 FBP
-give_permission_form.is_valid
-self.admin_site.each_context(request
-AdminImportExport
-admin.site.register(CostCentre
-DirectorateAdmin
-WrongHeaderException
-segment_code = segment_code_description[:8
-f"Error
-django.contrib import admin
-core.export_data
-CommandLog
-AdminActiveField(admin
-ModelAdmin
-Remove
-self.readonly_fields
-request.user.id
-AttributeError
-Excel
-super(CsvImportForm
-e.yield_data
-f"Import
-import_info.header_list
-import_info.form_title
-path("import1
-" Display the Admin log
-financial_year_display
-executed_by
-month_dict.values
-financialcode_obj
-budget_obj.amount
-Ignore
-upload_budget_from_file(file_upload
-Budgets
-previous_years.import_previous_year import
-PREVIOUSYEAR
+Define CostCentre Factory
+Test Cost Centre
+Set the Actual
+Cost Centre for
+Cost Centre Hierarchy
 Admin Tool
-GL Report
-STATUS_STARTED
-Import Log"
-Import Logs
-Home
-Home.as_view
-URLconf
-RedirectView
-namespace="authbroker
-path("chartofaccountDIT/
-admin.site.urls
-Paste
-DownloadSupportConfig(AppConfig
-April"
-FinancialCode
-MonthlyFigureFactory(factory
-ViewProjectDetailsTest(PastYearForecastSetup
-assert last_details_cols
-assert len(negative_values
-AutocompleteSelect
-self.admin_site
-InvalidPeriodError
-BudgetType
-ArchivedModel
-default=
-EstimateRow(IsActiveModel
-UNDEF
-DEL ADMIN
-DELPROG
-DEL
-DELADM
-AMEDEPT
-AMENODEPT
-NB
-verbose_name="control budget detail
-Control
-Sub Segment
-suffix=
-dit_budget_type=obj.dit_budget_type
-model_name='historicaluser
-ViewProgrammeDetailsTest(PastYearForecastSetup
-format_forecast_figure(self.underspend_total
-assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text().strip
+Download Type
+Download Log
+Download Logs
+forecast_cost_centre
+2222222
+E501
 programme_details_directorate
-ViewProgrammeDetailsTwoYearDataTest(ViewProgrammeDetailsTest
-ProjectForm
-DITForecastMixin
-self.selection_kwargs
-self.field_infos.project_code_field
-Project Report
-GroupForecastMixin
-project_details_group
-DirectorateProjectDetailsView
-DirectorateForecastMixin
-CostCentreProjectDetailsView
-instances_and_widgets(bound_field
-has_end_of_month_archive_permissions(user
-function.__doc
-HistoricalInterEntityFactory.create
-Decimal
-ImportInfo
-def get_month_dict
-period_calendar_code__lt=13
-msg =
-month_dict = get_month_dict
-row[col_key["project"]].strip
-has_download_oscar_permission
-FileDownload
-chartofaccountDIT.import_archived_from_csv
-costcentre.import_archived_from_csv
-import_archived_cost_centre
-forecast.import_csv
-import_archived_programme
-Table
-/Reducers/Edit'
-{ OPEN_FILTER_IF_CLOSED }
-SET_SELECTED_ROW
-selectedRow > -1
-window.actuals && window.actuals.length >
-event.preventDefault
-Tab
-event.shiftKey && document.activeElement
-event.shiftKey &&
-&&
-getCellId(targetRow
-document.activeElement.blur(
-nextId
-targetMonth++
-Jump
-INPUT
-role="alert
-EditForecast
-GiftHospitalityReceivedView
-GiftHospitalityReceivedView.as_view
-Directors
-Hierarchy Responsibility
-BSCEEmail(IsActiveModel
-EmailField("BSCE
-Departmental Group
-Departmental Groups
-CostCentre(IsActiveModel
-CharField("Cost Centre Name
-BooleanField("Used for Travel
-"Repository for historical cost centres hierarchies
-CharField("Cost Centre Code"
-verbose_name="Treasury
-cc_obj.business_partner
-cc_hist
-Archived Cost Centre
-Archived Cost Centres
-Download OSCAR Return
-OSCAR Returns
-OSCAR Return
-ProgrammeForm
-self.field_infos.programme_code_field
-Programme Report
-"Set of functions
-pk_name
-IMPORT_CSV_PK_KEY
-IMPORT_CSV_IS_FK
-msg = f'{get_pk_verbose_name(m
-IMPORT_CSV_PK_NAME_KEY
-get_col_from_obj_key(obj_key
-IMPORT_CSV_FIELDLIST_KEY
-import_obj(csv_file
-{l1}
-key=
-key[IMPORT_CSV_MODEL_KEY]._meta.verbose_name.title
-upload_file.templatetags.upload_permissions
-has_upload_permission(test_user
-assert has_upload_permission(test_user
-ProjectCode
-CostHierarchy
-group_name="Departmental Group
-Centre
-"Clear the Cost Centre,
-Directorate
-self.create_departmental_group('8456AA
-ProgrammeCodes
-Analysis 1 Codes
-analysis1_code="10002
-Analysis 2
-ProjectCodes
-project_code=5002
-Contractors (Pay
-Staff Welfare"
-NAC_category_description="Capital
-Estates (Capital
-assert is_forecast_user(test_user
-Workbook
-outturn_variance_field
-forecast_query_iterator
-keys_dict
-keys_dict.keys
-k = list(keys_dict.values
-k.extend(list(show_monthly_variance.values(
-k.append(year_to_date_header
-export_forecast_to_excel
-C901
-first_figure_col
-# Actual month
-Formula for Year To Date
-Formula
-column_index_from_string(year_to_date_col
-APIClient().get
-csv.reader(io
-assert len(rows[0]
-get_response
-response["Cache-Control
-django_log_formatter_ecs
-BACKEND
-RedisCache
-DefaultClient
-ECSFormatter
-message)s
-StreamHandler
-# Set cookie
-CRSF
-Audit
-AUDIT_LOG_USER_FIELD
-ViewForecastHierarchyTest(PastYearForecastSetup
-assert str(self.cost_centre_code
-assert first_prog_cols[prog_index].get_text().strip
-assert last_programme_cols[TOTAL_COLUMN].get_text().strip
-assert last_programme_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-first_expenditure_cols[2].get_text().strip
-assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-project_rows = table.find_all("tr
-assert first_project_cols[1].get_text().strip
-assert first_project_cols[3].get_text().strip
-assert last_project_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-assert first_hierarchy_cols[budget_col].get_text().strip
-assert last_hierarchy_cols[TOTAL_COLUMN].get_text().strip
-assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-CSV</button
-ForecastMonthlyFigure.objects.all().count
-310940
-financial_period=1
-budget_upload_blank_data.xlsx
-FigureFieldData
-Financial Period Code
-Financial Period Name
-# Current
-Archived
-IntegrityError
-_export_sub_segment_iterator
+update_forecast_figure
+View Forecast' CC
+Edit Forecast'
+View Forecast'
+Checks Directorate
+Edit Forecast
+the 'View Forecast'
+Tests 'Edit Forecast'
+ROUND(SUM(CASE
+ON
+ON "treasurySS_subsegment"
+NULL GROUP BY coalesce("chartofaccountDIT_naturalcode"
+m.financial_year_id
+ON m.financial_code_id
+ON ff.programme_id
 EstimateRow
-estimates_row_code
-return super(SubSegmentAdmin
-SegmentAdmin
-self.year_total
-may_figure1
-COLOUR_GREEN=\033[32;01
-COLOUR_YELLOW=\033[33;01
-migrate$(COLOUR_NONE
-Compile SCSS
-elevate$(COLOUR_NONE
-test$(COLOUR_NONE
-create_data_lake_stub_data
-nac_data
-Expenditure Report
-nac_table.tag = self.table_tag
-GroupExpenditureDetailsView
-DirectorateExpenditureDetailsView
-Project
+estimates_row_code'
+Define GiftsAndHospitality Factory
+Define GiftsAndHospitalityCategory Factory
+archived_financial_row_unique_6
+PO/Actual NAC
+Budget Type
+AD2
+export_forecast_data_project_detail_cost_centre
+Original Record Id"
+Gift or Hospitality
+Venue
+DIT Group
+Action Taken
+f'SimpleHistory{x}'
+Archived Natural Account Code
+Archived Natural Account Codes
+Archived Programme Codes'
+Archived Commercial Category'
+Archived Budget Category'
+Archived Inter-Entity'
+Archived Programme Code'
+Archived Project'
+f"csrftoken={os.environ['CRSF_TOKEN
+CRSF_TOKEN
+Gift and Hospitality Type
+Gift and Hospitality Types
+Gift and Hospitality Category
+Gift and Hospitality Categories
+DIT Staff
+Gift and Hospitality Company
+Gift and Hospitality Companies
+CharField("DIT Group
+Gift and Hospitality
+-id
+Oct"
+Mar
+Programme Resource'
+Admin
+Admin Resource'
+forecast_forecastmonthlyfigure.archived_status_id
+NULL GROUP BY
+OSCAR L5 Mapping"
+L6"
+L6_NAME
+DFF-Economic Budget
+BEIS
+Oscar Upload
+Resource, Capital
+Convert
+Budget Categories
+Approvers
+L1 Value
+L1 Description"
+Test Grade
+Normal Venue'
+FD
+end_of_month/end_of_month_archive.html
+archivable_month
+account_L5_code__account_l4__account_l3__account_l2
+download_oscar_report/
+download_mi_report/"
+DjangoCelery
+financial_year_display
+Finance Business Partners
+directorate__group__group_code
+give_permission_form
+" Define DownloadLog Factory
+Chart of Account
+Null
+A2
+BSCEEmail
+BusinessPartner
+Business Partner
+Business Partner'
+Business Partners'
+Group Name'
+Departmental Group'
+Departmental Groups'
+Cost Centre Name'
+Historic Cost Centre'
+Directorate
+Hierarchy Responsibility'
+Finance Business Partner'
+Cost Centre'
+Historic Cost Centres'
+budget_type_descr
+Budget/Forecast NAC
+PO/Actuals NAC
+Operational Delivery Plan
+DEL
+ADMIN
+NON-PAY
+Admin, Capital or Programme
+Departmental Group
+Group
+NAC Expenditure
+Budget/Forecast NAC Description
+Account Codes
+Market (Analysis 2
+Markets (Analysis 2
+Budget Groupings
+Budget
+Archived Budget Category
+Archived Budget Categories
+Commercial Categories
+Archived Commercial Category
+Archived Commercial Categories
+Level 1
+UKTI
+L5_OSCAR_Upload"
+Programme Name
+Programme Codes
+Archived Programme Code
+Archived Programme Codes
+ORACLE - Inter Entity Description
+Archived Projects"
+FCO Mapping
+Action Time
+Content Type
+message)s
 Compile
 npm
 Dev
 Hospitality Register
 Download Oscar
-HistoricalUser
-RunSQL
-SELECT coalesce(b.financial_code_id
-coalesce(budget
-coalesce(jan
-mar
-adj2
-ROW_NUMBER (
-fc.id
-chartofaccountDIT.exportcsv
-_export_exp_cat_iterator
-chartofaccountDIT.import_csv
-import_fco_mapping_class
-import_analysis2_class
-OpDelCategoryAdmin(AdminImportExport
-Analysis1Admin
-ExpenditureCategoryAdmin
-Cost Centre Description
-Directorate Code
-Group Code
-Group Description
-109045,Test Cost Centre
-Test Group
-ArchivedCostCentre.objects.all().count
-Cost Centre,
-UniqueConstraint
-ArchivedFinancialCode(ArchivedModel
-Chart of Account
-Null
-name="archived_financial_row_unique_6
-0123
-00798
-Programme
-JUL
-AUG
-NOV
-JAN
-self.assertEqual(financial_code_obj.cost_centre_id
-self.assertEqual(financial_code_obj.analysis2_code_id
-self.assertEqual(financial_code_obj.project_code_id
-.factories
-@pytest.mark.django_db
-test_GiftsAndHospitalityClassification_model
-assert model_test.gift_type
-help_text='Required
-model_name='simplehistoryforecasteditstate
-Group, Permission
-assert can_view_forecasts(self.test_user
-assert user_in_group(self.test_user
-assert can_edit_at_least_one_cost_centre
-assert can_edit_cost_centre
-import_list_obj
-ANALYSIS2_KEY
-L5_FK_KEY
-OSCAR L5 Mapping"
-L6
-DFF-Economic Budget
-BEIS
-Oscar Upload
-Resource, Capital
-CommercialCategory
-EXP_CAT_FK_KEY
-Budget Grouping
-Operating Delivery Category
-Expenditure
-Convert
-import_nac_category(csvfile
-ImportInfo(COMMERCIAL_CATEGORY_KEY
-InterEntity
-L2 Value
-INTER_ENTITY_L1_KEY
-L6_KEY
-FCOMapping
-FilteredListSerializer(serializers
-ListSerializer
-FinancialCodeSerializer(serializers
-SerializerMethodField
-yearly_amount=Sum('amount'
-budget[0]["yearly_amount
-&& npm
-^1.4.0
-getattr(data_obj
-self.import_period(1
-help="User
-dest="email
-CustomAuthbrokerBackend(AuthbrokerBackend
-@staticmethod
-User.objects.filter
-# Set email_user_id
-https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.15.4.tgz
-^4.16.6
-^6.3.0
-https://registry.npmjs.org/semver/-/semver-6.3.0.tgz
-https://registry.npmjs.org/@babel/helper-create-regexp-features-plugin/-/helper-create-regexp-features-plugin-7.14.5.tgz
-https://registry.npmjs.org/@babel/helper-hoist-variables/-/helper-hoist-variables-7.15.4.tgz
-https://registry.npmjs.org/@babel/helper-module-imports/-/helper-module-imports-7.15.4.tgz
-https://registry.npmjs.org/@babel/helper-simple-access/-/helper-simple-access-7.15.4.tgz
-https://registry.npmjs.org/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.15.4.tgz
-^4.0.0
-https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz
-^3.0.0
-https://registry.npmjs.org/@babel/plugin-proposal-private-methods/-/plugin-proposal-private-methods-7.14.5.tgz
-mDkt1qv2YJJSeUAec2ma4WLUnUPeKjyrfntVwe
-https://registry.npmjs.org/@babel/plugin-syntax-class-static-block/-/plugin-syntax-class-static-block-7.14.5.tgz
-^11.1.0
-n0voENtP/zymdT4HH6QEb65wjjcbqr1Jb/7z9Qp7TF5FtwYGw==
-^1.8.1
-^5.5.1
-https://registry.npmjs.org/@babel/plugin-transform-shorthand-properties/-/plugin-transform-shorthand-properties-7.14.5.tgz
-https://registry.npmjs.org/@babel/plugin-transform-sticky-regex/-/plugin-transform-sticky-regex-7.14.5.tgz
-VkFr+zStqlujWaarpMErvay7goJS6BWwdd6BY9zQyDLDa4x2S3VugxFb162IZ4m/S/+Gg==
-https://registry.npmjs.org/@babel/plugin-transform-typeof-symbol/-/plugin-transform-typeof-symbol-7.14.5.tgz
-https://registry.npmjs.org/@babel/runtime-corejs3/-/runtime-corejs3-7.15.4.tgz
-0.4.3
-^7.3.0
-@gar
-@hapi
-@hapi/hoek
-2.x.x
-https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.5.0.tgz
-26.6.2
-@types
-4.1.2
-uBL
-^7.1.0
-fastq
-https://registry.npmjs.org/@npmcli/fs/-/fs-1.0.0.tgz
-@npmcli
-@pmmmwh
-@rollup
-^3.1.0
-@surma
-https://registry.npmjs.org/@surma/rollup-plugin-off-main-thread/-/rollup-plugin-off-main-thread-1.4.2.tgz
-@svgr
-@types/babel__generator
-tFyQIY2eiiITcCAeuPbNSvT9YCGkVMqqvSk2Z0mXiA==
-0.0.50
-@types/html
-https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz
-sha512-rZ5drC
-7.1.18
-https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz
-3.13.1
-20.2.1
-mzsANvhwbiULsaiqT5GZGT9qinTICdj6PLuM5gslw==
-https://registry.npmjs.org/agent-base/-/agent-base-6.0.2.tgz
-https://registry.npmjs.org/aggregate-error/-/aggregate-error-3.1.0.tgz
-https://registry.npmjs.org/ajv/-/ajv-6.12.6.tgz
-3.5.2
-0.0.7
-3.1.2
-https://registry.npmjs.org/aria-query/-/aria-query-4.2.2.tgz
-cR5pf8r/cR4Wq60sL/
-^1.18.0-next.1
-bn.js
-0.10.3
-https://registry.npmjs.org/assign-symbols/-/assign-symbols-1.0.0.tgz
-https://registry.npmjs.org/async-foreach/-/async-foreach-0.1.3.tgz
-^7.7.0
-https://registry.npmjs.org/babel-loader/-/babel-loader-8.1.0.tgz
-https://registry.npmjs.org/babel-plugin-macros/-/babel-plugin-macros-2.8.0.tgz
-https://registry.npmjs.org/babel-preset-react-app/-/babel-preset-react-app-10.0.0.tgz
-https://registry.npmjs.org/babylon/-/babylon-6.18.0.tgz
-base16
-https://registry.npmjs.org/batch/-/batch-0.6.1.tgz
-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
-sha512-+e/UqUzwmzJamNF50tBV6tZPTORow7gQ96iFow+8b562OdMpEK0BcJEq2OSPEDmAbSMBQ7PKZ87ubFkgxpYWgw==
-^1.1.0
-https://registry.npmjs.org/braces/-/braces-3.0.2.tgz
-4.2.1
-^1.3.846
-4.9.2
-https://registry.npmjs.org/cache-base/-/cache-base-1.0.1.tgz
-https://registry.npmjs.org/camel-case/-/camel-case-4.1.2.tgz
-https://registry.npmjs.org/chokidar/-/chokidar-3.5.2.tgz
-~4.0.1
-https://registry.npmjs.org/chownr/-/chownr-2.0.0.tgz
-https://registry.npmjs.org/strip-ansi/-/strip-ansi-5.2.0.tgz
-https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz
-https://registry.npmjs.org/concat-stream/-/concat-stream-1.6.2.tgz
-https://registry.npmjs.org/console-browserify/-/console-browserify-1.2.0.tgz
-7.0.0
-https://registry.npmjs.org/semver/-/semver-7.0.0.tgz
-https://registry.npmjs.org/create-ecdh/-/create-ecdh-4.0.4.tgz
-https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.3.tgz
-csso
-https://registry.npmjs.org/damerau-levenshtein/-/damerau-levenshtein-1.0.7.tgz
-https://registry.npmjs.org/deep-equal/-/deep-equal-1.1.1.tgz
-https://registry.npmjs.org/domain-browser/-/domain-browser-1.2.0.tgz
-webidl
-https://registry.npmjs.org/domutils/-/domutils-1.7.0.tgz
-3.0.4
-https://registry.npmjs.org/dotenv/-/dotenv-8.2.0.tgz
-https://registry.npmjs.org/error-stack-parser/-/error-stack-parser-2.0.6.tgz
-^1.0.7
-https://registry.npmjs.org/debug/-/debug-3.2.7.tgz
-https://registry.npmjs.org/eslint-module-utils/-/eslint-module-utils-2.6.2.tgz
-^3.11.0
-2 || 3 || 4 || 5"
-https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-2.1.0.tgz
-7.3.1
-^1.3.0
-sha1-Qa4u62XvpiJorr
-https://registry.npmjs.org/which/-/which-1.3.1.tgz
-https://registry.npmjs.org/array-flatten/-/array-flatten-1.1.1.tgz
-sha512-+ONcYoWj/SoQwUofMr94aGu05Ou4FepKi7N7b+O8T4jVfyIsZQV1/xeS8jpaBzF0csAk0KLXoHCxU7cKYZjo1Q==
-https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz
-sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==
-https://registry.npmjs.org/find-cache-dir/-/find-cache-dir-2.1.0.tgz
-^1.1.5
-https://registry.npmjs.org/get-own-enumerable-property-symbols/-/get-own-enumerable-property-symbols-3.0.2.tgz
-^1.3.1
-uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==
-^2.5.2
-https://registry.npmjs.org/http-errors/-/http-errors-1.7.2.tgz
-https://registry.npmjs.org/http-signature/-/http-signature-1.2.0.tgz
-sDK6y6uUKmuYhW7eacnIhFfsPmCNYdDzsnnDCg==
-https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-1.9.1.tgz
-4.0.3
-https://registry.npmjs.org/string-width/-/string-width-4.2.2.tgz
-OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==
-QkqQcTqZfRgjfyRhDFM/auzgVo2RKvSwi18YMvh0WvXDJFoFED6c7jd/5jxtu4kSOb9PTu2cPVg=="
-^0.4.4
-6.0.1
-https://registry.npmjs.org/acorn/-/acorn-8.5.0.tgz
-https://registry.npmjs.org/tough-cookie/-/tough-cookie-4.0.0.tgz
-https://registry.npmjs.org/kleur/-/kleur-3.0.3.tgz
-klona
-sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql
-Wfhrlem2CL
-^3.0.0 || ^4.0.0
-https://registry.npmjs.org/make-dir/-/make-dir-2.1.0.tgz
-https://registry.npmjs.org/map-visit/-/map-visit-1.0.0.tgz
-^0.18.0
-1.49.0
-https://registry.npmjs.org/mississippi/-/mississippi-3.0.0.tgz
-nanoid
-https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz
-https://registry.npmjs.org/node-gyp/-/node-gyp-7.1.2.tgz
-https://registry.npmjs.org/node-libs-browser/-/node-libs-browser-2.2.1.tgz
-https://registry.npmjs.org/optimize-css-assets-webpack-plugin/-/optimize-css-assets-webpack-plugin-5.0.4.tgz
-^4.1.10
-^1.4.3
-sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==
-https://registry.npmjs.org/parse-json/-/parse-json-5.2.0.tgz
-https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.7.tgz
-pinkie
-https://registry.npmjs.org/locate-path/-/locate-path-3.0.0.tgz
-https://registry.npmjs.org/supports-color/-/supports-color-6.1.0.tgz
-eT2g==
-https://registry.npmjs.org/postcss-gap-properties/-/postcss-gap-properties-2.0.0.tgz
-4.0.11
-8.0.1
-^10.1.0
-^10.0.0
-https://registry.npmjs.org/postcss-normalize-url/-/postcss-normalize-url-4.0.1.tgz
-^0.6.2
-PDMqa
-QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==
-OiCa0uphp57NVTeAGdJGaAliecxwBDHYQCIvrW7aDBZCYeNTP/WX69mkg==
-https://registry.npmjs.org/progress/-/progress-2.0.3.tgz
-https://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1.tgz
-^15.7.3
-^7.11.0
-https://registry.npmjs.org/type-fest/-/type-fest-0.8.1.tgz
-https://registry.npmjs.org/redux/-/redux-4.1.1.tgz
-V6cTPnXXtQOPUbhZ6CmGzAD
-2.88.2
-https://registry.npmjs.org/request/-/request-2.88.2.tgz
-^1.8.0
-https://registry.npmjs.org/reselect/-/reselect-4.0.0.tgz
-https://registry.npmjs.org/loader-utils/-/loader-utils-1.2.3.tgz
-HrAoKEKz3uUPzSvKs9A3qR4iVw==
-https://registry.npmjs.org/anymatch/-/anymatch-2.0.0.tgz
-mrtk=
-https://registry.npmjs.org/schema-utils/-/schema-utils-2.7.1.tgz
-a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==
-kOWhYQvyg==
-https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz
-https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.4.tgz
-^0.3.1
-snapdragon
-https://registry.npmjs.org/snapdragon-node/-/snapdragon-node-2.1.1.tgz
-czIcqUFOM
-^1.5.3
-sha512-/tTrYOC7PPI1nUAgx34hUpqXuyJG+DTHJTnIULG4rDygi4xu/tfgmq1e1cIRwRzwZgo4NLySi+ricLkZkw4i5A==
-VTNyJv1eC1IPNB8ftcY=
-https://registry.npmjs.org/string-natural-compare/-/string-natural-compare-3.0.1.tgz
-vUphGRM/RJNT9SCURJLjwfOg51heRtguGWDzcaBlgAzKhQa0EVNpPEKzQuBwZ8S8WaCeQ==
-BaW
-https://registry.npmjs.org/symbol-tree/-/symbol-tree-3.2.4.tgz
-^2.20.0
-~0.5.12
-https://registry.npmjs.org/commander/-/commander-2.20.3.tgz
-https://registry.npmjs.org/to-regex/-/to-regex-3.0.2.tgz
-https://registry.npmjs.org/uniq/-/uniq-1.0.1.tgz
-https://registry.npmjs.org/universalify/-/universalify-2.0.0.tgz
-https://registry.npmjs.org/upath/-/upath-1.2.0.tgz
-TA9cshCEhtu7IKJ
-https://registry.npmjs.org/util/-/util-0.11.1.tgz
-LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
-https://registry.npmjs.org/walker/-/walker-1.0.7.tgz
-1.13.1
-mississippi
-https://registry.npmjs.org/ansi-colors/-/ansi-colors-3.2.4.tgz
-wG5u/RSKzwdAC4i51YigihA==
-FN6x3ROzkfFPsRjtw/kGZuZkPzfeH531qdUGfhtwjmtO/ZzXcWErqVzJNdXaA==
-https://registry.npmjs.org/workbox-cacheable-response/-/workbox-cacheable-response-5.1.4.tgz
-sha512-+4iRQan/1D8I81nR2L5vcbaaFskZC2CL17TLbvWVzQ4qiF/ytOGF6XeV54pVxAvKUtkLANhk8TyIUMtiMw2oDg==
-~0.1.7
-13.1.2
-20.2.9
-IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
-&& cells[i].isEditable
-programme.budget_type
-ProgrammeCodeViewSet(DataLakeViewSet
-Programme Name
-BudgetViewSet(DataLakeViewSet
-ActionChains
-DesiredCapabilities
-Keys
-SessionStore
-django.core.cache
-ChromeDriverManager
-core.test.factories
-2222222
-FinancialYearFactory(
-budget_type_key="DEL
-analysis_1
-nac_code
-test_user_email
-# Finally
-CONTROL
-# Wait
-UI
-\n
-copyToClipboard(
-copyToClipboard
-Forecast / Historical
-# Segment Department Code
-# Segment Department
-# Segment Grand Parent Code
-# Segment Grand Parent Long Name
-# Segment Parent Code
-Sub Segment Code
-Policy Ringfence Code
-# Accounting Authority Code
-# Accounting Authority Detail Code
-Flake8
-Segment Grand Parent Code
-Segment Grand Parent Long Name
-SEGMENT_GP_KEY
-Segment Long Name
-Row Long Name
-Sub Segment Long Name
-Control Budget Detail Code
-ESTIMATE_ROW_KEY
-SUB_SEGMENT_KEY
-UKT013.GROUP
-Segment Department Code
-NacCategory.objects.get_or_create(NAC_category_description="Pay
-MIT License
-Department for International Trade
-Software
-IMPLIED
-DAMAGES
-LIABILITY
-Define EstimateRow Factory
-Define SubSegment Factory
-can_view_gifthospitality_helper
-self.fields['cost_centre
-kwargs.pop('user
-user.has_perm("costcentre.edit_forecast_all_cost_centres
-kwargs.pop('cost_centre
-id_list
-administering_user.groups.filter
-HawkAuthentication
-django.utils.decorators
-decorator_from_middleware
-ViewSet
-filename={self.filename}.csv
-csv.excel
-get_no_answer
-NULL
-costcentrehistoricalfilter/<year>/
-getComponent
-e.preventDefault
-className={getClasses
-columns</h4
-Project Code
-self.assertEqual(current_total
-beautifulsoup4
-behave-django
-Project Details - Group
-self.init_data = SetFullYearArchive(3
-financial_period_id=4
-archived_status_id=2
-in_mem_csv =
-import_single_archived_period(in_mem_csv, 4,
--1
-SELECT_ALL
-DownloadLog
-NAC_H_AT
-GiftsAndHospitalityCategoryFactory(factory
-Define CostCentre Factory
-BSCEFactory(factory
-Test Cost Centre
-upload_to=
-has_admin_upload_permission(user
-CostCentreFactory.create().cost_centre_code
-JSONDecodeError
-IntegerField
-Business Partner
-id__in
-name='SimpleHistoryEndOfMonthStatus
-CommandUpload
-create_groups(apps
-# Finance Business Partners
-EmailField
-Celery
-SetActualPeriodCommandsTest(TestCase
-self.set_actual_period(1
-self.set_actual_period(5
-TableCell
-InfoCell
-CellValue
-AggregateValue
-VariancePercentage
-TableHeader
-TotalCol
-ToggleCell
-TotalAggregate
-TotalBudget
-OverspendUnderspend
-getCellId
-window.period_display && window.period_display.includes(13) &&
-window.period_display && window.period_display.includes(14) &&
-window.period_display && window.period_display.includes(15) &&
-ToggleCell colName={"natural_account_code
-cellKey={"budget
-extraClasses=
-window.period_display && window.period_display.map((value
-memo(Table
-ViewUtils(BaseTestCase
-ArchivedForecastDataUpload
-f"INSERT INTO previous_years_archivedforecastdata
-upload_previous_year_figures
-previous_year_row
-previous_year_row[header_dict[month_name]].value
-previous_year_obj.aug
-previous_year_obj.adj2
-row_number
-VALID_WS_NAME
-RenameField
-W503
-self.assertEqual(ArchivedForecastData_obj.jan
-self.assertEqual(ArchivedForecastData_obj.feb
-_export_L5_iterator
-L5Account
-admin.site.register(L3Account
-test_admin
-is_number
-assert is_number("3
-assert is_number("3.1
-abc
-ActualViewSet
-ForecastViewSet
-BudgetViewSet
-data_lake.views.commercial_category
-CommercialCategoryViewSet
-HierarchyViewSet
-data_lake.views.programme_code import ProgrammeCodeViewSet
-data_lake.views.project_code
-Analysis2CodeViewSet
-InvalidPeriodError(Exception
-}View Forecast - Upload File{%
-RunSQL(generate_create_query('apr
-RunSQL(generate_create_query('may
-generate_drop_query('jun
-RunSQL(generate_create_query('aug
-generate_drop_query('sep
-generate_drop_query('oct'
-8)
-RunSQL(generate_create_query('dec
-generate_drop_query('adj2
-generate_drop_query('adj3
-create_budget(financial_code_obj
-TimeoutException
-forecast.views.view_forecast.export_forecast_data
-assert error_msg
-context.browser.get(f'{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/'
-context.browser.find_element_by_id("select_row_0
-Description	Natural Account
-Date Actuals	Group
-\\n123456	Test
-\\n123456	Test	999999	Test
-@then(u'no
-111111	Test
-assert has_end_of_month_archive_permissions(test_user
-BaseModel
-Account Codes
-Analysis1(Analysis1Abstract
-Archived Contract Reconciliation (Analysis 1
-Market (Analysis 2
-self.financial_year.financial_year_display
-Archived Market (Analysis 2
-Archived Markets (Analysis 2
-NACCategory(IsActiveModel
-Budget Groupings
-OperatingDeliveryCategory(IsActiveModel
-Budget
-Operating Delivery Plan Categories"
-ExpenditureCategoryAbstract(models
-# Introduced
-Budget Category
-ArchivedExpenditureCategory
-Archived Budget Category
-Archived Budget Categories
-CommercialCategory(
-Archived Commercial Category
-Archived Commercial Categories
-Level 1
-UKTI
-NaturalCodeAbstract(models
-OSCAR
-# Override
-IntegerField(verbose_name="PO/Actuals NAC
-BigIntegerField
-Budget/Forecast NAC
-Programme Code
-Archived Programme Code
-Archived Programme Codes
-max_length=10
-Body Description
-Government Bodies
-CharField("Treasury - CPID (Departmental Code No
-Inter-Entities
-CharField("ORACLE - Inter Entity Code
-Archived Inter-Entity"
-Archived Inter-Entities
-ProjectCodeAbstract(models
-Project"
-Archived Project"
-Archived Projects"
-FCOMappingAbstract(models
-ArchivedFCOMapping(FCOMappingAbstract
-IntegerField(verbose_name="FCO
-budget_desc =
-DeleteNonExistingArchiveError(Exception
-logger.error(error_msg
-exc_info
-raise ArchiveMonthInvalidPeriodError(error_msg
-used_for_current_month
-SQL
-cursor.execute(forecast_sql
-Forecast
-cursor.execute(budget_sql
-create_outturn_for_variance(period_id
-delete_end_of_month_archive(period_id
-period_id
-get_last_restore_period_id
-delete_end_of_month_archive(get_last_restore_period_id
-nextProps.selectedRow &&
-give_permission_form.non_field_errors|length
-field.label_tag
-100vw
-calc(100
-ViewForecastNaturalAccountCodeTest(PastYearForecastSetup
-assert first_nac_cols[0].get_text().strip
-assert first_nac_cols[2].get_text().strip
-assert last_nac_cols[TOTAL_COLUMN].get_text().strip
-Oct'
-ArchiveMonthArchivedPastError
-self.test_end_of_month_aug
-self.test_end_of_month_feb
-self.test_read_archived_figure_aug
-self.test_read_archived_figure_feb
-EndOfMonthBudgetTest(TestCase
-BudgetMonthlyFigure.objects.all().count
-ReadArchivedBudgetTest(TestCase
-Analysis 1 Code
-Supplier
-00012,Test Contract
-ArchivedAnalysis1.objects.all().count
-Analysis,Contract Name
-assert ArchivedAnalysis2.objects.all().count
-Project Description
-assert ArchivedProjectCode.objects.all().count
-00012,Ame Programme
-assert ArchivedProgrammeCode.objects.all().count
-Code,Programme Description,Type
-Expenditure Type,Budget Grouping,Budget Category
-assert ArchivedNaturalCode.objects.all().count
-DownloadPreviousYearMIReportTest(PastYearForecastSetup
-assert ws["E1"].value
-Analysis
-assert ws["L2"].value
-InvalidOperation
-NotEnoughMatchException(Exception
-IndexError
-NUM_META_COLS
-Luis
-L1Account(IsActiveModel
-verbose_name="account l1
-verbose_name="account l1 long
-L2Account(IsActiveModel
-L3Account(IsActiveModel
-OUTTURN
-GROSS
-L5Account(L5AccountAbstract
-row.items
-aria-hidden="true">&laquo;</span
-aria-hidden="true">&raquo;</span
-GiftAndHospitalityCompanyAdmin(AdminActiveField
-Grade Description"]
-admin.site.register(GiftAndHospitalityCompany, GiftAndHospitalityCompanyAdmin
-GiftAndHospitalityCategoryAdmin
-GradeAdmin
-Gift and Hospitality
-ArchivedExpenditureCategory, ExpenditureCategory
-ImportError
-Python 2
-PYTHONPATH
-HistoricalAnalysis2Factory
-row=2
-self.data_worksheet.cell
-end_of_month/end_of_month_archive.html
-can_edit
-monthly_forecast_sep CASCADE
-monthly_forecast_jan CASCADE
-monthly_forecast_feb CASCADE
-monthly_forecast_mar CASCADE
-monthly_forecast_adj1 CASCADE
-forecast_forecastmonthlyfigure.archived_status_id
-SELECT 2
-SELECT
-CREATE VIEW monthly_forecast_dec
-CREATE VIEW monthly_forecast_feb
-CREATE VIEW monthly_forecast_mar
-name='User
-is_superuser
-verbose_name='superuser
-verbose_name='staff
-managers=
-OscarReturnConfig
-ForecastConfig
-CoreConfig
-DownloadFileConfig
-OPTIONS
-VCAP_SERVICES['postgres'][0]['credentials']['uri
-https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-django_filters.conf import
-DEFAULTS
-env("AUTHBROKER_CLIENT_ID
-TEMP_FILE_AWS_ACCESS_KEY_ID
-env('AWS_ACCESS_KEY_ID
-env('TEMP_FILE_AWS_ACCESS_KEY_ID
-env('TEMP_FILE_AWS_SECRET_ACCESS_KEY
-TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env('TEMP_FILE_AWS_STORAGE_BUCKET_NAME'
-core.no_cache_middleware
-SessionStorage
-Max
-Hawk
-DatabaseCache
-django_chunk_upload_handlers.clam_av
-validate_virus_check_result
-UNPROCESSED
-ANTIVIRUS
-PROCESSEDWITHWARNING
-Previous Year
-self.document_type
-manifest.json
-metadata
-assert FinancialCode.objects.count
-assert ForecastMonthlyFigure.objects.count
-assert monthly_figure.financial_period.financial_period_code =
-# add forecast row
-finance_business_partners.user_set.add(self.test_user
-self.project_obj.project_code
-financial_code2_obj
-first_nac_cols[3].get_text().strip
-assert last_nac_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-Lock
-User
-update_forecast_figure
-assert amount > settings
-self.nac_code
-assert amount
-# Checks CC
-View Forecast' CC
-assert len(cost_centre_links
-assert cost_centre_links[0]['href'
-# Checks Group Code
-Edit Forecast'
-View Forecast'
-assert group_code_links[0]['href'
-# Checks Directorate
-assert len(directorate_code_links
-assert directorate_code_links[0]['href
-Edit Forecast
-the 'View Forecast'
-CC
-assert len(edit_forecast_links
-Tests
-cost_centre_code=109070
-f"Invalid
-OutturnInvalidPeriodError(error_msg
-f"INSERT INTO end_of_month_monthlyoutturn
-f"financial_year_id
-f"archived_period_id
-cursor.execute(sql_update_current_flag
-NumberInput
-self.fields['grade'].widget.attrs.update({'class
-Meta(DateSelectorWidget
-DIT Group
-GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm
-Meta(GiftAndHospitalityReceivedForm
-openpyxl
-True/False
-SmartExport
-mydata_qs
-field.name).all
-export_to_csv(queryset
-queryset.model._meta.verbose_name_plural.title
-UTF-8
-help="Cost Centre
-chart_of_account_quick_links"  view.display_year %
-BSCEFactory
-ViewCostCentreTest(BaseTestCase
-Test
-assert str(self.group
-rgba(177
-Chrome
-ForestGreen
-user_passes_test
-forecast.create_mi_report_source
-downloading_user=request.user
-export_mi_budget_report(request
-mi_budget_report_source
-UploadedView
-assert FinancialCode.objects.all().count
-assert CostCentre.objects.all().count
-is_super_user
-account_L6_code_fk__expenditure_category__NAC_category
-obj.account_L6_code_fk.\
-Directorate Description"
-Importing
-monthly_figures_clear
-BudgetMonthlyFigure.objects.all().delete
-monthly_figures_create
-msg
-name='SimpleHistoryMonthlyOutturn
-HttpLocust
-f"csrftoken={os.environ['CRSF_TOKEN
-@task(1
-DOWNLOADED
-Oscar Return'
-Previous Year Actuals'
-Previous Year Forecast/Actuals'
-downloading_user = models
-uploaded_at
-EventType
-financial_year_display'
-name='HistoricalUser
-Oct"
-Resource
-forecast_expenditure_type_description='Admin Resource'
-SET budget_type_display_order=1
-model_name='archivedexpenditurecategory
-NACCategory
-HistoricalExpenditureCategoryFactory(factory
-Test Archived Budget Category'
-CommercialCategoryFactory(factory
-Programme Test
-HistoricalInterEntityFactory(factory
-FCOMappingFactory(factory
-Define ArchivedFCOMapping Factory
-can_edit_cost_centre_helper
-is_forecast_user(user
-DepartmentalGroupFactory
-assert costcentre_fact.directorate.directorate_name
-GroupName
-#     'Economic Category Code'
-#     'Economic Category Long Name'
-#     'Economic Group Code'
-#     'Economic Group Long Name'
-#     'Economic Budget Code'
-PESA Economic Group Code'
-#     'Estimates Category Code'
-Account L1 Code
-Account L1 Long Name
-Account L0 Code"
-Account L3 Code
-Account L3 Long Name
-L2_KEY
-Account L5 Code
-Account L5 Long Name
-Account L5 Description"
-Economic Budget Code
-Estimates Column Code
-Cash Indicator Code
-export_logentry_iterator(queryset
-Action Time
-obj.object_id
-b1b4b6
-Create
-assert len(admin_link
-chartofaccountDIT.import_csv import
-Programme Description"
-EXPENDITURE_CATEGORY_HISTORICAL_KEY
-Analysis 1
-category_qs
-Applications</h1
-import hashlib
-ForecastEditState(BaseModel
-UnlockedForecastEditor(BaseModel
-ForecastExpenditureType(BaseModel
-FinancialPeriodManager(models
-get_max_period(self
-CharField(max_length=10
-name="financial_row_unique_6
-name="financial_row_unique_5b
-can_download_oscar
-ForeignKey(CostCentre
-del self.display_data[i]
-new_flag
-self.subtotal_columns.index(column
-calculate_subtotal_data
-self.subtotal_columns.reverse
-self.display_data
-Total Managed Expenditure
-filter_dict=
-order_list=
-Oct": Sum("oct"
-E722
-BigIntegerField(default=0
-PivotManager
-Programme Code'
-Budget Grouping'
-name='SimpleHistoryInterEntityL1
-verbose_name='Treasury - CPID (Departmental Code No
-Inter-Entity'
-CharField(max_length=50
-Historic Programme Code'
-IntegerField(verbose_name='PO/Actuals NAC'
-Historic Natural Account Code
-Historic Inter-Entity'
-IntegerField(verbose_name='Oracle
-CharField(max_length=200
-Historic FCO Mapping'
-Historic Budget Category'
-Historic Commercial Category'
-name='SimpleHistoryArchivedAnalysis2
-name='SimpleHistoryArchivedAnalysis1
-Inter-Entities'
-FCO Mappings'
-Historic Project'
-Historic Programme Codes'
-Historic Natural Account Codes
-Historic Inter-Entities'
-Finance Business Partner
-the Business Support Centre of Excellence
-import_adi_file_class
-UnlockedForecastEditorAdmin(admin
-UnlockedForecastEditorAdmin
-MonthlyFigureAdmin
-FinancialPeriodAdmin
-BudgetAdmin
-&& cell.amount
-newAmount
-MIN_SAFE_INTEGER
-&& intAmount
-cell && !isEditable
-className="cell-input
-WSGI
-Forecast/Actuals
-zope.event==4.4
-zope.interface==5.1.0
-assert self.test_user.has_perm("costcentre.change_costcentre
-assert self.test_user.has_perm("costcentre.change_bsceemail
-assert self.test_user.has_perm("costcentre.change_businesspartner
-assert self.test_user.has_perm("costcentre.add_businesspartner
-costcentre.add_businesspartner
-budget_forecast_adj1_view
-assert actuals_colspan
-Dockerfile.dev
-mkdir
-Download Selenium
-Install Python
-Install React
-Compile CSS
-first_cols[4].get_text().strip
-self.amount_apr / 100
-last_cols = project_rows[-1].find_all("td
-assert last_cols[TOTAL_COLUMN].get_text().strip
-assert last_cols[UNDERSPEND_COLUMN].get_text().strip
-assert last_cols[SPEND_TO_DATE_COLUMN].get_text().strip
-DirectorateFactory
-assert first_cols[3].get_text().strip
-Learn
-type="text" className="govuk-input
-Gift and Hospitality Categories
-Gift and Hospitality Companies
-gif_hospitality_company='ADS
-gif_hospitality_company='Augusta Westland'
-gif_hospitality_company='Ernst & Young'
-Martin
-gif_hospitality_company='Rolls Royce'
-gif_hospitality_company='Selex Galileo'
-Gift and Hospitality Types
-gif_hospitality_classification='Dinner
-gif_hospitality_classification='Sporting/Cultural Event'
-gif_hospitality_classification='Hotel
-sequence_no=80
-gif_hospitality_classification='Transport
-sequence_no=100
-grade='HEO'
-Create Gift
-View Admin Link
-Navigation Bar
-verbose_name='Type
-Hospitality Types'
-Gift Hospitality
-Gift and Hospitality Company'
-verbose_name='DIT
-DIT Staff'
-verbose_name='Company
-Action3
-assert cached_value
-m.financial_year_id
-round(sum(aug
-previous_years_archivedforecastdata
-ON m.financial_code_id
-ON ff.programme_id
-the Chart of Account
-Hospitality - Added Entry{%
-Hospitality</h1
-Trainline
-NAC H'
-Download Log'
-Download Logs'
-ImportDataConfig(AppConfig
-DIT Chart of Account
-name='pc_reference
-verbose_name='PC Reference'
-Provide
-ExpenditureCategoryFilter(MyFilterSet
-the Expenditure Category
-Active  on the queryset
-the Commercial Category
-HistoricalAnalysis2Filter(ArchivedFilterSet
-HistoricalProjectFilter(ArchivedFilterSet
-related_name='treasurycoa_historicl5account
-env.bool("LOG_TO_ELK
-Handler
-UserAdmin
-form.cleaned_data["groups
-Gift and Hospitality Admin
-len(form.cleaned_data["groups
-Date Lake
-is_admin
-name='FinancialPeriod'
-can_edit_whilst_closed
-name='ForecastMonthlyFigure_unique1
-name='forecastexpendituretype'
-name='financial_row_unique_5b
-name='financial_row_unique_5c
-name='financial_row_unique_3
-django-adv-cache-
-six>=1.11.0
-urllib3>=1.26.5
-content_type=
-HawkTests(TestCase
-HTTP_X_FORWARDED_FOR='1.2.3.4
-assert response.json
-Authorization
-Gift & Hospitality{%
-Hospitality Register</h1
-financialgovernance@trade.gov.uk">financialgovernance@trade.gov.uk</a
-DIR_KEY
-Business
-BSCE
-deputy_obj.email
-header["bp
-bp_obj
-Groups
-director_obj
-dg_obj
-row[header["dg name"]].strip
-dg_obj.email
-dg_obj.save
-ErrorView
-export_forecast_data_cost_centre
-export_forecast_data_expenditure_detail_cost_centre
-export_forecast_data_expenditure_dit
-export_forecast_data_group
-GroupView
-name="choose_cost_centre
-name="forecast_directorate
-GroupExpenditureDetailsView.as_view
-name="expenditure_details_cost_centre
-GroupProgrammeDetailsView.as_view
-DirectorateProjectDetailsView.as_view
-name="project_details_costcentre
-name="export_edit_forecast_data_cost_centre
-name="download_mi_report_source
-path("download_mi_budget/
-name="export_expenditure_details_cost_centre
-FadminTable
-name='L3Account
-name='L4Account
-name='SimpleHistoryL5Account
-max_length=25
-choices=[('BOTH
-name='SimpleHistoryL4Account
-BigIntegerField(verbose_name='account
-BigIntegerField(verbose_name='account l1
-name='L5Account
-hack alert
-f"t.financial_code_id
-u.financial_year_id
-queryset=ArchivedProgrammeCode.objects.filter
-MIDDLEWARE=
-AUTHENTICATION_BACKENDS=
-cls.test_password
-cls.test_user.set_password(cls.test_password
-self.period_info
-row[self.programme_field
-# Current year
-to='previous_years
-first_project_cols[3].get_text().strip
-self.view_cost_centre_summary(0
-self.view_group_summary(6
-self.view_group_summary(9
-self.view_dit_summary(3
-self.view_dit_summary(8
 handle_validated_user
-UserModel
-Meta.verbose_name
-ADMIN
-NON-PAY
-f"{financial_code_prefix}cost_centre__directorate_code
-nac_name_field =
-expenditure_sub_total(self
-project_sub_total(self
-self.project_name_field
-self.group_columns
-programme_details_hierarchy_sub_total_column(self
-self.project_details_costcentre_order_list
-self.analysis1_name_field
-NAC Expenditure
-Programme code Description
-Contract Code"
-Budget/Forecast NAC Description
-Contract Description"
-Project Description"
-order_list.append(elem[prefix_len
-CHANGE
-fin_year
-datamodel = fields.datamodel
-fields.programme_code_field
-analysis2_field =
-row_to_archive[cost_centre_field
-core.utils.export_helpers import export_to_csv
-Office,109000,Chief Executive's
-Operations
-Mentor Map
-export_nac_iterator(queryset
-Format
-name='costcentre'
-0.00
-a.archived_period_id
-FilteredCostListView(LoginRequiredMixin, FAdminFilteredView
-Financial MI
-ArchivedPeriodManager(models
-MonthlyOutturn(BaseModel
-related_name="end_of_month_outturn_period"
-budget_forecast_aug_view
-model_name='simplehistoryarchivedcostcentre'
-GiftAndHospitalityClassification(IsActiveModel
-GIFT
-Gift and Hospitality Type
-GiftAndHospitalityCategory(IsActiveModel
-Gift and Hospitality Category
-DIT Staff
-GiftAndHospitalityCompany(IsActiveModel
-Gift and Hospitality Company
-CharField("DIT Group
-GiftHospitalityPermissions(models
-analysis2_obj
-another_year_obj.jun = outturn["jun
-django.utils.crypto import
-constant_time_compare
-HawkFail
-BaseAuthentication
-AuthenticationFailed
-Raises
-access_key_id=access_key_id
-seen_nonce(access_key_id
-access_key_id
-WWW
-DRF
-META
-hawk_receiver = authorise(request
-response['Server-Authorization'
-a  '
-chartofaccountDIT_archivedexpenditurecategory"
-Organisation Alias
-Sub Segment Alias
-obj.oct
-obj.adj1
-create_oscar_report
-create_previous_year_oscar_report
-Archive Monthly Forecast
-Archive Monthly Forecast{%
-administrator</h4>
-id="archive_button
-hiddenCols.reducer
-TypeVar
-KT
-TypeVar('_KT
-_VT
-FakeWorkSheet(Dict[_KT
-Group Active
-name='archived_financial_row_unique_5a
-name='archived_financial_row_unique_5c
-name='archived_financial_row_unique_4b'
-name='SimpleHistoryArchivedForecastData
-NAC H"
-Cost Centre  for
-NAC Hierarchy
-Download Type
-Download Log
-Download Logs
-expenditure_category_id
-export_forecast_data_expenditure_detail_group
-fields.group_code_field
-programme_code_id
-export_forecast_data_programme_detail_group
-can_edit_cost_centre(request.user
-raise CommandError(self.error_message
-self.run_command
-self.run_command("Clear
-Original Record Id
-Gift or Hospitality
-Venue
-Action Taken
-obj.reason
-Organisation"
-CostCentreTable(FadminTable
-download_file.views.oscar_return
-download_oscar_report/
-assert header_hidden
-Chart
-self.analysis_1
-Analysis1Factory.create
-self.analysis_1.analysis1_code
-TestAddUploadActualsForm(TestCase
-budget_type_descr
-Meta(ProgrammeTable
-accessor="expenditure_category
-verbose_name="Budget/Forecast NAC
-Column(verbose_name="PO/Actuals NAC
-view.directorate_code  view.period %
-# Created
-Files
-AFP
-DLL
-env/
-var/
-PyInstaller
-# Installer
-pip-delete-this-directory.txt
-Sphinx
-PyBuilder
-local_settings.py
-Docker
-# Local
-dir
-Front
-Node
-backup.sql
-test_*.txt
-archive_analysis_1
-f"t.financial_period_id = u.financial_period_id
-financial_period_code__lt=13
-get_obj_code(self
-obj.economic_budget_code.upper
-Resource or Capital
-HistoricalRecords
-ArchivedModel(BaseModel
-python manage.py clearcache &&
-python manage.py compilescss &&
-Budget / Forecast NAC
-PO / Actuals NAC
-obj.op_delivery_plan
-model_name='archivedforecastdata
-has_oscar_download_permission(user
-RemoveField
-name='budget_type
-model_name='simplehistoryprogrammecode
-new_name='budget_type
-related_name='chartofaccountdit_programmecode
-related_name='chartofaccountdit_archivednaturalcode
-HistoricalFilteredProjectView
-register_converter(GetValidYear
-FilteredAnalysis2ListView.as_view
-# Historical
-historicalnaturalcode/<year>/
-historicalfinancecategory/<year>/
-HistoricalFilteredExpenditureCategoryListView.as_view
-historicalcommercialcategory/<year>/
-historicalprogrammefilter/<year>/
-historicalprojectfilter/<year>/
-historicalfcofilter/<year>/
-JsonResponse
-PublishForm
-CostCentrePermissionTest
-EditForecastFigureView
-raise NoFinancialCodeForEditedValue
-FinancialPeriod.financial_period_info.period_display_code_list
-context["forecast_dump
-view.cost_centre_code
-self.assertEqual(dit_url.status_code
-self.test_user.user_permissions.remove(can_view_forecasts
-self.cost_centre.cost_centre_code
-Elevate SSO
-self.field_infos.programme_name_field
-self.field_infos.project_name_field
-self.field_infos.project_detail_view
-DirectorateView
-ProjectCodeViewSet(DataLakeViewSet
-document.cookie && document.cookie
-nfObject
-Headers
-Content-Type'
-POST
-PUT
-DELETE
-colIndex++
-numActuals > 0 &&
-FilterView
-ExportMixin
-TableExport
-django_tables2.views
-FidoExportMixin(ExportMixin
-exclude_columns=self.exclude_columns
-View
-Define DownloadLog Factory
-ROW_NUMBER () OVER
-ROUND(SUM(CASE
-ON
-ON "treasurySS_subsegment"
-financial_code__cost_centre
-financial_code__forecast_expenditure_type
-self.contract_field
-TEST_EMAIL
-643210"
-financial_row_unique_5a
-financial_row_unique_5c
-financial_row_unique_4b
-ActualUploadMonthlyFigure_unique1
-BudgetUploadMonthlyFigure_unique1
-actual_split/
-T123
-Upload Percentages
-Home 2
-chartofaccountDIT/"
-Project Split Administrator
-Programme DEL
-Programme AME
-f'{context.base_url}/
-document.body.appendChild(input
-history_id"
-f"MI Budget
-0.0.0.34
-Financial Year Display
+Control
+Sub Segment
 Project Percentages
 f"ON
 f"{period_id}
@@ -2044,3 +496,14 @@ ner_output_file.txt
 Tests 'Edit Forecast'
 Checks Directorate
 r"\t
+Excel
+SQL
+Forecast
+COLOUR_GREEN=\033[32;01
+COLOUR_YELLOW=\033[33;01
+migrate$(COLOUR_NONE
+Compile SCSS
+elevate$(COLOUR_NONE
+test$(COLOUR_NONE
+create_data_lake_stub_data
+

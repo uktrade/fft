@@ -49,6 +49,7 @@ first-use:
 	docker-compose down
 	docker-compose run --rm fido python manage.py migrate
 	docker-compose run --rm fido python manage.py create_stub_data All
+	docker-compose run --rm fido python manage.py create_stub_future_forecast_data
 	docker-compose run --rm fido python manage.py create_stub_forecast_data
 	docker-compose run --rm fido python manage.py create_stub_future_forecast_data
 	docker-compose run --rm fido python manage.py create_data_lake_stub_data

@@ -14,7 +14,7 @@
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0",
-    "shortid": "^2.2.16",
+    "nanoid": "^3.3.1",
     "react-scripts": "^5.0.0"
   },
   "scripts": {

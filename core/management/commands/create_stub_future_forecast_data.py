@@ -18,14 +18,14 @@ from forecast.models import (
 )
 
 
-def future_year_figures_clear(future_financial_year):
-    ForecastMonthlyFigure.objects.filter(financial_year=future_financial_year).delete()
-    BudgetMonthlyFigure.objects.filter(financial_year=future_financial_year).delete()
-    MonthlyTotalBudget.objects.filter(financial_year=future_financial_year).delete()
+def clear_figures(financial_year):
+    ForecastMonthlyFigure.objects.filter(financial_year=financial_year).delete()
+    BudgetMonthlyFigure.objects.filter(financial_year=financial_year).delete()
+    MonthlyTotalBudget.objects.filter(financial_year=financial_year).delete()
 
 
-def future_year_figure_create(future_financial_year):
-    future_year_figures_clear(future_financial_year)
+def create_future_year_figure(future_financial_year):
+    clear_figures(future_financial_year)
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
     project_list = ProjectCode.objects.all()
@@ -85,10 +85,10 @@ class Command(BaseCommand):
         financial_year = FinancialYear.objects.get(current=True).financial_year
 
         if options["delete"]:
-            action = future_year_figures_clear
+            action = clear_figures
             msg = "cleared"
         else:
-            action = future_year_figure_create
+            action = create_future_year_figure
             msg = "created"
 
         for interval in range(1, 4):

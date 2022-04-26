@@ -88,6 +88,7 @@ class Command(BaseCommand):
                 f"OR financial_year_id IS NULL;"
             )
             cursor.execute(sql_delete)
+
             sql_delete = (
                 f"DELETE FROM end_of_month_monthlytotalbudget "
                 f"WHERE financial_year_id = {current_year} "
@@ -101,6 +102,21 @@ class Command(BaseCommand):
                 f"OR financial_year_id IS NULL;"
             )
             cursor.execute(sql_delete)
+
+            # Delete archived forecasts for future years
+            sql_delete = (
+                "DELETE FROM forecast_forecastmonthlyfigure "
+                "WHERE archived_status_id IS NOT NULL;"
+            )
+            cursor.execute(sql_delete)
+
+            # Delete archived budgets for future years
+            sql_delete = (
+                "DELETE FROM forecast_budgetmonthlyfigure "
+                "WHERE archived_status_id IS NOT NULL;"
+            )
+            cursor.execute(sql_delete)
+
             # Don't remove financial codes still in use by future forecast and budget
             sql_delete = "DELETE FROM forecast_financialcode " \
                          "WHERE forecast_financialcode NOT IN " \

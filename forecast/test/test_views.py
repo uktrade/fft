@@ -27,9 +27,14 @@ from costcentre.test.factories import (
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
+    ForecastEditState,
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.factories import (
+    FinancialCodeFactory,
+)
+
 from forecast.test.test_utils import (
     TOTAL_COLUMN,
     SPEND_TO_DATE_COLUMN,
@@ -108,6 +113,325 @@ class ViewPermissionsTest(BaseTestCase):
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
+
+
+class AddForecastRowTest(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        self.nac_code = 999999
+        self.cost_centre_code = 888812
+        self.analysis_1_code = "1111111"
+        self.analysis_2_code = "2222222"
+        self.project_code = "3000"
+
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(natural_account_code=self.nac_code)
+        self.project = ProjectCodeFactory.create(project_code=self.project_code)
+        self.analysis_1 = Analysis1Factory.create(analysis1_code=self.analysis_1_code)
+        self.analysis_2 = Analysis2Factory.create(analysis2_code=self.analysis_2_code)
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def add_row_get_response(self, url):
+        return self.client.get(url)
+
+    def add_row_post_response(self, url, post_content):
+        return self.client.post(
+            url,
+            data=post_content,
+        )
+
+    def edit_row_get_response(self):
+        edit_view_url = reverse(
+            "edit_forecast",
+            kwargs={
+                'cost_centre_code': self.cost_centre_code
+            },
+        )
+
+        return self.client.get(edit_view_url)
+
+    def test_view_add_row(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        assert FinancialCode.objects.count() == 0
+
+        add_resp = self.add_row_get_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+        )
+
+        self.assertEqual(add_resp.status_code, 200)
+
+        # add_forecast_row
+        add_row_resp = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+            },
+        )
+
+        self.assertEqual(add_row_resp.status_code, 302)
+
+        assert FinancialCode.objects.count() == 1
+
+    def test_view_add_row_with_period_actual(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        # financial period with actual
+        financial_period = FinancialPeriod.objects.get(
+            financial_period_code=1,
+        )
+        financial_period.actual_loaded = True
+        financial_period.save()
+
+        assert ForecastMonthlyFigure.objects.count() == 0
+
+        # add_forecast_row
+        add_row_resp = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+            },
+        )
+
+        self.assertEqual(add_row_resp.status_code, 302)
+
+        assert ForecastMonthlyFigure.objects.count() == 1
+
+        monthly_figure = ForecastMonthlyFigure.objects.first()
+
+        assert monthly_figure.financial_period.financial_period_code == financial_period.financial_period_code  # noqa
+
+    def test_duplicate_values_invalid(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        # add forecast row
+        response = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(FinancialCode.objects.count(), 1)
+
+        response_2 = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+        )
+
+        self.assertEqual(response_2.status_code, 200)
+
+        assert "govuk-list govuk-error-summary__list" in str(
+            response_2.rendered_content,
+        )
+        self.assertEqual(FinancialCode.objects.count(), 1)
+
+    def test_duplicate_values_different_cost_centre_valid(self):
+        cost_centre_code_2 = self.cost_centre_code + 1
+
+        cost_centre_2 = CostCentreFactory.create(
+            cost_centre_code=cost_centre_code_2,
+        )
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+        assign_perm("change_costcentre", self.test_user, cost_centre_2)
+
+        # add forecast row
+        response = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': self.cost_centre_code
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(FinancialCode.objects.count(), 1)
+
+        response_2 = self.add_row_post_response(
+            reverse(
+                "add_forecast_row",
+                kwargs={
+                    'cost_centre_code': cost_centre_code_2,
+                },
+            ),
+            {
+                "programme": self.programme.programme_code,
+                "natural_account_code": self.nac.natural_account_code,
+                "analysis1_code": self.analysis_1_code,
+                "analysis2_code": self.analysis_2_code,
+                "project_code": self.project_code,
+            },
+        )
+
+        self.assertEqual(response_2.status_code, 302)
+        self.assertEqual(FinancialCode.objects.count(), 2)
+
+
+class ChooseCostCentreTest(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+
+        self.cost_centre_code = 109076
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_choose_cost_centre(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        response = self.client.post(
+            reverse(
+                "choose_cost_centre"
+            ),
+            data={
+                "cost_centre": self.cost_centre_code
+            },
+        )
+
+        self.assertEqual(
+            response.status_code,
+            302,
+        )
+
+        # Check we've been forwarded to edit page
+        assert "/forecast/edit/" in response.url
+
+    def test_cost_centre_json(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        self.assertContains(
+            response,
+            f'window.costCentres = [{{"name": "{self.cost_centre.cost_centre_name}", "code": "{self.cost_centre_code}"}}];'  # noqa E501
+        )
+
+    def test_finance_admin_cost_centre_access(self):
+        finance_admins = Group.objects.get(
+            name='Finance Administrator',
+        )
+        finance_admins.user_set.add(self.test_user)
+        finance_admins.save()
+
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email=self.test_user.email
+        )
+
+        # Check that no cost centres can be accessed
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
+            )
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+    def test_finance_business_partner_cost_centre_access(self):
+        finance_business_partners = Group.objects.get(
+            name='Finance Business Partner/BSCE',
+        )
+        finance_business_partners.user_set.add(self.test_user)
+        finance_business_partners.save()
+
+        # Bust permissions cache (refresh_from_db does not work)
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            email=self.test_user.email
+        )
+
+        # Check that no cost centres can be accessed
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
+            )
+        )
+        assert response.status_code == 403
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.client.get(
+            reverse(
+                "choose_cost_centre"
+            ),
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
 
 
 class ViewForecastNaturalAccountCodeTest(BaseTestCase):
