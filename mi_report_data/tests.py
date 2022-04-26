@@ -22,8 +22,8 @@ class MIReportDataTests(TestCase):
         rows = response.content.decode("utf-8").split("\n")
 
         cols = rows[0].split(",")
-        assert len(cols) == 16
-        assert len(rows) == 104
+        assert len(cols) == 17
+        assert len(rows) == 196
 
     def get_data(self):
         test_url = f"http://testserver{reverse(self.url_name)}"

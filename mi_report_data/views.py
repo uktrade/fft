@@ -80,6 +80,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
             ReportDataView.objects.select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
             .filter(financial_year_id=current_year)
+            .filter(financial_code__cost_centre="109075")
             .filter(archived_period_id__lte=max_period_id)
             .annotate(
                 archiving_year=ExpressionWrapper(
