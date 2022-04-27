@@ -33,6 +33,7 @@ from forecast.models import (
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import (
     can_edit_at_least_one_cost_centre,
+    can_edit_cost_centre,
     can_forecast_be_edited,
     get_user_cost_centres,
 )
@@ -52,9 +53,47 @@ from forecast.utils.edit_helpers import (
 )
 from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
-    CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
 )
+
+
+class CostCentrePermissionTest(UserPassesTestMixin):
+    cost_centre_code = None
+    edit_not_available = False
+
+    def test_func(self):
+        if "cost_centre_code" not in self.kwargs:
+            raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
+
+        self.cost_centre_code = self.kwargs["cost_centre_code"]
+
+        has_permission = can_edit_cost_centre(
+            self.request.user,
+            self.cost_centre_code,
+        )
+
+        user_can_edit = can_forecast_be_edited(self.request.user)
+
+        if not user_can_edit:
+            self.edit_not_available = True
+            return False
+
+        return has_permission
+
+    def handle_no_permission(self):
+        if self.edit_not_available:
+            return redirect(reverse("edit_unavailable"))
+        else:
+            return redirect(
+                reverse(
+                    "forecast_cost_centre",
+                    kwargs={
+                        "cost_centre_code": self.cost_centre_code,
+                        "period": 0,
+                    },
+                )
+            )
+
 
 
 def get_financial_code_serialiser(cost_centre_code):
@@ -189,9 +228,7 @@ class AddRowView(
         # Create "actual" monthly figures for past months
         actual_months = FinancialPeriod.financial_period_info.actual_period_code_list()
         financial_year = get_current_financial_year()
-
         if len(actual_months) > 0:
-
             for actual_month in actual_months:
                 ForecastMonthlyFigure.objects.create(
                     financial_code=financial_code,
@@ -201,12 +238,11 @@ class AddRowView(
         else:
             # Create at least one entry, to help some of the queries used to view
             # the forecast
-            for actual_month in actual_months:
-                ForecastMonthlyFigure.objects.create(
-                    financial_code=financial_code,
-                    financial_year_id=financial_year,
-                    financial_period_id=1,
-                )
+            ForecastMonthlyFigure.objects.create(
+                financial_code=financial_code,
+                financial_year_id=financial_year,
+                financial_period_id=1,
+            )
 
         return super().form_valid(form)
 

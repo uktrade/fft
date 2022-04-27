@@ -506,4 +506,5 @@ Compile SCSS
 elevate$(COLOUR_NONE
 test$(COLOUR_NONE
 create_data_lake_stub_data
+FinancialPeriod
 
