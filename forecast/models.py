@@ -86,6 +86,41 @@ class ForecastEditState(BaseModel):
             ),
         ]
 
+class FutureForecastEditState(BaseModel):
+    closed = models.BooleanField(
+        default=False,
+        help_text="Ticking this option will close future forecast editing access "
+                  "to all non finance staff. Future forecast editing is still "
+                  "available to Finance business partners/BSCEs and admin."
+    )
+    lock_date = models.DateField(
+        null=True,
+        blank=True,
+        verbose_name="Lock future forecast",
+        help_text="The future forecast editing is locked from the date entered. "
+                  "The future forecast editing will remain locked to users without "
+                  "'unlocked' user status, until the date is removed "
+                  "from the input field above.",
+    )
+
+    def __str__(self):
+        return 'Future forecast edit state'
+
+    class Meta:
+        verbose_name_plural = "Future forecast edit state"
+        default_permissions = ('view', 'change')
+        permissions = [
+            ("can_set_future_edit_lock", "Can set future edit lock"),
+            (
+                "can_edit_future_whilst_closed",
+                "Can edit future forecasts whilst system is closed",
+            ),
+            (
+                "can_edit_future_whilst_locked",
+                "Can edit future forecasts whilst system is locked",
+            ),
+        ]
+
 
 class UnlockedForecastEditor(BaseModel):
     user = models.ForeignKey(

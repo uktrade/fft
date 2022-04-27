@@ -105,6 +105,29 @@ def can_forecast_be_edited(user):
 
     return False
 
+def can_future_forecast_be_edited(user):
+    if user.is_superuser:
+        return True
+
+    closed = is_system_closed()
+    locked = is_system_locked()
+
+    if not closed and not locked:
+        return True
+
+    if user.has_perm("forecast.can_edit_whilst_locked"):
+        return True
+
+    if closed and not locked and user.has_perm("forecast.can_edit_whilst_closed"):
+        return True
+
+    if UnlockedForecastEditor.objects.filter(
+        user=user,
+    ).exists():
+        return True
+
+    return False
+
 
 def can_edit_cost_centre(user, cost_centre_code):
     if user.has_perm(
