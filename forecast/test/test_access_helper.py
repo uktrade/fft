@@ -15,6 +15,7 @@ from costcentre.test.factories import (
 
 from forecast.models import (
     ForecastEditState,
+    FutureForecastEditState,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import UnlockedForecastEditorFactory
@@ -22,7 +23,10 @@ from forecast.utils.access_helpers import (
     can_edit_at_least_one_cost_centre,
     can_edit_cost_centre,
     can_forecast_be_edited,
+    can_future_forecast_be_edited,
     can_view_forecasts,
+    is_future_system_closed,
+    is_future_system_locked,
     is_system_closed,
     is_system_locked,
     user_in_group,
@@ -55,7 +59,13 @@ class PermissionTestBase(TestCase):
         )
 
 
-class TestSimpleAccessHelpers(BaseTestCase, PermissionTestBase):
+class PermissionFutureTestBase(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.future_forecast_edit_state = FutureForecastEditState.objects.get()
+
+
+class TestSimpleAccessHelpers(BaseTestCase, PermissionFutureTestBase):
     def setUp(self):
         super().setUp()
 
@@ -94,6 +104,22 @@ class TestSimpleAccessHelpers(BaseTestCase, PermissionTestBase):
 
         assert is_system_locked()
 
+    def test_is_future_system_locked(self):
+        # Check default lock state is unlocked
+        assert not is_future_system_locked()
+
+        # Check lock date in the future allows access
+        self.future_forecast_edit_state.lock_date = datetime.today() + timedelta(days=1)
+        self.future_forecast_edit_state.save()
+
+        assert not is_future_system_locked()
+
+        # Check lock date in past prevents access
+        self.future_forecast_edit_state.lock_date = datetime.today() - timedelta(days=1)
+        self.future_forecast_edit_state.save()
+
+        assert is_future_system_locked()
+
     def is_system_closed(self):
         # Check default lock state is open
         assert not is_system_closed()
@@ -103,6 +129,16 @@ class TestSimpleAccessHelpers(BaseTestCase, PermissionTestBase):
         self.forecast_edit_state.save()
 
         assert is_system_closed()
+
+    def is_future_system_closed(self):
+        # Check default lock state is open
+        assert not is_future_system_closed()
+
+        # Set system to closed
+        self.forecast_future_edit_state.closed = True
+        self.forecast_future_edit_state.save()
+
+        assert is_future_system_closed()
 
     def user_in_group(self):
         assert not user_in_group(self.test_user)
@@ -207,6 +243,86 @@ class TestCanForecastBeEdited(PermissionTestBase):
         )
 
         assert can_forecast_be_edited(self.test_user)
+
+
+class TestCanFutureForecastBeEdited(PermissionFutureTestBase):
+    def setUp(self):
+        super().setUp()
+        self.test_user, _ = get_user_model().objects.get_or_create(
+            username="test_user",
+            email=TEST_EMAIL,
+        )
+        self.test_user.set_password("test_password")
+        self.test_user.save()
+
+    def lock(self):
+        self.future_forecast_edit_state.lock_date = datetime.today() - timedelta(days=1)
+        self.future_forecast_edit_state.save()
+
+    def close(self):
+        self.future_forecast_edit_state.closed = True
+        self.future_forecast_edit_state.save()
+
+    def test_super_user(self):
+        self.test_user.is_superuser = True
+        self.test_user.save()
+
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.close()
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.lock()
+        assert can_future_forecast_be_edited(self.test_user)
+
+    def test_close(self):
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.close()
+        assert not can_future_forecast_be_edited(self.test_user)
+
+    def test_lock(self):
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.lock()
+        assert not can_future_forecast_be_edited(self.test_user)
+
+    def test_can_edit_whilst_locked_permission(self):
+        self.lock()
+        assert not can_future_forecast_be_edited(self.test_user)
+
+        self.assign_permission("can_edit_whilst_locked")
+
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.close()
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.lock()
+        assert can_future_forecast_be_edited(self.test_user)
+
+    def test_can_edit_whilst_closed_permission(self):
+        self.close()
+        assert not can_future_forecast_be_edited(self.test_user)
+
+        self.assign_permission("can_edit_whilst_closed")
+
+        assert can_future_forecast_be_edited(self.test_user)
+        self.lock()
+
+        assert not can_future_forecast_be_edited(self.test_user)
+
+    def test_unlocked_user(self):
+        assert can_future_forecast_be_edited(self.test_user)
+
+        self.lock()
+        assert not can_future_forecast_be_edited(self.test_user)
+
+        UnlockedForecastEditorFactory(
+            user=self.test_user,
+        )
+
+        assert can_future_forecast_be_edited(self.test_user)
 
 
 class TestCanEditCostCentre(BaseTestCase, PermissionTestBase):
