@@ -59,7 +59,7 @@ class PermissionTestBase(TestCase):
         )
 
 
-class PermissionFutureTestBase(TestCase):
+class PermissionFutureTestBase(PermissionTestBase):
     def setUp(self):
         super().setUp()
         self.future_forecast_edit_state = FutureForecastEditState.objects.get()
@@ -291,7 +291,7 @@ class TestCanFutureForecastBeEdited(PermissionFutureTestBase):
         self.lock()
         assert not can_future_forecast_be_edited(self.test_user)
 
-        self.assign_permission("can_edit_whilst_locked")
+        self.assign_permission("can_edit_future_whilst_locked")
 
         assert can_future_forecast_be_edited(self.test_user)
 
@@ -305,7 +305,7 @@ class TestCanFutureForecastBeEdited(PermissionFutureTestBase):
         self.close()
         assert not can_future_forecast_be_edited(self.test_user)
 
-        self.assign_permission("can_edit_whilst_closed")
+        self.assign_permission("can_edit_future_whilst_closed")
 
         assert can_future_forecast_be_edited(self.test_user)
         self.lock()
