@@ -86,6 +86,7 @@ class ForecastEditState(BaseModel):
             ),
         ]
 
+
 class FutureForecastEditState(BaseModel):
     closed = models.BooleanField(
         default=False,

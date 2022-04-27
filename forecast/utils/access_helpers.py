@@ -126,6 +126,7 @@ def can_forecast_be_edited(user):
 
     return False
 
+
 def can_future_forecast_be_edited(user):
     if user.is_superuser:
         return True
@@ -139,7 +140,8 @@ def can_future_forecast_be_edited(user):
     if user.has_perm("forecast.can_edit_future_whilst_locked"):
         return True
 
-    if closed and not locked and user.has_perm("forecast.can_edit_future_whilst_closed"):
+    if closed and not locked \
+            and user.has_perm("forecast.can_edit_future_whilst_closed"):
         return True
 
     if UnlockedForecastEditor.objects.filter(
