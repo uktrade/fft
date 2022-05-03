@@ -60,6 +60,10 @@ class ForecastEditStateAdmin(AdminEditOnly, SimpleHistoryAdmin):
     history_list_display = ["locked"]
 
 
+class FutureForecastEditStateAdmin(AdminEditOnly, SimpleHistoryAdmin):
+    history_list_display = ["locked"]
+
+
 class UnlockedForecastEditorAdmin(admin.ModelAdmin):
     list_display_links = None
 
@@ -78,4 +82,7 @@ admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
 admin.site.register(BudgetMonthlyFigure, BudgetAdmin)
 admin.site.register(ForecastEditState, ForecastEditStateAdmin)
+# Disable access to FutureForecastEditState until edit future year forecast
+# is fully functional
+# admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
 admin.site.register(UnlockedForecastEditor, UnlockedForecastEditorAdmin)

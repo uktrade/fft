@@ -10,6 +10,7 @@ from costcentre.models import (
 
 from forecast.models import (
     ForecastEditState,
+    FutureForecastEditState,
     UnlockedForecastEditor,
 )
 
@@ -40,6 +41,26 @@ def is_system_locked():
 
 def is_system_closed():
     forecast_edit_date = ForecastEditState.objects.get()
+
+    if forecast_edit_date.closed:
+        return True
+
+    return False
+
+
+def is_future_system_locked():
+    forecast_edit_date = FutureForecastEditState.objects.get()
+
+    if (
+        forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date
+    ):
+        return True
+
+    return False
+
+
+def is_future_system_closed():
+    forecast_edit_date = FutureForecastEditState.objects.get()
 
     if forecast_edit_date.closed:
         return True
@@ -104,6 +125,26 @@ def can_forecast_be_edited(user):
         return True
 
     return False
+
+
+def can_future_forecast_be_edited(user):
+    if user.is_superuser:
+        return True
+
+    closed = is_future_system_closed()
+    locked = is_future_system_locked()
+
+    if not closed and not locked:
+        return True
+
+    if user.has_perm("forecast.can_edit_future_whilst_locked"):
+        return True
+
+    if closed and not locked \
+            and user.has_perm("forecast.can_edit_future_whilst_closed"):
+        return True
+
+    return UnlockedForecastEditor.objects.filter(user=user,).exists()
 
 
 def can_edit_cost_centre(user, cost_centre_code):
