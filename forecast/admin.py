@@ -83,5 +83,7 @@ admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
 admin.site.register(BudgetMonthlyFigure, BudgetAdmin)
 admin.site.register(ForecastEditState, ForecastEditStateAdmin)
-admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
+# Disable access to FutureForecastEditState until edit future year forecast
+# is fully functional
+# admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
 admin.site.register(UnlockedForecastEditor, UnlockedForecastEditorAdmin)
