@@ -13,3 +13,8 @@ class User(AbstractUser):
             self.first_name,
             self.last_name,
         )
+
+    class Meta(AbstractUser.Meta):
+        permissions = [
+            ("can_download", "Can download active users"),
+        ]
