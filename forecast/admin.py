@@ -16,6 +16,7 @@ from forecast.models import (
     FinancialPeriod,
     ForecastEditState,
     ForecastMonthlyFigure,
+    FutureForecastEditState,
     UnlockedForecastEditor,
 )
 
@@ -82,7 +83,5 @@ admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
 admin.site.register(BudgetMonthlyFigure, BudgetAdmin)
 admin.site.register(ForecastEditState, ForecastEditStateAdmin)
-# Disable access to FutureForecastEditState until edit future year forecast
-# is fully functional
-# admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
+admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
 admin.site.register(UnlockedForecastEditor, UnlockedForecastEditorAdmin)
