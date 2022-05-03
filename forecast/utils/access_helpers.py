@@ -144,12 +144,7 @@ def can_future_forecast_be_edited(user):
             and user.has_perm("forecast.can_edit_future_whilst_closed"):
         return True
 
-    if UnlockedForecastEditor.objects.filter(
-        user=user,
-    ).exists():
-        return True
-
-    return False
+    return UnlockedForecastEditor.objects.filter(user=user,).exists()
 
 
 def can_edit_cost_centre(user, cost_centre_code):
