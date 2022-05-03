@@ -16,7 +16,6 @@ from forecast.models import (
     FinancialPeriod,
     ForecastEditState,
     ForecastMonthlyFigure,
-    FutureForecastEditState,
     UnlockedForecastEditor,
 )
 
