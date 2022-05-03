@@ -64,7 +64,14 @@ from forecast.views.view_forecast.project_details import (
 urlpatterns = [
     path("error/", ErrorView.as_view(), name="error"),
     path(
-        "edit/<int:cost_centre_code>/", EditForecastView.as_view(), name="edit_forecast"
+        "edit/<int:cost_centre_code>/",
+        EditForecastView.as_view(),
+        name="edit_forecast"
+    ),
+    path(
+        "edit/<int:cost_centre_code>/<int:financial_year>",
+        EditForecastView.as_view(),
+        name="edit_future-forecast"
     ),
     path(
         "edit/editing-unavailable/",
