@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import (
@@ -58,10 +59,17 @@ from forecast.views.base import (
 
 
 def get_financial_code_serialiser(cost_centre_code):
+    financial_year = get_current_financial_year()
+
     financial_codes = (
         FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )
         .prefetch_related(
-            "forecast_forecastmonthlyfigures",
+            Prefetch("forecast_forecastmonthlyfigures",
+                     queryset=ForecastMonthlyFigure.objects.filter(
+                                    financial_year_id=financial_year,
+                                    archived_status__isnull=True,
+            ),
+                     to_attr='monthly_figure_items'),
             "forecast_forecastmonthlyfigures__financial_period",
         ).order_by(*edit_forecast_order())
     )
