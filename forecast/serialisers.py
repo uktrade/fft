@@ -39,15 +39,16 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
         return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
+        if obj.financial_year_id > get_current_financial_year():
+            return False
         return obj.financial_period.actual_loaded
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
     budget = serializers.SerializerMethodField('get_budget')
-    monthly_figures = ForecastMonthlyFigureSerializer(
-        many=True,
-        read_only=True,
-        source='forecast_forecastmonthlyfigures',
+    financial_year = get_current_financial_year()
+    monthly_figures = serializers.ModelSerializer(
+        'get_monthly_figure_serializer'
     )
     programme_description = serializers.SerializerMethodField(
         'get_programme_description',
@@ -55,6 +56,15 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
     nac_description = serializers.SerializerMethodField(
         'get_nac_description',
     )
+
+    def get_monthly_figure_serializer(self):
+        return ForecastMonthlyFigureSerializer(
+            financial_year = self.financial_year,
+            many=True,
+            read_only=True,
+            source='forecast_forecastmonthlyfigures',
+        )
+
 
     class Meta:
         model = FinancialCode
@@ -84,7 +94,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             'financial_year',
         ).filter(
             financial_code=obj.id,
-            financial_year_id=get_current_financial_year(),
+            financial_year_id=self.financial_year,
             archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')

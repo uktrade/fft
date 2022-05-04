@@ -113,8 +113,9 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
             "forecast_forecastmonthlyfigures__financial_period",
         ).order_by(*edit_forecast_order())
     )
-
-    return FinancialCodeSerializer(financial_codes, many=True, )
+    financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True, )
+    financial_code_serialiser.financial_year = financial_year
+    return financial_code_serialiser
 
 
 logger = logging.getLogger(__name__)

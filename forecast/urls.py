@@ -69,7 +69,7 @@ urlpatterns = [
         name="edit_forecast"
     ),
     path(
-        "edit/<int:cost_centre_code>/<int:financial_year>",
+        "edit/<int:cost_centre_code>/<int:financial_year>/",
         EditForecastView.as_view(),
         name="edit_future-forecast"
     ),
