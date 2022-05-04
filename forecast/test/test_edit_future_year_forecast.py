@@ -1,52 +1,35 @@
-from datetime import datetime
-
-from bs4 import BeautifulSoup
-
-
-from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import (
-    Group,
     Permission,
 )
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
-    Analysis1Factory,
-    Analysis2Factory,
-    ExpenditureCategoryFactory,
     NaturalCodeFactory,
     ProgrammeCodeFactory,
-    ProjectCodeFactory,
 )
 
-from core.models import FinancialYear
-from core.test.test_base import TEST_EMAIL, BaseTestCase
-from core.utils.generic_helpers import get_current_financial_year, get_financial_year_obj
+from core.test.test_base import BaseTestCase
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 
 from costcentre.test.factories import (
     CostCentreFactory,
-    DepartmentalGroupFactory,
-    DirectorateFactory,
 )
 
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    ForecastEditState,
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
-from forecast.test.factories import (
-    FinancialCodeFactory,
-)
+
 
 class EditForecastTest(BaseTestCase):
     def setUp(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
 
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
@@ -72,42 +55,33 @@ class EditForecastTest(BaseTestCase):
 
         current_financial_year = get_current_financial_year()
         this_year_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=get_financial_year_obj(current_financial_year),
-            amount=self.current_year_amount
+            amount=self.current_year_amount,
         )
         this_year_figure.save
 
         next_year_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year+1),
-            amount=self.next_year_amount
+            financial_year=get_financial_year_obj(current_financial_year + 1),
+            amount=self.next_year_amount,
         )
         next_year_figure.save
 
         next_next_year_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year+2),
-            amount=self.next_next_year_amount
+            financial_year=get_financial_year_obj(current_financial_year + 2),
+            amount=self.next_next_year_amount,
         )
         next_next_year_figure.save
 
     def test_correct_forecast(self):
         # Checks the 'Edit-Forecast tab' returns an 'OK' status code
         edit_forecast_url = reverse(
-            "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            }
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
         )
 
         response = self.client.get(edit_forecast_url)
@@ -115,7 +89,3 @@ class EditForecastTest(BaseTestCase):
         assert str(self.current_year_amount) in str(response.content)
         assert str(self.next_year_amount) not in str(response.content)
         assert str(self.next_next_year_amount) not in str(response.content)
-
-
-
-
