@@ -66,9 +66,9 @@ def get_financial_code_serialiser(cost_centre_code):
         .prefetch_related(
             Prefetch("forecast_forecastmonthlyfigures",
                      queryset=ForecastMonthlyFigure.objects.filter(
-                                    financial_year_id=financial_year,
-                                    archived_status__isnull=True,
-            ),
+                         financial_year_id=financial_year,
+                         archived_status__isnull=True,
+                     ),
                      to_attr='monthly_figure_items'),
             "forecast_forecastmonthlyfigures__financial_period",
         ).order_by(*edit_forecast_order())
