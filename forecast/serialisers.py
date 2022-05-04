@@ -13,17 +13,11 @@ from .models import (
 )
 
 
-class FilteredListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        return super(FilteredListSerializer, self).to_representation(data)
-
-
 class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
 
     class Meta:
-        list_serializer_class = FilteredListSerializer
         model = ForecastMonthlyFigure
         fields = [
             'actual',
