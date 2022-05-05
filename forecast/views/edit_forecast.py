@@ -107,7 +107,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
-    FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )\
+    financial_codes = FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )\
         .prefetch_related(
             Prefetch("forecast_forecastmonthlyfigures",
                      queryset=ForecastMonthlyFigure.objects.filter(
@@ -117,9 +117,12 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
                      to_attr='monthly_figure_items'),
             "forecast_forecastmonthlyfigures__financial_period",
         ).order_by(*edit_forecast_order())
-    
+    print(f"==== in get_financial_code_serialiser financial_year = {financial_year}")
     financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True, )
+    print(f"==== financial_code_serialiser.financial_year = {financial_code_serialiser.financial_year}")
+
     financial_code_serialiser.financial_year = financial_year
+    print(f"==== after setting financial_code_serialiser.financial_year = {financial_code_serialiser.financial_year}")
     return financial_code_serialiser
 
 
