@@ -115,9 +115,7 @@ class AddForecastRowTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # financial period with actual
-        financial_period = FinancialPeriod.objects.get(
-            financial_period_code=1,
-        )
+        financial_period = FinancialPeriod.objects.get(financial_period_code=1,)
         financial_period.actual_loaded = True
         financial_period.save()
 
@@ -584,4 +582,3 @@ class ViewEditTest(BaseTestCase):
 
         assert len(directorate_code_links) == 1
         assert directorate_code_links[0]['href'] == view_directorate_forecast_url
-

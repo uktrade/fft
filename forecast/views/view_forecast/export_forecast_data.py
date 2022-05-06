@@ -218,7 +218,7 @@ def export_forecast_data_project_detail_dit(request, project_code_id, period):
     return export_forecast_data_generic(period, filter, title)
 
 
-def export_edit_forecast_data(request, cost_centre, financial_year = 0):
+def export_edit_forecast_data(request, cost_centre, financial_year=0):
     fields = ForecastQueryFields()
     if can_edit_cost_centre(request.user, cost_centre):
         if financial_year == 0:

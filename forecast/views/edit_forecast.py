@@ -108,21 +108,21 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_codes = FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )\
-        .prefetch_related(
-            Prefetch("forecast_forecastmonthlyfigures",
-                     queryset=ForecastMonthlyFigure.objects.filter(
-                         financial_year_id=financial_year,
-                         archived_status__isnull=True,
-                     ),
-                     to_attr='monthly_figure_items'),
-            "forecast_forecastmonthlyfigures__financial_period",
-        ).order_by(*edit_forecast_order())
-    print(f"==== in get_financial_code_serialiser financial_year = {financial_year}")
-    financial_code_serialiser = FinancialCodeSerializer(financial_codes, many=True, )
-    print(f"==== financial_code_serialiser.financial_year = {financial_code_serialiser.financial_year}")
-
-    financial_code_serialiser.financial_year = financial_year
-    print(f"==== after setting financial_code_serialiser.financial_year = {financial_code_serialiser.financial_year}")
+        .prefetch_related\
+            (
+                Prefetch("forecast_forecastmonthlyfigures",
+                         queryset=ForecastMonthlyFigure.objects.filter(
+                             financial_year_id=financial_year,
+                             archived_status__isnull=True,
+                         ),
+                         to_attr='monthly_figure_items'),
+                "forecast_forecastmonthlyfigures__financial_period",
+            ).order_by(*edit_forecast_order())
+    financial_code_serialiser = FinancialCodeSerializer(
+        financial_codes,
+        many=True,
+        context={'financial_year': financial_year}
+    )
     return financial_code_serialiser
 
 
@@ -176,6 +176,7 @@ class ChooseCostCentreView(
             "edit_forecast",
             kwargs={"cost_centre_code": self.cost_centre.cost_centre_code},
         )
+
 
 # TODO add financial_year to kwargs
 class AddRowView(
@@ -531,6 +532,7 @@ class EditForecastView(
         context["period_display"] = period_display
 
         return context
+
 
 # TODO check what to do for future years
 class EditUnavailableView(

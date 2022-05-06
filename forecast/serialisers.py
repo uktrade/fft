@@ -39,7 +39,6 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
     budget = serializers.SerializerMethodField('get_budget')
-    financial_year = get_current_financial_year()
     monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
@@ -52,9 +51,11 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         'get_nac_description',
     )
 
+    def my_financial_year(self, value):
+        self.financial_year = value
+
     def get_monthly_figure_serializer(self):
         return ForecastMonthlyFigureSerializer(
-            financial_year = self.financial_year,
             many=True,
             read_only=True,
             source='forecast_forecastmonthlyfigures',
@@ -83,13 +84,13 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
-        print(f"====== Financial year = {self.financial_year}")
+        financial_year = self.context["financial_year"]
         budget = BudgetMonthlyFigure.objects.values(
             'financial_code',
             'financial_year',
         ).filter(
             financial_code=obj.id,
-            financial_year_id=self.financial_year,
+            financial_year_id=financial_year,
             archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')
