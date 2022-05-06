@@ -70,7 +70,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
         current_financial_year = get_current_financial_year()
         self.cost_centre_code = self.kwargs["cost_centre_code"]
-        self.financial_year = self.kwargs.get("financial_year", current_financial_year)
+        self.financial_year = int(self.kwargs["financial_year"])
         has_permission = can_edit_cost_centre(
             self.request.user,
             self.cost_centre_code,
