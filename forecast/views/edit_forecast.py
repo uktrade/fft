@@ -107,21 +107,25 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
-    financial_codes = FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )\
-        .prefetch_related\
-            (
-                Prefetch("forecast_forecastmonthlyfigures",
-                         queryset=ForecastMonthlyFigure.objects.filter(
-                             financial_year_id=financial_year,
-                             archived_status__isnull=True,
-                         ),
-                         to_attr='monthly_figure_items'),
-                "forecast_forecastmonthlyfigures__financial_period",
-            ).order_by(*edit_forecast_order())
+    financial_codes = (
+        FinancialCode.objects.filter(
+            cost_centre_id=cost_centre_code,
+        )
+        .prefetch_related(
+            Prefetch(
+                "forecast_forecastmonthlyfigures",
+                queryset=ForecastMonthlyFigure.objects.filter(
+                    financial_year_id=financial_year,
+                    archived_status__isnull=True,
+                ),
+                to_attr="monthly_figure_items",
+            ),
+            "forecast_forecastmonthlyfigures__financial_period",
+        )
+        .order_by(*edit_forecast_order())
+    )
     financial_code_serialiser = FinancialCodeSerializer(
-        financial_codes,
-        many=True,
-        context={'financial_year': financial_year}
+        financial_codes, many=True, context={"financial_year": financial_year}
     )
     return financial_code_serialiser
 
