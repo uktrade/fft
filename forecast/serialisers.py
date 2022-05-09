@@ -51,9 +51,6 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         'get_nac_description',
     )
 
-    def my_financial_year(self, value):
-        self.financial_year = value
-
     def get_monthly_figure_serializer(self):
         return ForecastMonthlyFigureSerializer(
             many=True,
