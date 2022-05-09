@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
 
 from forecast.models import (
     ForecastingDataView,
@@ -230,7 +230,7 @@ def export_edit_forecast_data(request, cost_centre, financial_year=0):
             financial_year,
             order_list=fields.EDIT_FORECAST_DOWNLOAD_ORDER,
         )
-        title = f"Edit forecast {cost_centre}"
+        title = f"Edit forecast {cost_centre} year {get_year_display(financial_year)}"
         return export_edit_to_excel(
             q, fields.EDIT_KEYS_DOWNLOAD, fields.EDIT_FORECAST_DOWNLOAD_COLUMNS, title
         )
