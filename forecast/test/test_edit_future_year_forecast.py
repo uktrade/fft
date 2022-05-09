@@ -53,11 +53,11 @@ class EditForecastTest(BaseTestCase):
         )
         financial_code_obj.save
 
-        current_financial_year = get_current_financial_year()
+        self.current_financial_year = get_current_financial_year()
         this_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year),
+            financial_year=get_financial_year_obj(self.current_financial_year),
             amount=self.current_year_amount,
         )
         this_year_figure.save
@@ -65,7 +65,7 @@ class EditForecastTest(BaseTestCase):
         next_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year + 1),
+            financial_year=get_financial_year_obj(self.current_financial_year + 1),
             amount=self.next_year_amount,
         )
         next_year_figure.save
@@ -73,12 +73,12 @@ class EditForecastTest(BaseTestCase):
         next_next_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year + 2),
+            financial_year=get_financial_year_obj(self.current_financial_year + 2),
             amount=self.next_next_year_amount,
         )
         next_next_year_figure.save
 
-    def test_correct_forecast(self):
+    def test_correct_current_forecast(self):
         # Checks the 'Edit-Forecast tab' returns an 'OK' status code
         edit_forecast_url = reverse(
             "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
@@ -89,3 +89,33 @@ class EditForecastTest(BaseTestCase):
         assert str(self.current_year_amount) in str(response.content)
         assert str(self.next_year_amount) not in str(response.content)
         assert str(self.next_next_year_amount) not in str(response.content)
+
+
+    def test_correct_future_forecast(self):
+        edit_forecast_url = reverse(
+            "edit_forecast", kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year + 1,
+            }
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+        assert str(self.current_year_amount) not in str(response.content)
+        assert str(self.next_year_amount) in str(response.content)
+        assert str(self.next_next_year_amount) not in str(response.content)
+
+    def test_correct_next_future_forecast(self):
+        edit_forecast_url = reverse(
+            "edit_forecast", kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year + 2,
+            }
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+        assert str(self.current_year_amount) not in str(response.content)
+        assert str(self.next_year_amount) not in str(response.content)
+        assert str(self.next_next_year_amount) in str(response.content)
+

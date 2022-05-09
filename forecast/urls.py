@@ -71,7 +71,7 @@ urlpatterns = [
     path(
         "edit/<int:cost_centre_code>/<int:financial_year>/",
         EditForecastView.as_view(),
-        name="edit_future-forecast"
+        name="edit_forecast"
     ),
     path(
         "edit/editing-unavailable/",
@@ -79,7 +79,7 @@ urlpatterns = [
         name="edit_unavailable",
     ),
     path(
-        "edit/add/<int:cost_centre_code>//<int:financial_year>/",
+        "edit/add/<int:cost_centre_code>/<int:financial_year>/",
         AddRowView.as_view(),
         name="add_forecast_row",
     ),
