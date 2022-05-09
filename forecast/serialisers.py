@@ -51,13 +51,6 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         'get_nac_description',
     )
 
-    def get_monthly_figure_serializer(self):
-        return ForecastMonthlyFigureSerializer(
-            many=True,
-            read_only=True,
-            source='forecast_forecastmonthlyfigures',
-        )
-
     class Meta:
         model = FinancialCode
         fields = [
