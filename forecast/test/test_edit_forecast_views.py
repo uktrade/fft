@@ -57,6 +57,7 @@ class AddForecastRowTest(BaseTestCase):
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
+        self.financial_year = get_current_financial_year()
 
     def add_row_get_response(self, url):
         return self.client.get(url)
@@ -86,7 +87,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
         )
@@ -98,7 +100,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
             {
@@ -126,7 +129,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
             {
@@ -151,7 +155,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
             {
@@ -170,7 +175,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
             {
@@ -204,7 +210,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code
+                    'cost_centre_code': self.cost_centre_code,
+                    'financial_year': self.financial_year,
                 },
             ),
             {
@@ -224,6 +231,7 @@ class AddForecastRowTest(BaseTestCase):
                 "add_forecast_row",
                 kwargs={
                     'cost_centre_code': cost_centre_code_2,
+                    'financial_year': self.financial_year,
                 },
             ),
             {

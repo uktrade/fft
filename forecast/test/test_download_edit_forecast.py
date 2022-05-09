@@ -211,7 +211,7 @@ class DownloadEditForecastTest(BaseTestCase):
             reverse(
                 "export_edit_forecast_data_cost_centre",
                 kwargs={
-                    "cost_centre": self.cost_centre_code,
+                    "cost_centre": test_cost_centre_code,
                     "financial_year": self.current_year
                 },
             )

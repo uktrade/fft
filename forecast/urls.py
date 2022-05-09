@@ -79,7 +79,7 @@ urlpatterns = [
         name="edit_unavailable",
     ),
     path(
-        "edit/add/<int:cost_centre_code>/",
+        "edit/add/<int:cost_centre_code>//<int:financial_year>/",
         AddRowView.as_view(),
         name="add_forecast_row",
     ),

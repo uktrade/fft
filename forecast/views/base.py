@@ -41,6 +41,10 @@ class NoCostCentreCodeInURLError(Exception):
     pass
 
 
+class NoFinancialYearInURLError(Exception):
+    pass
+
+
 class ForecastViewPermissionMixin(UserPassesTestMixin):
     cost_centre_code = None
 

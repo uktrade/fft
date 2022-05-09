@@ -56,6 +56,7 @@ from forecast.utils.edit_helpers import (
 from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
     NoCostCentreCodeInURLError,
+    NoFinancialYearInURLError,
 )
 
 
@@ -70,7 +71,11 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
         current_financial_year = get_current_financial_year()
         self.cost_centre_code = self.kwargs["cost_centre_code"]
-        self.financial_year = int(self.kwargs["financial_year"])
+        if "financial_year" in self.kwargs:
+            self.financial_year = int(self.kwargs["financial_year"])
+        else:
+            self.financial_year = get_current_financial_year()
+
         has_permission = can_edit_cost_centre(
             self.request.user,
             self.cost_centre_code,
@@ -182,7 +187,6 @@ class ChooseCostCentreView(
         )
 
 
-# TODO add financial_year to kwargs
 class AddRowView(
     CostCentrePermissionTest, FormView,
 ):
@@ -190,7 +194,7 @@ class AddRowView(
     form_class = AddForecastRowForm
     cost_centre_code = None
 
-    def get_cost_centre(self):
+    def get_cost_centre_and_year(self):
         if self.cost_centre_code is not None:
             return
 
@@ -199,15 +203,27 @@ class AddRowView(
 
         self.cost_centre_code = self.kwargs["cost_centre_code"]
 
-    def get_success_url(self):
-        self.get_cost_centre()
+        if "financial_year" not in self.kwargs:
+            raise NoFinancialYearInURLError("No financial year provided in URL")
 
+        self.financial_year = self.kwargs["financial_year"]
+
+    def get_success_url(self):
+        self.get_cost_centre_and_year()
+
+        if self.financial_year == get_current_financial_year():
+            return reverse(
+                "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+            )
         return reverse(
-            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+            "edit_forecast", kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            }
         )
 
     def cost_centre_details(self):
-        self.get_cost_centre()
+        self.get_cost_centre_and_year()
 
         cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
         return {
@@ -220,10 +236,11 @@ class AddRowView(
         }
 
     def get_form_kwargs(self):
-        self.get_cost_centre()
+        self.get_cost_centre_and_year()
 
         kwargs = super(AddRowView, self).get_form_kwargs()
         kwargs['cost_centre_code'] = self.cost_centre_code
+        kwargs['financial_year'] = self.financial_year
         return kwargs
 
     def form_valid(self, form):
@@ -248,14 +265,16 @@ class AddRowView(
                 project_code=data["project_code"],
             )
 
-        # Create "actual" monthly figures for past months
+        # Create "actual" monthly figures for past months, otherwise some of the
+        # queries used to view the forecast will fail.
         actual_months = FinancialPeriod.financial_period_info.actual_period_code_list()
-        financial_year = get_current_financial_year()
-        if len(actual_months) > 0:
+
+        if self.financial_year == get_current_financial_year() \
+                and len(actual_months) > 0:
             for actual_month in actual_months:
                 ForecastMonthlyFigure.objects.create(
                     financial_code=financial_code,
-                    financial_year_id=financial_year,
+                    financial_year_id=self.financial_year,
                     financial_period_id=actual_month,
                 )
         else:
@@ -263,7 +282,7 @@ class AddRowView(
             # the forecast
             ForecastMonthlyFigure.objects.create(
                 financial_code=financial_code,
-                financial_year_id=financial_year,
+                financial_year_id=self.financial_year,
                 financial_period_id=1,
             )
 
@@ -417,6 +436,9 @@ class EditForecastFigureView(
     def form_valid(self, form):
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
+
+        if "financial_year" not in self.kwargs:
+            raise NoFinancialYearInURLError("No financial year provided in URL")
 
         cost_centre_code = self.kwargs["cost_centre_code"]
 

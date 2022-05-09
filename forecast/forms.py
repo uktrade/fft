@@ -31,6 +31,7 @@ class PublishForm(forms.Form):
 class AddForecastRowForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.__cost_centre_code = kwargs.pop("cost_centre_code")
+        self.__financial_year = kwargs.pop("financial_year")
         forms.Form.__init__(self, *args, **kwargs)
 
     def clean(self):
