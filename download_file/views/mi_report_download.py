@@ -27,6 +27,7 @@ class DownloadMIReportView(FormView):
             kwargs = {"financial_year": self.financial_year}
         elif request.POST.get("download_previous_year_name", None,):
             url_name = "download_mi_previous_year_report_source"
+            # no forecast year required
             kwargs = {}
         else:
             url_name = "download_mi_report_source"
