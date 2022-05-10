@@ -514,4 +514,5 @@ BaseModel
 FinancialPeriod
 get_monthly_figure_serializer'
 financial_year>/
+view.cost_centre_details.cost_centre_code  view.financial_year %
 
