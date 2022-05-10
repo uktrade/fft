@@ -53,6 +53,7 @@ from forecast.utils.edit_helpers import (
 )
 from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
+    CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
     NoFinancialYearInURLError,
 )
