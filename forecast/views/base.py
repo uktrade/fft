@@ -17,6 +17,7 @@ from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import (
     can_edit_cost_centre,
     can_future_forecast_be_edited,
+    can_forecast_be_edited,
     can_view_forecasts,
 )
 from forecast.utils.query_fields import (
