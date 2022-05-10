@@ -90,7 +90,6 @@ class EditForecastTest(BaseTestCase):
         assert str(self.next_year_amount) not in str(response.content)
         assert str(self.next_next_year_amount) not in str(response.content)
 
-
     def test_correct_future_forecast(self):
         edit_forecast_url = reverse(
             "edit_forecast", kwargs={
@@ -118,4 +117,3 @@ class EditForecastTest(BaseTestCase):
         assert str(self.current_year_amount) not in str(response.content)
         assert str(self.next_year_amount) not in str(response.content)
         assert str(self.next_next_year_amount) in str(response.content)
-

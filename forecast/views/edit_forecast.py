@@ -59,8 +59,6 @@ from forecast.views.base import (
 )
 
 
-
-
 def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_codes = (
         FinancialCode.objects.filter(
