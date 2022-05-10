@@ -34,9 +34,7 @@ from forecast.models import (
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import (
     can_edit_at_least_one_cost_centre,
-    can_edit_cost_centre,
     can_forecast_be_edited,
-    can_future_forecast_be_edited,
     get_user_cost_centres,
 )
 from forecast.utils.edit_helpers import (
@@ -60,55 +58,6 @@ from forecast.views.base import (
 )
 
 
-class CostCentrePermissionTest(UserPassesTestMixin):
-    cost_centre_code = None
-    financial_year = 0
-    edit_not_available = False
-
-    def test_func(self):
-        if "cost_centre_code" not in self.kwargs:
-            raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
-
-        current_financial_year = get_current_financial_year()
-        self.cost_centre_code = self.kwargs["cost_centre_code"]
-        if "financial_year" in self.kwargs:
-            self.financial_year = int(self.kwargs["financial_year"])
-        else:
-            self.financial_year = get_current_financial_year()
-
-        has_permission = can_edit_cost_centre(
-            self.request.user,
-            self.cost_centre_code,
-        )
-        # Cannot edit the past!
-        if self.financial_year < current_financial_year:
-            self.edit_not_available = True
-            return False
-
-        if self.financial_year == current_financial_year:
-            user_can_edit = can_forecast_be_edited(self.request.user)
-        else:
-            user_can_edit = can_future_forecast_be_edited(self.request.user)
-
-        if not user_can_edit:
-            self.edit_not_available = True
-            return False
-
-        return has_permission
-
-    def handle_no_permission(self):
-        if self.edit_not_available:
-            return redirect(reverse("edit_unavailable"))
-        else:
-            return redirect(
-                reverse(
-                    "forecast_cost_centre",
-                    kwargs={
-                        "cost_centre_code": self.cost_centre_code,
-                        "period": 0,
-                    },
-                )
-            )
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
