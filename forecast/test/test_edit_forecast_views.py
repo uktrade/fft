@@ -92,10 +92,8 @@ class AddForecastRowTest(BaseTestCase):
                 },
             ),
         )
-
         self.assertEqual(add_resp.status_code, 200)
 
-        # add_forecast_row
         add_row_resp = self.add_row_post_response(
             reverse(
                 "add_forecast_row",
@@ -124,7 +122,6 @@ class AddForecastRowTest(BaseTestCase):
 
         assert ForecastMonthlyFigure.objects.count() == 0
 
-        # add_forecast_row
         add_row_resp = self.add_row_post_response(
             reverse(
                 "add_forecast_row",
@@ -150,7 +147,6 @@ class AddForecastRowTest(BaseTestCase):
     def test_duplicate_values_invalid(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        # add forecast row
         response = self.add_row_post_response(
             reverse(
                 "add_forecast_row",
