@@ -236,7 +236,7 @@ class DownloadMIViewLabelTests(BaseTestCase):
         soup = BeautifulSoup(response.content, features="html.parser")
 
         # Check that the text of the button shows the previous year
-        previous_year_button = soup.find(id="id_previous_year_button")
+        previous_year_button = soup.find(id="download_previous_year")
         self.assertIn(previous_year_display, str(previous_year_button))
 
 
