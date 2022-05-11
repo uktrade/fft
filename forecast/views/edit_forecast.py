@@ -55,26 +55,32 @@ from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
     CostCentrePermissionTest,
     NoCostCentreCodeInURLError,
+    NoFinancialYearInURLError,
 )
 
 
-def get_financial_code_serialiser(cost_centre_code):
-    financial_year = get_current_financial_year()
-
+def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_codes = (
-        FinancialCode.objects.filter(cost_centre_id=cost_centre_code, )
+        FinancialCode.objects.filter(
+            cost_centre_id=cost_centre_code,
+        )
         .prefetch_related(
-            Prefetch("forecast_forecastmonthlyfigures",
-                     queryset=ForecastMonthlyFigure.objects.filter(
-                         financial_year_id=financial_year,
-                         archived_status__isnull=True,
-                     ),
-                     to_attr='monthly_figure_items'),
+            Prefetch(
+                "forecast_forecastmonthlyfigures",
+                queryset=ForecastMonthlyFigure.objects.filter(
+                    financial_year_id=financial_year,
+                    archived_status__isnull=True,
+                ),
+                to_attr="monthly_figure_items",
+            ),
             "forecast_forecastmonthlyfigures__financial_period",
-        ).order_by(*edit_forecast_order())
+        )
+        .order_by(*edit_forecast_order())
     )
-
-    return FinancialCodeSerializer(financial_codes, many=True, )
+    financial_code_serialiser = FinancialCodeSerializer(
+        financial_codes, many=True, context={"financial_year": financial_year}
+    )
+    return financial_code_serialiser
 
 
 logger = logging.getLogger(__name__)
@@ -136,7 +142,7 @@ class AddRowView(
     form_class = AddForecastRowForm
     cost_centre_code = None
 
-    def get_cost_centre(self):
+    def get_cost_centre_and_year(self):
         if self.cost_centre_code is not None:
             return
 
@@ -145,15 +151,27 @@ class AddRowView(
 
         self.cost_centre_code = self.kwargs["cost_centre_code"]
 
-    def get_success_url(self):
-        self.get_cost_centre()
+        if "financial_year" not in self.kwargs:
+            raise NoFinancialYearInURLError("No financial year provided in URL")
 
+        self.financial_year = self.kwargs["financial_year"]
+
+    def get_success_url(self):
+        self.get_cost_centre_and_year()
+
+        if self.financial_year == get_current_financial_year():
+            return reverse(
+                "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+            )
         return reverse(
-            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+            "edit_forecast", kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            }
         )
 
     def cost_centre_details(self):
-        self.get_cost_centre()
+        self.get_cost_centre_and_year()
 
         cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
         return {
@@ -166,10 +184,11 @@ class AddRowView(
         }
 
     def get_form_kwargs(self):
-        self.get_cost_centre()
+        self.get_cost_centre_and_year()
 
         kwargs = super(AddRowView, self).get_form_kwargs()
         kwargs['cost_centre_code'] = self.cost_centre_code
+        kwargs['financial_year'] = self.financial_year
         return kwargs
 
     def form_valid(self, form):
@@ -194,27 +213,26 @@ class AddRowView(
                 project_code=data["project_code"],
             )
 
-        # Create "actual" monthly figures for past months
+        # Create "actual" monthly figures for past months, otherwise some of the
+        # queries used to view the forecast will fail.
         actual_months = FinancialPeriod.financial_period_info.actual_period_code_list()
-        financial_year = get_current_financial_year()
 
-        if len(actual_months) > 0:
-
+        if self.financial_year == get_current_financial_year() \
+                and len(actual_months) > 0:
             for actual_month in actual_months:
                 ForecastMonthlyFigure.objects.create(
                     financial_code=financial_code,
-                    financial_year_id=financial_year,
+                    financial_year_id=self.financial_year,
                     financial_period_id=actual_month,
                 )
         else:
             # Create at least one entry, to help some of the queries used to view
             # the forecast
-            for actual_month in actual_months:
-                ForecastMonthlyFigure.objects.create(
-                    financial_code=financial_code,
-                    financial_year_id=financial_year,
-                    financial_period_id=1,
-                )
+            ForecastMonthlyFigure.objects.create(
+                financial_code=financial_code,
+                financial_year_id=self.financial_year,
+                financial_period_id=1,
+            )
 
         return super().form_valid(form)
 
@@ -325,6 +343,7 @@ class PasteForecastRowsView(
 
             financial_code_serialiser = get_financial_code_serialiser(
                 self.cost_centre_code,
+                self.financial_year,
             )
 
             return JsonResponse(
@@ -366,13 +385,16 @@ class EditForecastFigureView(
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
+        if "financial_year" not in self.kwargs:
+            raise NoFinancialYearInURLError("No financial year provided in URL")
+
         cost_centre_code = self.kwargs["cost_centre_code"]
 
         cost_centre = CostCentre.objects.filter(
             cost_centre_code=cost_centre_code,
         ).first()
 
-        financial_year = get_current_financial_year()
+        financial_year = self.kwargs["financial_year"]
 
         financial_code = FinancialCode.objects.filter(
             cost_centre=cost_centre,
@@ -422,7 +444,10 @@ class EditForecastFigureView(
 
         monthly_figure.save()
 
-        financial_code_serialiser = get_financial_code_serialiser(self.cost_centre_code)
+        financial_code_serialiser = get_financial_code_serialiser(
+            self.cost_centre_code,
+            self.financial_year
+        )
 
         return JsonResponse(financial_code_serialiser.data, safe=False)
 
@@ -462,6 +487,7 @@ class EditForecastView(
 
         financial_code_serialiser = get_financial_code_serialiser(
             self.cost_centre_code,
+            self.financial_year,
         )
 
         serialiser_data = financial_code_serialiser.data
@@ -482,6 +508,7 @@ class EditForecastView(
         return context
 
 
+# TODO check what to do for future years
 class EditUnavailableView(
     TemplateView,
 ):

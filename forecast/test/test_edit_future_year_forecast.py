@@ -24,6 +24,15 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
+from forecast.test.factories import FinancialCodeFactory
+from forecast.test.test_edit_forecast_views import AddForecastRowTest
+
+
+class AddFutureForecastRowTest(AddForecastRowTest):
+    def SetUp(self):
+        super().setUp()
+        future_year_obj = get_financial_year_obj(self.financial_year + 1)
+        self.financial_year = future_year_obj.financial_year
 
 
 class EditForecastTest(BaseTestCase):
@@ -53,11 +62,11 @@ class EditForecastTest(BaseTestCase):
         )
         financial_code_obj.save
 
-        current_financial_year = get_current_financial_year()
+        self.current_financial_year = get_current_financial_year()
         this_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year),
+            financial_year=get_financial_year_obj(self.current_financial_year),
             amount=self.current_year_amount,
         )
         this_year_figure.save
@@ -65,7 +74,7 @@ class EditForecastTest(BaseTestCase):
         next_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year + 1),
+            financial_year=get_financial_year_obj(self.current_financial_year + 1),
             amount=self.next_year_amount,
         )
         next_year_figure.save
@@ -73,12 +82,12 @@ class EditForecastTest(BaseTestCase):
         next_next_year_figure = ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
-            financial_year=get_financial_year_obj(current_financial_year + 2),
+            financial_year=get_financial_year_obj(self.current_financial_year + 2),
             amount=self.next_next_year_amount,
         )
         next_next_year_figure.save
 
-    def test_correct_forecast(self):
+    def test_correct_current_forecast(self):
         # Checks the 'Edit-Forecast tab' returns an 'OK' status code
         edit_forecast_url = reverse(
             "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
@@ -89,3 +98,109 @@ class EditForecastTest(BaseTestCase):
         assert str(self.current_year_amount) in str(response.content)
         assert str(self.next_year_amount) not in str(response.content)
         assert str(self.next_next_year_amount) not in str(response.content)
+
+    def test_correct_future_forecast(self):
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year + 1,
+            },
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+        assert str(self.current_year_amount) not in str(response.content)
+        assert str(self.next_year_amount) in str(response.content)
+        assert str(self.next_next_year_amount) not in str(response.content)
+
+    def test_correct_next_future_forecast(self):
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year + 2,
+            },
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+        assert str(self.current_year_amount) not in str(response.content)
+        assert str(self.next_year_amount) not in str(response.content)
+        assert str(self.next_next_year_amount) in str(response.content)
+
+
+class EditFutureForecastFigureViewTest(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+        current_year = get_current_financial_year()
+        future_year_obj = get_financial_year_obj(current_year + 1)
+        self.financial_year = future_year_obj.financial_year
+
+        self.nac_code = 999999
+        self.cost_centre_code = 888812
+
+        self.programme = ProgrammeCodeFactory.create()
+        self.nac = NaturalCodeFactory.create(
+            natural_account_code=self.nac_code,
+        )
+
+        self.cost_centre_code = 888812
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+        self.financial_code = FinancialCodeFactory.create(
+            programme=self.programme,
+            cost_centre=self.cost_centre,
+            natural_account_code=self.nac,
+        )
+
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+    def test_edit_forecast_(self):
+
+        update_forecast_figure_url = reverse(
+            "update_forecast_figure",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            },
+        )
+
+        amount = 12345678
+        assert (
+            ForecastMonthlyFigure.objects.filter(
+                financial_year_id=self.financial_year
+            ).count()
+            == 0
+        )
+        resp = self.client.post(
+            update_forecast_figure_url,
+            data={
+                "natural_account_code": self.nac_code,
+                "programme_code": self.programme.programme_code,
+                "month": 5,
+                "amount": amount,
+            },
+        )
+        assert (
+            ForecastMonthlyFigure.objects.filter(
+                financial_year_id=self.financial_year
+            ).count()
+            == 1
+        )
+
+        self.assertEqual(resp.status_code, 200)
+
+        assert (
+            ForecastMonthlyFigure.objects.filter(financial_year_id=self.financial_year)
+            .first()
+            .amount
+            == amount
+        )
