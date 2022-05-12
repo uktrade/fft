@@ -44,7 +44,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
             <ul className="cost-centre-list">
               {displayedCentres.map((costCentre, index) => {
                 return <li key={index}>
-                    <a href={ `/forecast/edit/${costCentre.code}/` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
+                    <a href={ `/forecast/edit/${costCentre.code}/2023` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
                 </li>
               })}
             </ul>

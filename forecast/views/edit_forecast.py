@@ -327,7 +327,7 @@ class PasteForecastRowsView(
                     check_cols_match(cell_data)
 
                     set_monthly_figure_amount(
-                        cost_centre_code, cell_data,
+                        cost_centre_code, cell_data, self.financial_year
                     )
             except (
                 BadFormatException,
@@ -350,9 +350,9 @@ class PasteForecastRowsView(
                 financial_code_serialiser.data,
                 safe=False,
             )
-        except Exception:
+        except Exception as ex:
             logger.fatal(
-                "Error when pasting forecast data",
+                f"Error when pasting forecast data {ex}",
                 exc_info=True,
             )
             return JsonResponse(

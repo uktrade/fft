@@ -171,7 +171,7 @@ urlpatterns = [
     path("upload-actuals/", UploadActualsView.as_view(), name="upload_actuals_file"),
     path("upload-budgets/", UploadBudgetView.as_view(), name="upload_budget_file"),
     path(
-        "paste-forecast/<cost_centre_code>/",
+        "paste-forecast/<cost_centre_code>/<financial_year>",
         PasteForecastRowsView.as_view(),
         name="paste_forecast",
     ),
