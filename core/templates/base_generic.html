@@ -145,12 +145,12 @@
                             </a>
                         </li>
 {#  The following entry is commented out because it is not yet working   #}
-{#                         <li class="internal-header__navigation__item">#}
-{#                            <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/edit/' %}internal-header__navigation__item__link--active{% endif %}"#}
-{#                               href="{% url 'choose_cost_centre' %}">#}
-{#                                Edit future year forecast #}
-{#                            </a>#}
-{#                        </li>#}
+                         <li class="internal-header__navigation__item">
+                            <a class="internal-header__navigation__item__link {% if request.path|startswith:'/forecast/edit/' %}internal-header__navigation__item__link--active{% endif %}"
+                               href="{% url 'choose_year_cost_centre' %}">
+                                Edit future year forecast
+                            </a>
+                        </li>
                     {% endif %}
 
                     {% has_mi_report_download_permission user as has_mi_report_download_permission %}

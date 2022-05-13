@@ -1,0 +1,35 @@
+{% extends "wide_content.html" %}
+{% load util %}
+
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Choose year and cost centre" "choose_year_cost_centre" %}
+{% endblock %}
+
+{% block title %}Edit Future Year Forecast - Choose Year and Cost Centre{% endblock %}
+
+{% block content %}
+
+    <h3 class="govuk-heading-l">My cost centres</h3>
+        <label class="govuk-label" for="selected_period">
+            Selected financial year:
+        </label>
+    <select name="selected_year" class="govuk-select" id="id_selected_year">
+        {% for year in view.get_year_list %}
+           <option value="{{year.financial_year}}"
+               {% if year == view.financial_year %}selected="selected"{% endif %}>
+               {{year.financial_year_display}}
+           </option>
+        {% endfor %}
+
+    </select>
+    <div id="cost-centre-list-app"></div>
+{% endblock %}
+{% block scripts %}
+    {% render_front_end_script %}
+    <script>
+        window.costCentres = {{ view.get_user_cost_centres|safe }};
+    </script>
+{% endblock %}

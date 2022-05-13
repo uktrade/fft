@@ -2,12 +2,15 @@ from django.urls import path
 
 from forecast.views.edit_forecast import (
     AddRowView,
-    ChooseCostCentreView,
     EditForecastFigureView,
     EditForecastView,
     EditUnavailableView,
     ErrorView,
     PasteForecastRowsView,
+)
+from forecast.views.edit_select_cost_centre import (
+    ChooseCostCentreView,
+    ChooseYearCostCentreView,
 )
 from forecast.views.export.mi_report_source import (
     export_mi_budget_report,
@@ -87,6 +90,11 @@ urlpatterns = [
         "edit/choose-cost-centre/",
         ChooseCostCentreView.as_view(),
         name="choose_cost_centre",
+    ),
+    path(
+        "edit/choose-year-cost-centre/",
+        ChooseYearCostCentreView.as_view(),
+        name="choose_year_cost_centre",
     ),
     path("view/dit/<int:period>/", DITView.as_view(), name="forecast_dit",),
     path(

@@ -12,6 +12,7 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
 
 from end_of_month.models import EndOfMonthStatus
 
@@ -301,3 +302,25 @@ class ForecastPeriodForm(forms.Form):
                 "class": "govuk-select",
             }
         )
+
+
+# class ForecastFutureYearForm(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#         selected_year = kwargs.pop('selected_period', 0)
+#         if selected_year == 0:
+#             selected_year = get_current_financial_year() + 1
+#
+#         super(ForecastPeriodForm, self).__init__(
+#             *args,
+#             **kwargs,
+#         )
+#         display_list = FinancialYear.financial_year_objects.future_list()
+#         self.fields['selected_period'] = forms.ChoiceField(
+#             choices=display_list,
+#             initial=selected_year
+#         )
+#         self.fields["selected_period"].widget.attrs.update(
+#             {
+#                 "class": "govuk-select",
+#             }
+#         )

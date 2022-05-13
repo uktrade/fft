@@ -3,8 +3,6 @@ import logging
 import re
 
 from django.conf import settings
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Prefetch
 from django.http import JsonResponse
@@ -17,7 +15,6 @@ from django.views.generic.edit import FormView
 
 from core.utils.generic_helpers import get_current_financial_year
 
-from costcentre.forms import MyCostCentresForm
 from costcentre.models import CostCentre
 
 from forecast.forms import (
@@ -33,9 +30,7 @@ from forecast.models import (
 )
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import (
-    can_edit_at_least_one_cost_centre,
     can_forecast_be_edited,
-    get_user_cost_centres,
 )
 from forecast.utils.edit_helpers import (
     BadFormatException,
@@ -84,55 +79,6 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
 
 
 logger = logging.getLogger(__name__)
-
-
-class ChooseCostCentreView(
-    UserPassesTestMixin,
-    FormView,
-):
-    template_name = "forecast/edit/choose_cost_centre.html"
-    form_class = MyCostCentresForm
-    cost_centre = None
-
-    def test_func(self):
-        can_edit = can_edit_at_least_one_cost_centre(
-            self.request.user
-        )
-
-        if not can_edit:
-            raise PermissionDenied()
-
-        return True
-
-    def get_user_cost_centres(self):
-        user_cost_centres = get_user_cost_centres(
-            self.request.user,
-        )
-
-        cost_centres = []
-
-        for (cost_centre) in user_cost_centres:
-            cost_centres.append({
-                "name": cost_centre.cost_centre_name,
-                "code": cost_centre.cost_centre_code,
-            })
-
-        return json.dumps(cost_centres)
-
-    def get_form_kwargs(self):
-        kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        self.cost_centre = form.cleaned_data["cost_centre"]
-        return super(ChooseCostCentreView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            "edit_forecast",
-            kwargs={"cost_centre_code": self.cost_centre.cost_centre_code},
-        )
 
 
 class AddRowView(

@@ -50,6 +50,17 @@ class FinancialYearManager(models.Manager):
             .order_by("-financial_year")
         )
 
+    def future_year_dictionary(self):
+        current_year = \
+            super().get_queryset().filter(current=True).first().financial_year
+
+
+        return super().get_queryset().filter(financial_year__gt=current_year).values(
+                "financial_year",
+                "financial_year_display",
+                ).order_by("financial_year")
+
+
 
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""

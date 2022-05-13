@@ -561,4 +561,5 @@ INPUT
 EditForecast
 f"Error
 type="text" className="govuk-input
+Cost Centre{%
 
