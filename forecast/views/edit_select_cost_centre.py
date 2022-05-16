@@ -11,6 +11,7 @@ from costcentre.forms import MyCostCentresForm
 
 from forecast.utils.access_helpers import (
     can_edit_at_least_one_cost_centre,
+    can_future_forecast_be_edited,
     get_user_cost_centres,
 )
 
@@ -31,21 +32,26 @@ class ChooseCostCentreView(
         if not can_edit:
             raise PermissionDenied()
 
+        self.future_can_be_edited = can_future_forecast_be_edited(self.request.user)
+
         return True
 
     def get_financial_year(self):
         return get_current_financial_year()
 
     def get_financial_years(self):
-        financial_years = [
-            {
-                "financial_year": get_current_financial_year(),
-                "financial_year_display": "Current"
+        if self.future_can_be_edited:
+            financial_years = [
+                {
+                    "financial_year": get_current_financial_year(),
+                    "financial_year_display": "Current"
 
-            }
-        ]
-        for year in FinancialYear.financial_year_objects.future_year_dictionary():
-            financial_years.append(year)
+                }
+            ]
+            for year in FinancialYear.financial_year_objects.future_year_dictionary():
+                financial_years.append(year)
+        else:
+            financial_years = []
         return json.dumps(financial_years)
 
     def get_user_cost_centres(self):
@@ -79,6 +85,6 @@ class ChooseCostCentreView(
             "edit_forecast",
             kwargs={
                 "cost_centre_code": self.cost_centre.cost_centre_code,
-                "financial_year":financial_year,
+                "financial_year": financial_year,
             },
         )

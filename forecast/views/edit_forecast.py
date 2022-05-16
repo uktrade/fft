@@ -411,6 +411,7 @@ class EditForecastView(
     CostCentrePermissionTest, TemplateView,
 ):
     template_name = "forecast/edit/edit.html"
+    _year_tag = None
 
     def class_name(self):
         return "wide-table"
@@ -440,13 +441,15 @@ class EditForecastView(
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():
             self.title = "Edit forecast"
-            actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
+            actual_data = FinancialPeriod.financial_period_info.\
+                actual_period_code_list()
         else:
-            actual_data=[]
-            self.title = f"Edit future forecast: {get_year_display(self.financial_year)}"
+            actual_data = []
+            self.title = \
+                f"Edit future forecast: {get_year_display(self.financial_year)}"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
-        )  # noqa
+        )
         paste_form = PasteForecastForm()
 
         context["form"] = form
@@ -456,6 +459,18 @@ class EditForecastView(
         context["period_display"] = period_display
 
         return context
+
+    @property
+    def year_tag(self):
+        if self._year_tag is None:
+            current_year = get_current_financial_year()
+            if self.financial_year > current_year:
+                self._year_tag = (
+                    f"Future forecast for {get_year_display(self.financial_year)}"
+                )
+            else:
+                self._year_tag = ""
+        return self._year_tag
 
 
 # TODO check what to do for future years

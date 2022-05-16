@@ -54,11 +54,10 @@ class FinancialYearManager(models.Manager):
         current_year = \
             super().get_queryset().filter(current=True).first().financial_year
 
-        return super().get_queryset().filter(financial_year__gt=current_year).values(
-                "financial_year",
-                "financial_year_display",
-                ).order_by("financial_year")
-
+        return super().get_queryset().filter(financial_year__gt=current_year).\
+            values(
+            "financial_year", "financial_year_display",
+        ).order_by("financial_year")
 
 
 class FinancialYear(BaseModel):
