@@ -441,11 +441,9 @@ class EditForecastView(
         if self.financial_year == get_current_financial_year():
             self.title = "Edit forecast"
             actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
-            self.breadcrumb_url = "choose_cost_centre"
         else:
             actual_data=[]
             self.title = f"Edit future forecast: {get_year_display(self.financial_year)}"
-            self.breadcrumb_url = "choose_year_cost_centre"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
         )  # noqa

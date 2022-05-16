@@ -79,18 +79,3 @@ class ChooseCostCentreView(
                 "financial_year":financial_year,
             },
         )
-
-
-
-class ChooseYearCostCentreView(
-    ChooseCostCentreView):
-
-    template_name = "forecast/edit/choose_year_cost_centre.html"
-    # form_class = MyCostCentresYearForm
-
-    def get_year_list(self):
-        a = FinancialYear.financial_year_objects.future_year_dictionary()
-        return FinancialYear.financial_year_objects.future_year_dictionary()
-
-    def get_financial_year(self):
-        return get_current_financial_year() + 1
