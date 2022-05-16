@@ -37,6 +37,13 @@ class ChooseCostCentreView(
     def get_financial_year(self):
         return get_current_financial_year()
 
+    def get_financial_years(self):
+        # TODO get from logic
+        financial_years = [
+            { "code": "current", "year": 2021 },
+            { "code": "21/22", "year": 2022 },
+        ]
+        return json.dumps(financial_years)
 
     def get_user_cost_centres(self):
         user_cost_centres = get_user_cost_centres(
