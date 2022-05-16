@@ -4,6 +4,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.generic.edit import FormView
 from django.urls import reverse
 
+from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.forms import MyCostCentresForm
@@ -36,11 +37,15 @@ class ChooseCostCentreView(
         return get_current_financial_year()
 
     def get_financial_years(self):
-        # TODO get from logic
         financial_years = [
-            { "code": "current", "year": 2021 },
-            { "code": "21/22", "year": 2022 },
+            {
+                "financial_year": get_current_financial_year(),
+                "financial_year_display": "Current"
+
+            }
         ]
+        for year in FinancialYear.financial_year_objects.future_year_dictionary():
+            financial_years.append(year)
         return json.dumps(financial_years)
 
     def get_user_cost_centres(self):

@@ -52,7 +52,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                     >
                         {financialYears.map((financialYear, index) => {
                             return <option key={index}
-                                           value={financialYear.year}>{financialYear.code}</option>
+                                           value={financialYear.financial_year}>{financialYear.financial_year_display}</option>
                         })}
                     </select>
                 </div>
