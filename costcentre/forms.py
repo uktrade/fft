@@ -101,49 +101,27 @@ class MyCostCentresForm(forms.Form):
         if user.has_perm("costcentre.edit_forecast_all_cost_centres"):
             accept_global_perms = True
 
-        # self.base_fields['cost_centre'].queryset = get_objects_for_user(
-        #     user,
-        #     "costcentre.change_costcentre",
-        #     accept_global_perms=accept_global_perms,
-        # )
+        self.base_fields['cost_centre'].queryset = get_objects_for_user(
+            user,
+            "costcentre.change_costcentre",
+            accept_global_perms=accept_global_perms,
+        )
 
         super(MyCostCentresForm, self).__init__(
             *args,
             **kwargs,
         )
 
-    # cost_centre = forms.ModelChoiceField(
-    #     queryset=None,
-    #     widget=Select(),
-    # )
-    #
-    # cost_centre.widget.attrs.update(
-    #     {
-    #         "class": "govuk-select",
-    #     }
-    # )
+    cost_centre = forms.ModelChoiceField(
+        queryset=None,
+        widget=Select(),
+    )
 
-
-from core.models import FinancialYear
-
-class MyCostCentresYearForm(MyCostCentresForm):
-    def __init__(self, *args, **kwargs):
-        selected_year = kwargs.pop('selected_period', 0)
-        if selected_year == 0:
-            selected_year = get_current_financial_year() + 1
-
-        super(MyCostCentresYearForm, self).__init__(
-            *args,
-            **kwargs,
-        )
-
-        display_list = FinancialYear.financial_year_objects.future_list()
-        self.fields['selected_year'] = forms.ChoiceField(
-            choices=display_list,
-            initial=selected_year
-        )
-        a = 1
-
+    cost_centre.widget.attrs.update(
+        {
+            "class": "govuk-select",
+        }
+    )
 
 
 class UserModelChoiceField(forms.ModelChoiceField):

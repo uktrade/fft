@@ -10,7 +10,6 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
         const timer = () => {
             setTimeout(() => {
                 if (window.costCentres) {
-                    console.log(window.financialYears)
                     setCostCentres(window.costCentres)
                     setDisplayedCentres(window.costCentres)
                     setForecastFinYear(window.currentFinancialYear)
