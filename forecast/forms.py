@@ -12,7 +12,6 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
 
 from end_of_month.models import EndOfMonthStatus
 
