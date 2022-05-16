@@ -562,4 +562,8 @@ EditForecast
 f"Error
 type="text" className="govuk-input
 Cost Centre{%
+export_forecast_data_cost_centre
+data</a>
+view.cost_centre_code
+0 &&
 

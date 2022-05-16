@@ -18,6 +18,7 @@
     {% render_front_end_script %}
     <script>
         window.costCentres = {{ view.get_user_cost_centres|safe }};
+        window.currentFinancialYear = {{ view.get_financial_year|safe }};
         window.financialYears = {{ view.get_financial_years|safe }};
     </script>
 {% endblock %}
