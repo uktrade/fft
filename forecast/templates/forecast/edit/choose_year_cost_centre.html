@@ -12,9 +12,8 @@
 
 {% block content %}
 
-    <h3 class="govuk-heading-l">My cost centres</h3>
         <label class="govuk-label" for="selected_period">
-            Selected financial year:
+            Financial year:
         </label>
     <select name="selected_year" class="govuk-select" id="id_selected_year">
         {% for year in view.get_year_list %}
@@ -25,6 +24,7 @@
         {% endfor %}
 
     </select>
+    <h3 class="govuk-heading-l">My cost centres</h3>
     <div id="cost-centre-list-app"></div>
 {% endblock %}
 {% block scripts %}

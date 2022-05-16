@@ -13,7 +13,7 @@ from django.urls import (
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
 
 from costcentre.models import CostCentre
 
@@ -438,8 +438,14 @@ class EditForecastView(
 
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
-
-        actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
+        if self.financial_year == get_current_financial_year():
+            self.title = "Edit forecast"
+            actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
+            self.breadcrumb_url = "choose_cost_centre"
+        else:
+            actual_data=[]
+            self.title = f"Edit future forecast: {get_year_display(self.financial_year)}"
+            self.breadcrumb_url = "choose_year_cost_centre"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
         )  # noqa
