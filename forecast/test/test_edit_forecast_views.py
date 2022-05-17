@@ -314,7 +314,7 @@ class ChooseCostCentreTest(BaseTestCase):
             email=self.test_user.email
         )
 
-        # Check that no cost centres can be accessed
+        # Check that the cost centres can be accessed
         response = self.client.get(
             reverse(
                 "choose_cost_centre"
