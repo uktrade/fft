@@ -65,7 +65,6 @@ class ChooseCostCentreView(
             cost_centres.append({
                 "name": cost_centre.cost_centre_name,
                 "code": cost_centre.cost_centre_code,
-                "year": financial_year,
             })
 
         return json.dumps(cost_centres)
