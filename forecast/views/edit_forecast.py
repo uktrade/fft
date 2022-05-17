@@ -411,7 +411,7 @@ class EditForecastView(
     CostCentrePermissionTest, TemplateView,
 ):
     template_name = "forecast/edit/edit.html"
-    _year_tag = None
+    _future_year_display = None
 
     def class_name(self):
         return "wide-table"
@@ -446,7 +446,7 @@ class EditForecastView(
         else:
             actual_data = []
             self.title = \
-                f"Edit future forecast: {get_year_display(self.financial_year)}"
+                f"Edit future forecast: {self.future_year_display}"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
         )
@@ -461,16 +461,14 @@ class EditForecastView(
         return context
 
     @property
-    def year_tag(self):
-        if self._year_tag is None:
+    def future_year_display(self):
+        if self._future_year_display is None:
             current_year = get_current_financial_year()
             if self.financial_year > current_year:
-                self._year_tag = (
-                    f"Future forecast for {get_year_display(self.financial_year)}"
-                )
+                self._future_year_display = get_year_display(self.financial_year)
             else:
-                self._year_tag = ""
-        return self._year_tag
+                self._future_year_display = ""
+        return self._future_year_display
 
 
 # TODO check what to do for future years

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import (
     Permission,
 )
@@ -22,6 +23,7 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
+    FutureForecastEditState,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import FinancialCodeFactory
@@ -214,6 +216,8 @@ class EditFutureForecastLockTest(BaseTestCase):
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
+        self.future_year = get_current_financial_year() + 1
+        get_financial_year_obj(self.future_year)
 
     def test_edit_forecast_view_permission(self):
         # Add forecast view permission
@@ -225,10 +229,12 @@ class EditFutureForecastLockTest(BaseTestCase):
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
+
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                "financial_year": self.future_year,
             }
         )
 
@@ -238,7 +244,7 @@ class EditFutureForecastLockTest(BaseTestCase):
         self.assertEqual(resp.status_code, 200)
 
         # Lock forecast for editing
-        edit_lock = ForecastEditState.objects.get()
+        edit_lock = FutureForecastEditState.objects.get()
         edit_lock.lock_date = datetime.now()
         edit_lock.save()
 
@@ -252,7 +258,7 @@ class EditFutureForecastLockTest(BaseTestCase):
 
         # Add edit whilst lock permission
         can_edit_whilst_locked = Permission.objects.get(
-            codename='can_edit_whilst_locked'
+            codename='can_edit_future_whilst_locked'
         )
         self.test_user.user_permissions.add(can_edit_whilst_locked)
         self.test_user.save()
@@ -262,5 +268,3 @@ class EditFutureForecastLockTest(BaseTestCase):
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
-
-

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="app-pane__content">
- {% if view.year_tag %}
+ {% if view.future_year_display %}
         <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
           <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -11,7 +11,7 @@
           </div>
           <div class="govuk-notification-banner__content">
             <p class="govuk-notification-banner__heading">
-              You are editing {{ view.year_tag }}
+              You are editing {{ view.future_year_display }}
             </p>
           </div>
         </div>

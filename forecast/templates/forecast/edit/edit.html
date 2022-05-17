@@ -26,9 +26,9 @@
         </div>
     </div>
 
-         {% if view.year_tag %}
+         {% if view.future_year_display %}
             <div>
-                <strong class="govuk-tag">{{ view.year_tag }}</strong>
+                <strong class="govuk-tag">Future Forecast for {{ view.future_year_display }}</strong>
             </div>
     {% endif %}
 
