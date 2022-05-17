@@ -60,7 +60,6 @@ class ChooseCostCentreView(
         )
 
         cost_centres = []
-        financial_year = self.get_financial_year()
         for (cost_centre) in user_cost_centres:
             cost_centres.append({
                 "name": cost_centre.cost_centre_name,
