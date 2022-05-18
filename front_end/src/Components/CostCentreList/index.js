@@ -45,7 +45,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
         <Fragment>
             {financialYears.length > 0 &&
                 <div className="govuk-form-group">
-                    <label className="govuk-label" htmlFor="sort">Financial Year</label>
+                    <label className="govuk-label" htmlFor="sort">Choose financial year</label>
                     <select className="govuk-select" id="sort" name="sort"
                             onChange={(e) => {
                                 console.log(e.target.options[e.target.selectedIndex].label)
