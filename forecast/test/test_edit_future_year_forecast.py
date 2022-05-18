@@ -137,7 +137,7 @@ class EditFutureForecastFigureViewTest(BaseTestCase):
         self.client.force_login(self.test_user)
         current_year = get_current_financial_year()
         future_year_obj = get_financial_year_obj(current_year + 1)
-        self.financial_year = future_year_obj.financial_year
+        self.future_financial_year = future_year_obj.financial_year
 
         self.nac_code = 999999
         self.cost_centre_code = 888812
@@ -166,19 +166,18 @@ class EditFutureForecastFigureViewTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
     def test_edit_forecast_(self):
-
         update_forecast_figure_url = reverse(
             "update_forecast_figure",
             kwargs={
                 "cost_centre_code": self.cost_centre_code,
-                "financial_year": self.financial_year,
+                "financial_year": self.future_financial_year,
             },
         )
 
         amount = 12345678
         assert (
             ForecastMonthlyFigure.objects.filter(
-                financial_year_id=self.financial_year
+                financial_year_id=self.future_financial_year
             ).count()
             == 0
         )
@@ -193,7 +192,7 @@ class EditFutureForecastFigureViewTest(BaseTestCase):
         )
         assert (
             ForecastMonthlyFigure.objects.filter(
-                financial_year_id=self.financial_year
+                financial_year_id=self.future_financial_year
             ).count()
             == 1
         )
@@ -201,11 +200,59 @@ class EditFutureForecastFigureViewTest(BaseTestCase):
         self.assertEqual(resp.status_code, 200)
 
         assert (
-            ForecastMonthlyFigure.objects.filter(financial_year_id=self.financial_year)
+            ForecastMonthlyFigure.objects.filter(
+                financial_year_id=self.future_financial_year
+            )
             .first()
             .amount
             == amount
         )
+
+
+class EditForecastShowWarningTest(BaseTestCase):
+    def setUp(self):
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
+
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+        self.client.force_login(self.test_user)
+
+        self.cost_centre_code = 888812
+
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+        self.current_financial_year = get_current_financial_year()
+        self.future_year = get_current_financial_year() + 1
+        get_financial_year_obj(self.future_year)
+
+    def test_current_forecast(self):
+        # Checks the 'Edit-Forecast tab' returns an 'OK' status code
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year,
+            },
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+
+    def test_future_forecast(self):
+        # Checks the 'Edit-Forecast tab' returns an 'OK' status code
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.future_year,
+            },
+        )
+
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
 
 
 class EditFutureForecastLockTest(BaseTestCase):
@@ -221,21 +268,18 @@ class EditFutureForecastLockTest(BaseTestCase):
 
     def test_edit_forecast_view_permission(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
+                "cost_centre_code": self.cost_centre_code,
                 "financial_year": self.future_year,
-            }
+            },
         )
 
         # Should be allowed
@@ -258,7 +302,7 @@ class EditFutureForecastLockTest(BaseTestCase):
 
         # Add edit whilst lock permission
         can_edit_whilst_locked = Permission.objects.get(
-            codename='can_edit_future_whilst_locked'
+            codename="can_edit_future_whilst_locked"
         )
         self.test_user.user_permissions.add(can_edit_whilst_locked)
         self.test_user.save()
@@ -268,3 +312,7 @@ class EditFutureForecastLockTest(BaseTestCase):
 
         # Should be allowed
         self.assertEqual(resp.status_code, 200)
+
+
+class SelectCostCentreForEditTest(BaseTestCase):
+    pass
