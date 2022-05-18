@@ -48,7 +48,6 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                     <label className="govuk-label" htmlFor="sort">Choose financial year</label>
                     <select className="govuk-select" id="sort" name="sort"
                             onChange={(e) => {
-                                console.log(e.target.options[e.target.selectedIndex].label)
                                 setForecastFinYearDisplay(e.target.options[e.target.selectedIndex].label.toLowerCase())
                                 setForecastFinYear(e.target.value)
                             }}
