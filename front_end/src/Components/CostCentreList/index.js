@@ -4,6 +4,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
     const [costCentres, setCostCentres] = useState([])
     const [displayedCentres, setDisplayedCentres] = useState([])
     const [financialYears, setFinancialYears] = useState([])
+    const [forecastFinYearDisplay, setForecastFinYearDisplay] = useState(null)
     const [forecastFinYear, setForecastFinYear] = useState(null)
 
     useEffect(() => {
@@ -12,6 +13,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                 if (window.costCentres) {
                     setCostCentres(window.costCentres)
                     setDisplayedCentres(window.costCentres)
+                    setForecastFinYearDisplay(window.currentFinancialYearDisplay)
                     setForecastFinYear(window.currentFinancialYear)
                     if (window.financialYears){
                         setFinancialYears(window.financialYears)
@@ -46,7 +48,8 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                     <label className="govuk-label" htmlFor="sort">Financial Year</label>
                     <select className="govuk-select" id="sort" name="sort"
                             onChange={(e) => {
-                                console.log(e.target.value)
+                                console.log(e.target.options[e.target.selectedIndex].label)
+                                setForecastFinYearDisplay(e.target.options[e.target.selectedIndex].label.toLowerCase())
                                 setForecastFinYear(e.target.value)
                             }}
                     >
@@ -57,7 +60,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                     </select>
                 </div>
             }
-            <h3 className="govuk-heading-m">You have access to {costCentres.length} cost centres</h3>
+            <h3 className="govuk-heading-m">You have access to {costCentres.length} cost centres for the {forecastFinYearDisplay} financial year</h3>
             <input placeholder="Filter your cost centres" type="text" className="govuk-input"
                 onChange={(e) => {
                     filterCostCentres(e.target.value);

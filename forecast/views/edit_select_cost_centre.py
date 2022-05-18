@@ -39,6 +39,9 @@ class ChooseCostCentreView(
     def get_financial_year(self):
         return get_current_financial_year()
 
+    def get_financial_year_display(self):
+        return "current"
+
     def get_financial_years(self):
         if self.future_can_be_edited:
             financial_years = [
