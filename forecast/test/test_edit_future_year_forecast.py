@@ -336,15 +336,10 @@ class ChooseCostCentreFutureTest(BaseTestCase):
         self.future_year = self.current_year + 1
         get_financial_year_obj(self.future_year)
 
-
     def test_cost_centre_json(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
 
         self.assertEqual(
             response.status_code,
@@ -353,30 +348,18 @@ class ChooseCostCentreFutureTest(BaseTestCase):
 
         year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "Current"}}'  # noqa E501
 
-        self.assertContains(
-            response,
-            year_list
-        )
-
+        self.assertContains(response, year_list)
 
         # Lock future forecast for editing
         edit_lock = FutureForecastEditState.objects.get()
         edit_lock.lock_date = datetime.now()
         edit_lock.save()
 
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
 
         self.assertEqual(
             response.status_code,
             200,
         )
 
-        self.assertNotContains(
-            response,
-            year_list
-        )
-
+        self.assertNotContains(response, year_list)
