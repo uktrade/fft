@@ -566,5 +566,4 @@ export_forecast_data_cost_centre
 data</a>
 view.cost_centre_code
 0 &&
-view.year_tag
-
+f'window.financialYears
