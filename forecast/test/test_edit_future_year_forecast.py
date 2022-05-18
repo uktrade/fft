@@ -1,4 +1,7 @@
+from bs4 import BeautifulSoup
+
 from datetime import datetime
+
 from django.contrib.auth.models import (
     Permission,
 )
@@ -229,7 +232,6 @@ class EditForecastShowWarningTest(BaseTestCase):
         get_financial_year_obj(self.future_year)
 
     def test_current_forecast(self):
-        # Checks the 'Edit-Forecast tab' returns an 'OK' status code
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
@@ -237,12 +239,16 @@ class EditForecastShowWarningTest(BaseTestCase):
                 "financial_year": self.current_financial_year,
             },
         )
-
         response = self.client.get(edit_forecast_url)
         assert response.status_code == 200
+        soup = BeautifulSoup(response.content, features="html.parser")
+        divs = soup.find_all("div", class_="govuk-tag")
+        assert len(divs) == 0
+
+        divs = soup.find_all("div", class_="govuk-notification-banner__content")
+        assert len(divs) == 0
 
     def test_future_forecast(self):
-        # Checks the 'Edit-Forecast tab' returns an 'OK' status code
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
@@ -250,9 +256,13 @@ class EditForecastShowWarningTest(BaseTestCase):
                 "financial_year": self.future_year,
             },
         )
-
         response = self.client.get(edit_forecast_url)
         assert response.status_code == 200
+        soup = BeautifulSoup(response.content, features="html.parser")
+        divs = soup.find_all("div", class_="govuk-tag")
+        assert len(divs) == 1
+        divs = soup.find_all("div", class_="govuk-notification-banner__content")
+        assert len(divs) == 1
 
 
 class EditFutureForecastLockTest(BaseTestCase):
