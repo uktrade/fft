@@ -64,7 +64,7 @@ L1_KEY = {
     IMPORT_CSV_PK_KEY: "Account L1 Code",
     IMPORT_CSV_FIELDLIST_KEY: {
         "account_l1_long_name": "Account L1 Long Name",  # noqa: E501
-        "account_code.field_name": "Accounts Code",
+        "account_code": "Accounts Code",
         "account_l0_code": "Account L0 Code",
     },
 }
