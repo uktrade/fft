@@ -478,4 +478,5 @@ Download MI
 type="submit
 role="alert
 download_budget_name
+clear_financial_codes
 

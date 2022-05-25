@@ -1,5 +1,7 @@
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.core.management.base import CommandError
+
 
 from django.db import connection
 
@@ -117,19 +119,7 @@ class Command(BaseCommand):
             )
             cursor.execute(sql_delete)
 
-            # Don't remove financial codes still in use by future forecast and budget
-            sql_delete = "DELETE FROM forecast_financialcode " \
-                         "WHERE forecast_financialcode NOT IN " \
-                         "(SELECT forecast_financialcode " \
-                         "FROM  forecast_forecastmonthlyfigure " \
-                         "UNION " \
-                         "SELECT forecast_financialcode " \
-                         "FROM  end_of_month_monthlytotalbudget " \
-                         "UNION " \
-                         "SELECT forecast_financialcode " \
-                         "FROM forecast_budgetmonthlyfigure);"
-            cursor.execute(sql_delete)
-
+        call_command("clear_financial_codes")
         self.stdout.write(
             self.style.SUCCESS(
                 f"forecast/actual/budget figures for {current_year_display} "
