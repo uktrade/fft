@@ -25,6 +25,9 @@ class Command(BaseCommand):
                 "FROM  end_of_month_monthlytotalbudget "
                 "UNION "
                 "SELECT financial_code_id "
+                "FROM  end_of_month_monthlyoutturn "
+                "UNION "
+                "SELECT financial_code_id "
                 "FROM forecast_budgetmonthlyfigure);"
             )
             cursor.execute(sql_delete)
