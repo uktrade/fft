@@ -10,6 +10,7 @@ from forecast.models import (
 )
 from forecast.test.factories import FinancialCodeFactory
 
+
 class ClearForecastCommandNoArchiveTest(TestCase):
     def setUp(self):
         self.out = StringIO()
