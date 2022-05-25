@@ -14,7 +14,7 @@ class Command(BaseCommand):
         # The sql is 1000 times faster than queryset.delete()
         count_before = FinancialCode.objects.all().count()
         with connection.cursor() as cursor:
-            # Remove financial codes not used by future forecast and budget
+            # Remove financial codes not used
             sql_delete = (
                 "DELETE FROM forecast_financialcode "
                 "WHERE ID NOT IN "

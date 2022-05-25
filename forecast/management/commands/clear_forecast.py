@@ -105,6 +105,13 @@ class Command(BaseCommand):
             )
             cursor.execute(sql_delete)
 
+            sql_delete = (
+                f"DELETE FROM end_of_month_monthlyoutturn "
+                f"WHERE financial_year_id = {current_year} "
+                f"OR financial_year_id IS NULL;"
+            )
+            cursor.execute(sql_delete)
+
             # Delete archived forecasts for future years
             sql_delete = (
                 "DELETE FROM forecast_forecastmonthlyfigure "
