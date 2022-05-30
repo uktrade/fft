@@ -22,6 +22,8 @@ def export_user_iterator(queryset):
 
 
 def download_users_queryset():
+    # Include users with any type of permission or part of any group
+    # and superusers
     return User.objects.filter(
         Q(is_active=True)
         & (
