@@ -106,7 +106,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
                     "forecast_cost_centre",
                     kwargs={
                         "cost_centre_code": self.cost_centre_code,
-                        "period": 0,
+                        "period": self.financial_year,
                     },
                 )
             )

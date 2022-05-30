@@ -5,12 +5,13 @@ from django.views.generic.edit import FormView
 from django.urls import reverse
 
 from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
 
 from costcentre.forms import MyCostCentresForm
 
 from forecast.utils.access_helpers import (
     can_edit_at_least_one_cost_centre,
+    can_forecast_be_edited,
     can_future_forecast_be_edited,
     get_user_cost_centres,
 )
@@ -33,28 +34,36 @@ class ChooseCostCentreView(
             raise PermissionDenied()
 
         self.future_can_be_edited = can_future_forecast_be_edited(self.request.user)
-
+        self.current_year_can_be_edited = can_forecast_be_edited(self.request.user)
         return True
 
     def get_financial_year(self):
-        return get_current_financial_year()
+        current_financial_year = get_current_financial_year()
+        if self.current_year_can_be_edited:
+            return current_financial_year
+        else:
+            # Theoretically, I should check that the next year exists.
+            # But if it does not exist, it will be created later on
+            return current_financial_year + 1
 
     def get_financial_year_display(self):
-        return "current"
+        if self.current_year_can_be_edited:
+            return "current"
+        return get_year_display(get_current_financial_year()+1)
 
     def get_financial_years(self):
+        financial_years = []
         if self.future_can_be_edited:
-            financial_years = [
-                {
-                    "financial_year": get_current_financial_year(),
-                    "financial_year_display": "Current"
-
-                }
-            ]
+            if self.current_year_can_be_edited:
+                financial_years.append = [
+                    {
+                        "financial_year": get_current_financial_year(),
+                        "financial_year_display": "Current"
+                    }
+                ]
             for year in FinancialYear.financial_year_objects.future_year_dictionary():
                 financial_years.append(year)
-        else:
-            financial_years = []
+
         return json.dumps(financial_years)
 
     def get_user_cost_centres(self):

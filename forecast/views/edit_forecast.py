@@ -31,6 +31,7 @@ from forecast.models import (
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import (
     can_forecast_be_edited,
+    can_future_forecast_be_edited,
 )
 from forecast.utils.edit_helpers import (
     BadFormatException,
@@ -479,7 +480,8 @@ class EditUnavailableView(
 
     def dispatch(self, request, *args, **kwargs):
         # If edit is open, redirect to choose CC page
-        if can_forecast_be_edited(request.user):
+        if can_forecast_be_edited(request.user) \
+                | can_future_forecast_be_edited(request.user):
             return redirect(reverse("choose_cost_centre"))
 
         return super(EditUnavailableView, self).dispatch(
