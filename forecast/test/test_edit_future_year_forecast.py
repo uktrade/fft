@@ -26,6 +26,7 @@ from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
+    ForecastEditState,
     FutureForecastEditState,
 )
 from forecast.permission_shortcuts import assign_perm
@@ -336,6 +337,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
         self.future_year = self.current_year + 1
         get_financial_year_obj(self.future_year)
 
+
     def test_cost_centre_json(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
@@ -361,5 +363,35 @@ class ChooseCostCentreFutureTest(BaseTestCase):
             response.status_code,
             200,
         )
-
         self.assertNotContains(response, year_list)
+
+    def test_cost_centre_future_json(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        response = self.client.get(reverse("choose_cost_centre"))
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+
+        current_year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "Current"}}'  # noqa E501
+        # No year selection available
+        self.assertContains(response, current_year_list)
+
+        # Lock current forecast for editing
+        edit_lock = ForecastEditState.objects.get()
+        edit_lock.lock_date = datetime.now()
+        edit_lock.save()
+
+        response = self.client.get(reverse("choose_cost_centre"))
+
+        self.assertEqual(
+            response.status_code,
+            200,
+        )
+        # Current year is not on the page
+        self.assertNotContains(response, current_year_list)
+        future_year_list = f'window.financialYears = [{{"financial_year": {self.future_year},'  # noqa E501
+        self.assertContains(response, future_year_list)
+
