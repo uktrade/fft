@@ -472,11 +472,23 @@ class EditForecastView(
         return self._future_year_display
 
 
-# TODO check what to do for future years
+
 class EditUnavailableView(
     TemplateView,
 ):
     template_name = "forecast/edit/edit_locked.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        financial_year = kwargs["financial_year"]
+        if financial_year == get_current_financial_year():
+            context["title"] = "Forecast editing is locked"
+            context["message"] = \
+                "Editing is unavailable until month end processing has been completed."
+        else:
+            context["title"] = "Future forecast editing is locked"
+            context["message"] = "Editing future years forecast is not available at the moment."
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         # If edit is open, redirect to choose CC page

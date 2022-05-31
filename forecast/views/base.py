@@ -99,7 +99,14 @@ class CostCentrePermissionTest(UserPassesTestMixin):
 
     def handle_no_permission(self):
         if self.edit_not_available:
-            return redirect(reverse("edit_unavailable"))
+            return redirect(
+                reverse(
+                    "edit_unavailable",
+                    kwargs={
+                             "financial_year": self.financial_year,
+                    },
+                )
+            )
         else:
             return redirect(
                 reverse(

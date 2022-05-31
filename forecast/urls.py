@@ -76,7 +76,7 @@ urlpatterns = [
         name="edit_forecast"
     ),
     path(
-        "edit/editing-unavailable/",
+        "edit/editing-unavailable/<int:financial_year>/",
         EditUnavailableView.as_view(),
         name="edit_unavailable",
     ),

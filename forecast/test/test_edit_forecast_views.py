@@ -399,7 +399,10 @@ class EditForecastLockTest(BaseTestCase):
         # Should be redirected to lock page
         resp = self.client.get(edit_forecast_url)
 
-        editing_locked_url = reverse("edit_unavailable")
+        editing_locked_url = reverse(
+                                    "edit_unavailable",
+                                    kwargs={"financial_year": get_current_financial_year(),},
+                             )
 
         assert resp.status_code == 302
         assert resp.url == editing_locked_url
