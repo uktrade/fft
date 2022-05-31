@@ -26,9 +26,7 @@ class ChooseCostCentreView(
     cost_centre = None
 
     def test_func(self):
-        can_edit = can_edit_at_least_one_cost_centre(
-            self.request.user
-        )
+        can_edit = can_edit_at_least_one_cost_centre(self.request.user)
 
         if not can_edit:
             raise PermissionDenied()
@@ -49,16 +47,18 @@ class ChooseCostCentreView(
     def get_financial_year_display(self):
         if self.current_year_can_be_edited:
             return "current"
-        return get_year_display(get_current_financial_year()+1)
+        return get_year_display(get_current_financial_year() + 1)
 
     def get_financial_years(self):
         financial_years = []
         if self.future_can_be_edited:
             if self.current_year_can_be_edited:
-                financial_years.append ({
+                financial_years.append(
+                    {
                         "financial_year": get_current_financial_year(),
-                        "financial_year_display": "Current"
-                    })
+                        "financial_year_display": "Current",
+                    }
+                )
 
             for year in FinancialYear.financial_year_objects.future_year_dictionary():
                 financial_years.append(year)
@@ -71,11 +71,13 @@ class ChooseCostCentreView(
         )
 
         cost_centres = []
-        for (cost_centre) in user_cost_centres:
-            cost_centres.append({
-                "name": cost_centre.cost_centre_name,
-                "code": cost_centre.cost_centre_code,
-            })
+        for cost_centre in user_cost_centres:
+            cost_centres.append(
+                {
+                    "name": cost_centre.cost_centre_name,
+                    "code": cost_centre.cost_centre_code,
+                }
+            )
 
         return json.dumps(cost_centres)
 
