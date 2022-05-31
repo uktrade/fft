@@ -307,9 +307,11 @@ class EditFutureForecastLockTest(BaseTestCase):
         resp = self.client.get(edit_forecast_url)
 
         editing_locked_url = reverse(
-                                    "edit_unavailable",
-                                    kwargs={"financial_year": self.future_year,},
-                             )
+            "edit_unavailable",
+            kwargs={
+                "financial_year": self.future_year,
+            },
+        )
 
         assert resp.status_code == 302
         assert resp.url == editing_locked_url
@@ -339,7 +341,6 @@ class ChooseCostCentreFutureTest(BaseTestCase):
         self.current_year = get_current_financial_year()
         self.future_year = self.current_year + 1
         get_financial_year_obj(self.future_year)
-
 
     def test_cost_centre_json(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
@@ -398,3 +399,31 @@ class ChooseCostCentreFutureTest(BaseTestCase):
         future_year_list = f'window.financialYears = [{{"financial_year": {self.future_year},'  # noqa E501
         self.assertContains(response, future_year_list)
 
+
+class EditUnavailableTest(BaseTestCase):
+    def test_edit_not_available(self):
+        # Lock forecast for editing
+        edit_lock = ForecastEditState.objects.get()
+        edit_lock.lock_date = datetime.now()
+        edit_lock.save()
+
+        # Lock future forecast for editing
+        edit_lock = FutureForecastEditState.objects.get()
+        edit_lock.lock_date = datetime.now()
+        edit_lock.save()
+
+        self.client.force_login(self.test_user)
+        editing_locked_url = reverse(
+            "edit_unavailable",
+            kwargs={
+                "financial_year": get_current_financial_year(),
+            },
+        )
+
+        response = self.client.get(editing_locked_url)
+        print(f"response = {response.status_code}")
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+
+        cost_centre_links = soup.find_all("a", class_="cost-centre-heading-link")

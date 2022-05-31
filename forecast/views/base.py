@@ -102,9 +102,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             return redirect(
                 reverse(
                     "edit_unavailable",
-                    kwargs={
-                             "financial_year": self.financial_year,
-                    },
+                    kwargs={"financial_year": self.financial_year, },
                 )
             )
         else:

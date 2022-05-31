@@ -55,6 +55,12 @@ from forecast.views.base import (
 )
 
 
+UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
+UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE = "Future forecast editing is locked"
+UNAVAILABLE_FORECAST_EDIT_MESSAGE = "Editing is unavailable until month end processing has been completed."  # noqa: E501
+UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not available at the moment."  # noqa: E501
+
+
 def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_codes = (
         FinancialCode.objects.filter(
@@ -472,7 +478,6 @@ class EditForecastView(
         return self._future_year_display
 
 
-
 class EditUnavailableView(
     TemplateView,
 ):
@@ -482,12 +487,12 @@ class EditUnavailableView(
         context = super().get_context_data(**kwargs)
         financial_year = kwargs["financial_year"]
         if financial_year == get_current_financial_year():
-            context["title"] = "Forecast editing is locked"
-            context["message"] = \
-                "Editing is unavailable until month end processing has been completed."
+            context["title"] = UNAVAILABLE_FORECAST_EDIT_TITLE
+            context["message"] = UNAVAILABLE_FORECAST_EDIT_MESSAGE
+
         else:
-            context["title"] = "Future forecast editing is locked"
-            context["message"] = "Editing future years forecast is not available at the moment."
+            context["title"] = UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE
+            context["message"] = UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE
         return context
 
     def dispatch(self, request, *args, **kwargs):
