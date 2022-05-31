@@ -22,6 +22,10 @@ from costcentre.test.factories import (
     CostCentreFactory,
 )
 
+from forecast.views.edit_forecast import (
+    UNAVAILABLE_FORECAST_EDIT_TITLE,
+    UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE,
+)
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
@@ -401,7 +405,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
 
 
 class EditUnavailableTest(BaseTestCase):
-    def test_edit_not_available(self):
+    def setUp(self):
         # Lock forecast for editing
         edit_lock = ForecastEditState.objects.get()
         edit_lock.lock_date = datetime.now()
@@ -413,6 +417,8 @@ class EditUnavailableTest(BaseTestCase):
         edit_lock.save()
 
         self.client.force_login(self.test_user)
+
+    def test_edit_not_available(self):
         editing_locked_url = reverse(
             "edit_unavailable",
             kwargs={
@@ -421,9 +427,27 @@ class EditUnavailableTest(BaseTestCase):
         )
 
         response = self.client.get(editing_locked_url)
-        print(f"response = {response.status_code}")
         assert response.status_code == 200
 
         soup = BeautifulSoup(response.content, features="html.parser")
+        title_string = soup.find_all(text=UNAVAILABLE_FORECAST_EDIT_TITLE)
+        assert len(title_string) == 1
 
-        cost_centre_links = soup.find_all("a", class_="cost-centre-heading-link")
+        future_title_string = soup.find_all(text=UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE)
+        assert len(future_title_string) == 0
+
+    def test_future_edit_not_available(self):
+        editing_locked_url = reverse(
+            "edit_unavailable",
+            kwargs={
+                "financial_year": get_current_financial_year() + 1,
+            },
+        )
+        response = self.client.get(editing_locked_url)
+        assert response.status_code == 200
+
+        soup = BeautifulSoup(response.content, features="html.parser")
+        title_string = soup.find_all(text=UNAVAILABLE_FORECAST_EDIT_TITLE)
+        assert len(title_string) == 0
+        future_title_string = soup.find_all(text=UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE)
+        assert len(future_title_string) == 1
