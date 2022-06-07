@@ -36,9 +36,9 @@ def get_current_financial_year():
 
 
 def get_year_display(year):
-    y = FinancialYear.objects.filter(financial_year=year)
-    if y.count():
-        return y.first().financial_year_display
+    year_queryset = FinancialYear.objects.filter(financial_year=year)
+    if year_queryset.count():
+        return year_queryset.first().financial_year_display
     else:
         return "Invalid year"
 

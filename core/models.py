@@ -11,6 +11,8 @@ from .metamodels import (
     BaseModel,
 )
 
+from core.utils.generic_helpers import get_current_financial_year
+
 
 class CommandLog(BaseModel):
     command_name = models.CharField(max_length=500)
@@ -36,9 +38,7 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_list(self):
-        current_year = \
-            super().get_queryset().filter(current=True).first().financial_year
-
+        current_year = get_current_financial_year()
         return list(
             super()
             .get_queryset()
@@ -51,6 +51,7 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_year_dictionary(self):
+
         current_year = \
             super().get_queryset().filter(current=True).first().financial_year
 
