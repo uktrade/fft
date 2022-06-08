@@ -10,7 +10,7 @@ from upload_file.models import FileUpload
 
 
 class Command(CommandUpload):
-    help = "Upload the Trial Balance for a specific month"
+    help = "Upload the Trial Balance for a specific month and year"
 
     def add_arguments(self, parser):
         parser.add_argument("path")
@@ -21,7 +21,7 @@ class Command(CommandUpload):
         path = options["path"]
         month = options["month"]
         year = options["financial_year"]
-        file_name = self.path_to_upload(path, 'xslx')
+        file_name = self.path_to_upload(path, 'xlsx')
 
         fileobj = FileUpload(
             document_file_name=file_name,
