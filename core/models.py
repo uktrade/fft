@@ -36,7 +36,8 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_list(self):
-        current_year = FinancialYear.objects.filter(current=True).last()
+        current_year = \
+            super().get_queryset().filter(current=True).first().financial_year
         return list(
             super()
             .get_queryset()
@@ -49,7 +50,6 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_year_dictionary(self):
-
         current_year = \
             super().get_queryset().filter(current=True).first().financial_year
 
