@@ -80,7 +80,7 @@ function EditForecast() {
             setSheetUpdating(true)
 
             postData(
-                `/forecast/paste-forecast/${window.cost_centre}/`,
+                `/forecast/paste-forecast/${window.cost_centre}/${window.financial_year}`,
                 payload
             ).then((response) => {
                 if (response.status === 200) {

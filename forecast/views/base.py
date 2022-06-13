@@ -78,10 +78,6 @@ class CostCentrePermissionTest(UserPassesTestMixin):
         else:
             self.financial_year = get_current_financial_year()
 
-        has_permission = can_edit_cost_centre(
-            self.request.user,
-            self.cost_centre_code,
-        )
         # Cannot edit the past!
         if self.financial_year < current_financial_year:
             self.edit_not_available = True
@@ -96,18 +92,26 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             self.edit_not_available = True
             return False
 
-        return has_permission
+        return can_edit_cost_centre(
+            self.request.user,
+            self.cost_centre_code,
+        )
 
     def handle_no_permission(self):
         if self.edit_not_available:
-            return redirect(reverse("edit_unavailable"))
+            return redirect(
+                reverse(
+                    "edit_unavailable",
+                    kwargs={"financial_year": self.financial_year, },
+                )
+            )
         else:
             return redirect(
                 reverse(
                     "forecast_cost_centre",
                     kwargs={
                         "cost_centre_code": self.cost_centre_code,
-                        "period": 0,
+                        "period": self.financial_year,
                     },
                 )
             )

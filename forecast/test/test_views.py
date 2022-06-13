@@ -66,7 +66,7 @@ class ViewPermissionsTest(BaseTestCase):
             "forecast_cost_centre",
             kwargs={
                 "cost_centre_code": self.cost_centre_code,
-                "period": 0,
+                "period": get_current_financial_year(),
             }
         )
 

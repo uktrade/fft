@@ -314,7 +314,7 @@ class ChooseCostCentreTest(BaseTestCase):
             email=self.test_user.email
         )
 
-        # Check that no cost centres can be accessed
+        # Check that the cost centres can be accessed
         response = self.client.get(
             reverse(
                 "choose_cost_centre"
@@ -399,7 +399,12 @@ class EditForecastLockTest(BaseTestCase):
         # Should be redirected to lock page
         resp = self.client.get(edit_forecast_url)
 
-        editing_locked_url = reverse("edit_unavailable")
+        editing_locked_url = reverse(
+            "edit_unavailable",
+            kwargs={
+                "financial_year": get_current_financial_year(),
+            },
+        )
 
         assert resp.status_code == 302
         assert resp.url == editing_locked_url
@@ -520,7 +525,7 @@ class ViewEditTest(BaseTestCase):
         self.directorate = DirectorateFactory(
             group=self.group,
         )
-
+        self.financial_year = get_current_financial_year()
         self.test_cost_centre = 888812
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
@@ -533,7 +538,8 @@ class ViewEditTest(BaseTestCase):
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code
+                'cost_centre_code': self.cost_centre_code,
+                'financial_year': self.financial_year
             }
         )
 
@@ -547,7 +553,7 @@ class ViewEditTest(BaseTestCase):
             "forecast_cost_centre",
             kwargs={
                 'cost_centre_code': self.cost_centre_code,
-                "period": 0,
+                "period": self.financial_year,
             }
         )
 
@@ -564,7 +570,7 @@ class ViewEditTest(BaseTestCase):
             "forecast_group",
             kwargs={
                 'group_code': self.group.group_code,
-                'period': 0,
+                'period': self.financial_year,
             }
         )
 
@@ -578,7 +584,7 @@ class ViewEditTest(BaseTestCase):
             "forecast_directorate",
             kwargs={
                 'directorate_code': self.directorate.directorate_code,
-                'period': 0,
+                'period': self.financial_year,
             }
         )
 

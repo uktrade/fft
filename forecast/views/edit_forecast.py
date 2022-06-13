@@ -3,8 +3,6 @@ import logging
 import re
 
 from django.conf import settings
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Prefetch
 from django.http import JsonResponse
@@ -15,9 +13,8 @@ from django.urls import (
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
 
-from costcentre.forms import MyCostCentresForm
 from costcentre.models import CostCentre
 
 from forecast.forms import (
@@ -33,9 +30,8 @@ from forecast.models import (
 )
 from forecast.serialisers import FinancialCodeSerializer
 from forecast.utils.access_helpers import (
-    can_edit_at_least_one_cost_centre,
     can_forecast_be_edited,
-    get_user_cost_centres,
+    can_future_forecast_be_edited,
 )
 from forecast.utils.edit_helpers import (
     BadFormatException,
@@ -57,6 +53,12 @@ from forecast.views.base import (
     NoCostCentreCodeInURLError,
     NoFinancialYearInURLError,
 )
+
+
+UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
+UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE = "Future forecast editing is locked"
+UNAVAILABLE_FORECAST_EDIT_MESSAGE = "Editing is unavailable until month end processing has been completed."  # noqa: E501
+UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not available at the moment."  # noqa: E501
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
@@ -84,55 +86,6 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
 
 
 logger = logging.getLogger(__name__)
-
-
-class ChooseCostCentreView(
-    UserPassesTestMixin,
-    FormView,
-):
-    template_name = "forecast/edit/choose_cost_centre.html"
-    form_class = MyCostCentresForm
-    cost_centre = None
-
-    def test_func(self):
-        can_edit = can_edit_at_least_one_cost_centre(
-            self.request.user
-        )
-
-        if not can_edit:
-            raise PermissionDenied()
-
-        return True
-
-    def get_user_cost_centres(self):
-        user_cost_centres = get_user_cost_centres(
-            self.request.user,
-        )
-
-        cost_centres = []
-
-        for (cost_centre) in user_cost_centres:
-            cost_centres.append({
-                "name": cost_centre.cost_centre_name,
-                "code": cost_centre.cost_centre_code,
-            })
-
-        return json.dumps(cost_centres)
-
-    def get_form_kwargs(self):
-        kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def form_valid(self, form):
-        self.cost_centre = form.cleaned_data["cost_centre"]
-        return super(ChooseCostCentreView, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse(
-            "edit_forecast",
-            kwargs={"cost_centre_code": self.cost_centre.cost_centre_code},
-        )
 
 
 class AddRowView(
@@ -327,7 +280,7 @@ class PasteForecastRowsView(
                     check_cols_match(cell_data)
 
                     set_monthly_figure_amount(
-                        cost_centre_code, cell_data,
+                        cost_centre_code, cell_data, self.financial_year
                     )
             except (
                 BadFormatException,
@@ -350,9 +303,9 @@ class PasteForecastRowsView(
                 financial_code_serialiser.data,
                 safe=False,
             )
-        except Exception:
+        except Exception as ex:
             logger.fatal(
-                "Error when pasting forecast data",
+                f"Error when pasting forecast data {ex}",
                 exc_info=True,
             )
             return JsonResponse(
@@ -465,6 +418,7 @@ class EditForecastView(
     CostCentrePermissionTest, TemplateView,
 ):
     template_name = "forecast/edit/edit.html"
+    _future_year_display = None
 
     def class_name(self):
         return "wide-table"
@@ -492,11 +446,17 @@ class EditForecastView(
 
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
-
-        actual_data = FinancialPeriod.financial_period_info.actual_period_code_list()
+        if self.financial_year == get_current_financial_year():
+            self.title = "Edit forecast"
+            actual_data = FinancialPeriod.financial_period_info.\
+                actual_period_code_list()
+        else:
+            actual_data = []
+            self.title = \
+                f"Edit future forecast: {self.future_year_display}"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
-        )  # noqa
+        )
         paste_form = PasteForecastForm()
 
         context["form"] = form
@@ -507,16 +467,38 @@ class EditForecastView(
 
         return context
 
+    @property
+    def future_year_display(self):
+        if self._future_year_display is None:
+            current_year = get_current_financial_year()
+            if self.financial_year > current_year:
+                self._future_year_display = get_year_display(self.financial_year)
+            else:
+                self._future_year_display = ""
+        return self._future_year_display
 
-# TODO check what to do for future years
+
 class EditUnavailableView(
     TemplateView,
 ):
     template_name = "forecast/edit/edit_locked.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        financial_year = kwargs["financial_year"]
+        if financial_year == get_current_financial_year():
+            context["title"] = UNAVAILABLE_FORECAST_EDIT_TITLE
+            context["message"] = UNAVAILABLE_FORECAST_EDIT_MESSAGE
+
+        else:
+            context["title"] = UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE
+            context["message"] = UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE
+        return context
+
     def dispatch(self, request, *args, **kwargs):
         # If edit is open, redirect to choose CC page
-        if can_forecast_be_edited(request.user):
+        if can_forecast_be_edited(request.user) \
+                | can_future_forecast_be_edited(request.user):
             return redirect(reverse("choose_cost_centre"))
 
         return super(EditUnavailableView, self).dispatch(

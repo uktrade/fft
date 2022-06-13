@@ -2,12 +2,14 @@ from django.urls import path
 
 from forecast.views.edit_forecast import (
     AddRowView,
-    ChooseCostCentreView,
     EditForecastFigureView,
     EditForecastView,
     EditUnavailableView,
     ErrorView,
     PasteForecastRowsView,
+)
+from forecast.views.edit_select_cost_centre import (
+    ChooseCostCentreView,
 )
 from forecast.views.export.mi_report_source import (
     export_mi_budget_report,
@@ -74,7 +76,7 @@ urlpatterns = [
         name="edit_forecast"
     ),
     path(
-        "edit/editing-unavailable/",
+        "edit/editing-unavailable/<int:financial_year>/",
         EditUnavailableView.as_view(),
         name="edit_unavailable",
     ),
@@ -171,7 +173,7 @@ urlpatterns = [
     path("upload-actuals/", UploadActualsView.as_view(), name="upload_actuals_file"),
     path("upload-budgets/", UploadBudgetView.as_view(), name="upload_budget_file"),
     path(
-        "paste-forecast/<cost_centre_code>/",
+        "paste-forecast/<cost_centre_code>/<financial_year>",
         PasteForecastRowsView.as_view(),
         name="paste_forecast",
     ),

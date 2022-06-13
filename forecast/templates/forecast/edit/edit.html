@@ -26,8 +26,15 @@
         </div>
     </div>
 
+    {% if view.future_year_display %}
+            <div class="govuk-tag">
+                <strong>Future Forecast for {{ view.future_year_display }}</strong>
+            </div>
+    {% endif %}
+
+
     <div id="forecast-app"></div>
-    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
+    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  view.financial_year%}" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ paste_form }}
     </form>
