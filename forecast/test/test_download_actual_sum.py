@@ -1,6 +1,3 @@
-# create data
-# check that sum of actuals exists in current year
-# check it is missing in future years
 import io
 
 from django.contrib.auth.models import Permission
@@ -14,7 +11,6 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
-from core.models import FinancialYear
 from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
@@ -33,15 +29,11 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
-from forecast.test.test_utils import create_budget
-
 from forecast.utils.view_header_definition import (
-    budget_header,
     forecast_total_header,
-    variance_header,
-    variance_outturn_header,
     year_to_date_header,
 )
+
 
 class DownloadForecastHierarchyTest(BaseTestCase):
     def setUp(self):
@@ -73,7 +65,7 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         year_obj = get_financial_year_obj(current_year)
         next_year_obj = get_financial_year_obj(self.next_year)
         # Create actuals
-        for period in range(1,4):
+        for period in range(1, 4):
             period_obj = FinancialPeriod.objects.get(financial_period_code=period)
             period_obj.actual_loaded = True
             period_obj.save()
@@ -82,17 +74,15 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             programme=programme_obj,
             cost_centre=cost_centre,
             natural_account_code=nac_obj,
-            project_code=project_obj
+            project_code=project_obj,
         )
         financial_code_obj.save
         self.amount_apr_current_year = 987654300
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
-            amount=self.amount_apr_current_year
+            amount=self.amount_apr_current_year,
         )
         apr_figure.save
         self.amount_apr_next_year = 9898989800
@@ -102,23 +92,17 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             ),
             amount=self.amount_apr_next_year,
             financial_code=financial_code_obj,
-            financial_year=next_year_obj
+            financial_year=next_year_obj,
         )
         next_year_april_figures.save
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
-
     def test_current_year_download(self):
         dit_url = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={"period": 0}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": 0})
         )
 
         file = io.BytesIO(dit_url.content)
@@ -139,10 +123,7 @@ class DownloadForecastHierarchyTest(BaseTestCase):
 
     def test_next_year_download(self):
         dit_url = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={"period": self.next_year}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": self.next_year})
         )
 
         file = io.BytesIO(dit_url.content)
@@ -156,8 +137,5 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         assert ws["AO1"].value == forecast_total_header
         assert ws["AO1"].value == forecast_total_header
         # Check year to date does exists
-        assert ws["AQ1"].value == None
-        assert ws["AQ2"].value == None
-
-
-
+        assert ws["AQ1"].value is None
+        assert ws["AQ2"].value is None

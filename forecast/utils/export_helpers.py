@@ -192,7 +192,7 @@ def export_forecast_to_excel( # noqa C901
                 f"=SUM({first_figure_col}{row_count}:{last_actual_col}{row_count})"
             )
         else:
-            if display_future_years == False:
+            if not display_future_years:
                 ws[f"{year_to_date_col}{row_count}"].value = 0
 
         # Formula for calculating the full year
