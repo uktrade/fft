@@ -569,5 +569,7 @@ view.cost_centre_code
 f'window.financialYears
 financial year</h3
 Forecast/Actuals
-Formula
+clear_financial_codes
+Upload the Trial Balance for a specific month and year
+
 
