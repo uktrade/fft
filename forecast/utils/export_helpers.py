@@ -11,7 +11,7 @@ from core.utils.export_helpers import (
     EXCEL_TYPE,
     EXC_TAB_NAME_LEN,
 )
-from core.utils.generic_helpers import today_string
+from core.utils.generic_helpers import get_current_financial_year, today_string
 
 from end_of_month.utils import monthly_variance_exists
 from forecast.models import FinancialPeriod
@@ -78,14 +78,17 @@ def forecast_query_iterator(
         yield row
 
 
-def create_headers(keys_dict, columns_dict, period_list, show_monthly_variance):
+def create_headers(
+        keys_dict, columns_dict, period_list, show_monthly_variance, show_spent_to_date
+):
     k = list(keys_dict.values())
     k.append(budget_header)
     k.extend(period_list)
     k.append(forecast_total_header)
     k.extend(list(show_monthly_variance.values()))
     k.append(variance_header)
-    k.append(year_to_date_header)
+    if show_spent_to_date:
+        k.append(year_to_date_header)
     k.extend(list(columns_dict.values()))
     return k
 
@@ -97,7 +100,7 @@ def export_forecast_to_excel( # noqa C901
     protect,
     title,
     include_month_total,
-    last_actual_period,
+    period_to_show,
     display_monthly_variance
 ):
     resp = HttpResponse(content_type=EXCEL_TYPE)
@@ -117,11 +120,21 @@ def export_forecast_to_excel( # noqa C901
         ws.protection.formatRows = False
         ws.protection.formatColumns = False
     row_count = 1
-    display_previous_years = last_actual_period > 2000
+
+    current_year = get_current_financial_year()
+    if period_to_show > 2000:
+        display_previous_years = period_to_show < current_year
+        display_future_years = period_to_show > current_year
+    else:
+        display_previous_years = False
+        display_future_years = False
+
     if display_previous_years:
+        # Display adjustments periods when showing datas from previous years
         period_list = FinancialPeriod.financial_period_info.period_display_all_list()
     else:
         period_list = FinancialPeriod.financial_period_info.period_display_list()
+
     howmany_periods = len(period_list)
     monthly_variance_dict = {}
     if display_monthly_variance:
@@ -131,6 +144,7 @@ def export_forecast_to_excel( # noqa C901
         extra_columns_dict,
         period_list,
         monthly_variance_dict,
+        not display_future_years,
     )
     budget_index = header.index(budget_header) + 1
     budget_col = get_column_letter(budget_index)
@@ -139,11 +153,14 @@ def export_forecast_to_excel( # noqa C901
     if display_previous_years:
         # For previous years, all the periods are actuals
         howmany_actuals = howmany_periods
+    elif display_future_years:
+        # No actuals in future forecasts
+        howmany_actuals = 0
     else:
         # Actual month starts at 1 for April,
         # so it can be used as counter of the actual periods
-        if last_actual_period:
-            howmany_actuals = last_actual_period
+        if period_to_show:
+            howmany_actuals = period_to_show
         else:
             # download the current period
             howmany_actuals = FinancialPeriod.financial_period_info.actual_month()
@@ -175,7 +192,8 @@ def export_forecast_to_excel( # noqa C901
                 f"=SUM({first_figure_col}{row_count}:{last_actual_col}{row_count})"
             )
         else:
-            ws[f"{year_to_date_col}{row_count}"].value = 0
+            if display_future_years == False:
+                ws[f"{year_to_date_col}{row_count}"].value = 0
 
         # Formula for calculating the full year
         ws[
