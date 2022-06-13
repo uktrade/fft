@@ -1,5 +1,6 @@
 {% extends "standard_content.html" %}
 {% load django_bootstrap_breadcrumbs %}
+{% load tz %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -24,7 +25,8 @@
             </button>
         </a>
     </p>
-    {% for document in view.downloaded_files %}
+    {% timezone "Europe/London" %}
+        {% for document in view.downloaded_files %}
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <p class="govuk-heading-s">{{ document.file_name }}</p>
@@ -94,4 +96,5 @@
       </div>
     </div>
     {% endfor %}
+    {% endtimezone %}
 {% endblock %}

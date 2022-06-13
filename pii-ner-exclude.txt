@@ -481,3 +481,9 @@ download_budget_name
 clear_financial_codes
 Upload the Trial Balance for a specific month and year
 Europe
+Download OSCAR Return
+OSCAR Returns
+OSCAR Return
+Project Codes{%
+Project Codes</h3
+
