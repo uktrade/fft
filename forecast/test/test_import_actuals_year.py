@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-
 from django.contrib.auth.models import (
      Permission,
 )
@@ -17,7 +15,9 @@ from core.utils.generic_helpers import (
 class UploadActualsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.future_financial_year_display = get_financial_year_obj(get_current_financial_year() +1).financial_year_display
+        self.current_year = get_current_financial_year()
+        # Make sure that at least one year in the future exists
+        get_financial_year_obj(self.current_year+1)
         can_upload_files = Permission.objects.get(
             codename='can_upload_files'
         )
@@ -35,4 +35,7 @@ class UploadActualsTest(BaseTestCase):
             uploaded_actuals_url,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, self.future_financial_year_display)
+        current_year_display = get_year_display(self.current_year)
+        self.assertContains(response, current_year_display)
+        next_year_display = get_year_display(self.current_year+1)
+        self.assertNotContains(response, next_year_display)
