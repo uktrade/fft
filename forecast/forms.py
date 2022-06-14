@@ -151,8 +151,8 @@ class UploadActualsForm(forms.Form):
         )
         current_year = get_current_financial_year()
         self.fields['year'] = forms.ModelChoiceField(
-            queryset=FinancialYear.objects.
-                filter(financial_year__lte=current_year).order_by("-financial_year"),
+            queryset=FinancialYear.objects.filter(financial_year__lte=current_year)
+                    .order_by("-financial_year"),
             empty_label="",
         )
         self.fields['year'].widget.attrs.update(
@@ -161,7 +161,6 @@ class UploadActualsForm(forms.Form):
                 "aria-describedby": "year-hint year-error",
             }
         )
-
 
 
 class UploadBudgetsForm(forms.Form):

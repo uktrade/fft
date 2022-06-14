@@ -1,5 +1,5 @@
 from django.contrib.auth.models import (
-     Permission,
+    Permission,
 )
 from django.urls import reverse
 
@@ -17,14 +17,10 @@ class UploadActualsTest(BaseTestCase):
         self.client.force_login(self.test_user)
         self.current_year = get_current_financial_year()
         # Make sure that at least one year in the future exists
-        get_financial_year_obj(self.current_year+1)
-        can_upload_files = Permission.objects.get(
-            codename='can_upload_files'
-        )
+        get_financial_year_obj(self.current_year + 1)
+        can_upload_files = Permission.objects.get(codename="can_upload_files")
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
-
-
 
     def test_upload_actuals_view(self):
         assert not self.test_user.has_perm("forecast.can_view_forecasts")
@@ -37,5 +33,5 @@ class UploadActualsTest(BaseTestCase):
         self.assertEqual(response.status_code, 200)
         current_year_display = get_year_display(self.current_year)
         self.assertContains(response, current_year_display)
-        next_year_display = get_year_display(self.current_year+1)
+        next_year_display = get_year_display(self.current_year + 1)
         self.assertNotContains(response, next_year_display)
