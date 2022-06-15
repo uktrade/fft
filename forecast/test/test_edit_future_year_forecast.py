@@ -490,6 +490,7 @@ class EditFutureForecastTest(BaseTestCase):
         this_year_figure.save
 
     def test_empty_future_forecast(self):
+        # Tests that there are no emtpy rows derived from forecasts data in other years
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
@@ -501,5 +502,3 @@ class EditFutureForecastTest(BaseTestCase):
         assert response.status_code == 200
         assert str(self.current_year_amount) not in str(response.content)
         assert str(self.nac_code) not in str(response.content)
-
-

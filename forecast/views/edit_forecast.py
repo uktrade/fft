@@ -63,21 +63,20 @@ UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
-
+    # Only selects the financial codes relevant to the financial year being edited.
+    # Financial codes are used in budgets and forecast/actuals.
     forecasts = ForecastMonthlyFigure.objects.filter(
-                    financial_year_id=financial_year,
-                    archived_status__isnull=True,
-                )
-
+        financial_year_id=financial_year,
+        archived_status__isnull=True,
+    )
     budgets = BudgetMonthlyFigure.objects.filter(
-                    financial_year_id=financial_year,
-                    archived_status__isnull=True,
-                )
-
+        financial_year_id=financial_year,
+        archived_status__isnull=True,
+    )
     financial_codes = (
         FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
-            Q(Exists(forecasts.filter(financial_code_id=OuterRef('pk')))) |
-            Q(Exists(budgets.filter(financial_code_id=OuterRef('pk'))))
+            Q(Exists(forecasts.filter(financial_code_id=OuterRef('pk'))))
+            | Q(Exists(budgets.filter(financial_code_id=OuterRef('pk'))))
         )
         .prefetch_related(
             Prefetch(
@@ -92,7 +91,6 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_code_serialiser = FinancialCodeSerializer(
         financial_codes, many=True, context={"financial_year": financial_year}
     )
-    print(f"==== = {financial_codes}")
     return financial_code_serialiser
 
 
