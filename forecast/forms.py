@@ -12,6 +12,7 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
 
 from end_of_month.models import EndOfMonthStatus
 
@@ -132,7 +133,6 @@ class UploadActualsForm(forms.Form):
             "aria-describedby": "file-hint file-error",
         }
     )
-
     period = forms.ModelChoiceField(
         queryset=FinancialPeriod.objects.all(),
         empty_label="",
@@ -144,16 +144,24 @@ class UploadActualsForm(forms.Form):
         }
     )
 
-    year = forms.ModelChoiceField(
-        queryset=FinancialYear.objects.all(),
-        empty_label="",
-    )
-    year.widget.attrs.update(
-        {
-            "class": "govuk-select",
-            "aria-describedby": "year-hint year-error",
-        }
-    )
+    def __init__(self, *args, **kwargs):
+        super(UploadActualsForm, self).__init__(
+            *args,
+            **kwargs,
+        )
+        current_year = get_current_financial_year()
+        self.fields["year"] = forms.ModelChoiceField(
+            queryset=FinancialYear.objects.filter(
+                financial_year__lte=current_year
+            ).order_by("-financial_year"),
+            empty_label="",
+        )
+        self.fields['year'].widget.attrs.update(
+            {
+                "class": "govuk-select",
+                "aria-describedby": "year-hint year-error",
+            }
+        )
 
 
 class UploadBudgetsForm(forms.Form):
