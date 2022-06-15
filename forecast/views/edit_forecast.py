@@ -4,9 +4,8 @@ import re
 
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Prefetch
 from django.http import JsonResponse
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, Prefetch, OuterRef, Q
 from django.shortcuts import redirect
 from django.urls import (
     reverse,
@@ -25,6 +24,7 @@ from forecast.forms import (
     PublishForm,
 )
 from forecast.models import (
+    BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
@@ -64,18 +64,25 @@ UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
 
-    financial_amount_queryset = ForecastMonthlyFigure.objects.filter(
+    forecasts = ForecastMonthlyFigure.objects.filter(
                     financial_year_id=financial_year,
                     archived_status__isnull=True,
                 )
+
+    budgets = BudgetMonthlyFigure.objects.filter(
+                    financial_year_id=financial_year,
+                    archived_status__isnull=True,
+                )
+
     financial_codes = (
         FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
-            Exists(financial_amount_queryset.filter(financial_code_id=OuterRef('pk')))
+            Q(Exists(forecasts.filter(financial_code_id=OuterRef('pk')))) |
+            Q(Exists(budgets.filter(financial_code_id=OuterRef('pk'))))
         )
         .prefetch_related(
             Prefetch(
                 "forecast_forecastmonthlyfigures",
-                queryset=financial_amount_queryset,
+                queryset=forecasts,
                 to_attr="monthly_figure_items",
             ),
             "forecast_forecastmonthlyfigures__financial_period",
@@ -85,7 +92,7 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_code_serialiser = FinancialCodeSerializer(
         financial_codes, many=True, context={"financial_year": financial_year}
     )
-
+    print(f"==== = {financial_codes}")
     return financial_code_serialiser
 
 
@@ -151,24 +158,14 @@ class AddRowView(
     def form_valid(self, form):
         data = form.cleaned_data
 
-        financial_code = FinancialCode.objects.filter(
+        financial_code, _ = FinancialCode.objects.get_or_create(
             cost_centre_id=self.cost_centre_code,
             programme=data["programme"],
             natural_account_code=data["natural_account_code"],
             analysis1_code=data["analysis1_code"],
             analysis2_code=data["analysis2_code"],
             project_code=data["project_code"],
-        ).first()
-
-        if not financial_code:
-            financial_code = FinancialCode.objects.create(
-                cost_centre_id=self.cost_centre_code,
-                programme=data["programme"],
-                natural_account_code=data["natural_account_code"],
-                analysis1_code=data["analysis1_code"],
-                analysis2_code=data["analysis2_code"],
-                project_code=data["project_code"],
-            )
+        )
 
         # Create "actual" monthly figures for past months, otherwise some of the
         # queries used to view the forecast will fail.
@@ -177,7 +174,7 @@ class AddRowView(
         if self.financial_year == get_current_financial_year() \
                 and len(actual_months) > 0:
             for actual_month in actual_months:
-                ForecastMonthlyFigure.objects.create(
+                ForecastMonthlyFigure.objects.get_or_create(
                     financial_code=financial_code,
                     financial_year_id=self.financial_year,
                     financial_period_id=actual_month,
@@ -185,7 +182,7 @@ class AddRowView(
         else:
             # Create at least one entry, to help some of the queries used to view
             # the forecast
-            ForecastMonthlyFigure.objects.create(
+            ForecastMonthlyFigure.objects.get_or_create(
                 financial_code=financial_code,
                 financial_year_id=self.financial_year,
                 financial_period_id=1,
