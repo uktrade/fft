@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Prefetch
 from django.http import JsonResponse
+from django.db.models import Exists, OuterRef
 from django.shortcuts import redirect
 from django.urls import (
     reverse,
@@ -62,17 +63,19 @@ UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not
 
 
 def get_financial_code_serialiser(cost_centre_code, financial_year):
+
+    financial_amount_queryset = ForecastMonthlyFigure.objects.filter(
+                    financial_year_id=financial_year,
+                    archived_status__isnull=True,
+                )
     financial_codes = (
-        FinancialCode.objects.filter(
-            cost_centre_id=cost_centre_code,
+        FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
+            Exists(financial_amount_queryset.filter(financial_code_id=OuterRef('pk')))
         )
         .prefetch_related(
             Prefetch(
                 "forecast_forecastmonthlyfigures",
-                queryset=ForecastMonthlyFigure.objects.filter(
-                    financial_year_id=financial_year,
-                    archived_status__isnull=True,
-                ),
+                queryset=financial_amount_queryset,
                 to_attr="monthly_figure_items",
             ),
             "forecast_forecastmonthlyfigures__financial_period",
@@ -82,6 +85,7 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
     financial_code_serialiser = FinancialCodeSerializer(
         financial_codes, many=True, context={"financial_year": financial_year}
     )
+
     return financial_code_serialiser
 
 

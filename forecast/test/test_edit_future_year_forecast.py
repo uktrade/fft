@@ -451,3 +451,55 @@ class EditUnavailableTest(BaseTestCase):
         assert len(title_string) == 0
         future_title_string = soup.find_all(text=UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE)
         assert len(future_title_string) == 1
+
+
+class EditFutureForecastTest(BaseTestCase):
+    def setUp(self):
+        # Add forecast view permission
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
+
+        self.test_user.user_permissions.add(can_view_forecasts)
+        self.test_user.save()
+        self.client.force_login(self.test_user)
+
+        self.cost_centre_code = 888812
+        nac_obj = NaturalCodeFactory.create()
+        self.nac_code = nac_obj.natural_account_code
+        self.current_year_amount = 12345600
+
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        financial_code_obj = FinancialCode.objects.create(
+            programme=ProgrammeCodeFactory.create(),
+            cost_centre=self.cost_centre,
+            natural_account_code=nac_obj,
+        )
+        financial_code_obj.save
+
+        self.current_financial_year = get_current_financial_year()
+        this_year_figure = ForecastMonthlyFigure.objects.create(
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
+            financial_code=financial_code_obj,
+            financial_year=get_financial_year_obj(self.current_financial_year),
+            amount=self.current_year_amount,
+        )
+        this_year_figure.save
+
+    def test_empty_future_forecast(self):
+        edit_forecast_url = reverse(
+            "edit_forecast",
+            kwargs={
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.current_financial_year + 1,
+            },
+        )
+        response = self.client.get(edit_forecast_url)
+        assert response.status_code == 200
+        assert str(self.current_year_amount) not in str(response.content)
+        assert str(self.nac_code) not in str(response.content)
+
+
