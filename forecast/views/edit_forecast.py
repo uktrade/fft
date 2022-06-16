@@ -62,7 +62,7 @@ UNAVAILABLE_FORECAST_EDIT_MESSAGE = "Editing is unavailable until month end proc
 UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not available at the moment."  # noqa: E501
 
 
-def get_financial_code_serialiser(cost_centre_code, financial_year):
+def get_financial_codes_for_year(cost_centre_code, financial_year):
     # Only selects the financial codes relevant to the financial year being edited.
     # Financial codes are used in budgets and forecast/actuals.
     forecasts = ForecastMonthlyFigure.objects.filter(
@@ -73,11 +73,23 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
         financial_year_id=financial_year,
         archived_status__isnull=True,
     )
-    financial_codes = (
+    return (
         FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
             Q(Exists(forecasts.filter(financial_code_id=OuterRef('pk'))))
             | Q(Exists(budgets.filter(financial_code_id=OuterRef('pk'))))
         )
+    )
+
+
+def get_financial_code_serialiser(cost_centre_code, financial_year):
+    # Only selects the financial codes relevant to the financial year being edited.
+    # Financial codes are used in budgets and forecast/actuals.
+    forecasts = ForecastMonthlyFigure.objects.filter(
+        financial_year_id=financial_year,
+        archived_status__isnull=True,
+    )
+    financial_codes = (
+        get_financial_codes_for_year(cost_centre_code, financial_year)
         .prefetch_related(
             Prefetch(
                 "forecast_forecastmonthlyfigures",
@@ -206,8 +218,8 @@ class PasteForecastRowsView(
             pasted_at_row = form.cleaned_data.get("pasted_at_row", None)
             all_selected = form.cleaned_data.get("all_selected", False)
 
-            financial_codes = FinancialCode.objects.filter(
-                cost_centre_id=self.cost_centre_code,
+            financial_codes = get_financial_codes_for_year(
+                cost_centre_code, self.financial_year
             )
 
             # TODO - introduce a way of checking for
