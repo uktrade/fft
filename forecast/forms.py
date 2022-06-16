@@ -16,8 +16,10 @@ from core.models import FinancialYear
 from end_of_month.models import EndOfMonthStatus
 
 from forecast.models import (
+    BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
+    ForecastMonthlyFigure,
     UnlockedForecastEditor,
 )
 
@@ -52,10 +54,23 @@ class AddForecastRowForm(forms.Form):
         ).first()
 
         if financial_code:
-            raise forms.ValidationError(
-                "A row already exists with these details, "
-                "please amend the values you are supplying"
-            )
+            # Check if it used in the required year or not
+            financial_amount_queryset = ForecastMonthlyFigure.objects.filter(
+                financial_code=financial_code,
+                financial_year_id=self.__financial_year,
+                archived_status__isnull=True,
+            ).first()
+            budget_queryset = BudgetMonthlyFigure.objects.filter(
+                financial_code=financial_code,
+                financial_year_id=self.__financial_year,
+                archived_status__isnull=True,
+            ).first()
+
+            if financial_amount_queryset or budget_queryset:
+                raise forms.ValidationError(
+                    "A row already exists with these details, "
+                    "please amend the values you are supplying"
+                )
 
     programme = forms.ModelChoiceField(
         queryset=ProgrammeCode.objects.filter(
