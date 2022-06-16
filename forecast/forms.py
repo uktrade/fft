@@ -66,7 +66,7 @@ class AddForecastRowForm(forms.Form):
                 archived_status__isnull=True,
             ).first()
 
-            if financial_amount_queryset | budget_queryset:
+            if financial_amount_queryset or budget_queryset:
                 raise forms.ValidationError(
                     "A row already exists with these details, "
                     "please amend the values you are supplying"
