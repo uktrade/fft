@@ -89,7 +89,7 @@ class TestAddForecastRowForm(TestCase):
         )
 
         monthly_figure = ForecastMonthlyFigure(
-            financial_year_id=2019,
+            financial_year_id=self.financial_year,
             financial_period_id=1,
             financial_code=financial_code,
         )
