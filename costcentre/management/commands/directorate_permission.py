@@ -14,10 +14,8 @@ def give_access_to_directorate(directorate, user):
         if user.has_perm("change_costcentre", cost_centre):
             already_assign_list.append(cost_centre)
         else:
-            print(f"In assigned permission {cost_centre}")
             assign_perm("change_costcentre", user, cost_centre)
             assigned_list.append(cost_centre)
-        print(f"user {user.id} cc {cost_centre} permission {user.has_perm('change_costcentre', cost_centre)}")
     return assigned_list, already_assign_list
 
 

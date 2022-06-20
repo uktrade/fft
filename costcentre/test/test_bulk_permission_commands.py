@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from core.test.test_base import TEST_EMAIL
 
+from costcentre.models import CostCentre
 from costcentre.test.factories import CostCentreFactory, DirectorateFactory
 
 from forecast.permission_shortcuts import assign_perm
@@ -14,7 +15,7 @@ FIRST_COST_CENTRE_CODE=888810
 LAST_COST_CENTRE_CODE=888820
 
 
-class CostCentrePermissionsCommandsTest(TestCase):
+class DirectoratePermissionsCommandsTest(TestCase):
     def setUp(self):
         self.out = StringIO()
 
@@ -22,7 +23,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
         test_password = "test_password"
 
         for cc in range (FIRST_COST_CENTRE_CODE, LAST_COST_CENTRE_CODE):
-            cost_centre_obj = CostCentreFactory.create(
+            CostCentreFactory.create(
                 cost_centre_code=cc,
                 directorate=directorate
             )
@@ -35,39 +36,23 @@ class CostCentrePermissionsCommandsTest(TestCase):
         self.test_user.save()
 
     def test_add_directorate_permission(self):
-        # for cc in range(FIRST_COST_CENTRE_CODE, LAST_COST_CENTRE_CODE):
-        #     self.assertFalse(self.test_user.has_perm(
-        #         "change_costcentre",
-        #         cc)
-        #     )
+        for cc in range(FIRST_COST_CENTRE_CODE, LAST_COST_CENTRE_CODE):
+            self.assertFalse(self.test_user.has_perm(
+                "change_costcentre",
+                CostCentre.objects.get(cost_centre_code=cc))
+            )
+
         call_command(
-            "add_user_to_cost_centre",
+            "directorate_permission",
             email=self.test_user.email,
-            cost_centre_code=FIRST_COST_CENTRE_CODE,
+            directorate_code=self.directorate_code,
             stdout=self.out,
         )
 
-        # call_command(
-        #     "directorate_permission",
-        #     email=self.test_user.email,
-        #     directorate_code=self.directorate_code,
-        #     stdout=self.out,
-        # )
-
-        for cc in range(FIRST_COST_CENTRE_CODE, FIRST_COST_CENTRE_CODE+1):
-            print(f"user {self.test_user.id} cc {cc} permission"
-                  f" {self.test_user.has_perm('change_costcentre', cc)}")
-            call_command(
-                "add_user_to_cost_centre",
-                email=self.test_user.email,
-                cost_centre_code=cc,
-                stdout=self.out,
+        for cc in range(FIRST_COST_CENTRE_CODE, LAST_COST_CENTRE_CODE):
+            self.assertTrue(self.test_user.has_perm(
+                "change_costcentre",
+                CostCentre.objects.get(cost_centre_code=cc)
             )
-            print(f"AFTER user {self.test_user.id} cc {cc} permission"
-                  f" {self.test_user.has_perm('change_costcentre', cc)}")
-
-            # self.assertFalse(self.test_user.has_perm(
-            #     "change_costcentre",
-            #     cc)
-            # )
+            )
 
