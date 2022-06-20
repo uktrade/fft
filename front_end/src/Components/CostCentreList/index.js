@@ -3,6 +3,9 @@ import React, { Fragment, useEffect, useState } from 'react'
 const CostCentreList = ({rowIndex, cellKey, format}) => {
     const [costCentres, setCostCentres] = useState([])
     const [displayedCentres, setDisplayedCentres] = useState([])
+    const [financialYears, setFinancialYears] = useState([])
+    const [forecastFinYearDisplay, setForecastFinYearDisplay] = useState(null)
+    const [forecastFinYear, setForecastFinYear] = useState(null)
 
     useEffect(() => {
         const timer = () => {
@@ -10,6 +13,11 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                 if (window.costCentres) {
                     setCostCentres(window.costCentres)
                     setDisplayedCentres(window.costCentres)
+                    setForecastFinYearDisplay(window.currentFinancialYearDisplay)
+                    setForecastFinYear(window.currentFinancialYear)
+                    if (window.financialYears){
+                        setFinancialYears(window.financialYears)
+                    }
                 } else {
                     timer()
                 }
@@ -35,7 +43,23 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
 
     return (
         <Fragment>
-            <h3 className="govuk-heading-m">You have access to {costCentres.length} cost centres</h3>
+            {financialYears.length > 0 &&
+                <div className="govuk-form-group">
+                    <label className="govuk-label" htmlFor="sort">Choose financial year</label>
+                    <select className="govuk-select" id="sort" name="sort"
+                            onChange={(e) => {
+                                setForecastFinYearDisplay(e.target.options[e.target.selectedIndex].label.toLowerCase())
+                                setForecastFinYear(e.target.value)
+                            }}
+                    >
+                        {financialYears.map((financialYear, index) => {
+                            return <option key={index}
+                                           value={financialYear.financial_year}>{financialYear.financial_year_display}</option>
+                        })}
+                    </select>
+                </div>
+            }
+            <h3 className="govuk-heading-m">You have access to {costCentres.length} cost centres for the {forecastFinYearDisplay} financial year</h3>
             <input placeholder="Filter your cost centres" type="text" className="govuk-input"
                 onChange={(e) => {
                     filterCostCentres(e.target.value);
@@ -44,7 +68,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
             <ul className="cost-centre-list">
               {displayedCentres.map((costCentre, index) => {
                 return <li key={index}>
-                    <a href={ `/forecast/edit/${costCentre.code}/` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
+                    <a href={ `/forecast/edit/${costCentre.code}/${forecastFinYear}` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
                 </li>
               })}
             </ul>

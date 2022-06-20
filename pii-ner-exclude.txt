@@ -458,6 +458,44 @@ handle_validated_user
 Control
 Sub Segment
 Project Percentages
+f"ON
+f"{period_id}
+PingdomConfig
+dal_select2
+DjangoTemplates
+ELASTIC_APM_ENVIRONMENT
+ELASTIC_APM_SECRET_TOKEN
+NAME
+VERBOSE_LOOKUPS
+GIT_COMMIT
+CacheControl
+CssFinder
+WhiteNoiseMiddleware
+Budget / Forecast NAC Description
+E501
+Budget Type Display
+Project Codes{%
+Project Codes</h3
+Content-Disposition"
+u"\ufeff
+3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'
+3000-30000-{}-{}-000000-00000-00000-0000-0000-0000'
+Wrong Title'
+Project Percentages'
+Upload Percentage
+"Clear the Cost Centre, Directorate and Group
+self.create_departmental_group('8213CC
+Admin DEL'
+Project 1
+Project 2
+Project 3
+Project 4
+Project 5
+Staff Welfare
+ner_output_file.txt
+Tests 'Edit Forecast'
+Checks Directorate
+r"\t
 Excel
 SQL
 Forecast
@@ -474,10 +512,63 @@ Centre
 E722
 BaseModel
 FinancialPeriod
+<<<<<<< HEAD
+get_monthly_figure_serializer'
+financial_year>/
+view.cost_centre_details.cost_centre_code  view.financial_year %
+gtm.start
+Date().getTime
+https://www.googletagmanager.com/gtm.js?id=
+charset="utf-8"/
+sizes="167x167
+sizes="152x152
+Forecast Tool</span></a
+aria-controls="navigation
+navigation">Menu
+request.path|startswith:'/chartofaccountDIT/
+request.path|startswith:'/gifthospitality/
+Gifts &amp
+href="/download_file
+Download MI
+target="_blank
+Accessibility Statement
+viewBox="0 0 483.2
+height="17
+8.7 39.7 21.8l42.7-27.2A97.63
+GOVUKFrontend.initAll
 Download MI
 type="submit
 role="alert
 download_budget_name
+Luis
+Table
+/Reducers/Edit'
+{ OPEN_FILTER_IF_CLOSED }
+SET_SELECTED_ROW
+selectedRow > -1
+window.actuals && window.actuals.length >
+event.preventDefault
+Tab
+event.shiftKey && document.activeElement
+event.shiftKey &&
+&&
+getCellId(targetRow
+document.activeElement.blur(
+nextId
+targetMonth++
+Jump
+INPUT
+EditForecast
+f"Error
+type="text" className="govuk-input
+Cost Centre{%
+export_forecast_data_cost_centre
+data</a>
+view.cost_centre_code
+0 &&
+f'window.financialYears
+financial year</h3
+Forecast/Actuals
 clear_financial_codes
 Upload the Trial Balance for a specific month and year
 Europe
@@ -486,4 +577,5 @@ OSCAR Returns
 OSCAR Return
 Project Codes{%
 Project Codes</h3
+
 

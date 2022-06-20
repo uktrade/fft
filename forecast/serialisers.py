@@ -32,6 +32,8 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
         return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
+        if obj.financial_year_id > get_current_financial_year():
+            return False
         return obj.financial_period.actual_loaded
 
 
@@ -72,12 +74,13 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
+        financial_year = self.context["financial_year"]
         budget = BudgetMonthlyFigure.objects.values(
             'financial_code',
             'financial_year',
         ).filter(
             financial_code=obj.id,
-            financial_year_id=get_current_financial_year(),
+            financial_year_id=financial_year,
             archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')

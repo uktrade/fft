@@ -17,17 +17,24 @@
 
     <div class="action-bar-wrapper">
         <div id="action-bar"  class="action-bar">
-            <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code view.financial_year %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
               Add a new row
             </a>
-            <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code %}">
+            <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code  view.financial_year %}">
                 Download
             </a>
         </div>
     </div>
 
+    {% if view.future_year_display %}
+            <div class="govuk-tag">
+                <strong>Future Forecast for {{ view.future_year_display }}</strong>
+            </div>
+    {% endif %}
+
+
     <div id="forecast-app"></div>
-    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  %}" method="post" novalidate="novalidate">
+    <form id="id_paste_data_form" action="{% url 'paste_forecast' view.cost_centre_details.cost_centre_code  view.financial_year%}" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ paste_form }}
     </form>
@@ -39,5 +46,6 @@
         window.period_display = {{ period_display|safe }};
         window.table_data = {{ forecast_dump|safe }};
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }}
+        window.financial_year = {{ view.financial_year|safe }}
     </script>
 {% endblock %}
