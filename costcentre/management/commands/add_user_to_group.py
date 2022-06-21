@@ -42,8 +42,16 @@ class Command(BaseCommand):
                 )
             )
             return
+        directorate_list = Directorate.objects.filter(group_id=group_code)
 
-        directorate_list = Directorate.objects.filter(group=group)
+        if directorate_list.count() == 0:
+            self.stdout.write(
+                self.style.ERROR(
+                    f"No cost centre found in this group {group_code}"
+                )
+            )
+            return
+
         group_assigned_cc = []
         group_already_assigned_cc = []
 
