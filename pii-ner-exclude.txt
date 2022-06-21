@@ -582,4 +582,6 @@ f"User
 f"In
 directorate_code=
 GGGG1
+remove_user_from_cost_centre
+
 
