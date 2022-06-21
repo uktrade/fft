@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from costcentre.management.commands.directorate_permission import (
+from costcentre.management.commands.add_user_to_directorate import (
     give_access_to_directorate
 )
 from costcentre.models import DepartmentalGroup, Directorate
