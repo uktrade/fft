@@ -22,6 +22,7 @@ from costcentre.test.factories import (
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
+from core.test.test_base import TEST_COST_CENTRE
 
 from forecast.models import (
     BudgetMonthlyFigure,
@@ -57,7 +58,7 @@ class FutureFigureSetup:
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
             group_code=self.group_code,

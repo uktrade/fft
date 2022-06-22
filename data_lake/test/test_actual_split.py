@@ -8,6 +8,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.test.test_base import TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -30,7 +31,7 @@ class ActualSplitTests(DataLakeTesting):
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
             group_code=self.group_code, group_name=group_name,

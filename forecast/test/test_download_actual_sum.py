@@ -11,7 +11,7 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
-from core.test.test_base import BaseTestCase
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
@@ -42,7 +42,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
         directorate_code = "TestDD"
-        cost_centre_code = 109076
+        cost_centre_code = TEST_COST_CENTRE
+
 
         group = DepartmentalGroupFactory(
             group_code=self.group_code,
