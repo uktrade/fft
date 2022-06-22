@@ -7,7 +7,7 @@ from django.test import (
 )
 
 TEST_EMAIL = "test@test.com"     # /PS-IGNORE
-
+TEST_COST_CENTRE = 888812
 
 @modify_settings(
     MIDDLEWARE={
