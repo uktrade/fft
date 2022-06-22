@@ -12,7 +12,7 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
 )
 
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
@@ -338,7 +338,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
