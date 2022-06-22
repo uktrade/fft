@@ -43,7 +43,7 @@ from forecast.test.test_utils import (
 class ViewPermissionsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -502,7 +502,7 @@ class ViewEditButtonTest(BaseTestCase):
             group=self.group,
         )
 
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code

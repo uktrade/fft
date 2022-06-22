@@ -6,12 +6,12 @@ from forecast.templatetags.forecast_permissions import (
     is_forecast_user,
 )
 
-from core.test.test_base import TEST_EMAIL
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
 
 
 class EditPermissionTest(TestCase):
     def setUp(self):
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
 
     def test_is_forecast_user(self):
         test_user, _ = get_user_model().objects.get_or_create(

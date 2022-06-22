@@ -54,7 +54,7 @@ class EditForecastTest(BaseTestCase):
         self.test_user.save()
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.current_year_amount = 12345600
         self.next_year_amount = 89765400
         self.next_next_year_amount = 1212122100
@@ -148,14 +148,14 @@ class EditFutureForecastFigureViewTest(BaseTestCase):
         self.future_financial_year = future_year_obj.financial_year
 
         self.nac_code = 999999
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.programme = ProgrammeCodeFactory.create()
         self.nac = NaturalCodeFactory.create(
             natural_account_code=self.nac_code,
         )
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -226,7 +226,7 @@ class EditForecastShowWarningTest(BaseTestCase):
         self.test_user.save()
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -274,7 +274,7 @@ class EditFutureForecastLockTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -462,7 +462,7 @@ class EditFutureForecastTest(BaseTestCase):
         self.test_user.save()
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         nac_obj = NaturalCodeFactory.create()
         self.nac_code = nac_obj.natural_account_code
         self.current_year_amount = 12345600

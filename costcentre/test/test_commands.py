@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
 
-from core.test.test_base import TEST_EMAIL
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
 
 from costcentre.test.factories import CostCentreFactory
 
@@ -15,7 +15,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
     def setUp(self):
         self.out = StringIO()
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.test_user_email = TEST_EMAIL
         self.test_password = "test_password"
 

@@ -44,7 +44,6 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         directorate_code = "TestDD"
         cost_centre_code = TEST_COST_CENTRE
 
-
         group = DepartmentalGroupFactory(
             group_code=self.group_code,
             group_name=self.group_name,
