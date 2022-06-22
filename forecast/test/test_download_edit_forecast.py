@@ -201,7 +201,7 @@ class DownloadEditForecastTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # Changes cost_centre_code to one that user can view but NOT edit
-        test_cost_centre_code = 888332
+        test_cost_centre_code = TEST_COST_CENTRE + 1
 
         CostCentreFactory.create(
             cost_centre_code=test_cost_centre_code
