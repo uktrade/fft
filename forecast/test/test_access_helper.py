@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
-from core.test.test_base import BaseTestCase, TEST_EMAIL
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE, TEST_EMAIL
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -38,7 +38,7 @@ User = get_user_model()
 
 class PermissionTestBase(TestCase):
     def setUp(self):
-        self.cost_centre_code = 888332
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
