@@ -125,7 +125,7 @@ class FutureFigureSetup:
 class FutureYearForecastSetup(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = "109189"
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre_name = "Test cost centre"
         self.group_code = "1090TT"
         self.group_name = "Test group name"
