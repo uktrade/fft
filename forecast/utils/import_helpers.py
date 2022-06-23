@@ -253,7 +253,7 @@ class CheckFinancialCode:
         info_tuple = (obj, status, msg)
         return info_tuple
 
-    def __init__(self, file_upload, expenditure_type=None):
+    def __init__(self, file_upload, expenditure_type_list=None):
         self.file_upload = file_upload
         if self.file_upload:
             self.upload_type = self.file_upload.document_type
@@ -271,7 +271,7 @@ class CheckFinancialCode:
         self.project_dict = {}
         # Only used when uploading percentage
         if self.upload_type == FileUpload.PROJECT_PERCENTAGE:
-            self.expenditure_type = expenditure_type
+            self.expenditure_type_list = expenditure_type_list
 
     def validate_info_tuple(self, info_tuple):
         status = info_tuple[status_index]
@@ -323,14 +323,15 @@ class CheckFinancialCode:
                 # Check the type of the NAC
                 if (
                     obj.expenditure_category is None
-                    or self.expenditure_type is None
+                    or self.expenditure_type_list is None
                     or obj.expenditure_category.grouping_description
-                    != self.expenditure_type
+                    not in self.expenditure_type_list
                 ):
                     status = self.CODE_ERROR
+                    currect_type = ",".join(self.expenditure_type_list)
                     msg = (
                         f"The budget category of '{nac}' "
-                        f"is not '{self.expenditure_type}'."
+                        f"is not the currect type ({currect_type})."
                     )
                     info_tuple = (obj, status, msg)
         return self.validate_info_tuple(info_tuple)

@@ -22,6 +22,7 @@ INCOME_PAY_CODE = "Income (Pay)"
 
 EXPENDITURE_TYPE_LIST = [PAY_CODE, INCOME_PAY_CODE]
 
+
 def calculate_expenditure_type_total(
     directorate_code,
     financial_period_id,
@@ -84,7 +85,7 @@ def copy_values(period_id, directorate_code, expenditure_code_list):
         f'INNER JOIN "chartofaccountDIT_expenditurecategory" ec '
         f"ON (nac.expenditure_category_id = ec.id) "
         f"WHERE fm.financial_period_id = {period_id} "
-        f"AND fm.financial_year_id = {financial_year_id} "        
+        f"AND fm.financial_year_id = {financial_year_id} "
         f"AND fm.archived_status_id is null "
         f"AND costcentre_costcentre.directorate_id = '{directorate_code}' "
         f"AND ec.grouping_description in ( {sql_list} '');"
@@ -97,7 +98,7 @@ def copy_values(period_id, directorate_code, expenditure_code_list):
         f"WHERE upload_split_file_splitpayactualfigure.financial_period_id "
         f"= {period_id} "
         f"AND upload_split_file_splitpayactualfigure.financial_year_id "
-        f"= {financial_year_id} "        
+        f"= {financial_year_id} "
         f"AND upload_split_file_splitpayactualfigure.financial_code_id "
         f"= c.financial_code_id;"
     )

@@ -578,4 +578,9 @@ OSCAR Return
 Project Codes{%
 Project Codes</h3
 ec
+f"t.financial_code_id
+f"t.financial_period_id = u.financial_period_id
+u.financial_year_id
+Resource or Capital
+
 
