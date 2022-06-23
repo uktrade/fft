@@ -328,10 +328,10 @@ class CheckFinancialCode:
                     not in self.expenditure_type_list
                 ):
                     status = self.CODE_ERROR
-                    currect_type = ",".join(self.expenditure_type_list)
+                    correct_type = ",".join(self.expenditure_type_list)
                     msg = (
                         f"The budget category of '{nac}' "
-                        f"is not the currect type ({currect_type})."
+                        f"is not the correct type ({correct_type})."
                     )
                     info_tuple = (obj, status, msg)
         return self.validate_info_tuple(info_tuple)

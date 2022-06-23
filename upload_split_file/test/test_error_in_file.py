@@ -46,7 +46,7 @@ class ImportPercentageTest(SplitDataSetup):
         upload_project_percentage_from_file(data_worksheet, file_upload_obj)
         assert (
             f"Row 2 error: The budget category of "
-            f"'{self.natural_account_code_non_pay}' is not '{PAY_CODE}'"
+            f"'{self.natural_account_code_non_pay}' is not the correct type"
             in file_upload_obj.user_error_message
         )
 
