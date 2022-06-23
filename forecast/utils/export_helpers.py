@@ -125,6 +125,8 @@ def export_forecast_to_excel( # noqa C901
     if period_to_show > 2000:
         display_previous_years = period_to_show < current_year
         display_future_years = period_to_show > current_year
+        # As the argument had the year in it, the period to show is not defined.
+        period_to_show = 0
     else:
         display_previous_years = False
         display_future_years = False
