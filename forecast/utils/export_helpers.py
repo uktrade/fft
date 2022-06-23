@@ -229,7 +229,7 @@ def export_query_to_excel(queryset, columns_dict, title, period):
     )
 
 
-def export_edit_to_excel(queryset, key_dict, columns_dict, title):
+def export_edit_to_excel(queryset, key_dict, columns_dict, title, financial_year):
     return export_forecast_to_excel(
-        queryset, key_dict, columns_dict, True, title, True, 0, False
+        queryset, key_dict, columns_dict, True, title, True, int(financial_year), False
     )
