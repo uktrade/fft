@@ -18,12 +18,14 @@ class TransferTooLargeError(Exception):
 
 
 PAY_CODE = "Staff UK (Pay)"
+INCOME_PAY_CODE = "Income (Pay)"
 
+EXPENDITURE_TYPE_LIST = [PAY_CODE, INCOME_PAY_CODE]
 
 def calculate_expenditure_type_total(
     directorate_code,
     financial_period_id,
-    expenditure_type_code,
+    expenditure_type_code_list,
     current_year=True,
     unsplit=True,
 ):
@@ -35,23 +37,30 @@ def calculate_expenditure_type_total(
 
     expenditure_type_field = query_fields.budget_category_name_field
     directorate_field = query_fields.directorate_code_field
+    pay_total = 0
+    for expenditure_type_code in expenditure_type_code_list:
+        kwargs = {
+            "financial_period_id": financial_period_id,
+            expenditure_type_field: expenditure_type_code,
+            directorate_field: directorate_code,
+            "archived_status__isnull": True,
+        }
+        if unsplit:
+            amount_model = ForecastMonthlyFigure
+        else:
+            amount_model = SplitPayActualFigure
+        pay_total_obj = amount_model.objects.filter(**kwargs).aggregate(Sum("amount"))
+        if pay_total_obj["amount__sum"]:
+            pay_total += pay_total_obj["amount__sum"]
+    return pay_total
 
-    kwargs = {
-        "financial_period_id": financial_period_id,
-        expenditure_type_field: expenditure_type_code,
-        directorate_field: directorate_code,
-        "archived_status__isnull": True,
-    }
-    if unsplit:
-        amount_model = ForecastMonthlyFigure
-    else:
-        amount_model = SplitPayActualFigure
-    pay_total = amount_model.objects.filter(**kwargs).aggregate(Sum("amount"))
-    return pay_total["amount__sum"]
 
-
-def copy_values(period_id, directorate_code, expenditure_code):
+def copy_values(period_id, directorate_code, expenditure_code_list):
     financial_year_id = get_current_financial_year()
+    sql_list = ""
+    for expenditure_code in expenditure_code_list:
+        sql_list = f"{sql_list} '{expenditure_code}', "
+
     # clear the previously calculated values
     sql_delete = (
         f"DELETE from public.upload_split_file_splitpayactualfigure "
@@ -75,9 +84,10 @@ def copy_values(period_id, directorate_code, expenditure_code):
         f'INNER JOIN "chartofaccountDIT_expenditurecategory" ec '
         f"ON (nac.expenditure_category_id = ec.id) "
         f"WHERE fm.financial_period_id = {period_id} "
+        f"AND fm.financial_year_id = {financial_year_id} "        
         f"AND fm.archived_status_id is null "
         f"AND costcentre_costcentre.directorate_id = '{directorate_code}' "
-        f"AND ec.grouping_description = '{expenditure_code}' ;"
+        f"AND ec.grouping_description in ( {sql_list} '');"
     )
 
     sql_update = (
@@ -86,6 +96,8 @@ def copy_values(period_id, directorate_code, expenditure_code):
         f"FROM upload_split_file_temporarycalculatedvalues c "
         f"WHERE upload_split_file_splitpayactualfigure.financial_period_id "
         f"= {period_id} "
+        f"AND upload_split_file_splitpayactualfigure.financial_year_id "
+        f"= {financial_year_id} "        
         f"AND upload_split_file_splitpayactualfigure.financial_code_id "
         f"= c.financial_code_id;"
     )
@@ -116,11 +128,10 @@ def copy_values(period_id, directorate_code, expenditure_code):
 
 
 def handle_split_project_by_directorate(
-    financial_period_id, directorate_code, expenditure_code
+    financial_period_id, directorate_code, expenditure_code_list
 ):
-    # for the moment, limit to DDaT
     total_value = calculate_expenditure_type_total(
-        directorate_code, financial_period_id, expenditure_code
+        directorate_code, financial_period_id, expenditure_code_list
     )
 
     # Clear the table used to stored the results while doing the calculations
@@ -162,7 +173,7 @@ def handle_split_project_by_directorate(
         transferred_to_obj.calculated_amount += rounding
         transferred_to_obj.save
 
-    copy_values(financial_period_id, directorate_code, expenditure_code)
+    copy_values(financial_period_id, directorate_code, expenditure_code_list)
 
 
 def handle_split_project(financial_period_id):
@@ -174,5 +185,5 @@ def handle_split_project(financial_period_id):
     for coefficient in coefficient_queryset:
         directorate_code = coefficient.directorate_code
         handle_split_project_by_directorate(
-            financial_period_id, directorate_code, PAY_CODE
+            financial_period_id, directorate_code, EXPENDITURE_TYPE_LIST
         )
