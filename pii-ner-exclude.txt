@@ -582,5 +582,7 @@ f"t.financial_code_id
 f"t.financial_period_id = u.financial_period_id
 u.financial_year_id
 Resource or Capital
+310940
+T123
 
 

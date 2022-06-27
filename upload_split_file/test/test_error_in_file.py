@@ -1,7 +1,5 @@
 import os
 
-from upload_split_file.split_actuals import PAY_CODE
-
 from upload_file.models import FileUpload
 
 from upload_split_file.import_project_percentage import (
