@@ -3,6 +3,8 @@ from unittest.mock import MagicMock
 from django.core.files import File
 from django.test import TestCase
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
     Analysis2Factory,
@@ -30,7 +32,7 @@ class TestAddForecastRowForm(TestCase):
         self.analysis_1_code = "1111111"
         self.analysis_2_code = "2222222"
         self.project_code = "3000"
-
+        self.financial_year = get_current_financial_year()
         self.programme = ProgrammeCodeFactory.create()
         self.cost_centre = NaturalCodeFactory.create(
             natural_account_code=self.nac_code,
@@ -49,6 +51,7 @@ class TestAddForecastRowForm(TestCase):
     def test_valid_data(self):
         form = AddForecastRowForm(
             cost_centre_code=self.cost_centre_code,
+            financial_year=self.financial_year,
             data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,
@@ -63,6 +66,7 @@ class TestAddForecastRowForm(TestCase):
     def test_blank_data(self):
         form = AddForecastRowForm(
             cost_centre_code=self.cost_centre_code,
+            financial_year=self.financial_year,
             data={},
         )
         self.assertFalse(form.is_valid())
@@ -85,7 +89,7 @@ class TestAddForecastRowForm(TestCase):
         )
 
         monthly_figure = ForecastMonthlyFigure(
-            financial_year_id=2019,
+            financial_year_id=self.financial_year,
             financial_period_id=1,
             financial_code=financial_code,
         )
@@ -93,6 +97,7 @@ class TestAddForecastRowForm(TestCase):
 
         form = AddForecastRowForm(
             cost_centre_code=self.cost_centre_code,
+            financial_year=self.financial_year,
             data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,
@@ -132,6 +137,7 @@ class TestAddForecastRowForm(TestCase):
 
         form = AddForecastRowForm(
             cost_centre_code=self.cost_centre_code,
+            financial_year=self.financial_year,
             data={
                 "programme": self.programme.programme_code,
                 "natural_account_code": self.nac_code,

@@ -2,12 +2,14 @@ from django.urls import path
 
 from forecast.views.edit_forecast import (
     AddRowView,
-    ChooseCostCentreView,
     EditForecastFigureView,
     EditForecastView,
     EditUnavailableView,
     ErrorView,
     PasteForecastRowsView,
+)
+from forecast.views.edit_select_cost_centre import (
+    ChooseCostCentreView,
 )
 from forecast.views.export.mi_report_source import (
     export_mi_budget_report,
@@ -64,15 +66,22 @@ from forecast.views.view_forecast.project_details import (
 urlpatterns = [
     path("error/", ErrorView.as_view(), name="error"),
     path(
-        "edit/<int:cost_centre_code>/", EditForecastView.as_view(), name="edit_forecast"
+        "edit/<int:cost_centre_code>/",
+        EditForecastView.as_view(),
+        name="edit_forecast"
     ),
     path(
-        "edit/editing-unavailable/",
+        "edit/<int:cost_centre_code>/<int:financial_year>/",
+        EditForecastView.as_view(),
+        name="edit_forecast"
+    ),
+    path(
+        "edit/editing-unavailable/<int:financial_year>/",
         EditUnavailableView.as_view(),
         name="edit_unavailable",
     ),
     path(
-        "edit/add/<int:cost_centre_code>/",
+        "edit/add/<int:cost_centre_code>/<int:financial_year>/",
         AddRowView.as_view(),
         name="add_forecast_row",
     ),
@@ -164,12 +173,12 @@ urlpatterns = [
     path("upload-actuals/", UploadActualsView.as_view(), name="upload_actuals_file"),
     path("upload-budgets/", UploadBudgetView.as_view(), name="upload_budget_file"),
     path(
-        "paste-forecast/<cost_centre_code>/",
+        "paste-forecast/<cost_centre_code>/<financial_year>",
         PasteForecastRowsView.as_view(),
         name="paste_forecast",
     ),
     path(
-        "update-forecast/<cost_centre_code>/",
+        "update-forecast/<cost_centre_code>/<financial_year>",
         EditForecastFigureView.as_view(),
         name="update_forecast_figure",
     ),
@@ -194,7 +203,7 @@ urlpatterns = [
         name="export_forecast_data_cost_centre",
     ),
     path(
-        "export-edit-forecast-data/<cost_centre>",
+        "export-edit-forecast-data/<cost_centre>/<financial_year>",
         export_edit_forecast_data,
         name="export_edit_forecast_data_cost_centre",
     ),

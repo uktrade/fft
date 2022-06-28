@@ -155,7 +155,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         payload.append("amount", intAmount)
 
         postData(
-            `/forecast/update-forecast/${window.cost_centre}/`,
+            `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
             payload
         ).then((response) => {
             setIsUpdating(false)

@@ -58,7 +58,7 @@ def get_archivable_month():
 
 
 def monthly_variance_exists(period):
-    # The monthly variance is not relevant when we display previous years
+    # The monthly variance is not relevant when we display previous or future years
     # or we display the April archived period
     # or there are no archived period (happens in April)
     # period 0 is used for the current period

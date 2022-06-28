@@ -16,6 +16,7 @@ from forecast.models import (
     FinancialPeriod,
     ForecastEditState,
     ForecastMonthlyFigure,
+    FutureForecastEditState,
     UnlockedForecastEditor,
 )
 
@@ -60,6 +61,10 @@ class ForecastEditStateAdmin(AdminEditOnly, SimpleHistoryAdmin):
     history_list_display = ["locked"]
 
 
+class FutureForecastEditStateAdmin(AdminEditOnly, SimpleHistoryAdmin):
+    history_list_display = ["locked"]
+
+
 class UnlockedForecastEditorAdmin(admin.ModelAdmin):
     list_display_links = None
 
@@ -78,4 +83,5 @@ admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
 admin.site.register(BudgetMonthlyFigure, BudgetAdmin)
 admin.site.register(ForecastEditState, ForecastEditStateAdmin)
+admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
 admin.site.register(UnlockedForecastEditor, UnlockedForecastEditorAdmin)

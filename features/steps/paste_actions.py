@@ -16,6 +16,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from django.test import RequestFactory
 from django.urls import reverse
 
+from core.utils.generic_helpers import get_current_financial_year
+
 from forecast.views.view_forecast.export_forecast_data import (
     export_edit_forecast_data,
 )
@@ -28,7 +30,6 @@ from features.environment import (
 )
 
 from forecast.models import (
-    FinancialCode,
     FinancialPeriod,
 )
 
@@ -113,7 +114,10 @@ def step_impl(context):
 @when(u'the user pastes valid sheet with no changes')
 def step_impl(context):
     factory = RequestFactory()
-    kwargs = {"cost_centre": TEST_COST_CENTRE_CODE}
+    kwargs = {
+        "cost_centre": TEST_COST_CENTRE_CODE,
+        "financial_year": get_current_financial_year()
+    }
     request = factory.get(reverse(
         "export_edit_forecast_data_cost_centre",
         kwargs=kwargs,

@@ -45,7 +45,7 @@ class ForecastQueryFields:
             self.selected_year = current_year
             self.period = period
             self.not_archived_year = True
-        if period > current_year:
+        if period >= current_year:
             self.not_archived_year = True
         self._datamodel = None
 

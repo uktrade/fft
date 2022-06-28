@@ -2,20 +2,34 @@
 
 {% block content %}
 <div class="app-pane__content">
-    <h1 class="govuk-heading-l">Edit forecast</h1>
-    <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code 0 %}" target="_blank" class="govuk-heading-m cost-centre-heading-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
+ {% if view.future_year_display %}
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+              Important
+            </h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+              You are editing {{ view.future_year_display }}
+            </p>
+          </div>
+        </div>
+    {% endif %}
+    <h1 class="govuk-heading-l">{{ view.title }}</h1>
+    <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code view.financial_year %}" target="_blank" class="govuk-heading-m cost-centre-heading-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 Group
             </dt>
-            <a href="{% url 'forecast_group' view.cost_centre_details.group_code 0 %}" target="_blank" class="govuk-summary-list__value group-link">{{ view.cost_centre_details.group }} ({{ view.cost_centre_details.group_code }}) </a>
+            <a href="{% url 'forecast_group' view.cost_centre_details.group_code view.financial_year %}" target="_blank" class="govuk-summary-list__value group-link">{{ view.cost_centre_details.group }} ({{ view.cost_centre_details.group_code }}) </a>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
                 Directorate
             </dt>
-            <a href="{% url 'forecast_directorate' view.cost_centre_details.directorate_code 0 %}" target="_blank" class="govuk-summary-list__value directorate-link">
+            <a href="{% url 'forecast_directorate' view.cost_centre_details.directorate_code view.financial_year %}" target="_blank" class="govuk-summary-list__value directorate-link">
                 {{ view.cost_centre_details.directorate }}
                 ({{ view.cost_centre_details.directorate_code }})
             </a>

@@ -1,5 +1,6 @@
 {% extends "standard_content.html" %}
 {% load django_bootstrap_breadcrumbs %}
+{% load tz %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -29,6 +30,7 @@
             </p>
         </div>
         <div class="govuk-grid-column-three-quarters">
+        {% timezone "Europe/London" %}
             {% for document in view.uploaded_files %}
             <div class="govuk-grid-row">
                 {% if document.status == "error" or document.status == "parsing" or document.status == "processed_error" %}
@@ -124,6 +126,7 @@
                     {% endif %}
             </div>
             {% endfor %}
+        {% endtimezone %}
         </div>
     </div>
 {% endblock %}

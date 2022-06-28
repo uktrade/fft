@@ -12,12 +12,15 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
 
 from end_of_month.models import EndOfMonthStatus
 
 from forecast.models import (
+    BudgetMonthlyFigure,
     FinancialCode,
     FinancialPeriod,
+    ForecastMonthlyFigure,
     UnlockedForecastEditor,
 )
 
@@ -31,6 +34,7 @@ class PublishForm(forms.Form):
 class AddForecastRowForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.__cost_centre_code = kwargs.pop("cost_centre_code")
+        self.__financial_year = kwargs.pop("financial_year")
         forms.Form.__init__(self, *args, **kwargs)
 
     def clean(self):
@@ -51,10 +55,23 @@ class AddForecastRowForm(forms.Form):
         ).first()
 
         if financial_code:
-            raise forms.ValidationError(
-                "A row already exists with these details, "
-                "please amend the values you are supplying"
-            )
+            # Check if it used in the required year or not
+            financial_amount_queryset = ForecastMonthlyFigure.objects.filter(
+                financial_code=financial_code,
+                financial_year_id=self.__financial_year,
+                archived_status__isnull=True,
+            ).first()
+            budget_queryset = BudgetMonthlyFigure.objects.filter(
+                financial_code=financial_code,
+                financial_year_id=self.__financial_year,
+                archived_status__isnull=True,
+            ).first()
+
+            if financial_amount_queryset or budget_queryset:
+                raise forms.ValidationError(
+                    "A row already exists with these details, "
+                    "please amend the values you are supplying"
+                )
 
     programme = forms.ModelChoiceField(
         queryset=ProgrammeCode.objects.filter(
@@ -132,7 +149,6 @@ class UploadActualsForm(forms.Form):
             "aria-describedby": "file-hint file-error",
         }
     )
-
     period = forms.ModelChoiceField(
         queryset=FinancialPeriod.objects.all(),
         empty_label="",
@@ -144,16 +160,24 @@ class UploadActualsForm(forms.Form):
         }
     )
 
-    year = forms.ModelChoiceField(
-        queryset=FinancialYear.objects.all(),
-        empty_label="",
-    )
-    year.widget.attrs.update(
-        {
-            "class": "govuk-select",
-            "aria-describedby": "year-hint year-error",
-        }
-    )
+    def __init__(self, *args, **kwargs):
+        super(UploadActualsForm, self).__init__(
+            *args,
+            **kwargs,
+        )
+        current_year = get_current_financial_year()
+        self.fields["year"] = forms.ModelChoiceField(
+            queryset=FinancialYear.objects.filter(
+                financial_year__lte=current_year
+            ).order_by("-financial_year"),
+            empty_label="",
+        )
+        self.fields['year'].widget.attrs.update(
+            {
+                "class": "govuk-select",
+                "aria-describedby": "year-hint year-error",
+            }
+        )
 
 
 class UploadBudgetsForm(forms.Form):

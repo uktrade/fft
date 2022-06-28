@@ -5,7 +5,6 @@ from django.conf import settings
 
 from core.utils.generic_helpers import (
     check_empty,
-    get_current_financial_year,
 )
 
 from forecast.models import (
@@ -54,7 +53,7 @@ class IncorrectDecimalFormatException(Exception):
 logger = logging.getLogger(__name__)
 
 
-def set_monthly_figure_amount(cost_centre_code, cell_data):  # noqa C901
+def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # noqa C901
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
 
     period_max = FinancialPeriod.objects.filter(
@@ -65,7 +64,7 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):  # noqa C901
         try:
             monthly_figure = ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre__cost_centre_code=cost_centre_code,
-                financial_year__financial_year=get_current_financial_year(),
+                financial_year__financial_year=financial_year,
                 financial_period__financial_period_code=financial_period_month,
                 financial_code__programme__programme_code=check_empty(cell_data[0]),
                 financial_code__natural_account_code__natural_account_code=cell_data[2],
@@ -116,7 +115,7 @@ def set_monthly_figure_amount(cost_centre_code, cell_data):  # noqa C901
                     financial_period_code=financial_period_month,
                 )
                 monthly_figure = ForecastMonthlyFigure.objects.create(
-                    financial_year_id=get_current_financial_year(),
+                    financial_year_id=financial_year,
                     financial_period=financial_period,
                     financial_code=financial_code,
                 )

@@ -13,18 +13,11 @@ from .models import (
 )
 
 
-class FilteredListSerializer(serializers.ListSerializer):
-    def to_representation(self, data):
-        data = data.filter(archived_status__isnull=True)
-        return super(FilteredListSerializer, self).to_representation(data)
-
-
 class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
     month = serializers.SerializerMethodField('get_month')
     actual = serializers.SerializerMethodField('get_actual')
 
     class Meta:
-        list_serializer_class = FilteredListSerializer
         model = ForecastMonthlyFigure
         fields = [
             'actual',
@@ -39,6 +32,8 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
         return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
+        if obj.financial_year_id > get_current_financial_year():
+            return False
         return obj.financial_period.actual_loaded
 
 
@@ -47,7 +42,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
     monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
-        source='forecast_forecastmonthlyfigures',
+        source='monthly_figure_items',
     )
     programme_description = serializers.SerializerMethodField(
         'get_programme_description',
@@ -79,12 +74,13 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
+        financial_year = self.context["financial_year"]
         budget = BudgetMonthlyFigure.objects.values(
             'financial_code',
             'financial_year',
         ).filter(
             financial_code=obj.id,
-            financial_year_id=get_current_financial_year(),
+            financial_year_id=financial_year,
             archived_status=None,
         ).annotate(
             yearly_amount=Sum('amount')
