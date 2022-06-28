@@ -7,7 +7,7 @@ from costcentre.models import CostCentre
 
 
 class Command(BaseCommand):
-    help = "View cost centres associated with a given user"
+    help = "Revoke cost centre edit permission from user"
 
     def add_arguments(self, parser):
         parser.add_argument("--email", help="User's email address", dest="email")
