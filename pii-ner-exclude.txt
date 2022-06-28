@@ -512,7 +512,6 @@ Centre
 E722
 BaseModel
 FinancialPeriod
-<<<<<<< HEAD
 get_monthly_figure_serializer'
 financial_year>/
 view.cost_centre_details.cost_centre_code  view.financial_year %
@@ -583,5 +582,7 @@ f"In
 directorate_code=
 GGGG1
 remove_user_from_cost_centre
+Formula
+
 
 
