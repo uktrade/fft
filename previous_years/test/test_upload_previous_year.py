@@ -15,6 +15,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
+from core.test.test_base import TEST_COST_CENTRE
 
 from costcentre.test.factories import ArchivedCostCentreFactory
 
@@ -43,7 +44,7 @@ class ImportPreviousYearForecastTest(TestCase):
         # 2019 is created when the database is created, so it exists
         self.archived_year = 2019
         self.archived_year_obj = FinancialYear.objects.get(pk=self.archived_year)
-        self.cost_centre_code = "109189"
+        self.cost_centre_code = TEST_COST_CENTRE
         self.natural_account_code = 52191003
         self.programme_code = "310940"
         self.project_code = "0123"

@@ -24,7 +24,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.excel_test_helpers import (
     FakeCell,
     FakeWorkSheet
@@ -65,7 +65,6 @@ from forecast.utils.import_helpers import (
 
 from upload_file.models import FileUpload
 
-TEST_COST_CENTRE = 109189
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = '310940'

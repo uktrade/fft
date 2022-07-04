@@ -14,7 +14,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
@@ -33,7 +33,7 @@ from forecast.models import (
 class DownloadViewTests(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 670911
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -234567
@@ -117,7 +117,7 @@ class DownloadViewTests(BaseTestCase):
 class DownloadMIBudgetViewTests(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 670911
+        self.cost_centre_code = TEST_COST_CENTRE
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -234567

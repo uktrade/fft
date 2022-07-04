@@ -15,7 +15,7 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import make_financial_year_current
 
 from costcentre.test.factories import (
@@ -44,7 +44,7 @@ from upload_split_file.import_project_percentage import (
 
 from upload_split_file.models import PaySplitCoefficient
 
-from upload_split_file.split_actuals import PAY_CODE
+from upload_split_file.split_actuals import INCOME_PAY_CODE, PAY_CODE
 
 COST_CENTRE_CODE_INDEX = 1
 NAC_CODE_INDEX = 2
@@ -141,9 +141,9 @@ class SplitDataSetup(BaseTestCase):
         make_financial_year_current(self.test_year)
         self.test_period = 9
 
-        self.cost_centre_code = 109189
-        self.cost_centre_code1 = 109190
-        self.cost_centre_code2 = 109191
+        self.cost_centre_code = TEST_COST_CENTRE
+        self.cost_centre_code1 = TEST_COST_CENTRE + 1
+        self.cost_centre_code2 = TEST_COST_CENTRE + 2
         self.cost_centre_code_different_directorate = 234567
 
         self.natural_account_code_pay = 52191003
@@ -159,6 +159,9 @@ class SplitDataSetup(BaseTestCase):
         self.directorate_code1 = "T125"
         expenditure_pay_obj = ExpenditureCategoryFactory.create(
             grouping_description=PAY_CODE
+        )
+        income_pay_obj = ExpenditureCategoryFactory.create(
+            grouping_description=INCOME_PAY_CODE
         )
 
         self.directorate_obj = DirectorateFactory.create(
@@ -191,7 +194,7 @@ class SplitDataSetup(BaseTestCase):
         NaturalCodeFactory.create(
             natural_account_code=self.natural_account_code_pay,
             economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
-            expenditure_category=expenditure_pay_obj,
+            expenditure_category=income_pay_obj,
             active=False,
         )
         NaturalCodeFactory.create(

@@ -10,7 +10,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 
 from costcentre.test.factories import ArchivedCostCentreFactory
 
@@ -37,7 +37,7 @@ class PastYearForecastSetup(BaseTestCase):
         assert archived_year_obj is not None
 
         FinancialPeriod.objects.all().update(actual_loaded_previous_year=True)
-        self.cost_centre_code = "109189"
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre_name = "Test cost centre"
         self.group_code = "1090TT"
         self.group_name = "Test group name"

@@ -636,5 +636,21 @@ OSCAR Returns
 OSCAR Return
 Project Codes{%
 Project Codes</h3
+ec
+f"t.financial_code_id
+f"t.financial_period_id = u.financial_period_id
+u.financial_year_id
+Resource or Capital
+310940
+T123
+310940
+00798
+Formula
+f"Cannot
+f"User
+f"In
+directorate_code=
+GGGG1
+remove_user_from_cost_centre
 Formula
 

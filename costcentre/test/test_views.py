@@ -8,7 +8,7 @@ from django.urls import reverse
 import pytest
 
 from core.utils.generic_helpers import get_current_financial_year
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 
 from costcentre.test.factories import (
     ArchivedCostCentreFactory,
@@ -45,7 +45,7 @@ class ViewCostCentreTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
         self.financial_year = FinancialYearFactory(financial_year=2019)
         self.name = "Test"
         self.surname = "FBP"

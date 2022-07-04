@@ -11,7 +11,7 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
-from core.test.test_base import BaseTestCase
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 
@@ -37,7 +37,7 @@ class DownloadProjectDetailTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
             group_code=self.group_code, group_name=self.group_name,

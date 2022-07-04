@@ -12,7 +12,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import CostCentreFactory
@@ -30,7 +30,7 @@ class DownloadMIReportTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
@@ -109,7 +109,7 @@ class DownloadMIReportTest(BaseTestCase):
 class DownloadOscarReportTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
         cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
