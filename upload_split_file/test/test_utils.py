@@ -15,7 +15,7 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import make_financial_year_current
 
 from costcentre.test.factories import (
@@ -141,9 +141,9 @@ class SplitDataSetup(BaseTestCase):
         make_financial_year_current(self.test_year)
         self.test_period = 9
 
-        self.cost_centre_code = 109189
-        self.cost_centre_code1 = 109190
-        self.cost_centre_code2 = 109191
+        self.cost_centre_code = TEST_COST_CENTRE
+        self.cost_centre_code1 = TEST_COST_CENTRE + 1
+        self.cost_centre_code2 = TEST_COST_CENTRE + 2
         self.cost_centre_code_different_directorate = 234567
 
         self.natural_account_code_pay = 52191003

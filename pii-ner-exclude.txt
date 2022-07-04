@@ -583,6 +583,9 @@ u.financial_year_id
 Resource or Capital
 310940
 T123
+310940
+00798
+Formula
 f"Cannot
 f"User
 f"In
@@ -590,6 +593,5 @@ directorate_code=
 GGGG1
 remove_user_from_cost_centre
 Formula
-
 
 

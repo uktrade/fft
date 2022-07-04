@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 from django.core.files import File
 from django.test import TestCase
 
+from core.test.test_base import TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
 
 from chartofaccountDIT.test.factories import (
@@ -28,7 +29,7 @@ from forecast.models import (
 class TestAddForecastRowForm(TestCase):
     def setUp(self):
         self.nac_code = 999999
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.analysis_1_code = "1111111"
         self.analysis_2_code = "2222222"
         self.project_code = "3000"

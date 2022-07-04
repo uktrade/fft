@@ -12,7 +12,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -38,7 +38,7 @@ class DownloadEditForecastTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
 
@@ -201,7 +201,7 @@ class DownloadEditForecastTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # Changes cost_centre_code to one that user can view but NOT edit
-        test_cost_centre_code = 888332
+        test_cost_centre_code = TEST_COST_CENTRE + 1
 
         CostCentreFactory.create(
             cost_centre_code=test_cost_centre_code

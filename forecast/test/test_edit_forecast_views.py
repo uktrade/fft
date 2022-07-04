@@ -19,7 +19,7 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -44,7 +44,7 @@ class AddForecastRowTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.nac_code = 999999
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.analysis_1_code = "1111111"
         self.analysis_2_code = "2222222"
         self.project_code = "3000"
@@ -247,7 +247,7 @@ class ChooseCostCentreTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -364,7 +364,7 @@ class EditForecastLockTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -428,14 +428,14 @@ class EditForecastFigureViewTest(BaseTestCase):
         self.client.force_login(self.test_user)
         self.financial_year = get_current_financial_year()
         self.nac_code = 999999
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.programme = ProgrammeCodeFactory.create()
         self.nac = NaturalCodeFactory.create(
             natural_account_code=self.nac_code,
         )
 
-        self.cost_centre_code = 888812
+        self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -526,7 +526,7 @@ class ViewEditTest(BaseTestCase):
             group=self.group,
         )
         self.financial_year = get_current_financial_year()
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code

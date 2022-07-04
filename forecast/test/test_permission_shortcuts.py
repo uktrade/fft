@@ -6,7 +6,7 @@ from guardian.shortcuts import (
     get_objects_for_user as guardian_get_objects_for_user,
 )
 
-from core.test.test_base import TEST_EMAIL
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -21,7 +21,7 @@ class PermissionShortcutsTest(
     TestCase,
 ):
     def setUp(self):
-        test_cost_centre = 888812
+        test_cost_centre = TEST_COST_CENTRE
 
         self.test_user, _ = get_user_model().objects.get_or_create(
             email=TEST_EMAIL

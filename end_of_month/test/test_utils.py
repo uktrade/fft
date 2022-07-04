@@ -8,6 +8,7 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 
+from core.test.test_base import TEST_COST_CENTRE
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
@@ -70,7 +71,7 @@ class MonthlyFigureSetup:
         self.group_code = "TestGG"
         directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
             group_code=self.group_code, group_name=group_name,
