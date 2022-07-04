@@ -7,7 +7,7 @@ from forecast.permission_shortcuts import assign_perm
 
 
 class Command(BaseCommand):
-    help = "View cost centres associated with a given user"
+    help = "Give cost centre edit permission to a user"
 
     def add_arguments(self, parser):
         parser.add_argument("--email", help="User's email address", dest="email")

@@ -232,7 +232,11 @@ def export_edit_forecast_data(request, cost_centre, financial_year=0):
         )
         title = f"Edit forecast {cost_centre} year {get_year_display(financial_year)}"
         return export_edit_to_excel(
-            q, fields.EDIT_KEYS_DOWNLOAD, fields.EDIT_FORECAST_DOWNLOAD_COLUMNS, title
+            q,
+            fields.EDIT_KEYS_DOWNLOAD,
+            fields.EDIT_FORECAST_DOWNLOAD_COLUMNS,
+            title,
+            financial_year
         )
     else:
         return redirect(reverse("forecast_dit", kwargs={"period": 0, },))

@@ -512,7 +512,6 @@ Centre
 E722
 BaseModel
 FinancialPeriod
-<<<<<<< HEAD
 get_monthly_figure_serializer'
 financial_year>/
 view.cost_centre_details.cost_centre_code  view.financial_year %
@@ -579,6 +578,13 @@ Project Codes{%
 Project Codes</h3
 310940
 00798
+Formula
+f"Cannot
+f"User
+f"In
+directorate_code=
+GGGG1
+remove_user_from_cost_centre
 Formula
 
 
