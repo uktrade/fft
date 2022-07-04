@@ -15,7 +15,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import TEST_EMAIL, BaseTestCase
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
 from costcentre.test.factories import (
@@ -43,7 +43,7 @@ from forecast.test.test_utils import (
 class ViewPermissionsTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -118,7 +118,7 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code,
@@ -325,7 +325,7 @@ class ViewProgrammeDetailsTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         group = DepartmentalGroupFactory(
             group_code=self.group_code,
@@ -502,7 +502,7 @@ class ViewEditButtonTest(BaseTestCase):
             group=self.group,
         )
 
-        self.test_cost_centre = 888812
+        self.test_cost_centre = TEST_COST_CENTRE
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -568,7 +568,7 @@ class ViewEditButtonTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # Changes cost_centre_code to one that user can view but NOT edit
-        self.test_cost_centre = 888332
+        self.test_cost_centre = TEST_COST_CENTRE + 1
         self.cost_centre_code = self.test_cost_centre
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
@@ -601,7 +601,7 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
         self.group_code = "TestGG"
         self.directorate_name = "Test Directorate"
         self.directorate_code = "TestDD"
-        self.cost_centre_code = 109076
+        self.cost_centre_code = TEST_COST_CENTRE
 
         self.group = DepartmentalGroupFactory(
             group_code=self.group_code,

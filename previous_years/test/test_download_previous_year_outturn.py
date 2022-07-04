@@ -26,7 +26,7 @@ class DownloadPastYearForecastTest(PastYearForecastSetup):
         assert ws["D1"].value == "Directorate code"
         assert ws["D2"].value == self.directorate_code
         assert ws["F1"].value == "Cost Centre code"
-        assert ws["F2"].value == self.cost_centre_code
+        assert int(ws["F2"].value) == self.cost_centre_code
 
         assert ws["N1"].value == "PO/Actual NAC"
         assert ws["N2"].value == self.natural_account_code

@@ -576,6 +576,9 @@ OSCAR Returns
 OSCAR Return
 Project Codes{%
 Project Codes</h3
+310940
+00798
+Formula
 f"Cannot
 f"User
 f"In
@@ -583,6 +586,5 @@ directorate_code=
 GGGG1
 remove_user_from_cost_centre
 Formula
-
 
 

@@ -9,7 +9,7 @@ from chartofaccountDIT.test.factories import (
 )
 
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase
+from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 
 from costcentre.test.factories import (
     CostCentreFactory,
@@ -28,7 +28,7 @@ class ImportForecastTest(BaseTestCase):
         self.client.force_login(self.test_user)
         self.test_year = 2019
         self.test_period = 9
-        self.cost_centre_code = "109189"
+        self.cost_centre_code = TEST_COST_CENTRE
         self.natural_account_code = 52191003
         self.programme_code = "310940"
         self.project_code = "0123"
@@ -69,7 +69,7 @@ class ImportForecastTest(BaseTestCase):
         )
         self.assertEqual(FinancialCode.objects.all().count(), 1)
         financial_code_obj = FinancialCode.objects.all().first()
-        self.assertEqual(financial_code_obj.cost_centre_id, self.cost_centre_code)
+        self.assertEqual(int(financial_code_obj.cost_centre_id), self.cost_centre_code)
         self.assertEqual(financial_code_obj.analysis1_code_id, self.analisys1)
         self.assertEqual(financial_code_obj.analysis2_code_id, self.analisys2)
         self.assertEqual(financial_code_obj.project_code_id, self.project_code)
