@@ -25,7 +25,7 @@ from upload_split_file.models import (
     UploadPaySplitCoefficient,
 )
 from upload_split_file.split_actuals import (
-    PAY_CODE,
+    EXPENDITURE_TYPE_LIST,
     handle_split_project,
 )
 
@@ -59,7 +59,7 @@ class UploadProjectPercentages:
         worksheet,
         header_dict,
         file_upload,
-        expenditure_type,
+        expenditure_type_list,
         include_archived=False,
     ):
         self.worksheet = worksheet
@@ -72,7 +72,7 @@ class UploadProjectPercentages:
         self.file_upload = file_upload
         self.rows_to_process = self.worksheet.max_row + 1
         self.include_archived = include_archived
-        self.expenditure_type = expenditure_type
+        self.expenditure_type_list = expenditure_type_list
         self.directorate_code = ""
         self.create_month_dict(header_dict)
 
@@ -261,7 +261,7 @@ class UploadProjectPercentages:
         # This means that we always have a full upload.
         UploadPaySplitCoefficient.objects.all().delete()
         self.check_financial_code = CheckFinancialCode(
-            self.file_upload, self.expenditure_type
+            self.file_upload, self.expenditure_type_list
         )
         self.current_row = 0
         for percentage_row in self.worksheet.rows:
@@ -301,7 +301,11 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
 
     try:
         upload = UploadProjectPercentages(
-            worksheet, header_dict, file_upload, PAY_CODE, include_archived,
+            worksheet,
+            header_dict,
+            file_upload,
+            EXPENDITURE_TYPE_LIST,
+            include_archived,
         )
         upload.read_percentages()
         upload.validate_percentages()

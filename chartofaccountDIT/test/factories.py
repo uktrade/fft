@@ -67,7 +67,7 @@ class NACCategoryFactory(factory.DjangoModelFactory):
     class Meta:
         model = NACCategory
 
-    NAC_category_description = "Test NAC desc"
+    NAC_category_description = factory.Faker("name")
 
 
 class OperatingDeliveryCategoryFactory(factory.DjangoModelFactory):

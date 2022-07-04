@@ -44,7 +44,7 @@ from upload_split_file.import_project_percentage import (
 
 from upload_split_file.models import PaySplitCoefficient
 
-from upload_split_file.split_actuals import PAY_CODE
+from upload_split_file.split_actuals import INCOME_PAY_CODE, PAY_CODE
 
 COST_CENTRE_CODE_INDEX = 1
 NAC_CODE_INDEX = 2
@@ -160,6 +160,9 @@ class SplitDataSetup(BaseTestCase):
         expenditure_pay_obj = ExpenditureCategoryFactory.create(
             grouping_description=PAY_CODE
         )
+        income_pay_obj = ExpenditureCategoryFactory.create(
+            grouping_description=INCOME_PAY_CODE
+        )
 
         self.directorate_obj = DirectorateFactory.create(
             directorate_code=self.directorate_code
@@ -191,7 +194,7 @@ class SplitDataSetup(BaseTestCase):
         NaturalCodeFactory.create(
             natural_account_code=self.natural_account_code_pay,
             economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
-            expenditure_category=expenditure_pay_obj,
+            expenditure_category=income_pay_obj,
             active=False,
         )
         NaturalCodeFactory.create(
