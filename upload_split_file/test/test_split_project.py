@@ -95,10 +95,14 @@ class SplitDataTest(SplitDataSetup):
             2,
         )
         spend_directorate_before = calculate_expenditure_type_total(
-            self.directorate_code, self.test_period, EXPENDITURE_TYPE_LIST,
+            self.directorate_code,
+            self.test_period,
+            EXPENDITURE_TYPE_LIST,
         )
         spend_directorate1_before = calculate_expenditure_type_total(
-            self.directorate_code1, self.test_period, EXPENDITURE_TYPE_LIST,
+            self.directorate_code1,
+            self.test_period,
+            EXPENDITURE_TYPE_LIST,
         )
 
         # Check that the table with split figures is empty
@@ -129,14 +133,14 @@ class SplitDataTest(SplitDataSetup):
         # The total in the unsplit data has not been changed
         result = ForecastMonthlyFigure.objects.all().aggregate(total=Sum("amount"))
         self.assertEqual(
-            result["total"], self.total_amount,
+            result["total"],
+            self.total_amount,
         )
 
 
 class SplitDataWithFutureForecastTest(SplitDataTest):
     def setUp(self):
         super().setUp()
-
 
         # Create the amount to be split
         create_future_monthly_amount(
@@ -147,7 +151,6 @@ class SplitDataWithFutureForecastTest(SplitDataTest):
             99999,
             self.period_obj,
         )
-
 
         create_future_monthly_amount(
             self.cost_centre_code1,
@@ -166,7 +169,6 @@ class SplitDataWithFutureForecastTest(SplitDataTest):
             self.period_obj,
         )
 
-
     def test_split_pay(self):
 
         self.assertEqual(
@@ -176,10 +178,14 @@ class SplitDataWithFutureForecastTest(SplitDataTest):
             3,
         )
         spend_directorate_before = calculate_expenditure_type_total(
-            self.directorate_code, self.test_period, EXPENDITURE_TYPE_LIST,
+            self.directorate_code,
+            self.test_period,
+            EXPENDITURE_TYPE_LIST,
         )
         spend_directorate1_before = calculate_expenditure_type_total(
-            self.directorate_code1, self.test_period, EXPENDITURE_TYPE_LIST,
+            self.directorate_code1,
+            self.test_period,
+            EXPENDITURE_TYPE_LIST,
         )
 
         # Check that the table with split figures is empty

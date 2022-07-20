@@ -100,7 +100,7 @@ def create_monthly_amount(
     cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
 ):
     year_obj = FinancialYear.objects.get(financial_year=get_current_financial_year())
-    return create_monthly_amount_with_year (
+    return create_monthly_amount_with_year(
         cost_centre,
         nac,
         programme_code,
@@ -114,8 +114,10 @@ def create_monthly_amount(
 def create_future_monthly_amount(
     cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
 ):
-    year_obj = FinancialYear.objects.get(financial_year=get_current_financial_year()+1)
-    return create_monthly_amount_with_year (
+    year_obj = FinancialYear.objects.get(
+        financial_year=get_current_financial_year() + 1
+    )
+    return create_monthly_amount_with_year(
         cost_centre,
         nac,
         programme_code,

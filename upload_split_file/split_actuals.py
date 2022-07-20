@@ -9,7 +9,6 @@ from forecast.utils.query_fields import ForecastQueryFields
 from upload_split_file.models import (
     PaySplitCoefficient,
     TemporaryCalculatedValues,
-    SplitPayActualFigure,
 )
 
 
