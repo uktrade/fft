@@ -14,6 +14,7 @@ from previous_years.models import ArchivedForecastData
 
 
 class BudgetViewSet(DataLakeViewSet, FigureFieldData):
+    # for each financial code, returns the total budget for the year
     filename = "Budget"
     budget_title = [
         "Budget",
@@ -34,11 +35,11 @@ class BudgetViewSet(DataLakeViewSet, FigureFieldData):
                     *self.select_related_list
                 )
             )
-            .annotate(year=Value(current_year))
+            .filter(financial_year=current_year)
             .values_list(
                 *self.chart_of_account_field_list,
                 "budget",
-                "year",
+                "financial_year",
             )
         )
 
