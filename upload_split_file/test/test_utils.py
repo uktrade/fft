@@ -15,6 +15,8 @@ from chartofaccountDIT.models import (
 )
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
+
 from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
 from core.utils.generic_helpers import make_financial_year_current
 
@@ -78,20 +80,52 @@ def create_financial_code(
     return financial_code_obj
 
 
-def create_monthly_amount(
-    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+def create_monthly_amount_with_year(
+    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj, year_obj
 ):
     financial_code_obj = create_financial_code(
         cost_centre, nac, programme_code, project_code,
     )
     forecast_figure_obj = ForecastMonthlyFigure.objects.create(
-        financial_year=FinancialYear.objects.get(current=True),
+        financial_year=year_obj,
         financial_period=period_obj,
         financial_code=financial_code_obj,
         amount=monthly_amount,
         starting_amount=monthly_amount,
     )
     return forecast_figure_obj
+
+
+def create_monthly_amount(
+    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+):
+    year_obj = FinancialYear.objects.get(financial_year=get_current_financial_year())
+    return create_monthly_amount_with_year(
+        cost_centre,
+        nac,
+        programme_code,
+        project_code,
+        monthly_amount,
+        period_obj,
+        year_obj
+    )
+
+
+def create_future_monthly_amount(
+    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+):
+    year_obj = FinancialYear.objects.get(
+        financial_year=get_current_financial_year() + 1
+    )
+    return create_monthly_amount_with_year(
+        cost_centre,
+        nac,
+        programme_code,
+        project_code,
+        monthly_amount,
+        period_obj,
+        year_obj
+    )
 
 
 def create_split_data(

@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "upload_split_file.apps.UploadSplitFileConfig",
     "oscar_return.apps.OscarReturnConfig",
     "previous_years.apps.PreviousYearsConfig",
-    "downloadsupport.apps.DownloadSupportConfig",
     "forecast.apps.ForecastConfig",
     "gifthospitality.apps.GifthospitalityConfig",
     "costcentre.apps.CostCentreConfig",

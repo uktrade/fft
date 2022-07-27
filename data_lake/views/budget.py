@@ -1,5 +1,3 @@
-from django.db.models import Value
-
 from core.utils.generic_helpers import get_current_financial_year
 
 from data_lake.views.data_lake_view import DataLakeViewSet
@@ -14,6 +12,7 @@ from previous_years.models import ArchivedForecastData
 
 
 class BudgetViewSet(DataLakeViewSet, FigureFieldData):
+    # returns the total budget for the year for each financial code.
     filename = "Budget"
     budget_title = [
         "Budget",
@@ -34,11 +33,11 @@ class BudgetViewSet(DataLakeViewSet, FigureFieldData):
                     *self.select_related_list
                 )
             )
-            .annotate(year=Value(current_year))
+            .filter(financial_year=current_year)
             .values_list(
                 *self.chart_of_account_field_list,
                 "budget",
-                "year",
+                "financial_year",
             )
         )
 

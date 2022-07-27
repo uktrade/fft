@@ -9,7 +9,6 @@ from forecast.utils.query_fields import ForecastQueryFields
 from upload_split_file.models import (
     PaySplitCoefficient,
     TemporaryCalculatedValues,
-    SplitPayActualFigure,
 )
 
 
@@ -26,15 +25,9 @@ EXPENDITURE_TYPE_LIST = [PAY_CODE, INCOME_PAY_CODE]
 def calculate_expenditure_type_total(
     directorate_code,
     financial_period_id,
-    expenditure_type_code_list,
-    current_year=True,
-    unsplit=True,
+    expenditure_type_code_list
 ):
-    if current_year:
-        query_fields = ForecastQueryFields()
-    else:
-        previous_year = get_current_financial_year() - 1
-        query_fields = ForecastQueryFields(previous_year)
+    query_fields = ForecastQueryFields()
 
     expenditure_type_field = query_fields.budget_category_name_field
     directorate_field = query_fields.directorate_code_field
@@ -42,15 +35,13 @@ def calculate_expenditure_type_total(
     for expenditure_type_code in expenditure_type_code_list:
         kwargs = {
             "financial_period_id": financial_period_id,
+            "financial_year_id": get_current_financial_year(),
             expenditure_type_field: expenditure_type_code,
             directorate_field: directorate_code,
             "archived_status__isnull": True,
         }
-        if unsplit:
-            amount_model = ForecastMonthlyFigure
-        else:
-            amount_model = SplitPayActualFigure
-        pay_total_obj = amount_model.objects.filter(**kwargs).aggregate(Sum("amount"))
+        pay_total_obj = ForecastMonthlyFigure.objects.filter(**kwargs).\
+            aggregate(Sum("amount"))
         if pay_total_obj["amount__sum"]:
             pay_total += pay_total_obj["amount__sum"]
     return pay_total
