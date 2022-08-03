@@ -653,4 +653,8 @@ directorate_code=
 GGGG1
 remove_user_from_cost_centre
 Formula
+financial_code_%(app_label)s_%(class)ss
+financial_archived_period_%(app_label)s_%(class)ss
+Dataworkspace
+ReportYTDView(UniqueDataKey
 
