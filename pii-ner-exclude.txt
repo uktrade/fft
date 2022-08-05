@@ -657,4 +657,11 @@ financial_code_%(app_label)s_%(class)ss
 financial_archived_period_%(app_label)s_%(class)ss
 Dataworkspace
 ReportYTDView(UniqueDataKey
+adj2
+public.previous_years_archivedforecastdata
+cost_centre_code
+a_cc on cost_centre_id =
+a_a2.id
+COALESCE(c.analysis2_code_id
+unnest(array
 
