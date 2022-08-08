@@ -12,8 +12,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-                DROP VIEW if exists mi_report_periods;
-         CREATE OR REPLACE VIEW mi_report_periods
+                DROP materialized VIEW if exists  mi_report_periods;
+         CREATE materialized VIEW mi_report_periods
                  AS
                  SELECT f.financial_period_code AS financial_period_id,
                     a.financial_period_code AS archived_period_id

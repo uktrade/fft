@@ -2,6 +2,43 @@
 
 from django.db import migrations
 
+def query_budget_or_forecast(table_name):
+    # This query extract the forecast and the actual from forecast or budget table.
+    #  In the table, the actuals are not archived each month, as they don't change
+    #  so this view create the missing archived data
+    #  In the table, the archived period is NULL for the current period,
+    #  because the current period has not yet been archived
+    #  This query changed to be the current period.
+    return f"""
+    SELECT financial_code_id, 0 as forecast, amount as actual, f.financial_period_id, financial_year_id, fp.archived_period_id
+       FROM public.{table_name} f cross join 
+	   public.end_of_month_endofmonthstatus fp
+       WHERE 
+            archived_status_id is null
+            and f.financial_period_id  in (select financial_period_code 
+										   from forecast_financialperiod 
+                                            where actual_loaded  = true )
+            and fp.archived_period_id >= f.financial_period_id  
+			and fp.archived_period_id in (select financial_period_code 
+										   from forecast_financialperiod 
+                                            where actual_loaded  = true )
+            AND f.financial_year_id in (SELECT financial_year 
+										FROM public.core_financialyear 
+										WHERE current = true)         
+UNION	           
+			SELECT financial_code_id, amount as forecast, 0 as actual, financial_period_id, 
+			financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
+				FROM public.{table_name}, (SELECT min(archived_period_id) as current_period
+				FROM public.end_of_month_endofmonthstatus where archived = false) as m
+				WHERE 
+				 (
+					 (financial_period_id  in (select financial_period_code from forecast_financialperiod 
+												where actual_loaded  = false ) and archived_status_id is null)
+				 or financial_period_id != archived_status_id);
+
+"""
+
+
 
 class Migration(migrations.Migration):
 
@@ -11,83 +48,25 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunSQL(
-            """
-                DROP VIEW if exists mi_report_data_forecast_actual_query;
-                CREATE VIEW  mi_report_data_forecast_actual_query as
-
-        select sum(forecast) as forecast, sum(actual) as actual, financial_code_id, a.financial_period_id, a.financial_year_id, a.archived_period_id
-        from
-        (
-            SELECT financial_code_id, 0 as forecast, amount as actual, f.financial_period_id, financial_year_id, fp.archived_period_id
-            FROM public.forecast_forecastmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
-            WHERE 
-            archived_status_id is null
-             and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                            where actual_loaded  = true )
-             and fp.archived_period_id >= f.financial_period_id           
-        UNION	           
-        SELECT financial_code_id, amount as forecast, 0 as actual, financial_period_id, 
-        financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
-            FROM public.forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as current_period
-            FROM public.end_of_month_endofmonthstatus where archived = false) as m
-            WHERE 
-             (
-                 (financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                            where actual_loaded  = false ) and archived_status_id is null)
-             or financial_period_id != archived_status_id)
-        UNION
-        SELECT financial_code_id, 0 as forecast, 0 as actual, financial_period_id, 
-        financial_year_id,  fp.archived_period_id
-	        FROM public.forecast_forecastmonthlyfigure
-	        CROSS JOIN end_of_month_endofmonthstatus fp
-	    WHERE 
-	        (archived_status_id is not null or financial_period_id != archived_status_id)
-	            AND fp.archived_period_id > archived_status_id
-        ) a group by a.financial_code_id, a.financial_period_id, a.financial_year_id, a.archived_period_id;
-
-    
-        """,
-            """
-                DROP VIEW if exists mi_report_data_forecast_actual_query;
-                """,
+            f" drop VIEW if exists mi_report_data_forecast_actual_query; "
+            f"CREATE VIEW mi_report_data_forecast_actual_query AS "
+            f"{query_budget_or_forecast('forecast_forecastmonthlyfigure')}",
+         "DROP VIEW if exists mi_report_data_forecast_actual_query;",
         ),
         migrations.RunSQL(
-            """
-            DROP VIEW if exists mi_report_data_budget_query;
-            CREATE VIEW  mi_report_data_budget_query as
-            SELECT financial_code_id,  amount as budget, f.financial_period_id, financial_year_id, fp.archived_period_id
-                FROM public.forecast_budgetmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
-                WHERE 
-                archived_status_id is null
-                 and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                                where actual_loaded  = true )
-                 and fp.archived_period_id >= f.financial_period_id
-    
-            UNION	
-    
-            SELECT financial_code_id, amount as budget, financial_period_id, 
-            financial_year_id, coalesce(archived_status_id, m.current_period) as archived_period_id
-                FROM public.forecast_budgetmonthlyfigure, (SELECT min(archived_period_id) as current_period
-                FROM public.end_of_month_endofmonthstatus where archived = false) as m
-                WHERE 
-                 (
-                     (financial_period_id  in (select financial_period_code from forecast_financialperiod 
-                                                where actual_loaded  = false ) and archived_status_id is null)
-                 or financial_period_id != archived_status_id);
-    
-        """,
-            """
-                DROP VIEW if exists mi_report_data_budget_query;
-                """,
-        ),
+            f"drop VIEW if exists mi_report_data_budget_query;"
+            f"CREATE VIEW mi_report_data_budget_query AS"
+            f"{query_budget_or_forecast('forecast_budgetmonthlyfigure')}"
+            ,
+            "DROP VIEW if exists mi_report_data_budget_query;"),
         migrations.RunSQL(
             """
             DROP VIEW if exists mi_report_data_query;
             CREATE VIEW mi_report_data_query as
             SELECT coalesce(b.financial_code_id, f.financial_code_id) as financial_code_id,
-                            coalesce(budget,0) as budget, 
-                            coalesce(forecast,0) as forecast, 
-                            coalesce(actual,0) as actual, 
+                            coalesce(b.forecast + b.actual,0) as budget,
+                            coalesce(f.forecast,0) as forecast,
+                            coalesce(f.actual,0) as actual,
                   coalesce(b.financial_period_id, f.financial_period_id) as financial_period_id,
                   coalesce(b.financial_year_id, f.financial_year_id) as financial_year_id,
                   coalesce(b.archived_period_id, f.archived_period_id) as archived_period_id
@@ -97,11 +76,10 @@ class Migration(migrations.Migration):
                 and b.financial_period_id = f.financial_period_id
                 and b.financial_year_id = f.financial_year_id
                 and b.archived_period_id = f.archived_period_id
-                ;    
+                ;
         """,
             """
                 DROP VIEW if exists mi_report_data_query;
                 """,
         ),
-
     ]
