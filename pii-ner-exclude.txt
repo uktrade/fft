@@ -664,4 +664,17 @@ a_cc on cost_centre_id =
 a_a2.id
 COALESCE(c.analysis2_code_id
 unnest(array
+Data Workspace
+DROP VIEW IF EXISTS mi_report_monthly_forecast_apr
+DROP VIEW IF EXISTS mi_report_monthly_forecast_dec
+DROP VIEW IF EXISTS mi_report_monthly_forecast_adj1
+CREATE VIEW mi_report_monthly_forecast_apr
+SELECT
+CREATE VIEW mi_report_monthly_forecast_may
+SELECT archived_period_id
+CREATE VIEW mi_report_monthly_forecast_aug
+CREATE VIEW mi_report_monthly_forecast_sep
+CREATE VIEW mi_report_monthly_forecast_oct
+CREATE VIEW mi_report_monthly_forecast_dec
+CREATE VIEW mi_report_monthly_forecast_feb
 
