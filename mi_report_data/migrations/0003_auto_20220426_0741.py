@@ -54,8 +54,8 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             """
-            DROP materialized VIEW if exists mi_report_full_data;
-            CREATE materialized view mi_report_full_data as 
+            DROP  VIEW if exists mi_report_full_data;
+            CREATE  view mi_report_full_data as 
                 SELECT financial_code_id, 
                 sum(budget) as budget, 
                 sum(forecast) as forecast, 
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 group by financial_code_id, financial_period_id, financial_year_id, archived_period_id;                   
         """,
             """
-                DROP materialized VIEW if exists mi_report_full_data;
+                DROP  VIEW if exists mi_report_full_data;
                 """,
         ),
 
