@@ -54,11 +54,25 @@ class Migration(migrations.Migration):
          "DROP VIEW if exists mi_report_data_forecast_actual_query;",
         ),
         migrations.RunSQL(
-            f"drop VIEW if exists mi_report_data_budget_query;"
-            f"CREATE VIEW mi_report_data_budget_query AS"
-            f"{query_budget_or_forecast('forecast_budgetmonthlyfigure')}"
-            ,
-            "DROP VIEW if exists mi_report_data_budget_query;"),
+            """ 
+            drop VIEW if exists mi_report_archived_budget_view;
+            CREATE VIEW  mi_report_archived_budget_view as
+            SELECT financial_code_id,  amount as budget, f.financial_period_id, financial_year_id, fp.archived_period_id
+                FROM public.forecast_budgetmonthlyfigure f cross join public.end_of_month_endofmonthstatus fp
+                WHERE financial_year_id in (SELECT financial_year FROM public.core_financialyear where current = true) and 
+                archived_status_id is null
+                 and f.financial_period_id  in (select financial_period_code from forecast_financialperiod 
+                                                where actual_loaded  = true )
+                 and fp.archived_period_id >= f.financial_period_id    
+            UNION	    
+            SELECT financial_code_id, amount as budget, financial_period_id, 
+            financial_year_id, archived_status_id
+                FROM public.forecast_budgetmonthlyfigure
+                 WHERE financial_year_id in (SELECT financial_year FROM public.core_financialyear where current = true) 
+                 and archived_status_id is NOT NULL;
+            """
+             ,
+            "DROP VIEW if exists mi_report_archived_budget_view;"),
         migrations.RunSQL(
             """
             DROP VIEW if exists mi_report_data_query;

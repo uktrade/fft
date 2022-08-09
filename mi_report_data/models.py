@@ -43,6 +43,104 @@ class ReportDataView(UniqueDataKey):
         ]
 
 
+class ReportPreviousMonthlyDataView(UniqueDataKey):
+    id = models.IntegerField(primary_key=True,)
+    forecast = models.BigIntegerField(default=0)
+    actual = models.BigIntegerField(default=0)
+
+    class Meta:
+        abstract = True
+
+class ReportAprDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_apr"
+
+
+class ReportMayDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_may"
+
+
+class ReportJunDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_jun"
+
+
+class ReportJulDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_jul"
+
+
+class ReportAugDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_aug"
+
+
+class ReportSepDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_sep"
+
+
+class ReportOctDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_oct"
+
+
+class ReportNovDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_nov"
+
+
+class ReportDecDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_dec"
+
+
+class ReportJanDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_jan"
+
+
+class ReportFebDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_feb"
+
+
+class ReportMarDataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_mar"
+
+
+class ReportAdj1DataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_adj1"
+
+
+class ReportAdj2DataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_adj2"
+
+
+class ReportAdj3DataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_monthly_forecast_adj3"
+
+
 class ReportPreviousYearData(UniqueDataKey):
     # This model is created for convenience
     # It stores the actual for the previous year for a given period
@@ -52,6 +150,29 @@ class ReportPreviousYearData(UniqueDataKey):
     # As their value is fixed, it is convenient to store them in a table
     # to be used for the MI pipeline
     actual = models.BigIntegerField(default=0)
+
+
+
+forecast_budget_view_model = [
+    # ForecastingDataView,
+    ReportAprDataView,
+    ReportMayDataView,
+    ReportJunDataView,
+    ReportJulDataView,
+    ReportAugDataView,
+    ReportSepDataView,
+    ReportOctDataView,
+    ReportNovDataView,
+    ReportDecDataView,
+    ReportJanDataView,
+    ReportFebDataView,
+    ReportMarDataView,
+    ReportAdj1DataView,
+    ReportAdj2DataView,
+    ReportAdj3DataView,
+]
+
+
 
 
 class ReportPreviousMonthDataView(UniqueDataKey):
