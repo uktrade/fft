@@ -687,4 +687,12 @@ mi_report_monthly_forecast_sep'
 mi_report_monthly_forecast_sep
 mi_report_monthly_forecast_jan
 mi_report_monthly_forecast_adj1
+ReportBudgetArchivedData
+DROP VIEW IF EXISTS
+archived_id
+ON cost_centre_id = p.cost_centre_code AND c.natural_account_code_id
+f"{drop_previous_year_sql
+ReportPreviousYearData(UniqueDataKey
+# Archived
+CREATE VIEW last_year_financial_code as SELECT p.id
 

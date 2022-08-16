@@ -141,16 +141,19 @@ class ReportAdj3DataView(ReportPreviousMonthlyDataView):
         db_table = "mi_report_monthly_forecast_adj3"
 
 
-class ReportPreviousYearData(UniqueDataKey):
-    # This model is created for convenience
-    # It stores the actual for the previous year for a given period
-    # Archived data are saved in a denormalized form,
-    # without the financial code, but with the explicit
-    # chart of account members
-    # As their value is fixed, it is convenient to store them in a table
-    # to be used for the MI pipeline
-    actual = models.BigIntegerField(default=0)
-
+# class ReportPreviousYearData(UniqueDataKey):
+#     # This model is created for convenience
+#     # It stores the actual for the previous year for a given period
+#     # Archived data are saved in a denormalized form,
+#     # without the financial code, but with the explicit
+#     # chart of account members
+#     # As their value is fixed, it is convenient to store them in a table
+#     # to be used for the MI pipeline
+#     previous_year_actual = models.BigIntegerField(default=0)
+#     class Meta:
+#         managed = False
+#         db_table = "mi_report_previous_year_actual"
+#
 
 
 forecast_budget_view_model = [
@@ -173,26 +176,22 @@ forecast_budget_view_model = [
 ]
 
 
-
-
-class ReportPreviousMonthDataView(UniqueDataKey):
-    id = models.IntegerField(primary_key=True,)
-    previous_month_forecast = models.BigIntegerField(default=0)
+class ReportBudgetArchivedData(UniqueDataKey):
+    budget = models.BigIntegerField(default=0)
     class Meta:
         managed = False
-        db_table = "mi_report_full_data"
-        default_permissions = "view"
+        db_table = "mi_report_archived_budget_view"
 
 
-# class ReportPreviousYearDataView(UniqueDataKey):
-#     id = models.IntegerField(primary_key=True,)
-#     previous_year_actual = models.BigIntegerField(default=0)
-#     class Meta:
-#         managed = False
-#         db_table = "mi_report_full_data"
-#         default_permissions = "view"
-#
-#
+
+class ReportPreviousYearDataView(UniqueDataKey):
+    id = models.IntegerField(primary_key=True,)
+    previous_year_actual = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_previous_year_actual"
+
+
 # # The following data are calculated using SQL.
 # # They will become derived tables in Dataworkspace
 # class ReportYTDView(UniqueDataKey):
@@ -225,24 +224,24 @@ class ReportPreviousMonthDataView(UniqueDataKey):
 # 	FROM public.core_financialyear where current = true)
 
 
-# CREATE MATERIALIZED VIEW last_year_financial_codes as
-# SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_code, project_code, programme_code
-# 	FROM public.previous_years_archivedfinancialcode p
-# 	JOIN public."chartofaccountDIT_archivednaturalcode" a_nac on natural_account_code_id = a_nac.id
-# 	JOIN public."chartofaccountDIT_archivedprogrammecode" a_prog on programme_id = a_prog.id
-# 	JOIN public."costcentre_archivedcostcentre" a_cc on cost_centre_id = a_cc.id
-# 	LEFT OUTER JOIN public."chartofaccountDIT_archivedanalysis1" a_a1 on analysis1_code_id = a_a1.id
-# 	LEFT OUTER JOIN public."chartofaccountDIT_archivedanalysis2" a_a2 on analysis2_code_id = a_a2.id
-# 	LEFT OUTER JOIN public."chartofaccountDIT_archivedprojectcode" a_proj on project_code_id = a_proj.id
-# 	WHERE
-# 	 (p.financial_year_id + 1) in (SELECT financial_year
-#  	FROM public.core_financialyear where current = true)
-# 	;
-
+"""CREATE VIEW last_year_financial_code as
+SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_code, project_code, programme_code
+	FROM public.previous_years_archivedfinancialcode p
+	JOIN public."chartofaccountDIT_archivednaturalcode" a_nac on natural_account_code_id = a_nac.id
+	JOIN public."chartofaccountDIT_archivedprogrammecode" a_prog on programme_id = a_prog.id
+	JOIN public."costcentre_archivedcostcentre" a_cc on cost_centre_id = a_cc.id
+	LEFT OUTER JOIN public."chartofaccountDIT_archivedanalysis1" a_a1 on analysis1_code_id = a_a1.id
+	LEFT OUTER JOIN public."chartofaccountDIT_archivedanalysis2" a_a2 on analysis2_code_id = a_a2.id
+	LEFT OUTER JOIN public."chartofaccountDIT_archivedprojectcode" a_proj on project_code_id = a_proj.id
+	WHERE
+	 (p.financial_year_id + 1) in (SELECT financial_year
+ 	FROM public.core_financialyear where current = true)
+	;
+"""
 # CREATE VIEW
 # 	map_previous_year_financial_code as
 # SELECT c.id as current_code, archived_id
-# 	FROM public.forecast_financialcode c LEFT OUTER JOIN public.last_year_financial_codes p
+# 	FROM public.forecast_financialcode c LEFT OUTER JOIN public.last_year_financial_code p
 # 	on
 # 	cost_centre_id  = p.cost_centre_code
 #  	AND
