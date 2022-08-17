@@ -26,26 +26,7 @@ class DownloadMIDataView(TemplateView):
         return super(DownloadMIDataView, self).dispatch(request, *args, **kwargs)
 
 
-class MIReportFieldList():
-
-    pass
-
-
-class MIReportDataSet(ViewSet, FigureFieldData):
-    filename = "mi_data"
-    forecast_title = [
-        "Actual",
-        "Forecast",
-        "Financial Period Code",
-        "Financial Period Name",
-        "Archived Financial Period Code",
-        "Archived Financial Period Name",
-        "Year",
-        "Archiving Year",
-    ]
-    title_list = FigureFieldData.chart_of_account_titles.copy()
-    title_list.extend(forecast_title)
-
+class MIReportFieldList:
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
@@ -54,7 +35,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
         self.write_data(writer)
         return response
 
-    def write_data(self, writer):
+    def write_queryset_data(self, writer, qryset):
         current_year = get_current_financial_year()
         self.set_fields()
         # Download all the archived period, plus 1.
@@ -81,7 +62,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
         contract_dict = {contract_field: Coalesce(self.contract_field, Value("0"))}
         project_dict = {project_field: Coalesce(self.project_field, Value("0"))}
         forecast_queryset = (
-            ReportDataView.objects.select_related(*self.select_related_list)
+            qryset.objects.select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
             .filter(financial_year_id=current_year)
             .filter(financial_code__cost_centre__in=[
@@ -101,8 +82,7 @@ class MIReportDataSet(ViewSet, FigureFieldData):
             .annotate(**project_dict)
             .values_list(
                 *self.chart_of_account_field_list,
-                "actual",
-                "forecast",
+                *self.data_field_list,
                 "financial_period__financial_period_code",
                 "financial_period__period_short_name",
                 "archived_period__financial_period_code",
@@ -114,3 +94,26 @@ class MIReportDataSet(ViewSet, FigureFieldData):
 
         for row in forecast_queryset:
             writer.writerow(row)
+
+
+class MIReportDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+    filename = "mi_data"
+    forecast_title = [
+        "Actual",
+        "Forecast",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+        "Archiving Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+    data_field_list = [
+        "actual",
+        "forecast",
+    ]
+
+    def write_data(self, writer):
+        return self.write_queryset_data(writer, ReportDataView)
