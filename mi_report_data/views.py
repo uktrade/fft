@@ -32,6 +32,8 @@ class DownloadMIDataView(TemplateView):
 
 
 class MIReportFieldList:
+    filter_on_year = False
+    filter_on_archived_period = False
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
@@ -43,11 +45,6 @@ class MIReportFieldList:
     def write_queryset_data(self, writer, qryset):
         current_year = get_current_financial_year()
         self.set_fields()
-        # Download all the archived period, plus 1.
-        # The plus 1 is the current period.
-        max_period_id = (
-            EndOfMonthStatus.archived_period_objects.get_latest_archived_period() + 1
-        )
         # Change the list of fields, to use the field showing 0 instead of null
         market_field = "market"
         contract_field = "contract"
@@ -63,20 +60,29 @@ class MIReportFieldList:
             self.expenditure_type_description_field,
         ]
 
+        filter_dict = {}
+        if self.filter_on_year:
+            filter_dict["financial_year_id"]=current_year
+        if self.filter_on_archived_period:
+            # Download all the archived period.
+            max_period_id = (
+                EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
+            )
+            filter_dict["archived_period__lte"] = max_period_id
+
         market_dict = {market_field: Coalesce(self.market_field, Value("0"))}
         contract_dict = {contract_field: Coalesce(self.contract_field, Value("0"))}
         project_dict = {project_field: Coalesce(self.project_field, Value("0"))}
         forecast_queryset = (
             qryset.objects.select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
-            .filter(financial_year_id=current_year)
+            .filter(**filter_dict)
             .filter(financial_code__cost_centre__in=[
                 "109075",
                 "109451",
                 "109714",
                 "109838"
             ])
-            .filter(archived_period__lte=max_period_id)
             .annotate(
                 archiving_year=ExpressionWrapper(
                     Value(current_year), output_field=IntegerField()
@@ -97,7 +103,6 @@ class MIReportFieldList:
                 "archiving_year",
             )
         )
-        print(forecast_queryset.query)
         for row in forecast_queryset:
             writer.writerow(row)
 
@@ -145,6 +150,8 @@ class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
     data_field_list = [
         "budget",
     ]
+    filter_on_year = False
+    filter_on_archived_period = True
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportBudgetArchivedData)
