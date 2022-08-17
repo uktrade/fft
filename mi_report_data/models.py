@@ -2,7 +2,6 @@ from django.db import models
 
 from forecast.models import FinancialCode, FinancialPeriod
 
-
 class UniqueDataKey(models.Model):
     financial_code = models.ForeignKey(
         FinancialCode,
@@ -15,6 +14,27 @@ class UniqueDataKey(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="financial_period_%(app_label)s_%(class)ss",
     )
+    class Meta:
+        abstract = True
+
+
+class ReportCurrentActualData(UniqueDataKey):
+    amount = models.BigIntegerField(default=0)
+    forecast = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_current_actual"
+
+
+class ReportCurrentForecastData(UniqueDataKey):
+    amount = models.BigIntegerField(default=0)
+    forecast = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_current_forecast"
+
+
+class UniqueDataKeyWithArchived(UniqueDataKey):
     archived_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.DO_NOTHING,
@@ -25,7 +45,7 @@ class UniqueDataKey(models.Model):
         abstract = True
 
 
-class ReportDataView(UniqueDataKey):
+class ReportDataView(UniqueDataKeyWithArchived):
     id = models.IntegerField(primary_key=True,)
     budget = models.BigIntegerField(default=0)
     forecast = models.BigIntegerField(default=0)
@@ -40,7 +60,7 @@ class ReportDataView(UniqueDataKey):
         ]
 
 
-class ReportPreviousMonthlyDataView(UniqueDataKey):
+class ReportPreviousMonthlyDataView(UniqueDataKeyWithArchived):
     id = models.IntegerField(primary_key=True,)
     forecast = models.BigIntegerField(default=0)
     actual = models.BigIntegerField(default=0)
@@ -158,7 +178,7 @@ forecast_budget_view_model = [
 ]
 
 
-class ReportBudgetArchivedData(UniqueDataKey):
+class ReportBudgetArchivedData(UniqueDataKeyWithArchived):
     budget = models.BigIntegerField(default=0)
     class Meta:
         managed = False
@@ -175,7 +195,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
 
 # # The following data are calculated using SQL.
 # # They will become derived tables in Dataworkspace
-# class ReportYTDView(UniqueDataKey):
+# class ReportYTDView(UniqueDataKeyWithArchived):
 #     ytd_budget = models.BigIntegerField(default=0)
 #     ytd_actual = models.BigIntegerField(default=0)
 #     class Meta:
@@ -184,7 +204,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
 #         default_permissions = "view"
 #
 #
-# class ReportFullYearView(UniqueDataKey):
+# class ReportFullYearView(UniqueDataKeyWithArchived):
 #     full_year_budget = models.BigIntegerField(default=0)
 #     full_year_total = models.BigIntegerField(default=0)
 #     class Meta:

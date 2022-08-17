@@ -31,6 +31,8 @@ drop_view_sql = """
         DROP VIEW IF EXISTS mi_report_monthly_forecast_adj1; 
         DROP VIEW IF EXISTS mi_report_monthly_forecast_adj2; 
         DROP VIEW IF EXISTS mi_report_monthly_forecast_adj3; 
+        DROP VIEW IF EXISTS mi_report_current_actual; 
+        DROP VIEW IF EXISTS mi_report_current_forecast;
 """
 
 create_view_sql = """
@@ -169,7 +171,17 @@ CREATE VIEW mi_report_monthly_forecast_adj3 as
     WHERE financial_year_id IN
     (SELECT financial_year FROM public.core_financialyear where current = true);
 
+CREATE VIEW mi_report_current_actual as
+    SELECT financial_code_id, financial_year_id, financial_period_id, 
+        0 as forecast,  amount as actual
+    FROM public.forecast_forecastmonthlyfigure 
+    WHERE archived_status_id is Null;        
 
+CREATE VIEW mi_report_current_forecast as
+    SELECT financial_code_id, financial_year_id, financial_period_id, 
+        amount as forecast,  0 as actual
+    FROM public.forecast_forecastmonthlyfigure 
+    WHERE archived_status_id is Null;        
 """
 class Migration(migrations.Migration):
 

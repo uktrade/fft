@@ -656,7 +656,7 @@ Formula
 financial_code_%(app_label)s_%(class)ss
 financial_archived_period_%(app_label)s_%(class)ss
 Dataworkspace
-ReportYTDView(UniqueDataKey
+ReportYTDView(UniqueDataKeyWithArchived
 adj2
 public.previous_years_archivedforecastdata
 cost_centre_code
@@ -692,7 +692,7 @@ DROP VIEW IF EXISTS
 archived_id
 ON cost_centre_id = p.cost_centre_code AND c.natural_account_code_id
 f"{drop_previous_year_sql
-ReportPreviousYearData(UniqueDataKey
+ReportPreviousYearData(UniqueDataKeyWithArchived
 # Archived
 CREATE VIEW last_year_financial_code as SELECT p.id
 Download MI Forecast Data

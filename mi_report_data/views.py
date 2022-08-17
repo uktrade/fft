@@ -1,26 +1,29 @@
 from data_lake.views.utils import FigureFieldData
 import csv
 
-from core.utils.generic_helpers import get_current_financial_year
-
+from django.db.models import F
 from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
-
-from mi_report_data.models import (
-    ReportMayDataView,
-    ReportAprDataView,
-    ReportBudgetArchivedData,
-    ReportPreviousYearDataView,
-)
 
 from django.db.models import Value, ExpressionWrapper, IntegerField
 from django.db.models.functions import Coalesce
 from django.views.generic.base import TemplateView
 
+from end_of_month.models import EndOfMonthStatus
+
+from core.utils.generic_helpers import get_current_financial_year
+
 from download_file.decorators import has_download_mi_report_permission
 
-from end_of_month.models import EndOfMonthStatus
+from forecast.models import FinancialPeriod, ForecastMonthlyFigure, BudgetMonthlyFigure
+
+from mi_report_data.models import (
+    archived_forecast_actual_view,
+    ReportBudgetArchivedData,
+    ReportPreviousYearDataView,
+)
+
 
 
 class DownloadMIDataView(TemplateView):
@@ -34,6 +37,7 @@ class DownloadMIDataView(TemplateView):
 class MIReportFieldList:
     filter_on_year = False
     filter_on_archived_period = False
+    rename_value_dict = {}
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
@@ -74,7 +78,7 @@ class MIReportFieldList:
         contract_dict = {contract_field: Coalesce(self.contract_field, Value("0"))}
         project_dict = {project_field: Coalesce(self.project_field, Value("0"))}
         forecast_queryset = (
-            qryset.objects.select_related(*self.select_related_list)
+            qryset.select_related(*self.select_related_list)
             .select_related("financial_period", "archived_period")
             .filter(**filter_dict)
             .filter(financial_code__cost_centre__in=[
@@ -129,8 +133,32 @@ class MIReportForecastActualDataSet(ViewSet, FigureFieldData, MIReportFieldList)
     ]
 
     def write_data(self, writer):
-        self.write_queryset_data(writer, ReportAprDataView)
-        self.write_queryset_data(writer, ReportMayDataView)
+        max_period_id = (
+            EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
+        )
+        for period in range(0, max_period_id):
+            self.write_queryset_data(writer, archived_forecast_actual_view[period].objects)
+        # Output the current period in two part: first the actuals and after the forecast
+        current_year = get_current_financial_year()
+        actual_period_id = FinancialPeriod.financial_period_info.actual_month()
+        archive_dict = {"archived_status_id": Coalesce("archived_status_id", max_period_id+1)}
+
+        self.rename_value_dict = {"actual":F("amount")}
+        current_period_actual_queryset = ForecastMonthlyFigure.objects\
+            .filter(archived_status__isnull=True)\
+            .filter(financial_year_id=current_year) \
+            .annotate(**archive_dict)\
+            .annotate(
+                forecast=ExpressionWrapper(
+                    Value(0), output_field=IntegerField()
+                )
+            )\
+            .filter(financial_period_id__lte=actual_period_id) \
+            .annotate(actual=F('amount'))
+
+        self.write_queryset_data(writer, current_period_actual_queryset)
+
+
 
 
 class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
