@@ -52,10 +52,10 @@ SELECT c.id as current_code, p.id as archived_id
 
 CREATE VIEW
 	mi_report_previous_year_actual as	
-    SELECT financial_year_id, current_code as financial_code, 12 as archived_period,
-            unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) as financial_period, 
+SELECT financial_year_id + 1 as financial_year_id, current_code as financial_code_id, 12 as archived_period_id,
+            unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) as financial_period_id, 
             unnest(array[apr, may, jun, jul, aug, sep, 
-                    oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3]) as actual
+                    oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3]) as previous_year_actual
     FROM previous_years_archivedforecastdata
     JOIN
     mi_report_map_previous_year_financial_code 

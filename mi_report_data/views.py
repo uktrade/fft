@@ -7,7 +7,12 @@ from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
 
-from mi_report_data.models import ReportMayDataView, ReportAprDataView, ReportBudgetArchivedData
+from mi_report_data.models import (
+    ReportMayDataView,
+    ReportAprDataView,
+    ReportBudgetArchivedData,
+    ReportPreviousYearDataView,
+)
 
 from django.db.models import Value, ExpressionWrapper, IntegerField
 from django.db.models.functions import Coalesce
@@ -92,7 +97,7 @@ class MIReportFieldList:
                 "archiving_year",
             )
         )
-
+        print(forecast_queryset.query)
         for row in forecast_queryset:
             writer.writerow(row)
 
@@ -124,7 +129,7 @@ class MIReportForecastActualDataSet(ViewSet, FigureFieldData, MIReportFieldList)
 
 
 class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
-    filename = "mi_data_forecast_actual"
+    filename = "mi_data_budget"
     forecast_title = [
         "Financial Code ID",
         "Budget",
@@ -143,3 +148,25 @@ class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportBudgetArchivedData)
+
+
+class MIReportPreviousYearDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+    filename = "mi_data_previous_year_actual"
+    forecast_title = [
+        "Financial Code ID",
+        "Previous Year Actual",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+        "Archiving Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+    data_field_list = [
+        "previous_year_actual",
+    ]
+
+    def write_data(self, writer):
+        self.write_queryset_data(writer, ReportPreviousYearDataView)
