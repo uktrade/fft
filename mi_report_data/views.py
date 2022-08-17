@@ -26,10 +26,14 @@ class DownloadMIDataView(TemplateView):
         return super(DownloadMIDataView, self).dispatch(request, *args, **kwargs)
 
 
+class MIReportFieldList():
+
+    pass
+
+
 class MIReportDataSet(ViewSet, FigureFieldData):
     filename = "mi_data"
     forecast_title = [
-        "Budget",
         "Actual",
         "Forecast",
         "Financial Period Code",
@@ -97,7 +101,6 @@ class MIReportDataSet(ViewSet, FigureFieldData):
             .annotate(**project_dict)
             .values_list(
                 *self.chart_of_account_field_list,
-                "budget",
                 "actual",
                 "forecast",
                 "financial_period__financial_period_code",
