@@ -7,7 +7,7 @@ from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
 
-from mi_report_data.models import ReportDataView
+from mi_report_data.models import ReportMayDataView, ReportAprDataView, ReportBudgetArchivedData
 
 from django.db.models import Value, ExpressionWrapper, IntegerField
 from django.db.models.functions import Coalesce
@@ -71,7 +71,7 @@ class MIReportFieldList:
                 "109714",
                 "109838"
             ])
-            .filter(archived_period_id__lte=max_period_id)
+            .filter(archived_period__lte=max_period_id)
             .annotate(
                 archiving_year=ExpressionWrapper(
                     Value(current_year), output_field=IntegerField()
@@ -82,6 +82,7 @@ class MIReportFieldList:
             .annotate(**project_dict)
             .values_list(
                 *self.chart_of_account_field_list,
+                "financial_code",
                 *self.data_field_list,
                 "financial_period__financial_period_code",
                 "financial_period__period_short_name",
@@ -96,9 +97,11 @@ class MIReportFieldList:
             writer.writerow(row)
 
 
-class MIReportDataSet(ViewSet, FigureFieldData, MIReportFieldList):
-    filename = "mi_data"
+
+class MIReportForecastActualDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+    filename = "mi_data_forecast_actual"
     forecast_title = [
+        "Financial Code ID",
         "Actual",
         "Forecast",
         "Financial Period Code",
@@ -116,4 +119,27 @@ class MIReportDataSet(ViewSet, FigureFieldData, MIReportFieldList):
     ]
 
     def write_data(self, writer):
-        return self.write_queryset_data(writer, ReportDataView)
+        self.write_queryset_data(writer, ReportAprDataView)
+        self.write_queryset_data(writer, ReportMayDataView)
+
+
+class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+    filename = "mi_data_forecast_actual"
+    forecast_title = [
+        "Financial Code ID",
+        "Budget",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+        "Archiving Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+    data_field_list = [
+        "budget",
+    ]
+
+    def write_data(self, writer):
+        self.write_queryset_data(writer, ReportBudgetArchivedData)

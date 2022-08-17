@@ -12,9 +12,16 @@
     <h3 class="govuk-heading-l">Experimental download for MI reports</h3>
     <p class="govuk-body">The download is a csv file. It takes a long time!</p>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url "data_lake_mi_report_data" %}">
+        <a class="govuk-link" href="{% url "data_lake_mi_report_forecast_data" %}">
             <button class="govuk-button" data-module="govuk-button">
-                Download MI Data (csv)
+                Download MI Forecast Data (csv)
+            </button>
+        </a>
+    </p>
+    <p class="govuk-body">
+        <a class="govuk-link" href="{% url "data_lake_mi_report_budget_data" %}">
+            <button class="govuk-button" data-module="govuk-button">
+                Download MI Budget Data (csv)
             </button>
         </a>
     </p>

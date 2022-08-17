@@ -695,4 +695,6 @@ f"{drop_previous_year_sql
 ReportPreviousYearData(UniqueDataKey
 # Archived
 CREATE VIEW last_year_financial_code as SELECT p.id
+Download MI Forecast Data
+Download MI Budget Data
 

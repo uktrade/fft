@@ -36,7 +36,7 @@ drop_view_sql = """
 create_view_sql = """
 CREATE VIEW mi_report_monthly_forecast_apr as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_apr 
@@ -45,7 +45,7 @@ CREATE VIEW mi_report_monthly_forecast_apr as
 
 CREATE VIEW mi_report_monthly_forecast_may as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_may 
@@ -54,7 +54,7 @@ CREATE VIEW mi_report_monthly_forecast_may as
 
 CREATE VIEW mi_report_monthly_forecast_jun as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_jun 
@@ -63,7 +63,7 @@ CREATE VIEW mi_report_monthly_forecast_jun as
 
 CREATE VIEW mi_report_monthly_forecast_jul as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_jul 
@@ -72,7 +72,7 @@ CREATE VIEW mi_report_monthly_forecast_jul as
 
 CREATE VIEW mi_report_monthly_forecast_aug as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_aug 
@@ -81,7 +81,7 @@ CREATE VIEW mi_report_monthly_forecast_aug as
 
 CREATE VIEW mi_report_monthly_forecast_sep as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", 0, 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_sep 
@@ -90,7 +90,7 @@ CREATE VIEW mi_report_monthly_forecast_sep as
 
 CREATE VIEW mi_report_monthly_forecast_oct as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", 0, 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_oct 
@@ -99,7 +99,7 @@ CREATE VIEW mi_report_monthly_forecast_oct as
 
 CREATE VIEW mi_report_monthly_forecast_nov as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", 0, 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_nov 
@@ -108,7 +108,7 @@ CREATE VIEW mi_report_monthly_forecast_nov as
 
 CREATE VIEW mi_report_monthly_forecast_dec as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", 0, 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_dec 
@@ -117,7 +117,7 @@ CREATE VIEW mi_report_monthly_forecast_dec as
 
 CREATE VIEW mi_report_monthly_forecast_jan as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", 0, 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "feb", "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_jan 
@@ -126,7 +126,7 @@ CREATE VIEW mi_report_monthly_forecast_jan as
 
 CREATE VIEW mi_report_monthly_forecast_feb as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", 0, 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "mar", "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_feb 
@@ -135,7 +135,7 @@ CREATE VIEW mi_report_monthly_forecast_feb as
 
 CREATE VIEW mi_report_monthly_forecast_mar as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", 0, 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "adj1", "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_mar 
@@ -144,7 +144,7 @@ CREATE VIEW mi_report_monthly_forecast_mar as
 
 CREATE VIEW mi_report_monthly_forecast_adj1 as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", 0, 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "adj2", "adj3"]) as forecast
     FROM public.monthly_forecast_adj1 
@@ -153,7 +153,7 @@ CREATE VIEW mi_report_monthly_forecast_adj1 as
 
 CREATE VIEW mi_report_monthly_forecast_adj2 as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", 0]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "adj3"]) as forecast
     FROM public.monthly_forecast_adj2 
@@ -162,7 +162,7 @@ CREATE VIEW mi_report_monthly_forecast_adj2 as
 
 CREATE VIEW mi_report_monthly_forecast_adj3 as 
     SELECT archived_period_id, financial_code_id, financial_year_id,
-    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS period,
+    unnest( array[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]) AS financial_period_id,
     unnest( array["apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec", "jan", "feb", "mar", "adj1", "adj2", "adj3"]) as actual,
     unnest( array[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) as forecast
     FROM public.monthly_forecast_adj3 
