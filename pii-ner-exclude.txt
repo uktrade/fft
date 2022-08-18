@@ -706,5 +706,9 @@ ReportYTDView(UniqueDataKey
 DROP VIEW mi_report_current_period
 CREATE VIEW mi_report_current_period
 CREATE VIEW mi_report_current_forecast
+DROP VIEW IF EXISTS mi_report_current_period
+CREATE VIEW mi_report_archived_budget_view
+SELECT f.financial_code_id
+f.archived_status_id
 
 

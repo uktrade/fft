@@ -180,6 +180,13 @@ class ReportBudgetArchivedData(UniqueDataKey):
         db_table = "mi_report_archived_budget_view"
 
 
+class ReportBudgetCurrentData(UniqueDataKey):
+    budget = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_current_budget_view"
+
+
 class ReportPreviousYearDataView(UniqueDataKey):
     id = models.IntegerField(primary_key=True,)
     previous_year_actual = models.BigIntegerField(default=0)

@@ -37,7 +37,6 @@ class DownloadMIDataView(TemplateView):
 
 
 class MIReportFieldList(FigureFieldData):
-    filter_on_year = False
     filter_on_archived_period = False
 
     def list(self, request):
@@ -70,8 +69,6 @@ class MIReportFieldList(FigureFieldData):
         ]
 
         filter_dict = {}
-        if self.filter_on_year:
-            filter_dict["financial_year_id"]=current_year
         if self.filter_on_archived_period:
             # Download all the archived period.
             max_period_id = (
@@ -133,7 +130,6 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         "actual",
         "forecast",
     ]
-    filter_on_archived_period = False
 
     def write_data(self, writer):
         max_period_id = (
@@ -172,10 +168,10 @@ class MIReportBudgetDataSet(ViewSet, MIReportFieldList):
     data_field_list = [
         "budget",
     ]
-    filter_on_year = False
-    filter_on_archived_period = True
+
 
     def write_data(self, writer):
+        self.filter_on_archived_period = True
         self.write_queryset_data(writer, ReportBudgetArchivedData)
 
 

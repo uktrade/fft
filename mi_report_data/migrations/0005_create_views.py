@@ -33,7 +33,9 @@ drop_view_sql = """
         DROP VIEW IF EXISTS mi_report_monthly_forecast_adj3; 
         DROP VIEW IF EXISTS mi_report_current_actual; 
         DROP VIEW IF EXISTS mi_report_current_forecast;
-        DROP VIEW mi_report_current_period;
+        DROP VIEW IF EXISTS mi_report_current_period;
+        DROP VIEW IF EXISTS mi_report_archived_budget_view;
+        DROP VIEW IF EXISTS mi_report_current_budget_view;
 """
 
 create_view_sql = """
@@ -207,6 +209,47 @@ CREATE VIEW mi_report_current_forecast
 	FROM end_of_month_endofmonthstatus where archived = false) ar
   WHERE  financial_period_id IN  
   (SELECT financial_period_code FROM forecast_financialperiod WHERE actual_loaded = false);
+
+
+CREATE VIEW mi_report_current_budget_view
+AS
+ SELECT financial_code_id,
+    amount AS budget,
+    financial_period_id,
+    financial_year_id,
+    ar.archived_period_id
+   FROM forecast_budgetmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
+	FROM end_of_month_endofmonthstatus where archived = false) ar
+  WHERE financial_year_id IN ( SELECT financial_year
+           FROM core_financialyear
+          WHERE core_financialyear.current = true)
+		  AND archived_status_id IS NULL;
+
+CREATE VIEW mi_report_archived_budget_view
+ AS
+ SELECT f.financial_code_id,
+    f.amount AS budget,
+    f.financial_period_id,
+    f.financial_year_id,
+    fp.archived_period_id
+   FROM forecast_budgetmonthlyfigure f
+     CROSS JOIN end_of_month_endofmonthstatus fp
+  WHERE (f.financial_year_id IN ( SELECT core_financialyear.financial_year
+           FROM core_financialyear
+          WHERE core_financialyear.current = true)) AND f.archived_status_id IS NULL AND (f.financial_period_id IN ( SELECT forecast_financialperiod.financial_period_code
+           FROM forecast_financialperiod
+          WHERE forecast_financialperiod.actual_loaded = true)) AND fp.archived_period_id >= f.financial_period_id
+UNION
+ SELECT forecast_budgetmonthlyfigure.financial_code_id,
+    forecast_budgetmonthlyfigure.amount AS budget,
+    forecast_budgetmonthlyfigure.financial_period_id,
+    forecast_budgetmonthlyfigure.financial_year_id,
+    forecast_budgetmonthlyfigure.archived_status_id AS archived_period_id
+   FROM forecast_budgetmonthlyfigure
+  WHERE (forecast_budgetmonthlyfigure.financial_year_id IN ( SELECT core_financialyear.financial_year
+           FROM core_financialyear
+          WHERE core_financialyear.current = true)) AND forecast_budgetmonthlyfigure.archived_status_id IS NOT NULL;
+
 
 """
 class Migration(migrations.Migration):
