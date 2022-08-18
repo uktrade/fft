@@ -1,7 +1,6 @@
 from data_lake.views.utils import FigureFieldData
 import csv
 
-from django.db.models import F
 from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
@@ -16,11 +15,10 @@ from core.utils.generic_helpers import get_current_financial_year
 
 from download_file.decorators import has_download_mi_report_permission
 
-from forecast.models import FinancialPeriod, ForecastMonthlyFigure, BudgetMonthlyFigure
-
 from mi_report_data.models import (
     archived_forecast_actual_view,
     ReportBudgetArchivedData,
+    ReportBudgetCurrentData,
     ReportPreviousYearDataView,
     ReportCurrentForecastData,
     ReportCurrentActualData,
@@ -173,6 +171,8 @@ class MIReportBudgetDataSet(ViewSet, MIReportFieldList):
     def write_data(self, writer):
         self.filter_on_archived_period = True
         self.write_queryset_data(writer, ReportBudgetArchivedData)
+        self.filter_on_archived_period = False
+        self.write_queryset_data(writer, ReportBudgetCurrentData)
 
 
 class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
