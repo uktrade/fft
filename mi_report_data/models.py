@@ -14,27 +14,6 @@ class UniqueDataKey(models.Model):
         on_delete=models.DO_NOTHING,
         related_name="financial_period_%(app_label)s_%(class)ss",
     )
-    class Meta:
-        abstract = True
-
-
-class ReportCurrentActualData(UniqueDataKey):
-    amount = models.BigIntegerField(default=0)
-    forecast = models.BigIntegerField(default=0)
-    class Meta:
-        managed = False
-        db_table = "mi_report_current_actual"
-
-
-class ReportCurrentForecastData(UniqueDataKey):
-    amount = models.BigIntegerField(default=0)
-    forecast = models.BigIntegerField(default=0)
-    class Meta:
-        managed = False
-        db_table = "mi_report_current_forecast"
-
-
-class UniqueDataKeyWithArchived(UniqueDataKey):
     archived_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.DO_NOTHING,
@@ -45,7 +24,23 @@ class UniqueDataKeyWithArchived(UniqueDataKey):
         abstract = True
 
 
-class ReportDataView(UniqueDataKeyWithArchived):
+class ReportCurrentActualData(UniqueDataKey):
+    actual = models.BigIntegerField(default=0)
+    forecast = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_current_actual"
+
+
+class ReportCurrentForecastData(UniqueDataKey):
+    actual = models.BigIntegerField(default=0)
+    forecast = models.BigIntegerField(default=0)
+    class Meta:
+        managed = False
+        db_table = "mi_report_current_forecast"
+
+
+class ReportDataView(UniqueDataKey):
     id = models.IntegerField(primary_key=True,)
     budget = models.BigIntegerField(default=0)
     forecast = models.BigIntegerField(default=0)
@@ -60,7 +55,7 @@ class ReportDataView(UniqueDataKeyWithArchived):
         ]
 
 
-class ReportPreviousMonthlyDataView(UniqueDataKeyWithArchived):
+class ReportPreviousMonthlyDataView(UniqueDataKey):
     id = models.IntegerField(primary_key=True,)
     forecast = models.BigIntegerField(default=0)
     actual = models.BigIntegerField(default=0)
@@ -158,7 +153,7 @@ class ReportAdj3DataView(ReportPreviousMonthlyDataView):
         db_table = "mi_report_monthly_forecast_adj3"
 
 
-forecast_budget_view_model = [
+archived_forecast_actual_view = [
     # ForecastingDataView,
     ReportAprDataView,
     ReportMayDataView,
@@ -178,7 +173,7 @@ forecast_budget_view_model = [
 ]
 
 
-class ReportBudgetArchivedData(UniqueDataKeyWithArchived):
+class ReportBudgetArchivedData(UniqueDataKey):
     budget = models.BigIntegerField(default=0)
     class Meta:
         managed = False
@@ -195,7 +190,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
 
 # # The following data are calculated using SQL.
 # # They will become derived tables in Dataworkspace
-# class ReportYTDView(UniqueDataKeyWithArchived):
+# class ReportYTDView(UniqueDataKey):
 #     ytd_budget = models.BigIntegerField(default=0)
 #     ytd_actual = models.BigIntegerField(default=0)
 #     class Meta:
@@ -204,7 +199,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
 #         default_permissions = "view"
 #
 #
-# class ReportFullYearView(UniqueDataKeyWithArchived):
+# class ReportFullYearView(UniqueDataKey):
 #     full_year_budget = models.BigIntegerField(default=0)
 #     full_year_total = models.BigIntegerField(default=0)
 #     class Meta:

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
 
-from django.db.models import Value, ExpressionWrapper, IntegerField
+from django.db.models import Value, ExpressionWrapper, IntegerField, CharField
 from django.db.models.functions import Coalesce
 from django.views.generic.base import TemplateView
 
@@ -22,6 +22,8 @@ from mi_report_data.models import (
     archived_forecast_actual_view,
     ReportBudgetArchivedData,
     ReportPreviousYearDataView,
+    ReportCurrentForecastData,
+    ReportCurrentActualData,
 )
 
 
@@ -34,10 +36,10 @@ class DownloadMIDataView(TemplateView):
         return super(DownloadMIDataView, self).dispatch(request, *args, **kwargs)
 
 
-class MIReportFieldList:
+class MIReportFieldList(FigureFieldData):
     filter_on_year = False
     filter_on_archived_period = False
-    rename_value_dict = {}
+
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
         response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
@@ -47,6 +49,9 @@ class MIReportFieldList:
         return response
 
     def write_queryset_data(self, writer, qryset):
+        # Apply the filters and annotations common to  the budget, forecast and actual
+        # data feed
+        #
         current_year = get_current_financial_year()
         self.set_fields()
         # Change the list of fields, to use the field showing 0 instead of null
@@ -74,12 +79,16 @@ class MIReportFieldList:
             )
             filter_dict["archived_period__lte"] = max_period_id
 
-        market_dict = {market_field: Coalesce(self.market_field, Value("0"))}
-        contract_dict = {contract_field: Coalesce(self.contract_field, Value("0"))}
-        project_dict = {project_field: Coalesce(self.project_field, Value("0"))}
+        annotation_dict = {
+            market_field: Coalesce(self.market_field, Value("0")),
+            contract_field: Coalesce(self.contract_field, Value("0")),
+            project_field: Coalesce(self.project_field, Value("0")),
+            "archiving_year":
+                ExpressionWrapper(Value(current_year), output_field=IntegerField())
+        }
+
         forecast_queryset = (
-            qryset.select_related(*self.select_related_list)
-            .select_related("financial_period", "archived_period")
+            qryset.objects.select_related(*self.select_related_list)
             .filter(**filter_dict)
             .filter(financial_code__cost_centre__in=[
                 "109075",
@@ -87,14 +96,7 @@ class MIReportFieldList:
                 "109714",
                 "109838"
             ])
-            .annotate(
-                archiving_year=ExpressionWrapper(
-                    Value(current_year), output_field=IntegerField()
-                )
-            )
-            .annotate(**market_dict)
-            .annotate(**contract_dict)
-            .annotate(**project_dict)
+            .annotate(**annotation_dict)
             .values_list(
                 *self.chart_of_account_field_list,
                 "financial_code",
@@ -112,7 +114,7 @@ class MIReportFieldList:
 
 
 
-class MIReportForecastActualDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
     filename = "mi_data_forecast_actual"
     forecast_title = [
         "Financial Code ID",
@@ -131,37 +133,28 @@ class MIReportForecastActualDataSet(ViewSet, FigureFieldData, MIReportFieldList)
         "actual",
         "forecast",
     ]
+    filter_on_archived_period = False
 
     def write_data(self, writer):
         max_period_id = (
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
         )
+        # Output the archived period.
+        # Each db query is derived from the query used to display the yearly
+        # data. Not the most efficient way to do it, but it avoids having two ways
+        # of extracting the same data
         for period in range(0, max_period_id):
-            self.write_queryset_data(writer, archived_forecast_actual_view[period].objects)
+            self.write_queryset_data(writer, archived_forecast_actual_view[period])
+
         # Output the current period in two part: first the actuals and after the forecast
-        current_year = get_current_financial_year()
-        actual_period_id = FinancialPeriod.financial_period_info.actual_month()
-        archive_dict = {"archived_status_id": Coalesce("archived_status_id", max_period_id+1)}
-
-        self.rename_value_dict = {"actual":F("amount")}
-        current_period_actual_queryset = ForecastMonthlyFigure.objects\
-            .filter(archived_status__isnull=True)\
-            .filter(financial_year_id=current_year) \
-            .annotate(**archive_dict)\
-            .annotate(
-                forecast=ExpressionWrapper(
-                    Value(0), output_field=IntegerField()
-                )
-            )\
-            .filter(financial_period_id__lte=actual_period_id) \
-            .annotate(actual=F('amount'))
-
-        self.write_queryset_data(writer, current_period_actual_queryset)
+        # The current period in FFT data has Null as archived period
+        # For convenience, when sending data to data workspace we change the Null
+        # to the next available archived period.
+        # It would be better to change the name of the field, but it is late for it!
+        self.write_queryset_data(writer, ReportCurrentForecastData)
 
 
-
-
-class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+class MIReportBudgetDataSet(ViewSet, MIReportFieldList):
     filename = "mi_data_budget"
     forecast_title = [
         "Financial Code ID",
@@ -185,7 +178,7 @@ class MIReportBudgetDataSet(ViewSet, FigureFieldData, MIReportFieldList):
         self.write_queryset_data(writer, ReportBudgetArchivedData)
 
 
-class MIReportPreviousYearDataSet(ViewSet, FigureFieldData, MIReportFieldList):
+class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
     filename = "mi_data_previous_year_actual"
     forecast_title = [
         "Financial Code ID",

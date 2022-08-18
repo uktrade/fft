@@ -698,4 +698,10 @@ CREATE VIEW last_year_financial_code as SELECT p.id
 Download MI Forecast Data
 Download MI Budget Data
 Download Previous Year Data
+NULL AND forecast_forecastmonthlyfigure.financial_period_id IN
+CREATE VIEW public.mi_report_current_forecast AS
+MIReportCurrentActualData'
+MIReportCurrentForecastData
+ReportYTDView(UniqueDataKey
+
 

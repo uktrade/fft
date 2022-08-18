@@ -171,17 +171,39 @@ CREATE VIEW mi_report_monthly_forecast_adj3 as
     WHERE financial_year_id IN
     (SELECT financial_year FROM public.core_financialyear where current = true);
 
-CREATE VIEW mi_report_current_actual as
-    SELECT financial_code_id, financial_year_id, financial_period_id, 
-        0 as forecast,  amount as actual
-    FROM public.forecast_forecastmonthlyfigure 
-    WHERE archived_status_id is Null;        
+CREATE VIEW mi_report_current_actual AS
+ SELECT forecast_forecastmonthlyfigure.financial_code_id,
+    forecast_forecastmonthlyfigure.financial_year_id,
+    forecast_forecastmonthlyfigure.financial_period_id,
+    0 AS forecast, ar.archived_period_id,
+    forecast_forecastmonthlyfigure.amount AS actual
+   FROM forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
+	FROM public.end_of_month_endofmonthstatus where archived = false) ar
+  WHERE forecast_forecastmonthlyfigure.archived_status_id IS NULL
+  AND forecast_forecastmonthlyfigure.financial_period_id IN  
+  (SELECT financial_period_code FROM public.forecast_financialperiod WHERE actual_loaded = true)
+  AND forecast_forecastmonthlyfigure.financial_year_id
+  IN ( SELECT core_financialyear.financial_year
+           FROM core_financialyear
+          WHERE core_financialyear.current = true);
 
-CREATE VIEW mi_report_current_forecast as
-    SELECT financial_code_id, financial_year_id, financial_period_id, 
-        amount as forecast,  0 as actual
-    FROM public.forecast_forecastmonthlyfigure 
-    WHERE archived_status_id is Null;        
+CREATE VIEW public.mi_report_current_forecast
+ AS
+ SELECT forecast_forecastmonthlyfigure.financial_code_id,
+    forecast_forecastmonthlyfigure.financial_year_id,
+    forecast_forecastmonthlyfigure.financial_period_id,
+    forecast_forecastmonthlyfigure.amount AS forecast, ar.archived_period_id,
+    0 AS actual
+   FROM forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
+	FROM public.end_of_month_endofmonthstatus where archived = false) ar
+  WHERE forecast_forecastmonthlyfigure.archived_status_id IS NULL
+  AND forecast_forecastmonthlyfigure.financial_period_id IN  
+  (SELECT financial_period_code FROM public.forecast_financialperiod WHERE actual_loaded = false)
+  AND forecast_forecastmonthlyfigure.financial_year_id
+  IN ( SELECT core_financialyear.financial_year
+           FROM core_financialyear
+          WHERE core_financialyear.current = true);
+
 """
 class Migration(migrations.Migration):
 
