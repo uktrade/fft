@@ -70,10 +70,7 @@ SELECT financial_year_id + 1 as financial_year_id, current_code as financial_cod
 
 
 class Migration(migrations.Migration):
-
-    dependencies = [
-        ("mi_report_data", "0008_auto_20220810_1525"),
-    ]
+    ("mi_report_data", "0001_initial"),
 
     operations = [
         migrations.RunSQL(
