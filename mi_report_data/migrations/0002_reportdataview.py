@@ -8,24 +8,24 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('mi_report_data', '0001_initial'),
+        ("mi_report_data", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportDataView',
+            name="ReportDataView",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('financial_year_id', models.IntegerField()),
-                ('budget', models.BigIntegerField(default=0)),
-                ('forecast', models.BigIntegerField(default=0)),
-                ('actual', models.BigIntegerField(default=0)),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("financial_year_id", models.IntegerField()),
+                ("budget", models.BigIntegerField(default=0)),
+                ("forecast", models.BigIntegerField(default=0)),
+                ("actual", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_data_query',
-                'permissions': [('can_view_mi_report_data', 'Can view MI report data')],
-                'managed': False,
-                'default_permissions': 'view',
+                "db_table": "mi_report_data_query",
+                "permissions": [("can_view_mi_report_data", "Can view MI report data")],
+                "managed": False,
+                "default_permissions": "view",
             },
         ),
     ]

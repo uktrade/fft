@@ -2,6 +2,7 @@ from django.db import models
 
 from forecast.models import FinancialCode, FinancialPeriod
 
+
 class UniqueDataKey(models.Model):
     financial_code = models.ForeignKey(
         FinancialCode,
@@ -27,6 +28,7 @@ class UniqueDataKey(models.Model):
 class ReportCurrentActualData(UniqueDataKey):
     actual = models.BigIntegerField(default=0)
     forecast = models.BigIntegerField(default=0)
+
     class Meta:
         managed = False
         db_table = "mi_report_current_actual"
@@ -35,13 +37,16 @@ class ReportCurrentActualData(UniqueDataKey):
 class ReportCurrentForecastData(UniqueDataKey):
     actual = models.BigIntegerField(default=0)
     forecast = models.BigIntegerField(default=0)
+
     class Meta:
         managed = False
         db_table = "mi_report_current_forecast"
 
 
 class ReportDataView(UniqueDataKey):
-    id = models.IntegerField(primary_key=True,)
+    id = models.IntegerField(
+        primary_key=True,
+    )
     budget = models.BigIntegerField(default=0)
     forecast = models.BigIntegerField(default=0)
     actual = models.BigIntegerField(default=0)
@@ -56,12 +61,15 @@ class ReportDataView(UniqueDataKey):
 
 
 class ReportPreviousMonthlyDataView(UniqueDataKey):
-    id = models.IntegerField(primary_key=True,)
+    id = models.IntegerField(
+        primary_key=True,
+    )
     forecast = models.BigIntegerField(default=0)
     actual = models.BigIntegerField(default=0)
 
     class Meta:
         abstract = True
+
 
 class ReportAprDataView(ReportPreviousMonthlyDataView):
     class Meta:
@@ -175,6 +183,7 @@ archived_forecast_actual_view = [
 
 class ReportBudgetArchivedData(UniqueDataKey):
     budget = models.BigIntegerField(default=0)
+
     class Meta:
         managed = False
         db_table = "mi_report_archived_budget_view"
@@ -182,14 +191,18 @@ class ReportBudgetArchivedData(UniqueDataKey):
 
 class ReportBudgetCurrentData(UniqueDataKey):
     budget = models.BigIntegerField(default=0)
+
     class Meta:
         managed = False
         db_table = "mi_report_current_budget_view"
 
 
 class ReportPreviousYearDataView(UniqueDataKey):
-    id = models.IntegerField(primary_key=True,)
+    id = models.IntegerField(
+        primary_key=True,
+    )
     previous_year_actual = models.BigIntegerField(default=0)
+
     class Meta:
         managed = False
         db_table = "mi_report_previous_year_actual"
@@ -213,4 +226,3 @@ class ReportPreviousYearDataView(UniqueDataKey):
 #         managed = False
 #         db_table = "mi_report_full_data"
 #         default_permissions = "view"
-

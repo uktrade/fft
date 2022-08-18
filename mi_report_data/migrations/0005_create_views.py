@@ -252,12 +252,14 @@ UNION
 
 
 """
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0004_alter_reportdataview_table'),
+        ("mi_report_data", "0004_alter_reportdataview_table"),
     ]
 
     operations = [
         migrations.RunSQL(f"{drop_view_sql} {create_view_sql}", drop_view_sql),
-        ]
+    ]

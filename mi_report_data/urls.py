@@ -29,5 +29,4 @@ urlpatterns = [
         DownloadMIDataView.as_view(),
         name="download_mi_report_data",
     ),
-
 ]

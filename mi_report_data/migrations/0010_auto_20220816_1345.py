@@ -6,19 +6,19 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0009_create_previous_years_views'),
+        ("mi_report_data", "0009_create_previous_years_views"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='reportpreviousyeardataview',
-            options={'managed': False},
+            name="reportpreviousyeardataview",
+            options={"managed": False},
         ),
         migrations.AlterModelTable(
-            name='reportpreviousyeardataview',
-            table='mi_report_previous_year_actual',
+            name="reportpreviousyeardataview",
+            table="mi_report_previous_year_actual",
         ),
         migrations.DeleteModel(
-            name='ReportPreviousYearData',
+            name="ReportPreviousYearData",
         ),
     ]

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 from rest_framework.viewsets import ViewSet
 
-from django.db.models import Value, ExpressionWrapper, IntegerField, CharField
+from django.db.models import Value, ExpressionWrapper, IntegerField
 from django.db.models.functions import Coalesce
 from django.views.generic.base import TemplateView
 
@@ -23,7 +23,6 @@ from mi_report_data.models import (
     ReportCurrentForecastData,
     ReportCurrentActualData,
 )
-
 
 
 class DownloadMIDataView(TemplateView):
@@ -78,19 +77,17 @@ class MIReportFieldList(FigureFieldData):
             market_field: Coalesce(self.market_field, Value("0")),
             contract_field: Coalesce(self.contract_field, Value("0")),
             project_field: Coalesce(self.project_field, Value("0")),
-            "archiving_year":
-                ExpressionWrapper(Value(current_year), output_field=IntegerField())
+            "archiving_year": ExpressionWrapper(
+                Value(current_year), output_field=IntegerField()
+            ),
         }
 
         forecast_queryset = (
             qryset.objects.select_related(*self.select_related_list)
             .filter(**filter_dict)
-            .filter(financial_code__cost_centre__in=[
-                "109075",
-                "109451",
-                "109714",
-                "109838"
-            ])
+            .filter(
+                financial_code__cost_centre__in=["109075", "109451", "109714", "109838"]
+            )
             .annotate(**annotation_dict)
             .values_list(
                 *self.chart_of_account_field_list,
@@ -106,7 +103,6 @@ class MIReportFieldList(FigureFieldData):
         )
         for row in forecast_queryset:
             writer.writerow(row)
-
 
 
 class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
@@ -140,7 +136,8 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         for period in range(0, max_period_id):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
-        # Output the current period in two part: first the actuals and after the forecast
+        # Output the current period in two part:
+        # first the actuals and after the forecast
         # The current period in FFT data has Null as archived period
         # For convenience, when sending data to data workspace we change the Null
         # to the next available archived period.
@@ -166,7 +163,6 @@ class MIReportBudgetDataSet(ViewSet, MIReportFieldList):
     data_field_list = [
         "budget",
     ]
-
 
     def write_data(self, writer):
         self.filter_on_archived_period = True

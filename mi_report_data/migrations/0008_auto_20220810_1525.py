@@ -6,40 +6,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0007_auto_20220809_1534'),
+        ("mi_report_data", "0007_auto_20220809_1534"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportBudgetArchivedData',
+            name="ReportBudgetArchivedData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('budget', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("budget", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_archived_budget_view',
-                'managed': False,
+                "db_table": "mi_report_archived_budget_view",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportPreviousYearDataView',
+            name="ReportPreviousYearDataView",
             fields=[
-                ('financial_year_id', models.IntegerField()),
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('previous_year_actual', models.BigIntegerField(default=0)),
+                ("financial_year_id", models.IntegerField()),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("previous_year_actual", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_full_data',
-                'managed': False,
-                'default_permissions': 'view',
+                "db_table": "mi_report_full_data",
+                "managed": False,
+                "default_permissions": "view",
             },
         ),
         migrations.DeleteModel(
-            name='ReportPreviousMonthDataView',
+            name="ReportPreviousMonthDataView",
         ),
         migrations.AlterModelOptions(
-            name='reportpreviousyeardata',
-            options={'managed': False},
+            name="reportpreviousyeardata",
+            options={"managed": False},
         ),
     ]

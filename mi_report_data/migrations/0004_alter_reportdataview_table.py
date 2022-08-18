@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0003_auto_20220426_0741'),
+        ("mi_report_data", "0003_auto_20220426_0741"),
     ]
 
     operations = [
         migrations.AlterModelTable(
-            name='reportdataview',
-            table='mi_report_full_data',
+            name="reportdataview",
+            table="mi_report_full_data",
         ),
     ]

@@ -6,20 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0013_auto_20220818_1315'),
+        ("mi_report_data", "0013_auto_20220818_1315"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportBudgetCurrentData',
+            name="ReportBudgetCurrentData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('budget', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("budget", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_current_budget_view',
-                'managed': False,
+                "db_table": "mi_report_current_budget_view",
+                "managed": False,
             },
         ),
     ]

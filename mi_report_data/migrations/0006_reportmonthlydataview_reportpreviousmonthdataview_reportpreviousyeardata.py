@@ -7,49 +7,81 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0009_futureforecasteditstate_simplehistoryfutureforecasteditstate'),
-        ('mi_report_data', '0005_create_views'),
+        (
+            "forecast",
+            "0009_futureforecasteditstate_simplehistoryfutureforecasteditstate",
+        ),
+        ("mi_report_data", "0005_create_views"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportMonthlyDataView',
+            name="ReportMonthlyDataView",
             fields=[
-                ('financial_year_id', models.IntegerField()),
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('forecast', models.BigIntegerField(default=0)),
-                ('actual', models.BigIntegerField(default=0)),
+                ("financial_year_id", models.IntegerField()),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("forecast", models.BigIntegerField(default=0)),
+                ("actual", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_monthly_forecast_apr',
-                'managed': False,
+                "db_table": "mi_report_monthly_forecast_apr",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportPreviousMonthDataView',
+            name="ReportPreviousMonthDataView",
             fields=[
-                ('financial_year_id', models.IntegerField()),
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('previous_month_forecast', models.BigIntegerField(default=0)),
+                ("financial_year_id", models.IntegerField()),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("previous_month_forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_full_data',
-                'managed': False,
-                'default_permissions': 'view',
+                "db_table": "mi_report_full_data",
+                "managed": False,
+                "default_permissions": "view",
             },
         ),
         migrations.CreateModel(
-            name='ReportPreviousYearData',
+            name="ReportPreviousYearData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('actual', models.BigIntegerField(default=0)),
-                ('archived_period', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='financial_archived_period_mi_report_data_reportpreviousyeardatas', to='forecast.financialperiod')),
-                ('financial_code', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='financial_code_mi_report_data_reportpreviousyeardatas', to='forecast.financialcode')),
-                ('financial_period', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='financial_period_mi_report_data_reportpreviousyeardatas', to='forecast.financialperiod')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("actual", models.BigIntegerField(default=0)),
+                (
+                    "archived_period",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="financial_archived_period_mi_report_data_reportpreviousyeardatas",
+                        to="forecast.financialperiod",
+                    ),
+                ),
+                (
+                    "financial_code",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="financial_code_mi_report_data_reportpreviousyeardatas",
+                        to="forecast.financialcode",
+                    ),
+                ),
+                (
+                    "financial_period",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="financial_period_mi_report_data_reportpreviousyeardatas",
+                        to="forecast.financialperiod",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

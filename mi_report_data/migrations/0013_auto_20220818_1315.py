@@ -6,40 +6,56 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0012_auto_20220818_0857'),
+        ("mi_report_data", "0012_auto_20220818_0857"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportCurrentActualData',
+            name="ReportCurrentActualData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('actual', models.BigIntegerField(default=0)),
-                ('forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("actual", models.BigIntegerField(default=0)),
+                ("forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_current_actual',
-                'managed': False,
+                "db_table": "mi_report_current_actual",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportCurrentForecastData',
+            name="ReportCurrentForecastData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('actual', models.BigIntegerField(default=0)),
-                ('forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("actual", models.BigIntegerField(default=0)),
+                ("forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_current_forecast',
-                'managed': False,
+                "db_table": "mi_report_current_forecast",
+                "managed": False,
             },
         ),
         migrations.DeleteModel(
-            name='MIReportCurrentActualData',
+            name="MIReportCurrentActualData",
         ),
         migrations.DeleteModel(
-            name='MIReportCurrentForecastData',
+            name="MIReportCurrentForecastData",
         ),
     ]

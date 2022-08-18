@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0002_reportdataview'),
+        ("mi_report_data", "0002_reportdataview"),
     ]
 
     operations = [
@@ -76,5 +76,4 @@ class Migration(migrations.Migration):
                 DROP  VIEW if exists mi_report_full_data;
                 """,
         ),
-
     ]

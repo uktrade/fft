@@ -6,34 +6,50 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0010_auto_20220816_1345'),
+        ("mi_report_data", "0010_auto_20220816_1345"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportCurrentActualData',
+            name="ReportCurrentActualData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('amount', models.BigIntegerField(default=0)),
-                ('forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("amount", models.BigIntegerField(default=0)),
+                ("forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_current_actual',
-                'managed': False,
+                "db_table": "mi_report_current_actual",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportCurrentForecastData',
+            name="ReportCurrentForecastData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('amount', models.BigIntegerField(default=0)),
-                ('forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("amount", models.BigIntegerField(default=0)),
+                ("forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_current_forecast',
-                'managed': False,
+                "db_table": "mi_report_current_forecast",
+                "managed": False,
             },
         ),
     ]

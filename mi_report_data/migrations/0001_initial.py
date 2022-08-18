@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def query_budget_or_forecast(table_name):
     # This query extract the forecast and the actual from forecast or budget table.
     #  In the table, the actuals are not archived each month, as they don't change
@@ -39,19 +40,16 @@ UNION
 """
 
 
-
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ("forecast", "0008_amend_views_20210802_1439")
-    ]
+    dependencies = [("forecast", "0008_amend_views_20210802_1439")]
 
     operations = [
         migrations.RunSQL(
             f" drop VIEW if exists mi_report_data_forecast_actual_query; "
             f"CREATE VIEW mi_report_data_forecast_actual_query AS "
             f"{query_budget_or_forecast('forecast_forecastmonthlyfigure')}",
-         "DROP VIEW if exists mi_report_data_forecast_actual_query;",
+            "DROP VIEW if exists mi_report_data_forecast_actual_query;",
         ),
         migrations.RunSQL(
             """ 
@@ -70,9 +68,9 @@ class Migration(migrations.Migration):
                 FROM public.forecast_budgetmonthlyfigure
                  WHERE financial_year_id in (SELECT financial_year FROM public.core_financialyear where current = true) 
                  and archived_status_id is NOT NULL;
-            """
-             ,
-            "DROP VIEW if exists mi_report_archived_budget_view;"),
+            """,
+            "DROP VIEW if exists mi_report_archived_budget_view;",
+        ),
         migrations.RunSQL(
             """
             DROP VIEW if exists mi_report_data_query;
