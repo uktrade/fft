@@ -703,5 +703,8 @@ CREATE VIEW public.mi_report_current_forecast AS
 MIReportCurrentActualData'
 MIReportCurrentForecastData
 ReportYTDView(UniqueDataKey
+DROP VIEW mi_report_current_period
+CREATE VIEW mi_report_current_period
+CREATE VIEW mi_report_current_forecast
 
 

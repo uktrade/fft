@@ -33,6 +33,7 @@ drop_view_sql = """
         DROP VIEW IF EXISTS mi_report_monthly_forecast_adj3; 
         DROP VIEW IF EXISTS mi_report_current_actual; 
         DROP VIEW IF EXISTS mi_report_current_forecast;
+        DROP VIEW mi_report_current_period;
 """
 
 create_view_sql = """
@@ -171,38 +172,41 @@ CREATE VIEW mi_report_monthly_forecast_adj3 as
     WHERE financial_year_id IN
     (SELECT financial_year FROM public.core_financialyear where current = true);
 
-CREATE VIEW mi_report_current_actual AS
- SELECT forecast_forecastmonthlyfigure.financial_code_id,
-    forecast_forecastmonthlyfigure.financial_year_id,
-    forecast_forecastmonthlyfigure.financial_period_id,
-    0 AS forecast, ar.archived_period_id,
-    forecast_forecastmonthlyfigure.amount AS actual
-   FROM forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
-	FROM public.end_of_month_endofmonthstatus where archived = false) ar
-  WHERE forecast_forecastmonthlyfigure.archived_status_id IS NULL
-  AND forecast_forecastmonthlyfigure.financial_period_id IN  
-  (SELECT financial_period_code FROM public.forecast_financialperiod WHERE actual_loaded = true)
-  AND forecast_forecastmonthlyfigure.financial_year_id
-  IN ( SELECT core_financialyear.financial_year
+CREATE VIEW mi_report_current_period as
+SELECT 
+    financial_code_id,
+    financial_year_id,
+    unnest(ARRAY[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) AS financial_period_id,
+    unnest(ARRAY[apr, may, jun, jul, aug, sep, oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3
+				 ]) AS amount
+   FROM annual_forecast 
+  WHERE (annual_forecast.financial_year_id IN ( SELECT core_financialyear.financial_year
            FROM core_financialyear
-          WHERE core_financialyear.current = true);
+          WHERE core_financialyear.current = true));
 
-CREATE VIEW public.mi_report_current_forecast
+
+CREATE VIEW mi_report_current_actual AS
+  SELECT financial_code_id,
+    financial_year_id,
+    financial_period_id,
+    0 AS forecast, ar.archived_period_id,
+    coalesce(amount,0) AS actual
+   FROM mi_report_current_period, (SELECT min(archived_period_id) as archived_period_id
+	FROM end_of_month_endofmonthstatus where archived = false) ar
+  WHERE  financial_period_id IN  
+  (SELECT financial_period_code FROM forecast_financialperiod WHERE actual_loaded = true);
+
+CREATE VIEW mi_report_current_forecast
  AS
- SELECT forecast_forecastmonthlyfigure.financial_code_id,
-    forecast_forecastmonthlyfigure.financial_year_id,
-    forecast_forecastmonthlyfigure.financial_period_id,
-    forecast_forecastmonthlyfigure.amount AS forecast, ar.archived_period_id,
+ SELECT financial_code_id,
+    financial_year_id,
+    financial_period_id,
+    coalesce(amount,0)  AS forecast, ar.archived_period_id,
     0 AS actual
-   FROM forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
-	FROM public.end_of_month_endofmonthstatus where archived = false) ar
-  WHERE forecast_forecastmonthlyfigure.archived_status_id IS NULL
-  AND forecast_forecastmonthlyfigure.financial_period_id IN  
-  (SELECT financial_period_code FROM public.forecast_financialperiod WHERE actual_loaded = false)
-  AND forecast_forecastmonthlyfigure.financial_year_id
-  IN ( SELECT core_financialyear.financial_year
-           FROM core_financialyear
-          WHERE core_financialyear.current = true);
+   FROM mi_report_current_period, (SELECT min(archived_period_id) as archived_period_id
+	FROM end_of_month_endofmonthstatus where archived = false) ar
+  WHERE  financial_period_id IN  
+  (SELECT financial_period_code FROM forecast_financialperiod WHERE actual_loaded = false);
 
 """
 class Migration(migrations.Migration):
