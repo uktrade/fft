@@ -41,20 +41,6 @@ class ReportCurrentForecastData(UniqueDataKey):
     class Meta:
         managed = False
         db_table = "mi_report_current_forecast"
-
-
-class ReportDataView(UniqueDataKey):
-    id = models.IntegerField(
-        primary_key=True,
-    )
-    budget = models.BigIntegerField(default=0)
-    forecast = models.BigIntegerField(default=0)
-    actual = models.BigIntegerField(default=0)
-
-    class Meta:
-        managed = False
-        db_table = "mi_report_full_data"
-        default_permissions = "view"
         permissions = [
             ("can_view_mi_report_data", "Can view MI report data"),
         ]
