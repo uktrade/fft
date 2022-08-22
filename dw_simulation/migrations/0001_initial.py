@@ -5,17 +5,20 @@ from django.db import migrations
 # Create in FFT tables that will be created in data lake by the pipelines
 # Needed for testing before creating the pipelines
 drop_tables_sql = """
-DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast;
+DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_budget;
 DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
 """
 
 create_tables_sql = """
-CREATE TABLE dw_simulation_mi_report_forecast
+CREATE TABLE dw_simulation_mi_report_forecast_actual
 (
     cost_centre_code character varying(6),
     actual_nac integer,
     programme_code character varying(50),
+    contract_code character varying,
+    market_code character varying,
+    project_code character varying,
     expenditure_type character varying(100),
     expenditure_type_description character varying(100),
     financial_code integer,
@@ -26,9 +29,6 @@ CREATE TABLE dw_simulation_mi_report_forecast
     archived_financial_period_code integer,
     financial_period_code_name character varying(10),
     financial_year integer,
-    market_code character varying,
-    contract_code character varying,
-    project_code character varying,
     archiving_year integer
 );
 
@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_budget
     cost_centre_code character varying(6),
     actual_nac integer,
     programme_code character varying(50),
+    contract_code character varying,
+    market_code character varying,
+    project_code character varying,
     expenditure_type character varying(100),
     expenditure_type_description character varying(100),
     financial_code integer,
@@ -46,9 +49,6 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_budget
     archived_financial_period_code integer,
     financial_period_code_name character varying(10),
     financial_year integer,
-    market_code character varying,
-    contract_code character varying,
-    project_code character varying,
     archiving_year integer
 );
 
@@ -57,7 +57,10 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_previous_year_actual
 (
     cost_centre_code character varying(6),
     actual_nac integer,
-    programme_code character varying(50),
+    programme_code character varying(50),    
+    market_code character varying,
+    contract_code character varying,
+    project_code character varying,
     expenditure_type character varying(100),
     expenditure_type_description character varying(100),
     financial_code integer,
@@ -67,12 +70,48 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_previous_year_actual
     archived_financial_period_code integer,
     financial_period_code_name character varying(10),
     financial_year integer,
-    market_code character varying,
-    contract_code character varying,
-    project_code character varying,
     archiving_year integer
 );
 
+
+CREATE VIEW dw_full_year_budget as 
+SELECT financial_code, sum(budget) as budget_outturn, archived_financial_period_code
+	FROM dw_simulation_mi_report_budget
+	GROUP BY financial_code, archived_financial_period_code;
+
+CREATE VIEW dw_prev_year_outturn as
+SELECT financial_code, sum(previous_year_actual) as previous_year_outturn
+	FROM public.dw_simulation_mi_report_previous_year_actual
+	group by financial_code;
+
+CREATE VIEW dw_current_year_outturn as 
+SELECT financial_code, coalesce(sum(actual+forecast), 0)  as current_year_outturn, archived_financial_period_code
+	FROM public.dw_simulation_mi_report_forecast_actual
+	GROUP BY financial_code, archived_financial_period_code;
+
+
+CREATE VIEW dw_budget_ytd as
+
+SELECT financial_code, financial_period_code, archived_financial_period_code, sum(budget) OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+AS ytd_budget
+	FROM public.dw_simulation_mi_report_budget;
+	
+	
+CREATE VIEW dw_actual_forecast_ytd as
+	
+SELECT financial_code, financial_period_code, archived_financial_period_code, sum(COALESCE(forecast, 0) + coalesce(actual, 0))  OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+AS ytd_forecast_actual
+	FROM public.dw_simulation_mi_report_forecast_actual
+	
+
+CREATE VIEW dw_actual_ytd as
+SELECT financial_code, financial_period_code, archived_financial_period_code, sum(coalesce(actual, 0)) 
+OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+AS ytd_actual
+	FROM public.dw_simulation_mi_report_forecast_actual
+	WHERE financial_period_code <= archived_financial_period_code;
+	
+	
 SELECT COALESCE(b.cost_centre_code, f.cost_centre_code) as cost_centre_code,
        COALESCE(b.actual_nac,f.actual_nac) as actual_nac, 
        COALESCE(b.programme_code, f.programme_code) as programme_code, 
@@ -83,6 +122,7 @@ SELECT COALESCE(b.cost_centre_code, f.cost_centre_code) as cost_centre_code,
 	   COALESCE(f.actual, 0) as actual,
 	   COALESCE(f.forecast, 0) as forecast,
 	   COALESCE(p.previous_year_actual, 0) as previous_year_actual,
+	   COALESCE(prev_out.previous_year_outturn, 0) as previous_year_outturn,
        COALESCE(b.financial_period_code, f.financial_period_code) as financial_period_code, 
        COALESCE(b.financial_period_name, f.financial_period_name) as financial_period_name, 
        COALESCE(b.archived_financial_period_code, f.archived_financial_period_code) as archived_financial_period_code, 
@@ -93,11 +133,19 @@ SELECT COALESCE(b.cost_centre_code, f.cost_centre_code) as cost_centre_code,
        COALESCE(b.project_code, f.project_code) as project_code, 
        COALESCE(b.archiving_year,f.archiving_year) as archiving_year
 	FROM (public.dw_simulation_mi_report_budget b
-	full outer join public.dw_simulation_mi_report_forecast f on b.financial_code = f.financial_code 
+	full outer join public.dw_simulation_mi_report_forecast_actual f on b.financial_code = f.financial_code 
 	AND b.archived_financial_period_code = f.archived_financial_period_code 
-		  AND f.financial_period_code = b.financial_period_code and b.financial_year = f.financial_year) join public.dw_simulation_mi_report_previous_year_actual p
+		  AND f.financial_period_code = b.financial_period_code and b.financial_year = f.financial_year) 
+		  join public.dw_simulation_mi_report_previous_year_actual p
 		  on p.financial_code = COALESCE(f.financial_code, b.financial_code)
-		  AND p.financial_period_code = COALESCE(b.financial_period_code, f.financial_period_code);
+		  AND p.financial_period_code = COALESCE(b.financial_period_code, f.financial_period_code)
+		  JOIN (SELECT financial_code, sum(previous_year_actual) as previous_year_outturn
+
+	FROM public.dw_simulation_mi_report_previous_year_actual
+	group by financial_code) prev_out on prev_out.financial_code = COALESCE(f.financial_code, b.financial_code) ;
+	
+		  
+		  ;
 	
 		  
 		  ;
