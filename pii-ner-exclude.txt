@@ -712,4 +712,7 @@ SELECT f.financial_code_id
 f.archived_status_id
 f.expenditure_type
 CREATE VIEW dw_current_year_outturn
+EXISTS dw_actual_ytd
+Actual Loaded"
+
 

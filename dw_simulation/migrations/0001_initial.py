@@ -8,10 +8,16 @@ drop_tables_sql = """
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_budget;
 DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
+
+DROP VIEW IF EXISTS dw_budget_ytd;
+DROP VIEW IF EXISTS dw_actual_forecast_ytd;
+DROP VIEW IF EXISTS dw_actual_ytd;
+DROP VIEW IF EXISTS dw_previous_year_ytd;
+
 """
 
 create_tables_sql = """
-CREATE TABLE dw_simulation_mi_report_forecast_actual
+CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_forecast_actual
 (
     cost_centre_code character varying(6),
     actual_nac integer,
@@ -24,6 +30,7 @@ CREATE TABLE dw_simulation_mi_report_forecast_actual
     financial_code integer,
     actual numeric,
     forecast numeric,
+    actual_loaded boolean, 
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
@@ -91,26 +98,32 @@ SELECT financial_code, coalesce(sum(actual+forecast), 0)  as current_year_outtur
 
 
 CREATE VIEW dw_budget_ytd as
-
-SELECT financial_code, financial_period_code, archived_financial_period_code, sum(budget) OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+SELECT financial_code, financial_period_code, archived_financial_period_code, sum(budget) 
+OVER (PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code)
 AS ytd_budget
 	FROM public.dw_simulation_mi_report_budget;
 	
 	
-CREATE VIEW dw_actual_forecast_ytd as
-	
-SELECT financial_code, financial_period_code, archived_financial_period_code, sum(COALESCE(forecast, 0) + coalesce(actual, 0))  OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+CREATE VIEW dw_actual_forecast_ytd as	
+SELECT financial_code, financial_period_code, archived_financial_period_code, 
+sum(COALESCE(forecast, 0) + coalesce(actual, 0))  
+OVER (PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code)
 AS ytd_forecast_actual
 	FROM public.dw_simulation_mi_report_forecast_actual
 	
 
 CREATE VIEW dw_actual_ytd as
 SELECT financial_code, financial_period_code, archived_financial_period_code, sum(coalesce(actual, 0)) 
-OVER (PARTITION BY archived_financial_period_code ORDER BY financial_period_code)
+OVER (PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code)
 AS ytd_actual
 	FROM public.dw_simulation_mi_report_forecast_actual
 	WHERE financial_period_code <= archived_financial_period_code;
 	
+CREATE VIEW dw_previous_year_ytd as
+SELECT financial_code, financial_period_code,  sum(previous_year_actual) OVER (PARTITION BY financial_code ORDER by financial_period_code)
+	FROM public.dw_simulation_mi_report_previous_year_actual;
+
+
 	
 SELECT COALESCE(b.cost_centre_code, f.cost_centre_code) as cost_centre_code,
        COALESCE(b.actual_nac,f.actual_nac) as actual_nac, 

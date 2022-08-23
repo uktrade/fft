@@ -115,6 +115,7 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         "Financial Code ID",
         "Actual",
         "Forecast",
+        "Actual Loaded",
         "Financial Period Code",
         "Financial Period Name",
         "Archived Financial Period Code",
@@ -127,6 +128,7 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
     data_field_list = [
         "actual",
         "forecast",
+        "financial_period__actual_loaded"
     ]
 
     def write_data(self, writer):
