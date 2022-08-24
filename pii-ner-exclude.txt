@@ -714,5 +714,20 @@ f.expenditure_type
 CREATE VIEW dw_current_year_outturn
 EXISTS dw_actual_ytd
 Actual Loaded"
+DROP VIEW IF EXISTS dw_select_all
+DROP VIEW IF EXISTS dw_current_year_outturn
+DROP VIEW IF EXISTS dw_prev_year_outturn
+run_rate_ytd
+pa_ytd.previous_year_ytd
+pa_ytd
+public.dw_budget_ytd b_ytd
+current_year_forecast_budget_variance
+actual_forecast_budget_variance_ytd
+COALESCE(rates.run_rate_ytd
+COALESCE(b.financial_period_code
+ON fa_ytd.financial_code
+a_ytd
+ON rates.financial_code
+rates.financial_period_code
 
 
