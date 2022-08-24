@@ -257,6 +257,7 @@ UNION
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('previous_years', '0004_auto_20210707_1008'),
     ]
 
     operations = [
