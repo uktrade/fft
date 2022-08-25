@@ -101,10 +101,6 @@ class MIReportFieldList(FigureFieldData):
                 "archiving_year",
             )
         )
-        print("=================")
-        print(forecast_queryset.query)
-        print("=================")
-
         for row in forecast_queryset:
             writer.writerow(row)
 

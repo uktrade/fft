@@ -729,5 +729,12 @@ ON fa_ytd.financial_code
 a_ytd
 ON rates.financial_code
 rates.financial_period_code
+COALESCE(cy_o.current_year_outturn
+previous_year_ytd
+t3 WHERE dw_simulation_mi_report_previous_year_actual.financial_code = t1.financial_code
+t2.financial_code AND dw_simulation_mi_report_previous_year_actual.financial_code =
+DELETE
+t3
+t3 WHERE
 
 
