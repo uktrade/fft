@@ -736,5 +736,6 @@ t2.financial_code AND dw_simulation_mi_report_previous_year_actual.financial_cod
 DELETE
 t3
 t3 WHERE
+Previous Financial Code ID
 
 
