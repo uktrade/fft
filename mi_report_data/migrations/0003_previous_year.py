@@ -18,7 +18,8 @@ DROP VIEW IF EXISTS
 create_previous_year_sql = """
 CREATE VIEW 
     mi_report_last_year_financial_code as
-SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_code, project_code, programme_code
+SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_code, 
+     project_code, programme_code
 	FROM previous_years_archivedfinancialcode p
 	JOIN "chartofaccountDIT_archivednaturalcode" a_nac on natural_account_code_id = a_nac.id
 	JOIN "chartofaccountDIT_archivedprogrammecode" a_prog on programme_id = a_prog.id
@@ -33,7 +34,7 @@ SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_c
 
 CREATE VIEW
 	mi_report_map_previous_year_financial_code as
-SELECT c.id as current_code, p.id as archived_id
+SELECT c.id as current_financial_code_id, p.id as archived_id
 	FROM forecast_financialcode c LEFT OUTER JOIN mi_report_last_year_financial_code p
 	ON
 	cost_centre_id  = p.cost_centre_code
@@ -52,12 +53,15 @@ SELECT c.id as current_code, p.id as archived_id
 
 CREATE VIEW
 	mi_report_previous_year_actual as	
-SELECT financial_year_id + 1 as financial_year_id, current_code as financial_code_id, 12 as archived_period_id,
+SELECT financial_year_id + 1 as financial_year_id, 
+        current_financial_code_id, 
+        financial_code_id,
+        12 as archived_period_id,
             unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) as financial_period_id, 
             unnest(array[apr, may, jun, jul, aug, sep, 
                     oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3]) as previous_year_actual
     FROM previous_years_archivedforecastdata
-    JOIN
+    LEFT OUTER JOIN
     mi_report_map_previous_year_financial_code 
     ON
     financial_code_id = archived_id
