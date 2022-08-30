@@ -2,6 +2,8 @@ from django.db import models
 
 from forecast.models import FinancialCode, FinancialPeriod
 
+from previous_years.models import ArchivedFinancialCode
+
 
 class UniqueDataKey(models.Model):
     financial_code = models.ForeignKey(
@@ -19,6 +21,7 @@ class UniqueDataKey(models.Model):
         FinancialPeriod,
         on_delete=models.DO_NOTHING,
         related_name="financial_archived_period_%(app_label)s_%(class)ss",
+        blank=True, null=True
     )
 
     class Meta:
@@ -188,6 +191,17 @@ class ReportPreviousYearDataView(UniqueDataKey):
         primary_key=True,
     )
     previous_year_actual = models.BigIntegerField(default=0)
+    financial_code = models.ForeignKey(
+        ArchivedFinancialCode,
+        on_delete=models.DO_NOTHING,
+        related_name="archivedfinancial_code_%(app_label)s_%(class)ss",
+    )
+
+    current_financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.DO_NOTHING,
+        related_name="current_financial_code_%(app_label)s_%(class)ss",
+    )
 
     class Meta:
         managed = False
