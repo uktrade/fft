@@ -714,7 +714,6 @@ f.expenditure_type
 CREATE VIEW dw_current_year_outturn
 EXISTS dw_actual_ytd
 Actual Loaded"
-DROP VIEW IF EXISTS dw_select_all
 DROP VIEW IF EXISTS dw_current_year_outturn
 DROP VIEW IF EXISTS dw_prev_year_outturn
 run_rate_ytd
