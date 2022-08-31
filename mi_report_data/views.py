@@ -37,6 +37,7 @@ class DownloadMIDataView(TemplateView):
 
 class MIReportFieldList(FigureFieldData):
     filter_on_archived_period = False
+    exclude_adj_period = True
 
     def list(self, request):
         response = HttpResponse(content_type="text/csv")
@@ -74,6 +75,10 @@ class MIReportFieldList(FigureFieldData):
                 EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
             )
             filter_dict["archived_period__lte"] = max_period_id
+
+        if self.exclude_adj_period:
+            # Exclude Adj periods. They are always 0 in the current year
+            filter_dict["financial_period_id__lte"] = 12
 
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),
@@ -194,6 +199,7 @@ class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
     data_field_list = [
         "previous_year_actual",
     ]
+    exclude_adj_period = False
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportPreviousYearDataView)
