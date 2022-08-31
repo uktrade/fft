@@ -190,7 +190,6 @@ class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
     title_list = FigureFieldData.chart_of_account_titles.copy()
     title_list.extend(forecast_title)
     data_field_list = [
-        "current_financial_code",
         "previous_year_actual",
     ]
 

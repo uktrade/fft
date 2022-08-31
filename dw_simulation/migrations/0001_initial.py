@@ -6,6 +6,7 @@ from django.db import migrations
 # Needed for testing before creating the pipelines
 drop_sql = """
 DROP VIEW IF EXISTS dw_select_all;
+DROP VIEW IF EXISTS dw_current_year_data;
 DROP VIEW IF EXISTS dw_budget_data;
 DROP VIEW IF EXISTS dw_previous_year_data;
 
@@ -15,8 +16,6 @@ DROP VIEW IF EXISTS dw_budget_ytd;
 DROP VIEW IF EXISTS dw_full_year_budget;
 DROP VIEW IF EXISTS dw_current_rates;
 DROP VIEW IF EXISTS dw_current_year_outturn;
-DROP VIEW IF EXISTS dw_prev_year_outturn;
-DROP VIEW IF EXISTS dw_previous_year_ytd;
 
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_budget;
@@ -94,11 +93,6 @@ SELECT financial_code, sum(budget) as budget_outturn, archived_financial_period_
 	FROM dw_simulation_mi_report_budget
 	GROUP BY financial_code, archived_financial_period_code;
 
-CREATE VIEW dw_prev_year_outturn as
-SELECT financial_code, sum(previous_year_actual) as previous_year_outturn
-	FROM public.dw_simulation_mi_report_previous_year_actual
-	group by financial_code;
-
 CREATE VIEW dw_current_year_outturn as 
 SELECT financial_code, coalesce(sum(actual+forecast), 0)  as current_year_outturn, archived_financial_period_code
 	FROM public.dw_simulation_mi_report_forecast_actual
@@ -127,11 +121,6 @@ AS ytd_actual
 	FROM public.dw_simulation_mi_report_forecast_actual
 	WHERE financial_period_code <= archived_financial_period_code;
 	
-CREATE VIEW dw_previous_year_ytd as
-SELECT financial_code, financial_period_code,  
-sum(previous_year_actual) OVER (PARTITION BY financial_code ORDER by financial_period_code) as previous_year_ytd
-	FROM public.dw_simulation_mi_report_previous_year_actual;
-
 
 CREATE VIEW dw_current_rates as
     SELECT financial_code, financial_period_code, archived_financial_period_code, 
@@ -154,18 +143,14 @@ CREATE VIEW dw_current_rates as
         WHERE fa.financial_period_code > fa.archived_financial_period_code 
         or (fa.financial_period_code = fa.archived_financial_period_code AND actual_loaded = false);
 
-
-CREATE VIEW dw_previous_year_data as 
-SELECT  pa.financial_code, pa.previous_year_actual, pa_o.previous_year_outturn, pa.financial_period_code, pa_ytd.previous_year_ytd
-	FROM public.dw_simulation_mi_report_previous_year_actual pa
-	inner join dw_prev_year_outturn pa_o on pa_o.financial_code = pa.financial_code
-	inner join dw_previous_year_ytd pa_ytd on pa_ytd.financial_code = pa.financial_code AND pa.financial_period_code = pa_ytd.financial_period_code
-	;
 	
 
 CREATE VIEW dw_budget_data as
+SELECT 
+cost_centre_code, actual_nac, programme_code, 
+contract_code, market_code, project_code, expenditure_type, expenditure_type_description, 
 
-SELECT cost_centre_code, actual_nac, programme_code, contract_code, market_code, project_code, expenditure_type, expenditure_type_description, financial_period_name,
+financial_period_name,
 financial_period_code_name, financial_year, archiving_year,
 b.financial_code, 
 b.budget, 
@@ -178,6 +163,60 @@ b.financial_period_code,  b.archived_financial_period_code
 		AND b.archived_financial_period_code = b_ytd.archived_financial_period_code
 	JOIN public.dw_full_year_budget b_o on b_o.financial_code = b.financial_code 
 		AND b.archived_financial_period_code = b_o.archived_financial_period_code;
+
+CREATE VIEW dw_current_year_data as
+SELECT 
+       COALESCE(b.financial_code, f.financial_code) as financial_code, 
+	   COALESCE(b.cost_centre_code, f.cost_centre_code) as cost_centre_code,
+       COALESCE(b.actual_nac,f.actual_nac) as actual_nac, 
+       COALESCE(b.programme_code, f.programme_code) as programme_code, 
+       COALESCE(b.contract_code, f.contract_code) as contract_code, 
+       COALESCE(b.market_code, f.market_code) as market_code, 
+       COALESCE(b.project_code, f.project_code) as project_code, 
+       COALESCE(b.expenditure_type, f.expenditure_type) as expenditure_type, 
+       COALESCE(b.expenditure_type_description, f.expenditure_type_description) as expenditure_type_description, 
+       COALESCE(b.budget, 0) period_budget, 
+	   COALESCE(f.actual, 0) as period_actual,
+	   COALESCE(f.forecast, 0) as period_forecast,
+       COALESCE(b.financial_period_code, f.financial_period_code) as financial_period_code, 
+       COALESCE(b.financial_period_name, f.financial_period_name) as financial_period_name, 
+       COALESCE(b.archived_financial_period_code, f.archived_financial_period_code) as archived_financial_period_code, 
+       COALESCE(b.financial_period_code_name, f.financial_period_code_name) as archived_financial_period_name, 
+       COALESCE(b.financial_year, f.financial_year) as financial_year, 
+       COALESCE(b.archiving_year,f.archiving_year) as archiving_year,	   
+	   (COALESCE(f.actual, 0) + COALESCE(f.forecast, 0)) as period_actual_forecast,	
+	   (COALESCE(b.budget, 0) - (COALESCE(f.actual, 0) + COALESCE(f.forecast, 0))) as period_actual_forecast_budget_variance,
+       COALESCE(b.ytd_budget, 0) as ytd_budget,
+ 	   COALESCE(a_ytd.ytd_actual, 0) as ytd_actual,
+ 	   COALESCE(fa_ytd.ytd_forecast_actual, 0) as ytd_actual_forecast,
+ 	   (COALESCE(b.ytd_budget, 0) - COALESCE(fa_ytd.ytd_forecast_actual, 0)) as ytd_actual_forecast_budget_variance,
+	   COALESCE(b.budget_outturn, 0) as full_year_budget,
+ 	   COALESCE(cy_o.current_year_outturn, 0) as full_year_actual_forecast,
+ 	   (COALESCE(cy_o.current_year_outturn, 0) - COALESCE(b.budget_outturn, 0)) as full_year_actual_forecast_budget_variance,
+ 	   COALESCE(rates.run_rate_ytd, 0) as ytd_run_rate,
+  	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
+	   COALESCE(fp.forecast, 0) as previous_period_forecast 
+	FROM (dw_simulation_mi_report_forecast_actual f
+	full outer join dw_budget_data b on b.financial_code = f.financial_code 
+			AND b.archived_financial_period_code = f.archived_financial_period_code 
+		  	AND f.financial_period_code = b.financial_period_code and b.financial_year = f.financial_year) 
+		  JOIN dw_current_year_outturn cy_o ON cy_o.financial_code = f.financial_code AND cy_o.archived_financial_period_code = f.archived_financial_period_code
+ 		  JOIN dw_actual_forecast_ytd fa_ytd ON fa_ytd.financial_code = f.financial_code 
+ 		  			AND fa_ytd.archived_financial_period_code = f.archived_financial_period_code 
+ 					AND fa_ytd.financial_period_code = f.financial_period_code
+ 		  LEFT OUTER JOIN dw_actual_ytd a_ytd ON a_ytd.financial_code = f.financial_code 
+ 		  			AND a_ytd.archived_financial_period_code = f.archived_financial_period_code 
+ 					AND a_ytd.financial_period_code = f.financial_period_code
+ 		  JOIN dw_current_rates rates ON rates.financial_code = f.financial_code 
+ 					AND rates.financial_period_code = f.financial_period_code
+ 		  			AND rates.archived_financial_period_code = f.archived_financial_period_code
+	LEFT OUTER JOIN (
+	SELECT financial_code, forecast, financial_period_code, archived_financial_period_code
+	FROM public.dw_simulation_mi_report_forecast_actual fp
+	) fp on fp.financial_code = f.financial_code AND fp.financial_period_code = f.financial_period_code AND fp.archived_financial_period_code = f.archived_financial_period_code - 1
+	;
+
+
 
 create view dw_select_all as 
 SELECT 

@@ -737,5 +737,8 @@ DELETE
 t3
 t3 WHERE
 Previous Financial Code ID
+DROP VIEW IF EXISTS dw_current_year_data
+DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual
+CREATE VIEW dw_current_year_data as SELECT COALESCE(b.financial_code
 
 

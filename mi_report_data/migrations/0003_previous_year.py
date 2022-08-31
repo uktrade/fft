@@ -6,66 +6,21 @@ drop_previous_year_sql = """
 DROP VIEW IF EXISTS
 	mi_report_previous_year_actual;
 
-DROP VIEW IF EXISTS
-	mi_report_map_previous_year_financial_code;
-
-DROP VIEW IF EXISTS
-	mi_report_last_year_financial_code;
-
 
 """
 
 create_previous_year_sql = """
-CREATE VIEW 
-    mi_report_last_year_financial_code as
-SELECT p.id, cost_centre_code, natural_account_code, analysis1_code, analysis2_code, 
-     project_code, programme_code
-	FROM previous_years_archivedfinancialcode p
-	JOIN "chartofaccountDIT_archivednaturalcode" a_nac on natural_account_code_id = a_nac.id
-	JOIN "chartofaccountDIT_archivedprogrammecode" a_prog on programme_id = a_prog.id
-	JOIN "costcentre_archivedcostcentre" a_cc on cost_centre_id = a_cc.id
-	LEFT OUTER JOIN "chartofaccountDIT_archivedanalysis1" a_a1 on analysis1_code_id = a_a1.id
-	LEFT OUTER JOIN "chartofaccountDIT_archivedanalysis2" a_a2 on analysis2_code_id = a_a2.id
-	LEFT OUTER JOIN "chartofaccountDIT_archivedprojectcode" a_proj on project_code_id = a_proj.id
-	WHERE
-	 (p.financial_year_id + 1) in 
-	 (SELECT financial_year FROM core_financialyear where current = true)
-	;
-
-CREATE VIEW
-	mi_report_map_previous_year_financial_code as
-SELECT c.id as current_financial_code_id, p.id as archived_id
-	FROM forecast_financialcode c LEFT OUTER JOIN mi_report_last_year_financial_code p
-	ON
-	cost_centre_id  = p.cost_centre_code
- 	AND
-	c.natural_account_code_id = p.natural_account_code
-	AND
-	c.programme_id  = p.programme_code
-	AND
- 	COALESCE(c.project_code_id, '') = COALESCE(p.project_code, '')
- 	AND
-	COALESCE(c.analysis1_code_id, '') = COALESCE(p.analysis1_code, '') 
-	AND
- 	COALESCE(c.analysis2_code_id , '') = COALESCE(p.analysis2_code, '');
-
-
 
 CREATE VIEW
 	mi_report_previous_year_actual as	
 SELECT financial_year_id + 1 as financial_year_id, 
-        current_financial_code_id, 
         financial_code_id,
         12 as archived_period_id,
             unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) as financial_period_id, 
             unnest(array[apr, may, jun, jul, aug, sep, 
                     oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3]) as previous_year_actual
     FROM previous_years_archivedforecastdata
-    LEFT OUTER JOIN
-    mi_report_map_previous_year_financial_code 
-    ON
-    financial_code_id = archived_id
-    WHERE
+     WHERE
          (financial_year_id + 1) in 
          (SELECT financial_year FROM core_financialyear where current = true)
         ;

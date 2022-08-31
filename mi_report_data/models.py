@@ -197,12 +197,6 @@ class ReportPreviousYearDataView(UniqueDataKey):
         related_name="archivedfinancial_code_%(app_label)s_%(class)ss",
     )
 
-    current_financial_code = models.ForeignKey(
-        FinancialCode,
-        on_delete=models.DO_NOTHING,
-        related_name="current_financial_code_%(app_label)s_%(class)ss",
-    )
-
     class Meta:
         managed = False
         db_table = "mi_report_previous_year_actual"
