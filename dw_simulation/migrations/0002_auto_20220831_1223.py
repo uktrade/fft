@@ -3,18 +3,21 @@
 from django.db import migrations
 
 drop_sql = """
+DROP VIEW IF EXISTS dw_full_data_set;
+DROP VIEW IF EXISTS dw_previous_year_data;
 DROP VIEW IF EXISTS dw_prev_year_outturn;
 DROP VIEW IF EXISTS dw_previous_year_ytd;
-DROP VIEW IF EXISTS dw_previous_year_data;
 DROP TABLE IF EXISTS dw_simulation_financial_period;
-DROP TABLE IF EXISTS dw_full_data_set;
 """
 
 
 create_sql= """
-SELECT financial_period_code,  period_short_name 
-        into dw_simulation_financial_period
-	    FROM public.forecast_financialperiod;	
+CREATE TABLE IF NOT EXISTS dw_simulation_financial_period
+(
+    financial_period_code integer,
+    period_short_name character varying(10)
+);
+
 	    
 CREATE VIEW dw_prev_year_outturn as
 SELECT financial_code, sum(previous_year_actual) as previous_year_outturn
