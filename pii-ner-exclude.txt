@@ -740,5 +740,11 @@ Previous Financial Code ID
 DROP VIEW IF EXISTS dw_current_year_data
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual
 CREATE VIEW dw_current_year_data as SELECT COALESCE(b.financial_code
+Download Period
+p.expenditure_type
+COALESCE(c.ytd_actual_forecast_budget_variance
+COALESCE(c.full_year_budget
+COALESCE(c.full_year_actual_forecast_budget_variance
+ON COALESCE(c.cost_centre_code
 
 
