@@ -220,9 +220,9 @@ class MIReportPeriodInUseDataSet(ViewSet):
         )
         # The financial periods that have already been archived,
         # and the current period.
-        period_queryset = FinancialPeriod.objects\
-            .filter(financial_period_code__lte=max_period_id+1)\
-            .order_by("financial_period_code")
+        period_queryset = FinancialPeriod.objects.filter(
+            financial_period_code__lte=max_period_id + 1
+        ).order_by("financial_period_code")
 
         for obj in period_queryset:
             row = [
