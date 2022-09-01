@@ -745,5 +745,6 @@ COALESCE(c.ytd_actual_forecast_budget_variance
 COALESCE(c.full_year_budget
 COALESCE(c.full_year_actual_forecast_budget_variance
 ON COALESCE(c.cost_centre_code
+b_o
 
 

@@ -3,9 +3,9 @@
 UPDATE dw_simulation_mi_report_previous_year_actual
     SET
         previous_year_actual =
-        coalesce(dw_simulation_mi_report_previous_year_actual.previous_year_actual, 0)
-        coalesce(t1.previous_year_actual, 0)
-        coalesce(t2.previous_year_actual, 0)
+        coalesce(dw_simulation_mi_report_previous_year_actual.previous_year_actual, 0) +
+        coalesce(t1.previous_year_actual, 0) +
+        coalesce(t2.previous_year_actual, 0) +
         coalesce(t3.previous_year_actual, 0)
     from
     (SELECT previous_year_actual, financial_period_code,

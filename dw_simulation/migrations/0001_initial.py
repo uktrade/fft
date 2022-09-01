@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_forecast_actual
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
-    financial_period_code_name character varying(10),
+    archived_financial_period_name character varying(10),
     financial_year integer,
     archiving_year integer
 );
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_budget
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
-    financial_period_code_name character varying(10),
+    archived_financial_period_name character varying(10),
     financial_year integer,
     archiving_year integer
 );
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_previous_year_actual
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
-    financial_period_code_name character varying(10),
+    archived_financial_period_name character varying(10),
     financial_year integer,
     archiving_year integer
 );
@@ -149,16 +149,16 @@ cost_centre_code, actual_nac, programme_code,
 contract_code, market_code, project_code, expenditure_type, expenditure_type_description, 
 
 financial_period_name,
-financial_period_code_name, financial_year, archiving_year,
+archived_financial_period_name, financial_year, archiving_year,
 b.financial_code, 
 b.budget, 
 ytd_budget,
 b_o.budget_outturn,
 b.financial_period_code,  b.archived_financial_period_code
-	FROM public.dw_simulation_mi_report_budget b
+	FROM (public.dw_simulation_mi_report_budget b
 	JOIN public.dw_budget_ytd b_ytd on b_ytd.financial_code = b.financial_code 
 		AND b.financial_period_code = b_ytd.financial_period_code 
-		AND b.archived_financial_period_code = b_ytd.archived_financial_period_code
+		AND b.archived_financial_period_code = b_ytd.archived_financial_period_code)
 	JOIN public.dw_full_year_budget b_o on b_o.financial_code = b.financial_code 
 		AND b.archived_financial_period_code = b_o.archived_financial_period_code;
 
@@ -179,7 +179,7 @@ SELECT
        COALESCE(b.financial_period_code, f.financial_period_code) as financial_period_code, 
        COALESCE(b.financial_period_name, f.financial_period_name) as financial_period_name, 
        COALESCE(b.archived_financial_period_code, f.archived_financial_period_code) as archived_financial_period_code, 
-       COALESCE(b.financial_period_code_name, f.financial_period_code_name) as archived_financial_period_name, 
+       COALESCE(b.archived_financial_period_name, f.archived_financial_period_name) as archived_financial_period_name, 
        COALESCE(b.financial_year, f.financial_year) as financial_year, 
        COALESCE(b.archiving_year,f.archiving_year) as archiving_year,	   
 	   (COALESCE(f.actual, 0) + COALESCE(f.forecast, 0)) as period_actual_forecast,	
