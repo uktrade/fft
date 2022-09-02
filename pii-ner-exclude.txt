@@ -746,5 +746,8 @@ COALESCE(c.full_year_budget
 COALESCE(c.full_year_actual_forecast_budget_variance
 ON COALESCE(c.cost_centre_code
 b_o
+DROP VIEW IF EXISTS dw_budget_full_table
+CREATE VIEW dw_budget_full_table
+FROM dw_budget_full_table GROUP
 
 
