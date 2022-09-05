@@ -7,12 +7,12 @@ DROP VIEW IF EXISTS dw_full_data_set;
 DROP VIEW IF EXISTS dw_previous_year_data;
 DROP VIEW IF EXISTS dw_prev_year_outturn;
 DROP VIEW IF EXISTS dw_previous_year_ytd;
-DROP TABLE IF EXISTS dw_simulation_financial_period;
+DROP TABLE IF EXISTS dw_simulation_financial_period_in_use;
 """
 
 
 create_sql= """
-CREATE TABLE IF NOT EXISTS dw_simulation_financial_period
+CREATE TABLE IF NOT EXISTS dw_simulation_financial_period_in_use
 (
     financial_period_code integer,
     period_short_name character varying(10)
@@ -47,7 +47,7 @@ CREATE VIEW dw_previous_year_data as
             inner join dw_prev_year_outturn pa_o on pa_o.financial_code = pa.financial_code
             inner join dw_previous_year_ytd pa_ytd on pa_ytd.financial_code = pa.financial_code 
             AND pa.financial_period_code = pa_ytd.financial_period_code
-            CROSS JOIN dw_simulation_financial_period per;    	    
+            CROSS JOIN dw_simulation_financial_period_in_use per;    	    
 
 	    
 CREATE VIEW dw_full_data_set as

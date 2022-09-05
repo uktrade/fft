@@ -10,28 +10,35 @@ DROP VIEW IF EXISTS dw_budget_full_table;
 
 DROP VIEW IF EXISTS dw_no_budget_full_table;
 DROP VIEW IF EXISTS dw_full_period_list_view;
+DROP TABLE IF EXISTS dw_simulation_financial_period;
 
 """
 
 create_sql = """
 
+CREATE TABLE IF NOT EXISTS dw_simulation_financial_period
+(
+    financial_period_code integer,
+    period_short_name character varying(10)
+);
+
+
 CREATE VIEW dw_full_period_list_view as
    SELECT p.financial_period_code, p.period_short_name as financial_period_name,
     a.financial_period_code as archived_period_code, a.period_short_name as archived_period_name
-  	from public.forecast_financialperiod p
+  	from public.dw_simulation_financial_period p
  	cross join 
- 	 public.dw_simulation_financial_period a WHERE p.financial_period_code < 13;
+ 	 public.dw_simulation_financial_period_in_use a WHERE p.financial_period_code < 13;
 
 
 
 CREATE VIEW dw_no_budget_full_table as
-
-SELECT distinct cost_centre_code, actual_nac, programme_code, contract_code, market_code, project_code, 
-expenditure_type, expenditure_type_description, financial_code, 
-0 as budget, t.financial_period_code, t.financial_period_name, t.archived_period_code, t.archived_period_name, 
-financial_year, archiving_year
-	FROM public.dw_simulation_mi_report_budget
-	CROSS JOIN dw_full_period_list_view t;
+    SELECT distinct cost_centre_code, actual_nac, programme_code, contract_code, market_code, project_code, 
+    expenditure_type, expenditure_type_description, financial_code, 
+    0 as budget, t.financial_period_code, t.financial_period_name, t.archived_period_code, t.archived_period_name, 
+    financial_year, archiving_year
+        FROM public.dw_simulation_mi_report_budget
+        CROSS JOIN dw_full_period_list_view t;
 
 CREATE VIEW dw_budget_full_table as
 SELECT

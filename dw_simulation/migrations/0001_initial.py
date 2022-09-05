@@ -15,6 +15,8 @@ DROP VIEW IF EXISTS dw_current_year_outturn;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_budget;
 DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
+DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
+DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
 
 """
 
