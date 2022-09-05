@@ -124,7 +124,7 @@ SELECT
  	   (COALESCE(b.ytd_budget, 0) - COALESCE(fa_ytd.ytd_forecast_actual, 0)) as ytd_actual_forecast_budget_variance,
 	   COALESCE(b.budget_outturn, 0) as full_year_budget,
  	   COALESCE(cy_o.current_year_outturn, 0) as full_year_actual_forecast,
- 	   (COALESCE(cy_o.current_year_outturn, 0) - COALESCE(b.budget_outturn, 0)) as full_year_actual_forecast_budget_variance,
+ 	   (COALESCE(b.budget_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0)) as full_year_actual_forecast_budget_variance,
  	   COALESCE(rates.run_rate_ytd, 0) as ytd_run_rate,
   	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
 	   COALESCE(fp.forecast, 0) as previous_period_forecast 
