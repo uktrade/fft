@@ -137,7 +137,6 @@ CREATE VIEW dw_current_rates as
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0001_previous_year'),
     ]
 
     operations = [
