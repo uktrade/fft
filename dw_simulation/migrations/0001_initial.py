@@ -110,27 +110,22 @@ AS ytd_actual
 
 CREATE VIEW dw_current_rates as
     SELECT financial_code, financial_period_code, archived_financial_period_code, 
-    sum(coalesce(actual, 0))  OVER ( PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code) as run_rate_ytd,
-    avg(coalesce(actual, 0)) OVER (PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code) * 12 as full_year_run_rate
-        FROM dw_simulation_mi_report_forecast_actual WHERE financial_period_code < archived_financial_period_code 
-        or (financial_period_code = archived_financial_period_code AND actual_loaded = true)
+    sum(coalesce(actual, 0) + coalesce(forecast, 0))  OVER ( PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code) as run_rate_ytd,
+    avg(coalesce(actual, 0)+ coalesce(forecast,0)) OVER (PARTITION BY financial_code, archived_financial_period_code ORDER BY financial_period_code) * 12 as full_year_run_rate
+        FROM dw_simulation_mi_report_forecast_actual 
+        WHERE financial_period_code <= archived_financial_period_code 
     
     UNION				 
     
-     SELECT fa.financial_code, fa.financial_period_code, fa.archived_financial_period_code, 
-    
+     SELECT fa.financial_code, fa.financial_period_code, fa.archived_financial_period_code,    
     rate.ytd_run_rate * financial_period_code as run_rate_ytd,
     rate.ytd_run_rate * 12 as full_year_run_rate
         FROM dw_simulation_mi_report_forecast_actual fa INNER JOIN 
-        (select avg(COALESCE(actual, 0)) as ytd_run_rate, financial_code, archived_financial_period_code
-				FROM dw_simulation_mi_report_forecast_actual WHERE actual_loaded = true
-				group by financial_code, archived_financial_period_code) as rate ON rate.financial_code = fa.financial_code and rate.archived_financial_period_code = fa.archived_financial_period_code
-            
-        WHERE fa.financial_period_code > fa.archived_financial_period_code 
-        or (fa.financial_period_code = fa.archived_financial_period_code AND actual_loaded = false);
-
-	
-
+        (select avg(COALESCE(actual, 0) + COALESCE(forecast, 0)) as ytd_run_rate, financial_code, archived_financial_period_code
+				FROM dw_simulation_mi_report_forecast_actual WHERE financial_period_code <= archived_financial_period_code 
+				group by financial_code, archived_financial_period_code) as rate ON rate.financial_code = fa.financial_code and rate.archived_financial_period_code = fa.archived_financial_period_code            
+        WHERE fa.financial_period_code > fa.archived_financial_period_code ;
+ 
 """
 
 

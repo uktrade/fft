@@ -185,7 +185,6 @@ class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
     filename = "mi_data_previous_year_actual"
     forecast_title = [
         "Previous Financial Code ID",
-        "Financial Code ID",
         "Previous Year Actual",
         "Financial Period Code",
         "Financial Period Name",
