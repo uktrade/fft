@@ -10,20 +10,39 @@ DROP VIEW IF EXISTS
 """
 
 create_previous_year_sql = """
-
 CREATE VIEW
 	mi_report_previous_year_actual as	
 SELECT financial_year_id + 1 as financial_year_id, 
         financial_code_id,
         12 as archived_period_id,
-            unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) as financial_period_id, 
+            unnest(array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) as financial_period_id, 
             unnest(array[apr, may, jun, jul, aug, sep, 
-                    oct, nov, "dec", jan, feb, mar, adj1, adj2, adj3]) as previous_year_actual
-    FROM previous_years_archivedforecastdata
-     WHERE
-         (financial_year_id + 1) in 
-         (SELECT financial_year FROM core_financialyear where current = true)
+                    oct, nov, "dec", jan, feb, mar]) as previous_year_actual
+    FROM 
+	(SELECT  
+		coalesce(apr,0) as apr, 
+		coalesce(may,0) as may, 
+		coalesce(jun,0) as jun, 
+		coalesce(jul,0) as jul,
+		coalesce(aug,0) as aug,
+		coalesce(sep,0) as sep, 
+		coalesce(oct,0) as oct, 
+		coalesce(nov,0) as nov, 
+		coalesce("dec",0) as "dec", 
+		coalesce(jan,0) as jan, 
+	 	coalesce(feb,0) as feb, 
+		coalesce(mar,0) + 
+		coalesce(adj1,0) + 
+		coalesce(adj2,0) + 
+		coalesce(adj3,0) as mar,
+		financial_code_id, financial_year_id
+			FROM public.previous_years_archivedforecastdata
+			 WHERE
+				 (financial_year_id + 1) in 
+				 (SELECT financial_year FROM core_financialyear where current = true)) p
         ;
+
+
 
 """
 

@@ -750,5 +750,6 @@ DROP VIEW IF EXISTS dw_budget_full_table
 CREATE VIEW dw_budget_full_table
 FROM dw_budget_full_table GROUP
 DROP TABLE IF
+coalesce(nov,0
 
 
