@@ -11,16 +11,23 @@ DROP VIEW IF EXISTS dw_actual_forecast_ytd;
 DROP VIEW IF EXISTS dw_actual_ytd;
 DROP VIEW IF EXISTS dw_current_rates;
 DROP VIEW IF EXISTS dw_current_year_outturn;
+DROP VIEW IF EXISTS dw_previous_period_forecast;
 
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual;
 DROP TABLE IF EXISTS public.dw_simulation_mi_report_budget;
 DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
-DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
-DROP TABLE IF EXISTS dw_simulation_mi_report_previous_year_actual;
+DROP TABLE IF EXISTS dw_simulation_financial_period_in_use;
+DROP TABLE IF EXISTS dw_simulation_financial_period;
 
 """
 
 create_sql = """
+CREATE TABLE IF NOT EXISTS dw_simulation_financial_period
+(
+    financial_period_code integer,
+    period_short_name character varying(10)
+);
+
 CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_forecast_actual
 (
     cost_centre_code character varying(6),
@@ -84,6 +91,11 @@ CREATE TABLE IF NOT EXISTS public.dw_simulation_mi_report_previous_year_actual
     archiving_year integer
 );
 
+CREATE TABLE IF NOT EXISTS dw_simulation_financial_period_in_use
+(
+    financial_period_code integer,
+    period_short_name character varying(10)
+);
 
 CREATE VIEW dw_current_year_outturn as 
 SELECT financial_code, coalesce(sum(actual+forecast), 0)  as current_year_outturn, archived_financial_period_code
@@ -126,6 +138,15 @@ CREATE VIEW dw_current_rates as
 				group by financial_code, archived_financial_period_code) as rate ON rate.financial_code = fa.financial_code and rate.archived_financial_period_code = fa.archived_financial_period_code            
         WHERE fa.financial_period_code > fa.archived_financial_period_code ;
  
+
+CREATE VIEW dw_previous_period_forecast as 
+select financial_code, coalesce(forecast, 0) as previous_period_forecast, financial_period_code
+FROM dw_simulation_mi_report_forecast_actual
+where financial_period_code = archived_financial_period_code+1 and archived_financial_period_code < 
+(SELECT max(financial_period_code)
+	FROM dw_simulation_financial_period_in_use);
+
+
 """
 
 

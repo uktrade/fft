@@ -17,12 +17,6 @@ DROP TABLE IF EXISTS dw_simulation_financial_period;
 
 create_sql = """
 
-CREATE TABLE IF NOT EXISTS dw_simulation_financial_period
-(
-    financial_period_code integer,
-    period_short_name character varying(10)
-);
-
 
 CREATE VIEW dw_full_period_list_view as
    SELECT p.financial_period_code, p.period_short_name as financial_period_name,
@@ -127,7 +121,7 @@ SELECT
  	   (COALESCE(b.budget_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0)) as full_year_actual_forecast_budget_variance,
  	   COALESCE(rates.run_rate_ytd, 0) as ytd_run_rate,
   	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
-	   COALESCE(fp.forecast, 0) as previous_period_forecast 
+	   COALESCE(fp.previous_period_forecast, 0) as previous_period_forecast 
 	FROM (dw_simulation_mi_report_forecast_actual f
 	full outer join dw_budget_data b 
 	on b.financial_code = f.financial_code 
@@ -143,10 +137,8 @@ SELECT
  		  JOIN dw_current_rates rates ON rates.financial_code = f.financial_code 
  					AND rates.financial_period_code = f.financial_period_code
  		  			AND rates.archived_financial_period_code = f.archived_financial_period_code
-	LEFT OUTER JOIN (
-	SELECT financial_code, forecast, financial_period_code, archived_financial_period_code
-	FROM public.dw_simulation_mi_report_forecast_actual fp
-	) fp on fp.financial_code = f.financial_code AND fp.financial_period_code = f.financial_period_code AND fp.archived_financial_period_code = f.archived_financial_period_code - 1
+ 		  LEFT OUTER JOIN dw_previous_period_forecast fp ON fp.financial_code = f.financial_code 
+ 					AND fp.financial_period_code = f.financial_period_code and fp.financial_period_code <= f.archived_financial_period_code;
 	;
 
 """
