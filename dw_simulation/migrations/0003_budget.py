@@ -11,7 +11,7 @@ DROP VIEW IF EXISTS dw_budget_full_table;
 
 DROP VIEW IF EXISTS dw_no_budget_full_table;
 DROP VIEW IF EXISTS dw_full_period_list_view;
-DROP TABLE IF EXISTS dw_simulation_financial_period;
+
 
 """
 
