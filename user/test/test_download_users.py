@@ -3,7 +3,6 @@ from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from core.test.test_base import TEST_EMAIL
-
 from user.download_users import download_users_queryset
 
 

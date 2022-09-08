@@ -1,12 +1,7 @@
+from authbroker_client.backends import AuthbrokerBackend
+from authbroker_client.utils import get_client, get_profile, has_valid_token
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-
-from authbroker_client.backends import AuthbrokerBackend
-from authbroker_client.utils import (
-    get_client,
-    get_profile,
-    has_valid_token,
-)
 
 
 class CustomAuthbrokerBackend(AuthbrokerBackend):
@@ -22,13 +17,9 @@ class CustomAuthbrokerBackend(AuthbrokerBackend):
         User = get_user_model()
 
         user = User.objects.filter(
-            Q(
-                email=profile["user_id"]
-            ) | Q(
-                username=profile["user_id"]
-            ) | Q(
-                username=profile["email_user_id"]
-            )
+            Q(email=profile["user_id"])
+            | Q(username=profile["user_id"])
+            | Q(username=profile["email_user_id"])
         ).first()
 
         if user:
