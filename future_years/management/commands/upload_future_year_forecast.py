@@ -2,16 +2,9 @@ import os
 
 from django.core.management.base import CommandError
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-from core.utils.command_helpers import get_no_answer
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-)
-
+from core.utils.command_helpers import CommandUpload, get_no_answer
+from core.utils.generic_helpers import get_current_financial_year
 from forecast.import_budget_or_forecast import upload_forecast_from_file
-
 from upload_file.models import FileUpload
 
 

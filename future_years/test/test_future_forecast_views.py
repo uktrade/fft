@@ -1,25 +1,17 @@
 from bs4 import BeautifulSoup
-
-from django.contrib.auth.models import (
-    Permission,
-)
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-)
-
-from end_of_month.test.test_utils import MonthlyFigureSetup
-
 from core.test.test_base import BaseTestCase
+from core.utils.generic_helpers import get_current_financial_year
+from end_of_month.test.test_utils import MonthlyFigureSetup
 from forecast.test.test_utils import (
+    EXPENDITURE_TABLE_INDEX,
     HIERARCHY_TABLE_INDEX,
     PROGRAMME_TABLE_INDEX,
-    EXPENDITURE_TABLE_INDEX,
     PROJECT_TABLE_INDEX,
     format_forecast_figure,
 )
-
 from future_years.test.future_year_utils import FUTURE_TOTAL_COLUMN
 
 

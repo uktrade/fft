@@ -1,35 +1,16 @@
 import os
 
 from django.db.models import Max
+from django.test import override_settings
 
-from django.test import (
-    override_settings,
-)
-
-from chartofaccountDIT.test.factories import (
-    NaturalCodeFactory,
-    ProgrammeCodeFactory,
-)
-
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from core.models import FinancialYear
 from core.test.test_base import BaseTestCase
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-    DirectorateFactory,
-)
-
+from core.utils.generic_helpers import get_current_financial_year
+from costcentre.test.factories import CostCentreFactory, DirectorateFactory
 from forecast.import_budget_or_forecast import upload_budget_from_file
-from forecast.models import (
-    BudgetMonthlyFigure,
-    FinancialPeriod,
-)
-
+from forecast.models import BudgetMonthlyFigure, FinancialPeriod
 from upload_file.models import FileUpload
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-)
-
 
 TEST_COST_CENTRE = 109189
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
