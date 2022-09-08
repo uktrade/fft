@@ -14,4 +14,3 @@ pyperclip
 webdriver-manager
 freezegun
 pip-tools>=6.5.1
-
