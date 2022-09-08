@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0009_auto_20201123_0902'),
+        ("chartofaccountDIT", "0009_auto_20201123_0902"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='archivednaturalcode',
-            name='op_delivery_plan',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Operating Delivery Plan Category'),
+            model_name="archivednaturalcode",
+            name="op_delivery_plan",
+            field=models.CharField(
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="Operating Delivery Plan Category",
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivednaturalcode',
-            name='op_delivery_plan',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Operating Delivery Plan Category'),
+            model_name="simplehistoryarchivednaturalcode",
+            name="op_delivery_plan",
+            field=models.CharField(
+                blank=True,
+                max_length=255,
+                null=True,
+                verbose_name="Operating Delivery Plan Category",
+            ),
         ),
     ]

@@ -22,11 +22,9 @@ from chartofaccountDIT.views import (
     choose_year,
     quick_links,
 )
-
 from core.utils.generic_helpers import GetValidYear
 
-
-register_converter(GetValidYear, 'yyyy')
+register_converter(GetValidYear, "yyyy")
 
 
 urlpatterns = [

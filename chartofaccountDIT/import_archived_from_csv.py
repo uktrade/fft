@@ -9,7 +9,6 @@ from chartofaccountDIT.models import (
     ArchivedProgrammeCode,
     ArchivedProjectCode,
 )
-
 from core.import_csv import (
     IMPORT_CSV_FIELDLIST_KEY,
     IMPORT_CSV_MODEL_KEY,
@@ -17,14 +16,8 @@ from core.import_csv import (
     IMPORT_CSV_PK_NAME_KEY,
     import_obj,
 )
-
 from forecast.import_csv import WrongChartOFAccountCodeException
-
-from previous_years.utils import (
-    ArchiveYearError,
-    validate_year_for_archiving,
-)
-
+from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 
 ANALYSIS1_HISTORICAL_KEY = {
     IMPORT_CSV_MODEL_KEY: ArchivedAnalysis1,

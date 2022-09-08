@@ -15,7 +15,6 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.import_csv import (
     IMPORT_CSV_FIELDLIST_KEY,
     IMPORT_CSV_IS_FK,
@@ -27,9 +26,7 @@ from core.import_csv import (
     import_list_obj,
     import_obj,
 )
-
 from treasuryCOA.models import L5Account
-
 
 # define the column position in the csv file.
 ANALYSIS1_KEY = {
@@ -45,9 +42,7 @@ ANALYSIS1_KEY = {
 ANALYSIS2_KEY = {
     IMPORT_CSV_MODEL_KEY: Analysis2,
     IMPORT_CSV_PK_KEY: "Code",
-    IMPORT_CSV_FIELDLIST_KEY: {
-        "analysis2_description": "Description"
-    },
+    IMPORT_CSV_FIELDLIST_KEY: {"analysis2_description": "Description"},
 }
 
 
@@ -66,9 +61,7 @@ import_analysis2_class = ImportInfo(ANALYSIS2_KEY)
 PROJECT_KEY = {
     IMPORT_CSV_MODEL_KEY: ProjectCode,
     IMPORT_CSV_PK_KEY: "Code",
-    IMPORT_CSV_FIELDLIST_KEY: {
-        "project_description": "Description"
-    },
+    IMPORT_CSV_FIELDLIST_KEY: {"project_description": "Description"},
 }
 
 
@@ -276,9 +269,7 @@ import_prog_class = ImportInfo(PROG_KEY)
 INTER_ENTITY_L1_KEY = {
     IMPORT_CSV_MODEL_KEY: InterEntityL1,
     IMPORT_CSV_PK_KEY: "L1 Value",
-    IMPORT_CSV_FIELDLIST_KEY: {
-        "l1_description": "L1 Description"
-    },
+    IMPORT_CSV_FIELDLIST_KEY: {"l1_description": "L1 Description"},
 }
 
 INTER_ENTITY_KEY = {

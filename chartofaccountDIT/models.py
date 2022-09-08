@@ -1,11 +1,6 @@
 from django.db import models
 
-from core.metamodels import (
-    ArchivedModel,
-    BaseModel,
-    IsActiveModel,
-)
-
+from core.metamodels import ArchivedModel, BaseModel, IsActiveModel
 from treasuryCOA.models import L5Account
 
 
