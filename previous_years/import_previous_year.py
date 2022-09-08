@@ -5,30 +5,20 @@ from django.db import connection
 
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
-
-
 from forecast.utils.import_helpers import (
     UploadFileDataError,
     UploadFileFormatError,
     check_header,
     validate_excel_file,
 )
-
-from previous_years.models import (
-    ArchivedForecastData,
-    ArchivedForecastDataUpload,
-)
+from previous_years.models import ArchivedForecastData, ArchivedForecastDataUpload
 from previous_years.utils import (
     ArchiveYearError,
     CheckArchivedFinancialCode,
     validate_year_for_archiving_actuals,
 )
-
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 
 # Make the adjustment columns compulsory. They can have just 0 in it.
 # Maybe only one adjustment column is needed, but it becomes too complex to find out
@@ -67,7 +57,9 @@ logger = logging.getLogger(__name__)
 
 def copy_previous_year_figure_from_temp_table(year):
     # Now copy the newly uploaded previous_years to the monthly figure table
-    ArchivedForecastData.objects.filter(financial_year=year,).delete()
+    ArchivedForecastData.objects.filter(
+        financial_year=year,
+    ).delete()
     sql_insert = (
         f"INSERT INTO previous_years_archivedforecastdata("
         "created, "
@@ -152,7 +144,8 @@ def upload_previous_year_figures(
             previous_year_obj,
             created,
         ) = ArchivedForecastDataUpload.objects.get_or_create(
-            financial_year=financial_year_obj, financial_code=financialcode_obj,
+            financial_year=financial_year_obj,
+            financial_code=financialcode_obj,
         )
         # to avoid problems with precision,
         # we store the figures in pence
@@ -210,7 +203,9 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
         validate_year_for_archiving_actuals(financial_year)
     except ArchiveYearError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         raise ex
 
@@ -220,7 +215,9 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
     # The previous_years are uploaded to to a temporary storage, and copied
     # when the upload is completed successfully.
     # This means that we always have a full upload.
-    ArchivedForecastDataUpload.objects.filter(financial_year=financial_year,).delete()
+    ArchivedForecastDataUpload.objects.filter(
+        financial_year=financial_year,
+    ).delete()
     rows_to_process = worksheet.max_row + 1
 
     check_financial_code = CheckArchivedFinancialCode(financial_year, file_upload)
@@ -280,7 +277,9 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
                 )
             except (UploadFileFormatError, ArchiveYearError) as ex:
                 set_file_upload_fatal_error(
-                    file_upload, str(ex), str(ex),
+                    file_upload,
+                    str(ex),
+                    str(ex),
                 )
                 raise ex
 
@@ -309,14 +308,18 @@ def upload_previous_year_from_file(file_upload, year):
         workbook, worksheet = validate_excel_file(file_upload, VALID_WS_NAME)
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         raise ex
     try:
         upload_previous_year(worksheet, year, file_upload)
     except (UploadFileDataError, ArchiveYearError) as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         workbook.close
         raise ex

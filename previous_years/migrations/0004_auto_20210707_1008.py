@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('previous_years', '0003_auto_20210224_0749'),
+        ("previous_years", "0003_auto_20210224_0749"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='archivedforecastdata',
-            name='previous_outturn',
+            model_name="archivedforecastdata",
+            name="previous_outturn",
             field=models.BigIntegerField(blank=True, default=0, null=True),
         ),
         migrations.AddField(
-            model_name='archivedforecastdataupload',
-            name='previous_outturn',
+            model_name="archivedforecastdataupload",
+            name="previous_outturn",
             field=models.BigIntegerField(blank=True, default=0, null=True),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivedforecastdata',
-            name='previous_outturn',
+            model_name="simplehistoryarchivedforecastdata",
+            name="previous_outturn",
             field=models.BigIntegerField(blank=True, default=0, null=True),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivedforecastdataupload',
-            name='previous_outturn',
+            model_name="simplehistoryarchivedforecastdataupload",
+            name="previous_outturn",
             field=models.BigIntegerField(blank=True, default=0, null=True),
         ),
     ]

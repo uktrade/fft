@@ -1,13 +1,8 @@
 import logging
 
 from core.models import FinancialYear
-
-from forecast.utils.import_helpers import (
-    UploadFileDataError,
-    UploadFileFormatError,
-)
+from forecast.utils.import_helpers import UploadFileDataError, UploadFileFormatError
 from forecast.utils.query_fields import ForecastQueryFields
-
 from previous_years.import_previous_year import (
     copy_previous_year_figure_from_temp_table,
 )
@@ -17,13 +12,8 @@ from previous_years.utils import (
     CheckArchivedFinancialCode,
     validate_year_for_archiving_actuals,
 )
-
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
-
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +22,8 @@ def archive_to_temp_previous_year_figures(
     row_to_archive, financial_year_obj, financialcode_obj
 ):
     (previous_year_obj, created,) = ArchivedForecastDataUpload.objects.get_or_create(
-        financial_year=financial_year_obj, financial_code=financialcode_obj,
+        financial_year=financial_year_obj,
+        financial_code=financialcode_obj,
     )
     # to avoid problems with precision,
     # we store the figures in pence
@@ -103,7 +94,9 @@ def archive_current_year():
     # The previous_years are uploaded to to a temporary storage,
     # and copied when the upload is completed successfully.
     # This means that we always have a full upload.
-    ArchivedForecastDataUpload.objects.filter(financial_year=financial_year,).delete()
+    ArchivedForecastDataUpload.objects.filter(
+        financial_year=financial_year,
+    ).delete()
     rows_to_process = data_to_archive_list.count()
 
     # Create an entry in the file upload table, even if it is not a file.
@@ -112,7 +105,7 @@ def archive_current_year():
         document_file_name="dummy",
         document_type=FileUpload.PREVIOUSYEAR,
         file_location=FileUpload.LOCALFILE,
-        status=FileUpload.PROCESSING
+        status=FileUpload.PROCESSING,
     )
 
     check_financial_code = CheckArchivedFinancialCode(financial_year, file_upload)
@@ -153,11 +146,15 @@ def archive_current_year():
             financialcode_obj = check_financial_code.get_financial_code()
             try:
                 archive_to_temp_previous_year_figures(
-                    row_to_archive, financial_year_obj, financialcode_obj,
+                    row_to_archive,
+                    financial_year_obj,
+                    financialcode_obj,
                 )
             except (UploadFileFormatError, ArchiveYearError) as ex:
                 set_file_upload_fatal_error(
-                    file_upload, str(ex), str(ex),
+                    file_upload,
+                    str(ex),
+                    str(ex),
                 )
                 raise ex
 

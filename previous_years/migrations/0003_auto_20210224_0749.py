@@ -6,40 +6,144 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('previous_years', '0002_auto_20210223_0909'),
+        ("previous_years", "0002_auto_20210223_0909"),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', False), ('analysis2_code__isnull', False), ('project_code__isnull', False)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code', 'project_code'), name='archived_financial_row_unique_6'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", False),
+                    ("analysis2_code__isnull", False),
+                    ("project_code__isnull", False),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "analysis2_code",
+                    "project_code",
+                ),
+                name="archived_financial_row_unique_6",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', True), ('analysis2_code__isnull', False), ('project_code__isnull', False)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis2_code', 'project_code'), name='archived_financial_row_unique_5a'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", True),
+                    ("analysis2_code__isnull", False),
+                    ("project_code__isnull", False),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis2_code",
+                    "project_code",
+                ),
+                name="archived_financial_row_unique_5a",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', False), ('analysis2_code__isnull', True), ('project_code__isnull', False)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'project_code'), name='archived_financial_row_unique_5b'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", False),
+                    ("analysis2_code__isnull", True),
+                    ("project_code__isnull", False),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "project_code",
+                ),
+                name="archived_financial_row_unique_5b",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', False), ('analysis2_code__isnull', False), ('project_code__isnull', True)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis1_code', 'analysis2_code'), name='archived_financial_row_unique_5c'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", False),
+                    ("analysis2_code__isnull", False),
+                    ("project_code__isnull", True),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                    "analysis2_code",
+                ),
+                name="archived_financial_row_unique_5c",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', True), ('analysis2_code__isnull', True), ('project_code__isnull', False)), fields=('programme', 'cost_centre', 'natural_account_code', 'project_code'), name='archived_financial_row_unique_4a'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", True),
+                    ("analysis2_code__isnull", True),
+                    ("project_code__isnull", False),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "project_code",
+                ),
+                name="archived_financial_row_unique_4a",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', False), ('analysis2_code__isnull', True), ('project_code__isnull', True)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis1_code'), name='archived_financial_row_unique_4b'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", False),
+                    ("analysis2_code__isnull", True),
+                    ("project_code__isnull", True),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis1_code",
+                ),
+                name="archived_financial_row_unique_4b",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', True), ('analysis2_code__isnull', False), ('project_code__isnull', True)), fields=('programme', 'cost_centre', 'natural_account_code', 'analysis2_code'), name='archived_financial_row_unique_4c'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", True),
+                    ("analysis2_code__isnull", False),
+                    ("project_code__isnull", True),
+                ),
+                fields=(
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                    "analysis2_code",
+                ),
+                name="archived_financial_row_unique_4c",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='archivedfinancialcode',
-            constraint=models.UniqueConstraint(condition=models.Q(('analysis1_code__isnull', True), ('analysis2_code__isnull', True), ('project_code__isnull', True)), fields=('programme', 'cost_centre', 'natural_account_code'), name='archived_financial_row_unique_3'),
+            model_name="archivedfinancialcode",
+            constraint=models.UniqueConstraint(
+                condition=models.Q(
+                    ("analysis1_code__isnull", True),
+                    ("analysis2_code__isnull", True),
+                    ("project_code__isnull", True),
+                ),
+                fields=("programme", "cost_centre", "natural_account_code"),
+                name="archived_financial_row_unique_3",
+            ),
         ),
     ]

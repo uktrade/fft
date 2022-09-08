@@ -1,9 +1,6 @@
 import os
 
-from django.test import (
-    TestCase,
-)
-
+from django.test import TestCase
 from openpyxl import Workbook
 
 from chartofaccountDIT.test.factories import (
@@ -13,29 +10,22 @@ from chartofaccountDIT.test.factories import (
     HistoricalProgrammeCodeFactory,
     HistoricalProjectCodeFactory,
 )
-
 from core.models import FinancialYear
 from core.test.test_base import TEST_COST_CENTRE
-
 from costcentre.test.factories import ArchivedCostCentreFactory
-
 from previous_years.import_previous_year import (
     ANALYSIS2_HEADER,
     ANALYSIS_HEADER,
-    ArchiveYearError,
     COST_CENTRE_HEADER,
     DATA_HEADERS,
     NAC_HEADER,
     PROGRAMME_HEADER,
     PROJECT_HEADER,
     VALID_WS_NAME,
+    ArchiveYearError,
     upload_previous_year,
 )
-from previous_years.models import (
-    ArchivedFinancialCode,
-    ArchivedForecastData,
-)
-
+from previous_years.models import ArchivedFinancialCode, ArchivedForecastData
 from upload_file.models import FileUpload
 
 
@@ -118,7 +108,10 @@ class ImportPreviousYearForecastTest(TestCase):
             self.data_worksheet.cell(column=col_index, row=2, value=value1)
             self.data_worksheet.cell(column=col_index, row=3, value=value2)
             self.results.append((value1 + value2) * 100)
-        self.excel_file_name = os.path.join(os.path.dirname(__file__), 'dummy.xlsx', )
+        self.excel_file_name = os.path.join(
+            os.path.dirname(__file__),
+            "dummy.xlsx",
+        )
         wb.save(filename=self.excel_file_name)
 
     def test_upload_wrong(self):
@@ -130,7 +123,9 @@ class ImportPreviousYearForecastTest(TestCase):
         file_upload_obj.save()
         with self.assertRaises(ArchiveYearError):
             upload_previous_year(
-                self.data_worksheet, self.archived_year + 1, file_upload_obj,
+                self.data_worksheet,
+                self.archived_year + 1,
+                file_upload_obj,
             )
 
     def test_upload(self):
@@ -145,7 +140,11 @@ class ImportPreviousYearForecastTest(TestCase):
         financial_year_obj = FinancialYear.objects.get(pk=self.archived_year)
         self.assertEqual(financial_year_obj.archived, False)
         file_upload_obj.save()
-        upload_previous_year(self.data_worksheet, self.archived_year, file_upload_obj,)
+        upload_previous_year(
+            self.data_worksheet,
+            self.archived_year,
+            file_upload_obj,
+        )
 
         financial_year_obj = FinancialYear.objects.get(pk=self.archived_year)
         self.assertEqual(financial_year_obj.archived, True)

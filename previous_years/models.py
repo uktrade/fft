@@ -1,8 +1,5 @@
 from django.db import models
-from django.db.models import (
-    Q,
-    UniqueConstraint,
-)
+from django.db.models import Q, UniqueConstraint
 
 from chartofaccountDIT.models import (
     ArchivedAnalysis1,
@@ -11,14 +8,9 @@ from chartofaccountDIT.models import (
     ArchivedProgrammeCode,
     ArchivedProjectCode,
 )
-
-from core.metamodels import (
-    ArchivedModel,
-)
+from core.metamodels import ArchivedModel
 from core.models import FinancialYear
-
 from costcentre.models import ArchivedCostCentre
-
 from forecast.models import (
     FinancialCodeAbstract,
     ForecastExpenditureType,
@@ -147,7 +139,11 @@ class ArchivedFinancialCode(ArchivedModel, FinancialCodeAbstract):
                 & Q(project_code__isnull=True),
             ),
             UniqueConstraint(
-                fields=["programme", "cost_centre", "natural_account_code", ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                ],
                 name="archived_financial_row_unique_3",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=True)
@@ -158,7 +154,10 @@ class ArchivedFinancialCode(ArchivedModel, FinancialCodeAbstract):
 
 class ArchivedForecastDataAbstract(ForecastingDataViewAbstract, ArchivedModel):
     id = models.AutoField(auto_created=True, primary_key=True)
-    financial_code = models.ForeignKey(ArchivedFinancialCode, on_delete=models.PROTECT,)
+    financial_code = models.ForeignKey(
+        ArchivedFinancialCode,
+        on_delete=models.PROTECT,
+    )
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
 
     class Meta:
@@ -184,7 +183,11 @@ class ArchivedActualUploadMonthlyFigure(MonthlyFigureAbstract):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["financial_code", "financial_year", "financial_period", ],
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                ],
                 name="ArchivedActualUploadMonthlyFigure_unique1",
             ),
         ]
