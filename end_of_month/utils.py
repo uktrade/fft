@@ -1,6 +1,4 @@
-from end_of_month.models import (
-    EndOfMonthStatus)
-
+from end_of_month.models import EndOfMonthStatus
 from forecast.models import MAX_PERIOD_CODE, FinancialPeriod
 
 
@@ -62,8 +60,11 @@ def monthly_variance_exists(period):
     # or we display the April archived period
     # or there are no archived period (happens in April)
     # period 0 is used for the current period
-    if period > 2000 or period == 1 \
-            or not EndOfMonthStatus.archived_period_objects.archived_list():
+    if (
+        period > 2000
+        or period == 1
+        or not EndOfMonthStatus.archived_period_objects.archived_list()
+    ):
         return False
     else:
         return True

@@ -1,18 +1,12 @@
 import logging
 
 from core.utils.generic_helpers import get_current_financial_year
-
 from end_of_month.end_of_month_actions import (
     ArchiveMonthInvalidPeriodError,
     RestoreNonExistingArchiveError,
     get_last_restore_period_id,
 )
-
-from end_of_month.models import (
-    EndOfMonthStatus,
-    MonthlyTotalBudget,
-)
-
+from end_of_month.models import EndOfMonthStatus, MonthlyTotalBudget
 from forecast.models import (
     MAX_PERIOD_CODE,
     BudgetMonthlyFigure,
@@ -75,9 +69,7 @@ def restore_archive(period_id):
     ).update(archived=False, archived_date=None)
 
     # Clear the actual loaded flag for periods after the se
-    FinancialPeriod.objects.filter(
-        financial_period_code__gt=period_id,
-    ).update(
+    FinancialPeriod.objects.filter(financial_period_code__gt=period_id,).update(
         actual_loaded=False,
     )
 

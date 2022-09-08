@@ -4,7 +4,6 @@ from end_of_month.end_of_month_actions import (
     delete_end_of_month_archive,
     delete_last_end_of_month_archive,
 )
-
 from forecast.models import MAX_PERIOD_CODE
 
 
@@ -28,10 +27,8 @@ class Command(BaseCommand):
         if period_code:
             delete_end_of_month_archive(period_code)
             self.stdout.write(
-                self.style.SUCCESS(f'Archive for period {period_code} deleted.')
+                self.style.SUCCESS(f"Archive for period {period_code} deleted.")
             )
         else:
             delete_last_end_of_month_archive()
-            self.stdout.write(
-                self.style.SUCCESS('Latest archive deleted.')
-            )
+            self.stdout.write(self.style.SUCCESS("Latest archive deleted."))

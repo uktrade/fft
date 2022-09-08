@@ -4,7 +4,6 @@ from django.db.models import Max
 
 from core.metamodels import BaseModel
 from core.models import FinancialYear
-
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
@@ -61,14 +60,20 @@ class ArchivedPeriodManager(models.Manager):
 class EndOfMonthStatus(BaseModel):
     archived = models.BooleanField(default=False)
     archived_by = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, blank=True, null=True,
+        get_user_model(),
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
     archived_period = models.OneToOneField(
         FinancialPeriod,
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
-    archived_date = models.DateTimeField(blank=True, null=True,)
+    archived_date = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
 
     objects = models.Manager()  # The default manager.
     archived_period_objects = ArchivedPeriodManager()
@@ -88,7 +93,10 @@ class MonthlyOutturn(BaseModel):
     # It could be calculated when displayed
     # but the computational overhead would be too much.
     previous_outturn = models.BigIntegerField(default=0)  # stored in pence
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
     used_for_current_month = models.BooleanField(default=False)
     financial_code = models.ForeignKey(
         FinancialCode,
@@ -123,7 +131,10 @@ class MonthlyTotalBudget(BaseModel):
     # It could be calculated from the archived budget,
     # but the queries are complex and it is easier to store the total
     amount = models.BigIntegerField(default=0)  # stored in pence
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
@@ -148,7 +159,10 @@ class MonthlyTotalBudget(BaseModel):
 
 
 class PreviousMonthForecast(ForecastingDataViewAbstract):
-    archived_period = models.ForeignKey(FinancialPeriod, on_delete=models.PROTECT,)
+    archived_period = models.ForeignKey(
+        FinancialPeriod,
+        on_delete=models.PROTECT,
+    )
 
     class Meta:
         abstract = True

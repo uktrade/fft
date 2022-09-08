@@ -4,7 +4,6 @@ from end_of_month.restore_archive import (
     restore_archive,
     restore_last_end_of_month_archive,
 )
-
 from forecast.models import MAX_PERIOD_CODE
 
 
@@ -36,7 +35,5 @@ class Command(BaseCommand):
         else:
             restore_last_end_of_month_archive()
             self.stdout.write(
-                self.style.SUCCESS(
-                    "Data restored to latest for period {period_code}."
-                )
+                self.style.SUCCESS("Data restored to latest for period {period_code}.")
             )

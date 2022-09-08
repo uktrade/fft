@@ -11,13 +11,13 @@ from end_of_month.utils import (
     get_archivable_month,
     user_has_archive_access,
 )
-
 from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import is_system_locked
 
 
 class EndOfMonthProcessView(
-    UserPassesTestMixin, FormView,
+    UserPassesTestMixin,
+    FormView,
 ):
     template_name = "end_of_month/end_of_month_archive.html"
     form_class = EndOfMonthProcessForm
@@ -31,9 +31,7 @@ class EndOfMonthProcessView(
         return success_url
 
     def test_func(self):
-        can_edit = user_has_archive_access(
-            self.request.user
-        )
+        can_edit = user_has_archive_access(self.request.user)
 
         if not can_edit:
             raise PermissionDenied()
@@ -46,7 +44,8 @@ class EndOfMonthProcessView(
         try:
             archivable_period = get_archivable_month()
             context["archivable_month"] = FinancialPeriod.objects.get(
-                pk=archivable_period).period_long_name
+                pk=archivable_period
+            ).period_long_name
         except InvalidPeriodError:
             context["invalid_period"] = True
         except PeriodAlreadyArchivedError as ex:
