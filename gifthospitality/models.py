@@ -1,10 +1,6 @@
 from django.db import models
 
-from core.metamodels import (
-    BaseModel,
-    IsActiveModel,
-)
-
+from core.metamodels import BaseModel, IsActiveModel
 from costcentre.models import DepartmentalGroup
 
 
@@ -95,7 +91,9 @@ class GiftAndHospitality(BaseModel):
     )
 
     group_name = models.CharField("Group", max_length=200, blank=True, null=True)
-    date_agreed = models.DateField("Date of event /  gift received",)
+    date_agreed = models.DateField(
+        "Date of event /  gift received",
+    )
     venue = models.CharField(max_length=1000)
     reason = models.CharField("Description of offer and reason", max_length=1000)
     value = models.IntegerField("Estimated value of offer (£)")
@@ -126,7 +124,8 @@ class GiftAndHospitality(BaseModel):
         verbose_name="company",
     )
     company_name = models.CharField(
-        "Other company", max_length=200, blank=True, default='')
+        "Other company", max_length=200, blank=True, default=""
+    )
     ACTION_TYPE = (
         ("Action1", "Rejected"),
         ("Action2", "Accepted (difference paid to Department)"),
@@ -144,8 +143,9 @@ class GiftAndHospitality(BaseModel):
         limit_choices_to={"active": True},
         verbose_name="category",
     )
-    grade = models.ForeignKey(Grade, on_delete=models.PROTECT, verbose_name="grade",
-                              null=True)
+    grade = models.ForeignKey(
+        Grade, on_delete=models.PROTECT, verbose_name="grade", null=True
+    )
 
     class Meta:
         verbose_name = "Gift and Hospitality"
@@ -158,5 +158,6 @@ class GiftAndHospitality(BaseModel):
 
 class GiftHospitalityPermissions(models.Model):
     class Meta:
-        permissions = (("can_view_all_gifthospitality",
-                        "Can view all Gift Hospitality entries"),)
+        permissions = (
+            ("can_view_all_gifthospitality", "Can view all Gift Hospitality entries"),
+        )

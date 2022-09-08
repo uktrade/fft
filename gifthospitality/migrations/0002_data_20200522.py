@@ -2,8 +2,8 @@ from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
-Permission = apps.get_model('auth', 'Permission')
-Group = apps.get_model('auth', 'Group')
+Permission = apps.get_model("auth", "Permission")
+Group = apps.get_model("auth", "Group")
 
 
 def add_all_permissions():
@@ -28,7 +28,7 @@ def create_gift_hospitality_groups(apps, schema_editor):
 
     # Gift and Hospitality Admin
     gift_hospitality_admin, _ = Group.objects.get_or_create(
-        name='Gift and Hospitality Admin',
+        name="Gift and Hospitality Admin",
     )
 
 
@@ -40,4 +40,3 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(create_gift_hospitality_groups),
     ]
-

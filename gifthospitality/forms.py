@@ -12,16 +12,22 @@ class DateSelectorWidget(forms.MultiWidget):
         widgets = [
             forms.NumberInput(
                 attrs={
-                    'class': 'govuk-date-input__item govuk-input govuk-input--width-2',
-                    'placeholder': 'DD'}),
+                    "class": "govuk-date-input__item govuk-input govuk-input--width-2",
+                    "placeholder": "DD",
+                }
+            ),
             forms.NumberInput(
                 attrs={
-                    'class': 'govuk-date-input__item govuk-input govuk-input--width-2',
-                    'placeholder': 'MM'}),
+                    "class": "govuk-date-input__item govuk-input govuk-input--width-2",
+                    "placeholder": "MM",
+                }
+            ),
             forms.NumberInput(
                 attrs={
-                    'class': 'govuk-date-input__item govuk-input govuk-input--width-3',
-                    'placeholder': 'YYYY'}),
+                    "class": "govuk-date-input__item govuk-input govuk-input--width-3",
+                    "placeholder": "YYYY",
+                }
+            ),
         ]
         super().__init__(widgets, attrs)
 
@@ -29,13 +35,13 @@ class DateSelectorWidget(forms.MultiWidget):
         if isinstance(value, date):
             return [value.day, value.month, value.year]
         elif isinstance(value, str):
-            year, month, day = value.split('-')
+            year, month, day = value.split("-")
             return [day, month, year]
         return [None, None, None]
 
     def value_from_datadict(self, data, files, name):
         day, month, year = super().value_from_datadict(data, files, name)
-        return '{}-{}-{}'.format(year, month, day)
+        return "{}-{}-{}".format(year, month, day)
 
 
 class GiftAndHospitalityReceivedForm(forms.ModelForm):
@@ -44,28 +50,27 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             self.fields[f].required = True
-        self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['value'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['company'].widget.attrs.update({'class': 'govuk-select',
-                                                    'onChange': 'checkOther()'})
-        self.fields['company_name'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['company_name'].required = False
+        self.fields["classification"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["category"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["action_taken"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["venue"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["reason"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["value"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["rep"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["grade"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["group"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["company_rep"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["company"].widget.attrs.update(
+            {"class": "govuk-select", "onChange": "checkOther()"}
+        )
+        self.fields["company_name"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["company_name"].required = False
 
     def save(self, *args, **kwargs):
         self.instance.offer = self.offer
         self.instance.entered_date_stamp = datetime.datetime.now()
         if self.instance.group:
-            self.instance.group_name = (
-                self.instance.group.group_name
-            )
+            self.instance.group_name = self.instance.group.group_name
         return super(GiftAndHospitalityReceivedForm, self).save(*args, **kwargs)
 
     class Meta(DateSelectorWidget):
@@ -98,9 +103,7 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
         }
 
         widgets = {
-            "date_agreed": DateSelectorWidget(
-
-            ),
+            "date_agreed": DateSelectorWidget(),
         }
 
         help_texts = {
@@ -113,19 +116,20 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
         self.offer = GIFT_OFFERED
         super(GiftAndHospitalityReceivedForm, self).__init__(*args, **kwargs)
 
-        self.fields['classification'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['category'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['action_taken'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['venue'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['reason'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['value'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['grade'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['group'].widget.attrs.update({'class': 'govuk-select'})
-        self.fields['company_rep'].widget.attrs.update({'class': 'govuk-input'})
-        self.fields['company'].widget.attrs.update({'class': 'govuk-select',
-                                                    'onChange': 'checkOther()'})
-        self.fields['company_name'].widget.attrs.update({'class': 'govuk-input'})
+        self.fields["classification"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["category"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["action_taken"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["venue"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["reason"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["value"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["rep"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["grade"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["group"].widget.attrs.update({"class": "govuk-select"})
+        self.fields["company_rep"].widget.attrs.update({"class": "govuk-input"})
+        self.fields["company"].widget.attrs.update(
+            {"class": "govuk-select", "onChange": "checkOther()"}
+        )
+        self.fields["company_name"].widget.attrs.update({"class": "govuk-input"})
 
     class Meta(GiftAndHospitalityReceivedForm.Meta):
         labels = {

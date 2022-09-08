@@ -4,7 +4,6 @@ from .models import GiftAndHospitality
 
 
 class GiftHospitalityTable(FadminTable):
-
     class Meta(FadminTable.Meta):
         model = GiftAndHospitality
 

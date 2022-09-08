@@ -8,7 +8,6 @@ from django.views.generic.edit import FormView
 
 from core.utils.generic_helpers import today_string
 from core.views import FAdminFilteredView
-
 from gifthospitality.filters import GiftHospitalityFilter
 from gifthospitality.forms import (
     GiftAndHospitalityOfferedForm,
@@ -39,9 +38,7 @@ class GiftHospitalityReceivedView(FormView):
     success_name = "gifthospitality:received-done"
 
     def get_success_url(self):
-        success_url = reverse_lazy(
-            self.success_name, kwargs={"gift_id": self.new_id}
-        )
+        success_url = reverse_lazy(self.success_name, kwargs={"gift_id": self.new_id})
         return success_url
 
     def form_valid(self, form):
@@ -104,22 +101,26 @@ class GiftHospitalityReceivedDoneView(TemplateView):
 
 
 def quick_links(request):
-    return render(request, 'gifthospitality/quick_links.html', {
-        "quick_links": [
-            {
-                "title": "Add Gift/Hosp Received",
-                "text": "view",
-                "url": "gifthospitality:gift-received",
-            },
-            {
-                "title": "Add Gift/Hosp Offered",
-                "text": "view",
-                "url": "gifthospitality:gift-offered",
-            },
-            {
-                "title": "Search Records",
-                "text": "view",
-                "url": "gifthospitality:gift-search",
-            },
-        ]
-    })
+    return render(
+        request,
+        "gifthospitality/quick_links.html",
+        {
+            "quick_links": [
+                {
+                    "title": "Add Gift/Hosp Received",
+                    "text": "view",
+                    "url": "gifthospitality:gift-received",
+                },
+                {
+                    "title": "Add Gift/Hosp Offered",
+                    "text": "view",
+                    "url": "gifthospitality:gift-offered",
+                },
+                {
+                    "title": "Search Records",
+                    "text": "view",
+                    "url": "gifthospitality:gift-search",
+                },
+            ]
+        },
+    )

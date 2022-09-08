@@ -2,8 +2,8 @@ from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
-Permission = apps.get_model('auth', 'Permission')
-Group = apps.get_model('auth', 'Group')
+Permission = apps.get_model("auth", "Permission")
+Group = apps.get_model("auth", "Group")
 
 
 def add_all_permissions():
@@ -28,11 +28,12 @@ def add_gandh_admin_permissions(apps, schema_editor):
 
     # Finance admins
     gift_hospitality_admin, _ = Group.objects.get_or_create(
-        name='Gift and Hospitality Admin',
+        name="Gift and Hospitality Admin",
     )
 
     assign_permissions(
-        gift_hospitality_admin, [
+        gift_hospitality_admin,
+        [
             # admin permissions follow
             "can_view_all_gifthospitality"
         ],
