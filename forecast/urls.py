@@ -8,22 +8,17 @@ from forecast.views.edit_forecast import (
     ErrorView,
     PasteForecastRowsView,
 )
-from forecast.views.edit_select_cost_centre import (
-    ChooseCostCentreView,
-)
+from forecast.views.edit_select_cost_centre import ChooseCostCentreView
 from forecast.views.export.mi_report_source import (
     export_mi_budget_report,
     export_mi_previous_year_report,
     export_mi_report,
 )
-from forecast.views.upload_file import (
-    UploadActualsView,
-    UploadBudgetView,
-)
+from forecast.views.upload_file import UploadActualsView, UploadBudgetView
 from forecast.views.view_forecast.expenditure_details import (
     CostCentreExpenditureDetailsView,
-    DITExpenditureDetailsView,
     DirectorateExpenditureDetailsView,
+    DITExpenditureDetailsView,
     GroupExpenditureDetailsView,
 )
 from forecast.views.view_forecast.export_forecast_data import (
@@ -46,34 +41,31 @@ from forecast.views.view_forecast.export_forecast_data import (
 )
 from forecast.views.view_forecast.forecast_summary import (
     CostCentreView,
-    DITView,
     DirectorateView,
+    DITView,
     GroupView,
 )
 from forecast.views.view_forecast.programme_details import (
-    DITProgrammeDetailsView,
     DirectorateProgrammeDetailsView,
+    DITProgrammeDetailsView,
     GroupProgrammeDetailsView,
 )
 from forecast.views.view_forecast.project_details import (
     CostCentreProjectDetailsView,
-    DITProjectDetailsView,
     DirectorateProjectDetailsView,
+    DITProjectDetailsView,
     GroupProjectDetailsView,
 )
-
 
 urlpatterns = [
     path("error/", ErrorView.as_view(), name="error"),
     path(
-        "edit/<int:cost_centre_code>/",
-        EditForecastView.as_view(),
-        name="edit_forecast"
+        "edit/<int:cost_centre_code>/", EditForecastView.as_view(), name="edit_forecast"
     ),
     path(
         "edit/<int:cost_centre_code>/<int:financial_year>/",
         EditForecastView.as_view(),
-        name="edit_forecast"
+        name="edit_forecast",
     ),
     path(
         "edit/editing-unavailable/<int:financial_year>/",
@@ -90,7 +82,11 @@ urlpatterns = [
         ChooseCostCentreView.as_view(),
         name="choose_cost_centre",
     ),
-    path("view/dit/<int:period>/", DITView.as_view(), name="forecast_dit",),
+    path(
+        "view/dit/<int:period>/",
+        DITView.as_view(),
+        name="forecast_dit",
+    ),
     path(
         "view/group/<group_code>/<int:period>/",
         GroupView.as_view(),
@@ -127,7 +123,7 @@ urlpatterns = [
         name="expenditure_details_directorate",
     ),
     path(
-        "view/cost-centre/<cost_centre_code>/<expenditure_category>/<budget_type>/<int:period>/",   # noqa
+        "view/cost-centre/<cost_centre_code>/<expenditure_category>/<budget_type>/<int:period>/",  # noqa
         CostCentreExpenditureDetailsView.as_view(),
         name="expenditure_details_cost_centre",
     ),
@@ -210,20 +206,20 @@ urlpatterns = [
     path(
         " download_mi_report_source/<financial_year>",
         export_mi_report,
-        name="download_mi_report_source"
+        name="download_mi_report_source",
     ),
     path(
         " download_mi_budget/<financial_year>",
         export_mi_budget_report,
-        name="download_mi_budget"
+        name="download_mi_budget",
     ),
     path(
         "download_previous_year_mi_report_source",
         export_mi_previous_year_report,
-        name="download_mi_previous_year_report_source"
+        name="download_mi_previous_year_report_source",
     ),
     path(
-        "export-expenditure-details/dit/<expenditure_category_id>/<budget_type_id>/<int:period>", # noqa
+        "export-expenditure-details/dit/<expenditure_category_id>/<budget_type_id>/<int:period>",  # noqa
         export_forecast_data_expenditure_dit,
         name="export_expenditure_details_dit",
     ),
@@ -243,12 +239,12 @@ urlpatterns = [
         name="export_expenditure_details_cost_centre",
     ),
     path(
-        "export-project-details/cost-centre/<cost_centre>/<project_code_id>/<int:period>", # noqa
+        "export-project-details/cost-centre/<cost_centre>/<project_code_id>/<int:period>",  # noqa
         export_forecast_data_project_detail_cost_centre,
         name="export_forecast_data_project_detail_cost_centre",
     ),
     path(
-        "export-project-details/directorate/<directorate_code>/<project_code_id>/<int:period>", # noqa
+        "export-project-details/directorate/<directorate_code>/<project_code_id>/<int:period>",  # noqa
         export_forecast_data_project_detail_directorate,
         name="export_forecast_data_project_detail_directorate",
     ),
@@ -263,7 +259,7 @@ urlpatterns = [
         name="export_forecast_data_project_detail_dit",
     ),
     path(
-        "export-dit-programme/<programme_code_id>/<forecast_expenditure_type_name>/<int:period>", # noqa
+        "export-dit-programme/<programme_code_id>/<forecast_expenditure_type_name>/<int:period>",  # noqa
         export_forecast_data_programme_detail_dit,
         name="export_programme_details_dit",
     ),

@@ -3,42 +3,20 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
-from django.contrib.auth.models import (
-    Group,
-    Permission,
-)
+from django.contrib.auth.models import Group, Permission
 from django.core.files import File
 from django.db.models import Sum
-from django.test import (
-    override_settings,
-)
+from django.test import override_settings
 from django.urls import reverse
 
-from chartofaccountDIT.models import (
-    NaturalCode,
-    ProgrammeCode,
-)
-from chartofaccountDIT.test.factories import (
-    NaturalCodeFactory,
-    ProgrammeCodeFactory,
-)
-
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
-from core.utils.excel_test_helpers import (
-    FakeCell,
-    FakeWorkSheet
-)
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
+from core.utils.excel_test_helpers import FakeCell, FakeWorkSheet
 from core.utils.generic_helpers import make_financial_year_current
-
-from costcentre.models import (
-    CostCentre,
-)
-from costcentre.test.factories import (
-    CostCentreFactory,
-    DirectorateFactory,
-)
-
+from costcentre.models import CostCentre
+from costcentre.test.factories import CostCentreFactory, DirectorateFactory
 from forecast.import_actuals import (
     CORRECT_TRIAL_BALANCE_TITLE,
     CORRECT_TRIAL_BALANCE_WORKSHEET_NAME,
@@ -58,16 +36,12 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
-from forecast.utils.import_helpers import (
-    CheckFinancialCode,
-    VALID_ECONOMIC_CODE_LIST,
-)
-
+from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST, CheckFinancialCode
 from upload_file.models import FileUpload
 
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
-TEST_PROGRAMME_CODE = '310940'
+TEST_PROGRAMME_CODE = "310940"
 
 
 # Set file upload handlers back to default as
@@ -91,9 +65,7 @@ class ImportActualsTest(BaseTestCase):
         self.not_valid_natural_account_code = TEST_NOT_VALID_NATURAL_ACCOUNT_CODE
         self.programme_code = TEST_PROGRAMME_CODE
         self.test_amount = 100
-        self.directorate_obj = DirectorateFactory.create(
-            directorate_code='T123'
-        )
+        self.directorate_obj = DirectorateFactory.create(directorate_code="T123")
         CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code,
             directorate=self.directorate_obj,
@@ -117,19 +89,15 @@ class ImportActualsTest(BaseTestCase):
             programme_code=self.programme_code,
             active=False,
         )
-        ProgrammeCodeFactory.create(
-            programme_code='310540'
-        )
-        ProgrammeCodeFactory.create(
-            programme_code='310530'
-        )
+        ProgrammeCodeFactory.create(programme_code="310540")
+        ProgrammeCodeFactory.create(programme_code="310530")
 
         self.period_obj = FinancialPeriod.objects.get(
             period_calendar_code=self.test_period
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
         dummy_upload = FileUpload(
-            s3_document_file='dummy.csv',
+            s3_document_file="dummy.csv",
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
         )
@@ -139,9 +107,7 @@ class ImportActualsTest(BaseTestCase):
     def test_save_row(self):
 
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
         self.assertEqual(
@@ -150,25 +116,24 @@ class ImportActualsTest(BaseTestCase):
             ).count(),
             0,
         )
-        chart_of_account_line_correct = \
-            '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
+        chart_of_account_line_correct = (
+            "3000-30000-{}-{}-{}-00000-00000-0000-0000-0000".format(
                 self.cost_centre_code,
                 self.valid_natural_account_code,
-                self.programme_code
+                self.programme_code,
             )
+        )
         self.assertEqual(
-            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
-            False
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active, False
         )
         self.assertEqual(
             NaturalCode.objects.get(
                 natural_account_code=self.valid_natural_account_code
             ).active,
-            False
+            False,
         )
         self.assertEqual(
-            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
-            False
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active, False
         )
 
         save_trial_balance_row(
@@ -177,28 +142,23 @@ class ImportActualsTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
         self.assertEqual(
-            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
-            True
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active, True
         )
         self.assertEqual(
             NaturalCode.objects.get(
                 natural_account_code=self.valid_natural_account_code
             ).active,
-            True
+            True,
         )
         self.assertEqual(
-            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
-            True
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active, True
         )
 
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
-            1
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(), 1
         )
         q = ActualUploadMonthlyFigure.objects.get(
             financial_code__cost_centre=self.cost_centre_code,
@@ -214,7 +174,7 @@ class ImportActualsTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            1
+            1,
         )
         # check that lines with the same chart of account are added together
         self.assertEqual(
@@ -234,14 +194,16 @@ class ImportActualsTest(BaseTestCase):
     def test_save_row_no_programme(self):
         self.assertEqual(
             ActualUploadMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code).count(),
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             0,
         )
-        chart_of_account_line_no_programme = \
-            '3000-30000-{}-{}-000000-00000-00000-0000-0000-0000'.format(
+        chart_of_account_line_no_programme = (
+            "3000-30000-{}-{}-000000-00000-00000-0000-0000-0000".format(
                 self.cost_centre_code,
                 self.valid_natural_account_code,
             )
+        )
 
         save_trial_balance_row(
             chart_of_account_line_no_programme,
@@ -249,12 +211,13 @@ class ImportActualsTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
         # Lines with 0 programme and 0 amount are not saved
         self.assertEqual(
             ActualUploadMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code).count(),
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             0,
         )
         #   Now save a valid value
@@ -264,55 +227,47 @@ class ImportActualsTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            3
+            3,
         )
 
-        q = FinancialCode.objects.get(
-            cost_centre=self.cost_centre_code
-        )
-        self.assertEqual(
-            int(q.programme.programme_code),
-            GENERIC_PROGRAMME_CODE
-        )
+        q = FinancialCode.objects.get(cost_centre=self.cost_centre_code)
+        self.assertEqual(int(q.programme.programme_code), GENERIC_PROGRAMME_CODE)
         self.assertEqual(
             ActualUploadMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code).count(),
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             1,
         )
 
     def test_save_row_invalid_nac(self):
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
         self.assertEqual(
             NaturalCode.objects.get(
                 natural_account_code=self.not_valid_natural_account_code
             ).active,
-            False
+            False,
         )
         self.assertEqual(
-            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
-            False
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active, False
         )
         self.assertEqual(
-            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
-            False
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active, False
         )
 
         save_trial_balance_row(
-            '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
+            "3000-30000-{}-{}-{}-00000-00000-0000-0000-0000".format(
                 self.cost_centre_code,
                 self.not_valid_natural_account_code,
-                self.programme_code
+                self.programme_code,
             ),
             10,
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            1
+            1,
         )
         # The chart of account fields are still non active
         # because the row was ignored
@@ -320,20 +275,16 @@ class ImportActualsTest(BaseTestCase):
             NaturalCode.objects.get(
                 natural_account_code=self.not_valid_natural_account_code
             ).active,
-            False
+            False,
         )
         self.assertEqual(
-            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active,
-            False
+            CostCentre.objects.get(cost_centre_code=self.cost_centre_code).active, False
         )
         self.assertEqual(
-            ProgrammeCode.objects.get(programme_code=self.programme_code).active,
-            False
+            ProgrammeCode.objects.get(programme_code=self.programme_code).active, False
         )
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
 
@@ -343,12 +294,12 @@ class ImportActualsTest(BaseTestCase):
         )
 
         save_trial_balance_row(
-            '3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234',
+            "3000-30000-123456-12345678-123456-12345-12345-1234-1234-1234",
             10,
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
         self.assertEqual(
             self.check_financial_code.error_found,
@@ -361,7 +312,7 @@ class ImportActualsTest(BaseTestCase):
         bad_file_type_upload = FileUpload(
             s3_document_file=os.path.join(
                 os.path.dirname(__file__),
-                'test_assets/bad_file_type.csv',
+                "test_assets/bad_file_type.csv",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
@@ -377,7 +328,7 @@ class ImportActualsTest(BaseTestCase):
         bad_title_file_upload = FileUpload(
             s3_document_file=os.path.join(
                 os.path.dirname(__file__),
-                'test_assets/bad_title_upload_test.xlsx',
+                "test_assets/bad_title_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
@@ -392,28 +343,23 @@ class ImportActualsTest(BaseTestCase):
             )
 
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
         cost_centre_code_1 = 888888
         CostCentreFactory.create(
-            cost_centre_code=cost_centre_code_1,
-            directorate=self.directorate_obj
+            cost_centre_code=cost_centre_code_1, directorate=self.directorate_obj
         )
         # Prepare to upload data. Create some data that will be deleted
         save_trial_balance_row(
-            '3000-30000-{}-{}-{}-00000-00000-0000-0000-0000'.format(
-                cost_centre_code_1,
-                self.valid_natural_account_code,
-                self.programme_code
+            "3000-30000-{}-{}-{}-00000-00000-0000-0000-0000".format(
+                cost_centre_code_1, self.valid_natural_account_code, self.programme_code
             ),
             self.test_amount,
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
 
         self.assertEqual(
@@ -453,7 +399,7 @@ class ImportActualsTest(BaseTestCase):
         bad_file_upload = FileUpload(
             s3_document_file=os.path.join(
                 os.path.dirname(__file__),
-                'test_assets/upload_bad_data.xlsx',
+                "test_assets/upload_bad_data.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
@@ -482,7 +428,7 @@ class ImportActualsTest(BaseTestCase):
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
                 os.path.dirname(__file__),
-                'test_assets/upload_test.xlsx',
+                "test_assets/upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
@@ -510,11 +456,11 @@ class ImportActualsTest(BaseTestCase):
         )
         result = ForecastMonthlyFigure.objects.filter(
             financial_code__cost_centre=self.cost_centre_code
-        ).aggregate(total=Sum('amount'))
+        ).aggregate(total=Sum("amount"))
 
         # Check that figures have correct values
         self.assertEqual(
-            result['total'],
+            result["total"],
             1000000,
         )
 
@@ -544,7 +490,7 @@ class ImportActualsTest(BaseTestCase):
                 2018,
             )
         # Wrong title
-        fake_work_sheet[TITLE_CELL] = FakeCell('Wrong Title')
+        fake_work_sheet[TITLE_CELL] = FakeCell("Wrong Title")
         with self.assertRaises(UploadFileFormatError):
             check_trial_balance_format(
                 fake_work_sheet,
@@ -633,9 +579,7 @@ class ImportActualsExcludeRowTest(BaseTestCase):
         self.valid_natural_account_code = TEST_VALID_NATURAL_ACCOUNT_CODE
         self.programme_code = TEST_PROGRAMME_CODE
         self.test_amount = 100
-        self.directorate_obj = DirectorateFactory.create(
-            directorate_code='T123'
-        )
+        self.directorate_obj = DirectorateFactory.create(directorate_code="T123")
         CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code,
             directorate=self.directorate_obj,
@@ -655,16 +599,14 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             programme_code=self.programme_code,
             active=False,
         )
-        ProgrammeCodeFactory.create(
-            programme_code=GENERIC_PROGRAMME_CODE
-        )
+        ProgrammeCodeFactory.create(programme_code=GENERIC_PROGRAMME_CODE)
 
         self.period_obj = FinancialPeriod.objects.get(
             period_calendar_code=self.test_period
         )
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
         dummy_upload = FileUpload(
-            s3_document_file='dummy.csv',
+            s3_document_file="dummy.csv",
             uploading_user=self.test_user,
             document_type=FileUpload.ACTUALS,
         )
@@ -673,9 +615,7 @@ class ImportActualsExcludeRowTest(BaseTestCase):
 
     def test_save_row_special_nac_correct_programme_code(self):
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(),
             0,
         )
         self.assertEqual(
@@ -684,10 +624,11 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             ).count(),
             0,
         )
-        chart_of_account_line_correct = \
-            f'3000-30000-{self.cost_centre_code}' \
-            f'-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}' \
-            f'-{self.programme_code}-00000-00000-0000-0000-0000'
+        chart_of_account_line_correct = (
+            f"3000-30000-{self.cost_centre_code}"
+            f"-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}"
+            f"-{self.programme_code}-00000-00000-0000-0000-0000"
+        )
 
         save_trial_balance_row(
             chart_of_account_line_correct,
@@ -695,14 +636,11 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
 
         self.assertEqual(
-            FinancialCode.objects.filter(
-                cost_centre=self.cost_centre_code
-            ).count(),
-            1
+            FinancialCode.objects.filter(cost_centre=self.cost_centre_code).count(), 1
         )
         q = ActualUploadMonthlyFigure.objects.get(
             financial_code__cost_centre=self.cost_centre_code,
@@ -716,13 +654,15 @@ class ImportActualsExcludeRowTest(BaseTestCase):
     def test_save_row_special_nac_no_programme(self):
         self.assertEqual(
             ActualUploadMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code).count(),
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             0,
         )
-        chart_of_account_line_no_programme = \
-            f'3000-30000-{self.cost_centre_code}' \
-            f'-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}' \
-            '-000000-00000-00000-0000-0000-0000'
+        chart_of_account_line_no_programme = (
+            f"3000-30000-{self.cost_centre_code}"
+            f"-{NAC_NOT_VALID_WITH_GENERIC_PROGRAMME}"
+            "-000000-00000-00000-0000-0000-0000"
+        )
 
         save_trial_balance_row(
             chart_of_account_line_no_programme,
@@ -730,12 +670,13 @@ class ImportActualsExcludeRowTest(BaseTestCase):
             self.period_obj,
             self.year_obj,
             self.check_financial_code,
-            2
+            2,
         )
         # The line should not be saved, because of the combination of NAC an 0 programme
         self.assertEqual(
             ActualUploadMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code).count(),
+                financial_code__cost_centre=self.cost_centre_code
+            ).count(),
             0,
         )
 
@@ -755,10 +696,10 @@ class UploadActualsTest(BaseTestCase):
         self.financial_year_id = 2019
         make_financial_year_current(self.financial_year_id)
         self.file_mock = MagicMock(spec=File)
-        self.file_mock.name = 'test.txt'
+        self.file_mock.name = "test.txt"
 
     @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.upload_file.process_uploaded_file')
+    @patch("forecast.views.upload_file.process_uploaded_file")
     def test_upload_actuals_view(self, mock_process_uploaded_file):
         assert not self.test_user.has_perm("forecast.can_view_forecasts")
 
@@ -774,9 +715,7 @@ class UploadActualsTest(BaseTestCase):
 
         assert resp.status_code == 403
 
-        can_upload_files = Permission.objects.get(
-            codename='can_upload_files'
-        )
+        can_upload_files = Permission.objects.get(codename="can_upload_files")
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
 
@@ -792,7 +731,7 @@ class UploadActualsTest(BaseTestCase):
             data={
                 "period": self.financial_period_code,
                 "year": self.financial_year_id,
-                'file': self.file_mock,
+                "file": self.file_mock,
             },
         )
 
@@ -801,21 +740,17 @@ class UploadActualsTest(BaseTestCase):
 
         # Should have been redirected to document upload  page
         self.assertEqual(resp.status_code, 302)
-        assert resp.url == '/upload/files/'
+        assert resp.url == "/upload/files/"
 
         # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
+        file_path = "uploaded/actuals/{}".format(self.file_mock.name)
         if os.path.exists(file_path):
             os.remove(file_path)
 
     @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.upload_file.process_uploaded_file')
+    @patch("forecast.views.upload_file.process_uploaded_file")
     def test_finance_admin_can_upload_actuals(self, mock_process_uploaded_file):
-        assert not self.test_user.groups.filter(
-            name="Finance Administrator"
-        )
+        assert not self.test_user.groups.filter(name="Finance Administrator")
 
         uploaded_actuals_url = reverse("upload_actuals_file")
 
@@ -828,7 +763,7 @@ class UploadActualsTest(BaseTestCase):
         assert resp.status_code == 403
 
         finance_admins = Group.objects.get(
-            name='Finance Administrator',
+            name="Finance Administrator",
         )
         finance_admins.user_set.add(self.test_user)
         finance_admins.save()
@@ -843,7 +778,7 @@ class UploadActualsTest(BaseTestCase):
             data={
                 "period": self.financial_period_code,
                 "year": self.financial_year_id,
-                'file': self.file_mock,
+                "file": self.file_mock,
             },
         )
 
@@ -852,11 +787,9 @@ class UploadActualsTest(BaseTestCase):
 
         # Should have been redirected to document upload  page
         self.assertEqual(resp.status_code, 302)
-        assert resp.url == '/upload/files/'
+        assert resp.url == "/upload/files/"
 
         # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
+        file_path = "uploaded/actuals/{}".format(self.file_mock.name)
         if os.path.exists(file_path):
             os.remove(file_path)

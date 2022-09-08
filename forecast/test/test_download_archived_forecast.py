@@ -2,13 +2,10 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from core.test.test_base import BaseTestCase
-
 from end_of_month.test.test_utils import SetFullYearArchive
-
 
 BUDGET_CELL = "Y2"
 GROUP_HEADING_CELL = "A1"
@@ -22,9 +19,7 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         self.client.force_login(self.test_user)
 
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
         self.archive = SetFullYearArchive()
@@ -37,24 +32,24 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         # Read the forecast/actual values to calculate the year total
         # The total is in the workbook, but reading it returns None
         for col in range(APR_COL, ADJ3_COL + 1):
-            year_total += ws.cell(column=col, row=2,).value
+            year_total += ws.cell(
+                column=col,
+                row=2,
+            ).value
 
         # Check group
         self.assertEqual(ws[GROUP_HEADING_CELL].value, "Group name")
         self.assertEqual(ws[GROUP_CODE_CELL].value, self.archive.group_code)
 
-        self.assertEqual(ws[BUDGET_CELL].value,
-                         self.archive.archived_budget[period] / 100)
+        self.assertEqual(
+            ws[BUDGET_CELL].value, self.archive.archived_budget[period] / 100
+        )
 
-        self.assertEqual(year_total,
-                         self.archive.archived_forecast[period] / 100)
+        self.assertEqual(year_total, self.archive.archived_forecast[period] / 100)
 
     def dit_download(self, test_period):
         response = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={"period": test_period}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": test_period})
         )
         self.assertEqual(response.status_code, 200)
         self.check_workbook(response.content, test_period)
@@ -103,8 +98,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_group",
                 kwargs={
-                    'group_code': self.archive.group_code,
-                    'period': test_period,
+                    "group_code": self.archive.group_code,
+                    "period": test_period,
                 },
             )
         )
@@ -155,8 +150,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_directorate",
                 kwargs={
-                    'directorate_code': self.archive.directorate_code,
-                    'period': test_period,
+                    "directorate_code": self.archive.directorate_code,
+                    "period": test_period,
                 },
             )
         )
@@ -207,8 +202,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_cost_centre",
                 kwargs={
-                    'cost_centre': self.archive.cost_centre_code,
-                    'period': test_period,
+                    "cost_centre": self.archive.cost_centre_code,
+                    "period": test_period,
                 },
             )
         )

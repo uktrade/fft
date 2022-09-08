@@ -3,12 +3,11 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import reverse
 
 from chartofaccountDIT.forms import ProjectForm
-
 from forecast.tables import ForecastSubTotalTable
 from forecast.views.base import (
     CostCentreForecastMixin,
-    DITForecastMixin,
     DirectorateForecastMixin,
+    DITForecastMixin,
     ForecastViewPermissionMixin,
     ForecastViewTableMixin,
     GroupForecastMixin,
@@ -16,7 +15,6 @@ from forecast.views.base import (
 
 
 class ForecastProjectDetailsMixin(ForecastViewTableMixin):
-
     def class_name(self):
         return "wide-table"
 
@@ -27,22 +25,31 @@ class ForecastProjectDetailsMixin(ForecastViewTableMixin):
         return ProjectForm(project_code=self.kwargs["project_code"])
 
     def post(self, request, *args, **kwargs):
-        self.selected_period = request.POST.get("selected_period", None,)
+        self.selected_period = request.POST.get(
+            "selected_period",
+            None,
+        )
         if self.selected_period is None:
             self.selected_period = self.period
             # Check that an expenditure category was selected
-            self.selected_project_code_id = request.POST.get("project_code", None,)
+            self.selected_project_code_id = request.POST.get(
+                "project_code",
+                None,
+            )
             if self.selected_project_code_id is None:
                 raise Http404("Project not found")
         else:
             self.selected_project_code_id = self.kwargs["project_code"]
         return HttpResponseRedirect(
-            reverse(self.url_name, kwargs=self.selection_kwargs(),)
+            reverse(
+                self.url_name,
+                kwargs=self.selection_kwargs(),
+            )
         )
 
     def get_tables(self):
         """
-         Return an array of table instances containing data.
+        Return an array of table instances containing data.
         """
         self.field_infos.hierarchy_type = self.hierarchy_type
         project_code_id = self.kwargs["project_code"]
@@ -82,7 +89,9 @@ class ForecastProjectDetailsMixin(ForecastViewTableMixin):
 
 
 class DITProjectDetailsView(
-    ForecastViewPermissionMixin, ForecastProjectDetailsMixin, DITForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProjectDetailsMixin,
+    DITForecastMixin,
 ):
     template_name = "forecast/view/project_details/dit.html"
     url_name = "project_details_dit"
@@ -95,7 +104,9 @@ class DITProjectDetailsView(
 
 
 class GroupProjectDetailsView(
-    ForecastViewPermissionMixin, ForecastProjectDetailsMixin, GroupForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProjectDetailsMixin,
+    GroupForecastMixin,
 ):
     template_name = "forecast/view/project_details/group.html"
     url_name = "project_details_group"
@@ -109,7 +120,9 @@ class GroupProjectDetailsView(
 
 
 class DirectorateProjectDetailsView(
-    ForecastViewPermissionMixin, ForecastProjectDetailsMixin, DirectorateForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProjectDetailsMixin,
+    DirectorateForecastMixin,
 ):
     template_name = "forecast/view/project_details/directorate.html"
     url_name = "project_details_directorate"
@@ -123,14 +136,16 @@ class DirectorateProjectDetailsView(
 
 
 class CostCentreProjectDetailsView(
-    ForecastViewPermissionMixin, ForecastProjectDetailsMixin, CostCentreForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProjectDetailsMixin,
+    CostCentreForecastMixin,
 ):
     template_name = "forecast/view/project_details/cost_centre.html"
     url_name = "project_details_costcentre"
 
     @property
     def cost_centre_code(self):
-        return self.kwargs['cost_centre_code']
+        return self.kwargs["cost_centre_code"]
 
     def selection_kwargs(self):
         return {

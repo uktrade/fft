@@ -1,13 +1,8 @@
 from datetime import date
 
-from guardian.shortcuts import (
-    get_objects_for_user as guardian_get_objects_for_user,
-)
+from guardian.shortcuts import get_objects_for_user as guardian_get_objects_for_user
 
-from costcentre.models import (
-    CostCentre,
-)
-
+from costcentre.models import CostCentre
 from forecast.models import (
     ForecastEditState,
     FutureForecastEditState,
@@ -18,22 +13,16 @@ from forecast.models import (
 def can_view_forecasts(user):
     """Checks view permission, if the user can edit ANY
     cost centre, they are allowed to view ALL forecasts"""
-    if can_edit_at_least_one_cost_centre(
-        user
-    ):
+    if can_edit_at_least_one_cost_centre(user):
         return True
 
-    return user.has_perm(
-        "forecast.can_view_forecasts"
-    )
+    return user.has_perm("forecast.can_view_forecasts")
 
 
 def is_system_locked():
     forecast_edit_date = ForecastEditState.objects.get()
 
-    if (
-        forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date
-    ):
+    if forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date:
         return True
 
     return False
@@ -51,9 +40,7 @@ def is_system_closed():
 def is_future_system_locked():
     forecast_edit_date = FutureForecastEditState.objects.get()
 
-    if (
-        forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date
-    ):
+    if forecast_edit_date.lock_date and date.today() >= forecast_edit_date.lock_date:
         return True
 
     return False
@@ -75,9 +62,7 @@ def user_in_group(user, group):
 
 
 def can_edit_at_least_one_cost_centre(user):
-    if user.is_superuser or user.has_perm(
-        "costcentre.edit_forecast_all_cost_centres"
-    ):
+    if user.is_superuser or user.has_perm("costcentre.edit_forecast_all_cost_centres"):
         return True
 
     cost_centres = guardian_get_objects_for_user(
@@ -91,9 +76,7 @@ def can_edit_at_least_one_cost_centre(user):
 
 
 def get_user_cost_centres(user):
-    if user.is_superuser or user.has_perm(
-        "costcentre.edit_forecast_all_cost_centres"
-    ):
+    if user.is_superuser or user.has_perm("costcentre.edit_forecast_all_cost_centres"):
         return CostCentre.objects.all()
 
     return guardian_get_objects_for_user(
@@ -140,17 +123,20 @@ def can_future_forecast_be_edited(user):
     if user.has_perm("forecast.can_edit_future_whilst_locked"):
         return True
 
-    if closed and not locked \
-            and user.has_perm("forecast.can_edit_future_whilst_closed"):
+    if (
+        closed
+        and not locked
+        and user.has_perm("forecast.can_edit_future_whilst_closed")
+    ):
         return True
 
-    return UnlockedForecastEditor.objects.filter(user=user,).exists()
+    return UnlockedForecastEditor.objects.filter(
+        user=user,
+    ).exists()
 
 
 def can_edit_cost_centre(user, cost_centre_code):
-    if user.has_perm(
-        "costcentre.edit_forecast_all_cost_centres"
-    ):
+    if user.has_perm("costcentre.edit_forecast_all_cost_centres"):
         return True
 
     cost_centre = CostCentre.objects.get(

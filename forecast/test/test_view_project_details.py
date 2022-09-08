@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.urls import reverse
@@ -10,25 +9,18 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE, TEST_EMAIL
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.test.test_utils import (
-    TOTAL_COLUMN,
     SPEND_TO_DATE_COLUMN,
+    TOTAL_COLUMN,
     UNDERSPEND_COLUMN,
     format_forecast_figure,
 )
@@ -63,10 +55,11 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
         self.budget_type = programme_obj.budget_type.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
-        self.nac_obj = NaturalCodeFactory(natural_account_code=12345678,
-                                          expenditure_category=expenditure_obj,
-                                          economic_budget_code='RESOURCE'
-                                          )
+        self.nac_obj = NaturalCodeFactory(
+            natural_account_code=12345678,
+            expenditure_category=expenditure_obj,
+            economic_budget_code="RESOURCE",
+        )
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
         apr_period = FinancialPeriod.objects.get(financial_period_code=1)
@@ -81,15 +74,14 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
             programme=programme_obj,
             cost_centre=self.cost_centre,
             natural_account_code=self.nac_obj,
-            project_code=project_obj
+            project_code=project_obj,
         )
         financial_code1_obj.save
-        self.expenditure_type = \
+        self.expenditure_type = (
             financial_code1_obj.forecast_expenditure_type.forecast_expenditure_type_name
+        )
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
             amount=self.amount_apr,
@@ -98,26 +90,20 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
 
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=4
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=4),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
-            amount=self.amount_may
+            amount=self.amount_may,
         )
         may_figure.save
 
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
         # Bust permissions cache (refresh_from_db does not work)
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         self.year_total = self.amount_apr + self.amount_may
         self.underspend_total = -self.amount_apr - self.amount_may
@@ -127,21 +113,24 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
         project_rows = table.find_all("tr")
         first_cols = project_rows[2].find_all("td")
 
-        assert (first_cols[0].get_text().strip() == self.expenditure_type)
+        assert first_cols[0].get_text().strip() == self.expenditure_type
         assert first_cols[4].get_text().strip() == format_forecast_figure(
             self.amount_apr / 100
         )
 
         last_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total / 100)
+        assert last_cols[TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
+            self.year_total / 100
+        )
         # Check the difference between budget and year total
-        assert last_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total / 100)
+        assert last_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total / 100)
+        assert last_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
         negative_values = soup.find_all("span", class_="negative")
@@ -170,9 +159,9 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
             reverse(
                 "project_details_costcentre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'project_code': self.project_code,
-                    'period': 0,
+                    "cost_centre_code": self.cost_centre_code,
+                    "project_code": self.project_code,
+                    "period": 0,
                 },
             ),
         )
@@ -183,9 +172,9 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
             reverse(
                 "project_details_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'project_code': self.project_code,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "project_code": self.project_code,
+                    "period": 0,
                 },
             ),
         )
@@ -196,9 +185,9 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
             reverse(
                 "project_details_group",
                 kwargs={
-                    'group_code': self.group.group_code,
-                    'project_code': self.project_code,
-                    'period': 0,
+                    "group_code": self.group.group_code,
+                    "project_code": self.project_code,
+                    "period": 0,
                 },
             )
         )
@@ -210,8 +199,8 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
             reverse(
                 "project_details_dit",
                 kwargs={
-                    'project_code': self.project_code,
-                    'period': 0,
+                    "project_code": self.project_code,
+                    "period": 0,
                 },
             ),
         )

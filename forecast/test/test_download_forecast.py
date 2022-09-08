@@ -2,7 +2,6 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from chartofaccountDIT.test.factories import (
@@ -10,22 +9,15 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.test_utils import create_budget
 
@@ -69,16 +61,14 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             programme=self.programme_obj,
             cost_centre=self.cost_centre,
             natural_account_code=nac_obj,
-            project_code=self.project_obj
+            project_code=self.project_obj,
         )
         financial_code_obj.save
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
-            amount=self.amount_apr
+            amount=self.amount_apr,
         )
         apr_figure.save
         self.amount_may = 1234567
@@ -88,13 +78,11 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
-            financial_year=year_obj
+            financial_year=year_obj,
         )
         may_figure.save
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -105,10 +93,7 @@ class DownloadForecastHierarchyTest(BaseTestCase):
 
     def test_dit_download(self):
         dit_url = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={"period": 0}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": 0})
         )
 
         self.assertEqual(dit_url.status_code, 200)
@@ -121,16 +106,11 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         assert ws["B2"].value == self.group_code
 
     def test_dit_cannot_download(self):
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.remove(can_view_forecasts)
 
         dit_url = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={'period': 0}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": 0})
         )
 
         self.assertEqual(dit_url.status_code, 302)
@@ -140,8 +120,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_group",
                 kwargs={
-                    'group_code': self.group.group_code,
-                    'period': 0,
+                    "group_code": self.group.group_code,
+                    "period": 0,
                 },
             )
         )
@@ -156,17 +136,15 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         assert ws["B2"].value == self.group_code
 
     def test_group_cannot_download(self):
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.remove(can_view_forecasts)
 
         response = self.client.get(
             reverse(
                 "export_forecast_data_group",
                 kwargs={
-                    'group_code': self.group.group_code,
-                    'period': 0,
+                    "group_code": self.group.group_code,
+                    "period": 0,
                 },
             )
         )
@@ -178,8 +156,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "period": 0,
                 },
             )
         )
@@ -194,17 +172,15 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         assert ws["B2"].value == self.group_code
 
     def test_directorate_cannot_download(self):
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.remove(can_view_forecasts)
 
         response = self.client.get(
             reverse(
                 "export_forecast_data_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "period": 0,
                 },
             )
         )
@@ -219,8 +195,8 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             reverse(
                 "export_forecast_data_cost_centre",
                 kwargs={
-                    'cost_centre': self.cost_centre.cost_centre_code,
-                    'period': 0,
+                    "cost_centre": self.cost_centre.cost_centre_code,
+                    "period": 0,
                 },
             )
         )
@@ -235,17 +211,15 @@ class DownloadForecastHierarchyTest(BaseTestCase):
         assert ws["B2"].value == self.group_code
 
     def test_cost_centre_cannot_download(self):
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.remove(can_view_forecasts)
 
         response = self.client.get(
             reverse(
                 "export_forecast_data_cost_centre",
                 kwargs={
-                    'cost_centre': self.cost_centre.cost_centre_code,
-                    'period': 0,
+                    "cost_centre": self.cost_centre.cost_centre_code,
+                    "period": 0,
                 },
             )
         )

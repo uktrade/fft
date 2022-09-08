@@ -2,7 +2,6 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from chartofaccountDIT.test.factories import (
@@ -10,22 +9,15 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
-from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.models import FinancialYear
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.test.test_utils import create_budget
 
 
@@ -40,7 +32,8 @@ class DownloadProjectDetailTest(BaseTestCase):
         self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
-            group_code=self.group_code, group_name=self.group_name,
+            group_code=self.group_code,
+            group_name=self.group_name,
         )
         self.directorate = DirectorateFactory(
             directorate_code=self.directorate_code,
@@ -48,7 +41,8 @@ class DownloadProjectDetailTest(BaseTestCase):
             group=group_obj,
         )
         cost_centre = CostCentreFactory(
-            directorate=self.directorate, cost_centre_code=self.cost_centre_code,
+            directorate=self.directorate,
+            cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
@@ -78,7 +72,9 @@ class DownloadProjectDetailTest(BaseTestCase):
         apr_figure.save
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
             financial_year=year_obj,

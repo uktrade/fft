@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def fix_calendar_codes(apps, schema_editor):
     PeriodModel = apps.get_model("forecast", "FinancialPeriod")
     # Fix the calendar code for the adjustemnt periods.
@@ -15,7 +16,7 @@ def fix_calendar_codes(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0004_auto_20200820_0751'),
+        ("forecast", "0004_auto_20200820_0751"),
     ]
 
     operations = [

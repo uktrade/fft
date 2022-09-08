@@ -4,19 +4,15 @@ import re
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.http import JsonResponse
-from django.db.models import Exists, Prefetch, OuterRef, Q
 from django.shortcuts import redirect
-from django.urls import (
-    reverse,
-)
+from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
 from core.utils.generic_helpers import get_current_financial_year, get_year_display
-
 from costcentre.models import CostCentre
-
 from forecast.forms import (
     AddForecastRowForm,
     EditForecastFigureForm,
@@ -55,11 +51,12 @@ from forecast.views.base import (
     NoFinancialYearInURLError,
 )
 
-
 UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
 UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE = "Future forecast editing is locked"
 UNAVAILABLE_FORECAST_EDIT_MESSAGE = "Editing is unavailable until month end processing has been completed."  # noqa: E501
-UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = "Editing future years forecast is not available at the moment."  # noqa: E501
+UNAVAILABLE_FUTURE_FORECAST_EDIT_MESSAGE = (
+    "Editing future years forecast is not available at the moment."  # noqa: E501
+)
 
 
 def get_financial_codes_for_year(cost_centre_code, financial_year):
@@ -73,11 +70,9 @@ def get_financial_codes_for_year(cost_centre_code, financial_year):
         financial_year_id=financial_year,
         archived_status__isnull=True,
     )
-    return (
-        FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
-            Q(Exists(forecasts.filter(financial_code_id=OuterRef('pk'))))
-            | Q(Exists(budgets.filter(financial_code_id=OuterRef('pk'))))
-        )
+    return FinancialCode.objects.filter(cost_centre_id=cost_centre_code).filter(
+        Q(Exists(forecasts.filter(financial_code_id=OuterRef("pk"))))
+        | Q(Exists(budgets.filter(financial_code_id=OuterRef("pk"))))
     )
 
 
@@ -110,7 +105,8 @@ logger = logging.getLogger(__name__)
 
 
 class AddRowView(
-    CostCentrePermissionTest, FormView,
+    CostCentrePermissionTest,
+    FormView,
 ):
     template_name = "forecast/edit/add.html"
     form_class = AddForecastRowForm
@@ -138,16 +134,19 @@ class AddRowView(
                 "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
             )
         return reverse(
-            "edit_forecast", kwargs={
+            "edit_forecast",
+            kwargs={
                 "cost_centre_code": self.cost_centre_code,
                 "financial_year": self.financial_year,
-            }
+            },
         )
 
     def cost_centre_details(self):
         self.get_cost_centre_and_year()
 
-        cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
+        cost_centre = CostCentre.objects.get(
+            cost_centre_code=self.cost_centre_code,
+        )
         return {
             "group": cost_centre.directorate.group.group_name,
             "group_code": cost_centre.directorate.group.group_code,
@@ -161,8 +160,8 @@ class AddRowView(
         self.get_cost_centre_and_year()
 
         kwargs = super(AddRowView, self).get_form_kwargs()
-        kwargs['cost_centre_code'] = self.cost_centre_code
-        kwargs['financial_year'] = self.financial_year
+        kwargs["cost_centre_code"] = self.cost_centre_code
+        kwargs["financial_year"] = self.financial_year
         return kwargs
 
     def form_valid(self, form):
@@ -181,8 +180,10 @@ class AddRowView(
         # queries used to view the forecast will fail.
         actual_months = FinancialPeriod.financial_period_info.actual_period_code_list()
 
-        if self.financial_year == get_current_financial_year() \
-                and len(actual_months) > 0:
+        if (
+            self.financial_year == get_current_financial_year()
+            and len(actual_months) > 0
+        ):
             for actual_month in actual_months:
                 ForecastMonthlyFigure.objects.get_or_create(
                     financial_code=financial_code,
@@ -202,7 +203,8 @@ class AddRowView(
 
 
 class PasteForecastRowsView(
-    CostCentrePermissionTest, FormView,
+    CostCentrePermissionTest,
+    FormView,
 ):
     form_class = PasteForecastForm
 
@@ -284,7 +286,9 @@ class PasteForecastRowsView(
 
                     # Check that pasted at content and desired first row match
                     check_row_match(
-                        index, pasted_at_row, cell_data,
+                        index,
+                        pasted_at_row,
+                        cell_data,
                     )
 
                     # Check cell data length against expected number of cols
@@ -303,7 +307,10 @@ class PasteForecastRowsView(
                 CannotFindForecastMonthlyFigureException,
                 IncorrectDecimalFormatException,
             ) as ex:
-                return JsonResponse({"error": str(ex)}, status=400,)
+                return JsonResponse(
+                    {"error": str(ex)},
+                    status=400,
+                )
 
             financial_code_serialiser = get_financial_code_serialiser(
                 self.cost_centre_code,
@@ -320,13 +327,14 @@ class PasteForecastRowsView(
                 exc_info=True,
             )
             return JsonResponse(
-                {"error": "There was an error when attempting to paste "
-                          "your data, please make sure you have selected "
-                          "all columns when you copy from the spreadsheet. "
-                          "Some of the forecast data may have been updated. "
-                          "If the error persists, please contact the Live "
-                          "Services Team"
-                 },
+                {
+                    "error": "There was an error when attempting to paste "
+                    "your data, please make sure you have selected "
+                    "all columns when you copy from the spreadsheet. "
+                    "Some of the forecast data may have been updated. "
+                    "If the error persists, please contact the Live "
+                    "Services Team"
+                },
                 status=400,
             )
 
@@ -341,7 +349,8 @@ class PasteForecastRowsView(
 
 
 class EditForecastFigureView(
-    CostCentrePermissionTest, FormView,
+    CostCentrePermissionTest,
+    FormView,
 ):
     form_class = EditForecastFigureForm
 
@@ -365,12 +374,17 @@ class EditForecastFigureView(
             natural_account_code=form.cleaned_data["natural_account_code"],
             programme__programme_code=form.cleaned_data["programme_code"],
             analysis1_code__analysis1_code=form.cleaned_data.get(
-                "analysis1_code", None,
+                "analysis1_code",
+                None,
             ),
             analysis2_code__analysis2_code=form.cleaned_data.get(
-                "analysis2_code", None,
+                "analysis2_code",
+                None,
             ),
-            project_code__project_code=form.cleaned_data.get("project_code", None,),
+            project_code__project_code=form.cleaned_data.get(
+                "project_code",
+                None,
+            ),
         )
 
         month = form.cleaned_data["month"]
@@ -409,8 +423,7 @@ class EditForecastFigureView(
         monthly_figure.save()
 
         financial_code_serialiser = get_financial_code_serialiser(
-            self.cost_centre_code,
-            self.financial_year
+            self.cost_centre_code, self.financial_year
         )
 
         return JsonResponse(financial_code_serialiser.data, safe=False)
@@ -426,7 +439,8 @@ class EditForecastFigureView(
 
 
 class EditForecastView(
-    CostCentrePermissionTest, TemplateView,
+    CostCentrePermissionTest,
+    TemplateView,
 ):
     template_name = "forecast/edit/edit.html"
     _future_year_display = None
@@ -435,7 +449,9 @@ class EditForecastView(
         return "wide-table"
 
     def cost_centre_details(self):
-        cost_centre = CostCentre.objects.get(cost_centre_code=self.cost_centre_code,)
+        cost_centre = CostCentre.objects.get(
+            cost_centre_code=self.cost_centre_code,
+        )
         return {
             "group": cost_centre.directorate.group.group_name,
             "group_code": cost_centre.directorate.group.group_code,
@@ -448,7 +464,11 @@ class EditForecastView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        form = PublishForm(initial={"cost_centre_code": self.cost_centre_code, })
+        form = PublishForm(
+            initial={
+                "cost_centre_code": self.cost_centre_code,
+            }
+        )
 
         financial_code_serialiser = get_financial_code_serialiser(
             self.cost_centre_code,
@@ -459,12 +479,12 @@ class EditForecastView(
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():
             self.title = "Edit forecast"
-            actual_data = FinancialPeriod.financial_period_info.\
-                actual_period_code_list()
+            actual_data = (
+                FinancialPeriod.financial_period_info.actual_period_code_list()
+            )
         else:
             actual_data = []
-            self.title = \
-                f"Edit future forecast: {self.future_year_display}"
+            self.title = f"Edit future forecast: {self.future_year_display}"
         period_display = (
             FinancialPeriod.financial_period_info.period_display_code_list()
         )
@@ -508,8 +528,9 @@ class EditUnavailableView(
 
     def dispatch(self, request, *args, **kwargs):
         # If edit is open, redirect to choose CC page
-        if can_forecast_be_edited(request.user) \
-                | can_future_forecast_be_edited(request.user):
+        if can_forecast_be_edited(request.user) | can_future_forecast_be_edited(
+            request.user
+        ):
             return redirect(reverse("choose_cost_centre"))
 
         return super(EditUnavailableView, self).dispatch(

@@ -3,9 +3,6 @@ from unittest.mock import MagicMock
 from django.core.files import File
 from django.test import TestCase
 
-from core.test.test_base import TEST_COST_CENTRE
-from core.utils.generic_helpers import get_current_financial_year
-
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
     Analysis2Factory,
@@ -13,17 +10,11 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
+from core.test.test_base import TEST_COST_CENTRE
+from core.utils.generic_helpers import get_current_financial_year
 from costcentre.test.factories import CostCentreFactory
-
-from forecast.forms import (
-    AddForecastRowForm,
-    UploadActualsForm,
-)
-from forecast.models import (
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
+from forecast.forms import AddForecastRowForm, UploadActualsForm
+from forecast.models import FinancialCode, ForecastMonthlyFigure
 
 
 class TestAddForecastRowForm(TestCase):
@@ -59,7 +50,7 @@ class TestAddForecastRowForm(TestCase):
                 "analysis1_code": self.analysis_1.analysis1_code,
                 "analysis2_code": self.analysis_2.analysis2_code,
                 "project_code": self.project_code,
-            }
+            },
         )
 
         self.assertTrue(form.is_valid())
@@ -105,7 +96,7 @@ class TestAddForecastRowForm(TestCase):
                 "analysis1_code": self.analysis_1.analysis1_code,
                 "analysis2_code": self.analysis_2.analysis2_code,
                 "project_code": self.project_code,
-            }
+            },
         )
 
         self.assertFalse(form.is_valid())
@@ -145,7 +136,7 @@ class TestAddForecastRowForm(TestCase):
                 "analysis1_code": None,
                 "analysis2_code": None,
                 "project_code": None,
-            }
+            },
         )
 
         self.assertTrue(form.is_valid())
@@ -157,7 +148,7 @@ class TestAddUploadActualsForm(TestCase):
         self.financial_year_id = 2019
 
         self.file_mock = MagicMock(spec=File)
-        self.file_mock.name = 'test.txt'
+        self.file_mock.name = "test.txt"
 
     def test_valid_data(self):
         form = UploadActualsForm(
@@ -166,8 +157,8 @@ class TestAddUploadActualsForm(TestCase):
                 "year": self.financial_year_id,
             },
             files={
-                'file': self.file_mock,
-            }
+                "file": self.file_mock,
+            },
         )
 
         self.assertTrue(form.is_valid())

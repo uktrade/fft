@@ -2,15 +2,11 @@ import logging
 
 from celery import shared_task
 
-
 from forecast.import_actuals import upload_trial_balance_report
 from forecast.import_budget_or_forecast import upload_budget_from_file
-
 from previous_years.import_previous_year import upload_previous_year_from_file
-
 from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_finished
-
 from upload_split_file.import_project_percentage import upload_project_percentage
 
 logger = logging.getLogger(__name__)
@@ -19,7 +15,9 @@ logger = logging.getLogger(__name__)
 @shared_task
 def process_uploaded_file(*args):
     latest_unprocessed = (
-        FileUpload.objects.filter(status=FileUpload.UNPROCESSED,)
+        FileUpload.objects.filter(
+            status=FileUpload.UNPROCESSED,
+        )
         .order_by("-created")
         .first()
     )

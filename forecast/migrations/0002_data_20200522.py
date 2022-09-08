@@ -68,30 +68,30 @@ def create_forecast_expenditure_types(apps, schema_editor):
     ForecastExpenditureType.objects.create(
         nac_economic_budget_code="RESOURCE",
         programme_budget_type=del_type,
-        forecast_expenditure_type_name='Programme',
-        forecast_expenditure_type_description='Programme Resource',
-        forecast_expenditure_type_display_order=2
+        forecast_expenditure_type_name="Programme",
+        forecast_expenditure_type_description="Programme Resource",
+        forecast_expenditure_type_display_order=2,
     ).save()
 
     ForecastExpenditureType.objects.create(
         nac_economic_budget_code="RESOURCE",
         programme_budget_type=ame_type,
-        forecast_expenditure_type_name='Programme',
-        forecast_expenditure_type_description='Programme Resource',
-        forecast_expenditure_type_display_order=2
+        forecast_expenditure_type_name="Programme",
+        forecast_expenditure_type_description="Programme Resource",
+        forecast_expenditure_type_display_order=2,
     ).save()
 
     ForecastExpenditureType.objects.create(
         nac_economic_budget_code="RESOURCE",
         programme_budget_type=admin_type,
-        forecast_expenditure_type_name='Admin',
-        forecast_expenditure_type_description='Admin Resource',
-        forecast_expenditure_type_display_order=1
+        forecast_expenditure_type_name="Admin",
+        forecast_expenditure_type_description="Admin Resource",
+        forecast_expenditure_type_display_order=1,
     ).save()
 
 
 def create_forecast_lock(apps, schema_editor):
-    ForecastEditState = apps.get_model('forecast', 'ForecastEditState')
+    ForecastEditState = apps.get_model("forecast", "ForecastEditState")
     ForecastEditState.objects.create()
 
 
@@ -103,7 +103,8 @@ class Migration(migrations.Migration):
         migrations.RunPython(create_forecast_expenditure_types),
         migrations.RunPython(create_forecast_lock),
         # 0050_auto_20200116_1204
-        migrations.RunSQL("""UPDATE public."chartofaccountDIT_budgettype"
+        migrations.RunSQL(
+            """UPDATE public."chartofaccountDIT_budgettype"
                                             SET budget_type_display_order=1
                                             WHERE budget_type_key = 'DEL';
                                         UPDATE public."chartofaccountDIT_budgettype"
@@ -112,10 +113,10 @@ class Migration(migrations.Migration):
                                         UPDATE public."chartofaccountDIT_budgettype"
                                             SET budget_type_display_order=2
                                             WHERE budget_type_key = 'AME';
-        	"""),
+        	"""
+        ),
         # 0051_create_budget_forecast_view
         migrations.RunSQL(
-
             """
             DROP VIEW if exists forecast_forecast_budget_view ;
             DROP VIEW if exists yearly_budget;

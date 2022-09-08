@@ -6,12 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0002_data_20200522'),
+        ("forecast", "0002_data_20200522"),
     ]
 
     operations = [
         migrations.RunSQL(
-
             """
             DROP VIEW if exists forecast_forecast_download_view ;
             CREATE VIEW public.forecast_forecast_download_view
@@ -44,5 +43,4 @@ class Migration(migrations.Migration):
                 DROP VIEW if exists forecast_forecast_download_view;
                 """,
         )
-
     ]

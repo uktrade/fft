@@ -3,18 +3,9 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from core.utils.generic_helpers import get_current_financial_year, get_year_display
-
-from forecast.models import (
-    ForecastingDataView,
-)
-from forecast.utils.access_helpers import (
-    can_edit_cost_centre,
-    can_view_forecasts,
-)
-from forecast.utils.export_helpers import (
-    export_edit_to_excel,
-    export_query_to_excel,
-)
+from forecast.models import ForecastingDataView
+from forecast.utils.access_helpers import can_edit_cost_centre, can_view_forecasts
+from forecast.utils.export_helpers import export_edit_to_excel, export_query_to_excel
 from forecast.utils.query_fields import ForecastQueryFields
 from forecast.views.base import get_view_forecast_period_name
 
@@ -236,7 +227,14 @@ def export_edit_forecast_data(request, cost_centre, financial_year=0):
             fields.EDIT_KEYS_DOWNLOAD,
             fields.EDIT_FORECAST_DOWNLOAD_COLUMNS,
             title,
-            financial_year
+            financial_year,
         )
     else:
-        return redirect(reverse("forecast_dit", kwargs={"period": 0, },))
+        return redirect(
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    "period": 0,
+                },
+            )
+        )

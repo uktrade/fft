@@ -2,21 +2,10 @@ import csv
 import logging
 from decimal import Decimal
 
-from core.import_csv import (
-    ImportInfo,
-    csv_header_to_dict,
-    get_fk,
-    get_fk_from_field,
-)
+from core.import_csv import ImportInfo, csv_header_to_dict, get_fk, get_fk_from_field
 from core.utils.generic_helpers import get_current_financial_year
-
-from forecast.models import (
-    FinancialPeriod,
-    FinancialYear,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialPeriod, FinancialYear, ForecastMonthlyFigure
 from forecast.utils.import_helpers import CheckFinancialCode
-
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +19,8 @@ def get_month_dict():
     the foreign key used in the MonthlyFigure to
     identify the period"""
     q = FinancialPeriod.objects.filter(
-        period_calendar_code__gt=0,
-        period_calendar_code__lt=13
-    ).values(
-        "period_short_name"
-    )
+        period_calendar_code__gt=0, period_calendar_code__lt=13
+    ).values("period_short_name")
     period_dict = {}
     for e in q:
         per_obj, msg = get_fk_from_field(
@@ -50,8 +36,7 @@ def import_adi_file(csvfile):
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
     ForecastMonthlyFigure.objects.filter(
-        financial_year=fin_year,
-        archived_status__isnull=True
+        financial_year=fin_year, archived_status__isnull=True
     ).delete()
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
@@ -84,17 +69,16 @@ def import_adi_file(csvfile):
         for month, per_obj in month_dict.items():
             period_amount = Decimal(row[col_key[month.lower()]])
             if period_amount:
-                month_figure_obj, created = \
-                    ForecastMonthlyFigure.objects.get_or_create(
-                        financial_year=fin_obj,
-                        financial_period=per_obj,
-                        financial_code=financialcode_obj,
-                        archived_status__isnull=True,
-                    )
+                month_figure_obj, created = ForecastMonthlyFigure.objects.get_or_create(
+                    financial_year=fin_obj,
+                    financial_period=per_obj,
+                    financial_code=financialcode_obj,
+                    archived_status__isnull=True,
+                )
                 if created:
                     month_figure_obj.amount = period_amount * 100
                 else:
-                    month_figure_obj.amount += (period_amount * 100)
+                    month_figure_obj.amount += period_amount * 100
                 month_figure_obj.current_amount = month_figure_obj.amount
                 month_figure_obj.save()
 

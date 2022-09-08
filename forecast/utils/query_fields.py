@@ -1,22 +1,19 @@
-
-from chartofaccountDIT.models import (ArchivedExpenditureCategory,
-                                      ArchivedProgrammeCode,
-                                      ArchivedProjectCode,
-                                      ExpenditureCategory,
-                                      ProgrammeCode,
-                                      ProjectCode)
-
+from chartofaccountDIT.models import (
+    ArchivedExpenditureCategory,
+    ArchivedProgrammeCode,
+    ArchivedProjectCode,
+    ExpenditureCategory,
+    ProgrammeCode,
+    ProjectCode,
+)
 from core.utils.generic_helpers import get_current_financial_year
-
-from costcentre.models import (ArchivedCostCentre,
-                               CostCentre,
-                               DepartmentalGroup,
-                               Directorate,
-                               )
-
-
+from costcentre.models import (
+    ArchivedCostCentre,
+    CostCentre,
+    DepartmentalGroup,
+    Directorate,
+)
 from end_of_month.models import forecast_budget_view_model
-
 from previous_years.models import ArchivedForecastData
 
 financial_code_prefix = "financial_code__"
@@ -310,10 +307,21 @@ class ForecastQueryFields:
     @property
     def hierarchy_order_list(self):
         list = [
-            [self.budget_type_order_field, self.group_name_field, ],
-            [self.budget_type_order_field, self.directorate_name_field, ],
-            [self.budget_type_order_field, self.cost_centre_name_field, ],
-            [self.budget_type_order_field, ],
+            [
+                self.budget_type_order_field,
+                self.group_name_field,
+            ],
+            [
+                self.budget_type_order_field,
+                self.directorate_name_field,
+            ],
+            [
+                self.budget_type_order_field,
+                self.cost_centre_name_field,
+            ],
+            [
+                self.budget_type_order_field,
+            ],
         ]
         return list[self.hierarchy_type]
 
@@ -682,9 +690,7 @@ class ForecastQueryFields:
     # using the period to decide which one to use
     def group(self, group_code):
         if self.not_archived_year:
-            return DepartmentalGroup.objects.get(
-                group_code=group_code
-            )
+            return DepartmentalGroup.objects.get(group_code=group_code)
         queryset = ArchivedCostCentre.objects.filter(
             group_code=group_code,
             financial_year_id=self.selected_year,
@@ -704,7 +710,9 @@ class ForecastQueryFields:
 
     def cost_centre(self, cost_centre_code):
         if self.not_archived_year:
-            return CostCentre.objects.get(cost_centre_code=cost_centre_code, )
+            return CostCentre.objects.get(
+                cost_centre_code=cost_centre_code,
+            )
         queryset = ArchivedCostCentre.objects.filter(
             cost_centre_code=cost_centre_code,
             financial_year_id=self.selected_year,

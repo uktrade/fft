@@ -9,27 +9,15 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
-from core.import_csv import (
-    get_fk,
-    get_fk_from_field,
-    get_pk_verbose_name,
-)
-
+from core.import_csv import get_fk, get_fk_from_field, get_pk_verbose_name
 from costcentre.models import CostCentre
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-)
-
+from forecast.models import FinancialCode, FinancialPeriod
 from upload_file.models import FileUpload
 from upload_file.utils import (
     set_file_upload_error,
     set_file_upload_fatal_error,
     set_file_upload_warning,
 )
-
 
 # When the following codes are used, they must be a fixed length and padded with "0"
 ANALYSIS1_CODE_LENGTH = 5

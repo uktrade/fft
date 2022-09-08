@@ -1,19 +1,14 @@
 from bs4 import BeautifulSoup
-
-from django.contrib.auth.models import (
-    Permission,
-)
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 
-from end_of_month.test.test_utils import SetFullYearArchive
-
 from core.test.test_base import BaseTestCase
+from end_of_month.test.test_utils import SetFullYearArchive
 from forecast.test.test_utils import (
+    EXPENDITURE_TABLE_INDEX,
     HIERARCHY_TABLE_INDEX,
     PROGRAMME_TABLE_INDEX,
-    EXPENDITURE_TABLE_INDEX,
     PROJECT_TABLE_INDEX,
-
     format_forecast_figure,
 )
 
@@ -307,7 +302,10 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
         response = self.client.get(
             reverse(
                 "forecast_group",
-                kwargs={"group_code": self.archive.group_code, "period": test_period, },
+                kwargs={
+                    "group_code": self.archive.group_code,
+                    "period": test_period,
+                },
             )
         )
 
@@ -385,7 +383,12 @@ class ViewArchivedForecastHierarchyTest(BaseTestCase):
 
     def view_dit_summary(self, test_period):
         response = self.client.get(
-            reverse("forecast_dit", kwargs={"period": test_period, })
+            reverse(
+                "forecast_dit",
+                kwargs={
+                    "period": test_period,
+                },
+            )
         )
 
         self.assertEqual(response.status_code, 200)

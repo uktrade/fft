@@ -1,18 +1,10 @@
 from django.core.management import call_command
-from django.core.management.base import BaseCommand
-from django.core.management.base import CommandError
-
-
+from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
 from core.utils.command_helpers import get_no_answer
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-    get_year_display,
-)
-
+from core.utils.generic_helpers import get_current_financial_year, get_year_display
 from end_of_month.models import EndOfMonthStatus
-
 from previous_years.models import ArchivedFinancialCode
 
 
@@ -75,7 +67,9 @@ class Command(BaseCommand):
                 return
 
         EndOfMonthStatus.objects.all().update(
-            archived=False, archived_by=None, archived_date=None,
+            archived=False,
+            archived_by=None,
+            archived_date=None,
         )
 
         # Use sql to delete the figure for performance reason.

@@ -2,12 +2,9 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
-from previous_years.test.test_utils import (
-    PastYearForecastSetup,
-)
+from previous_years.test.test_utils import PastYearForecastSetup
 
 
 class DownloadPreviousYearMIReportTest(PastYearForecastSetup):

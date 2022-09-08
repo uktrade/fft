@@ -1,10 +1,6 @@
 from bs4 import BeautifulSoup
-
-
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import (
-    Permission,
-)
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -13,27 +9,19 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
 from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.permission_shortcuts import assign_perm
-
 from forecast.test.test_utils import (
-    TOTAL_COLUMN,
     SPEND_TO_DATE_COLUMN,
+    TOTAL_COLUMN,
     UNDERSPEND_COLUMN,
     create_budget,
     format_forecast_figure,
@@ -53,8 +41,8 @@ class ViewPermissionsTest(BaseTestCase):
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
-            }
+                "cost_centre_code": self.cost_centre_code,
+            },
         )
 
         resp = self.client.get(
@@ -67,14 +55,12 @@ class ViewPermissionsTest(BaseTestCase):
             kwargs={
                 "cost_centre_code": self.cost_centre_code,
                 "period": get_current_financial_year(),
-            }
+            },
         )
 
     def test_edit_forecast_view(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -86,10 +72,7 @@ class ViewPermissionsTest(BaseTestCase):
         )
 
         edit_forecast_url = reverse(
-            "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            }
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
         )
 
         resp = self.client.get(
@@ -141,9 +124,9 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
         self.budget_type = programme_obj.budget_type.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
-        self.nac1_obj = NaturalCodeFactory(natural_account_code=12345678,
-                                           expenditure_category=expenditure_obj
-                                           )
+        self.nac1_obj = NaturalCodeFactory(
+            natural_account_code=12345678, expenditure_category=expenditure_obj
+        )
         self.nac2_obj = NaturalCodeFactory(expenditure_category=expenditure_obj)
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
@@ -166,9 +149,7 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
         )
         financial_code2_obj.save
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
             amount=self.amount1_apr,
@@ -176,49 +157,43 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
         apr_figure.save
 
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code2_obj,
             financial_year=year_obj,
-            amount=self.amount2_apr
+            amount=self.amount2_apr,
         )
         apr_figure.save
 
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=4
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=4),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
-            amount=self.amount_may
+            amount=self.amount_may,
         )
         may_figure.save
 
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
         # Bust permissions cache (refresh_from_db does not work)
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         self.budget = create_budget(financial_code2_obj, year_obj)
         self.year_total = self.amount1_apr + self.amount2_apr + self.amount_may
-        self.underspend_total = \
+        self.underspend_total = (
             self.budget - self.amount1_apr - self.amount_may - self.amount2_apr
+        )
         self.spend_to_date_total = self.amount1_apr + self.amount2_apr
 
     def check_nac_table(self, table):
         nac_rows = table.find_all("tr")
         first_nac_cols = nac_rows[2].find_all("td")
         assert (
-            first_nac_cols[0].get_text().strip() == self.nac2_obj.natural_account_code_description  # noqa
+            first_nac_cols[0].get_text().strip()
+            == self.nac2_obj.natural_account_code_description  # noqa
         )
 
         assert first_nac_cols[3].get_text().strip() == format_forecast_figure(
@@ -227,14 +202,17 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
 
         last_nac_cols = nac_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total / 100)
+        assert last_nac_cols[TOTAL_COLUMN].get_text().strip() == format_forecast_figure(
+            self.year_total / 100
+        )
         # Check the difference between budget and year total
-        assert last_nac_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total / 100)
+        assert last_nac_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_nac_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total / 100)
+        assert last_nac_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
         negative_values = soup.find_all("span", class_="negative")
@@ -264,10 +242,10 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
             reverse(
                 "expenditure_details_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'expenditure_category': self.expenditure_id,
-                    'budget_type': self.budget_type,
-                    'period': 0,
+                    "cost_centre_code": self.cost_centre_code,
+                    "expenditure_category": self.expenditure_id,
+                    "budget_type": self.budget_type,
+                    "period": 0,
                 },
             ),
         )
@@ -278,10 +256,10 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
             reverse(
                 "expenditure_details_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'expenditure_category': self.expenditure_id,
-                    'budget_type': self.budget_type,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "expenditure_category": self.expenditure_id,
+                    "budget_type": self.budget_type,
+                    "period": 0,
                 },
             ),
         )
@@ -292,10 +270,10 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
             reverse(
                 "expenditure_details_group",
                 kwargs={
-                    'group_code': self.group.group_code,
-                    'expenditure_category': self.expenditure_id,
-                    'budget_type': self.budget_type,
-                    'period': 0,
+                    "group_code": self.group.group_code,
+                    "expenditure_category": self.expenditure_id,
+                    "budget_type": self.budget_type,
+                    "period": 0,
                 },
             )
         )
@@ -307,9 +285,9 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
             reverse(
                 "expenditure_details_dit",
                 kwargs={
-                    'expenditure_category': self.expenditure_id,
-                    'budget_type': self.budget_type,
-                    'period': 0,
+                    "expenditure_category": self.expenditure_id,
+                    "budget_type": self.budget_type,
+                    "period": 0,
                 },
             )
         )
@@ -346,10 +324,11 @@ class ViewProgrammeDetailsTest(BaseTestCase):
 
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
-        nac_obj = NaturalCodeFactory(natural_account_code=12345678,
-                                     expenditure_category=expenditure_obj,
-                                     economic_budget_code='RESOURCE'
-                                     )
+        nac_obj = NaturalCodeFactory(
+            natural_account_code=12345678,
+            expenditure_category=expenditure_obj,
+            economic_budget_code="RESOURCE",
+        )
 
         year_obj = FinancialYear.objects.get(financial_year=current_year)
 
@@ -365,40 +344,33 @@ class ViewProgrammeDetailsTest(BaseTestCase):
             natural_account_code=nac_obj,
         )
         financial_code_obj.save
-        self.forecast_expenditure_type_id = \
+        self.forecast_expenditure_type_id = (
             financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name
+        )
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             amount=amount_apr,
             financial_code=financial_code_obj,
-            financial_year=year_obj
+            financial_year=year_obj,
         )
         apr_figure.save
 
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=4
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=4),
             financial_code=financial_code_obj,
             financial_year=year_obj,
-            amount=self.amount_may
+            amount=self.amount_may,
         )
         may_figure.save
 
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
         # Bust permissions cache (refresh_from_db does not work)
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         self.budget = create_budget(financial_code_obj, year_obj)
         self.year_total = amount_apr + self.amount_may
@@ -410,14 +382,17 @@ class ViewProgrammeDetailsTest(BaseTestCase):
 
         last_details_cols = details_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_details_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total / 100)
+        assert last_details_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total / 100)
         # Check the difference between budget and year total
-        assert last_details_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total / 100)
+        assert last_details_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total / 100)
         # Check the spend to date
-        assert last_details_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total / 100)
+        assert last_details_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total / 100)
 
     def check_negative_value_formatted(self, soup, lenght):
         negative_values = soup.find_all("span", class_="negative")
@@ -446,10 +421,10 @@ class ViewProgrammeDetailsTest(BaseTestCase):
             reverse(
                 "programme_details_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'programme_code': self.programme_obj.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "programme_code": self.programme_obj.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": 0,
                 },
             )
         )
@@ -460,10 +435,10 @@ class ViewProgrammeDetailsTest(BaseTestCase):
             reverse(
                 "programme_details_group",
                 kwargs={
-                    'group_code': self.group_code,
-                    'programme_code': self.programme_obj.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
-                    'period': 0,
+                    "group_code": self.group_code,
+                    "programme_code": self.programme_obj.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": 0,
                 },
             )
         )
@@ -475,9 +450,9 @@ class ViewProgrammeDetailsTest(BaseTestCase):
             reverse(
                 "programme_details_dit",
                 kwargs={
-                    'programme_code': self.programme_obj.programme_code,
-                    'forecast_expenditure_type': self.forecast_expenditure_type_id,
-                    'period': 0,
+                    "programme_code": self.programme_obj.programme_code,
+                    "forecast_expenditure_type": self.forecast_expenditure_type_id,
+                    "period": 0,
                 },
             )
         )
@@ -487,9 +462,7 @@ class ViewProgrammeDetailsTest(BaseTestCase):
 class ViewEditButtonTest(BaseTestCase):
     def setUp(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
 
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
@@ -519,9 +492,9 @@ class ViewEditButtonTest(BaseTestCase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
+                "cost_centre_code": self.cost_centre_code,
                 "period": 0,
-            }
+            },
         )
 
         response = self.client.get(view_forecast_url)
@@ -543,9 +516,9 @@ class ViewEditButtonTest(BaseTestCase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
+                "cost_centre_code": self.cost_centre_code,
                 "period": 0,
-            }
+            },
         )
 
         response = self.client.get(view_forecast_url)
@@ -578,9 +551,9 @@ class ViewEditButtonTest(BaseTestCase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
+                "cost_centre_code": self.cost_centre_code,
                 "period": 0,
-            }
+            },
         )
         response = self.client.get(view_forecast_url)
         assert response.status_code == 200
@@ -637,33 +610,29 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             programme=self.programme_obj,
             cost_centre=self.cost_centre,
             natural_account_code=nac_obj,
-            project_code=self.project_obj
+            project_code=self.project_obj,
         )
         financial_code_obj.save
         financial_code_obj1 = FinancialCode.objects.create(
             programme=self.programme_obj,
             cost_centre=self.cost_centre1,
             natural_account_code=nac_obj,
-            project_code=self.project_obj
+            project_code=self.project_obj,
         )
         financial_code_obj1.save
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
-            amount=self.amount_apr
+            amount=self.amount_apr,
         )
         apr_figure.save
 
         apr_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(
-                financial_period_code=1
-            ),
+            financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj1,
             financial_year=year_obj,
-            amount=-self.amount_apr
+            amount=-self.amount_apr,
         )
         apr_figure.save
 
@@ -674,7 +643,7 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
-            financial_year=year_obj
+            financial_year=year_obj,
         )
         may_figure.save
 
@@ -684,14 +653,12 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             ),
             amount=-self.amount_may,
             financial_code=financial_code_obj1,
-            financial_year=year_obj
+            financial_year=year_obj,
         )
         may_figure.save
 
         # Assign forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -702,8 +669,8 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate.directorate_code,
-                    'period': 0,
+                    "directorate_code": self.directorate.directorate_code,
+                    "period": 0,
                 },
             )
         )
@@ -725,8 +692,8 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group.group_code,
-                    'period': 0,
+                    "group_code": self.group.group_code,
+                    "period": 0,
                 },
             )
         )
@@ -747,7 +714,7 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             reverse(
                 "forecast_dit",
                 kwargs={
-                    'period': 0,
+                    "period": 0,
                 },
             )
         )

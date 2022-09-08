@@ -5,12 +5,11 @@ from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from forecast.models import (
-    BudgetMonthlyFigure,
-    ForecastMonthlyFigure,
-    BudgetUploadMonthlyFigure,
     ActualUploadMonthlyFigure,
+    BudgetMonthlyFigure,
+    BudgetUploadMonthlyFigure,
+    ForecastMonthlyFigure,
 )
 from forecast.utils.import_helpers import (
     CheckFinancialCode,
@@ -21,12 +20,8 @@ from forecast.utils.import_helpers import (
     sql_for_data_copy,
     validate_excel_file,
 )
-
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 
 EXPECTED_FIGURE_HEADERS = [
     "cost centre",

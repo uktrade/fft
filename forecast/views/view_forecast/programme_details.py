@@ -3,11 +3,10 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import reverse
 
 from chartofaccountDIT.forms import ProgrammeForm
-
 from forecast.tables import ForecastSubTotalTable
 from forecast.views.base import (
-    DITForecastMixin,
     DirectorateForecastMixin,
+    DITForecastMixin,
     ForecastViewPermissionMixin,
     ForecastViewTableMixin,
     GroupForecastMixin,
@@ -15,7 +14,6 @@ from forecast.views.base import (
 
 
 class ForecastProgrammeDetailsMixin(ForecastViewTableMixin):
-
     def class_name(self):
         return "wide-table"
 
@@ -27,27 +25,35 @@ class ForecastProgrammeDetailsMixin(ForecastViewTableMixin):
 
     def programme_code_form(self):
         return ProgrammeForm(
-            programme_code=self.kwargs["programme_code"],
-            year=self.year
+            programme_code=self.kwargs["programme_code"], year=self.year
         )
 
     def post(self, request, *args, **kwargs):
-        self.selected_period = request.POST.get("selected_period", None,)
+        self.selected_period = request.POST.get(
+            "selected_period",
+            None,
+        )
         if self.selected_period is None:
             self.selected_period = self.period
             # Check that a programme code was selected
-            self.selected_programme_code_id = request.POST.get("programme_code", None,)
+            self.selected_programme_code_id = request.POST.get(
+                "programme_code",
+                None,
+            )
             if self.selected_programme_code_id is None:
                 raise Http404("Programme code not found")
         else:
             self.selected_programme_code_id = self.kwargs["programme_code"]
         return HttpResponseRedirect(
-            reverse(self.url_name, kwargs=self.selection_kwargs(),)
+            reverse(
+                self.url_name,
+                kwargs=self.selection_kwargs(),
+            )
         )
 
     def get_tables(self):
         """
-         Return an array of table instances containing data.
+        Return an array of table instances containing data.
         """
         forecast_expenditure_type_name = self.kwargs["forecast_expenditure_type"]
         programme_code_id = self.kwargs["programme_code"]
@@ -87,7 +93,9 @@ class ForecastProgrammeDetailsMixin(ForecastViewTableMixin):
 
 
 class DITProgrammeDetailsView(
-    ForecastViewPermissionMixin, ForecastProgrammeDetailsMixin, DITForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProgrammeDetailsMixin,
+    DITForecastMixin,
 ):
     template_name = "forecast/view/programme_details/dit.html"
     url_name = "programme_details_dit"
@@ -104,7 +112,9 @@ class DITProgrammeDetailsView(
 
 
 class GroupProgrammeDetailsView(
-    ForecastViewPermissionMixin, ForecastProgrammeDetailsMixin, GroupForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastProgrammeDetailsMixin,
+    GroupForecastMixin,
 ):
     template_name = "forecast/view/programme_details/group.html"
     url_name = "programme_details_group"

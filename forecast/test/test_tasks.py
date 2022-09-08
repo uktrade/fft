@@ -1,23 +1,17 @@
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test import (
-    TestCase,
-)
-
-from forecast.tasks import process_uploaded_file
+from django.test import TestCase
 
 from core.test.test_base import TEST_EMAIL
-
+from forecast.tasks import process_uploaded_file
 from upload_file.models import FileUpload
 from upload_file.test.factories import FileUploadFactory
 
 
 class ProcessUploadTest(TestCase):
     def setUp(self):
-        test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         self.file_upload = FileUploadFactory(
             status=FileUpload.UNPROCESSED,
@@ -25,7 +19,7 @@ class ProcessUploadTest(TestCase):
             uploading_user=test_user,
         )
 
-    @patch('forecast.tasks.upload_trial_balance_report')
+    @patch("forecast.tasks.upload_trial_balance_report")
     def test_process_uploaded_file_no_malware_trial_balance(
         self,
         mock_upload_trial_balance_report,
@@ -38,7 +32,7 @@ class ProcessUploadTest(TestCase):
         assert mock_upload_trial_balance_report.called
         assert self.file_upload.status == FileUpload.PROCESSED
 
-    @patch('forecast.tasks.upload_budget_from_file')
+    @patch("forecast.tasks.upload_budget_from_file")
     def test_process_uploaded_file_no_malware_budget(
         self,
         mock_upload_budget_from_file,
