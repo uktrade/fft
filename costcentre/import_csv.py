@@ -58,7 +58,7 @@ def get_field_from_row(row, header_name):
     if temp:
         temp = temp.strip()
     else:
-        temp = ''
+        temp = ""
     return temp
 
 
@@ -102,9 +102,7 @@ def import_cc_dit_specific(csvfile):
             obj.business_partner = None
         bsce_email = get_field_from_row(row, header["bsce email"])
         if bsce_email:
-            bsce_obj, created = BSCEEmail.objects.get_or_create(
-                bsce_email=bsce_email
-            )
+            bsce_obj, created = BSCEEmail.objects.get_or_create(bsce_email=bsce_email)
             obj.bsce_email = bsce_obj
         else:
             obj.bsce_email = None

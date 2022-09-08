@@ -1,9 +1,6 @@
 from django.urls import path
 
-from .views import (
-    FilteredCostListView,
-    HistoricalFilteredCostListView,
-)
+from .views import FilteredCostListView, HistoricalFilteredCostListView
 
 urlpatterns = [
     path(

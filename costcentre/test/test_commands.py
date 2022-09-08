@@ -5,13 +5,11 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
 from forecast.permission_shortcuts import assign_perm
 
 
@@ -35,10 +33,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
         self.test_user.save()
 
     def test_add_user_to_cost_centre(self):
-        self.assertFalse(self.test_user.has_perm(
-            "change_costcentre",
-            self.cost_centre)
-        )
+        self.assertFalse(self.test_user.has_perm("change_costcentre", self.cost_centre))
         call_command(
             "add_user_to_cost_centre",
             email=self.test_user_email,
@@ -46,19 +41,10 @@ class CostCentrePermissionsCommandsTest(TestCase):
             stdout=self.out,
         )
 
-        self.assertTrue(
-            self.test_user.has_perm(
-                "change_costcentre",
-                self.cost_centre
-            )
-        )
+        self.assertTrue(self.test_user.has_perm("change_costcentre", self.cost_centre))
 
     def test_remove_user_from_cost_centre(self):
-        assign_perm(
-            "change_costcentre",
-            self.test_user,
-            self.cost_centre
-        )
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         self.assertTrue(
             self.test_user.has_perm(
@@ -90,12 +76,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
             self.cost_centre,
         )
 
-        self.assertTrue(
-            self.test_user.has_perm(
-                "change_costcentre",
-                self.cost_centre
-            )
-        )
+        self.assertTrue(self.test_user.has_perm("change_costcentre", self.cost_centre))
 
         call_command(
             "cost_centre_users",
@@ -138,9 +119,7 @@ class CostCentrePermissionsCommandsTest(TestCase):
 
         self.assertIn(
             "User with email '{}' has permissions "
-            "on the following cost centres:".format(
-                self.test_user_email
-            ),
+            "on the following cost centres:".format(self.test_user_email),
             out_value,
         )
 

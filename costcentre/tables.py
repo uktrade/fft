@@ -1,11 +1,7 @@
 import django_tables2 as tables
 
 from core.tables import FadminTable
-
-from costcentre.models import (
-    ArchivedCostCentre,
-    CostCentre,
-)
+from costcentre.models import ArchivedCostCentre, CostCentre
 
 
 class CostCentreTable(FadminTable):

@@ -120,8 +120,7 @@ def export_historic_costcentre_iterator(queryset):
         "Group",
         "Group Description",
         "Director General",
-        "Treasury Segment Code"
-        "Financial Year",
+        "Treasury Segment Code" "Financial Year",
         "Date archived",
     ]
     for obj in queryset:

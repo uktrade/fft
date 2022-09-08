@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from costcentre.models import CostCentre
-
 from forecast.permission_shortcuts import assign_perm
 
 

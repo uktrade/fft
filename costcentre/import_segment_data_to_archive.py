@@ -1,16 +1,9 @@
 import csv
 
 from core.import_csv import csv_header_to_dict
-
 from costcentre.models import ArchivedCostCentre
-
-from previous_years.utils import (
-    ArchiveYearError,
-    validate_year_for_archiving,
-)
-
+from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 from treasurySS.import_segment_data_to_archive import WrongHeaderException
-
 
 SEGMENT_HEADER = "treasury segment"
 DG_GROUP_HEADER = "group"

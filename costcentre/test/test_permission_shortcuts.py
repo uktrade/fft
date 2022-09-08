@@ -14,7 +14,7 @@ class PermissionShortcutsTest(
         )
 
     def test_finance_admin_perm(self):
-        self.group, created = Group.objects.get_or_create(name='Finance Administrator')
+        self.group, created = Group.objects.get_or_create(name="Finance Administrator")
         self.test_user.groups.add(self.group)
 
         assert self.test_user.has_perm("costcentre.change_costcentre")
@@ -30,7 +30,8 @@ class PermissionShortcutsTest(
 
     def test_fbp_perm(self):
         self.group, created = Group.objects.get_or_create(
-            name='Finance Business Partner/BSCE')
+            name="Finance Business Partner/BSCE"
+        )
         self.test_user.groups.add(self.group)
 
         assert self.test_user.has_perm("costcentre.change_costcentre")

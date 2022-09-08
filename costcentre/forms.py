@@ -1,24 +1,16 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.forms import Select
-
-from guardian.shortcuts import (
-    get_objects_for_user,
-    get_users_with_perms,
-)
+from guardian.shortcuts import get_objects_for_user, get_users_with_perms
 
 from core.utils.generic_helpers import get_current_financial_year
-
-from costcentre.models import (
-    ArchivedCostCentre,
-    CostCentre,
-)
+from costcentre.models import ArchivedCostCentre, CostCentre
 
 
 class CostCentreViewModeForm(forms.Form):
     COST_CENTRE_MODES = [
-        ('all', 'All cost centres'),
-        ('my', 'My cost centres'),
+        ("all", "All cost centres"),
+        ("my", "My cost centres"),
     ]
 
     mode = forms.ChoiceField(
@@ -28,7 +20,7 @@ class CostCentreViewModeForm(forms.Form):
 
     mode.widget.attrs.update(
         {
-            'onclick': 'swapCostCentreChoice(this)',
+            "onclick": "swapCostCentreChoice(this)",
         }
     )
 
@@ -49,8 +41,8 @@ class AllCostCentresForm(forms.Form):
 
 class DirectorateCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        year = kwargs.pop('year')
-        cost_centre_code = kwargs.pop('cost_centre_code')
+        year = kwargs.pop("year")
+        cost_centre_code = kwargs.pop("cost_centre_code")
         super(DirectorateCostCentresForm, self).__init__(
             *args,
             **kwargs,
@@ -66,24 +58,22 @@ class DirectorateCostCentresForm(forms.Form):
                 financial_year_id=year,
                 active=True,
             )
-            self.fields['cost_centre'] = forms.ModelChoiceField(
+            self.fields["cost_centre"] = forms.ModelChoiceField(
                 queryset=cost_centre_queryset,
                 widget=Select(),
                 initial=cost_centre_code,
-                to_field_name='cost_centre_code'
+                to_field_name="cost_centre_code",
             )
         else:
             directorate_code = CostCentre.objects.get(
-                cost_centre_code=cost_centre_code)\
-                .directorate.directorate_code
+                cost_centre_code=cost_centre_code
+            ).directorate.directorate_code
             cost_centre_queryset = CostCentre.objects.filter(
                 directorate__directorate_code=directorate_code,
                 active=True,
             )
-            self.fields['cost_centre'] = forms.ModelChoiceField(
-                queryset=cost_centre_queryset,
-                widget=Select(),
-                initial=cost_centre_code
+            self.fields["cost_centre"] = forms.ModelChoiceField(
+                queryset=cost_centre_queryset, widget=Select(), initial=cost_centre_code
             )
 
         self.fields["cost_centre"].widget.attrs.update(
@@ -95,13 +85,13 @@ class DirectorateCostCentresForm(forms.Form):
 
 class MyCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user')
+        user = kwargs.pop("user")
         accept_global_perms = False
 
         if user.has_perm("costcentre.edit_forecast_all_cost_centres"):
             accept_global_perms = True
 
-        self.base_fields['cost_centre'].queryset = get_objects_for_user(
+        self.base_fields["cost_centre"].queryset = get_objects_for_user(
             user,
             "costcentre.change_costcentre",
             accept_global_perms=accept_global_perms,
@@ -133,8 +123,8 @@ class GivePermissionAdminForm(forms.Form):
     def __init__(self, *args, **kwargs):
         User = get_user_model()
 
-        cost_centre = kwargs.pop('cost_centre')
-        administering_user = kwargs.pop('user')
+        cost_centre = kwargs.pop("cost_centre")
+        administering_user = kwargs.pop("user")
 
         # Filter out all users who already have permission
         users = get_users_with_perms(cost_centre, attach_perms=True)
@@ -151,7 +141,7 @@ class GivePermissionAdminForm(forms.Form):
             ]
         ).exists():
             finance_admin_users = User.objects.filter(
-                groups__name='Finance Administrator',
+                groups__name="Finance Administrator",
             )
             id_list = id_list + [user.id for user in finance_admin_users]
 
@@ -159,7 +149,7 @@ class GivePermissionAdminForm(forms.Form):
         id_list.append(administering_user.id)
 
         # Set list of users removing administering user
-        self.base_fields['user'].queryset = User.objects.exclude(
+        self.base_fields["user"].queryset = User.objects.exclude(
             pk__in=id_list
         ).order_by("-first_name")
 
@@ -183,8 +173,8 @@ class RemovePermissionAdminForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         User = get_user_model()
-        cost_centre = kwargs.pop('cost_centre')
-        administering_user = kwargs.pop('user')
+        cost_centre = kwargs.pop("cost_centre")
+        administering_user = kwargs.pop("user")
 
         users_with_permission = get_users_with_perms(cost_centre, attach_perms=True)
         id_list = [user.id for user in users_with_permission]
@@ -192,6 +182,6 @@ class RemovePermissionAdminForm(forms.Form):
 
         super(RemovePermissionAdminForm, self).__init__(*args, **kwargs)
 
-        self.fields['users'].queryset = User.objects.filter(
-            pk__in=id_list
-        ).exclude(pk=administering_user.id)
+        self.fields["users"].queryset = User.objects.filter(pk__in=id_list).exclude(
+            pk=administering_user.id
+        )

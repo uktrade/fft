@@ -1,13 +1,8 @@
+import django_filters
 from django.db.models import Q
 
-import django_filters
-
 from core.filters import ArchivedFilterSet, MyFilterSet
-
-from costcentre.models import (
-    ArchivedCostCentre,
-    CostCentre,
-)
+from costcentre.models import ArchivedCostCentre, CostCentre
 
 
 class CostCentreFilter(MyFilterSet):

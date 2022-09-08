@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-
 from guardian.shortcuts import get_users_with_perms
 
 from costcentre.models import CostCentre

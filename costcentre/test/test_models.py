@@ -2,7 +2,6 @@ import pytest
 
 from .factories import CostCentreFactory, DepartmentalGroupFactory, DirectorateFactory
 
-
 # https://medium.com/@dwernychukjosh/testing-models-with-django-using-pytest-and-factory-boy-a2985adce7b3
 
 
