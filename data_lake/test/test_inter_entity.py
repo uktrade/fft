@@ -1,9 +1,8 @@
-from data_lake.test.utils import DataLakeTesting
-
 from chartofaccountDIT.test.factories import (
-    InterEntityFactory,
     HistoricalInterEntityFactory,
+    InterEntityFactory,
 )
+from data_lake.test.utils import DataLakeTesting
 
 
 class InterEntityTests(DataLakeTesting):

@@ -4,4 +4,4 @@ profile = "black"
 [tool.black]
 # Exclude files with # noqa directive for flake8. They have long lines,
 # and black will move the flake8 directive to a new line, and flake8 will complain.
-exclude = '(chartofaccountDIT/filters.py|chartofaccountDIT/models.py)'
+exclude = '(chartofaccountDIT/filters.py|chartofaccountDIT/models.py|data_lake/views/fco_mapping.py)'

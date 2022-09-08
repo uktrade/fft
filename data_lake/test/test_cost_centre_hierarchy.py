@@ -1,9 +1,5 @@
+from costcentre.test.factories import ArchivedCostCentreFactory, CostCentreFactory
 from data_lake.test.utils import DataLakeTesting
-
-from costcentre.test.factories import (
-    ArchivedCostCentreFactory,
-    CostCentreFactory,
-)
 
 
 class HierarchyTests(DataLakeTesting):

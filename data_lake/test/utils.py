@@ -1,22 +1,17 @@
 import csv
-
 import io
 
+from django.test import TestCase, override_settings
 from rest_framework.reverse import reverse
+from rest_framework.test import APIClient
 
 from data_lake.test.test_hawk import hawk_auth_sender
-
-from django.test import (
-    TestCase,
-    override_settings,
-)
-
-from rest_framework.test import APIClient
 
 
 class DataLakeTesting(TestCase):
     @override_settings(
-        HAWK_INCOMING_ACCESS_KEY="some-id", HAWK_INCOMING_SECRET_KEY="some-secret",
+        HAWK_INCOMING_ACCESS_KEY="some-id",
+        HAWK_INCOMING_SECRET_KEY="some-secret",
     )
     def get_data(self):
         test_url = f"http://testserver{reverse(self.url_name)}"

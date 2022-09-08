@@ -2,22 +2,21 @@ from django.urls import path
 
 from data_lake.views.actual import ActualViewSet
 from data_lake.views.actual_split import ActualSplitViewSet
-from data_lake.views.forecast import ForecastViewSet
+from data_lake.views.analysis1_code import Analysis1CodeViewSet
+from data_lake.views.analysis2_code import Analysis2CodeViewSet
 from data_lake.views.budget import BudgetViewSet
 from data_lake.views.budget_profiled_actual import BudgetActualViewSet
 from data_lake.views.budget_profiled_forecast import BudgetForecastViewSet
 from data_lake.views.commercial_category import CommercialCategoryViewSet
 from data_lake.views.cost_centre_hierarchy import HierarchyViewSet
+from data_lake.views.expenditure_category import ExpenditureCategoryViewSet
+from data_lake.views.fco_mapping import FCOMappingViewSet
 from data_lake.views.financial_year import FinancialYearViewSet
+from data_lake.views.forecast import ForecastViewSet
+from data_lake.views.inter_entity import InterEntityViewSet
 from data_lake.views.natural_code import NaturalCodeViewSet
 from data_lake.views.programme_code import ProgrammeCodeViewSet
 from data_lake.views.project_code import ProjectCodeViewSet
-from data_lake.views.analysis1_code import Analysis1CodeViewSet
-from data_lake.views.analysis2_code import Analysis2CodeViewSet
-from data_lake.views.expenditure_category import ExpenditureCategoryViewSet
-from data_lake.views.fco_mapping import FCOMappingViewSet
-from data_lake.views.inter_entity import InterEntityViewSet
-
 
 urlpatterns = [
     path(

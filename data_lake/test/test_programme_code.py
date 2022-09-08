@@ -1,11 +1,9 @@
-from data_lake.test.utils import DataLakeTesting
-
+from chartofaccountDIT.models import ProgrammeCode
 from chartofaccountDIT.test.factories import (
     HistoricalProgrammeCodeFactory,
     ProgrammeCodeFactory,
 )
-
-from chartofaccountDIT.models import ProgrammeCode
+from data_lake.test.utils import DataLakeTesting
 
 
 class ProgrammeCodeTests(DataLakeTesting):

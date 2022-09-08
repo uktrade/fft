@@ -1,10 +1,5 @@
 from core.utils.generic_helpers import get_current_financial_year
-
-from costcentre.models import (
-    ArchivedCostCentre,
-    CostCentre,
-)
-
+from costcentre.models import ArchivedCostCentre, CostCentre
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 

@@ -115,3 +115,8 @@ black-check:
 
 superuser:
 	docker-compose run --rm fido python manage.py createsuperuser
+
+check_app:
+	docker-compose run --rm fido isort $(app)
+	docker-compose run --rm fido black $(app)
+	docker-compose run --rm fido flake8 $(app)

@@ -1,17 +1,15 @@
 import csv
 
-from data_lake.hawk import (
-    HawkAuthentication,
-    HawkResponseMiddleware,
-)
-
 from django.http import HttpResponse
 from django.utils.decorators import decorator_from_middleware
-
 from rest_framework.viewsets import ViewSet
 
+from data_lake.hawk import HawkAuthentication, HawkResponseMiddleware
 
-class DataLakeViewSet(ViewSet,):
+
+class DataLakeViewSet(
+    ViewSet,
+):
     authentication_classes = (HawkAuthentication,)
     permission_classes = ()
 
