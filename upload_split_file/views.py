@@ -15,6 +15,7 @@ from upload_split_file.templatetags.upload_percentage_permissions import (
     has_project_percentage_permission,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

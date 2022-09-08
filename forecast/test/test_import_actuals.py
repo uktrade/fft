@@ -39,6 +39,7 @@ from forecast.models import (
 from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST, CheckFinancialCode
 from upload_file.models import FileUpload
 
+
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003
 TEST_PROGRAMME_CODE = "310940"

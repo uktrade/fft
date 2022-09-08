@@ -12,6 +12,7 @@ from forecast.test.test_utils import (
     format_forecast_figure,
 )
 
+
 TOTAL_COLUMN = -6
 
 

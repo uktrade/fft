@@ -16,6 +16,7 @@ from costcentre.models import (
 from end_of_month.models import forecast_budget_view_model
 from previous_years.models import ArchivedForecastData
 
+
 financial_code_prefix = "financial_code__"
 SHOW_DIT = 0
 SHOW_GROUP = 1

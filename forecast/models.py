@@ -33,6 +33,7 @@ from forecast.utils.view_field_definition import (
     outturn_variance_field,
 )
 
+
 GRAND_TOTAL_ROW = "grand_total"
 MAX_PERIOD_CODE = 15
 

@@ -15,6 +15,7 @@ from upload_file.utils import (
     set_file_upload_warning,
 )
 
+
 EXPECTED_USER_HEADERS = [
     "first name",  # /PS-IGNORE
     "last name",  # /PS-IGNORE

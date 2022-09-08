@@ -9,6 +9,7 @@ from .views import (
     quick_links,
 )
 
+
 app_name = "gifthospitality"
 
 urlpatterns = [

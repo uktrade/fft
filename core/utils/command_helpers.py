@@ -8,6 +8,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 from core.models import CommandLog
 
+
 UserModel = get_user_model()
 
 

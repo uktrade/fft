@@ -22,6 +22,7 @@ from forecast.utils.access_helpers import (
     user_in_group,
 )
 
+
 User = get_user_model()
 
 

@@ -21,6 +21,7 @@ from forecast.models import (
     UnlockedForecastEditor,
 )
 
+
 User = get_user_model()
 
 

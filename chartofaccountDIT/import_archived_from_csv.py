@@ -19,6 +19,7 @@ from core.import_csv import (
 from forecast.import_csv import WrongChartOFAccountCodeException
 from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 
+
 ANALYSIS1_HISTORICAL_KEY = {
     IMPORT_CSV_MODEL_KEY: ArchivedAnalysis1,
     IMPORT_CSV_PK_KEY: "Analysis 1 Code",

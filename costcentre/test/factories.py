@@ -11,6 +11,7 @@ from costcentre.models import (
     Directorate,
 )
 
+
 fake = Faker()
 
 

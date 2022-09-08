@@ -8,6 +8,7 @@ from end_of_month.models import EndOfMonthStatus, MonthlyTotalBudget
 from end_of_month.monthly_outturn import create_outturn_for_variance
 from forecast.models import MAX_PERIOD_CODE, BudgetMonthlyFigure, ForecastMonthlyFigure
 
+
 logger = logging.getLogger(__name__)
 
 

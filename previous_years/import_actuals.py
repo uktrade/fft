@@ -8,6 +8,7 @@ from previous_years.models import (
     ArchivedForecastData,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

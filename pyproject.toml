@@ -1,7 +1,28 @@
 [tool.isort]
 profile = "black"
+multi_line_output = 3
+skip_gitignore = true
+line_length = 88
+lines_after_imports = 2
 
 [tool.black]
 # Exclude files with # noqa directive for flake8. They have long lines,
 # and black will move the flake8 directive to a new line, and flake8 will complain.
-exclude = '(chartofaccountDIT/filters.py|chartofaccountDIT/models.py|data_lake/views/fco_mapping.py|forecast/views/base.py|upload_split_file/downloads.py)'
+exclude = '''
+(
+    \.env
+    | \.git
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+    | chartofaccountDIT/filters.py
+    | chartofaccountDIT/models.py
+    | data_lake/views/fco_mapping.py
+    | forecast/views/base.py
+    | upload_split_file/downloads.py
+)
+'''

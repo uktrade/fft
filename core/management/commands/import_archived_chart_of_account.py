@@ -14,6 +14,7 @@ from costcentre.import_archived_from_csv import import_archived_cost_centre
 from forecast.import_csv import WrongChartOFAccountCodeException
 from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 
+
 IMPORT_ARCHIVED_TYPE = {
     "Analysis1": import_archived_analysis1,
     "Analysis2": import_archived_analysis2,

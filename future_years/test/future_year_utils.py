@@ -26,6 +26,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
+
 FUTURE_TOTAL_COLUMN = -3
 FUTURE_UNDERSPEND_COLUMN = -2
 

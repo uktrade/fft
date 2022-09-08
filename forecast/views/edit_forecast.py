@@ -51,6 +51,7 @@ from forecast.views.base import (
     NoFinancialYearInURLError,
 )
 
+
 UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
 UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE = "Future forecast editing is locked"
 UNAVAILABLE_FORECAST_EDIT_MESSAGE = "Editing is unavailable until month end processing has been completed."  # noqa: E501

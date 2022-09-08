@@ -16,6 +16,7 @@ from forecast.models import BudgetMonthlyFigure, FinancialPeriod
 from forecast.utils.import_helpers import UploadFileFormatError
 from upload_file.models import FileUpload
 
+
 TEST_COST_CENTRE = 109189
 TEST_VALID_NATURAL_ACCOUNT_CODE = 52191003
 TEST_NOT_VALID_NATURAL_ACCOUNT_CODE = 92191003

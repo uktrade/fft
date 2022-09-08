@@ -15,6 +15,7 @@ from forecast.models import (
 )
 from forecast.utils.import_helpers import CheckFinancialCode
 
+
 logger = logging.getLogger(__name__)
 
 

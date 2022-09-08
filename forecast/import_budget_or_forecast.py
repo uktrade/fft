@@ -23,6 +23,7 @@ from forecast.utils.import_helpers import (
 from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 
+
 EXPECTED_FIGURE_HEADERS = [
     "cost centre",
     "natural account",

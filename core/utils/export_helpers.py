@@ -8,6 +8,7 @@ from django.utils.encoding import smart_str
 from core.import_csv import IMPORT_CSV_MODEL_KEY, get_col_from_obj_key, get_field_name
 from core.utils.generic_helpers import today_string
 
+
 # The max lenght for an Excel tab name is 31. So truncate the name, if needed
 EXC_TAB_NAME_LEN = 31
 EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

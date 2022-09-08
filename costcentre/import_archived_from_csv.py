@@ -9,6 +9,7 @@ from costcentre.models import ArchivedCostCentre
 from forecast.import_csv import WrongChartOFAccountCodeException
 from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 
+
 COST_CENTRE_HISTORICAL_KEY = {
     IMPORT_CSV_MODEL_KEY: ArchivedCostCentre,
     IMPORT_CSV_PK_KEY: "Cost Centre Code",

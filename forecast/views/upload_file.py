@@ -10,6 +10,7 @@ from forecast.tasks import process_uploaded_file
 from upload_file.models import FileUpload
 from upload_file.utils import user_has_upload_permission
 
+
 logger = logging.getLogger(__name__)
 
 

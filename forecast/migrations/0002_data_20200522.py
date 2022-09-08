@@ -1,5 +1,6 @@
 from django.db import migrations
 
+
 fields = [
     "financial_period_code",
     "period_long_name",

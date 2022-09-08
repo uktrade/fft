@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from core.utils.export_helpers import export_to_excel
 
+
 User = get_user_model()
 
 

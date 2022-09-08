@@ -4,6 +4,7 @@ from django.db import migrations
 
 from core.utils.generic_helpers import get_current_financial_year
 
+
 fields = ["financial_year", "financial_year_display", "current"]
 
 financial_years = [

@@ -17,6 +17,7 @@ from costcentre.archive import archive_cost_centre
 from treasuryCOA.archive import archive_treasury_l5
 from treasurySS.archive import archive_treasury_segment
 
+
 ARCHIVE_TYPE = {
     "CostCentre": archive_cost_centre,
     "Treasury_COA": archive_treasury_l5,

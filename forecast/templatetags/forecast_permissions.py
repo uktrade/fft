@@ -8,6 +8,7 @@ from forecast.utils.access_helpers import (
 )
 from forecast.utils.access_helpers import can_view_forecasts
 
+
 register = template.Library()
 
 

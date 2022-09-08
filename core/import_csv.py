@@ -1,5 +1,6 @@
 import csv
 
+
 """Set of functions used to import from
 csv into the FIDO model. The import is
 specified as a dictionary, defining the

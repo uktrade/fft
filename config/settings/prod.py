@@ -1,10 +1,11 @@
 import sys
 
-from .base import *  # noqa
 import sentry_sdk
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from django_log_formatter_ecs import ECSFormatter
+from .base import *  # noqa
+
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
@@ -29,18 +30,18 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [
-    'noindex',
-    'nofollow',
+    "noindex",
+    "nofollow",
 ]
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': CELERY_BROKER_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": CELERY_BROKER_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-        'KEY_PREFIX': 'cache_'
+        "KEY_PREFIX": "cache_",
     }
 }
 
@@ -51,44 +52,50 @@ LOGGING = {
         "ecs_formatter": {
             "()": ECSFormatter,
         },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
+        "simple": {"format": "%(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "ecs": {
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "ecs_formatter",
+        },
+        "stdout": {
+            "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "simple",
+            "level": "INFO",
         },
     },
-    'handlers': {
-        'ecs': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-            'formatter': 'ecs_formatter',
+    "loggers": {
+        "django.request": {
+            "handlers": [
+                "ecs",
+            ],
+            "level": "INFO",
+            "propagate": True,
         },
-        'stdout': {
-            'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
-            'formatter': 'simple',
-            'level': 'INFO',
+        "forecast.import_csv": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "INFO",
+            "propagate": True,
         },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['ecs', ],
-            'level': 'INFO',
-            'propagate': True,
+        "forecast.views.upload_file": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "INFO",
+            "propagate": True,
         },
-        'forecast.import_csv': {
-            'handlers': ['stdout', ],
-            'level': 'INFO',
-            'propagate': True,
+        "forecast.tasks": {
+            "handlers": [
+                "stdout",
+            ],
+            "level": "INFO",
+            "propagate": True,
         },
-        'forecast.views.upload_file': {
-            'handlers': ['stdout', ],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'forecast.tasks': {
-            'handlers': ['stdout', ],
-            'level': 'INFO',
-            'propagate': True,
-        }
     },
 }
 
@@ -101,7 +108,7 @@ sentry_sdk.init(
     integrations=[DjangoIntegration()],
 )
 
-# Django staff SSO user migration process requries the following
+# Django staff SSO user migration process requries the following
 MIGRATE_EMAIL_USER_ON_LOGIN = True
 
 # HSTS (https://man.uktrade.io/docs/procedures/1st-go-live.html)
@@ -132,7 +139,7 @@ SESSION_COOKIE_HTTPONLY = True
 # Set content to no sniff
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Set anti XSS header
+# Set anti XSS header
 SECURE_BROWSER_XSS_FILTER = True
 
 # Audit log middleware user field

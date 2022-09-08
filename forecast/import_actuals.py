@@ -23,6 +23,7 @@ from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 from upload_split_file.split_actuals import handle_split_project
 
+
 logger = logging.getLogger(__name__)
 
 CHART_OF_ACCOUNT_COL = 3

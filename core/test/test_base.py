@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, modify_settings, override_settings
 
+
 TEST_EMAIL = "test@test.com"  # /PS-IGNORE
 TEST_COST_CENTRE = 888812
 

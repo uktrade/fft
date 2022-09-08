@@ -6,6 +6,7 @@ from django.urls import path
 from core.utils.generic_helpers import log_object_change
 from user.download_users import download_users_to_excel
 
+
 User = get_user_model()
 
 

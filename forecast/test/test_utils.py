@@ -1,5 +1,6 @@
 from forecast.models import BudgetMonthlyFigure, FinancialPeriod
 
+
 TOTAL_COLUMN = -5
 SPEND_TO_DATE_COLUMN = -2
 UNDERSPEND_COLUMN = -4

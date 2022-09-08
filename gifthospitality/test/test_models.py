@@ -5,6 +5,7 @@ from .factories import (
     GiftsAndHospitalityCompanyFactory,
 )
 
+
 # https://medium.com/@dwernychukjosh/testing-models-with-django-using-pytest-and-factory-boy-a2985adce7b3
 
 

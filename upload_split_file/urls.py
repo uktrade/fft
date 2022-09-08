@@ -7,6 +7,7 @@ from upload_split_file.views import (
     export_split_percentage_template,
 )
 
+
 urlpatterns = [
     path(
         "project_percentage/",

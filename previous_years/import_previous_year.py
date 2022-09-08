@@ -20,6 +20,7 @@ from previous_years.utils import (
 from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 
+
 # Make the adjustment columns compulsory. They can have just 0 in it.
 # Maybe only one adjustment column is needed, but it becomes too complex to find out
 # if it is required or not. This process will only happen 3 or 4 times a year,

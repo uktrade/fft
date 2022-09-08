@@ -19,6 +19,7 @@ from upload_file.utils import (
     set_file_upload_warning,
 )
 
+
 # When the following codes are used, they must be a fixed length and padded with "0"
 ANALYSIS1_CODE_LENGTH = 5
 ANALYSIS2_CODE_LENGTH = 5

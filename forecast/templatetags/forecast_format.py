@@ -10,6 +10,7 @@ from forecast.utils.view_header_definition import (
     year_to_date_header,
 )
 
+
 register = template.Library()
 
 forecast_figure_cols = [

@@ -14,6 +14,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 
+
 logger = logging.getLogger(__name__)
 
 

@@ -8,6 +8,7 @@ from mohawk.exc import HawkFail
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
+
 logger = logging.getLogger(__name__)
 
 NO_CREDENTIALS_MESSAGE = "Authentication credentials were not provided."

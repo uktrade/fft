@@ -18,6 +18,7 @@ from .models import (
     Directorate,
 )
 
+
 GROUP_KEY = {
     IMPORT_CSV_MODEL_KEY: DepartmentalGroup,
     IMPORT_CSV_PK_KEY: "Group Code",

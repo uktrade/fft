@@ -3,6 +3,7 @@ from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
+
 Permission = apps.get_model("auth", "Permission")
 Group = apps.get_model("auth", "Group")
 

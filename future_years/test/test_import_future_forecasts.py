@@ -12,6 +12,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from forecast.models import BudgetMonthlyFigure, FinancialPeriod, ForecastMonthlyFigure
 from future_years.test.future_year_utils import FutureFigureSetup
 
+
 TOTAL_FROM_FILE = 85800000
 
 

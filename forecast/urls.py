@@ -57,6 +57,7 @@ from forecast.views.view_forecast.project_details import (
     GroupProjectDetailsView,
 )
 
+
 urlpatterns = [
     path("error/", ErrorView.as_view(), name="error"),
     path(

@@ -18,6 +18,7 @@ from data_lake.views.natural_code import NaturalCodeViewSet
 from data_lake.views.programme_code import ProgrammeCodeViewSet
 from data_lake.views.project_code import ProjectCodeViewSet
 
+
 urlpatterns = [
     path(
         "budget_forecast/",

@@ -9,6 +9,7 @@ from upload_file.models import FileUpload
 from upload_file.utils import set_file_upload_finished
 from upload_split_file.import_project_percentage import upload_project_percentage
 
+
 logger = logging.getLogger(__name__)
 
 

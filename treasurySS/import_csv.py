@@ -10,6 +10,7 @@ from core.import_csv import (
 
 from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
 
+
 # Segment Department Code
 # Segment Department Long Name
 # Segment Grand Parent Code

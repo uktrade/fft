@@ -7,6 +7,7 @@ from openpyxl import load_workbook
 from core.test.test_base import BaseTestCase
 from end_of_month.test.test_utils import SetFullYearArchive
 
+
 BUDGET_CELL = "Y2"
 GROUP_HEADING_CELL = "A1"
 GROUP_CODE_CELL = "B2"
