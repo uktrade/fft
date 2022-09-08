@@ -1,15 +1,9 @@
 import csv
 
 from chartofaccountDIT.models import BudgetType
-
 from core.import_csv import csv_header_to_dict
-
+from previous_years.utils import ArchiveYearError, validate_year_for_archiving
 from treasurySS.models import ArchivedSubSegment
-
-from previous_years.utils import (
-    ArchiveYearError,
-    validate_year_for_archiving,
-)
 
 SUB_SEGMENT_CODE_HEADER = "sub segment code"
 SUB_SEGMENT_LONG_NAME_HEADER = "sub segment long name"
@@ -87,9 +81,7 @@ def import_segment(csv_file, year):
             sub_segment_code=sub_segment_code, financial_year_id=year
         )
 
-        obj.sub_segment_long_name = row[
-            header[SUB_SEGMENT_LONG_NAME_HEADER]
-        ].strip()
+        obj.sub_segment_long_name = row[header[SUB_SEGMENT_LONG_NAME_HEADER]].strip()
 
         obj.control_budget_detail_code = row[
             header[CONTROL_BUDGET_DETAIL_CODE_HEADER]
