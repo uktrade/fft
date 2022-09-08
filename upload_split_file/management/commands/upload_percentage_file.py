@@ -1,10 +1,8 @@
 import os
 
 from core.utils.command_helpers import CommandUpload
-
-from upload_split_file.import_project_percentage import upload_project_percentage
-
 from upload_file.models import FileUpload
+from upload_split_file.import_project_percentage import upload_project_percentage
 
 
 class Command(CommandUpload):

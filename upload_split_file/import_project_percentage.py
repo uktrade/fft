@@ -2,9 +2,7 @@ from django.db import connection
 from django.db.models import Sum
 
 from core.import_csv import xslx_header_to_dict
-
 from end_of_month.models import EndOfMonthStatus
-
 from forecast.models import FinancialPeriod
 from forecast.utils.import_helpers import (
     CheckFinancialCode,
@@ -13,21 +11,10 @@ from forecast.utils.import_helpers import (
     check_header,
     validate_excel_file,
 )
-
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
-
-from upload_split_file.models import (
-    PaySplitCoefficient,
-    UploadPaySplitCoefficient,
-)
-from upload_split_file.split_actuals import (
-    EXPENDITURE_TYPE_LIST,
-    handle_split_project,
-)
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
+from upload_split_file.models import PaySplitCoefficient, UploadPaySplitCoefficient
+from upload_split_file.split_actuals import EXPENDITURE_TYPE_LIST, handle_split_project
 
 WORKSHEET_PROJECT_TITLE = "Project Percentages"
 COST_CENTRE_CODE = "cost centre code"
@@ -127,7 +114,9 @@ class UploadProjectPercentages:
     def copy_uploaded_percentage(self):
         for period_obj in self.month_dict.values():
             # Now copy the newly uploaded budgets to the monthly figure table
-            PaySplitCoefficient.objects.filter(financial_period=period_obj,).delete()
+            PaySplitCoefficient.objects.filter(
+                financial_period=period_obj,
+            ).delete()
             sql_insert = (
                 f"INSERT INTO public.upload_split_file_paysplitcoefficient "
                 f"(created, updated, "
@@ -224,7 +213,8 @@ class UploadProjectPercentages:
         error_msg = ""
         for month_obj in self.month_dict.values():
             total_percentage = UploadPaySplitCoefficient.objects.filter(
-                directorate_code=self.directorate_code, financial_period=month_obj,
+                directorate_code=self.directorate_code,
+                financial_period=month_obj,
             ).aggregate(Sum("split_coefficient"))
             if total_percentage["split_coefficient__sum"] > MAX_COEFFICIENT + TOLERANCE:
                 error_msg = (
@@ -295,7 +285,9 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
         check_header(header_dict, EXPECTED_PERCENTAGE_HEADERS)
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         return
 
@@ -314,7 +306,9 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
 
     except (UploadFileDataError) as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
     upload.complete()
 
@@ -324,7 +318,9 @@ def upload_project_percentage(file_upload, include_archived=False):
         workbook, worksheet = validate_excel_file(file_upload, WORKSHEET_PROJECT_TITLE)
     except (UploadFileFormatError, UploadFileDataError) as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         return
     upload_project_percentage_from_file(worksheet, file_upload, include_archived)

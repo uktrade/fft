@@ -2,50 +2,33 @@ import os
 
 from openpyxl import Workbook
 
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
 from chartofaccountDIT.test.factories import (
     ExpenditureCategoryFactory,
     NaturalCodeFactory,
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-from chartofaccountDIT.models import (
-    NaturalCode,
-    ProgrammeCode,
-    ProjectCode,
-)
-
 from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
-
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
-from core.utils.generic_helpers import make_financial_year_current
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-    DirectorateFactory,
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    make_financial_year_current,
 )
 from costcentre.models import CostCentre
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from costcentre.test.factories import CostCentreFactory, DirectorateFactory
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST
-
-
 from upload_split_file.import_project_percentage import (
-    WORKSHEET_PROJECT_TITLE,
+    ANALYSIS1_CODE,
+    ANALYSIS2_CODE,
     COST_CENTRE_CODE,
     NAC_CODE,
     PROGRAMME_CODE,
-    ANALYSIS1_CODE,
-    ANALYSIS2_CODE,
     PROJECT_CODE,
+    WORKSHEET_PROJECT_TITLE,
 )
-
 from upload_split_file.models import PaySplitCoefficient
-
 from upload_split_file.split_actuals import INCOME_PAY_CODE, PAY_CODE
 
 COST_CENTRE_CODE_INDEX = 1
@@ -59,7 +42,10 @@ MONTH2_INDEX = 8
 
 
 def create_financial_code(
-    cost_centre, nac, programme_code, project_code,
+    cost_centre,
+    nac,
+    programme_code,
+    project_code,
 ):
     programme_obj = ProgrammeCode.objects.get(pk=programme_code)
     costcentre_obj = CostCentre.objects.get(pk=cost_centre)
@@ -84,7 +70,10 @@ def create_monthly_amount_with_year(
     cost_centre, nac, programme_code, project_code, monthly_amount, period_obj, year_obj
 ):
     financial_code_obj = create_financial_code(
-        cost_centre, nac, programme_code, project_code,
+        cost_centre,
+        nac,
+        programme_code,
+        project_code,
     )
     forecast_figure_obj = ForecastMonthlyFigure.objects.create(
         financial_year=year_obj,
@@ -97,7 +86,12 @@ def create_monthly_amount_with_year(
 
 
 def create_monthly_amount(
-    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+    cost_centre,
+    nac,
+    programme_code,
+    project_code,
+    monthly_amount,
+    period_obj,
 ):
     year_obj = FinancialYear.objects.get(financial_year=get_current_financial_year())
     return create_monthly_amount_with_year(
@@ -107,12 +101,17 @@ def create_monthly_amount(
         project_code,
         monthly_amount,
         period_obj,
-        year_obj
+        year_obj,
     )
 
 
 def create_future_monthly_amount(
-    cost_centre, nac, programme_code, project_code, monthly_amount, period_obj,
+    cost_centre,
+    nac,
+    programme_code,
+    project_code,
+    monthly_amount,
+    period_obj,
 ):
     year_obj = FinancialYear.objects.get(
         financial_year=get_current_financial_year() + 1
@@ -124,7 +123,7 @@ def create_future_monthly_amount(
         project_code,
         monthly_amount,
         period_obj,
-        year_obj
+        year_obj,
     )
 
 
@@ -132,7 +131,10 @@ def create_split_data(
     cost_centre, nac, programme_code, project_code, coefficient, period_obj
 ):
     financial_code_obj = create_financial_code(
-        cost_centre, nac, programme_code, project_code,
+        cost_centre,
+        nac,
+        programme_code,
+        project_code,
     )
     directorate_code = financial_code_obj.cost_centre.directorate.directorate_code
     project_split_obj = PaySplitCoefficient.objects.create(
@@ -163,7 +165,10 @@ def create_workbook(data_dictionary):
             data_worksheet.cell(column=data_col, row=row, value=data_value)
         row += 1
 
-    excel_file_name = os.path.join(os.path.dirname(__file__), "dummy.xlsx",)
+    excel_file_name = os.path.join(
+        os.path.dirname(__file__),
+        "dummy.xlsx",
+    )
     wb.save(filename=excel_file_name)
     return data_worksheet, excel_file_name
 
@@ -249,7 +254,8 @@ class SplitDataSetup(BaseTestCase):
             active=False,
         )
         ProgrammeCodeFactory.create(
-            programme_code=self.programme_code, active=False,
+            programme_code=self.programme_code,
+            active=False,
         )
         ProjectCodeFactory.create(project_code=self.project_code1)
         ProjectCodeFactory.create(project_code=self.project_code2)

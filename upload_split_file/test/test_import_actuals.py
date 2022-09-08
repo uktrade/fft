@@ -5,17 +5,11 @@ from forecast.import_actuals import (
     copy_current_year_actuals_to_monthly_figure,
     save_trial_balance_row,
 )
-from forecast.models import (
-    ActualUploadMonthlyFigure,
-    ForecastMonthlyFigure,
-)
+from forecast.models import ActualUploadMonthlyFigure, ForecastMonthlyFigure
 from forecast.utils.import_helpers import CheckFinancialCode
-from upload_split_file.models import SplitPayActualFigure
-from upload_split_file.test.test_utils import (
-    SplitDataSetup,
-    create_split_data,
-)
 from upload_file.models import FileUpload
+from upload_split_file.models import SplitPayActualFigure
+from upload_split_file.test.test_utils import SplitDataSetup, create_split_data
 
 
 class SplitImportActualsTest(SplitDataSetup):
@@ -118,7 +112,8 @@ class SplitImportActualsTest(SplitDataSetup):
 
         # Check that figures have correct values
         self.assertEqual(
-            result["total"], test_amount * 100,
+            result["total"],
+            test_amount * 100,
         )
 
         result_split = SplitPayActualFigure.objects.filter(
@@ -127,5 +122,6 @@ class SplitImportActualsTest(SplitDataSetup):
 
         # Check that figures have correct values
         self.assertEqual(
-            result_split["total"], test_amount * 100,
+            result_split["total"],
+            test_amount * 100,
         )

@@ -1,8 +1,6 @@
 from core.utils.export_helpers import export_to_excel
-
 from forecast.models import FinancialPeriod
 from forecast.utils.export_helpers import get_obj_value
-
 from upload_split_file.import_project_percentage import (
     EXPECTED_PERCENTAGE_HEADERS,
     WORKSHEET_PROJECT_TITLE,
