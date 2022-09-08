@@ -1,10 +1,9 @@
-from django.test import TestCase
 from django.core.cache import cache
 from django.core.management import call_command
+from django.test import TestCase
 
 
 class ClearCacheCommand(TestCase):
-
     def test_cache(self):
         original_value = "12345678901234567890"
         cache_key = "long_cache_key"

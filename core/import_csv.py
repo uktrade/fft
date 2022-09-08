@@ -148,8 +148,7 @@ def read_csv_from_dict(d, row, year):
             default_list[k], errormsg = read_csv_from_dict(v, row, year)
         else:
             default_list[k] = get_value_from_field(
-                m._meta.get_field(k).get_internal_type(),
-                row[v].strip()
+                m._meta.get_field(k).get_internal_type(), row[v].strip()
             )
     try:
         if pk_header_name == "":
@@ -158,7 +157,7 @@ def read_csv_from_dict(d, row, year):
             if year:
                 kwargs = {
                     unique_name: row[pk_header_name].strip(),
-                    'financial_year_id': year
+                    "financial_year_id": year,
                 }
                 obj, created = m.objects.update_or_create(
                     **kwargs,
@@ -307,8 +306,10 @@ class ImportInfo:
         l1 = [x.lower() for x in [x.lower() for x in self.header_list]]
         # Before starting to read, check that all the expected columns exists
         if not all(elem in header for elem in l1):
-            msg = f"Missing/wrong headers: expected {l1}, " \
-                  f"the file has: {header.keys()}."
+            msg = (
+                f"Missing/wrong headers: expected {l1}, "
+                f"the file has: {header.keys()}."
+            )
 
             return False, msg
 

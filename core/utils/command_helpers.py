@@ -1,18 +1,10 @@
 import uuid
 
 import boto3
-
 import botocore
-
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
-from django.core.management.base import (
-    BaseCommand,
-    CommandError,
-)
-
+from django.core.management.base import BaseCommand, CommandError
 
 from core.models import CommandLog
 
@@ -35,7 +27,8 @@ class CommandUpload(BaseCommand):
 
             try:
                 s3.Bucket(settings.TEMP_FILE_AWS_STORAGE_BUCKET_NAME).download_file(
-                    path, file_name,
+                    path,
+                    file_name,
                 )
             except botocore.exceptions.ClientError as e:
                 if e.response["Error"]["Code"] == "404":
@@ -75,13 +68,16 @@ class CommandWithUserCheck(BaseCommand):
     the command will exit.
     When using this class, implement handle_validated_user() instead of handle().
     """
+
     command_name = __name__
     user_validated = False
 
     def create_parser(self, prog_name, subcommand, **kwargs):
         parser = super().create_parser(prog_name, subcommand, **kwargs)
         parser.add_argument(
-            "--useremail", type=str, help="Email for validation",
+            "--useremail",
+            type=str,
+            help="Email for validation",
         )
         return parser
 
@@ -97,8 +93,9 @@ class CommandWithUserCheck(BaseCommand):
 
     def handle(self, *args, **options):
         user_email = options["useremail"]
-        error_message = f"User with email '{user_email}' " \
-                        f"does not exist or not authorised."
+        error_message = (
+            f"User with email '{user_email}' " f"does not exist or not authorised."
+        )
         while not user_email:
             user_email = input("Please enter your email: (exit to stop) ")
 

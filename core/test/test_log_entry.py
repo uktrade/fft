@@ -12,7 +12,7 @@ class LogEntryTest(TestCase):
         )
 
     def finance_admin_view_log_entry(self):
-        self.group, created = Group.objects.get_or_create(name='Finance Administrator')
+        self.group, created = Group.objects.get_or_create(name="Finance Administrator")
         self.test_user.groups.add(self.group)
 
         assert self.test_user.has_perm("view_logentry")

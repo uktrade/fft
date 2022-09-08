@@ -6,7 +6,6 @@ from django import template
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-
 register = template.Library()
 
 
@@ -14,10 +13,10 @@ register = template.Library()
 def render_front_end_script():
     if hasattr(settings, "FRONT_END_SERVER"):
         return mark_safe(
-            '<script '
+            "<script "
             'type="text/javascript" '
             f'src="{settings.FRONT_END_SERVER}/static/js/bundle.js">'
-            '</script>'
+            "</script>"
         )
     else:
         assets_manifest_path = os.path.join(
@@ -37,15 +36,18 @@ def render_front_end_script():
                         scripts.append(asset_json[key])
 
             return mark_safe(
-                ''.join([
-                    '<script type="text/javascript" src="/{}"></script>'.format(
-                        script
-                    ) for script in scripts
-                ])
+                "".join(
+                    [
+                        '<script type="text/javascript" src="/{}"></script>'.format(
+                            script
+                        )
+                        for script in scripts
+                    ]
+                )
             )
 
 
-@register.filter('startswith')
+@register.filter("startswith")
 def startswith(text, starts):
     return text.startswith(starts)
 

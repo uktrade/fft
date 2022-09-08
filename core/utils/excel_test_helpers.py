@@ -1,10 +1,7 @@
-from typing import (
-    Dict,
-    TypeVar,
-)
+from typing import Dict, TypeVar
 
-_KT = TypeVar('_KT')
-_VT = TypeVar('_VT')
+_KT = TypeVar("_KT")
+_VT = TypeVar("_VT")
 
 
 class FakeWorkSheet(Dict[_KT, _VT]):

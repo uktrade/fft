@@ -6,39 +6,39 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_data_20200810'),
+        ("core", "0006_data_20200810"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='Document',
+            name="Document",
         ),
         migrations.AddField(
-            model_name='financialyear',
-            name='archived',
+            model_name="financialyear",
+            name="archived",
             field=models.BooleanField(default=False, blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='financialyear',
-            name='archived_at',
+            model_name="financialyear",
+            name="archived_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='simplehistoryfinancialyear',
-            name='archived',
+            model_name="simplehistoryfinancialyear",
+            name="archived",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='simplehistoryfinancialyear',
-            name='archived_at',
+            model_name="simplehistoryfinancialyear",
+            name="archived_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='financialyear',
-            name='archived',
+            model_name="financialyear",
+            name="archived",
             field=models.BooleanField(default=False),
         ),
         migrations.DeleteModel(
-            name='SimpleHistoryDocument',
+            name="SimpleHistoryDocument",
         ),
     ]

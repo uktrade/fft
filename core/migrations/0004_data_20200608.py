@@ -2,8 +2,8 @@ from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.db import migrations
 
-Permission = apps.get_model('auth', 'Permission')
-Group = apps.get_model('auth', 'Group')
+Permission = apps.get_model("auth", "Permission")
+Group = apps.get_model("auth", "Group")
 
 
 def add_all_permissions():
@@ -28,11 +28,12 @@ def add_finance_admin_permissions(apps, schema_editor):
 
     # Finance admins
     finance_adminstrators, _ = Group.objects.get_or_create(
-        name='Finance Administrator',
+        name="Finance Administrator",
     )
 
     assign_permissions(
-        finance_adminstrators, [
+        finance_adminstrators,
+        [
             # admin permissions follow
             "change_naturalcode",
             "add_naturalcode",
@@ -52,7 +53,6 @@ def add_finance_admin_permissions(apps, schema_editor):
             "add_programmecode",
             "change_projectcode",
             "add_projectcode",
-
         ],
     )
 

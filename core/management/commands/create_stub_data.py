@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 
+import core
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
@@ -10,20 +11,8 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
-import core
-
-from costcentre.models import (
-    CostCentre,
-    DepartmentalGroup,
-    Directorate,
-)
-
-from forecast.models import (
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
-
+from costcentre.models import CostCentre, DepartmentalGroup, Directorate
+from forecast.models import FinancialCode, ForecastMonthlyFigure
 from upload_split_file.split_actuals import PAY_CODE
 
 
@@ -97,24 +86,24 @@ class ProgrammeCodes:
         budget_type_code = "AME"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code='338888',
-            programme_description='Programme {}'.format(budget_type_code),
+            programme_code="338888",
+            programme_description="Programme {}".format(budget_type_code),
             active=True,
             budget_type=budget_type,
         )
         budget_type_code = "DEL"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code='338889',
-            programme_description='Programme {}'.format(budget_type_code),
+            programme_code="338889",
+            programme_description="Programme {}".format(budget_type_code),
             active=True,
             budget_type=budget_type,
         )
         budget_type_code = "ADMIN"
         budget_type = BudgetType.objects.get(pk=budget_type_code)
         ProgrammeCode.objects.create(
-            programme_code='338887',
-            programme_description='Admin DEL',
+            programme_code="338887",
+            programme_description="Admin DEL",
             active=True,
             budget_type=budget_type,
         )
@@ -130,23 +119,28 @@ class Analysis1Codes:
     def create(self):
         self.clear()
         Analysis1.objects.create(
-            active=True, analysis1_code="10001",
+            active=True,
+            analysis1_code="10001",
             analysis1_description="Analysis 1 - 0",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10002",
+            active=True,
+            analysis1_code="10002",
             analysis1_description="Analysis 1 - 1",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10004",
+            active=True,
+            analysis1_code="10004",
             analysis1_description="Analysis 1 - 2",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10005",
+            active=True,
+            analysis1_code="10005",
             analysis1_description="Analysis 1 - 3",
         )
         Analysis1.objects.create(
-            active=True, analysis1_code="10006",
+            active=True,
+            analysis1_code="10006",
             analysis1_description="Analysis 1 - 4",
         )
 
@@ -161,23 +155,28 @@ class Analysis2Codes:
     def create(self):
         self.clear()
         Analysis2.objects.create(
-            active=True, analysis2_code="40001",
+            active=True,
+            analysis2_code="40001",
             analysis2_description="Analysis 2 - 0",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40002",
+            active=True,
+            analysis2_code="40002",
             analysis2_description="Analysis 2 - 1",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40004",
+            active=True,
+            analysis2_code="40004",
             analysis2_description="Analysis 2 - 2",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40005",
+            active=True,
+            analysis2_code="40005",
             analysis2_description="Analysis 2 - 3",
         )
         Analysis2.objects.create(
-            active=True, analysis2_code="40006",
+            active=True,
+            analysis2_code="40006",
             analysis2_description="Analysis 2 - 4",
         )
 
@@ -192,23 +191,28 @@ class ProjectCodes:
     def create(self):
         self.clear()
         ProjectCode.objects.create(
-            active=True, project_code=5000,
+            active=True,
+            project_code=5000,
             project_description="Project 1",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5001,
+            active=True,
+            project_code=5001,
             project_description="Project 2",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5002,
+            active=True,
+            project_code=5002,
             project_description="Project 3",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5003,
+            active=True,
+            project_code=5003,
             project_description="Project 4",
         )
         ProjectCode.objects.create(
-            active=True, project_code=5004,
+            active=True,
+            project_code=5004,
             project_description="Project 5",
         )
 
@@ -242,9 +246,7 @@ class NaturalAccountCodes:
         natural_account_code = NaturalCode.objects.create(
             active=True,
             natural_account_code=nac_base,
-            natural_account_code_description="NAC  {} - budget".format(
-                cat_description
-            ),
+            natural_account_code_description="NAC  {} - budget".format(cat_description),
             used_for_budget=True,
             economic_budget_code=economic_budget_code,
             expenditure_category=expenditure_category,
@@ -364,9 +366,7 @@ class Command(BaseCommand):
         del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
-                "Successfully completed stub data creation for {}.".format(
-                    p.name
-                )
+                "Successfully completed stub data creation for {}.".format(p.name)
             )
         )
 
@@ -376,11 +376,7 @@ class Command(BaseCommand):
         p.clear()
         del core._called_from_test
         self.stdout.write(
-            self.style.SUCCESS(
-                "Successfully cleared stub data for {}.".format(
-                    p.name
-                )
-            )
+            self.style.SUCCESS("Successfully cleared stub data for {}.".format(p.name))
         )
 
     def handle(self, *args, **options):

@@ -45,9 +45,7 @@ class Command(BaseCommand):
 
             if not password:
                 self.stdout.write(
-                    self.style.ERROR(
-                        "Please supply a password for this test user"
-                    )
+                    self.style.ERROR("Please supply a password for this test user")
                 )
                 return
 
@@ -73,9 +71,7 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    "Successfully created test user - {}".format(
-                        user.email
-                    )
+                    "Successfully created test user - {}".format(user.email)
                 )
             )
         else:

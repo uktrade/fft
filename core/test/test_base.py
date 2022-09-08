@@ -1,21 +1,16 @@
-
 from django.contrib.auth import get_user_model
-from django.test import (
-    modify_settings,
-    override_settings,
-    TestCase,
-)
+from django.test import TestCase, modify_settings, override_settings
 
-TEST_EMAIL = "test@test.com"     # /PS-IGNORE
+TEST_EMAIL = "test@test.com"  # /PS-IGNORE
 TEST_COST_CENTRE = 888812
 
 
 @modify_settings(
     MIDDLEWARE={
-        'remove': 'authbroker_client.middleware.ProtectAllViewsMiddleware',
+        "remove": "authbroker_client.middleware.ProtectAllViewsMiddleware",
     },
     AUTHENTICATION_BACKENDS={
-        'remove': 'authbroker_client.backends.AuthbrokerBackend',
+        "remove": "authbroker_client.backends.AuthbrokerBackend",
     },
 )
 @override_settings(AXES_ENABLED=False)

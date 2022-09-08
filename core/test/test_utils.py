@@ -1,6 +1,4 @@
-from django.contrib.admin.models import (
-    LogEntry,
-)
+from django.contrib.admin.models import LogEntry
 
 from core.models import FinancialYear
 from core.test.test_base import BaseTestCase
