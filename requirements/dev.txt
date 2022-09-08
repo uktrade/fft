@@ -43,6 +43,8 @@ botocore==1.20.89
     #   -r requirements.in/base.in
     #   boto3
     #   s3transfer
+build==0.8.0
+    # via pip-tools
 celery==5.2.3
     # via -r requirements.in/base.in
 certifi==2018.8.24
@@ -191,6 +193,8 @@ idna==2.7
     #   requests
 importlib-metadata==1.6.0
     # via -r requirements.in/base.in
+isort==5.10.1
+    # via -r requirements.in/dev.in
 jdcal==1.3
     # via
     #   -r requirements.in/base.in
@@ -243,7 +247,9 @@ openpyxl==3.0.5
     #   -r requirements.in/base.in
     #   tablib
 packaging==20.4
-    # via pytest
+    # via
+    #   build
+    #   pytest
 parse==1.15.0
     # via
     #   behave
@@ -257,12 +263,12 @@ parso==0.1.1
 pathspec==0.9.0
     # via black
 pep517==0.10.0
-    # via pip-tools
+    # via build
 pexpect==4.4.0
     # via -r requirements.in/base.in
 pickleshare==0.7.4
     # via -r requirements.in/base.in
-pip-tools==6.5.1
+pip-tools==6.8.0
     # via -r requirements.in/dev.in
 platformdirs==2.5.1
     # via black
@@ -404,7 +410,9 @@ text-unidecode==1.3
 toml==0.10.1
     # via pep517
 tomli==2.0.1
-    # via black
+    # via
+    #   black
+    #   build
 typing-extensions==4.1.1
     # via black
 unicodecsv==0.14.1
