@@ -1,34 +1,32 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from core.metamodels import (
-    BaseModel,
-)
+from core.metamodels import BaseModel
 
 
 class FileDownload(BaseModel):
-    UNPROCESSED = 'unprocessed'
-    DOWNLOADED = 'downloaded'
-    ERROR = 'error'
+    UNPROCESSED = "unprocessed"
+    DOWNLOADED = "downloaded"
+    ERROR = "error"
 
     STATUS_CHOICES = [
-        (UNPROCESSED, 'Unprocessed'),
-        (DOWNLOADED, 'Downloaded'),
-        (ERROR, 'Error'),
+        (UNPROCESSED, "Unprocessed"),
+        (DOWNLOADED, "Downloaded"),
+        (ERROR, "Error"),
     ]
 
-    OSCAR_RETURN = 'Oscar Return'
-    OSCAR_RETURN_PREVIOUS_YEAR = 'Previous Year Oscar Return'
-    MI_REPORT = 'Forecast'
-    MI_PREVIOUS_YEAR_REPORT = 'Previous Year Actuals'
-    MI_BUDGET_REPORT = 'Budget'
+    OSCAR_RETURN = "Oscar Return"
+    OSCAR_RETURN_PREVIOUS_YEAR = "Previous Year Oscar Return"
+    MI_REPORT = "Forecast"
+    MI_PREVIOUS_YEAR_REPORT = "Previous Year Actuals"
+    MI_BUDGET_REPORT = "Budget"
 
     DOWNLOAD_TYPE_CHOICES = [
-        (OSCAR_RETURN, 'OSCAR Return'),
-        (OSCAR_RETURN_PREVIOUS_YEAR, 'Previous Year Oscar Return'),
-        (MI_REPORT, 'Forecast'),
-        (MI_PREVIOUS_YEAR_REPORT, 'Previous Year Forecast/Actuals'),
-        (MI_BUDGET_REPORT, 'Budget'),
+        (OSCAR_RETURN, "OSCAR Return"),
+        (OSCAR_RETURN_PREVIOUS_YEAR, "Previous Year Oscar Return"),
+        (MI_REPORT, "Forecast"),
+        (MI_PREVIOUS_YEAR_REPORT, "Previous Year Forecast/Actuals"),
+        (MI_BUDGET_REPORT, "Budget"),
     ]
 
     document_type = models.CharField(

@@ -1,9 +1,6 @@
 from django.core.exceptions import PermissionDenied
 
-from forecast.utils.access_helpers import (
-    can_download_mi_reports,
-    can_download_oscar,
-)
+from forecast.utils.access_helpers import can_download_mi_reports, can_download_oscar
 
 
 def has_download_oscar_permission(function):
