@@ -15,7 +15,9 @@ class OSCARReturnAbstract(models.Model):
     # for getting the account description
     # than doing another join in the query.
     account_l5_code = models.ForeignKey(
-        "treasuryCOA.L5Account", on_delete=models.PROTECT, db_column="account_l5_code",
+        "treasuryCOA.L5Account",
+        on_delete=models.PROTECT,
+        db_column="account_l5_code",
     )
     sub_segment_code = models.CharField(max_length=8, primary_key=True)
     sub_segment_long_name = models.CharField(max_length=255)

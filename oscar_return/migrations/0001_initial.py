@@ -8,39 +8,42 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('treasurySS', '0002_auto_20210729_0846'),
+        ("treasurySS", "0002_auto_20210729_0846"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OSCARReturn',
+            name="OSCARReturn",
             fields=[
-                ('row_number', models.BigIntegerField()),
-                ('sub_segment_code', models.CharField(max_length=8, primary_key=True, serialize=False)),
-                ('sub_segment_long_name', models.CharField(max_length=255)),
-                ('organization_code', models.CharField(max_length=50)),
-                ('organization_alias', models.CharField(max_length=255)),
-                ('apr', models.BigIntegerField(default=0)),
-                ('may', models.BigIntegerField(default=0)),
-                ('jun', models.BigIntegerField(default=0)),
-                ('jul', models.BigIntegerField(default=0)),
-                ('aug', models.BigIntegerField(default=0)),
-                ('sep', models.BigIntegerField(default=0)),
-                ('oct', models.BigIntegerField(default=0)),
-                ('nov', models.BigIntegerField(default=0)),
-                ('dec', models.BigIntegerField(default=0)),
-                ('jan', models.BigIntegerField(default=0)),
-                ('feb', models.BigIntegerField(default=0)),
-                ('mar', models.BigIntegerField(default=0)),
-                ('adj1', models.BigIntegerField(default=0)),
-                ('adj2', models.BigIntegerField(default=0)),
-                ('adj3', models.BigIntegerField(default=0)),
+                ("row_number", models.BigIntegerField()),
+                (
+                    "sub_segment_code",
+                    models.CharField(max_length=8, primary_key=True, serialize=False),
+                ),
+                ("sub_segment_long_name", models.CharField(max_length=255)),
+                ("organization_code", models.CharField(max_length=50)),
+                ("organization_alias", models.CharField(max_length=255)),
+                ("apr", models.BigIntegerField(default=0)),
+                ("may", models.BigIntegerField(default=0)),
+                ("jun", models.BigIntegerField(default=0)),
+                ("jul", models.BigIntegerField(default=0)),
+                ("aug", models.BigIntegerField(default=0)),
+                ("sep", models.BigIntegerField(default=0)),
+                ("oct", models.BigIntegerField(default=0)),
+                ("nov", models.BigIntegerField(default=0)),
+                ("dec", models.BigIntegerField(default=0)),
+                ("jan", models.BigIntegerField(default=0)),
+                ("feb", models.BigIntegerField(default=0)),
+                ("mar", models.BigIntegerField(default=0)),
+                ("adj1", models.BigIntegerField(default=0)),
+                ("adj2", models.BigIntegerField(default=0)),
+                ("adj3", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'oscar_return_oscarreturn',
-                'ordering': ['sub_segment_code'],
-                'managed': False,
-            },            
+                "db_table": "oscar_return_oscarreturn",
+                "ordering": ["sub_segment_code"],
+                "managed": False,
+            },
         ),
         migrations.RunSQL(
             """
@@ -95,5 +98,4 @@ class Migration(migrations.Migration):
               """,
             'DROP VIEW "oscar_return_oscarreturn";',
         ),
-
     ]

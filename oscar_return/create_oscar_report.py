@@ -2,15 +2,8 @@ from django.db.models import Q
 
 from core.models import FinancialYear
 from core.utils.export_helpers import export_to_excel
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-    today_string,
-)
-
-from oscar_return.models import (
-    HistoricOSCARReturn,
-    OSCARReturn,
-)
+from core.utils.generic_helpers import get_current_financial_year, today_string
+from oscar_return.models import HistoricOSCARReturn, OSCARReturn
 
 
 def export_oscarreport_iterator(queryset):
