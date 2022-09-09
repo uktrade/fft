@@ -69,11 +69,11 @@ jobs:
       - run:
           name: Run isort
           command: |
-            python -m isort --check
+            python -m isort --check .
       - run:
           name: Run black
           command: |
-            python -m black --check
+            python -m black --check .
 
       - store_artifacts:
           path: test-reports/
