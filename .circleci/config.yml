@@ -66,6 +66,14 @@ jobs:
           name: Run Flake8
           command: |
             python -m flake8
+      - run:
+          name: Run isort
+          command: |
+            python -m isort --check
+      - run:
+          name: Run black
+          command: |
+            python -m black --check
 
       - store_artifacts:
           path: test-reports/
