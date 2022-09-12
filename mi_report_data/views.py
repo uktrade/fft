@@ -15,7 +15,7 @@ from download_file.decorators import has_download_mi_report_permission
 
 from end_of_month.models import EndOfMonthStatus
 
-from forecast.models import FinancialPeriod, ForecastMonthlyFigure
+from forecast.models import FinancialPeriod
 
 from mi_report_data.models import (
     archived_forecast_actual_view,
