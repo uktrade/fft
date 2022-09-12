@@ -122,7 +122,7 @@ SELECT
   	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
 	   COALESCE(fp.previous_period_forecast, 0) as previous_period_forecast,
 	   COALESCE(fp_o.current_year_outturn, 0) as full_year_previous_forecast,
-	   COALESCE(fp_o.current_year_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0) as full_year_previous_forecast_variance   	   
+	   COALESCE(cy_o.current_year_outturn, 0) - COALESCE(fp_o.current_year_outturn, 0) as full_year_previous_forecast_variance   	   
 	FROM (dw_simulation_mi_report_forecast_actual f
 	full outer join dw_budget_data b 
 	on b.financial_code = f.financial_code 
