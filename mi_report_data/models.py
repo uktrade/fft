@@ -151,7 +151,6 @@ class ReportAdj3DataView(ReportPreviousMonthlyDataView):
 
 
 archived_forecast_actual_view = [
-    # ForecastingDataView,
     ReportAprDataView,
     ReportMayDataView,
     ReportJunDataView,
@@ -200,6 +199,14 @@ class ReportPreviousYearDataView(UniqueDataKey):
     class Meta:
         managed = False
         db_table = "mi_report_previous_year_actual"
+
+
+class ReportFutureYearData(UniqueDataKey):
+    future_forecast = models.BigIntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "mi_report_future_year_forecast"
 
 
 # # The following data are calculated using SQL.

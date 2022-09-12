@@ -7,6 +7,7 @@ from mi_report_data.views import (
     MIFinancialPeriodDataSet,
     MIReportPeriodInUseDataSet,
     MIReportPreviousYearDataSet,
+    MIReportFutureYearDataSet,
 )
 
 
@@ -35,6 +36,11 @@ urlpatterns = [
         "data_lake_mi_report_financial_period/",
         MIFinancialPeriodDataSet.as_view({"get": "list"}),
         name="data_lake_mi_report_financial_period",
+    ),
+    path(
+        "data_lake_mi_report_future_year_data/",
+        MIReportFutureYearDataSet.as_view({"get": "list"}),
+        name="data_lake_mi_report_future_year_data",
     ),
     path(
         "download_mi_report_data/",

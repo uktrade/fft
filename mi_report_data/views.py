@@ -15,7 +15,7 @@ from download_file.decorators import has_download_mi_report_permission
 
 from end_of_month.models import EndOfMonthStatus
 
-from forecast.models import FinancialPeriod
+from forecast.models import FinancialPeriod, ForecastMonthlyFigure
 
 from mi_report_data.models import (
     archived_forecast_actual_view,
@@ -24,6 +24,7 @@ from mi_report_data.models import (
     ReportPreviousYearDataView,
     ReportCurrentForecastData,
     ReportCurrentActualData,
+    ReportFutureYearData,
 )
 
 
@@ -265,3 +266,25 @@ class MIFinancialPeriodDataSet(ViewSet):
                 obj.period_short_name,
             ]
             writer.writerow(row)
+
+
+class MIReportFutureYearDataSet(ViewSet, MIReportFieldList):
+    filename = "mi_data_future_year"
+    forecast_title = [
+        "Financial Code ID",
+        "Future Forecast",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+        "Archiving Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+    data_field_list = [
+        "future_forecast",
+    ]
+
+    def write_data(self, writer):
+        self.write_queryset_data(writer, ReportFutureYearData)
