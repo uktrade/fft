@@ -24,7 +24,8 @@ from mi_report_data.models import (
     ReportPreviousYearDataView,
     ReportCurrentForecastData,
     ReportCurrentActualData,
-    ReportFutureYearData,
+    ReportFutureBudgetData,
+    ReportFutureForecastData,
 )
 
 
@@ -287,4 +288,4 @@ class MIReportFutureYearDataSet(ViewSet, MIReportFieldList):
     ]
 
     def write_data(self, writer):
-        self.write_queryset_data(writer, ReportFutureYearData)
+        self.write_queryset_data(writer, ReportFutureForecastData)

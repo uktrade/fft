@@ -45,7 +45,7 @@ SELECT
     COALESCE(p.previous_year_period_actual, 0) / 100 as previous_year_period_actual,
     COALESCE(p.previous_year_outturn, 0) / 100 as previous_year_outturn,
     COALESCE(p.previous_year_ytd, 0) / 100 as previous_year_ytd
-        FROM dw_previous_year_data p full outer join      c
+        FROM dw_previous_year_data p full outer join dw_current_year_data c
         ON
         COALESCE(c.cost_centre_code, '') = COALESCE(p.cost_centre_code, '') AND 
         COALESCE(c.actual_nac, 0) = COALESCE(p.actual_nac, 0) AND 

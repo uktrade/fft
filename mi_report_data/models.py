@@ -185,6 +185,14 @@ class ReportBudgetCurrentData(UniqueDataKey):
         db_table = "mi_report_current_budget_view"
 
 
+class ReportFutureBudgetData(UniqueDataKey):
+    future_budget = models.BigIntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "mi_report_future_year_budget"
+
+
 class ReportPreviousYearDataView(UniqueDataKey):
     id = models.IntegerField(
         primary_key=True,
@@ -201,7 +209,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
         db_table = "mi_report_previous_year_actual"
 
 
-class ReportFutureYearData(UniqueDataKey):
+class ReportFutureForecastData(UniqueDataKey):
     future_forecast = models.BigIntegerField(default=0)
 
     class Meta:
