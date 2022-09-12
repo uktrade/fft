@@ -27,6 +27,7 @@ CREATE VIEW mi_report_future_year_budget AS
         AND financial_period_id < 13
         AND amount <> 0;
 
+
 """
 
 

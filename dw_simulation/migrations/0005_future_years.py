@@ -3,6 +3,10 @@
 from django.db import migrations
 
 drop_sql = """
+    DROP VIEW IF EXISTS dw_full_year_future_years;
+    DROP VIEW IF EXISTS dw_future_ytd;
+    DROP VIEW IF EXISTS dw_future_year_budget_forecast;
+    DROP VIEW IF EXISTS dw_no_data_future_year_full_table;
     DROP TABLE IF  EXISTS  dw_simulation_mi_report_future_year_forecast;
     DROP TABLE IF  EXISTS  dw_simulation_mi_report_future_year_budget;      
 """
@@ -20,7 +24,6 @@ CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_future_year_forecast
     expenditure_type_description character varying(100),
     financial_code integer,
     future_forecast numeric,
-    actual_loaded boolean, 
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
@@ -41,7 +44,6 @@ CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_future_year_budget
     expenditure_type_description character varying(100),
     financial_code integer,
     future_budget numeric,
-    actual_loaded boolean, 
     financial_period_code integer,
     financial_period_name character varying(10),
     archived_financial_period_code integer,
@@ -49,6 +51,85 @@ CREATE TABLE IF NOT EXISTS  dw_simulation_mi_report_future_year_budget
     financial_year integer,
     archiving_year integer
 );
+
+CREATE VIEW dw_no_data_future_year_full_table as
+    SELECT distinct cost_centre_code, actual_nac, programme_code, contract_code, market_code, project_code, 
+    expenditure_type, expenditure_type_description, financial_code, 
+    0 as future_budget, 
+    0 as future_forecast, 
+	t.financial_period_code, 
+	t.financial_period_name, 
+	t.archived_period_code as archived_financial_period_code, 
+	t.archived_period_name as archived_financial_period_name, 
+    financial_year, archiving_year
+        FROM (
+                SELECT cost_centre_code, actual_nac, programme_code, contract_code, market_code, 
+                    project_code, expenditure_type, expenditure_type_description, financial_code,
+			        financial_year, archiving_year
+	            FROM public.dw_simulation_mi_report_future_year_budget
+                UNION
+                SELECT cost_centre_code, actual_nac, programme_code, contract_code, market_code, 
+                    project_code, expenditure_type, expenditure_type_description, financial_code,
+			        financial_year, archiving_year
+                    FROM public.dw_simulation_mi_report_future_year_forecast
+		) u
+        CROSS JOIN dw_full_period_list_view t;
+
+
+
+CREATE VIEW dw_future_year_budget_forecast as
+SELECT        
+	   COALESCE(b.financial_code, f.financial_code, e.financial_code) as financial_code,
+	   COALESCE(b.cost_centre_code, f.cost_centre_code, e.cost_centre_code) as cost_centre_code,
+       COALESCE(b.actual_nac,f.actual_nac, e.actual_nac) as actual_nac,
+       COALESCE(b.programme_code, f.programme_code, e.programme_code) as programme_code,
+       COALESCE(b.contract_code, f.contract_code, e.contract_code) as contract_code,
+       COALESCE(b.market_code, f.market_code, e.market_code) as market_code,
+       COALESCE(b.project_code, f.project_code, e.project_code) as project_code,
+       COALESCE(b.expenditure_type, f.expenditure_type, e.expenditure_type) as expenditure_type,
+       COALESCE(b.expenditure_type_description, f.expenditure_type_description, e.expenditure_type_description) as expenditure_type_description,
+       COALESCE(b.financial_period_code, f.financial_period_code, e.financial_period_code) as financial_period_code,
+       COALESCE(b.financial_period_name, f.financial_period_name, e.financial_period_name) as financial_period_name,
+       COALESCE(b.archived_financial_period_code, f.archived_financial_period_code, e.archived_financial_period_code) as archived_financial_period_code,
+       COALESCE(b.archived_financial_period_name, f.archived_financial_period_name, e.archived_financial_period_name) as archived_financial_period_name,
+       COALESCE(b.financial_year, f.financial_year) as financial_year,
+       COALESCE(b.archiving_year,f.archiving_year) as archiving_year,
+	   COALESCE(b.future_budget, 0) as future_budget,
+	   COALESCE(f.future_forecast, 0) as future_forecast
+	FROM dw_simulation_mi_report_future_year_budget b
+	full outer join 
+		dw_simulation_mi_report_future_year_forecast f
+			ON COALESCE(b.financial_code, 0) = COALESCE(f.financial_code, 0)
+			AND COALESCE(b.archived_financial_period_code, 0) = COALESCE(f.archived_financial_period_code, 0)
+		  	AND COALESCE(f.financial_period_code, 0) = COALESCE(b.financial_period_code, 0) 
+		  	AND COALESCE(b.financial_year, 0) = COALESCE(f.financial_year, 0)
+		  	AND COALESCE(b.archiving_year, 0) = COALESCE(f.archiving_year, 0)
+	FULL OUTER JOIN dw_no_data_future_year_full_table e
+			ON COALESCE(e.financial_code, 0) = COALESCE(f.financial_code, 0)
+			AND COALESCE(e.archived_financial_period_code, 0) = COALESCE(f.archived_financial_period_code, 0)
+		  	AND COALESCE(e.financial_period_code, 0) = COALESCE(b.financial_period_code, 0) 
+		  	AND COALESCE(e.financial_year, 0) = COALESCE(f.financial_year, 0)
+		  	AND COALESCE(e.archiving_year, 0) = COALESCE(f.archiving_year, 0)
+;
+
+
+CREATE VIEW dw_full_year_future_years as 
+    SELECT financial_code, 
+        sum(future_budget) as future_budget_full_year, 
+        sum(future_forecast) as future_forecast_full_year, 
+        archived_financial_period_code, financial_year, archiving_year
+    FROM dw_future_year_budget_forecast
+    GROUP BY financial_code, archived_financial_period_code, financial_year, archiving_year;
+
+CREATE VIEW dw_future_ytd as
+	SELECT financial_code, financial_period_code, archived_financial_period_code, financial_year, archiving_year, 
+	sum(future_budget) 
+	OVER (PARTITION BY financial_code, archived_financial_period_code, financial_year, archiving_year ORDER BY financial_period_code)
+	AS ytd_future_budget,
+	sum(future_forecast) 
+	OVER (PARTITION BY financial_code, archived_financial_period_code, financial_year, archiving_year ORDER BY financial_period_code)
+	AS ytd_future_forecast
+		FROM dw_future_year_budget_forecast;
 
 """
 

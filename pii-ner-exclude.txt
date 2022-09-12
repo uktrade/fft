@@ -768,5 +768,11 @@ Forecast Data
 Download Future Year Budget Data
 data_lake_mi_report_future_year_forecast_data/
 0004_full_data
+DROP VIEW IF EXISTS dw_full_year_future_years
+DROP VIEW IF EXISTS dw_no_data_future_year_full_table
+u CROSS
+e.archived_financial_period_code
+CREATE VIEW dw_full_year_future_years
+FROM dw_future_year_budget_forecast GROUP
 
 

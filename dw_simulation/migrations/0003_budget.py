@@ -55,9 +55,11 @@ SELECT
        COALESCE(b.budget, f.budget) as budget
         FROM dw_simulation_mi_report_budget b
         FULL OUTER JOIN dw_no_budget_full_table f 
-			on b.financial_code = f.financial_code 
-			AND b.archived_financial_period_code = f.archived_period_code 
-		  	AND f.financial_period_code = b.financial_period_code and b.financial_year = f.financial_year; 
+			ON COALESCE(b.financial_code, 0) = COALESCE(f.financial_code, 0)
+			AND COALESCE(b.archived_financial_period_code, 0) = COALESCE(f.archived_period_code, 0)
+		  	AND COALESCE(f.financial_period_code, 0) = COALESCE(b.financial_period_code, 0) 
+		  	AND COALESCE(b.financial_year, 0) = COALESCE(f.financial_year, 0)
+		  	; 
 
 CREATE VIEW dw_full_year_budget as 
 SELECT financial_code, sum(budget) as budget_outturn, archived_financial_period_code
