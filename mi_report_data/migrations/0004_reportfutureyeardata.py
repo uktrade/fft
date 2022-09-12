@@ -14,7 +14,8 @@ CREATE VIEW mi_report_future_year_forecast AS
         FROM public.forecast_forecastmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
         FROM end_of_month_endofmonthstatus where archived = false) ar        
         WHERE financial_year_id > (SELECT financial_year FROM core_financialyear where current = true)
-        AND financial_period_id < 13;
+        AND financial_period_id < 13
+        AND amount <> 0;
 
 
 CREATE VIEW mi_report_future_year_budget AS
@@ -23,7 +24,8 @@ CREATE VIEW mi_report_future_year_budget AS
         FROM public.forecast_budgetmonthlyfigure, (SELECT min(archived_period_id) as archived_period_id
         FROM end_of_month_endofmonthstatus where archived = false) ar        
         WHERE financial_year_id > (SELECT financial_year FROM core_financialyear where current = true)
-        AND financial_period_id < 13;
+        AND financial_period_id < 13
+        AND amount <> 0;
 
 """
 

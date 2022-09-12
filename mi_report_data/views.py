@@ -270,7 +270,7 @@ class MIFinancialPeriodDataSet(ViewSet):
 
 
 class MIReportFutureYearForecastDataSet(ViewSet, MIReportFieldList):
-    filename = "mi_data_future_year"
+    filename = "mi_data_future_year_forecast"
     forecast_title = [
         "Financial Code ID",
         "Future Forecast",
@@ -292,7 +292,7 @@ class MIReportFutureYearForecastDataSet(ViewSet, MIReportFieldList):
 
 
 class MIReportFutureYearBudgetDataSet(ViewSet, MIReportFieldList):
-    filename = "mi_data_future_year"
+    filename = "mi_data_future_year_budget"
     forecast_title = [
         "Financial Code ID",
         "Future budget",
