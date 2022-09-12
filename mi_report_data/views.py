@@ -269,7 +269,7 @@ class MIFinancialPeriodDataSet(ViewSet):
             writer.writerow(row)
 
 
-class MIReportFutureYearDataSet(ViewSet, MIReportFieldList):
+class MIReportFutureYearForecastDataSet(ViewSet, MIReportFieldList):
     filename = "mi_data_future_year"
     forecast_title = [
         "Financial Code ID",
@@ -289,3 +289,25 @@ class MIReportFutureYearDataSet(ViewSet, MIReportFieldList):
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportFutureForecastData)
+
+
+class MIReportFutureYearBudgetDataSet(ViewSet, MIReportFieldList):
+    filename = "mi_data_future_year"
+    forecast_title = [
+        "Financial Code ID",
+        "Future budget",
+        "Financial Period Code",
+        "Financial Period Name",
+        "Archived Financial Period Code",
+        "Archived Financial Period Name",
+        "Year",
+        "Archiving Year",
+    ]
+    title_list = FigureFieldData.chart_of_account_titles.copy()
+    title_list.extend(forecast_title)
+    data_field_list = [
+        "future_budget",
+    ]
+
+    def write_data(self, writer):
+        self.write_queryset_data(writer, ReportFutureBudgetData)
