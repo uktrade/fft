@@ -7,6 +7,7 @@ DROP VIEW IF EXISTS dw_full_data_set;
 """
 
 create_sql = """
+
 CREATE VIEW dw_full_data_set as
 SELECT 
     COALESCE(c.cost_centre_code, p.cost_centre_code) as cost_centre_code,
@@ -37,14 +38,14 @@ SELECT
     COALESCE(c.full_year_actual_forecast_budget_variance, 0) / 100 as full_year_actual_forecast_budget_variance,
     COALESCE(c.ytd_run_rate, 0) / 100 as ytd_run_rate,
     COALESCE(c.full_year_run_rate, 0) / 100 as full_year_run_rate,
-    COALESCE(c.previous_period_forecast, 0) / 100 as previous_period_forecast,
-    (COALESCE(c.period_actual_forecast, 0) - COALESCE(c.previous_period_forecast, 0)) / 100 as variance_period_actual_previous_period_forecast,
-    COALESCE(c.previous_period_outurn, 0) / 100 as previous_period_outurn,
-    COALESCE(c.variance_since_last_period, 0) / 100 as variance_since_last_period,
+    COALESCE(c.previous_period_forecast, 0) / 100 as period_previous_forecast,
+    (COALESCE(c.previous_period_forecast, 0) - COALESCE(c.period_actual_forecast, 0)) / 100 as period_previous_forecast_variance,
+    COALESCE(c.full_year_previous_forecast, 0) / 100 as full_year_previous_forecast,
+    COALESCE(c.full_year_previous_forecast_variance, 0) / 100 as full_year_previous_forecast_variance,
     COALESCE(p.previous_year_period_actual, 0) / 100 as previous_year_period_actual,
     COALESCE(p.previous_year_outturn, 0) / 100 as previous_year_outturn,
     COALESCE(p.previous_year_ytd, 0) / 100 as previous_year_ytd
-        FROM dw_previous_year_data p full outer join dw_current_year_data c
+        FROM dw_previous_year_data p full outer join      c
         ON
         COALESCE(c.cost_centre_code, '') = COALESCE(p.cost_centre_code, '') AND 
         COALESCE(c.actual_nac, 0) = COALESCE(p.actual_nac, 0) AND 

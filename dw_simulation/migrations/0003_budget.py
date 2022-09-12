@@ -89,7 +89,6 @@ SELECT
                 AND b.archived_financial_period_code = b_o.archived_financial_period_code;
 
 
-
 CREATE VIEW dw_current_year_data as
 SELECT 
        COALESCE(b.financial_code, f.financial_code) as financial_code, 
@@ -122,8 +121,8 @@ SELECT
  	   COALESCE(rates.run_rate_ytd, 0) as ytd_run_rate,
   	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
 	   COALESCE(fp.previous_period_forecast, 0) as previous_period_forecast,
-	   COALESCE(fp_o.current_year_outturn, 0) as previous_period_outurn,
-	   COALESCE(fp_o.current_year_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0) as variance_since_last_period	   	   
+	   COALESCE(fp_o.current_year_outturn, 0) as full_year_previous_forecast,
+	   COALESCE(fp_o.current_year_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0) as full_year_previous_forecast_variance   	   
 	FROM (dw_simulation_mi_report_forecast_actual f
 	full outer join dw_budget_data b 
 	on b.financial_code = f.financial_code 
