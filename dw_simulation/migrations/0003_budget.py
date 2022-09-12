@@ -121,13 +121,18 @@ SELECT
  	   (COALESCE(b.budget_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0)) as full_year_actual_forecast_budget_variance,
  	   COALESCE(rates.run_rate_ytd, 0) as ytd_run_rate,
   	   COALESCE(rates.full_year_run_rate, 0) as full_year_run_rate,
-	   COALESCE(fp.previous_period_forecast, 0) as previous_period_forecast 
+	   COALESCE(fp.previous_period_forecast, 0) as previous_period_forecast,
+	   COALESCE(fp_o.current_year_outturn, 0) as previous_period_outurn,
+	   COALESCE(fp_o.current_year_outturn, 0) - COALESCE(cy_o.current_year_outturn, 0) as variance_since_last_period	   	   
 	FROM (dw_simulation_mi_report_forecast_actual f
 	full outer join dw_budget_data b 
 	on b.financial_code = f.financial_code 
 			AND b.archived_financial_period_code = f.archived_financial_period_code 
 		  	AND f.financial_period_code = b.financial_period_code and b.financial_year = f.financial_year) 
-		  JOIN dw_current_year_outturn cy_o ON cy_o.financial_code = f.financial_code AND cy_o.archived_financial_period_code = f.archived_financial_period_code
+		  JOIN dw_current_year_outturn cy_o ON cy_o.financial_code = f.financial_code 
+		    AND cy_o.archived_financial_period_code = f.archived_financial_period_code
+		  LEFT OUTER JOIN dw_current_year_outturn fp_o ON fp_o.financial_code = f.financial_code  
+		        AND fp_o.archived_financial_period_code = f.archived_financial_period_code - 1
  		  JOIN dw_actual_forecast_ytd fa_ytd ON fa_ytd.financial_code = f.financial_code 
  		  			AND fa_ytd.archived_financial_period_code = f.archived_financial_period_code 
  					AND fa_ytd.financial_period_code = f.financial_period_code

@@ -38,6 +38,9 @@ SELECT
     COALESCE(c.ytd_run_rate, 0) / 100 as ytd_run_rate,
     COALESCE(c.full_year_run_rate, 0) / 100 as full_year_run_rate,
     COALESCE(c.previous_period_forecast, 0) / 100 as previous_period_forecast,
+    (COALESCE(c.period_actual_forecast, 0) - COALESCE(c.previous_period_forecast, 0)) / 100 as variance_period_actual_previous_period_forecast,
+    COALESCE(c.previous_period_outurn, 0) / 100 as previous_period_outurn,
+    COALESCE(c.variance_since_last_period, 0) / 100 as variance_since_last_period,
     COALESCE(p.previous_year_period_actual, 0) / 100 as previous_year_period_actual,
     COALESCE(p.previous_year_outturn, 0) / 100 as previous_year_outturn,
     COALESCE(p.previous_year_ytd, 0) / 100 as previous_year_ytd
