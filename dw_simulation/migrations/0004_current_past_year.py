@@ -64,4 +64,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunSQL(
+            f"{drop_sql} {create_sql}",
+            drop_sql,
+        ),
     ]
