@@ -783,5 +783,6 @@ FROM dw_budget_forecast_future_years GROUP
 b_ytd
 CREATE VIEW dw_future_year_data
 SUM
+p.programme_code
 
 
