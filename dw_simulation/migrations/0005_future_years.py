@@ -3,10 +3,14 @@
 from django.db import migrations
 
 drop_sql = """
+    DROP VIEW IF EXISTS dw_future_year_data;
+    DROP VIEW IF EXISTS dw_future_year_data_by_year;
     DROP VIEW IF EXISTS dw_full_year_future_years;
-    DROP VIEW IF EXISTS dw_future_ytd;
-    DROP VIEW IF EXISTS dw_future_year_budget_forecast;
+    DROP VIEW IF EXISTS dw_ytd_future_years;
+    DROP VIEW IF EXISTS dw_budget_forecast_future_years;
     DROP VIEW IF EXISTS dw_no_data_future_year_full_table;
+    
+
     DROP TABLE IF  EXISTS  dw_simulation_mi_report_future_year_forecast;
     DROP TABLE IF  EXISTS  dw_simulation_mi_report_future_year_budget;      
 """
@@ -77,7 +81,7 @@ CREATE VIEW dw_no_data_future_year_full_table as
 
 
 
-CREATE VIEW dw_future_year_budget_forecast as
+CREATE VIEW dw_budget_forecast_future_years as
 SELECT        
 	   COALESCE(b.financial_code, f.financial_code, e.financial_code) as financial_code,
 	   COALESCE(b.cost_centre_code, f.cost_centre_code, e.cost_centre_code) as cost_centre_code,
@@ -118,10 +122,10 @@ CREATE VIEW dw_full_year_future_years as
         sum(future_budget) as future_budget_full_year, 
         sum(future_forecast) as future_forecast_full_year, 
         archived_financial_period_code, financial_year, archiving_year
-    FROM dw_future_year_budget_forecast
+    FROM dw_budget_forecast_future_years
     GROUP BY financial_code, archived_financial_period_code, financial_year, archiving_year;
 
-CREATE VIEW dw_future_ytd as
+CREATE VIEW dw_ytd_future_years as
 	SELECT financial_code, financial_period_code, archived_financial_period_code, financial_year, archiving_year, 
 	sum(future_budget) 
 	OVER (PARTITION BY financial_code, archived_financial_period_code, financial_year, archiving_year ORDER BY financial_period_code)
@@ -129,15 +133,173 @@ CREATE VIEW dw_future_ytd as
 	sum(future_forecast) 
 	OVER (PARTITION BY financial_code, archived_financial_period_code, financial_year, archiving_year ORDER BY financial_period_code)
 	AS ytd_future_forecast
-		FROM dw_future_year_budget_forecast;
+		FROM dw_budget_forecast_future_years;
 
+
+CREATE VIEW dw_future_year_data_by_year as
+SELECT 
+        cost_centre_code, actual_nac, programme_code, 
+        contract_code, market_code, project_code, expenditure_type, expenditure_type_description,        
+        financial_period_name,
+        archived_financial_period_name, 
+		b.financial_year, 
+		b.archiving_year,
+        b.financial_code, 
+        b.future_budget, 
+		b.future_forecast,
+        ytd_future_budget,
+		ytd_future_forecast,
+        b_o.future_budget_full_year,
+        b_o.future_forecast_full_year,		
+        b.financial_period_code,  b.archived_financial_period_code
+            FROM (public.dw_budget_forecast_future_years b
+            JOIN public.dw_ytd_future_years b_ytd on b_ytd.financial_code = b.financial_code 
+                AND b.financial_period_code = b_ytd.financial_period_code 
+                AND b.archived_financial_period_code = b_ytd.archived_financial_period_code
+				AND b.financial_year = b_ytd.financial_year
+				AND b.archiving_year = b_ytd.archiving_year)
+            JOIN public.dw_full_year_future_years b_o on b_o.financial_code = b.financial_code 
+                AND b.archived_financial_period_code = b_o.archived_financial_period_code
+				AND b.financial_year = b_o.financial_year
+				AND b.archiving_year = b_o.archiving_year;
+
+
+CREATE VIEW dw_future_year_data as
+SELECT cost_centre_code, 
+		actual_nac, 
+		programme_code, 
+		contract_code, 
+		market_code, 
+		project_code, 
+		expenditure_type, 
+		expenditure_type_description, 
+		financial_period_name, 
+		archived_financial_period_name, 
+		archiving_year, 
+		financial_code, 
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.future_budget
+            ELSE 0::bigint
+        END) AS future_budget_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.future_budget
+            ELSE 0::bigint
+        END) AS future_budget_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.future_budget
+            ELSE 0::bigint
+        END) AS future_budget_year_plus_three,
+    
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.future_forecast
+            ELSE 0::bigint
+        END) AS future_forecast_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.future_forecast
+            ELSE 0::bigint
+        END) AS future_forecast_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.future_forecast
+            ELSE 0::bigint
+        END) AS future_forecast_year_plus_three,
+
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.ytd_future_budget
+            ELSE 0::bigint
+        END) AS ytd_future_budget_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.ytd_future_budget
+            ELSE 0::bigint
+        END) AS ytd_future_budget_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.ytd_future_budget
+            ELSE 0::bigint
+        END) AS ytd_future_budget_year_plus_three,
+
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.ytd_future_forecast
+            ELSE 0::bigint
+        END) AS ytd_future_forecast_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.ytd_future_forecast
+            ELSE 0::bigint
+        END) AS ytd_future_forecast_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.ytd_future_forecast
+            ELSE 0::bigint
+        END) AS ytd_future_forecast_year_plus_three,
+
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.future_budget_full_year
+            ELSE 0::bigint
+        END) AS future_budget_full_year_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.future_budget_full_year
+            ELSE 0::bigint
+        END) AS future_budget_full_year_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.future_budget_full_year
+            ELSE 0::bigint
+        END) AS future_budget_full_year_year_plus_three,
+
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 1 THEN d.future_forecast_full_year
+            ELSE 0::bigint
+        END) AS future_forecast_full_year_year_plus_one,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 2 THEN d.future_forecast_full_year
+            ELSE 0::bigint
+        END) AS future_forecast_full_year_year_plus_two,
+		SUM(
+        CASE
+            WHEN d.financial_year = y.financial_year + 3 THEN d.future_forecast_full_year
+            ELSE 0::bigint
+        END) AS future_forecast_full_year_year_plus_three,
+
+-- future_budget_full_year,
+-- future_forecast_full_year, 
+financial_period_code, 
+archived_financial_period_code
+	FROM public.dw_future_year_data_by_year d, (SELECT financial_year FROM core_financialyear where current = true) y
+	GROUP BY cost_centre_code, 
+			actual_nac, 
+			programme_code, 
+			contract_code, 
+			market_code, 
+			project_code, 
+			expenditure_type, 
+			expenditure_type_description, 
+			financial_period_name, 
+			archived_financial_period_name, 
+			archiving_year, 
+			financial_code, 
+			financial_period_code, 
+			archived_financial_period_code
+	;
 """
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dw_simulation', '0004_full_data'),
+        ('dw_simulation', '0004_current_past_year'),
     ]
 
     operations = [

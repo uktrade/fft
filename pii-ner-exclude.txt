@@ -774,5 +774,14 @@ u CROSS
 e.archived_financial_period_code
 CREATE VIEW dw_full_year_future_years
 FROM dw_future_year_budget_forecast GROUP
+DROP VIEW IF EXISTS dw_current_past_year
+CREATE VIEW dw_current_past_year
+DROP VIEW IF EXISTS dw_future_year_data
+DROP VIEW IF EXISTS dw_ytd_future_years
+DROP VIEW IF EXISTS dw_budget_forecast_future_years
+FROM dw_budget_forecast_future_years GROUP
+b_ytd
+CREATE VIEW dw_future_year_data
+SUM
 
 

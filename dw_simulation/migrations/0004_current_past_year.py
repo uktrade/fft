@@ -3,12 +3,12 @@
 from django.db import migrations
 
 drop_sql = """
-DROP VIEW IF EXISTS dw_full_data_set;
+DROP VIEW IF EXISTS dw_current_past_year;
 """
 
 create_sql = """
 
-CREATE VIEW dw_full_data_set as
+CREATE VIEW dw_current_past_year as
 SELECT 
     COALESCE(c.cost_centre_code, p.cost_centre_code) as cost_centre_code,
     COALESCE(c.actual_nac, p.actual_nac) as actual_nac,

@@ -3,7 +3,6 @@
 from django.db import migrations
 
 drop_sql = """
-DROP VIEW IF EXISTS dw_full_data_set;
 DROP VIEW IF EXISTS dw_previous_year_data;
 DROP VIEW IF EXISTS dw_prev_year_outturn;
 DROP VIEW IF EXISTS dw_previous_year_ytd;
