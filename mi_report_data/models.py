@@ -60,6 +60,12 @@ class ReportPreviousMonthlyDataView(UniqueDataKey):
         abstract = True
 
 
+class ReportPeriod0DataView(ReportPreviousMonthlyDataView):
+    class Meta:
+        managed = False
+        db_table = "mi_report_forecast_period_0_view"
+
+
 class ReportAprDataView(ReportPreviousMonthlyDataView):
     class Meta:
         managed = False
@@ -151,6 +157,7 @@ class ReportAdj3DataView(ReportPreviousMonthlyDataView):
 
 
 archived_forecast_actual_view = [
+    ReportPeriod0DataView,
     ReportAprDataView,
     ReportMayDataView,
     ReportJunDataView,
@@ -175,6 +182,14 @@ class ReportBudgetArchivedData(UniqueDataKey):
     class Meta:
         managed = False
         db_table = "mi_report_archived_budget_view"
+
+
+class ReportBudgetPeriod0Data(UniqueDataKey):
+    budget = models.BigIntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "mi_report_budget_period_0_view"
 
 
 class ReportBudgetCurrentData(UniqueDataKey):

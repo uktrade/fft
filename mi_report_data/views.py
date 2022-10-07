@@ -145,7 +145,7 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         # Each db query is derived from the query used to display the yearly
         # data. Not the most efficient way to do it, but it avoids having two ways
         # of extracting the same data
-        for period in range(0, max_period_id):
+        for period in range(0, max_period_id+1):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
         # Output the current period in two part:
@@ -230,7 +230,10 @@ class MIReportPeriodInUseDataSet(ViewSet):
         period_queryset = FinancialPeriod.objects.filter(
             financial_period_code__lte=max_period_id + 1
         ).order_by("financial_period_code")
-
+        # Period 0 is always used.
+        # It contains the original budgets, at the beginning of the year
+        # Used for calculations in the MI reports
+        writer.writerow([0, "Period 0"])
         for obj in period_queryset:
             row = [
                 obj.financial_period_code,

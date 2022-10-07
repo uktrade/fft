@@ -784,5 +784,13 @@ b_ytd
 CREATE VIEW dw_future_year_data
 SUM
 p.programme_code
+ReportBudgetPeriod0Data
+ReportPeriod0DataView
+DROP VIEW IF EXISTS mi_report_forecast_period_0_view
+DROP VIEW IF EXISTS mi_report_budget_period_0_view
+" CREATE VIEW mi_report_forecast_period_0_view
+CREATE VIEW mi_report_budget_period_0_view
+mi_report_forecast_period_0_view"
+mi_report_budget_period_0_view
 
 
