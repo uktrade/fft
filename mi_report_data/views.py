@@ -34,6 +34,7 @@ from mi_report_data.models import (
 
 ARCHIVED_PERIOD_0_NAME = "Period 0"
 
+
 class DownloadMIDataView(TemplateView):
     template_name = "mi_report_data/download_mi_data.html"
 
@@ -155,7 +156,7 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         # Each db query is derived from the query used to display the yearly
         # data. Not the most efficient way to do it, but it avoids having two ways
         # of extracting the same data
-        for period in range(0, max_period_id+1):
+        for period in range(0, max_period_id + 1):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
         # Output the current period in two part:
