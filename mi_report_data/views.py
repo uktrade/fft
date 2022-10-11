@@ -32,6 +32,8 @@ from mi_report_data.models import (
 )
 
 
+ARCHIVED_PERIOD_0_NAME = "Period 0"
+
 class DownloadMIDataView(TemplateView):
     template_name = "mi_report_data/download_mi_data.html"
 
@@ -84,11 +86,16 @@ class MIReportFieldList(FigureFieldData):
         if self.exclude_adj_period:
             # Exclude Adj periods. They are always 0 in the current year
             filter_dict["financial_period_id__lte"] = 12
-
+        # Use annotation to show the name for period 0
+        # it does not exist in the financial period model,
+        # becasue it is an artefact for the reports
+        archive_period_name_field = "archived_period_name"
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),
             contract_field: Coalesce(self.contract_field, Value("0")),
             project_field: Coalesce(self.project_field, Value("0")),
+            archive_period_name_field: Coalesce("archived_period__period_short_name",
+                                                Value(ARCHIVED_PERIOD_0_NAME)),
             "archiving_year": ExpressionWrapper(
                 Value(current_year), output_field=IntegerField()
             ),
@@ -113,7 +120,7 @@ class MIReportFieldList(FigureFieldData):
                 "financial_period__financial_period_code",
                 "financial_period__period_short_name",
                 "archived_period__financial_period_code",
-                "archived_period__period_short_name",
+                archive_period_name_field,
                 "financial_year_id",
                 "archiving_year",
             )
@@ -237,7 +244,7 @@ class MIReportPeriodInUseDataSet(ViewSet):
         # Period 0 is always used.
         # It contains the original budgets, at the beginning of the year
         # Used for calculations in the MI reports
-        writer.writerow([0, "Period 0"])
+        writer.writerow([0, ARCHIVED_PERIOD_0_NAME])
         for obj in period_queryset:
             row = [
                 obj.financial_period_code,
