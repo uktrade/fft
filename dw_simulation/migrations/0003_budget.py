@@ -134,18 +134,18 @@ SELECT
 		    AND cy_o.archived_financial_period_code = f.archived_financial_period_code
 		  LEFT OUTER JOIN dw_current_year_outturn fp_o ON fp_o.financial_code = f.financial_code  
 		        AND fp_o.archived_financial_period_code = f.archived_financial_period_code - 1
- 		  JOIN dw_actual_forecast_ytd fa_ytd ON fa_ytd.financial_code = f.financial_code 
+ 		  LEFT OUTER JOIN dw_actual_forecast_ytd fa_ytd ON fa_ytd.financial_code = f.financial_code 
  		  			AND fa_ytd.archived_financial_period_code = f.archived_financial_period_code 
  					AND fa_ytd.financial_period_code = f.financial_period_code
  		  LEFT OUTER JOIN dw_actual_ytd a_ytd ON a_ytd.financial_code = f.financial_code 
  		  			AND a_ytd.archived_financial_period_code = f.archived_financial_period_code 
  					AND a_ytd.financial_period_code = f.financial_period_code
- 		  JOIN dw_current_rates rates ON rates.financial_code = f.financial_code 
+ 		  LEFT OUTER JOIN dw_current_rates rates ON rates.financial_code = f.financial_code 
  					AND rates.financial_period_code = f.financial_period_code
  		  			AND rates.archived_financial_period_code = f.archived_financial_period_code
  		  LEFT OUTER JOIN dw_previous_period_forecast fp ON fp.financial_code = f.financial_code 
  					AND fp.financial_period_code = f.financial_period_code and fp.financial_period_code <= f.archived_financial_period_code;
-	;
+
 
 """
 
