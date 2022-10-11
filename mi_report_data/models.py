@@ -208,6 +208,14 @@ class ReportFutureBudgetData(UniqueDataKey):
         db_table = "mi_report_future_year_budget"
 
 
+class ReportFutureBudgetPeriod0Data(UniqueDataKey):
+    future_budget = models.BigIntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "mi_report_future_year_period_0_budget"
+
+
 class ReportPreviousYearDataView(UniqueDataKey):
     id = models.IntegerField(
         primary_key=True,
@@ -230,6 +238,14 @@ class ReportFutureForecastData(UniqueDataKey):
     class Meta:
         managed = False
         db_table = "mi_report_future_year_forecast"
+
+
+class ReportFutureForecastPeriod0Data(UniqueDataKey):
+    future_forecast = models.BigIntegerField(default=0)
+
+    class Meta:
+        managed = False
+        db_table = "mi_report_future_year_period_0_forecast"
 
 
 # # The following data are calculated using SQL.

@@ -26,6 +26,9 @@ from mi_report_data.models import (
     ReportCurrentActualData,
     ReportFutureBudgetData,
     ReportFutureForecastData,
+    ReportFutureBudgetPeriod0Data,
+    ReportFutureForecastPeriod0Data,
+    ReportBudgetPeriod0Data,
 )
 
 
@@ -181,6 +184,7 @@ class MIReportBudgetDataSet(ViewSet, MIReportFieldList):
         self.write_queryset_data(writer, ReportBudgetArchivedData)
         self.filter_on_archived_period = False
         self.write_queryset_data(writer, ReportBudgetCurrentData)
+        self.write_queryset_data(writer, ReportBudgetPeriod0Data)
 
 
 class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
@@ -292,6 +296,7 @@ class MIReportFutureYearForecastDataSet(ViewSet, MIReportFieldList):
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportFutureForecastData)
+        self.write_queryset_data(writer, ReportFutureForecastPeriod0Data)
 
 
 class MIReportFutureYearBudgetDataSet(ViewSet, MIReportFieldList):
@@ -314,3 +319,4 @@ class MIReportFutureYearBudgetDataSet(ViewSet, MIReportFieldList):
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportFutureBudgetData)
+        self.write_queryset_data(writer, ReportFutureBudgetPeriod0Data)

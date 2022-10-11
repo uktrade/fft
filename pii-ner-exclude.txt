@@ -792,5 +792,6 @@ DROP VIEW IF EXISTS mi_report_budget_period_0_view
 CREATE VIEW mi_report_budget_period_0_view
 mi_report_forecast_period_0_view"
 mi_report_budget_period_0_view
+0007_future_year_period_0
 
 
