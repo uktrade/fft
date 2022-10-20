@@ -1,10 +1,5 @@
+from chartofaccountDIT.models import ArchivedNaturalCode, NaturalCode
 from core.utils.generic_helpers import get_current_financial_year
-
-from chartofaccountDIT.models import (
-    ArchivedNaturalCode,
-    NaturalCode,
-)
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
@@ -95,8 +90,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
 
         for obj in historical_queryset:
             if obj.expenditure_category:
-                account_L6_budget_description = \
+                account_L6_budget_description = (
                     obj.expenditure_category.linked_budget_code_description
+                )
             else:
                 account_L6_budget_description = ""
             row = [

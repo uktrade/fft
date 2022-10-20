@@ -104,6 +104,14 @@ pytest:
 black:
 	docker-compose run --rm fido black .
 
+isort-check:
+	docker-compose run --rm fido isort --check .
+
+isort:
+	docker-compose run --rm fido isort .
+
+black-check:
+	docker-compose run --rm --no-deps fido black --check .
+
 superuser:
 	docker-compose run --rm fido python manage.py createsuperuser
-

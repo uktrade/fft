@@ -1,17 +1,13 @@
 from core.models import FinancialYear
-
 from forecast.import_actuals import save_trial_balance_row
-
 from forecast.models import FinancialPeriod
-
 from previous_years.import_actuals import copy_previous_year_actuals_to_monthly_figure
 from previous_years.models import (
     ArchivedActualUploadMonthlyFigure,
     ArchivedForecastData,
 )
-from previous_years.utils import CheckArchivedFinancialCode
 from previous_years.test.test_utils import PastYearForecastSetup
-
+from previous_years.utils import CheckArchivedFinancialCode
 from upload_file.models import FileUpload
 
 
@@ -47,15 +43,18 @@ class ImportPastYearActualTest(PastYearForecastSetup):
         period_name = period_obj.period_short_name.lower()
 
         self.assertEqual(
-            ArchivedActualUploadMonthlyFigure.objects.all().count(), 0,
+            ArchivedActualUploadMonthlyFigure.objects.all().count(),
+            0,
         )
         self.assertEqual(
-            ArchivedForecastData.objects.all().count(), 1,
+            ArchivedForecastData.objects.all().count(),
+            1,
         )
         data_obj = ArchivedForecastData.objects.all().first()
         new_value_in_pence = 23456700
         self.assertNotEqual(
-            getattr(data_obj, period_name), new_value_in_pence,
+            getattr(data_obj, period_name),
+            new_value_in_pence,
         )
         save_trial_balance_row(
             self.chart_of_account_line_correct,
@@ -68,20 +67,24 @@ class ImportPastYearActualTest(PastYearForecastSetup):
         )
         # Check that there is a row in the temporary table
         self.assertEqual(
-            ArchivedActualUploadMonthlyFigure.objects.all().count(), 1,
+            ArchivedActualUploadMonthlyFigure.objects.all().count(),
+            1,
         )
         copy_previous_year_actuals_to_monthly_figure(period_obj, self.archived_year)
         self.assertEqual(
-            ArchivedForecastData.objects.all().count(), 1,
+            ArchivedForecastData.objects.all().count(),
+            1,
         )
         data_obj = ArchivedForecastData.objects.all().first()
         # Check that the field has been updated with the new value
         self.assertEqual(
-            getattr(data_obj, period_name), new_value_in_pence,
+            getattr(data_obj, period_name),
+            new_value_in_pence,
         )
         # and the temporary table has been cleared
         self.assertEqual(
-            ArchivedActualUploadMonthlyFigure.objects.all().count(), 0,
+            ArchivedActualUploadMonthlyFigure.objects.all().count(),
+            0,
         )
 
     def test_import_apr(self):

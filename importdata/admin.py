@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from core.admin import AdminReadOnly
-
 from importdata.models import AsyncImportLog
 
 

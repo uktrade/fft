@@ -2,7 +2,6 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from chartofaccountDIT.test.factories import (
@@ -10,19 +9,11 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import CostCentreFactory
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
-
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from treasuryCOA.test.factories import L5AccountFactory
 
 
@@ -31,7 +22,9 @@ class DownloadMIReportTest(BaseTestCase):
         self.client.force_login(self.test_user)
 
         self.cost_centre_code = TEST_COST_CENTRE
-        cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
+        cost_centre = CostCentreFactory(
+            cost_centre_code=self.cost_centre_code,
+        )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
         programme_obj = ProgrammeCodeFactory()
@@ -65,7 +58,9 @@ class DownloadMIReportTest(BaseTestCase):
         apr_figure.save
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
             financial_year=year_obj,
@@ -82,7 +77,7 @@ class DownloadMIReportTest(BaseTestCase):
         response = self.client.get(
             reverse(
                 "download_mi_report_source",
-                kwargs={"financial_year": get_current_financial_year()}
+                kwargs={"financial_year": get_current_financial_year()},
             ),
         )
 
@@ -110,7 +105,9 @@ class DownloadOscarReportTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
         self.cost_centre_code = TEST_COST_CENTRE
-        cost_centre = CostCentreFactory(cost_centre_code=self.cost_centre_code,)
+        cost_centre = CostCentreFactory(
+            cost_centre_code=self.cost_centre_code,
+        )
         current_year = get_current_financial_year()
         self.amount_apr = -9876543
         programme_obj = ProgrammeCodeFactory()
@@ -143,14 +140,18 @@ class DownloadOscarReportTest(BaseTestCase):
         apr_figure.save
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
             financial_year=year_obj,
         )
         may_figure.save
 
-        can_download_files = Permission.objects.get(codename="can_download_oscar",)
+        can_download_files = Permission.objects.get(
+            codename="can_download_oscar",
+        )
         self.test_user.user_permissions.add(can_download_files)
         self.test_user.save()
 

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from costcentre.management.commands.add_user_to_directorate import (
-    give_access_to_directorate
+    give_access_to_directorate,
 )
 from costcentre.models import DepartmentalGroup, Directorate
 
@@ -31,24 +31,18 @@ class Command(BaseCommand):
             )
             return
         group_code = options["group_code"]
-        group = DepartmentalGroup.objects.filter(
-            group_code=group_code
-        ).first()
+        group = DepartmentalGroup.objects.filter(group_code=group_code).first()
 
         if group is None:
             self.stdout.write(
-                self.style.ERROR(
-                    f"Cannot find group with code {group_code}"
-                )
+                self.style.ERROR(f"Cannot find group with code {group_code}")
             )
             return
         directorate_list = Directorate.objects.filter(group_id=group_code)
 
         if directorate_list.count() == 0:
             self.stdout.write(
-                self.style.ERROR(
-                    f"No cost centre found in this group {group_code}"
-                )
+                self.style.ERROR(f"No cost centre found in this group {group_code}")
             )
             return
 
@@ -56,8 +50,9 @@ class Command(BaseCommand):
         group_already_assigned_cc = []
 
         for directorate in directorate_list:
-            assigned_cc, already_assigned_cc = \
-                give_access_to_directorate(directorate, user)
+            assigned_cc, already_assigned_cc = give_access_to_directorate(
+                directorate, user
+            )
 
         if assigned_cc:
             group_assigned_cc.extend(assigned_cc)

@@ -2,35 +2,22 @@ import datetime
 import time
 
 import pyperclip
-
+from behave_django.testcase import BehaviorDrivenTestCase
+from django.conf import settings
+from django.contrib.auth import (
+    BACKEND_SESSION_KEY,
+    HASH_SESSION_KEY,
+    SESSION_KEY,
+    get_user_model,
+)
+from django.contrib.sessions.backends.db import SessionStore
+from django.core.cache import cache
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
-
-from behave_django.testcase import BehaviorDrivenTestCase
-
-from django.conf import settings
-from django.contrib.auth import (
-    SESSION_KEY,
-    BACKEND_SESSION_KEY,
-    HASH_SESSION_KEY,
-)
-from django.contrib.auth import get_user_model
-from django.contrib.sessions.backends.db import SessionStore
-from django.core.cache import cache
-
 from webdriver_manager.chrome import ChromeDriverManager
-
-from core.models import FinancialYear
-from core.utils.generic_helpers import get_current_financial_year
-from core.test.factories import FinancialYearFactory
-from core.test.test_base import TEST_EMAIL
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
 
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
@@ -40,17 +27,19 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
+from core.models import FinancialYear
+from core.test.factories import FinancialYearFactory
+from core.test.test_base import TEST_EMAIL
+from core.utils.generic_helpers import get_current_financial_year
+from costcentre.test.factories import CostCentreFactory
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
     ForecastEditState,
     ForecastMonthlyFigure,
 )
-from forecast.test.factories import (
-    FinancialPeriodFactory,
-    ForecastEditStateFactory,
-)
+from forecast.test.factories import FinancialPeriodFactory, ForecastEditStateFactory
+
 
 TEST_COST_CENTRE_CODE = 888812
 
@@ -105,9 +94,8 @@ def set_up_test_objects(context):
             month_name = (
                 financial_period,
                 datetime.date(
-                    get_current_financial_year(),
-                    financial_month, 1
-                ).strftime('%B')
+                    get_current_financial_year(), financial_month, 1
+                ).strftime("%B"),
             )[1]
 
             financial_period_count = FinancialPeriod.objects.filter(
@@ -119,7 +107,7 @@ def set_up_test_objects(context):
                     financial_period_code=financial_period,
                     period_long_name=month_name,
                     period_short_name=month_name[0:3],
-                    period_calendar_code=financial_month
+                    period_calendar_code=financial_month,
                 )
 
             financial_code = FinancialCode.objects.filter(
@@ -153,13 +141,11 @@ def set_up_test_objects(context):
 
 
 def create_test_user(context):
-    if not hasattr(context, 'user'):
+    if not hasattr(context, "user"):
         test_user_email = TEST_EMAIL
         test_password = "test_password"
 
-        test_user, _ = get_user_model().objects.get_or_create(
-            email=test_user_email
-        )
+        test_user, _ = get_user_model().objects.get_or_create(email=test_user_email)
         test_user.is_staff = True
         test_user.is_superuser = True
         test_user.set_password(test_password)
@@ -182,16 +168,16 @@ def create_test_user(context):
 
         # Finally, create the cookie dictionary
         cookie = {
-            'name': settings.SESSION_COOKIE_NAME,
-            'value': session.session_key,
-            'secure': False,
-            'path': '/',
+            "name": settings.SESSION_COOKIE_NAME,
+            "value": session.session_key,
+            "secure": False,
+            "path": "/",
         }
 
-        context.browser.get(f'{context.base_url}/admin/login/')
+        context.browser.get(f"{context.base_url}/admin/login/")
         context.browser.add_cookie(cookie)
         context.browser.refresh()  # need to update page for logged in user
-        context.browser.get(f'{context.base_url}/')
+        context.browser.get(f"{context.base_url}/")
 
 
 def paste(context):
@@ -236,16 +222,14 @@ def before_scenario(context, scenario):
 def before_feature(context, feature):
     if settings.USE_SELENIUM_HUB:
         context.browser = webdriver.Remote(
-            command_executor="http://{}:4444/wd/hub".format(
-                settings.SELENIUM_ADDRESS
-            ),
+            command_executor="http://{}:4444/wd/hub".format(settings.SELENIUM_ADDRESS),
             desired_capabilities=DesiredCapabilities.CHROME,
         )
         context.browser.implicitly_wait(5)
     else:
         chrome_options = Options()
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.headless = True
 
         context.browser = webdriver.Chrome(

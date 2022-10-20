@@ -1,17 +1,9 @@
 import os
 
-from django.core.management.base import (
-    CommandError,
-)
+from django.core.management.base import CommandError
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-
-from previous_years.utils import (
-    ArchiveYearError,
-)
-
+from core.utils.command_helpers import CommandUpload
+from previous_years.utils import ArchiveYearError
 from treasurySS.import_segment_data_to_archive import (
     WrongHeaderException,
     import_segment_data,
@@ -30,7 +22,7 @@ class Command(CommandUpload):
         path = options["path"]
         year = options["financial_year"]
 
-        file_name = self.path_to_upload(path, 'csv')
+        file_name = self.path_to_upload(path, "csv")
 
         # Windows-1252 or CP-1252, used because of a back quote
         csvfile = open(file_name, newline="", encoding="cp1252")

@@ -1,17 +1,11 @@
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
-
 from core.management.commands.create_stub_future_forecast_data import clear_figures
 from core.models import FinancialYear
-
 from costcentre.models import CostCentre
-
 from end_of_month.end_of_month_actions import end_of_month_archive
-from end_of_month.models import (
-    EndOfMonthStatus,
-)
-
+from end_of_month.models import EndOfMonthStatus
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
@@ -103,9 +97,5 @@ class Command(BaseCommand):
             create_monthly_figures()
             msg = "created"
         self.stdout.write(
-            self.style.SUCCESS(
-                "Successfully {} stub forecast data.".format(
-                    msg
-                )
-            )
+            self.style.SUCCESS("Successfully {} stub forecast data.".format(msg))
         )

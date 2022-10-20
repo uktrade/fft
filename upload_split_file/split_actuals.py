@@ -2,14 +2,9 @@ from django.db import connection
 from django.db.models import Sum
 
 from core.utils.generic_helpers import get_current_financial_year
-
 from forecast.models import ForecastMonthlyFigure
 from forecast.utils.query_fields import ForecastQueryFields
-
-from upload_split_file.models import (
-    PaySplitCoefficient,
-    TemporaryCalculatedValues,
-)
+from upload_split_file.models import PaySplitCoefficient, TemporaryCalculatedValues
 
 
 class TransferTooLargeError(Exception):
@@ -23,9 +18,7 @@ EXPENDITURE_TYPE_LIST = [PAY_CODE, INCOME_PAY_CODE]
 
 
 def calculate_expenditure_type_total(
-    directorate_code,
-    financial_period_id,
-    expenditure_type_code_list
+    directorate_code, financial_period_id, expenditure_type_code_list
 ):
     query_fields = ForecastQueryFields()
 
@@ -40,8 +33,9 @@ def calculate_expenditure_type_total(
             directorate_field: directorate_code,
             "archived_status__isnull": True,
         }
-        pay_total_obj = ForecastMonthlyFigure.objects.filter(**kwargs).\
-            aggregate(Sum("amount"))
+        pay_total_obj = ForecastMonthlyFigure.objects.filter(**kwargs).aggregate(
+            Sum("amount")
+        )
         if pay_total_obj["amount__sum"]:
             pay_total += pay_total_obj["amount__sum"]
     return pay_total

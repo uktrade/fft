@@ -1,9 +1,7 @@
 from core.utils.generic_helpers import get_current_financial_year
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.utils import FigureFieldData
-
-from forecast.models import FinancialPeriod, BudgetMonthlyFigure
+from forecast.models import BudgetMonthlyFigure, FinancialPeriod
 
 
 class BudgetForecastViewSet(DataLakeViewSet, FigureFieldData):

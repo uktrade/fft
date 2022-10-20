@@ -1,9 +1,6 @@
 import datetime
 
-from django.contrib.admin.models import (
-    CHANGE,
-    LogEntry,
-)
+from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
 from core.models import FinancialYear
@@ -28,9 +25,7 @@ def get_current_financial_year():
             # before 5th April, the financial
             # year it is one year behind the
             # calendar year
-            current_financial_year -= (
-                1
-            )
+            current_financial_year -= 1
 
     return current_financial_year
 
@@ -54,9 +49,7 @@ def get_financial_year_obj(financial_year):
         financial_year=financial_year
     )
     if created:
-        year_obj.financial_year_display = create_financial_year_display(
-            financial_year
-        )
+        year_obj.financial_year_display = create_financial_year_display(financial_year)
     year_obj.save()
     return year_obj
 
@@ -67,13 +60,13 @@ def make_financial_year_current(financial_year):
 
 
 class GetValidYear:
-    regex = r'20\d{2}'
+    regex = r"20\d{2}"
 
     def to_python(self, value):
         return int(value)
 
     def to_url(self, value):
-        return '%04d' % value
+        return "%04d" % value
 
 
 def today_string():
@@ -88,21 +81,19 @@ GRAND_TOTAL_CLASS = "grand-total"
 
 
 def check_empty(value):
-    if value is not None and value != '':
+    if value is not None and value != "":
         return value
 
     return None
 
 
 def log_object_change(
-        requesting_user_id,
-        message,
-        obj=None,
+    requesting_user_id,
+    message,
+    obj=None,
 ):
     if obj:
-        content_type_id = ContentType.objects.get_for_model(
-            obj
-        ).pk
+        content_type_id = ContentType.objects.get_for_model(obj).pk
 
         LogEntry.objects.log_action(
             user_id=requesting_user_id,

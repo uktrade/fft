@@ -1,16 +1,11 @@
 from core.utils.generic_helpers import get_current_financial_year
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.utils import FigureFieldData
-
 from forecast.models import FinancialPeriod, ForecastMonthlyFigure
-
 from previous_years.models import ArchivedForecastData
 
 
-class ActualViewSet(
-    DataLakeViewSet, FigureFieldData
-):
+class ActualViewSet(DataLakeViewSet, FigureFieldData):
     filename = "actual"
     actual_title = [
         "Actual",
@@ -74,8 +69,9 @@ class ActualViewSet(
 
         # Previous year actuals
         actual_queryset = (
-            ArchivedForecastData.objects.exclude(budget=0)
-            .select_related(*self.select_related_list)
+            ArchivedForecastData.objects.exclude(budget=0).select_related(
+                *self.select_related_list
+            )
         ).values(
             *self.chart_of_account_field_list,
             "apr",

@@ -1,17 +1,13 @@
 import csv
 
+import openpyxl
 from django.db import models
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 
-import openpyxl
-
-from core.import_csv import (
-    IMPORT_CSV_MODEL_KEY,
-    get_col_from_obj_key,
-    get_field_name,
-)
+from core.import_csv import IMPORT_CSV_MODEL_KEY, get_col_from_obj_key, get_field_name
 from core.utils.generic_helpers import today_string
+
 
 # The max lenght for an Excel tab name is 31. So truncate the name, if needed
 EXC_TAB_NAME_LEN = 31
@@ -52,7 +48,7 @@ def display_yes_no(row):
 
 # NOT USED
 class SmartExport:
-    """ return lists with the header
+    """return lists with the header
     name and the objects from a queryset
     it only follows one level of
     foreign key, while I would like
@@ -77,7 +73,7 @@ class SmartExport:
                 if val:
                     val = smart_str(val)
             elif type(field) == models.ManyToManyField:
-                val = u", ".join(
+                val = ", ".join(
                     [smart_str(item) for item in getattr(obj, field.name).all()]
                 )
             elif field.choices:
@@ -112,7 +108,7 @@ def generic_table_iterator(queryset):
                 if val:
                     val = smart_str(val)
             elif type(field) == models.ManyToManyField:
-                val = u", ".join(
+                val = ", ".join(
                     [smart_str(item) for item in getattr(obj, field.name).all()]
                 )
             elif field.choices:
@@ -132,7 +128,7 @@ def export_to_csv(queryset, f, title=""):
     response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = "attachment; filename=" + title + ".csv"
     writer = csv.writer(response, csv.excel)
-    response.write(u"\ufeff".encode("utf8"))  # Excel needs UTF-8 to open the file
+    response.write("\ufeff".encode("utf8"))  # Excel needs UTF-8 to open the file
     for row in f(queryset):
         writer.writerow(row)
     return response
@@ -162,7 +158,10 @@ def export_to_excel(queryset, func, title="", field_list=None, style_name=""):
     if style_name:
         for row in range(0, ws.max_row):
             for col in range(0, ws.max_column):
-                ws.cell(column=col + 1, row=row + 1,).style = style_name
+                ws.cell(
+                    column=col + 1,
+                    row=row + 1,
+                ).style = style_name
     wb.save(resp)
     return resp
 

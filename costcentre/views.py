@@ -1,15 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from core.views import FAdminFilteredView, HistoricalFilteredView
-
-from costcentre.filters import (
-    CostCentreFilter,
-    CostCentreHistoricalFilter,
-)
-from costcentre.tables import (
-    CostCentreTable,
-    HistoricalCostCentreTable,
-)
+from costcentre.filters import CostCentreFilter, CostCentreHistoricalFilter
+from costcentre.tables import CostCentreTable, HistoricalCostCentreTable
 
 
 class FilteredCostListView(LoginRequiredMixin, FAdminFilteredView):

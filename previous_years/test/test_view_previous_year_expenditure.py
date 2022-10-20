@@ -1,16 +1,13 @@
 from bs4 import BeautifulSoup
-
 from django.urls import reverse
 
 from forecast.test.test_utils import (
-    TOTAL_COLUMN,
     SPEND_TO_DATE_COLUMN,
+    TOTAL_COLUMN,
     UNDERSPEND_COLUMN,
-    format_forecast_figure
+    format_forecast_figure,
 )
-
 from previous_years.test.test_utils import (
-
     PastYearForecastSetup,
     hide_adjustment_columns,
 )
@@ -128,9 +125,7 @@ class ViewForecastNaturalAccountCodeAdjustmentColumnsTest(
         hide_adjustment_columns()
 
 
-class ViewForecastNaturalAccountCodeTwoYearDataTest(
-    ViewForecastNaturalAccountCodeTest
-):
+class ViewForecastNaturalAccountCodeTwoYearDataTest(ViewForecastNaturalAccountCodeTest):
     def setUp(self):
         super().setUp()
         self.create_another_year()

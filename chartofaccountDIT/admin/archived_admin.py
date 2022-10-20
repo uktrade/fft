@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from chartofaccountDIT.exportcsv import (
@@ -21,12 +20,7 @@ from chartofaccountDIT.models import (
     ArchivedProgrammeCode,
     ArchivedProjectCode,
 )
-
-from core.admin import (
-    AdminArchived,
-    AdminExport,
-    AdminReadOnly,
-)
+from core.admin import AdminArchived, AdminExport, AdminReadOnly
 from core.utils.export_helpers import generic_table_iterator
 
 

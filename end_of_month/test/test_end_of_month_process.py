@@ -7,18 +7,9 @@ from end_of_month.end_of_month_actions import (
     ArchiveMonthInvalidPeriodError,
     end_of_month_archive,
 )
-from end_of_month.models import (
-    MonthlyTotalBudget,
-    forecast_budget_view_model,
-)
-from end_of_month.test.test_utils import (
-    MonthlyFigureSetup,
-)
-
-from forecast.models import (
-    BudgetMonthlyFigure,
-    ForecastMonthlyFigure,
-)
+from end_of_month.models import MonthlyTotalBudget, forecast_budget_view_model
+from end_of_month.test.test_utils import MonthlyFigureSetup
+from forecast.models import BudgetMonthlyFigure, ForecastMonthlyFigure
 
 
 class EndOfMonthForecastTest(TestCase):
@@ -375,11 +366,8 @@ class ReadArchivedBudgetTest(TestCase):
 
         for period in range(1, tested_period + 1):
             # Check the full total. It is saved in a different table, for convenience
-            monthly_budget = MonthlyTotalBudget.objects.get(
-                archived_period=period)
-            self.assertEqual(
-                self.archived_figure[period], monthly_budget.amount
-            )
+            monthly_budget = MonthlyTotalBudget.objects.get(archived_period=period)
+            self.assertEqual(self.archived_figure[period], monthly_budget.amount)
             # Check that nothig has corrupted the archived figures
             self.assertEqual(
                 self.archived_figure[period], self.get_period_budget_total(period)

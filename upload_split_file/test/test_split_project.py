@@ -1,17 +1,17 @@
 from django.db.models import Sum
 
 from forecast.models import ForecastMonthlyFigure
+from upload_split_file.models import SplitPayActualFigure
 from upload_split_file.split_actuals import (
     EXPENDITURE_TYPE_LIST,
     calculate_expenditure_type_total,
     handle_split_project,
 )
-from upload_split_file.models import SplitPayActualFigure
 from upload_split_file.test.test_utils import (
     SplitDataSetup,
     create_future_monthly_amount,
-    create_split_data,
     create_monthly_amount,
+    create_split_data,
 )
 
 

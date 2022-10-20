@@ -4,9 +4,7 @@ from upload_file.models import FileUpload
 def user_has_upload_permission(user):
     if user.is_superuser:
         return True
-    elif user.has_perm(
-        "forecast.can_upload_files"
-    ) or user.groups.filter(
+    elif user.has_perm("forecast.can_upload_files") or user.groups.filter(
         name="Finance Administrator"
     ):
         return True

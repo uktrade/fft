@@ -5,10 +5,12 @@ from forecast.utils.view_header_definition import (
     budget_spent_percentage_header,
     forecast_total_header,
     variance_header,
+    variance_outturn_header,
     variance_percentage_header,
     year_to_date_header,
-    variance_outturn_header,
 )
+
+
 register = template.Library()
 
 forecast_figure_cols = [
@@ -17,21 +19,21 @@ forecast_figure_cols = [
     forecast_total_header,
     variance_header,
     variance_outturn_header,
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-    'Jan',
-    'Feb',
-    'Mar',
-    'Adj1',
-    'Adj2',
-    'Adj3',
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Adj1",
+    "Adj2",
+    "Adj3",
 ]
 
 
@@ -48,7 +50,7 @@ def format_figure(value, column):
     if value and is_forecast_figure(value, column):
         try:
             figure_value = int(value) / 100
-            return f'{round(figure_value):,d}'
+            return f"{round(figure_value):,d}"
         except ValueError:
             pass
 
@@ -57,8 +59,10 @@ def format_figure(value, column):
 
 @register.filter()
 def is_percentage_figure(_, column):
-    if str(column) == variance_percentage_header \
-            or str(column) == budget_spent_percentage_header:
+    if (
+        str(column) == variance_percentage_header
+        or str(column) == budget_spent_percentage_header
+    ):
         return True
 
     return False
@@ -66,7 +70,7 @@ def is_percentage_figure(_, column):
 
 @register.filter()
 def is_negative_percentage_figure(value, column):
-    if str(column) == variance_percentage_header and value[:1] == '-':
+    if str(column) == variance_percentage_header and value[:1] == "-":
         return True
 
     return False

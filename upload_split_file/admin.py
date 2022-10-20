@@ -1,6 +1,6 @@
 from django.contrib import admin
-from core.admin import AdminReadOnly
 
+from core.admin import AdminReadOnly
 from upload_split_file.models import PaySplitCoefficient
 
 

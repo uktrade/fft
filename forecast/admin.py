@@ -1,14 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-
 from simple_history.admin import SimpleHistoryAdmin
 
-from core.admin import (
-    AdminEditOnly,
-    AdminImportExport,
-    AdminReadOnly,
-)
-
+from core.admin import AdminEditOnly, AdminImportExport, AdminReadOnly
 from forecast.forms import UnlockedForecastEditorForm
 from forecast.import_csv import import_adi_file_class
 from forecast.models import (
@@ -42,7 +36,7 @@ class FinancialPeriodAdmin(AdminReadOnly):
         "period_calendar_code",
         "actual_loaded",
         "actual_loaded_previous_year",
-        "display_figure"
+        "display_figure",
     )
 
     def get_readonly_fields(self, request, obj=None):

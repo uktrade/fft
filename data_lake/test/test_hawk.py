@@ -1,34 +1,28 @@
 import datetime
 
-from django.test import (
-    TestCase,
-    override_settings,
-)
-
-from freezegun import freeze_time
-
 import mohawk
-
+from django.test import TestCase, override_settings
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
 
-test_url = 'http://testserver' + reverse('data_lake_forecast')
+test_url = "http://testserver" + reverse("data_lake_forecast")
 
 
 def hawk_auth_sender(
-    key_id='some-id',
-    secret_key='some-secret',
+    key_id="some-id",
+    secret_key="some-secret",
     url=test_url,
-    method='GET',
-    content='',
-    content_type='',
+    method="GET",
+    content="",
+    content_type="",
 ):
     credentials = {
-        'id': key_id,
-        'key': secret_key,
-        'algorithm': 'sha256',
+        "id": key_id,
+        "key": secret_key,
+        "algorithm": "sha256",
     }
     return mohawk.Sender(
         credentials,
@@ -51,9 +45,9 @@ class HawkTests(TestCase):
         sender = hawk_auth_sender()
         response = APIClient().get(
             test_url,
-            content_type='',
+            content_type="",
             HTTP_AUTHORIZATION=sender.request_header,
-            HTTP_X_FORWARDED_FOR='1.2.3.4, 123.123.123.123',
+            HTTP_X_FORWARDED_FOR="1.2.3.4, 123.123.123.123",
         )
 
         assert response.status_code == status.HTTP_200_OK
@@ -69,13 +63,13 @@ class HawkTests(TestCase):
         sender = hawk_auth_sender()
         response = APIClient().get(
             test_url,
-            content_type='',
+            content_type="",
             HTTP_AUTHORIZATION=sender.request_header,
-            HTTP_X_FORWARDED_FOR='1.2.3.4, 123.123.123.123',
+            HTTP_X_FORWARDED_FOR="1.2.3.4, 123.123.123.123",
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        error = {'detail': 'Incorrect authentication credentials.'}
+        error = {"detail": "Incorrect authentication credentials."}
         assert response.json() == error
 
     @override_settings(
@@ -90,12 +84,12 @@ class HawkTests(TestCase):
         with freeze_time(past):
             auth = hawk_auth_sender().request_header
         response = APIClient().get(
-            reverse('data_lake_forecast'),
-            content_type='',
+            reverse("data_lake_forecast"),
+            content_type="",
             HTTP_AUTHORIZATION=auth,
-            HTTP_X_FORWARDED_FOR='1.2.3.4, 123.123.123.123',
+            HTTP_X_FORWARDED_FOR="1.2.3.4, 123.123.123.123",
         )
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-        error = {'detail': 'Incorrect authentication credentials.'}
+        error = {"detail": "Incorrect authentication credentials."}
         assert response.json() == error

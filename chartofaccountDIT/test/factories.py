@@ -38,7 +38,6 @@ class Analysis1Factory(factory.DjangoModelFactory):
 
 
 class HistoricalAnalysis1Factory(factory.DjangoModelFactory):
-
     class Meta:
         model = ArchivedAnalysis1
 
@@ -84,7 +83,7 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
     Define ExpenditureCategory Factory
     """
 
-    grouping_description = 'Test Budget Category'
+    grouping_description = "Test Budget Category"
     NAC_category = factory.SubFactory(NACCategoryFactory)
 
     class Meta:
@@ -92,7 +91,7 @@ class ExpenditureCategoryFactory(factory.DjangoModelFactory):
 
 
 class HistoricalExpenditureCategoryFactory(factory.DjangoModelFactory):
-    grouping_description = 'Test Archived Budget Category'
+    grouping_description = "Test Archived Budget Category"
 
     class Meta:
         model = ArchivedExpenditureCategory
@@ -102,6 +101,7 @@ class CommercialCategoryFactory(factory.DjangoModelFactory):
     """
     Define CommercialCategory Factory
     """
+
     active = True
 
     class Meta:
@@ -119,9 +119,10 @@ class NaturalCodeFactory(factory.DjangoModelFactory):
     """
     Define NaturalCode Factory
     """
+
     class Meta:
         model = NaturalCode
-        django_get_or_create = ('natural_account_code',)
+        django_get_or_create = ("natural_account_code",)
 
     active = True
     natural_account_code = 999999
@@ -147,7 +148,7 @@ class ProgrammeCodeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = ProgrammeCode
-        django_get_or_create = ('programme_code',)
+        django_get_or_create = ("programme_code",)
 
     active = True
     programme_code = "123456"
@@ -159,6 +160,7 @@ class HistoricalProgrammeCodeFactory(factory.DjangoModelFactory):
     """
     Define ArchivedProgrammeCode Factory
     """
+
     active = True
     programme_code = "654321"
     programme_description = "Programme Test description"
@@ -181,6 +183,7 @@ class InterEntityFactory(factory.DjangoModelFactory):
     """
     Define InterEntity Factory
     """
+
     active = True
     l1_value = factory.SubFactory(InterEntityL1Factory)
 
@@ -202,7 +205,7 @@ class ProjectCodeFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = ProjectCode
-        django_get_or_create = ('project_code',)
+        django_get_or_create = ("project_code",)
 
     active = True
     project_code = "5000"
@@ -213,6 +216,7 @@ class HistoricalProjectCodeFactory(factory.DjangoModelFactory):
     """
     Define ArchivedProjectCode Factory
     """
+
     active = True
     project_code = "5000"
     project_description = "Project Description"
@@ -225,6 +229,7 @@ class FCOMappingFactory(factory.DjangoModelFactory):
     """
     Define FCOMapping Factory
     """
+
     fco_code = 123456
     active = True
     account_L6_code_fk = factory.SubFactory(NaturalCodeFactory)
@@ -237,6 +242,7 @@ class HistoricalFCOMappingFactory(factory.DjangoModelFactory):
     """
     Define ArchivedFCOMapping Factory
     """
+
     fco_code = 7891011
     account_L6_code = 98765432
     active = True

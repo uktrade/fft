@@ -1,18 +1,12 @@
 import os
 
-from django.core.management.base import (
-    CommandError,
-)
+from django.core.management.base import CommandError
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-
+from core.utils.command_helpers import CommandUpload
 from end_of_month.upload_archived_month import (
     WrongArchivePeriodException,
     import_single_archived_period,
 )
-
 from forecast.import_csv import WrongChartOFAccountCodeException
 from forecast.models import MAX_PERIOD_CODE
 
@@ -39,7 +33,7 @@ class Command(CommandUpload):
                 )
             )
             return
-        file_name = self.path_to_upload(path, 'csv')
+        file_name = self.path_to_upload(path, "csv")
 
         # Windows-1252 or CP-1252, used because of a back quote
         csvfile = open(file_name, newline="", encoding="cp1252")

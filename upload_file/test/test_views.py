@@ -4,18 +4,14 @@ from unittest.mock import MagicMock
 
 from django.contrib.auth.models import Permission
 from django.core.files import File
-from django.urls import reverse
-
-from core.test.test_base import BaseTestCase
-
-from upload_file.test.factories import FileUploadFactory
-
 
 # Set file upload handlers back to default as
 # we need to remove S3 interactions for test purposes
-from django.test import (
-    override_settings,
-)
+from django.test import override_settings
+from django.urls import reverse
+
+from core.test.test_base import BaseTestCase
+from upload_file.test.factories import FileUploadFactory
 
 
 @override_settings(
@@ -48,7 +44,9 @@ class UploadedViewTests(BaseTestCase):
         response = self.client.get(uploaded_files_url, follow=False)
         assert response.status_code == 302
 
-        can_upload_files = Permission.objects.get(codename="can_upload_files",)
+        can_upload_files = Permission.objects.get(
+            codename="can_upload_files",
+        )
         self.test_user.user_permissions.add(can_upload_files)
         self.test_user.save()
 
@@ -56,7 +54,10 @@ class UploadedViewTests(BaseTestCase):
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
-        res = re.search(self.file_name_regex, resp.rendered_content,)
+        res = re.search(
+            self.file_name_regex,
+            resp.rendered_content,
+        )
         # File name should be in response
         assert res is not None
 

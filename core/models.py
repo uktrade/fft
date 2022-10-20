@@ -1,15 +1,9 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import (
-    Group,
-    Permission,
-)
+from django.contrib.auth.models import Group, Permission
 from django.db import models
-
 from simple_history import register
 
-from .metamodels import (
-    BaseModel,
-)
+from .metamodels import BaseModel
 
 
 class CommandLog(BaseModel):
@@ -36,8 +30,9 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_list(self):
-        current_year = \
+        current_year = (
             super().get_queryset().filter(current=True).first().financial_year
+        )
         return list(
             super()
             .get_queryset()
@@ -50,17 +45,25 @@ class FinancialYearManager(models.Manager):
         )
 
     def future_year_dictionary(self):
-        current_year = \
+        current_year = (
             super().get_queryset().filter(current=True).first().financial_year
+        )
 
-        return super().get_queryset().filter(financial_year__gt=current_year).\
-            values(
-            "financial_year", "financial_year_display",
-        ).order_by("financial_year")
+        return (
+            super()
+            .get_queryset()
+            .filter(financial_year__gt=current_year)
+            .values(
+                "financial_year",
+                "financial_year_display",
+            )
+            .order_by("financial_year")
+        )
 
 
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""
+
     financial_year = models.IntegerField(primary_key=True)
     financial_year_display = models.CharField(max_length=20)
     current = models.BooleanField(default=False)

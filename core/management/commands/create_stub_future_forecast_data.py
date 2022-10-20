@@ -1,15 +1,10 @@
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode, ProjectCode
-
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_financial_year_obj
 from costcentre.models import CostCentre
-
-from end_of_month.models import (
-    MonthlyTotalBudget,
-)
-
+from end_of_month.models import MonthlyTotalBudget
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,

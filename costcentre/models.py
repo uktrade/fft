@@ -1,10 +1,6 @@
 from django.db import models
 
-from core.metamodels import (
-    ArchivedModel,
-    IsActiveModel,
-)
-
+from core.metamodels import ArchivedModel, IsActiveModel
 from treasurySS.models import Segment
 
 
@@ -162,12 +158,12 @@ class CostCentre(IsActiveModel):
         verbose_name = "Cost Centre"
         verbose_name_plural = "Cost Centres"
         ordering = ["cost_centre_code"]
-        default_permissions = ('change', 'add')
+        default_permissions = ("change", "add")
         permissions = (
-            ('edit_forecast_all_cost_centres', 'Edit all cost centres'),
+            ("edit_forecast_all_cost_centres", "Edit all cost centres"),
             (
-                'assign_edit_for_own_cost_centres',
-                'Assign edit cost centre for own cost centres',
+                "assign_edit_for_own_cost_centres",
+                "Assign edit cost centre for own cost centres",
             ),
         )
 
@@ -201,14 +197,14 @@ class ArchivedCostCentre(ArchivedModel):
         null=True,
         blank=True,
     )
-    treasury_segment_code = models.CharField(max_length=8,
-                                             verbose_name="Treasury segment code",
-                                             null=True, blank=True)
+    treasury_segment_code = models.CharField(
+        max_length=8, verbose_name="Treasury segment code", null=True, blank=True
+    )
     active = models.BooleanField(default="True")
     disabled_with_actual = models.BooleanField(
         "Disabled (Actuals to be cleared)", default="False"
     )
-    chart_of_account_code_name = 'cost_centre_code'
+    chart_of_account_code_name = "cost_centre_code"
 
     @classmethod
     def archive_year(cls, cc_obj, year_obj, suffix=""):

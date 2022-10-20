@@ -3,11 +3,8 @@ import os
 from django.core.management.base import CommandError
 
 from core.utils.command_helpers import CommandUpload
-
 from costcentre.import_segment_data_to_archive import import_segment_group
-
 from previous_years.utils import ArchiveYearError
-
 from treasurySS.import_segment_data_to_archive import WrongHeaderException
 
 

@@ -1,11 +1,7 @@
 import os
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-
+from core.utils.command_helpers import CommandUpload
 from forecast.import_actuals import upload_trial_balance_report
-
 from upload_file.models import FileUpload
 
 
@@ -21,7 +17,7 @@ class Command(CommandUpload):
         path = options["path"]
         month = options["month"]
         year = options["financial_year"]
-        file_name = self.path_to_upload(path, 'xlsx')
+        file_name = self.path_to_upload(path, "xlsx")
 
         fileobj = FileUpload(
             document_file_name=file_name,
@@ -34,9 +30,5 @@ class Command(CommandUpload):
             os.remove(file_name)
 
         self.stdout.write(
-            self.style.SUCCESS(
-                "Actual for period {} added".format(
-                    month
-                )
-            )
+            self.style.SUCCESS("Actual for period {} added".format(month))
         )

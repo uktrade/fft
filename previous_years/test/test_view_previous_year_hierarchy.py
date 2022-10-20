@@ -1,21 +1,19 @@
 from bs4 import BeautifulSoup
-
 from django.urls import reverse
 
 from forecast.test.test_utils import (
-    TOTAL_COLUMN,
-    SPEND_TO_DATE_COLUMN,
-    UNDERSPEND_COLUMN,
+    EXPENDITURE_TABLE_INDEX,
     HIERARCHY_TABLE_INDEX,
     PROGRAMME_TABLE_INDEX,
-    EXPENDITURE_TABLE_INDEX,
     PROJECT_TABLE_INDEX,
+    SPEND_TO_DATE_COLUMN,
+    TOTAL_COLUMN,
+    UNDERSPEND_COLUMN,
     format_forecast_figure,
 )
-
 from previous_years.test.test_utils import (
     PastYearForecastSetup,
-    hide_adjustment_columns
+    hide_adjustment_columns,
 )
 
 
@@ -40,7 +38,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group_code,
+                    "group_code": self.group_code,
                     "period": self.archived_year,
                 },
             ),
@@ -55,7 +53,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate_code,
+                    "directorate_code": self.directorate_code,
                     "period": self.archived_year,
                 },
             ),
@@ -70,7 +68,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
+                    "cost_centre_code": self.cost_centre_code,
                     "period": self.archived_year,
                 },
             ),
@@ -83,21 +81,24 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
     def check_programme_table(self, table, prog_index=1):
         programme_rows = table.find_all("tr")
         first_prog_cols = programme_rows[2].find_all("td")
-        assert first_prog_cols[prog_index].get_text().strip() == \
-            self.programme_description
-        assert first_prog_cols[prog_index + 1].get_text().strip() == \
-            self.programme_code
+        assert (
+            first_prog_cols[prog_index].get_text().strip() == self.programme_description
+        )
+        assert first_prog_cols[prog_index + 1].get_text().strip() == self.programme_code
 
         last_programme_cols = programme_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_programme_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_programme_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
-        assert last_programme_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_programme_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_programme_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_programme_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_expenditure_table(self, table):
         expenditure_rows = table.find_all("tr")
@@ -108,21 +109,23 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         last_expenditure_cols = expenditure_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_expenditure_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_expenditure_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
-        assert last_expenditure_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_expenditure_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_expenditure_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_expenditure_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_project_table(self, table):
         project_rows = table.find_all("tr")
         first_project_cols = project_rows[2].find_all("td")
 
-        assert first_project_cols[0].get_text().strip() == \
-            self.project_description
+        assert first_project_cols[0].get_text().strip() == self.project_description
         assert first_project_cols[1].get_text().strip() == self.project_code
         assert first_project_cols[3].get_text().strip() == format_forecast_figure(
             self.budget
@@ -130,36 +133,43 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         last_project_cols = project_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_project_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_project_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
-        assert last_project_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_project_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_project_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_project_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_hierarchy_table(self, table, hierarchy_element, offset):
         hierarchy_rows = table.find_all("tr")
         first_hierarchy_cols = hierarchy_rows[2].find_all("td")
-        assert first_hierarchy_cols[1 + offset].get_text().strip() == \
-            hierarchy_element
+        assert first_hierarchy_cols[1 + offset].get_text().strip() == hierarchy_element
         budget_col = 3 + offset
-        assert first_hierarchy_cols[budget_col].get_text().strip() == \
-            format_forecast_figure(self.budget)
-        assert first_hierarchy_cols[budget_col + 1].get_text().strip() == \
-            format_forecast_figure(self.outturn["apr"])
+        assert first_hierarchy_cols[
+            budget_col
+        ].get_text().strip() == format_forecast_figure(self.budget)
+        assert first_hierarchy_cols[
+            budget_col + 1
+        ].get_text().strip() == format_forecast_figure(self.outturn["apr"])
 
         last_hierarchy_cols = hierarchy_rows[-1].find_all("td")
         # Check the total for the year
-        assert last_hierarchy_cols[TOTAL_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.year_total)
+        assert last_hierarchy_cols[
+            TOTAL_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.year_total)
         # Check the difference between budget and year total
-        assert last_hierarchy_cols[UNDERSPEND_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.underspend_total)
+        assert last_hierarchy_cols[
+            UNDERSPEND_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.underspend_total)
         # Check the spend to date
-        assert last_hierarchy_cols[SPEND_TO_DATE_COLUMN].get_text().strip() == \
-            format_forecast_figure(self.spend_to_date_total)
+        assert last_hierarchy_cols[
+            SPEND_TO_DATE_COLUMN
+        ].get_text().strip() == format_forecast_figure(self.spend_to_date_total)
 
     def check_negative_value_formatted(self, soup):
         negative_values = soup.find_all("span", class_="negative")
@@ -170,7 +180,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_cost_centre",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
+                    "cost_centre_code": self.cost_centre_code,
                     "period": self.archived_year,
                 },
             ),
@@ -193,8 +203,9 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         self.check_negative_value_formatted(soup)
 
-        self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre_name, 0)
+        self.check_hierarchy_table(
+            tables[HIERARCHY_TABLE_INDEX], self.cost_centre_name, 0
+        )
 
         # Check that the second table displays the programme and the correct totals
         # The programme table in the cost centre does not show the 'View'
@@ -212,7 +223,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_directorate",
                 kwargs={
-                    'directorate_code': self.directorate_code,
+                    "directorate_code": self.directorate_code,
                     "period": self.archived_year,
                 },
             ),
@@ -234,8 +245,9 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         self.check_negative_value_formatted(soup)
 
-        self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.cost_centre_name, 0)
+        self.check_hierarchy_table(
+            tables[HIERARCHY_TABLE_INDEX], self.cost_centre_name, 0
+        )
 
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
@@ -251,7 +263,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
             reverse(
                 "forecast_group",
                 kwargs={
-                    'group_code': self.group_code,
+                    "group_code": self.group_code,
                     "period": self.archived_year,
                 },
             ),
@@ -273,8 +285,9 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         self.check_negative_value_formatted(soup)
 
-        self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.directorate_name, 0)
+        self.check_hierarchy_table(
+            tables[HIERARCHY_TABLE_INDEX], self.directorate_name, 0
+        )
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 
@@ -310,8 +323,7 @@ class ViewForecastHierarchyTest(PastYearForecastSetup):
 
         self.check_negative_value_formatted(soup)
 
-        self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX],
-                                   self.group_name, 0)
+        self.check_hierarchy_table(tables[HIERARCHY_TABLE_INDEX], self.group_name, 0)
         # Check that the second table displays the programme and the correct totals
         self.check_programme_table(tables[PROGRAMME_TABLE_INDEX])
 

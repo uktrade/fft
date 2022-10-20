@@ -8,6 +8,7 @@ from previous_years.models import (
     ArchivedForecastData,
 )
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,7 +38,7 @@ def copy_previous_year_actuals_to_monthly_figure(period_obj, financial_year):
         f"(created, updated, archived,"
         f"budget,"
         f'apr, may, jun, jul, aug, sep, oct, nov, "dec", jan, feb, mar, '
-        f'adj1, adj2, adj3,'
+        f"adj1, adj2, adj3,"
         f"financial_code_id, financial_year_id)"
         f"SELECT now(), now(), now(), "
         f"0, "

@@ -3,13 +3,10 @@ from io import StringIO
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
-
-from costcentre.test.factories import CostCentreFactory
-
-from forecast.permission_shortcuts import assign_perm
-
 from core.remove_users import delete_user
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
+from costcentre.test.factories import CostCentreFactory
+from forecast.permission_shortcuts import assign_perm
 
 
 class CostCentrePermissionsCommandsTest(TestCase):
@@ -48,7 +45,10 @@ class CostCentrePermissionsCommandsTest(TestCase):
         self.test_user.refresh_from_db()
 
         assert (
-            self.test_user.has_perm("change_costcentre", self.cost_centre,)
+            self.test_user.has_perm(
+                "change_costcentre",
+                self.cost_centre,
+            )
             is False
         )
         assert self.test_user.is_active is False

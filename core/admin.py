@@ -3,7 +3,6 @@ import io
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin.models import LogEntry
-
 from django.core.files.uploadhandler import (
     MemoryFileUploadHandler,
     TemporaryFileUploadHandler,
@@ -13,24 +12,18 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from core.export_data import export_logentry_iterator
-from core.models import (
-    CommandLog,
-    FinancialYear,
-)
+from core.models import CommandLog, FinancialYear
 from core.utils.export_helpers import (
     export_csv_from_import,
     export_to_csv,
     export_to_excel,
 )
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-    log_object_change,
-)
+from core.utils.generic_helpers import get_current_financial_year, log_object_change
 
 
 class AdminActiveField(admin.ModelAdmin):
     """Admin class including the
-    handling for the active flag """
+    handling for the active flag"""
 
     def change_active_flag(self, request, queryset, new_active_value):
         if new_active_value is True:
@@ -41,7 +34,9 @@ class AdminActiveField(admin.ModelAdmin):
 
         for obj in q:
             log_object_change(
-                request.user.id, msg, obj=obj,
+                request.user.id,
+                msg,
+                obj=obj,
             )
 
         rows_updated = q.update(active=new_active_value)
@@ -69,7 +64,7 @@ class AdminEditOnly(admin.ModelAdmin):
     """Admin class removing edit on
     the model useful for structures
     created elsewhere, where DIT
-    wants to add useful tags """
+    wants to add useful tags"""
 
     # Remove delete from the list of action
     def get_actions(self, request):
@@ -92,7 +87,7 @@ class AdminReadOnly(AdminEditOnly):
     """Admin class removing create/edit/delete
     on the model useful for structures
     created elsewhere and not changeable
-    by DIT, like the Treasury """
+    by DIT, like the Treasury"""
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -110,7 +105,8 @@ class AdminExport(admin.ModelAdmin):
 
     def export_all_xls(self, request):
         log_object_change(
-            request.user.id, f"Export all as .xlsx from {self.__class__.__name__}",
+            request.user.id,
+            f"Export all as .xlsx from {self.__class__.__name__}",
         )
 
         try:
@@ -121,7 +117,8 @@ class AdminExport(admin.ModelAdmin):
 
     def export_selection_xlsx(self, _, request, queryset):
         log_object_change(
-            request.user.id, "Export selection as .xlsx",
+            request.user.id,
+            "Export selection as .xlsx",
         )
 
         # _ is required because the
@@ -148,7 +145,7 @@ class AdminExport(admin.ModelAdmin):
 
 class CsvImportForm(forms.Form):
     """Form used to get the file
-     to upload for importing data"""
+    to upload for importing data"""
 
     def __init__(self, header_list, form_title, *args, **kwargs):
         # Form title and header list are
@@ -180,7 +177,8 @@ class AdminImportExport(AdminExport):
 
     def export_csv(self, request):
         log_object_change(
-            request.user.id, "Export CSV",
+            request.user.id,
+            "Export CSV",
         )
 
         e = export_csv_from_import(self.import_info.key)
@@ -188,7 +186,8 @@ class AdminImportExport(AdminExport):
 
     def process_csv(self, request, import_info):
         log_object_change(
-            request.user.id, "Processing CSV",
+            request.user.id,
+            "Processing CSV",
         )
 
         import_file = request.FILES["csv_file"]
@@ -214,7 +213,8 @@ class AdminImportExport(AdminExport):
 
     def generic_import_csv(self, request, import_info):
         log_object_change(
-            request.user.id, f"Import CSV: '{import_info.form_title}'",
+            request.user.id,
+            f"Import CSV: '{import_info.form_title}'",
         )
 
         header_list = import_info.header_list
@@ -226,7 +226,12 @@ class AdminImportExport(AdminExport):
         request.upload_handlers.insert(0, MemoryFileUploadHandler(request))
 
         if request.method == "POST":
-            form = CsvImportForm(header_list, form_title, request.POST, request.FILES,)
+            form = CsvImportForm(
+                header_list,
+                form_title,
+                request.POST,
+                request.FILES,
+            )
             if form.is_valid():
                 success, message = self.process_csv(request, import_info)
                 if success:
@@ -254,7 +259,7 @@ class AdminImportExtraExport(AdminImportExport):
 
 
 class LogEntryAdmin(AdminReadOnly, AdminExport):
-    """ Display the Admin log in the Admin interface"""
+    """Display the Admin log in the Admin interface"""
 
     date_hierarchy = "action_time"
 
@@ -335,8 +340,7 @@ class CustomLogModelAdmin(AdminReadOnly, AdminExport):
     # make everything readonly
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            self.readonly_fields = [field.name for field in
-                                    obj.__class__._meta.fields]
+            self.readonly_fields = [field.name for field in obj.__class__._meta.fields]
         return self.readonly_fields
 
     @property

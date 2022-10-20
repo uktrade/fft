@@ -8,19 +8,15 @@ from core.test.test_base import TEST_EMAIL
 
 class ArchivePermissionsTest(TestCase):
     def test_can_archive_end_of_month(self):
-        test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         assert not has_end_of_month_archive_permissions(test_user)
 
-        group, created = Group.objects.get_or_create(name='Finance Administrator')
+        group, created = Group.objects.get_or_create(name="Finance Administrator")
         test_user.groups.add(group)
         test_user.save()
 
         # Bust permissions cache (refresh_from_db does not work)
-        test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         assert has_end_of_month_archive_permissions(test_user)

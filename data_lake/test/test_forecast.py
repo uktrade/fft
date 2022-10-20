@@ -1,8 +1,5 @@
 from data_lake.test.utils import DataLakeTesting
-
-from end_of_month.test.test_utils import (
-    SetFullYearArchive,
-)
+from end_of_month.test.test_utils import SetFullYearArchive
 
 
 class ForecastTests(DataLakeTesting):
@@ -11,7 +8,7 @@ class ForecastTests(DataLakeTesting):
         self.url_name = "data_lake_forecast"
         response = self.get_data()
 
-        assert response['Content-Type'] == 'text/csv'
+        assert response["Content-Type"] == "text/csv"
         rows = response.content.decode("utf-8").split("\n")
 
         cols = rows[0].split(",")

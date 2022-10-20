@@ -1,9 +1,8 @@
-from data_lake.test.utils import DataLakeTesting
-
 from chartofaccountDIT.test.factories import (
-    HistoricalAnalysis2Factory,
     Analysis2Factory,
+    HistoricalAnalysis2Factory,
 )
+from data_lake.test.utils import DataLakeTesting
 
 
 class Analysis2CodeTests(DataLakeTesting):

@@ -1,12 +1,10 @@
 from io import StringIO
 
 from bs4 import BeautifulSoup
-
 from django.core.management import call_command
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import ExpenditureCategoryFactory
-
 from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
@@ -21,7 +19,10 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
         call_command(
-            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Expenditure_Cat",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
     def test_view_historical_financecategory(self):
@@ -50,7 +51,10 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
     def test_view_filtered_historical_financecategory(self):
         filter_parameter = "?search_all=" + self.grouping_description
         response = self.client.get(
-            reverse("historical_finance_category", kwargs={"year": self.archive_year},)
+            reverse(
+                "historical_finance_category",
+                kwargs={"year": self.archive_year},
+            )
             + filter_parameter,
         )
         self.assertEqual(response.status_code, 200)

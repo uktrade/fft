@@ -2,9 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-
 from django_filters.views import FilterView
-
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
 
@@ -65,7 +63,7 @@ class FAdminFilteredView(
                 "th": {"class": "govuk-table__header", "a": {"class": "govuk-link"}},
                 "td": {"class": "govuk-table__cell", "a": {"class": "govuk-link"}},
                 "a": {"class": "govuk-link"},
-            }
+            },
         }
 
     def __init__(self, *args, **kwargs):

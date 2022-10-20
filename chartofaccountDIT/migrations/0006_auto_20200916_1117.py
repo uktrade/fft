@@ -6,48 +6,96 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0005_auto_20200828_1209'),
+        ("chartofaccountDIT", "0005_auto_20200828_1209"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='analysis1',
-            name='pc_reference',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='PC Reference'),
+            model_name="analysis1",
+            name="pc_reference",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="PC Reference",
+            ),
         ),
         migrations.AlterField(
-            model_name='analysis1',
-            name='supplier',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='Supplier'),
+            model_name="analysis1",
+            name="supplier",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="Supplier",
+            ),
         ),
         migrations.AlterField(
-            model_name='archivedanalysis1',
-            name='pc_reference',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='PC Reference'),
+            model_name="archivedanalysis1",
+            name="pc_reference",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="PC Reference",
+            ),
         ),
         migrations.AlterField(
-            model_name='archivedanalysis1',
-            name='supplier',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='Supplier'),
+            model_name="archivedanalysis1",
+            name="supplier",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="Supplier",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryanalysis1',
-            name='pc_reference',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='PC Reference'),
+            model_name="simplehistoryanalysis1",
+            name="pc_reference",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="PC Reference",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryanalysis1',
-            name='supplier',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='Supplier'),
+            model_name="simplehistoryanalysis1",
+            name="supplier",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="Supplier",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedanalysis1',
-            name='pc_reference',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='PC Reference'),
+            model_name="simplehistoryarchivedanalysis1",
+            name="pc_reference",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="PC Reference",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedanalysis1',
-            name='supplier',
-            field=models.CharField(blank=True, default='', max_length=300, null=True, verbose_name='Supplier'),
+            model_name="simplehistoryarchivedanalysis1",
+            name="supplier",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=300,
+                null=True,
+                verbose_name="Supplier",
+            ),
         ),
     ]

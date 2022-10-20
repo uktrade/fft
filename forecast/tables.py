@@ -1,9 +1,8 @@
 from collections import OrderedDict
 
+import django_tables2 as tables
 from django.urls import reverse
 from django.utils.html import format_html
-
-import django_tables2 as tables
 
 from forecast.models import FinancialPeriod
 from forecast.utils.view_field_definition import (
@@ -16,8 +15,8 @@ from forecast.utils.view_header_definition import (
     budget_spent_percentage_header,
     forecast_total_header,
     variance_header,
-    variance_percentage_header,
     variance_outturn_header,
+    variance_percentage_header,
     year_to_date_header,
 )
 
@@ -130,7 +129,12 @@ class ForecastSubTotalTable(tables.Table):
         # Only add the month columns here. If you add the adjustments too,
         # their columns will always be displayed
         for month in FinancialPeriod.financial_period_info.month_display_list():
-            cols.append((month, tables.Column(month, empty_values=()),))
+            cols.append(
+                (
+                    month,
+                    tables.Column(month, empty_values=()),
+                )
+            )
             year_period_list.append(month)
 
         self.base_columns.update(OrderedDict(cols))
@@ -151,7 +155,14 @@ class ForecastSubTotalTable(tables.Table):
                 for (k, v) in column_dict.items()
                 if k != self.column_name
             ]
-            extra_column_to_display.extend([(self.column_name, self.link_col,)])
+            extra_column_to_display.extend(
+                [
+                    (
+                        self.column_name,
+                        self.link_col,
+                    )
+                ]
+            )
         else:
             extra_column_to_display = [
                 (k, tables.Column(v)) for (k, v) in column_dict.items()
@@ -172,11 +183,21 @@ class ForecastSubTotalTable(tables.Table):
             for adj in adj_list:
                 year_period_list.append(adj)
                 extra_column_to_display.extend(
-                    [(adj, tables.Column(adj, empty_values=()),)]
+                    [
+                        (
+                            adj,
+                            tables.Column(adj, empty_values=()),
+                        )
+                    ]
                 )
 
         extra_column_to_display.extend(
-            [(outturn_field, tables.Column(forecast_total_header, empty_values=()),)]
+            [
+                (
+                    outturn_field,
+                    tables.Column(forecast_total_header, empty_values=()),
+                )
+            ]
         )
         if show_monthly_variance:
             extra_column_to_display.extend(
@@ -192,7 +213,10 @@ class ForecastSubTotalTable(tables.Table):
                 (
                     "spend",
                     SubtractCol(
-                        "Budget", outturn_field, variance_header, empty_values=(),
+                        "Budget",
+                        outturn_field,
+                        variance_header,
+                        empty_values=(),
                     ),
                 ),
                 (
@@ -210,7 +234,9 @@ class ForecastSubTotalTable(tables.Table):
                     (
                         "year_to_date",
                         SummingMonthCol(
-                            actual_month_list, year_to_date_header, empty_values=(),
+                            actual_month_list,
+                            year_to_date_header,
+                            empty_values=(),
                         ),
                     ),
                     (
@@ -275,7 +301,9 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
             link_args.append(tables.A(str(item)))
 
         self.link_col = ForecastLinkCol(
-            column_dict.get(column_name), column_name, attrs={"class": "govuk-link"},
+            column_dict.get(column_name),
+            column_name,
+            attrs={"class": "govuk-link"},
         )
         self.link_col.viewname = viewname
         self.link_col.link_args = link_args

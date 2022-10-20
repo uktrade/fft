@@ -1,41 +1,30 @@
-from bs4 import BeautifulSoup
-
 from datetime import datetime
 
-from django.contrib.auth.models import (
-    Permission,
-)
+from bs4 import BeautifulSoup
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 
-from chartofaccountDIT.test.factories import (
-    NaturalCodeFactory,
-    ProgrammeCodeFactory,
-)
-
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
-
-from forecast.views.edit_forecast import (
-    UNAVAILABLE_FORECAST_EDIT_TITLE,
-    UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE,
-)
+from costcentre.test.factories import CostCentreFactory
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
-    ForecastMonthlyFigure,
     ForecastEditState,
+    ForecastMonthlyFigure,
     FutureForecastEditState,
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import FinancialCodeFactory
 from forecast.test.test_edit_forecast_views import AddForecastRowTest
+from forecast.views.edit_forecast import (
+    UNAVAILABLE_FORECAST_EDIT_TITLE,
+    UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE,
+)
 
 
 class AddFutureForecastRowTest(AddForecastRowTest):

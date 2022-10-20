@@ -4,13 +4,7 @@ import hashlib
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import models
-from django.db.models import (
-    Max,
-    F,
-    Q,
-    Sum,
-    UniqueConstraint,
-)
+from django.db.models import F, Max, Q, Sum, UniqueConstraint
 from django.template.defaultfilters import slugify
 
 # https://github.com/martsberger/django-pivot/blob/master/django_pivot/pivot.py
@@ -24,19 +18,21 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.metamodels import BaseModel
 from core.models import FinancialYear
-from core.utils.generic_helpers import GRAND_TOTAL_CLASS, SUB_TOTAL_CLASS, TOTAL_CLASS
-from core.utils.generic_helpers import get_current_financial_year
-
+from core.utils.generic_helpers import (
+    GRAND_TOTAL_CLASS,
+    SUB_TOTAL_CLASS,
+    TOTAL_CLASS,
+    get_current_financial_year,
+)
 from costcentre.models import CostCentre
-
 from forecast.utils.view_field_definition import (
     budget_field,
     outturn_field,
     outturn_variance_field,
 )
+
 
 GRAND_TOTAL_ROW = "grand_total"
 MAX_PERIOD_CODE = 15
@@ -54,26 +50,26 @@ class ForecastEditState(BaseModel):
     closed = models.BooleanField(
         default=False,
         help_text="Ticking this option will close editing access "
-                  "to all non finance staff. Forecast editing is still "
-                  "available to Finance business partners/BSCEs and admin."
+        "to all non finance staff. Forecast editing is still "
+        "available to Finance business partners/BSCEs and admin.",
     )
     lock_date = models.DateField(
         null=True,
         blank=True,
         verbose_name="Lock system",
         help_text="The system is locked from the date entered. "
-                  "The system will remain locked to users without "
-                  "'unlocked' user status, until the date is removed "
-                  "from the input field above. Please remember to archive the "
-                  "data after locking the forecast.",
+        "The system will remain locked to users without "
+        "'unlocked' user status, until the date is removed "
+        "from the input field above. Please remember to archive the "
+        "data after locking the forecast.",
     )
 
     def __str__(self):
-        return 'Forecast edit state'
+        return "Forecast edit state"
 
     class Meta:
         verbose_name_plural = "Forecast edit state"
-        default_permissions = ('view', 'change')
+        default_permissions = ("view", "change")
         permissions = [
             ("can_set_edit_lock", "Can set edit lock"),
             (
@@ -91,25 +87,25 @@ class FutureForecastEditState(BaseModel):
     closed = models.BooleanField(
         default=False,
         help_text="Ticking this option will close future forecast editing access "
-                  "to all non finance staff. Future forecast editing is still "
-                  "available to Finance business partners/BSCEs and admin."
+        "to all non finance staff. Future forecast editing is still "
+        "available to Finance business partners/BSCEs and admin.",
     )
     lock_date = models.DateField(
         null=True,
         blank=True,
         verbose_name="Lock future forecast",
         help_text="The future forecast editing is locked from the date entered. "
-                  "The future forecast editing will remain locked to users without "
-                  "'unlocked' user status, until the date is removed "
-                  "from the input field above.",
+        "The future forecast editing will remain locked to users without "
+        "'unlocked' user status, until the date is removed "
+        "from the input field above.",
     )
 
     def __str__(self):
-        return 'Future forecast edit state'
+        return "Future forecast edit state"
 
     class Meta:
         verbose_name_plural = "Future forecast edit state"
-        default_permissions = ('view', 'change')
+        default_permissions = ("view", "change")
         permissions = [
             ("can_set_future_edit_lock", "Can set future edit lock"),
             (
@@ -125,9 +121,7 @@ class FutureForecastEditState(BaseModel):
 
 class UnlockedForecastEditor(BaseModel):
     user = models.ForeignKey(
-        get_user_model(),
-        on_delete=models.CASCADE,
-        related_name="users"
+        get_user_model(), on_delete=models.CASCADE, related_name="users"
     )
 
     def __str__(self):
@@ -168,10 +162,7 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def month_adj_display_list(self):
-        return list(
-            self.get_queryset()
-            .values_list("period_short_name", flat=True)
-        )
+        return list(self.get_queryset().values_list("period_short_name", flat=True))
 
     def adj_display_list(self):
         return list(
@@ -195,10 +186,7 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def period_display_all_list(self):
-        return list(
-            self.get_queryset()
-            .values_list("period_short_name", flat=True)
-        )
+        return list(self.get_queryset().values_list("period_short_name", flat=True))
 
     def period_display_code_list(self):
         return list(
@@ -211,7 +199,7 @@ class FinancialPeriodManager(models.Manager):
         if month > MAX_PERIOD_CODE:
             # needed for displaying previous year outturn
             month = MAX_PERIOD_CODE
-        return self.period_display_list()[: month]
+        return self.period_display_list()[:month]
 
     def actual_month(self):
         # use the Max to protect us from the situation of
@@ -228,7 +216,10 @@ class FinancialPeriodManager(models.Manager):
         return list(
             self.get_queryset()
             .filter(financial_period_code__lte=last_actual_month)
-            .values_list("financial_period_code", flat=True,)
+            .values_list(
+                "financial_period_code",
+                flat=True,
+            )
         )
 
     def forecast_period_code_list(self):
@@ -236,7 +227,10 @@ class FinancialPeriodManager(models.Manager):
         return list(
             self.get_queryset()
             .filter(financial_period_code__gt=last_actual_month)
-            .values_list("financial_period_code", flat=True,)
+            .values_list(
+                "financial_period_code",
+                flat=True,
+            )
         )
 
     def actual_month_previous_year(self):
@@ -279,7 +273,9 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def reset_actuals(self):
-        self.get_queryset().filter(actual_loaded=True,).update(actual_loaded=False,)
+        self.get_queryset().filter(actual_loaded=True,).update(
+            actual_loaded=False,
+        )
 
     def get_max_period(self):
         return self.get_queryset().order_by("-financial_period_code").first()
@@ -314,6 +310,7 @@ class FinancialPeriod(BaseModel):
 
 class FinancialCodeAbstract(models.Model):
     """Contains the members of Chart of Account needed to create a unique key"""
+
     class Meta:
         abstract = True
         # Several constraints required, to cover all the permutations of
@@ -409,7 +406,11 @@ class FinancialCodeAbstract(models.Model):
                 & Q(project_code__isnull=True),
             ),
             UniqueConstraint(
-                fields=["programme", "cost_centre", "natural_account_code", ],
+                fields=[
+                    "programme",
+                    "cost_centre",
+                    "natural_account_code",
+                ],
                 name="financial_row_unique_3",
                 condition=Q(analysis1_code__isnull=True)
                 & Q(analysis2_code__isnull=True)
@@ -461,25 +462,37 @@ class FinancialCode(FinancialCodeAbstract, BaseModel):
     )
 
     def human_readable_format(self):
-        cost_centre = f"(Cost Centre: {self.cost_centre.cost_centre_code}" \
-                      f"-{self.cost_centre.cost_centre_name})"
-        nac = f"(NAC: {self.natural_account_code.natural_account_code}" \
-              f"-{self.natural_account_code.natural_account_code_description})"
-        programme = f"(Programme: {self.programme.programme_code}" \
-                    f"-{self.programme.programme_description})"
+        cost_centre = (
+            f"(Cost Centre: {self.cost_centre.cost_centre_code}"
+            f"-{self.cost_centre.cost_centre_name})"
+        )
+        nac = (
+            f"(NAC: {self.natural_account_code.natural_account_code}"
+            f"-{self.natural_account_code.natural_account_code_description})"
+        )
+        programme = (
+            f"(Programme: {self.programme.programme_code}"
+            f"-{self.programme.programme_description})"
+        )
         if self.project_code:
-            project = f"(Project: {self.project_code.project_code}" \
-                      f"-{self.project_code.project_description})"
+            project = (
+                f"(Project: {self.project_code.project_code}"
+                f"-{self.project_code.project_description})"
+            )
         else:
             project = ""
         if self.analysis1_code:
-            analysis1 = f"(Contract: {self.analysis1_code.analysis1_code}" \
-                        f"-{self.analysis1_code.analysis1_description})"
+            analysis1 = (
+                f"(Contract: {self.analysis1_code.analysis1_code}"
+                f"-{self.analysis1_code.analysis1_description})"
+            )
         else:
             analysis1 = ""
         if self.analysis2_code:
-            analysis2 = f"(Market: {self.analysis2_code.analysis2_code}" \
-                        f"-{self.analysis2_code.analysis2_description})"
+            analysis2 = (
+                f"(Market: {self.analysis2_code.analysis2_code}"
+                f"-{self.analysis2_code.analysis2_description})"
+            )
         else:
             analysis2 = ""
         return f"{cost_centre}{nac}{programme}{analysis1}{analysis2}{project}"
@@ -565,14 +578,15 @@ class SubTotalForecast:
                     self.display_total_column
                 ] = f"Total {self.previous_values[column]}"
                 show_class = TOTAL_CLASS
-                for out_total in self.subtotal_columns[level + 1:]:
+                for out_total in self.subtotal_columns[level + 1 :]:
                     subtotal_row[self.display_total_column] = (
                         f"{subtotal_row[self.display_total_column]} "
                         f"{self.previous_values[out_total]}"
                     )
                     show_class = SUB_TOTAL_CLASS
                 self.output_row_to_table(
-                    subtotal_row, show_class,
+                    subtotal_row,
+                    show_class,
                 )
                 self.clear_row(self.subtotals[column])
                 self.previous_values[column] = current_row[column]
@@ -581,7 +595,10 @@ class SubTotalForecast:
                 break
 
     def calculate_subtotal_data(
-        self, display_total_column, subtotal_columns_arg, show_grand_total,
+        self,
+        display_total_column,
+        subtotal_columns_arg,
+        show_grand_total,
     ):
         # Make a copy so that modifying this will not touch
         # the original subtotal_columns_arg
@@ -663,13 +680,14 @@ class SubTotalForecast:
             level = self.subtotal_columns.index(column)
             caption = f"Total {self.previous_values[column]}"
             show_class = TOTAL_CLASS
-            for out_total in self.subtotal_columns[level + 1:]:
+            for out_total in self.subtotal_columns[level + 1 :]:
                 caption = f"{caption} {self.previous_values[out_total]}"
                 show_class = SUB_TOTAL_CLASS
 
             self.subtotals[column][self.display_total_column] = caption
             self.output_row_to_table(
-                self.subtotals[column], show_class,
+                self.subtotals[column],
+                show_class,
             )
         if show_grand_total:
             self.subtotals[GRAND_TOTAL_ROW][
@@ -693,7 +711,10 @@ class PivotManager(models.Manager):
             .order_by(*order_list)
         )
         pivot_data = pivot(
-            q1, columns, "financial_period__period_short_name", "amount",
+            q1,
+            columns,
+            "financial_period__period_short_name",
+            "amount",
         )
         return pivot_data
 
@@ -742,12 +763,12 @@ class DisplaySubTotalManager(models.Manager):
             return []
         r = SubTotalForecast(raw_data)
         return r.calculate_subtotal_data(
-            display_total_column, subtotal_columns, show_grand_total,
+            display_total_column,
+            subtotal_columns,
+            show_grand_total,
         )
 
-    def raw_data_annotated(
-        self, columns, filter_dict={}, year=0, order_list=[]
-    ):
+    def raw_data_annotated(self, columns, filter_dict={}, year=0, order_list=[]):
         annotations = {
             budget_field: Sum("budget"),
             "Apr": Sum("apr"),
@@ -816,8 +837,8 @@ class DisplaySubTotalManager(models.Manager):
         if dont_use_cache:
             raw_data = (
                 self.get_queryset()
-                    .values(*columns)
-                    .filter(
+                .values(*columns)
+                .filter(
                     year_filter,
                     **filter_dict,
                 )
@@ -826,7 +847,7 @@ class DisplaySubTotalManager(models.Manager):
             )
         else:
             # Get previous year from cache if possible
-            query_key = f'{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}'  # noqa
+            query_key = f"{self.model._meta.db_table}_{str(columns)}_{str(filter_dict)}_{str(year)}"  # noqa
             key_slug = slugify(query_key)
             cache_key = hashlib.md5(str.encode(key_slug)).hexdigest()
             try:
@@ -834,7 +855,7 @@ class DisplaySubTotalManager(models.Manager):
 
                 if raw_data:
                     return raw_data
-            except:     # noqa E722
+            except:  # noqa E722
                 pass
 
             raw_data = (
@@ -855,7 +876,7 @@ class DisplaySubTotalManager(models.Manager):
                     raw_data,
                     cache_invalidation_time,
                 )
-            except:     # noqa E722
+            except:  # noqa E722
                 pass
 
         return raw_data
@@ -871,8 +892,13 @@ class ForecastingDataViewAbstract(models.Model):
     Mapped to a view in the database, because
     the query is too complex"""
 
-    id = models.IntegerField(primary_key=True,)
-    financial_code = models.ForeignKey(FinancialCode, on_delete=models.DO_NOTHING,)
+    id = models.IntegerField(
+        primary_key=True,
+    )
+    financial_code = models.ForeignKey(
+        FinancialCode,
+        on_delete=models.DO_NOTHING,
+    )
     financial_year = models.IntegerField()
     budget = models.BigIntegerField(default=0)
     apr = models.BigIntegerField(default=0)
@@ -890,7 +916,11 @@ class ForecastingDataViewAbstract(models.Model):
     adj1 = models.BigIntegerField(default=0)
     adj2 = models.BigIntegerField(default=0)
     adj3 = models.BigIntegerField(default=0)
-    previous_outturn = models.BigIntegerField(default=0, blank=True, null=True,)
+    previous_outturn = models.BigIntegerField(
+        default=0,
+        blank=True,
+        null=True,
+    )
     objects = models.Manager()  # The default manager.
     view_data = DisplaySubTotalManager()
 
@@ -911,7 +941,10 @@ class MonthlyFigureAbstract(BaseModel):
 
     amount = models.BigIntegerField(default=0)  # stored in pence
     id = models.AutoField(primary_key=True)
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
     financial_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
@@ -970,7 +1003,11 @@ class ForecastMonthlyFigure(MonthlyFigureAbstract):
                 condition=Q(archived_status__isnull=False),
             ),
             UniqueConstraint(
-                fields=["financial_code", "financial_year", "financial_period", ],
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                ],
                 name="ForecastMonthlyFigure_unique2",
                 condition=Q(archived_status__isnull=True),
             ),
@@ -981,7 +1018,11 @@ class ActualUploadMonthlyFigure(MonthlyFigureAbstract):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["financial_code", "financial_year", "financial_period", ],
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                ],
                 name="ActualUploadMonthlyFigure_unique1",
             ),
         ]
@@ -1017,10 +1058,11 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
                 condition=Q(archived_status__isnull=False),
             ),
             UniqueConstraint(
-                fields=["financial_code",
-                        "financial_year",
-                        "financial_period",
-                        ],
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                ],
                 name="BudgetMonthlyFigure_unique2",
                 condition=Q(archived_status__isnull=True),
             ),
@@ -1031,10 +1073,11 @@ class BudgetUploadMonthlyFigure(MonthlyFigureAbstract):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["financial_code",
-                        "financial_year",
-                        "financial_period",
-                        ],
+                fields=[
+                    "financial_code",
+                    "financial_year",
+                    "financial_period",
+                ],
                 name="BudgetUploadMonthlyFigure_unique1",
             ),
         ]

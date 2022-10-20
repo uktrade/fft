@@ -1,11 +1,7 @@
 import os
 
-from locust import (
-    HttpLocust,
-    TaskSet,
-    between,
-    task
-)
+from locust import HttpLocust, TaskSet, between, task
+
 
 sso_headers = {
     "Cookie": f"csrftoken={os.environ['CRSF_TOKEN']}; sessionid={os.environ['SESSION_ID']}"  # noqa E501
@@ -26,7 +22,7 @@ class UserBehaviour(TaskSet):
             data={
                 "all_selected": True,
                 "paste_content": paste_content,
-                "csrfmiddlewaretoken": os.environ['CRSF_TOKEN'],
+                "csrfmiddlewaretoken": os.environ["CRSF_TOKEN"],
                 "headers": sso_headers,
             },
         )

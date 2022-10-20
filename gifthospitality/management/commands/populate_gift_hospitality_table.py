@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
 import core
-
 from gifthospitality.models import (
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
@@ -19,27 +18,27 @@ class GiftAndHospitalityCategories:
     def create(self):
         self.clear()
         GiftAndHospitalityCategory.objects.create(
-            gif_hospitality_category='Meeting company to discuss Trade and/or Investment opportunities', # noqa
+            gif_hospitality_category="Meeting company to discuss Trade and/or Investment opportunities",  # noqa
             active=True,
             sequence_no=10,
         )
         GiftAndHospitalityCategory.objects.create(
-            gif_hospitality_category='Attended company event (reception/conference) whom we assisted', # noqa
+            gif_hospitality_category="Attended company event (reception/conference) whom we assisted",  # noqa
             active=True,
             sequence_no=20,
         )
         GiftAndHospitalityCategory.objects.create(
-            gif_hospitality_category='Attended event for networking purpose (getting to know companies/industry)', # noqa
+            gif_hospitality_category="Attended event for networking purpose (getting to know companies/industry)",  # noqa
             active=True,
             sequence_no=30,
         )
         GiftAndHospitalityCategory.objects.create(
-            gif_hospitality_category='Attended to give a speech',
+            gif_hospitality_category="Attended to give a speech",
             active=True,
             sequence_no=40,
         )
         GiftAndHospitalityCategory.objects.create(
-            gif_hospitality_category='Other',
+            gif_hospitality_category="Other",
             active=True,
             sequence_no=2000,
         )
@@ -54,57 +53,57 @@ class GiftAndHospitalityCompanies:
     def create(self):
         self.clear()
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 1',
+            gif_hospitality_company="Company 1",
             active=True,
             sequence_no=10,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 2',
+            gif_hospitality_company="Company 2",
             active=True,
             sequence_no=30,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 3',
+            gif_hospitality_company="Company 3",
             active=True,
             sequence_no=40,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 4',
+            gif_hospitality_company="Company 4",
             active=True,
             sequence_no=90,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 5',
+            gif_hospitality_company="Company 5",
             active=True,
             sequence_no=120,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 6',
+            gif_hospitality_company="Company 6",
             active=True,
             sequence_no=130,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 7',
+            gif_hospitality_company="Company 7",
             active=True,
             sequence_no=150,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 8',
+            gif_hospitality_company="Company 8",
             active=True,
             sequence_no=170,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 9',
+            gif_hospitality_company="Company 9",
             active=True,
             sequence_no=180,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Company 10',
+            gif_hospitality_company="Company 10",
             active=True,
             sequence_no=190,
         )
         GiftAndHospitalityCompany.objects.create(
-            gif_hospitality_company='Other',
+            gif_hospitality_company="Other",
             active=True,
             sequence_no=100000,
         )
@@ -119,62 +118,62 @@ class GiftAndHospitalityClassifications:
     def create(self):
         self.clear()
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Breakfast',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Breakfast",
             active=True,
             sequence_no=10,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Lunch',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Lunch",
             active=True,
             sequence_no=20,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Dinner (Private)',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Dinner (Private)",
             active=True,
             sequence_no=30,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Dinner (Public)',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Dinner (Public)",
             active=True,
             sequence_no=40,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Reception',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Reception",
             active=True,
             sequence_no=50,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Gift',
-            gif_hospitality_classification='Gifts',
+            gift_type="Gift",
+            gif_hospitality_classification="Gifts",
             active=True,
             sequence_no=60,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Sporting/Cultural Event',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Sporting/Cultural Event",
             active=True,
             sequence_no=70,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Hotel',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Hotel",
             active=True,
             sequence_no=80,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Transport',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Transport",
             active=True,
             sequence_no=90,
         )
         GiftAndHospitalityClassification.objects.create(
-            gift_type='Hospitality',
-            gif_hospitality_classification='Drinks',
+            gift_type="Hospitality",
+            gif_hospitality_classification="Drinks",
             active=True,
             sequence_no=100,
         )
@@ -189,53 +188,53 @@ class Grades:
     def create(self):
         self.clear()
         Grade.objects.create(
-            grade='Contractor',
-            gradedescription='Unknown',
+            grade="Contractor",
+            gradedescription="Unknown",
             active=True,
         )
         Grade.objects.create(
-            grade='SEO',
-            gradedescription='SEO',
+            grade="SEO",
+            gradedescription="SEO",
             active=True,
         )
         Grade.objects.create(
-            grade='SCS',
-            gradedescription='Senior Civil Service 1 and 2',
+            grade="SCS",
+            gradedescription="Senior Civil Service 1 and 2",
             active=True,
         )
         Grade.objects.create(
-            grade='HEO',
-            gradedescription='HEO',
+            grade="HEO",
+            gradedescription="HEO",
             active=True,
         )
         Grade.objects.create(
-            grade='Grade 7',
-            gradedescription='Grade 7',
+            grade="Grade 7",
+            gradedescription="Grade 7",
             active=True,
         )
         Grade.objects.create(
-            grade='Grade 6',
-            gradedescription='Grade 6',
+            grade="Grade 6",
+            gradedescription="Grade 6",
             active=True,
         )
         Grade.objects.create(
-            grade='Faststream',
-            gradedescription='Faststream',
+            grade="Faststream",
+            gradedescription="Faststream",
             active=True,
         )
         Grade.objects.create(
-            grade='EO',
-            gradedescription='EO',
+            grade="EO",
+            gradedescription="EO",
             active=True,
         )
         Grade.objects.create(
-            grade='AO',
-            gradedescription='AO',
+            grade="AO",
+            gradedescription="AO",
             active=True,
         )
         Grade.objects.create(
-            grade='AA',
-            gradedescription='AA',
+            grade="AA",
+            gradedescription="AA",
             active=True,
         )
 
@@ -271,9 +270,7 @@ class Command(BaseCommand):
         del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
-                "Successfully completed G and H data creation for {}.".format(
-                    p.name
-                )
+                "Successfully completed G and H data creation for {}.".format(p.name)
             )
         )
 
@@ -284,9 +281,7 @@ class Command(BaseCommand):
         del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
-                "Successfully cleared Gift and Hospitality data for {}.".format(
-                    p.name
-                )
+                "Successfully cleared Gift and Hospitality data for {}.".format(p.name)
             )
         )
 

@@ -1,10 +1,7 @@
-from django.contrib.auth.models import (
-    Permission,
-)
+from django.contrib.auth.models import Permission
 from django.urls import reverse
 
 from core.test.test_base import BaseTestCase
-
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,

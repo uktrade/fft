@@ -1,10 +1,7 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
-from core.utils.command_helpers import (
-    CommandWithUserCheck,
-    get_no_answer,
-)
+from core.utils.command_helpers import CommandWithUserCheck, get_no_answer
 from core.utils.generic_helpers import (
     create_financial_year_display,
     get_current_financial_year,
@@ -21,8 +18,9 @@ class Command(CommandWithUserCheck):
         try:
             call_command(command_name, *arg, **options)
         except CommandError as ex:
-            full_error_message = f"{message} failed. " \
-                                 f"Ex '{ex}'\nMessage: '{self.error_message}'"
+            full_error_message = (
+                f"{message} failed. " f"Ex '{ex}'\nMessage: '{self.error_message}'"
+            )
             self.stdout.write(self.style.ERROR(full_error_message))
             raise CommandError(full_error_message)
             return False

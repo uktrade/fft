@@ -1,9 +1,7 @@
 import factory
-
 from faker import Faker
 
 from core.models import FinancialYear
-
 from costcentre.models import (
     ArchivedCostCentre,
     BSCEEmail,
@@ -13,17 +11,19 @@ from costcentre.models import (
     Directorate,
 )
 
+
 fake = Faker()
 
 
 class DepartmentalGroupFactory(factory.DjangoModelFactory):
     """
-        Define DepartmentalGroup Factory
+    Define DepartmentalGroup Factory
     """
 
     class Meta:
         model = DepartmentalGroup
         django_get_or_create = ("group_code",)
+
     # Remove commas, because they break the test exporting csv data.
     group_name = fake.company().replace("'", " ")
     group_code = str(fake.pyint())
@@ -63,12 +63,12 @@ class BSCEFactory(factory.DjangoModelFactory):
         model = BSCEEmail
         django_get_or_create = ("bsce_email",)
 
-    bsce_email = "bsceuser@test.com"   # /PS-IGNORE
+    bsce_email = "bsceuser@test.com"  # /PS-IGNORE
 
 
 class CostCentreFactory(factory.DjangoModelFactory):
     """
-        Define CostCentre Factory
+    Define CostCentre Factory
     """
 
     class Meta:

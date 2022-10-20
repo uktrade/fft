@@ -1,27 +1,18 @@
-
-from data_lake.test.utils import DataLakeTesting
-
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
 from core.test.test_base import TEST_COST_CENTRE
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-)
-
+from data_lake.test.utils import DataLakeTesting
+from forecast.models import FinancialCode, FinancialPeriod
 from upload_split_file.models import SplitPayActualFigure
 
 
@@ -34,7 +25,8 @@ class ActualSplitTests(DataLakeTesting):
         self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
-            group_code=self.group_code, group_name=group_name,
+            group_code=self.group_code,
+            group_name=group_name,
         )
         directorate_obj = DirectorateFactory(
             directorate_code=self.directorate_code,
@@ -42,7 +34,8 @@ class ActualSplitTests(DataLakeTesting):
             group=group_obj,
         )
         cost_centre_obj = CostCentreFactory(
-            directorate=directorate_obj, cost_centre_code=self.cost_centre_code,
+            directorate=directorate_obj,
+            cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         programme_obj = ProgrammeCodeFactory()
@@ -59,8 +52,9 @@ class ActualSplitTests(DataLakeTesting):
             project_code=project_obj,
         )
         self.financial_code_obj.save
-        financial_period_queryset = \
-            FinancialPeriod.objects.filter(financial_period_code__lt=4)
+        financial_period_queryset = FinancialPeriod.objects.filter(
+            financial_period_code__lt=4
+        )
 
         amount = 0
         for period_obj in financial_period_queryset:
@@ -68,14 +62,14 @@ class ActualSplitTests(DataLakeTesting):
                 financial_period=period_obj,
                 financial_year_id=current_year,
                 financial_code=self.financial_code_obj,
-                amount=amount
+                amount=amount,
             )
             amount += 10000
 
     def test_actual_split_data_returned_in_response(self):
         self.url_name = "data_lake_actual_split"
         response = self.get_data()
-        assert response['Content-Type'] == 'text/csv'
+        assert response["Content-Type"] == "text/csv"
         rows = response.content.decode("utf-8").split("\n")
         cols = rows[0].split(",")
         assert len(cols) == 12

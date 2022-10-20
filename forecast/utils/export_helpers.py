@@ -1,18 +1,10 @@
 from django.http import HttpResponse
-
 from openpyxl import Workbook
 from openpyxl.styles import Protection
-from openpyxl.utils import (
-    column_index_from_string,
-    get_column_letter,
-)
+from openpyxl.utils import column_index_from_string, get_column_letter
 
-from core.utils.export_helpers import (
-    EXCEL_TYPE,
-    EXC_TAB_NAME_LEN,
-)
+from core.utils.export_helpers import EXC_TAB_NAME_LEN, EXCEL_TYPE
 from core.utils.generic_helpers import get_current_financial_year, today_string
-
 from end_of_month.utils import monthly_variance_exists
 from forecast.models import FinancialPeriod
 from forecast.utils.view_field_definition import outturn_variance_field
@@ -45,11 +37,7 @@ def get_obj_value(obj, name):
 
 
 def forecast_query_iterator(
-        queryset,
-        keys_dict,
-        columns_dict,
-        period_list,
-        monthly_variance_dict
+    queryset, keys_dict, columns_dict, period_list, monthly_variance_dict
 ):
     for obj in queryset:
         row = []
@@ -79,7 +67,7 @@ def forecast_query_iterator(
 
 
 def create_headers(
-        keys_dict, columns_dict, period_list, show_monthly_variance, show_spent_to_date
+    keys_dict, columns_dict, period_list, show_monthly_variance, show_spent_to_date
 ):
     k = list(keys_dict.values())
     k.append(budget_header)
@@ -93,7 +81,7 @@ def create_headers(
     return k
 
 
-def export_forecast_to_excel( # noqa C901
+def export_forecast_to_excel(  # noqa C901
     queryset,
     columns_dict,
     extra_columns_dict,
@@ -101,7 +89,7 @@ def export_forecast_to_excel( # noqa C901
     title,
     include_month_total,
     period_to_show,
-    display_monthly_variance
+    display_monthly_variance,
 ):
     resp = HttpResponse(content_type=EXCEL_TYPE)
     filename = f"{title}  {today_string()} .xlsx"

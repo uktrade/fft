@@ -3,12 +3,11 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import reverse
 
 from chartofaccountDIT.forms import ExpenditureTypeForm
-
 from forecast.tables import ForecastSubTotalTable
 from forecast.views.base import (
     CostCentreForecastMixin,
-    DITForecastMixin,
     DirectorateForecastMixin,
+    DITForecastMixin,
     ForecastViewPermissionMixin,
     ForecastViewTableMixin,
     GroupForecastMixin,
@@ -16,42 +15,48 @@ from forecast.views.base import (
 
 
 class ForecastExpenditureDetailsMixin(ForecastViewTableMixin):
-
     def class_name(self):
         return "wide-table"
 
     def expenditure_category(self):
-        return self.field_infos.\
-            expenditure_category(self.kwargs["expenditure_category"],)
+        return self.field_infos.expenditure_category(
+            self.kwargs["expenditure_category"],
+        )
 
     def budget_type(self):
         return self.kwargs["budget_type"]
 
     def expenditure_type_form(self):
         return ExpenditureTypeForm(
-            expenditure_category=self.kwargs["expenditure_category"],
-            year=self.year
+            expenditure_category=self.kwargs["expenditure_category"], year=self.year
         )
 
     def post(self, request, *args, **kwargs):
-        self.selected_period = request.POST.get("selected_period", None,)
+        self.selected_period = request.POST.get(
+            "selected_period",
+            None,
+        )
         if self.selected_period is None:
             self.selected_period = self.period
             # Check that an expenditure category was selected
             self.selected_expenditure_category_id = request.POST.get(
-                "expenditure_category", None,
+                "expenditure_category",
+                None,
             )
             if self.selected_expenditure_category_id is None:
                 raise Http404("Budget Type not found")
         else:
             self.selected_expenditure_category_id = self.kwargs["expenditure_category"]
         return HttpResponseRedirect(
-            reverse(self.url_name, kwargs=self.selection_kwargs(),)
+            reverse(
+                self.url_name,
+                kwargs=self.selection_kwargs(),
+            )
         )
 
     def get_tables(self):
         """
-         Return an array of table instances containing data.
+        Return an array of table instances containing data.
         """
         budget_type_id = self.kwargs["budget_type"]
         expenditure_category_id = self.kwargs["expenditure_category"]
@@ -76,7 +81,8 @@ class ForecastExpenditureDetailsMixin(ForecastViewTableMixin):
         )
 
         nac_table = ForecastSubTotalTable(
-            self.field_infos.nac_columns, nac_data,
+            self.field_infos.nac_columns,
+            nac_data,
             **self.table_kwargs,
         )
         nac_table.attrs["caption"] = "Expenditure Report"
@@ -88,7 +94,9 @@ class ForecastExpenditureDetailsMixin(ForecastViewTableMixin):
 
 
 class DITExpenditureDetailsView(
-    ForecastViewPermissionMixin, ForecastExpenditureDetailsMixin, DITForecastMixin,
+    ForecastViewPermissionMixin,
+    ForecastExpenditureDetailsMixin,
+    DITForecastMixin,
 ):
     template_name = "forecast/view/expenditure_details/dit.html"
     url_name = "expenditure_details_dit"
@@ -145,7 +153,7 @@ class CostCentreExpenditureDetailsView(
 
     @property
     def cost_centre_code(self):
-        return self.kwargs['cost_centre_code']
+        return self.kwargs["cost_centre_code"]
 
     def selection_kwargs(self):
         return {

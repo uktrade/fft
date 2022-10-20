@@ -1,9 +1,7 @@
 from django.contrib import admin
-
 from simple_history.admin import SimpleHistoryAdmin
 
 from core.admin import AdminReadOnly
-
 from end_of_month.models import EndOfMonthStatus
 
 
@@ -13,7 +11,7 @@ class EndOfMonthStatusAdmin(AdminReadOnly, SimpleHistoryAdmin):
         "period_code",
         "archived",
         "archived_by",
-        "archived_date"
+        "archived_date",
     )
 
     def period_name(self, instance):

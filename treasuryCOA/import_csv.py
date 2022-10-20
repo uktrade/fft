@@ -5,14 +5,8 @@ from core.import_csv import (
     ImportInfo,
     import_obj,
 )
+from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Account
 
-from treasuryCOA.models import (
-    L1Account,
-    L2Account,
-    L3Account,
-    L4Account,
-    L5Account,
-)
 
 # define the column position in the csv file.
 # The following is the list of headers in the structure report downloaded Treasury

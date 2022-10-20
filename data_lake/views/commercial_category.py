@@ -1,10 +1,5 @@
+from chartofaccountDIT.models import ArchivedCommercialCategory, CommercialCategory
 from core.utils.generic_helpers import get_current_financial_year
-
-from chartofaccountDIT.models import (
-    CommercialCategory,
-    ArchivedCommercialCategory,
-)
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 

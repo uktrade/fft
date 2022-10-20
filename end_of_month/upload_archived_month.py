@@ -4,13 +4,8 @@ from decimal import Decimal
 
 from django.db import connection
 
-from core.import_csv import (
-    csv_header_to_dict,
-    get_fk,
-)
-
+from core.import_csv import csv_header_to_dict, get_fk
 from end_of_month.models import EndOfMonthStatus
-
 from forecast.import_csv import WrongChartOFAccountCodeException
 from forecast.models import (
     ActualUploadMonthlyFigure,
@@ -29,7 +24,9 @@ class WrongArchivePeriodException(Exception):
 
 
 def sql_for_single_month_copy(
-    financial_period_id, archived_period_id, financial_year_id,
+    financial_period_id,
+    archived_period_id,
+    financial_year_id,
 ):
     sql_insert = (
         f"INSERT INTO forecast_forecastmonthlyfigure (created, "

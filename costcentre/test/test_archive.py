@@ -1,13 +1,11 @@
 from io import StringIO
 
 from bs4 import BeautifulSoup
-
 from django.core.management import call_command
 from django.urls import reverse
 
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
@@ -28,7 +26,8 @@ class ArchiveCostCentreTest(BaseTestCase):
         self.cost_centre_code = TEST_COST_CENTRE
 
         group = DepartmentalGroupFactory(
-            group_code=self.group_code, group_name=self.group_name,
+            group_code=self.group_code,
+            group_name=self.group_name,
         )
         directorate = DirectorateFactory(
             directorate_code=self.directorate_code,
@@ -36,7 +35,8 @@ class ArchiveCostCentreTest(BaseTestCase):
             group=group,
         )
         CostCentreFactory(
-            directorate=directorate, cost_centre_code=self.cost_centre_code,
+            directorate=directorate,
+            cost_centre_code=self.cost_centre_code,
         )
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
@@ -44,7 +44,8 @@ class ArchiveCostCentreTest(BaseTestCase):
     def show_historical_view(self):
         response = self.client.get(
             reverse(
-                "historical_cost_centre_filter", kwargs={"year": self.archive_year},
+                "historical_cost_centre_filter",
+                kwargs={"year": self.archive_year},
             ),
         )
         self.assertEqual(response.status_code, 200)
@@ -62,7 +63,10 @@ class ArchiveCostCentreTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "CostCentre", year=self.archive_year, stdout=self.out,
+            "archive",
+            "CostCentre",
+            year=self.archive_year,
+            stdout=self.out,
         )
         soup = self.show_historical_view()
         table_rows = soup.find_all("tr", class_="govuk-table__row")

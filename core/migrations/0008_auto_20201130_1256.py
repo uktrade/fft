@@ -7,38 +7,54 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0007_data_20200901'),
+        ("core", "0007_data_20200901"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='historicaluser',
-            name='email',
-            field=models.EmailField(blank=True, max_length=254, verbose_name='email address'),
+            model_name="historicaluser",
+            name="email",
+            field=models.EmailField(
+                blank=True, max_length=254, verbose_name="email address"
+            ),
         ),
         migrations.AlterField(
-            model_name='historicaluser',
-            name='first_name',
-            field=models.CharField(blank=True, max_length=30, verbose_name='first name'),   # /PS-IGNORE
+            model_name="historicaluser",
+            name="first_name",
+            field=models.CharField(
+                blank=True, max_length=30, verbose_name="first name"
+            ),  # /PS-IGNORE
         ),
         migrations.AlterField(
-            model_name='historicaluser',
-            name='is_active',
-            field=models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active'),
+            model_name="historicaluser",
+            name="is_active",
+            field=models.BooleanField(
+                default=True,
+                help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                verbose_name="active",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicaluser',
-            name='is_staff',
-            field=models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status'),
+            model_name="historicaluser",
+            name="is_staff",
+            field=models.BooleanField(
+                default=False,
+                help_text="Designates whether the user can log into this admin site.",
+                verbose_name="staff status",
+            ),
         ),
         migrations.AlterField(
-            model_name='historicaluser',
-            name='last_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='last name'),  # /PS-IGNORE
+            model_name="historicaluser",
+            name="last_name",
+            field=models.CharField(
+                blank=True, max_length=150, verbose_name="last name"
+            ),  # /PS-IGNORE
         ),
         migrations.AlterField(
-            model_name='historicaluser',
-            name='username',
-            field=models.CharField(null=True, blank=True, max_length=150, verbose_name='username'),
+            model_name="historicaluser",
+            name="username",
+            field=models.CharField(
+                null=True, blank=True, max_length=150, verbose_name="username"
+            ),
         ),
     ]

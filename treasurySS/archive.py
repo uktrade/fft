@@ -1,5 +1,4 @@
 from core.archive import archive_generic
-
 from treasurySS.models import ArchivedSubSegment, SubSegment
 
 

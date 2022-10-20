@@ -1,8 +1,6 @@
 import os
 
-from django.core.management.base import (
-    CommandError,
-)
+from django.core.management.base import CommandError
 
 from chartofaccountDIT.import_csv import (
     import_analysis1,
@@ -13,21 +11,13 @@ from chartofaccountDIT.import_csv import (
     import_nac_category,
     import_nac_dit_specific_fields,
     import_nac_expenditure_category,
-    import_programme
+    import_programme,
 )
-
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-
+from core.utils.command_helpers import CommandUpload
 from costcentre.import_csv import import_cc
-
-from forecast.import_csv import (
-    WrongChartOFAccountCodeException,
-    import_adi_file,
-)
-
+from forecast.import_csv import WrongChartOFAccountCodeException, import_adi_file
 from treasuryCOA.import_csv import import_treasury_COA
+
 
 IMPORT_TYPE = {
     "CostCentre": import_cc,
@@ -63,7 +53,7 @@ class Command(CommandUpload):
         path = options.get("csv_path")
         import_type = options.get("type")
 
-        file_name = self.path_to_upload(path, 'csv')
+        file_name = self.path_to_upload(path, "csv")
         # Windows-1252 or CP-1252, used because of a back quote
         csv_file = open(file_name, newline="", encoding="cp1252")
         try:

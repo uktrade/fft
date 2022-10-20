@@ -4,6 +4,7 @@ from gifthospitality.utils.access_helpers import (
     can_view_all_gifthospitality as can_view_gifthospitality_helper,
 )
 
+
 register = template.Library()
 
 

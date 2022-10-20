@@ -3,15 +3,11 @@ import datetime
 from django.db import models
 
 from chartofaccountDIT.models import BudgetType
-
 from core.metamodels import ArchivedModel, IsActiveModel
 
 
 class OrganizationCode(IsActiveModel):
-    organization_code = models.CharField(
-        max_length=50,
-        verbose_name="Organization"
-    )
+    organization_code = models.CharField(max_length=50, verbose_name="Organization")
     organization_alias = models.CharField(
         max_length=255,
         blank=True,
@@ -66,7 +62,10 @@ class Segment(IsActiveModel):
     segment_parent_code = models.ForeignKey(SegmentParent, on_delete=models.PROTECT)
 
     organization = models.ForeignKey(
-        OrganizationCode, on_delete=models.PROTECT, blank=True, null=True,
+        OrganizationCode,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
 
     def __str__(self):
@@ -192,16 +191,11 @@ class ArchivedSubSegment(SubSegmentAbstract, ArchivedModel):
     segment_parent_long_name = models.CharField(
         max_length=255, verbose_name="segment parent long name"
     )
-    segment_code = models.CharField(
-        max_length=8, verbose_name="segment code"
-    )
+    segment_code = models.CharField(max_length=8, verbose_name="segment code")
     segment_long_name = models.CharField(
         max_length=255, verbose_name="segment long name"
     )
-    organization_code = models.CharField(
-        max_length=50,
-        verbose_name="Organization"
-    )
+    organization_code = models.CharField(max_length=50, verbose_name="Organization")
     organization_alias = models.CharField(
         max_length=255,
         blank=True,
@@ -227,10 +221,10 @@ class ArchivedSubSegment(SubSegmentAbstract, ArchivedModel):
             accounting_authority_code=obj.accounting_authority_code,
             accounting_authority_DetailCode=obj.accounting_authority_DetailCode,
             dit_budget_type=obj.dit_budget_type,
-            segment_grand_parent_code=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_grand_parent_code, # noqa
-            segment_grand_parent_long_name=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_grand_parent_long_name, # noqa
-            segment_department_code=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_department_code, # noqa
-            segment_department_long_name=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_department_long_name, # noqa
+            segment_grand_parent_code=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_grand_parent_code,  # noqa
+            segment_grand_parent_long_name=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_grand_parent_long_name,  # noqa
+            segment_department_code=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_department_code,  # noqa
+            segment_department_long_name=obj.Segment_code.segment_parent_code.segment_grand_parent_code.segment_department_long_name,  # noqa
             segment_parent_code=obj.Segment_code.segment_parent_code.segment_parent_code,  # noqa
             segment_parent_long_name=obj.Segment_code.segment_parent_code.segment_parent_long_name,  # noqa
             segment_code=obj.Segment_code.segment_code,
@@ -244,9 +238,11 @@ class ArchivedSubSegment(SubSegmentAbstract, ArchivedModel):
         return segment_hist
 
     def __str__(self):
-        return f"{self.sub_segment_code} - " \
-               f"{self.sub_segment_long_name} " \
-               f"{self.financial_year.financial_year_display}"
+        return (
+            f"{self.sub_segment_code} - "
+            f"{self.sub_segment_long_name} "
+            f"{self.financial_year.financial_year_display}"
+        )
 
     class Meta:
         unique_together = ("segment_code", "dit_budget_type", "financial_year")

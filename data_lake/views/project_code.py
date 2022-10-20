@@ -1,10 +1,5 @@
+from chartofaccountDIT.models import ArchivedProjectCode, ProjectCode
 from core.utils.generic_helpers import get_current_financial_year
-
-from chartofaccountDIT.models import (
-    ArchivedProjectCode,
-    ProjectCode,
-)
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
@@ -24,7 +19,10 @@ class ProjectCodeViewSet(DataLakeViewSet):
         historical_queryset = (
             ArchivedProjectCode.objects.filter(active=True)
             .select_related("financial_year")
-            .order_by("-financial_year", "project_code",)
+            .order_by(
+                "-financial_year",
+                "project_code",
+            )
         )
         for obj in current_queryset:
             row = [
