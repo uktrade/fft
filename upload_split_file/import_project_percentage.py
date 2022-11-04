@@ -263,12 +263,13 @@ class UploadProjectPercentages:
                 continue
             self.display_row_count()
             cost_centre = percentage_row[self.cc_index].value
-            if not cost_centre:
+            nac = (percentage_row[self.nac_index].value,)
+            if not cost_centre and not nac:
                 # protection against empty rows
                 break
             self.check_financial_code.validate(
                 cost_centre,
-                percentage_row[self.nac_index].value,
+                nac,
                 percentage_row[self.prog_index].value,
                 percentage_row[self.a1_index].value,
                 percentage_row[self.a2_index].value,
