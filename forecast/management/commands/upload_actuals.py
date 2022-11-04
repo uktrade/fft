@@ -6,7 +6,11 @@ from upload_file.models import FileUpload
 
 
 class Command(CommandUpload):
-    help = "Upload the Trial Balance for a specific month and year"
+    help = (
+        "Upload the Trial Balance for a specific month and year. "
+        "The month is the calendar month, "
+        "i.e 1 for January, 2 for February, etc. "
+    )
 
     def add_arguments(self, parser):
         parser.add_argument("path")
