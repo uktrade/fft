@@ -263,7 +263,7 @@ class UploadProjectPercentages:
                 continue
             self.display_row_count()
             cost_centre = percentage_row[self.cc_index].value
-            nac = (percentage_row[self.nac_index].value)
+            nac = percentage_row[self.nac_index].value
             if not cost_centre and not nac:
                 # protection against empty rows
                 break
