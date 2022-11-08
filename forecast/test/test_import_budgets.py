@@ -463,7 +463,27 @@ class ImportBudgetsTest(BaseTestCase):
             2200,
         )
 
+    def test_upload_budget_zero_cost_centre(self):
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            0,
+        )
+        file_upload = FileUpload(
+            s3_document_file=os.path.join(
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_zero_cost_centre_test.xlsx",
+            ),
+            uploading_user=self.test_user,
+            document_type=FileUpload.BUDGET,
+        )
+        file_upload.save()
 
-# TODO Multiyear test
-# test that future years upload the 15 months
-# test that only the required year is uploaded
+        upload_budget_from_file(
+            file_upload,
+            self.test_year,
+        )
+        # No budgets uploaded, because of zero cost centre code
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            0,
+        )

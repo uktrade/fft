@@ -250,10 +250,10 @@ def upload_previous_year(worksheet, financial_year, file_upload):  # noqa
             logger.info(f"Processing row {row_number} of {rows_to_process}.")
 
         cost_centre = previous_year_row[cc_index].value
-        if not cost_centre:
+        nac = previous_year_row[nac_index].value
+        if not cost_centre and not nac:
             # protection against empty rows
             break
-        nac = previous_year_row[nac_index].value
         programme_code = previous_year_row[prog_index].value
         analysis1 = previous_year_row[a1_index].value
         analysis2 = previous_year_row[a2_index].value
