@@ -15,6 +15,10 @@ class WrongChartOFAccountCodeException(Exception):
     pass
 
 
+class WrongAmountException(Exception):
+    pass
+
+
 def get_month_dict():
     """Link the column names in the ADI file with
     the foreign key used in the MonthlyFigure to

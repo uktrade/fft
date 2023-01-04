@@ -6,7 +6,7 @@ from django.db import connection
 
 from core.import_csv import csv_header_to_dict, get_fk
 from end_of_month.models import EndOfMonthStatus
-from forecast.import_csv import WrongChartOFAccountCodeException
+from forecast.import_csv import WrongAmountException, WrongChartOFAccountCodeException
 from forecast.models import (
     ActualUploadMonthlyFigure,
     FinancialPeriod,
@@ -104,7 +104,14 @@ def import_single_archived_period(csvfile, month_to_upload, archive_period, fin_
             )
 
         financialcode_obj = check_financial_code.get_financial_code()
-        period_amount = Decimal(row[month_col])
+        try:
+            period_amount = Decimal(row[month_col])
+        except:
+            raise WrongAmountException(
+                f"Amount error, Row {row_number} error: "
+                f"month_col = {month_col}, val= {row[month_col]}"
+            )
+
         if period_amount:
             month_figure_obj, created = ActualUploadMonthlyFigure.objects.get_or_create(
                 financial_year=fin_obj,
