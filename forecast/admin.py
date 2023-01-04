@@ -26,8 +26,13 @@ class MonthlyFigureAdmin(AdminImportExport, AdminReadOnly, SimpleHistoryAdmin):
         "financial_year",
         "financial_period",
         "amount",
-        "archived_status",
     )
+
+    search_fields = [
+        "financial_code__cost_centre__cost_centre_code",
+        "financial_code__programme__programme_code",
+        "financial_code__natural_account_code__natural_account_code",
+    ]
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
@@ -38,6 +43,18 @@ class MonthlyFigureAdmin(AdminImportExport, AdminReadOnly, SimpleHistoryAdmin):
                 "amount",
                 "archived_status",
             ]
+
+    list_filter = (
+        ("financial_year", RelatedDropdownFilter),
+        ("financial_code__cost_centre", RelatedDropdownFilter),
+        ("financial_code__natural_account_code", RelatedDropdownFilter),
+        ("financial_code__programme", RelatedDropdownFilter),
+        ("financial_code__analysis1_code", RelatedDropdownFilter),
+        ("financial_code__analysis2_code", RelatedDropdownFilter),
+        ("financial_code__project_code", RelatedDropdownFilter),
+        ("financial_period", RelatedDropdownFilter),
+        ("archived_status__archived_period", RelatedDropdownFilter),
+    )
 
     @property
     def import_info(self):
@@ -120,7 +137,7 @@ class FinancialCodeAdmin(AdminReadOnly):
         ("programme", RelatedDropdownFilter),
         ("analysis1_code", RelatedDropdownFilter),
         ("analysis2_code", RelatedDropdownFilter),
-        ("project_code", RelatedDropdownFilter),
+        ("project_code,", RelatedDropdownFilter),
     )
 
     def get_readonly_fields(self, request, obj=None):
