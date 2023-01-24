@@ -1,11 +1,11 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.1    # /PS-IGNORE
+  browser-tools: circleci/browser-tools@1.4.1 # /PS-IGNORE
 jobs:
   build:
     docker:
-      - image: cimg/python:3.9.6-browsers
+      - image: cimg/python:3.9-browsers
         environment:
           FLASK_CONFIG: testing
           DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
@@ -22,7 +22,7 @@ jobs:
           POSTGRES_PASSWORD: ""
 
     steps:
-      - browser-tools/install-browser-tools      
+      - browser-tools/install-browser-tools
       - checkout
       - run: mkdir test-reports
       - run:
@@ -40,12 +40,10 @@ jobs:
             pip install -r requirements/dev.txt
       - run:
           name: Install latest NPM
-          command:
-            npm install npm
+          command: npm install npm
       - run:
           name: Install React app
-          command:
-            npm install
+          command: npm install
       - run:
           name: Collect static
           command: |
