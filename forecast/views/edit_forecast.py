@@ -42,8 +42,8 @@ from forecast.utils.edit_helpers import (
     TooManyMatchException,
     check_cols_match,
     check_row_match,
-    set_monthly_figure_amount,
     formatted_cost_centre_code,
+    set_monthly_figure_amount,
 )
 from forecast.utils.query_fields import edit_forecast_order
 from forecast.views.base import (
