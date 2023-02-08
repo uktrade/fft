@@ -17,6 +17,7 @@ from forecast.utils.access_helpers import (
     can_future_forecast_be_edited,
     can_view_forecasts,
 )
+from forecast.utils.edit_helpers import formatted_cost_centre_code
 from forecast.utils.query_fields import (
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
@@ -69,7 +70,8 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
         current_financial_year = get_current_financial_year()
-        self.cost_centre_code = self.kwargs["cost_centre_code"]
+        self.cost_centre_code = formatted_cost_centre_code(self.kwargs["cost_centre_code"])
+
         if "financial_year" in self.kwargs:
             self.financial_year = int(self.kwargs["financial_year"])
         else:
