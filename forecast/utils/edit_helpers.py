@@ -45,6 +45,7 @@ class IncorrectDecimalFormatException(Exception):
 
 logger = logging.getLogger(__name__)
 
+
 def formatted_cost_centre_code(cost_centre_code):
     # The edit views expect the cost centre as an integer, so they strip the leading 0
     # from the cost centre code.

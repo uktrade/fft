@@ -330,11 +330,12 @@ class ChooseCostCentreTest(BaseTestCase):
             200,
         )
 
+
 class EditCostCentre000Test(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
 
-        self.cost_centre_code = '000001'
+        self.cost_centre_code = "000001"
         self.cost_centre = CostCentreFactory.create(
             cost_centre_code=self.cost_centre_code
         )
@@ -350,10 +351,6 @@ class EditCostCentre000Test(BaseTestCase):
         resp = self.client.get(edit_forecast_url)
 
         self.assertEqual(resp.status_code, 200)
-
-
-
-
 
 
 class EditForecastLockTest(BaseTestCase):
