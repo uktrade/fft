@@ -42,6 +42,7 @@ from forecast.utils.edit_helpers import (
     TooManyMatchException,
     check_cols_match,
     check_row_match,
+    formatted_cost_centre_code,
     set_monthly_figure_amount,
 )
 from forecast.utils.query_fields import edit_forecast_order
@@ -120,8 +121,9 @@ class AddRowView(
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
-        self.cost_centre_code = self.kwargs["cost_centre_code"]
-
+        self.cost_centre_code = formatted_cost_centre_code(
+            self.kwargs["cost_centre_code"]
+        )
         if "financial_year" not in self.kwargs:
             raise NoFinancialYearInURLError("No financial year provided in URL")
 

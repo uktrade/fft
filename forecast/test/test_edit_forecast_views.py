@@ -331,6 +331,28 @@ class ChooseCostCentreTest(BaseTestCase):
         )
 
 
+class EditCostCentre000Test(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+
+        self.cost_centre_code = "000001"
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_choose_cost_centre(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        edit_forecast_url = reverse(
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+        )
+
+        # Should be allowed
+        resp = self.client.get(edit_forecast_url)
+
+        self.assertEqual(resp.status_code, 200)
+
+
 class EditForecastLockTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
