@@ -183,7 +183,7 @@ flake8==3.8.4
     # via -r requirements.in/base.in
 freezegun==1.0.0
     # via -r requirements.in/dev.in
-future==0.18.2
+future==0.18.3
     # via -r requirements.in/base.in
 gunicorn==19.9.0
     # via -r requirements.in/base.in
@@ -438,7 +438,7 @@ wcwidth==0.1.7
     #   pytest
 webdriver-manager==3.2.1
     # via -r requirements.in/dev.in
-wheel==0.37.1
+wheel==0.38.1
     # via pip-tools
 whitenoise==5.2
     # via -r requirements.in/base.in

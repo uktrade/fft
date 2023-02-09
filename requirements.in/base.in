@@ -41,7 +41,7 @@ docutils==0.14
 elastic-apm==6.2.2
 et-xmlfile==1.0.1
 flake8==3.8.4
-future==0.18.2
+future==0.18.3
 gunicorn==19.9.0
 idna==2.7
 importlib-metadata==1.6.0

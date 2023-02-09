@@ -151,7 +151,7 @@ et-xmlfile==1.0.1
     #   openpyxl
 flake8==3.8.4
     # via -r requirements.in/base.in
-future==0.18.2
+future==0.18.3
     # via -r requirements.in/base.in
 gevent==21.8.0
     # via -r requirements.in/prod.in
