@@ -42,7 +42,9 @@ def sql_for_single_month_copy(
     return sql_insert
 
 
-def import_single_archived_period(csvfile, month_to_upload, archive_period, fin_year):
+def import_single_archived_period(  # noqa C901
+    csvfile, month_to_upload, archive_period, fin_year
+):
     if month_to_upload <= archive_period:
         raise WrongArchivePeriodException(
             "You are trying to amend Actuals. Only forecast can be amended."
@@ -106,7 +108,9 @@ def import_single_archived_period(csvfile, month_to_upload, archive_period, fin_
         financialcode_obj = check_financial_code.get_financial_code()
         try:
             period_amount = Decimal(row[month_col])
-        except:
+        except:  # noqa E702
+            # Use bare except, because we want to catch any type of error
+            # and report the offending line to the user
             raise WrongAmountException(
                 f"Amount error, Row {row_number} error: "
                 f"month_col = {month_col}, val= {row[month_col]}"
