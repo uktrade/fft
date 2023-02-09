@@ -1,6 +1,6 @@
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from simple_history.admin import SimpleHistoryAdmin
 
 from core.admin import AdminEditOnly, AdminImportExport, AdminReadOnly
