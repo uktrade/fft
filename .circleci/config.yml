@@ -24,6 +24,9 @@ jobs:
     steps:
       - browser-tools/install-browser-tools
       - checkout
+      - run:
+          name: Copy env file
+          command: cp .env.ci .env
       - run: mkdir test-reports
       - run:
           name: Download Selenium

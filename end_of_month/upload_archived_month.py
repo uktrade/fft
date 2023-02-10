@@ -108,9 +108,7 @@ def import_single_archived_period(  # noqa C901
         financialcode_obj = check_financial_code.get_financial_code()
         try:
             period_amount = Decimal(row[month_col])
-        except:  # noqa E702
-            # Use bare except, because we want to catch any type of error
-            # and report the offending line to the user
+        except(ArithmeticError, IndexError, Decimal.InvalidOperation):
             raise WrongAmountException(
                 f"Amount error, Row {row_number} error: "
                 f"month_col = {month_col}, val= {row[month_col]}"
