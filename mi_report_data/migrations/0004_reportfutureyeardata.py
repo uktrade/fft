@@ -34,7 +34,7 @@ CREATE VIEW mi_report_future_year_budget AS
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0003_previous_year'),
+        ("mi_report_data", "0003_previous_year"),
     ]
 
     operations = [
@@ -43,29 +43,43 @@ class Migration(migrations.Migration):
             drop_sql,
         ),
         migrations.CreateModel(
-            name='ReportFutureForecastData',
+            name="ReportFutureForecastData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True,
-                                           serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('future_forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("future_forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_future_year_forecast',
-                'managed': False,
+                "db_table": "mi_report_future_year_forecast",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportFutureBudgetData',
+            name="ReportFutureBudgetData",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True,
-                                           serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('future_budget', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("future_budget", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_future_year_budget',
-                'managed': False,
+                "db_table": "mi_report_future_year_budget",
+                "managed": False,
             },
         ),
     ]

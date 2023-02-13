@@ -6,6 +6,7 @@ from rest_framework.viewsets import ViewSet
 
 from forecast.models import FinancialPeriod
 
+
 class MIFinancialPeriodDataSet(ViewSet):
     filename = "financial_period"
     title_list = [
@@ -34,4 +35,3 @@ class MIFinancialPeriodDataSet(ViewSet):
                 obj.period_short_name,
             ]
             writer.writerow(row)
-

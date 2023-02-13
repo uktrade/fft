@@ -6,32 +6,48 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0007_future_year_period_0'),
+        ("mi_report_data", "0007_future_year_period_0"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ReportFutureBudgetPeriod0Data',
+            name="ReportFutureBudgetPeriod0Data",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('future_budget', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("future_budget", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_future_year_period_0_budget',
-                'managed': False,
+                "db_table": "mi_report_future_year_period_0_budget",
+                "managed": False,
             },
         ),
         migrations.CreateModel(
-            name='ReportFutureForecastPeriod0Data',
+            name="ReportFutureForecastPeriod0Data",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('financial_year_id', models.IntegerField()),
-                ('future_forecast', models.BigIntegerField(default=0)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("financial_year_id", models.IntegerField()),
+                ("future_forecast", models.BigIntegerField(default=0)),
             ],
             options={
-                'db_table': 'mi_report_future_year_period_0_forecast',
-                'managed': False,
+                "db_table": "mi_report_future_year_period_0_forecast",
+                "managed": False,
             },
         ),
     ]

@@ -21,10 +21,11 @@ CREATE VIEW mi_report_future_year_period_0_forecast as
         FROM public.mi_report_future_year_budget WHERE archived_period_id = 1;
 """
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0006_period_0_model'),
+        ("mi_report_data", "0006_period_0_model"),
     ]
 
     operations = [
@@ -32,5 +33,4 @@ class Migration(migrations.Migration):
             f"{drop_sql} {create_sql}",
             drop_sql,
         ),
-
     ]

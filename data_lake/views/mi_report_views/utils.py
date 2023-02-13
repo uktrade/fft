@@ -65,8 +65,9 @@ class MIReportFieldList(FigureFieldData):
             market_field: Coalesce(self.market_field, Value("0")),
             contract_field: Coalesce(self.contract_field, Value("0")),
             project_field: Coalesce(self.project_field, Value("0")),
-            archive_period_name_field: Coalesce("archived_period__period_short_name",
-                                                Value(ARCHIVED_PERIOD_0_NAME)),
+            archive_period_name_field: Coalesce(
+                "archived_period__period_short_name", Value(ARCHIVED_PERIOD_0_NAME)
+            ),
             "archiving_year": ExpressionWrapper(
                 Value(current_year), output_field=IntegerField()
             ),

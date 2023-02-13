@@ -50,7 +50,7 @@ SELECT financial_year_id + 1 as financial_year_id,
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0002_model'),
+        ("mi_report_data", "0002_model"),
     ]
 
     operations = [

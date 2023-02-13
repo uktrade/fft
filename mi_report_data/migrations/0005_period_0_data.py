@@ -23,10 +23,12 @@ CREATE VIEW mi_report_budget_period_0_view as
         FROM public.mi_report_archived_budget_view where archived_period_id = 1;
         
 """
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0004_reportfutureyeardata'),
+        ("mi_report_data", "0004_reportfutureyeardata"),
     ]
 
     operations = [

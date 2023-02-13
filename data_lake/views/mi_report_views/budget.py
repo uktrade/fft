@@ -1,4 +1,3 @@
-
 from data_lake.views.utils import FigureFieldData
 
 from rest_framework.viewsets import ViewSet

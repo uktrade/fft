@@ -32,4 +32,3 @@ class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
 
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportPreviousYearDataView)
-

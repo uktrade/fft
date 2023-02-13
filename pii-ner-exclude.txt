@@ -824,5 +824,15 @@ Year
 Archiving Year
 Exclude Adj
 Previous Year Actual
+CREATE VIEW mi_report_forecast_period_0_view
+SELECT 0
+EXISTS
+mi_report_forecast_period_0_view
+mi_report_monthly_forecast_apr
+mi_report_monthly_forecast_nov
+mi_report_monthly_forecast_adj3
+BigIntegerField(default=0
+financial_year_id
+CREATE VIEW mi_report_future_year_period_0_budget
 
 

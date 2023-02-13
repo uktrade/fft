@@ -34,4 +34,3 @@ class MIReportFutureYearForecastDataSet(ViewSet, MIReportFieldList):
     def write_data(self, writer):
         self.write_queryset_data(writer, ReportFutureForecastData)
         self.write_queryset_data(writer, ReportFutureForecastPeriod0Data)
-

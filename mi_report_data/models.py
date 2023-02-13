@@ -21,7 +21,8 @@ class UniqueDataKey(models.Model):
         FinancialPeriod,
         on_delete=models.DO_NOTHING,
         related_name="financial_archived_period_%(app_label)s_%(class)ss",
-        blank=True, null=True
+        blank=True,
+        null=True,
     )
 
     class Meta:

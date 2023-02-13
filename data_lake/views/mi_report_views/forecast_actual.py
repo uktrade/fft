@@ -52,4 +52,3 @@ class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
         # It would be better to change the name of the field, but it is late for it!
         self.write_queryset_data(writer, ReportCurrentForecastData)
         self.write_queryset_data(writer, ReportCurrentActualData)
-
