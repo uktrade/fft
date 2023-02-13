@@ -1,5 +1,12 @@
 from django.urls import path
 
+from data_lake.views.mi_report_views.budget import MIReportBudgetDataSet
+from data_lake.views.mi_report_views.financial_period import MIFinancialPeriodDataSet
+from data_lake.views.mi_report_views.forecast_actual import MIReportForecastActualDataSet
+from data_lake.views.mi_report_views.future_year_budget import MIReportFutureYearBudgetDataSet
+from data_lake.views.mi_report_views.future_year_forecast import MIReportFutureYearForecastDataSet
+from data_lake.views.mi_report_views.past_year_actual import MIReportPreviousYearDataSet
+from data_lake.views.mi_report_views.period_in_use import MIReportPeriodInUseDataSet
 from data_lake.views.actual import ActualViewSet
 from data_lake.views.actual_split import ActualSplitViewSet
 from data_lake.views.analysis1_code import Analysis1CodeViewSet
@@ -104,5 +111,40 @@ urlpatterns = [
         "expenditurecategory/",
         ExpenditureCategoryViewSet.as_view({"get": "list"}),
         name="data_lake_expenditure_category",
+    ),
+    path(
+        "mi_report_forecast_data/",
+        MIReportForecastActualDataSet.as_view({"get": "list"}),
+        name="mi_report_forecast_data",
+    ),
+    path(
+        "mi_report_budget_data/",
+        MIReportBudgetDataSet.as_view({"get": "list"}),
+        name="mi_report_budget_data",
+    ),
+    path(
+        "mi_report_previous_year_data/",
+        MIReportPreviousYearDataSet.as_view({"get": "list"}),
+        name="mi_report_previous_year_data",
+    ),
+    path(
+        "mi_report_financial_period_in_use/",
+        MIReportPeriodInUseDataSet.as_view({"get": "list"}),
+        name="mi_report_financial_period_in_use",
+    ),
+    path(
+        "mi_report_financial_period/",
+        MIFinancialPeriodDataSet.as_view({"get": "list"}),
+        name="mi_report_financial_period",
+    ),
+    path(
+        "mi_report_future_year_forecast_data/",
+        MIReportFutureYearForecastDataSet.as_view({"get": "list"}),
+        name="mi_report_future_year_forecast_data",
+    ),
+    path(
+        "mi_report_future_year_budget_data/",
+        MIReportFutureYearBudgetDataSet.as_view({"get": "list"}),
+        name="mi_report_future_year_budget_data",
     ),
 ]
