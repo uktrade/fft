@@ -1,7 +1,6 @@
 from django.db import models
 
 from forecast.models import FinancialCode, FinancialPeriod
-
 from previous_years.models import ArchivedFinancialCode
 
 

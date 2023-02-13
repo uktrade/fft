@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 
+
 drop_sql = """
 DROP VIEW IF EXISTS mi_report_future_year_forecast;
 DROP VIEW IF EXISTS mi_report_future_year_budget;

@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 """
 The following views unpivot the views used for each archived months,
 and create the format required for the creations of the MI reports on Data Workspace.

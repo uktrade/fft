@@ -834,5 +834,9 @@ mi_report_monthly_forecast_adj3
 BigIntegerField(default=0
 financial_year_id
 CREATE VIEW mi_report_future_year_period_0_budget
+download_mi_report_data
+jun
+jul
+coalesce(sep,0
 
 

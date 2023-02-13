@@ -1,14 +1,13 @@
-from data_lake.views.utils import FigureFieldData
 import csv
 
+from django.db.models import ExpressionWrapper, IntegerField, Value
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 
-from django.db.models import Value, ExpressionWrapper, IntegerField
-from django.db.models.functions import Coalesce
-
 from core.utils.generic_helpers import get_current_financial_year
-
+from data_lake.views.utils import FigureFieldData
 from end_of_month.models import EndOfMonthStatus
+
 
 ARCHIVED_PERIOD_0_NAME = "Period 0"
 

@@ -1,11 +1,7 @@
-from data_lake.views.utils import FigureFieldData
-
 from rest_framework.viewsets import ViewSet
 
-from data_lake.views.mi_report_views.utils import (
-    MIReportFieldList,
-)
-
+from data_lake.views.mi_report_views.utils import MIReportFieldList
+from data_lake.views.utils import FigureFieldData
 from mi_report_data.models import (
     ReportBudgetArchivedData,
     ReportBudgetCurrentData,

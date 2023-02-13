@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 drop_previous_year_sql = """
 DROP VIEW IF EXISTS
 	mi_report_previous_year_actual;

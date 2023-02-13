@@ -1,17 +1,12 @@
-from data_lake.views.utils import FigureFieldData
-
 from rest_framework.viewsets import ViewSet
 
-from data_lake.views.mi_report_views.utils import (
-    MIReportFieldList,
-)
-
+from data_lake.views.mi_report_views.utils import MIReportFieldList
+from data_lake.views.utils import FigureFieldData
 from end_of_month.models import EndOfMonthStatus
-
 from mi_report_data.models import (
-    archived_forecast_actual_view,
-    ReportCurrentForecastData,
     ReportCurrentActualData,
+    ReportCurrentForecastData,
+    archived_forecast_actual_view,
 )
 
 
