@@ -1,12 +1,5 @@
 from django.urls import path
 
-from data_lake.views.mi_report_views.budget import MIReportBudgetDataSet
-from data_lake.views.mi_report_views.financial_period import MIFinancialPeriodDataSet
-from data_lake.views.mi_report_views.forecast_actual import MIReportForecastActualDataSet
-from data_lake.views.mi_report_views.future_year_budget import MIReportFutureYearBudgetDataSet
-from data_lake.views.mi_report_views.future_year_forecast import MIReportFutureYearForecastDataSet
-from data_lake.views.mi_report_views.past_year_actual import MIReportPreviousYearDataSet
-from data_lake.views.mi_report_views.period_in_use import MIReportPeriodInUseDataSet
 from data_lake.views.actual import ActualViewSet
 from data_lake.views.actual_split import ActualSplitViewSet
 from data_lake.views.analysis1_code import Analysis1CodeViewSet
@@ -21,6 +14,19 @@ from data_lake.views.fco_mapping import FCOMappingViewSet
 from data_lake.views.financial_year import FinancialYearViewSet
 from data_lake.views.forecast import ForecastViewSet
 from data_lake.views.inter_entity import InterEntityViewSet
+from data_lake.views.mi_report_views.budget import MIReportBudgetDataSet
+from data_lake.views.mi_report_views.financial_period import MIFinancialPeriodDataSet
+from data_lake.views.mi_report_views.forecast_actual import (
+    MIReportForecastActualDataSet,
+)
+from data_lake.views.mi_report_views.future_year_budget import (
+    MIReportFutureYearBudgetDataSet,
+)
+from data_lake.views.mi_report_views.future_year_forecast import (
+    MIReportFutureYearForecastDataSet,
+)
+from data_lake.views.mi_report_views.past_year_actual import MIReportPreviousYearDataSet
+from data_lake.views.mi_report_views.period_in_use import MIReportPeriodInUseDataSet
 from data_lake.views.natural_code import NaturalCodeViewSet
 from data_lake.views.programme_code import ProgrammeCodeViewSet
 from data_lake.views.project_code import ProjectCodeViewSet
