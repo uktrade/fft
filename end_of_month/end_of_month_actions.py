@@ -4,18 +4,10 @@ from django.db import connection
 from django.utils import timezone
 
 from core.utils.generic_helpers import get_current_financial_year
-
-from end_of_month.models import (
-    EndOfMonthStatus,
-    MonthlyTotalBudget,
-)
+from end_of_month.models import EndOfMonthStatus, MonthlyTotalBudget
 from end_of_month.monthly_outturn import create_outturn_for_variance
+from forecast.models import MAX_PERIOD_CODE, BudgetMonthlyFigure, ForecastMonthlyFigure
 
-from forecast.models import (
-    MAX_PERIOD_CODE,
-    BudgetMonthlyFigure,
-    ForecastMonthlyFigure,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -54,9 +46,7 @@ def insert_query(table_name, archived_status_id):
 
 
 def insert_total_budget_query(
-        archived_status_id,
-        archived_period_id,
-        financial_year_id
+    archived_status_id, archived_period_id, financial_year_id
 ):
     return (
         f"INSERT INTO public.end_of_month_monthlytotalbudget ("
@@ -71,8 +61,10 @@ def insert_total_budget_query(
 
 def get_end_of_month(period_code):
     if period_code > MAX_PERIOD_CODE or period_code < 1:
-        error_msg = f'Invalid period {period_code}: ' \
-                    f'Valid Period is between 1 and {MAX_PERIOD_CODE}.'
+        error_msg = (
+            f"Invalid period {period_code}: "
+            f"Valid Period is between 1 and {MAX_PERIOD_CODE}."
+        )
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthInvalidPeriodError(error_msg)
 
@@ -80,7 +72,9 @@ def get_end_of_month(period_code):
         archived_period__financial_period_code=period_code
     )
     if end_of_month_info.archived:
-        error_msg = f'"The selected period {period_code} has already been archived."'# noqa
+        error_msg = (
+            f'"The selected period {period_code} has already been archived."'  # noqa
+        )
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthAlreadyArchivedError(error_msg)
 
@@ -149,9 +143,8 @@ def end_of_month_archive(period_id, used_for_current_month=False):
     # used to display the forecast/budget much easier.
     # This is only required for the current year.
     budget_total_sql = insert_total_budget_query(
-        end_of_month_info.id,
-        period_id,
-        current_year)
+        end_of_month_info.id, period_id, current_year
+    )
     with connection.cursor() as cursor:
         cursor.execute(budget_total_sql)
 
@@ -165,8 +158,10 @@ def end_of_month_archive(period_id, used_for_current_month=False):
 
 def delete_end_of_month_archive(period_id):
     if period_id > MAX_PERIOD_CODE or period_id < 1:
-        error_msg = f'Invalid period {period_id}: ' \
-                    f'Valid Period is between 1 and {MAX_PERIOD_CODE}.'
+        error_msg = (
+            f"Invalid period {period_id}: "
+            f"Valid Period is between 1 and {MAX_PERIOD_CODE}."
+        )
         logger.error(error_msg, exc_info=True)
         raise ArchiveMonthInvalidPeriodError(error_msg)
 
@@ -191,18 +186,16 @@ def delete_end_of_month_archive(period_id):
         archived_status=end_of_month_info,
     ).delete()
 
-    MonthlyTotalBudget.objects.filter(
-        archived_status=end_of_month_info
-    ).delete()
+    MonthlyTotalBudget.objects.filter(archived_status=end_of_month_info).delete()
     end_of_month_info.archived = False
     end_of_month_info.archived_date = timezone.now()
     end_of_month_info.save()
 
 
 def get_last_restore_period_id():
-    end_of_month_queryset = EndOfMonthStatus.objects.filter(
-        archived=True
-    ).order_by('-archived_period')
+    end_of_month_queryset = EndOfMonthStatus.objects.filter(archived=True).order_by(
+        "-archived_period"
+    )
     if not end_of_month_queryset:
         error_msg = "No archive monthly period exists."
         logger.error(error_msg, exc_info=True)

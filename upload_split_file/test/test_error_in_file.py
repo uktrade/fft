@@ -1,16 +1,15 @@
 import os
 
 from upload_file.models import FileUpload
-
 from upload_split_file.import_project_percentage import (
     upload_project_percentage_from_file,
 )
 from upload_split_file.test.test_utils import (
     COST_CENTRE_CODE_INDEX,
+    MONTH1_INDEX,
     NAC_CODE_INDEX,
     PROGRAMME_CODE_INDEX,
     PROJECT_CODE_INDEX,
-    MONTH1_INDEX,
     SplitDataSetup,
     create_workbook,
 )

@@ -1,22 +1,12 @@
-from datetime import (
-    datetime,
-    timedelta,
-)
+from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.test import TestCase
 
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE, TEST_EMAIL
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
-
-from forecast.models import (
-    ForecastEditState,
-    FutureForecastEditState,
-)
+from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL, BaseTestCase
+from costcentre.test.factories import CostCentreFactory
+from forecast.models import ForecastEditState, FutureForecastEditState
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import UnlockedForecastEditorFactory
 from forecast.utils.access_helpers import (
@@ -46,6 +36,7 @@ class PermissionTestBase(TestCase):
         self.forecast_edit_state = ForecastEditState.objects.get()
 
     """Assigns test user given permission and busts permission cache"""
+
     def assign_permission(self, codename):
         perm = Permission.objects.get(
             codename=codename,
@@ -54,9 +45,7 @@ class PermissionTestBase(TestCase):
         self.test_user.save()
 
         # Needed to bust permission cache
-        self.test_user = User.objects.get(
-            email=self.test_user.email
-        )
+        self.test_user = User.objects.get(email=self.test_user.email)
 
 
 class PermissionFutureTestBase(PermissionTestBase):
@@ -144,7 +133,7 @@ class TestSimpleAccessHelpers(BaseTestCase, PermissionFutureTestBase):
         assert not user_in_group(self.test_user)
 
         new_group, _ = Group.objects.get_or_create(
-            name='new_group',
+            name="new_group",
         )
 
         new_group.user_set.add(self.test_user)

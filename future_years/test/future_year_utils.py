@@ -1,5 +1,3 @@
-from core.test.test_base import BaseTestCase
-
 from django.contrib.auth.models import Permission
 
 from chartofaccountDIT.test.factories import (
@@ -10,20 +8,17 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-from core.test.test_base import TEST_COST_CENTRE
-
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,

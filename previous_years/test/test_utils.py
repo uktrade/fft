@@ -8,20 +8,11 @@ from chartofaccountDIT.test.factories import (
     HistoricalProgrammeCodeFactory,
     HistoricalProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
-
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from costcentre.test.factories import ArchivedCostCentreFactory
-
-
 from forecast.models import FinancialPeriod
-
-
-from previous_years.models import (
-    ArchivedFinancialCode,
-    ArchivedForecastData,
-)
+from previous_years.models import ArchivedFinancialCode, ArchivedForecastData
 
 
 class PastYearForecastSetup(BaseTestCase):
@@ -107,7 +98,8 @@ class PastYearForecastSetup(BaseTestCase):
         )
 
         previous_year_obj = ArchivedForecastData.objects.create(
-            financial_year=archived_year_obj, financial_code=financial_code_obj,
+            financial_year=archived_year_obj,
+            financial_code=financial_code_obj,
         )
         self.outturn = {
             "budget": 1234500,
@@ -212,7 +204,8 @@ class PastYearForecastSetup(BaseTestCase):
         )
 
         another_year_obj = ArchivedForecastData.objects.create(
-            financial_year=another_archived_year_obj, financial_code=financial_code_obj,
+            financial_year=another_archived_year_obj,
+            financial_code=financial_code_obj,
         )
 
         outturn = {

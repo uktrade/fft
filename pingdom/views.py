@@ -2,6 +2,7 @@ from django.http import HttpResponse
 
 from .services import services_to_check
 
+
 PINGDOM_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
 <pingdom_http_custom_check>
     <status>{status}</status>
@@ -23,6 +24,4 @@ def pingdom(request):
         body = PINGDOM_TEMPLATE.format(status="FALSE")
         for service_result in filter(lambda x: x[0] is False, checked.values()):
             body += COMMENT_TEMPLATE.format(comment=service_result[1])
-        return HttpResponse(
-            body, status=500, content_type="text/xml"
-        )
+        return HttpResponse(body, status=500, content_type="text/xml")

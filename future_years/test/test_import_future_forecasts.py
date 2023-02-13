@@ -1,23 +1,17 @@
 import os
 from io import StringIO
 
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.db.models import Sum
 from django.test import TestCase
 from django.test.utils import captured_stdin
-from django.core.management import call_command
-from django.core.management.base import CommandError
-
-from core.utils.generic_helpers import get_current_financial_year
-
-from future_years.test.future_year_utils import FutureFigureSetup
 
 from core.models import FinancialYear
+from core.utils.generic_helpers import get_current_financial_year
+from forecast.models import BudgetMonthlyFigure, FinancialPeriod, ForecastMonthlyFigure
+from future_years.test.future_year_utils import FutureFigureSetup
 
-from forecast.models import (
-    BudgetMonthlyFigure,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
 
 TOTAL_FROM_FILE = 85800000
 

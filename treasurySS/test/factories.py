@@ -1,8 +1,6 @@
 import factory
 
 from chartofaccountDIT.models import BudgetType
-
-
 from treasurySS.models import (
     EstimateRow,
     Segment,

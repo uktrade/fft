@@ -1,7 +1,6 @@
 import io
 
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from previous_years.test.test_utils import (
@@ -61,10 +60,7 @@ class DownloadPastYearForecastTest(PastYearForecastSetup):
 
     def test_dit_download(self):
         response = self.client.get(
-            reverse(
-                "export_forecast_data_dit",
-                kwargs={"period": self.archived_year}
-            )
+            reverse("export_forecast_data_dit", kwargs={"period": self.archived_year})
         )
         self.assertEqual(response.status_code, 200)
 

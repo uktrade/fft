@@ -6,9 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('end_of_month', '0007_previousadj1forecast_previousadj2forecast_previousadj3forecast_previousaprforecast_previousaugforeca'),
-        ('end_of_month', '0003_data_20200522'),
+        (
+            "end_of_month",
+            "0007_previousadj1forecast_previousadj2forecast_previousadj3forecast_previousaprforecast_previousaugforeca",
+        ),
+        ("end_of_month", "0003_data_20200522"),
     ]
 
-    operations = [
-    ]
+    operations = []

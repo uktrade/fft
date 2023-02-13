@@ -6,9 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0007_delete_oscarreturn'),
-        ('end_of_month',
-         '0010_monthlypreviousoutturn_simplehistorymonthlypreviousoutturn'),
+        ("forecast", "0007_delete_oscarreturn"),
+        (
+            "end_of_month",
+            "0010_monthlypreviousoutturn_simplehistorymonthlypreviousoutturn",
+        ),
     ]
 
     operations = [

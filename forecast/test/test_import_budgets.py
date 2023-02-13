@@ -2,37 +2,18 @@ import os
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
-from django.contrib.auth.models import (
-    Group,
-)
+from django.contrib.auth.models import Group
 from django.core.files import File
-from django.test import (
-    override_settings,
-)
+from django.test import override_settings
 from django.urls import reverse
 
-from chartofaccountDIT.test.factories import (
-    NaturalCodeFactory,
-    ProgrammeCodeFactory,
-)
-
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from core.models import FinancialYear
 from core.test.test_base import BaseTestCase
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-    DirectorateFactory,
-)
-
+from costcentre.test.factories import CostCentreFactory, DirectorateFactory
 from forecast.import_budget_or_forecast import upload_budget_from_file
-from forecast.models import (
-    BudgetMonthlyFigure,
-    FinancialPeriod,
-)
-from forecast.utils.import_helpers import (
-    UploadFileFormatError,
-)
-
+from forecast.models import BudgetMonthlyFigure, FinancialPeriod
+from forecast.utils.import_helpers import UploadFileFormatError
 from upload_file.models import FileUpload
 
 
@@ -58,7 +39,7 @@ class ImportBudgetsTest(BaseTestCase):
         self.test_period = 9
 
         self.file_mock = MagicMock(spec=File)
-        self.file_mock.name = 'test.txt'
+        self.file_mock.name = "test.txt"
 
         self.cost_centre_code = TEST_COST_CENTRE
         self.cost_centre_code_1 = 888888
@@ -91,7 +72,8 @@ class ImportBudgetsTest(BaseTestCase):
         # supply of incorrect file format
         bad_file_type_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/bad_file_type.csv",
+                os.path.dirname(__file__),
+                "test_assets/bad_file_type.csv",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -99,12 +81,14 @@ class ImportBudgetsTest(BaseTestCase):
         bad_file_type_upload.save()
         with self.assertRaises(BadZipFile):
             upload_budget_from_file(
-                bad_file_type_upload, self.test_year,
+                bad_file_type_upload,
+                self.test_year,
             )
 
         bad_header_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_bad_header.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_bad_header.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -113,12 +97,14 @@ class ImportBudgetsTest(BaseTestCase):
 
         with self.assertRaises(UploadFileFormatError):
             upload_budget_from_file(
-                bad_header_file_upload, self.test_year,
+                bad_header_file_upload,
+                self.test_year,
             )
         # Check that the error is raised, and no data is uploaded
         bad_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_bad_data.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_bad_data.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -126,19 +112,23 @@ class ImportBudgetsTest(BaseTestCase):
         bad_file_upload.save()
 
         self.assertEqual(
-            BudgetMonthlyFigure.objects.all().count(), 0,
+            BudgetMonthlyFigure.objects.all().count(),
+            0,
         )
         upload_budget_from_file(
-            bad_file_upload, self.test_year,
+            bad_file_upload,
+            self.test_year,
         )
         self.assertEqual(bad_file_upload.status, FileUpload.PROCESSEDWITHERROR)
         self.assertEqual(
-            BudgetMonthlyFigure.objects.all().count(), 0,
+            BudgetMonthlyFigure.objects.all().count(),
+            0,
         )
 
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -146,7 +136,8 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         upload_budget_from_file(
-            good_file_upload, self.test_year,
+            good_file_upload,
+            self.test_year,
         )
 
         # # Check that existing figures for the same period have been deleted
@@ -199,7 +190,8 @@ class ImportBudgetsTest(BaseTestCase):
 
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_test.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_test.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -207,7 +199,8 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         upload_budget_from_file(
-            good_file_upload, self.test_year,
+            good_file_upload,
+            self.test_year,
         )
 
         self.assertEqual(
@@ -244,15 +237,11 @@ class ImportBudgetsTest(BaseTestCase):
         )
 
     @override_settings(ASYNC_FILE_UPLOAD=False)
-    @patch('forecast.views.upload_file.process_uploaded_file')
+    @patch("forecast.views.upload_file.process_uploaded_file")
     def test_finance_admin_can_upload_budget(self, mock_process_uploaded_file):
-        assert not self.test_user.groups.filter(
-            name="Finance Administrator"
-        )
+        assert not self.test_user.groups.filter(name="Finance Administrator")
 
-        uploaded_actuals_url = reverse(
-            "upload_budget_file"
-        )
+        uploaded_actuals_url = reverse("upload_budget_file")
 
         # Should have been redirected (no permission)
         resp = self.client.get(
@@ -263,14 +252,12 @@ class ImportBudgetsTest(BaseTestCase):
         assert resp.status_code == 403
 
         finance_admins = Group.objects.get(
-            name='Finance Administrator',
+            name="Finance Administrator",
         )
         finance_admins.user_set.add(self.test_user)
         finance_admins.save()
 
-        resp = self.client.get(
-            uploaded_actuals_url
-        )
+        resp = self.client.get(uploaded_actuals_url)
 
         # Should have been permission now
         self.assertEqual(resp.status_code, 200)
@@ -279,8 +266,8 @@ class ImportBudgetsTest(BaseTestCase):
             uploaded_actuals_url,
             data={
                 "year": self.test_year,
-                'file': self.file_mock,
-            }
+                "file": self.file_mock,
+            },
         )
 
         # Make sure upload was process was kicked off
@@ -288,12 +275,10 @@ class ImportBudgetsTest(BaseTestCase):
 
         # Should have been redirected to document upload  page
         self.assertEqual(resp.status_code, 302)
-        assert resp.url == '/upload/files/'
+        assert resp.url == "/upload/files/"
 
         # Clean up file
-        file_path = 'uploaded/actuals/{}'.format(
-            self.file_mock.name
-        )
+        file_path = "uploaded/actuals/{}".format(self.file_mock.name)
         if os.path.exists(file_path):
             os.remove(file_path)
 
@@ -312,7 +297,8 @@ class ImportBudgetsTest(BaseTestCase):
 
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_bad_dash.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_bad_dash.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -320,7 +306,8 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         upload_budget_from_file(
-            good_file_upload, self.test_year,
+            good_file_upload,
+            self.test_year,
         )
 
         self.assertEqual(
@@ -359,7 +346,8 @@ class ImportBudgetsTest(BaseTestCase):
     def test_budget_file_with_spaces_and_blanks(self):
         good_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_blank_data.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_blank_data.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -367,7 +355,8 @@ class ImportBudgetsTest(BaseTestCase):
         good_file_upload.save()
 
         upload_budget_from_file(
-            good_file_upload, self.test_year,
+            good_file_upload,
+            self.test_year,
         )
 
         # # Check that existing figures for the same period have been deleted
@@ -408,7 +397,8 @@ class ImportBudgetsTest(BaseTestCase):
     def test_upload_budget_adj_columns(self):
         adj_file_upload = FileUpload(
             s3_document_file=os.path.join(
-                os.path.dirname(__file__), "test_assets/budget_upload_adj_columns.xlsx",
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_adj_columns.xlsx",
             ),
             uploading_user=self.test_user,
             document_type=FileUpload.BUDGET,
@@ -416,7 +406,8 @@ class ImportBudgetsTest(BaseTestCase):
         adj_file_upload.save()
 
         upload_budget_from_file(
-            adj_file_upload, self.test_year,
+            adj_file_upload,
+            self.test_year,
         )
         self.assertEqual(
             BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
@@ -472,7 +463,27 @@ class ImportBudgetsTest(BaseTestCase):
             2200,
         )
 
+    def test_upload_budget_zero_cost_centre(self):
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            0,
+        )
+        file_upload = FileUpload(
+            s3_document_file=os.path.join(
+                os.path.dirname(__file__),
+                "test_assets/budget_upload_zero_cost_centre_test.xlsx",
+            ),
+            uploading_user=self.test_user,
+            document_type=FileUpload.BUDGET,
+        )
+        file_upload.save()
 
-# TODO Multiyear test
-# test that future years upload the 15 months
-# test that only the required year is uploaded
+        upload_budget_from_file(
+            file_upload,
+            self.test_year,
+        )
+        # No budgets uploaded, because of zero cost centre code
+        self.assertEqual(
+            BudgetMonthlyFigure.objects.filter(financial_year=self.test_year).count(),
+            0,
+        )

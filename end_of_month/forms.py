@@ -11,20 +11,18 @@ from end_of_month.utils import (
 
 class UserModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return f"{obj.archived_period.financial_period_code} - {obj.archived_period.period_long_name}"# noqa
+        return f"{obj.archived_period.financial_period_code} - {obj.archived_period.period_long_name}"  # noqa
 
 
 class EndOfMonthProcessForm(forms.Form):
     archive_confirmation = forms.BooleanField(
-        required=True,
-        label="Please confirm you would like to archive this month")
-    archive_confirmation.widget.attrs.update(
-        {"class": "govuk-checkboxes__input"}
+        required=True, label="Please confirm you would like to archive this month"
     )
+    archive_confirmation.widget.attrs.update({"class": "govuk-checkboxes__input"})
 
     def clean_archive_confirmation(self):
         try:
-            is_confirmed = self.cleaned_data['archive_confirmation']
+            is_confirmed = self.cleaned_data["archive_confirmation"]
             if not is_confirmed:
                 raise forms.ValidationError(
                     "You must confirm you wish to archive in order to proceed"

@@ -5,7 +5,6 @@ from django.db import connection
 
 from core.import_csv import get_fk, get_fk_from_field
 from core.models import FinancialYear
-
 from forecast.models import (
     ActualUploadMonthlyFigure,
     FinancialPeriod,
@@ -17,24 +16,13 @@ from forecast.utils.import_helpers import (
     sql_for_data_copy,
     validate_excel_file,
 )
-
-from previous_years.utils import (
-    CheckArchivedFinancialCode,
-)
-from previous_years.import_actuals import (
-    copy_previous_year_actuals_to_monthly_figure,
-)
-from previous_years.models import (
-    ArchivedActualUploadMonthlyFigure,
-)
-
+from previous_years.import_actuals import copy_previous_year_actuals_to_monthly_figure
+from previous_years.models import ArchivedActualUploadMonthlyFigure
+from previous_years.utils import CheckArchivedFinancialCode
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
-
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
 from upload_split_file.split_actuals import handle_split_project
+
 
 logger = logging.getLogger(__name__)
 
@@ -75,9 +63,7 @@ def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
         archived_status__isnull=True,
     ).update(amount=0, starting_amount=0)
     sql_update, sql_insert = sql_for_data_copy(
-        FileUpload.ACTUALS,
-        period_obj.pk,
-        financial_year
+        FileUpload.ACTUALS, period_obj.pk, financial_year
     )
     with connection.cursor() as cursor:
         cursor.execute(sql_insert)
@@ -94,18 +80,18 @@ def copy_current_year_actuals_to_monthly_figure(period_obj, financial_year):
         financial_year=financial_year, financial_period=period_obj
     ).delete()
 
-# See if the actuals should be split to different projects
+    # See if the actuals should be split to different projects
     handle_split_project(period_obj.financial_period_code)
 
 
 def save_trial_balance_row(
     chart_of_account,
-        value,
-        period_obj,
-        year_obj,
-        check_financial_code,
-        row,
-        save_to=ActualUploadMonthlyFigure
+    value,
+    period_obj,
+    year_obj,
+    check_financial_code,
+    row,
+    save_to=ActualUploadMonthlyFigure,
 ):
     """Parse the long strings containing the
     chart of account information. Return errors
@@ -163,8 +149,7 @@ def check_trial_balance_format(worksheet, calendar_month_number, financial_year)
             )
     except TypeError:
         logger.error(
-            "This file appears to be corrupt and it cannot be read",
-            exc_info=True
+            "This file appears to be corrupt and it cannot be read", exc_info=True
         )
         # wrong file
         raise UploadFileFormatError(
@@ -202,8 +187,7 @@ def check_trial_balance_format(worksheet, calendar_month_number, financial_year)
             raise UploadFileFormatError("File is for wrong year")
     except TypeError:
         logger.error(
-            "This file appears to be corrupt and it cannot be read",
-            exc_info=True
+            "This file appears to be corrupt and it cannot be read", exc_info=True
         )
         # wrong file
         raise UploadFileFormatError(
@@ -224,7 +208,9 @@ def validate_trial_balance_report(file_upload, month_number, year):
         )
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         raise ex
 
@@ -232,7 +218,9 @@ def validate_trial_balance_report(file_upload, month_number, year):
         check_trial_balance_format(worksheet, month_number, year)
     except UploadFileFormatError as ex:
         set_file_upload_fatal_error(
-            file_upload, str(ex), str(ex),
+            file_upload,
+            str(ex),
+            str(ex),
         )
         workbook.close
         raise ex
@@ -241,9 +229,8 @@ def validate_trial_balance_report(file_upload, month_number, year):
 
 def upload_trial_balance_report(file_upload, month_number, financial_year):
     workbook, worksheet = validate_trial_balance_report(
-        file_upload,
-        month_number,
-        financial_year)
+        file_upload, month_number, financial_year
+    )
 
     year_obj, _ = get_fk(FinancialYear, financial_year)
     period_obj, _ = get_fk_from_field(
@@ -261,7 +248,8 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
     # to the MonthlyFigure when the upload is completed successfully.
     # This means that we always have a full upload.
     ActualUploadMonthlyFigure.objects.filter(
-        financial_year=financial_year, financial_period=period_obj,
+        financial_year=financial_year,
+        financial_period=period_obj,
     ).delete()
     rows_to_process = worksheet.max_row + 1
     row = 0

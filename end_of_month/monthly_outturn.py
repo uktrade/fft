@@ -2,13 +2,8 @@ import logging
 
 from django.db import connection
 
-from end_of_month.models import EndOfMonthStatus
-
-from forecast.models import (
-    MAX_PERIOD_CODE,
-)
-
-from end_of_month.models import forecast_budget_view_model
+from end_of_month.models import EndOfMonthStatus, forecast_budget_view_model
+from forecast.models import MAX_PERIOD_CODE
 
 
 logger = logging.getLogger(__name__)

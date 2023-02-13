@@ -10,12 +10,9 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
-
 from end_of_month.models import EndOfMonthStatus
-
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
@@ -23,6 +20,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
     UnlockedForecastEditor,
 )
+
 
 User = get_user_model()
 
@@ -172,7 +170,7 @@ class UploadActualsForm(forms.Form):
             ).order_by("-financial_year"),
             empty_label="",
         )
-        self.fields['year'].widget.attrs.update(
+        self.fields["year"].widget.attrs.update(
             {
                 "class": "govuk-select",
                 "aria-describedby": "year-hint year-error",
@@ -202,10 +200,7 @@ class UploadBudgetsForm(forms.Form):
 
 
 class PasteForecastForm(forms.Form):
-    all_selected = forms.BooleanField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
+    all_selected = forms.BooleanField(widget=forms.HiddenInput(), required=False)
     pasted_at_row = forms.CharField(
         widget=forms.HiddenInput(),
         required=False,
@@ -216,7 +211,7 @@ class PasteForecastForm(forms.Form):
     )
 
     def clean_pasted_at_row(self):
-        data = self.cleaned_data['pasted_at_row']
+        data = self.cleaned_data["pasted_at_row"]
 
         if not data:
             return None
@@ -241,7 +236,7 @@ class EditForecastFigureForm(forms.Form):
     def clean_project_code(self):
         # Had to add this to prevent null coming through
         # as string - looks like a bug in Django
-        project_code = self.cleaned_data['project_code']
+        project_code = self.cleaned_data["project_code"]
 
         if project_code == "null" or project_code == "":
             return None
@@ -251,7 +246,7 @@ class EditForecastFigureForm(forms.Form):
     def clean_analysis1_code(self):
         # Had to add this to prevent null coming through
         # as string - looks like a bug in Django
-        analysis1_code = self.cleaned_data['analysis1_code']
+        analysis1_code = self.cleaned_data["analysis1_code"]
 
         if analysis1_code == "null" or analysis1_code == "":
             return None
@@ -261,7 +256,7 @@ class EditForecastFigureForm(forms.Form):
     def clean_analysis2_code(self):
         # Had to add this to prevent null coming through
         # as string - looks like a bug in Django
-        analysis2_code = self.cleaned_data['analysis2_code']
+        analysis2_code = self.cleaned_data["analysis2_code"]
 
         if analysis2_code == "null" or analysis2_code == "":
             return None
@@ -274,40 +269,36 @@ class UnlockedForecastEditorForm(forms.ModelForm):
         super(UnlockedForecastEditorForm, self).__init__(*args, **kwargs)
 
         unlocked_editors = UnlockedForecastEditor.objects.all()
-        existing_editors = [
-            editor.user.id for editor in unlocked_editors
-        ]
+        existing_editors = [editor.user.id for editor in unlocked_editors]
 
         finance_business_partners = User.objects.filter(
-            groups__name='Finance Business Partner/BSCE',
+            groups__name="Finance Business Partner/BSCE",
         )
-        id_list = [
-            user.id for user in finance_business_partners
-        ]
+        id_list = [user.id for user in finance_business_partners]
 
-        self.fields['user'].queryset = User.objects.filter(
-            id__in=id_list
-        ).exclude(
+        self.fields["user"].queryset = User.objects.filter(id__in=id_list).exclude(
             id__in=existing_editors
         )
 
     class Meta:
         model = UnlockedForecastEditor
-        fields = ["user", ]
+        fields = [
+            "user",
+        ]
 
 
 class ForecastPeriodForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        selected_period = kwargs.pop('selected_period', 0)
+        selected_period = kwargs.pop("selected_period", 0)
         super(ForecastPeriodForm, self).__init__(
             *args,
             **kwargs,
         )
         display_list = FinancialYear.financial_year_objects.future_list()
         if display_list:
-            display_list.extend([(0, 'Current')])
+            display_list.extend([(0, "Current")])
         else:
-            display_list = [(0, 'Current')]
+            display_list = [(0, "Current")]
 
         archived_list = EndOfMonthStatus.archived_period_objects.archived_list()
         if archived_list:
@@ -315,9 +306,8 @@ class ForecastPeriodForm(forms.Form):
         year_list = FinancialYear.financial_year_objects.archived_list()
         if year_list:
             display_list.extend(year_list)
-        self.fields['selected_period'] = forms.ChoiceField(
-            choices=display_list,
-            initial=selected_period
+        self.fields["selected_period"] = forms.ChoiceField(
+            choices=display_list, initial=selected_period
         )
         self.fields["selected_period"].widget.attrs.update(
             {

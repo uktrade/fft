@@ -3,15 +3,8 @@ from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 
-from core.utils.generic_helpers import (
-    check_empty,
-)
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from core.utils.generic_helpers import check_empty
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 
 
 class CannotFindMonthlyFigureException(Exception):
@@ -53,12 +46,24 @@ class IncorrectDecimalFormatException(Exception):
 logger = logging.getLogger(__name__)
 
 
+def formatted_cost_centre_code(cost_centre_code):
+    # The edit views expect the cost centre as an integer, so they strip the leading 0
+    # from the cost centre code.
+    # But the cost centre in the database is stored as a string , 6 char long,
+    # padded with leading 0
+    # This function returns the cost centre code in the expected format.
+    return str(cost_centre_code).zfill(6)
+
+
 def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # noqa C901
     start_period = FinancialPeriod.financial_period_info.actual_month() + 1
 
-    period_max = FinancialPeriod.objects.filter(
-        display_figure=True,
-    ).count() + 1
+    period_max = (
+        FinancialPeriod.objects.filter(
+            display_figure=True,
+        ).count()
+        + 1
+    )
 
     for financial_period_month in range(start_period, period_max):
         try:
@@ -75,9 +80,9 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
             ).first()
         except (IndexError, ValueError):
             raise CannotFindForecastMonthlyFigureException(
-                'Could not find forecast row, please check that you '
-                'have pasted ALL columns from the spreadsheet. '
-                'Some values may have been updated.'
+                "Could not find forecast row, please check that you "
+                "have pasted ALL columns from the spreadsheet. "
+                "Some values may have been updated."
             )
 
         col = (settings.NUM_META_COLS + financial_period_month) - 1
@@ -86,15 +91,15 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
             new_value = convert_forecast_amount(cell_data[col])
         except IndexError:
             raise NotEnoughColumnsException(
-                'Your pasted data does not '
-                'match the expected format. '
-                'There are not enough columns.'
+                "Your pasted data does not "
+                "match the expected format. "
+                "There are not enough columns."
             )
         except InvalidOperation:
             raise IncorrectDecimalFormatException(
-                'We cannot convert some of the values in your pasted '
-                'data to decimals, please check it and try again. '
-                'Some values may have been updated.'
+                "We cannot convert some of the values in your pasted "
+                "data to decimals, please check it and try again. "
+                "Some values may have been updated."
             )
 
         if new_value is not None:
@@ -151,9 +156,7 @@ def check_row_match(index, pasted_at_row, cell_data):  # noqa C901
             mismatched_cols.append('"Project code"')
 
     except (ValueError, IndexError):
-        raise BadFormatException(
-            "Your pasted data is not in the correct format"
-        )
+        raise BadFormatException("Your pasted data is not in the correct format")
 
     if len(mismatched_cols) > 0:
         raise RowMatchException(
@@ -180,13 +183,13 @@ def check_cols_match(cell_data):
     # added adjustment periods to edit spreadsheet downloads
     if len(cell_data) > 12 + settings.NUM_META_COLS:
         raise TooManyMatchException(
-            'Your pasted data does not '
-            'match the expected format. '
-            'There are too many columns.'
+            "Your pasted data does not "
+            "match the expected format. "
+            "There are too many columns."
         )
     if len(cell_data) < 12 + settings.NUM_META_COLS:
         raise NotEnoughMatchException(
-            'Your pasted data does not '
-            'match the expected format. '
-            'There are not enough columns.'
+            "Your pasted data does not "
+            "match the expected format. "
+            "There are not enough columns."
         )

@@ -1,14 +1,12 @@
 from django.db.models import Q
-
-from download_file.decorators import has_download_mi_report_permission
-from download_file.forms import DownloadMIForm
-from download_file.models import FileDownload
-
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.edit import FormView
 
 from core.utils.generic_helpers import get_current_financial_year, get_year_display
+from download_file.decorators import has_download_mi_report_permission
+from download_file.forms import DownloadMIForm
+from download_file.models import FileDownload
 
 
 class DownloadMIReportView(FormView):
@@ -20,12 +18,21 @@ class DownloadMIReportView(FormView):
         return super(DownloadMIReportView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.financial_year = request.POST.get("download_year", None,)
+        self.financial_year = request.POST.get(
+            "download_year",
+            None,
+        )
 
-        if request.POST.get("download_budget_name", None,):
+        if request.POST.get(
+            "download_budget_name",
+            None,
+        ):
             url_name = "download_mi_budget"
             kwargs = {"financial_year": self.financial_year}
-        elif request.POST.get("download_previous_year_name", None,):
+        elif request.POST.get(
+            "download_previous_year_name",
+            None,
+        ):
             url_name = "download_mi_previous_year_report_source"
             # no forecast year required
             kwargs = {}
@@ -33,9 +40,7 @@ class DownloadMIReportView(FormView):
             url_name = "download_mi_report_source"
             kwargs = {"financial_year": self.financial_year}
 
-        return HttpResponseRedirect(
-            reverse(url_name, kwargs=kwargs)
-        )
+        return HttpResponseRedirect(reverse(url_name, kwargs=kwargs))
 
     def downloaded_files(self):
         downloaded_files = FileDownload.objects.filter(

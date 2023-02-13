@@ -25,11 +25,13 @@ class Command(BaseCommand):
                     email=email,
                 )
             else:
-                sso_user = user.objects.exclude(
-                    email="AnonymousUser",
-                ).exclude(
-                    Q(email__contains='test.com')
-                ).first()
+                sso_user = (
+                    user.objects.exclude(
+                        email="AnonymousUser",
+                    )
+                    .exclude(Q(email__contains="test.com"))
+                    .first()
+                )
             sso_user.is_superuser = True
             sso_user.is_staff = True
             sso_user.save()

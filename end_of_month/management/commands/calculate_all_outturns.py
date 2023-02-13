@@ -1,7 +1,6 @@
 from django.core.management.base import BaseCommand
 
 from core.utils.generic_helpers import get_current_financial_year
-
 from end_of_month.models import EndOfMonthStatus
 from end_of_month.monthly_outturn import create_outturn_for_variance
 

@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.views.generic.base import TemplateView
 from django.urls import reverse
+from django.views.generic.base import TemplateView
 
 from upload_file.models import FileUpload
 from upload_file.utils import user_has_upload_permission
@@ -15,7 +15,11 @@ class UploadedView(UserPassesTestMixin, TemplateView):
         return user_has_upload_permission(self.request.user)
 
     def handle_no_permission(self):
-        return redirect(reverse("index",))
+        return redirect(
+            reverse(
+                "index",
+            )
+        )
 
     def uploaded_files(self):
         uploaded_files = FileUpload.objects.filter(

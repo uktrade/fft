@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
+
 urlpatterns = [
     path("auth/", include("authbroker_client.urls", namespace="authbroker")),
     path("", include("core.urls")),  # default to core with no path
@@ -32,10 +33,10 @@ urlpatterns = [
     path("upload/", include("upload_file.urls")),
     path("data-lake/", include("data_lake.urls")),
     path("mi-report-data/", include("mi_report_data.urls")),
-    path("oscar_return/",include("oscar_return.urls")),
+    path("oscar_return/", include("oscar_return.urls")),
     path("upload_split_file/", include("upload_split_file.urls")),
     path("admin/", admin.site.urls),
-     # TODO - split below out into develop only?
+    # TODO - split below out into develop only?
     path(
         "assets/<path:asset_path>",
         RedirectView.as_view(url="/static/govuk/assets/%(asset_path)s"),

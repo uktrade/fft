@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('end_of_month', '0004_monthlytotalbudget_simplehistorymonthlytotalbudget'),
+        ("end_of_month", "0004_monthlytotalbudget_simplehistorymonthlytotalbudget"),
     ]
 
     operations = [

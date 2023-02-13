@@ -1,6 +1,5 @@
-from django.db.models import Q
-
 import django_filters
+from django.db.models import Q
 
 from chartofaccountDIT.models import (
     Analysis1,
@@ -22,10 +21,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
-from core.filters import (ArchivedFilterSet,
-                          MyFilterSet,
-                          )
+from core.filters import ArchivedFilterSet, MyFilterSet
 
 
 class NACFilter(MyFilterSet):

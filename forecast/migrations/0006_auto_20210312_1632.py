@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0005_data_period_codes'),
+        ("forecast", "0005_data_period_codes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='financialperiod',
-            name='actual_loaded_previous_year',
+            model_name="financialperiod",
+            name="actual_loaded_previous_year",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='simplehistoryfinancialperiod',
-            name='actual_loaded_previous_year',
+            model_name="simplehistoryfinancialperiod",
+            name="actual_loaded_previous_year",
             field=models.BooleanField(default=False),
         ),
     ]

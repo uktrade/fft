@@ -1,26 +1,16 @@
 from io import StringIO
 
-from django.test import TestCase
-from django.test.utils import captured_stdin
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.test import TestCase
+from django.test.utils import captured_stdin
 
 from core.test.test_base import TEST_EMAIL
 from core.utils.generic_helpers import get_current_financial_year
-
+from costcentre.models import ArchivedCostCentre, CostCentre
 from end_of_month.test.test_utils import MonthlyFigureSetup
-
-from forecast.models import (
-    BudgetMonthlyFigure,
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
-
-from costcentre.models import (
-    ArchivedCostCentre,
-    CostCentre,
-)
+from forecast.models import BudgetMonthlyFigure, FinancialCode, ForecastMonthlyFigure
 
 
 class NewFinancialYearTest(TestCase):

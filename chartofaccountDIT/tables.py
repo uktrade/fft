@@ -20,7 +20,6 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.tables import FadminTable
 
 
@@ -220,8 +219,8 @@ class ProjectTable(FadminTable):
 
 class HistoricalProjectTable(ProjectTable):
     """The historical model is identical
-     to the current one, so we can just
-     inherit the class"""
+    to the current one, so we can just
+    inherit the class"""
 
     class Meta(ProjectTable.Meta):
         model = ArchivedProjectCode

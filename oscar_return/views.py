@@ -1,9 +1,7 @@
 from django.contrib.auth.decorators import user_passes_test
 
 from download_file.models import FileDownload
-
 from forecast.utils.access_helpers import can_download_oscar
-
 from oscar_return.create_oscar_report import (
     create_oscar_report,
     create_previous_year_oscar_report,

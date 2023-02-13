@@ -1,9 +1,8 @@
-from data_lake.test.utils import DataLakeTesting
-
 from chartofaccountDIT.test.factories import (
     ExpenditureCategoryFactory,
     HistoricalExpenditureCategoryFactory,
 )
+from data_lake.test.utils import DataLakeTesting
 
 
 class ExpenditureCategoryTests(DataLakeTesting):

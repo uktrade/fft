@@ -1,10 +1,5 @@
+from chartofaccountDIT.models import ArchivedExpenditureCategory, ExpenditureCategory
 from core.utils.generic_helpers import get_current_financial_year
-
-from chartofaccountDIT.models import (
-    ArchivedExpenditureCategory,
-    ExpenditureCategory,
-)
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 

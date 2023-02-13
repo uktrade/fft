@@ -1,27 +1,20 @@
 import logging
+
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import UserPassesTestMixin
-
 from django.db.models import Q
-
 from django.shortcuts import redirect
-
+from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 
-from django.urls import reverse, reverse_lazy
-
 from forecast.views.upload_file import UploadViewBase
-
-from upload_split_file.downloads import (
-    create_percentage_download,
-    create_template,
-)
+from upload_file.models import FileUpload
+from upload_split_file.downloads import create_percentage_download, create_template
 from upload_split_file.forms import UploadPercentageForm
 from upload_split_file.templatetags.upload_percentage_permissions import (
     has_project_percentage_permission,
 )
 
-from upload_file.models import FileUpload
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +41,11 @@ class UploadedPercentageView(UserPassesTestMixin, TemplateView):
         return has_project_percentage_permission(self.request.user)
 
     def handle_no_permission(self):
-        return redirect(reverse("index",))
+        return redirect(
+            reverse(
+                "index",
+            )
+        )
 
     def uploaded_files(self):
         uploaded_files = FileUpload.objects.filter(

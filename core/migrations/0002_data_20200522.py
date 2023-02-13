@@ -4,6 +4,7 @@ from django.db import migrations
 
 from core.utils.generic_helpers import get_current_financial_year
 
+
 fields = ["financial_year", "financial_year_display", "current"]
 
 financial_years = [
@@ -25,8 +26,8 @@ def populate_financial_years(apps, schema_editor):
         _, _ = financial_year_model.objects.get_or_create(**d)
 
 
-Permission = apps.get_model('auth', 'Permission')
-Group = apps.get_model('auth', 'Group')
+Permission = apps.get_model("auth", "Permission")
+Group = apps.get_model("auth", "Group")
 
 
 def add_all_permissions():
@@ -51,23 +52,24 @@ def create_groups(apps, schema_editor):
 
     # Forecast viewers
     forecast_viewers, _ = Group.objects.get_or_create(
-        name='Forecast viewers',
+        name="Forecast viewers",
     )
 
     assign_permissions(
-        forecast_viewers, [
+        forecast_viewers,
+        [
             "can_view_forecasts",
-        ]
+        ],
     )
 
     # Finance Business Partners
     finance_business_partners, _ = Group.objects.get_or_create(
-        name='Finance Business Partner/BSCE',
-
+        name="Finance Business Partner/BSCE",
     )
 
     assign_permissions(
-        finance_business_partners, [
+        finance_business_partners,
+        [
             "can_view_forecasts",
             "can_edit_whilst_closed",
             "assign_edit_for_own_cost_centres",
@@ -77,11 +79,12 @@ def create_groups(apps, schema_editor):
 
     # Finance admins
     finance_adminstrators, _ = Group.objects.get_or_create(
-        name='Finance Administrator',
+        name="Finance Administrator",
     )
 
     assign_permissions(
-        finance_adminstrators, [
+        finance_adminstrators,
+        [
             "can_view_forecasts",
             "edit_forecast_all_cost_centres",
             "can_edit_whilst_locked",

@@ -1,18 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from simple_history.admin import SimpleHistoryAdmin
 
-from core.admin import (
-    AdminEditOnly,
-    AdminImportExport,
-    AdminReadOnly,
-)
-
+from core.admin import AdminEditOnly, AdminImportExport, AdminReadOnly
 from forecast.forms import UnlockedForecastEditorForm
 from forecast.import_csv import import_adi_file_class
 from forecast.models import (
     BudgetMonthlyFigure,
+    FinancialCode,
     FinancialPeriod,
     ForecastEditState,
     ForecastMonthlyFigure,
@@ -25,6 +21,41 @@ User = get_user_model()
 
 
 class MonthlyFigureAdmin(AdminImportExport, AdminReadOnly, SimpleHistoryAdmin):
+    list_display = (
+        "financial_code",
+        "financial_year",
+        "financial_period",
+        "amount",
+    )
+
+    search_fields = [
+        "financial_code__cost_centre__cost_centre_code",
+        "financial_code__programme__programme_code",
+        "financial_code__natural_account_code__natural_account_code",
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "financial_code",
+                "financial_year",
+                "financial_period",
+                "amount",
+                "archived_status",
+            ]
+
+    list_filter = (
+        ("financial_year", RelatedDropdownFilter),
+        ("financial_code__cost_centre", RelatedDropdownFilter),
+        ("financial_code__natural_account_code", RelatedDropdownFilter),
+        ("financial_code__programme", RelatedDropdownFilter),
+        ("financial_code__analysis1_code", RelatedDropdownFilter),
+        ("financial_code__analysis2_code", RelatedDropdownFilter),
+        ("financial_code__project_code", RelatedDropdownFilter),
+        ("financial_period", RelatedDropdownFilter),
+        ("archived_status__archived_period", RelatedDropdownFilter),
+    )
+
     @property
     def import_info(self):
         return import_adi_file_class
@@ -42,7 +73,7 @@ class FinancialPeriodAdmin(AdminReadOnly):
         "period_calendar_code",
         "actual_loaded",
         "actual_loaded_previous_year",
-        "display_figure"
+        "display_figure",
     )
 
     def get_readonly_fields(self, request, obj=None):
@@ -79,9 +110,54 @@ class UnlockedForecastEditorAdmin(admin.ModelAdmin):
         return unlock_form
 
 
+class FinancialCodeAdmin(AdminReadOnly):
+    list_display = (
+        "id",
+        "cost_centre",
+        "programme",
+        "natural_account_code",
+        "analysis1_code",
+        "analysis2_code",
+        "project_code",
+        "forecast_expenditure_type",
+    )
+
+    search_fields = [
+        "id",
+        "cost_centre__cost_centre_code",
+        "programme__programme_code",
+        "natural_account_code__natural_account_code",
+        "analysis1_code__analysis1_code",
+        "analysis2_code__analysis2_code",
+        "project_code__project_code",
+    ]
+    list_filter = (
+        ("cost_centre", RelatedDropdownFilter),
+        ("natural_account_code", RelatedDropdownFilter),
+        ("programme", RelatedDropdownFilter),
+        ("analysis1_code", RelatedDropdownFilter),
+        ("analysis2_code", RelatedDropdownFilter),
+        ("project_code,", RelatedDropdownFilter),
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return [
+                "id",
+                "programme",
+                "cost_centre",
+                "natural_account_code",
+                "analysis1_code",
+                "analysis2_code",
+                "project_code",
+                "forecast_expenditure_type",
+            ]
+
+
 admin.site.register(ForecastMonthlyFigure, MonthlyFigureAdmin)
 admin.site.register(FinancialPeriod, FinancialPeriodAdmin)
 admin.site.register(BudgetMonthlyFigure, BudgetAdmin)
 admin.site.register(ForecastEditState, ForecastEditStateAdmin)
 admin.site.register(FutureForecastEditState, FutureForecastEditStateAdmin)
 admin.site.register(UnlockedForecastEditor, UnlockedForecastEditorAdmin)
+admin.site.register(FinancialCode, FinancialCodeAdmin)

@@ -1,5 +1,4 @@
 from django.db.models import Q
-
 from django.views.generic.base import TemplateView
 
 from download_file.decorators import has_download_oscar_permission

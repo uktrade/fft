@@ -1,7 +1,5 @@
+from core.models import FinancialYear
 from data_lake.test.utils import DataLakeTesting
-from core.models import (
-    FinancialYear,
-)
 
 
 class Analysis1CodeTests(DataLakeTesting):

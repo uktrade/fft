@@ -1,23 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.utils.crypto import get_random_string
-
-from guardian.shortcuts import remove_perm
-from guardian.shortcuts import get_objects_for_user
+from guardian.shortcuts import get_objects_for_user, remove_perm
 
 from core.import_csv import xslx_header_to_dict
-
 from forecast.utils.import_helpers import (
     UploadFileFormatError,
     check_header,
     validate_excel_file,
 )
 from upload_file.models import FileUpload
-
 from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
     set_file_upload_warning,
 )
+
 
 EXPECTED_USER_HEADERS = [
     "first name",  # /PS-IGNORE

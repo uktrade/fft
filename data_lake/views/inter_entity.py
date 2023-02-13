@@ -1,10 +1,5 @@
+from chartofaccountDIT.models import ArchivedInterEntity, InterEntity
 from core.utils.generic_helpers import get_current_financial_year
-
-from chartofaccountDIT.models import (
-    ArchivedInterEntity,
-    InterEntity,
-)
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 
 
@@ -29,7 +24,12 @@ class InterEntityViewSet(DataLakeViewSet):
         historical_queryset = (
             ArchivedInterEntity.objects.filter(active=True)
             .select_related("financial_year")
-            .order_by("-financial_year", "l1_value", "l1_description", "l2_value",)
+            .order_by(
+                "-financial_year",
+                "l1_value",
+                "l1_description",
+                "l2_value",
+            )
         )
         for obj in current_queryset:
             row = [

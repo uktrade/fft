@@ -1,13 +1,10 @@
 from io import StringIO
 
-from django.test import TestCase
 from django.core.management import call_command
+from django.test import TestCase
 
 from end_of_month.test.test_utils import MonthlyFigureSetup
-
-from forecast.models import (
-    FinancialCode,
-)
+from forecast.models import FinancialCode
 from forecast.test.factories import FinancialCodeFactory
 
 

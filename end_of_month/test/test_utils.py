@@ -1,25 +1,20 @@
-from django.test import (
-    TestCase,
-)
+from django.test import TestCase
 
 from chartofaccountDIT.test.factories import (
     NaturalCodeFactory,
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.test.test_base import TEST_COST_CENTRE
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
 from end_of_month.end_of_month_actions import end_of_month_archive
 from end_of_month.models import EndOfMonthStatus, forecast_budget_view_model
 from end_of_month.utils import (
@@ -29,7 +24,6 @@ from end_of_month.utils import (
     get_archivable_month,
     validate_period_code,
 )
-
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
@@ -74,7 +68,8 @@ class MonthlyFigureSetup:
         self.cost_centre_code = TEST_COST_CENTRE
 
         group_obj = DepartmentalGroupFactory(
-            group_code=self.group_code, group_name=group_name,
+            group_code=self.group_code,
+            group_name=group_name,
         )
         directorate_obj = DirectorateFactory(
             directorate_code=self.directorate_code,
@@ -82,7 +77,8 @@ class MonthlyFigureSetup:
             group=group_obj,
         )
         cost_centre_obj = CostCentreFactory(
-            directorate=directorate_obj, cost_centre_code=self.cost_centre_code,
+            directorate=directorate_obj,
+            cost_centre_code=self.cost_centre_code,
         )
         programme_obj = ProgrammeCodeFactory()
         self.programme_code = programme_obj.programme_code

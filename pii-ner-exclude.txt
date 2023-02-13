@@ -793,5 +793,31 @@ CREATE VIEW mi_report_budget_period_0_view
 mi_report_forecast_period_0_view"
 mi_report_budget_period_0_view
 0007_future_year_period_0
+Finance Forecast Tool Admin
+" Django settings for
+Django 2.0.2
+VCAP_SERVICES
+future_years.apps
+FutureYearsConfig
+previous_years.apps
+treasurySS.apps
+end_of_month.apps
+importdata.apps
+adv_cache_tag
+BACKEND
+AutoField
+AUTHBROKER_CLIENT_ID
+AWS
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+AxesMiddleware
+AxesBackend
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+Order
+django.core.cache.backends.db.
 
 

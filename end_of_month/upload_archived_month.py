@@ -4,14 +4,9 @@ from decimal import Decimal
 
 from django.db import connection
 
-from core.import_csv import (
-    csv_header_to_dict,
-    get_fk,
-)
-
+from core.import_csv import csv_header_to_dict, get_fk
 from end_of_month.models import EndOfMonthStatus
-
-from forecast.import_csv import WrongChartOFAccountCodeException
+from forecast.import_csv import WrongAmountException, WrongChartOFAccountCodeException
 from forecast.models import (
     ActualUploadMonthlyFigure,
     FinancialPeriod,
@@ -29,7 +24,9 @@ class WrongArchivePeriodException(Exception):
 
 
 def sql_for_single_month_copy(
-    financial_period_id, archived_period_id, financial_year_id,
+    financial_period_id,
+    archived_period_id,
+    financial_year_id,
 ):
     sql_insert = (
         f"INSERT INTO forecast_forecastmonthlyfigure (created, "
@@ -45,7 +42,9 @@ def sql_for_single_month_copy(
     return sql_insert
 
 
-def import_single_archived_period(csvfile, month_to_upload, archive_period, fin_year):
+def import_single_archived_period(  # noqa C901
+    csvfile, month_to_upload, archive_period, fin_year
+):
     if month_to_upload <= archive_period:
         raise WrongArchivePeriodException(
             "You are trying to amend Actuals. Only forecast can be amended."
@@ -107,7 +106,14 @@ def import_single_archived_period(csvfile, month_to_upload, archive_period, fin_
             )
 
         financialcode_obj = check_financial_code.get_financial_code()
-        period_amount = Decimal(row[month_col])
+        try:
+            period_amount = Decimal(row[month_col])
+        except(ArithmeticError, IndexError, Decimal.InvalidOperation):
+            raise WrongAmountException(
+                f"Amount error, Row {row_number} error: "
+                f"month_col = {month_col}, val= {row[month_col]}"
+            )
+
         if period_amount:
             month_figure_obj, created = ActualUploadMonthlyFigure.objects.get_or_create(
                 financial_year=fin_obj,

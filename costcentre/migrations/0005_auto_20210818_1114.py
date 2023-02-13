@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('costcentre', '0004_auto_20200828_1207'),
+        ("costcentre", "0004_auto_20200828_1207"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='archivedcostcentre',
-            name='treasury_segment_code',
-            field=models.CharField(blank=True, max_length=8, null=True, verbose_name='segment code'),
+            model_name="archivedcostcentre",
+            name="treasury_segment_code",
+            field=models.CharField(
+                blank=True, max_length=8, null=True, verbose_name="segment code"
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivedcostcentre',
-            name='treasury_segment_code',
-            field=models.CharField(blank=True, max_length=8, null=True, verbose_name='segment code'),
+            model_name="simplehistoryarchivedcostcentre",
+            name="treasury_segment_code",
+            field=models.CharField(
+                blank=True, max_length=8, null=True, verbose_name="segment code"
+            ),
         ),
     ]

@@ -1,7 +1,6 @@
 from io import StringIO
 
 from bs4 import BeautifulSoup
-
 from django.core.management import call_command
 from django.urls import reverse
 
@@ -12,7 +11,6 @@ from chartofaccountDIT.test.factories import (
     ExpenditureCategoryFactory,
     ProgrammeCodeFactory,
 )
-
 from core.test.test_base import BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
 
@@ -33,7 +31,10 @@ class ArchiveAnalysis1Test(BaseTestCase):
 
     def show_historical_view(self):
         response = self.client.get(
-            reverse("historical_analysis_1", kwargs={"year": self.archive_year},),
+            reverse(
+                "historical_analysis_1",
+                kwargs={"year": self.archive_year},
+            ),
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -50,7 +51,10 @@ class ArchiveAnalysis1Test(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "Analysis1", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Analysis1",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -65,11 +69,17 @@ class ArchiveAnalysis1Test(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", "Analysis1", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Analysis1",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         call_command(
-            "archive", "Analysis1", year=self.archive_year + 1, stdout=self.out,
+            "archive",
+            "Analysis1",
+            year=self.archive_year + 1,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -99,7 +109,10 @@ class ArchiveAnalysis2Test(BaseTestCase):
 
     def show_historical_view(self):
         response = self.client.get(
-            reverse("historical_analysis_2", kwargs={"year": self.archive_year},)
+            reverse(
+                "historical_analysis_2",
+                kwargs={"year": self.archive_year},
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "govuk-table")
@@ -116,7 +129,10 @@ class ArchiveAnalysis2Test(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "Analysis2", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Analysis2",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -131,11 +147,17 @@ class ArchiveAnalysis2Test(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", "Analysis2", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Analysis2",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         call_command(
-            "archive", "Analysis2", year=self.archive_year + 1, stdout=self.out,
+            "archive",
+            "Analysis2",
+            year=self.archive_year + 1,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -185,7 +207,10 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Expenditure_Cat",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -200,7 +225,10 @@ class ArchiveExpenditureCategoryTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", "Expenditure_Cat", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Expenditure_Cat",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         call_command(
@@ -230,7 +258,8 @@ class ArchiveCommercialCategoryTest(BaseTestCase):
         self.commercial_category = "commercial category"
         self.description = "Longer description"
         CommercialCategoryFactory(
-            commercial_category=self.commercial_category, description=self.description,
+            commercial_category=self.commercial_category,
+            description=self.description,
         )
         current_year = get_current_financial_year()
         self.archive_year = current_year - 1
@@ -257,7 +286,10 @@ class ArchiveCommercialCategoryTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "Commercial_Cat", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Commercial_Cat",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -272,11 +304,17 @@ class ArchiveCommercialCategoryTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", "Commercial_Cat", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Commercial_Cat",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         call_command(
-            "archive", "Commercial_Cat", year=self.archive_year + 1, stdout=self.out,
+            "archive",
+            "Commercial_Cat",
+            year=self.archive_year + 1,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -326,7 +364,10 @@ class ArchiveProgrammeTest(BaseTestCase):
         assert len(table_rows) == 2
 
         call_command(
-            "archive", "Programmes", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Programmes",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()
@@ -342,11 +383,17 @@ class ArchiveProgrammeTest(BaseTestCase):
 
     def test_archive_multiple_years(self):
         call_command(
-            "archive", "Programmes", year=self.archive_year, stdout=self.out,
+            "archive",
+            "Programmes",
+            year=self.archive_year,
+            stdout=self.out,
         )
 
         call_command(
-            "archive", "Programmes", year=self.archive_year + 1, stdout=self.out,
+            "archive",
+            "Programmes",
+            year=self.archive_year + 1,
+            stdout=self.out,
         )
 
         soup = self.show_historical_view()

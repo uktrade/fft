@@ -6,14 +6,14 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0008_amend_views_20210802_1439'),
-        ('core', '0011_alter_historicaluser_first_name'),
-        ('end_of_month', '0011_amend_view_20210629_1406'),
+        ("forecast", "0008_amend_views_20210802_1439"),
+        ("core", "0011_alter_historicaluser_first_name"),
+        ("end_of_month", "0011_amend_view_20210629_1406"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='monthlytotalbudget',
-            unique_together={('financial_code', 'archived_status', 'financial_year')},
+            name="monthlytotalbudget",
+            unique_together={("financial_code", "archived_status", "financial_year")},
         ),
     ]

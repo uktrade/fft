@@ -1,14 +1,8 @@
 import factory
 
-from chartofaccountDIT.test.factories import (
-    NaturalCodeFactory,
-    ProgrammeCodeFactory,
-)
-
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from core.models import FinancialYear
-
 from costcentre.test.factories import CostCentreFactory
-
 from forecast.models import (
     BudgetMonthlyFigure,
     FinancialCode,
@@ -21,7 +15,6 @@ from forecast.models import (
 
 
 class FinancialPeriodFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = FinancialPeriod
 
@@ -47,7 +40,6 @@ class BudgetMonthlyFigureFactory(factory.DjangoModelFactory):
 
 
 class BudgetFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = BudgetMonthlyFigure
 
@@ -72,18 +64,15 @@ class MonthlyFigureFactory(factory.DjangoModelFactory):
 
 
 class ForecastEditStateFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = ForecastEditState
 
 
 class FutureForecastEditStateFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = FutureForecastEditState
 
 
 class UnlockedForecastEditorFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = UnlockedForecastEditor

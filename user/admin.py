@@ -1,14 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-
-from core.utils.generic_helpers import (
-    log_object_change,
-)
-
 from django.urls import path
 
+from core.utils.generic_helpers import log_object_change
 from user.download_users import download_users_to_excel
+
 
 User = get_user_model()
 
@@ -22,7 +19,10 @@ class UserListFilter(admin.SimpleListFilter):
         list_of_users = []
         users = User.objects.all()
 
-        for user in self.queryset(request, users,):
+        for user in self.queryset(
+            request,
+            users,
+        ):
             list_of_users.append((str(user.id), user.get_short_name()))
 
         return sorted(list_of_users, key=lambda tp: tp[1])
@@ -36,9 +36,7 @@ class UserListFilter(admin.SimpleListFilter):
             # Remove administering user
             id_list.append(request.user.id)
 
-            return queryset.exclude(
-                pk__in=id_list
-            ).order_by("-last_name")
+            return queryset.exclude(pk__in=id_list).order_by("-last_name")
 
         return queryset
 
@@ -48,12 +46,12 @@ class UserAdmin(UserAdmin):
 
     list_filter = (UserListFilter,)
     list_display = (
-        'email',
-        'first_name',
-        'last_name',
-        'is_active',
-        'is_staff',
-        'is_superuser',
+        "email",
+        "first_name",
+        "last_name",
+        "is_active",
+        "is_staff",
+        "is_superuser",
     )
 
     def save_model(self, request, obj, form, change):
@@ -106,7 +104,7 @@ class UserAdmin(UserAdmin):
     def get_urls(self):
         urls = super().get_urls()
         export_urls = [
-            path('export-users/', download_users_to_excel),
+            path("export-users/", download_users_to_excel),
         ]
         return export_urls + urls
 

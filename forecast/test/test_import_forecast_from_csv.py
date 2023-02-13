@@ -7,20 +7,11 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-    DirectorateFactory,
-)
-
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
+from costcentre.test.factories import CostCentreFactory, DirectorateFactory
 from forecast.import_csv import import_adi_file
-from forecast.models import (
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, ForecastMonthlyFigure
 
 
 class ImportForecastTest(BaseTestCase):
@@ -52,20 +43,25 @@ class ImportForecastTest(BaseTestCase):
         self.year_obj.save
 
     def get_csv_data(self):
-        header = "Entity,Cost Centre,Natural Account,Programme,Analysis,Analysis2," \
-                 "Project,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC,JAN,FEB,MAR," \
-                 "ADJ01,ADJ02,ADJ03"
-        line1 = f"3000,{self.cost_centre_code},{self.natural_account_code}," \
-                f"{self.programme_code},{self.analisys1},{self.analisys2}," \
-                f"{self.project_code}," \
-                f"0,200,300,400,500,600,700,800,900,1000,1100,1200,0,0,0"
+        header = (
+            "Entity,Cost Centre,Natural Account,Programme,Analysis,Analysis2,"
+            "Project,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC,JAN,FEB,MAR,"
+            "ADJ01,ADJ02,ADJ03"
+        )
+        line1 = (
+            f"3000,{self.cost_centre_code},{self.natural_account_code},"
+            f"{self.programme_code},{self.analisys1},{self.analisys2},"
+            f"{self.project_code},"
+            f"0,200,300,400,500,600,700,800,900,1000,1100,1200,0,0,0"
+        )
         return io.StringIO(f"{header}\n{line1}\n")
 
     def test_upload_forecast_report(self):
         result = import_adi_file(self.get_csv_data())
         assert result
         self.assertEqual(
-            ForecastMonthlyFigure.objects.all().count(), 11,
+            ForecastMonthlyFigure.objects.all().count(),
+            11,
         )
         self.assertEqual(FinancialCode.objects.all().count(), 1)
         financial_code_obj = FinancialCode.objects.all().first()

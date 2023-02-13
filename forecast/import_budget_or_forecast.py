@@ -5,12 +5,11 @@ from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from forecast.models import (
-    BudgetMonthlyFigure,
-    ForecastMonthlyFigure,
-    BudgetUploadMonthlyFigure,
     ActualUploadMonthlyFigure,
+    BudgetMonthlyFigure,
+    BudgetUploadMonthlyFigure,
+    ForecastMonthlyFigure,
 )
 from forecast.utils.import_helpers import (
     CheckFinancialCode,
@@ -21,12 +20,9 @@ from forecast.utils.import_helpers import (
     sql_for_data_copy,
     validate_excel_file,
 )
-
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
+
 
 EXPECTED_FIGURE_HEADERS = [
     "cost centre",
@@ -165,10 +161,10 @@ def upload_financial_figures(worksheet, year, header_dict, file_upload):  # noqa
                 file_upload, f"Processing row {row_number} of {rows_to_process}."
             )
         cost_centre = data_row[cc_index].value
-        if not cost_centre:
+        nac = data_row[nac_index].value
+        if not cost_centre and not nac:
             # protection against empty rows
             break
-        nac = data_row[nac_index].value
         programme_code = data_row[prog_index].value
         analysis1 = data_row[a1_index].value
         analysis2 = data_row[a2_index].value
@@ -206,7 +202,9 @@ def upload_financial_figures(worksheet, year, header_dict, file_upload):  # noqa
             final_status = FileUpload.PROCESSEDWITHWARNING
 
     set_file_upload_feedback(
-        file_upload, f"Processed {rows_to_process} rows.", final_status
+        file_upload,
+        f"Processed {row_number} rows of {rows_to_process} rows in file.",
+        final_status,
     )
 
     return not check_financial_code.error_found

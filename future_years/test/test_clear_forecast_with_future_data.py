@@ -1,18 +1,12 @@
 from io import StringIO
 
+from django.core.management import call_command
 from django.test import TestCase
 from django.test.utils import captured_stdin
-from django.core.management import call_command
 
 from core.utils.generic_helpers import get_current_financial_year
-
 from end_of_month.test.test_utils import MonthlyFigureSetup
-
-from forecast.models import (
-    BudgetMonthlyFigure,
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
+from forecast.models import BudgetMonthlyFigure, FinancialCode, ForecastMonthlyFigure
 
 
 class ClearForecastCommandFutureDataTest(TestCase):

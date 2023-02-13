@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
-
 from guardian.shortcuts import get_objects_for_user
 
 
@@ -17,8 +16,7 @@ class Command(BaseCommand):
         if user is None:
             self.stdout.write(
                 self.style.ERROR(
-                    "Cannot find user with email "
-                    "address {}".format(options["email"])
+                    "Cannot find user with email " "address {}".format(options["email"])
                 )
             )
             return
@@ -26,9 +24,7 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(
                 "User with email '{}' has permissions "
-                "on the following cost centres:".format(
-                    options["email"]
-                )
+                "on the following cost centres:".format(options["email"])
             )
         )
 

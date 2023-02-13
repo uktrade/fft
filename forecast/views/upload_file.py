@@ -5,14 +5,11 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
 
-from forecast.forms import (
-    UploadActualsForm,
-    UploadBudgetsForm,
-)
+from forecast.forms import UploadActualsForm, UploadBudgetsForm
 from forecast.tasks import process_uploaded_file
-
 from upload_file.models import FileUpload
 from upload_file.utils import user_has_upload_permission
+
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +39,7 @@ class UploadViewBase(UserPassesTestMixin, FormView):
             # name attribute of the file rather than
             # passing the request file var directly as this is the
             # required when using the chunk uploader project
-            s3_file_name = request.FILES['file'].name
+            s3_file_name = request.FILES["file"].name
 
             logger.info(f"s3_file_name is f{s3_file_name}")
 
@@ -75,9 +72,10 @@ class UploadActualsView(UploadViewBase):
     upload_type = FileUpload.ACTUALS
 
     def get_args(self, data):
-        return [data['period'].period_calendar_code,
-                data['year'].financial_year,
-                ]
+        return [
+            data["period"].period_calendar_code,
+            data["year"].financial_year,
+        ]
 
 
 class UploadBudgetView(UploadViewBase):
@@ -88,4 +86,6 @@ class UploadBudgetView(UploadViewBase):
     upload_type = FileUpload.BUDGET
 
     def get_args(self, data):
-        return [data['year'].financial_year, ]
+        return [
+            data["year"].financial_year,
+        ]

@@ -2,7 +2,6 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from chartofaccountDIT.test.factories import (
@@ -10,25 +9,17 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
-
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.utils.view_header_definition import (
     forecast_total_header,
     year_to_date_header,

@@ -7,12 +7,8 @@ from end_of_month.upload_archived_month import (
     WrongArchivePeriodException,
     import_single_archived_period,
 )
-
 from forecast.import_csv import WrongChartOFAccountCodeException
-from forecast.models import (
-    FinancialCode,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, ForecastMonthlyFigure
 
 
 class UploadSingleMonthTest(TestCase):
@@ -31,7 +27,9 @@ class UploadSingleMonthTest(TestCase):
         )
 
         original_amount = ForecastMonthlyFigure.objects.get(
-            financial_code=fin_code_obj, financial_period_id=4, archived_status_id=2,
+            financial_code=fin_code_obj,
+            financial_period_id=4,
+            archived_status_id=2,
         ).amount
         new_amount = 800000
         in_mem_csv = StringIO(
@@ -44,7 +42,9 @@ class UploadSingleMonthTest(TestCase):
         )
         import_single_archived_period(in_mem_csv, 4, 2, 2020)
         new_amount_in_db = ForecastMonthlyFigure.objects.get(
-            financial_code=fin_code_obj, financial_period_id=4, archived_status_id=2,
+            financial_code=fin_code_obj,
+            financial_period_id=4,
+            archived_status_id=2,
         ).amount
 
         self.assertEqual(new_amount * 100, new_amount_in_db)

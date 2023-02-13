@@ -22,11 +22,13 @@ def insert_budget_type_fk(apps, schema_editor):
 
 def update_1(apps, schema_editor):
     BudgetType = apps.get_model("chartofaccountDIT", "BudgetType")
-    NaturalCode = apps.get_model('chartofaccountDIT', 'NaturalCode')
+    NaturalCode = apps.get_model("chartofaccountDIT", "NaturalCode")
 
     natural_codes = NaturalCode.objects.filter(account_L5_code__isnull=False)
     for natural_code in natural_codes:
-        natural_code.economic_budget_code = natural_code.account_L5_code.economic_budget_code
+        natural_code.economic_budget_code = (
+            natural_code.account_L5_code.economic_budget_code
+        )
         natural_code.save()
 
     budget_type = BudgetType.objects.get(budget_type_key="DEL")
@@ -35,7 +37,9 @@ def update_1(apps, schema_editor):
     budget_type.budget_type_edit_display_order = 2
     budget_type.save()
 
-    budget_type = BudgetType.objects.get(budget_type_key="AME", budget_type="Programme AME")
+    budget_type = BudgetType.objects.get(
+        budget_type_key="AME", budget_type="Programme AME"
+    )
     budget_type.budget_type_display = "AME"
     budget_type.budget_type_display_order = 2
     budget_type.budget_type_edit_display_order = 3
@@ -49,7 +53,7 @@ def update_1(apps, schema_editor):
 
 
 def update_2(apps, schema_editor):
-    NacCategory = apps.get_model("chartofaccountDIT", 'naccategory')
+    NacCategory = apps.get_model("chartofaccountDIT", "naccategory")
 
     model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Pay")
     model_obj.NAC_category_display_order = 1
@@ -67,7 +71,9 @@ def update_2(apps, schema_editor):
     model_obj.NAC_category_display_order = 4
     model_obj.save()
 
-    model_obj, _ = NacCategory.objects.get_or_create(NAC_category_description="Contingency")
+    model_obj, _ = NacCategory.objects.get_or_create(
+        NAC_category_description="Contingency"
+    )
     model_obj.NAC_category_display_order = 5
     model_obj.save()
 

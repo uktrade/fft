@@ -10,7 +10,7 @@ from gifthospitality.models import (
 
 class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
     """
-        Define GiftsAndHospitality Factory
+    Define GiftsAndHospitality Factory
     """
 
     class Meta:
@@ -19,7 +19,7 @@ class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
 
 class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
     """
-        Define GiftsAndHospitalityCategory Factory
+    Define GiftsAndHospitalityCategory Factory
     """
 
     class Meta:
@@ -28,7 +28,7 @@ class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
 
 class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
     """
-        Define CostCentre Factory
+    Define CostCentre Factory
     """
 
     class Meta:
@@ -37,7 +37,7 @@ class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
 
 class GiftsAndHospitalityCompanyFactory(factory.DjangoModelFactory):
     """
-        Define CostCentre Factory
+    Define CostCentre Factory
     """
 
     class Meta:

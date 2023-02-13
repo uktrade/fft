@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
 from chartofaccountDIT.exportcsv import (
@@ -14,15 +13,15 @@ from chartofaccountDIT.exportcsv import (
     _export_programme_iterator,
 )
 from chartofaccountDIT.import_csv import (
-    import_NAC_DIT_class,
-    import_NAC_category_class,
-    import_NAC_class,
     import_analysis1_class,
     import_analysis2_class,
     import_comm_cat_class,
     import_expenditure_category_class,
     import_fco_mapping_class,
     import_inter_entity_class,
+    import_NAC_category_class,
+    import_NAC_class,
+    import_NAC_DIT_class,
     import_op_del_category_class,
     import_prog_class,
     import_project_class,
@@ -42,7 +41,6 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
-
 from core.admin import (
     AdminActiveField,
     AdminExport,
@@ -440,7 +438,10 @@ class OpDelCategoryAdmin(AdminImportExport):
 
 
 class BudgetTypeAdmin(AdminImportExport):
-    list_display = ("budget_type_key", "budget_type",)
+    list_display = (
+        "budget_type_key",
+        "budget_type",
+    )
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):

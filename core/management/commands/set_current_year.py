@@ -1,18 +1,17 @@
 import datetime
 
-from django.core.management.base import (
-    BaseCommand,
-    CommandError,
-)
+from django.core.management.base import BaseCommand, CommandError
 
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_financial_year_obj
 
 
 class Command(BaseCommand):
-    help = "Set the current financial year to the year passed as argument.\n" \
-           "If no argument is given, set the current financial year " \
-           "to the current calendar year"
+    help = (
+        "Set the current financial year to the year passed as argument.\n"
+        "If no argument is given, set the current financial year "
+        "to the current calendar year"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument("year", type=int, nargs="?", default=0)

@@ -1,16 +1,10 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
-
 from django.test import TestCase
 
 from end_of_month.test.test_utils import MonthlyFigureSetup
-
 from previous_years.archive_current_year_figure import archive_current_year
-
-from previous_years.models import (
-    ArchivedFinancialCode,
-    ArchivedForecastData,
-)
+from previous_years.models import ArchivedFinancialCode, ArchivedForecastData
 from previous_years.utils import ArchiveYearError
 
 
@@ -21,7 +15,9 @@ class ArchiveCurrentYearErrorTest(TestCase):
 
     def test_command_error(self):
         with self.assertRaises(CommandError):
-            call_command("archive_current_year",)
+            call_command(
+                "archive_current_year",
+            )
 
     def test_error_no_archived_chart_of_account(self):
         with self.assertRaises(ArchiveYearError):
@@ -38,7 +34,9 @@ class ArchiveCurrentYearTest(TestCase):
     def test_archive_actuals(self):
         self.assertEqual(ArchivedFinancialCode.objects.count(), 0)
         self.assertEqual(ArchivedForecastData.objects.count(), 0)
-        call_command("archive_current_year",)
+        call_command(
+            "archive_current_year",
+        )
         self.assertEqual(ArchivedFinancialCode.objects.count(), 1)
         self.assertEqual(ArchivedForecastData.objects.count(), 1)
         ArchivedForecastData_obj = ArchivedForecastData.objects.all().first()
@@ -62,7 +60,9 @@ class ArchiveCurrentYearTest(TestCase):
     def test_archive_budget(self):
         self.assertEqual(ArchivedFinancialCode.objects.count(), 0)
         self.assertEqual(ArchivedForecastData.objects.count(), 0)
-        call_command("archive_current_year",)
+        call_command(
+            "archive_current_year",
+        )
         self.assertEqual(ArchivedFinancialCode.objects.count(), 1)
         self.assertEqual(ArchivedForecastData.objects.count(), 1)
         ArchivedForecastData_obj = ArchivedForecastData.objects.all().first()

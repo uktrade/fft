@@ -2,14 +2,9 @@ from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
-
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
-
 from guardian.admin import GuardedModelAdminMixin
-from guardian.shortcuts import (
-    get_users_with_perms,
-    remove_perm,
-)
+from guardian.shortcuts import get_users_with_perms, remove_perm
 
 from core.admin import (
     AdminActiveField,
@@ -19,7 +14,6 @@ from core.admin import (
     AdminImportExtraExport,
     AdminReadOnly,
 )
-
 from costcentre.exportcsv import (
     export_bp_iterator,
     export_bsce_iterator,
@@ -29,10 +23,7 @@ from costcentre.exportcsv import (
     export_historic_costcentre_iterator,
     export_person_iterator,
 )
-from costcentre.forms import (
-    GivePermissionAdminForm,
-    RemovePermissionAdminForm,
-)
+from costcentre.forms import GivePermissionAdminForm, RemovePermissionAdminForm
 from costcentre.import_csv import (
     import_cc_class,
     import_cc_dit_specific_class,
@@ -48,7 +39,6 @@ from costcentre.models import (
     DepartmentalGroup,
     Directorate,
 )
-
 from forecast.permission_shortcuts import assign_perm
 
 
@@ -116,8 +106,10 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
     # different fields editable if updating or creating the object
     def get_readonly_fields(self, request, obj=None):
-        if request.user.groups.filter(name="Finance Administrator") \
-                or request.user.is_superuser:
+        if (
+            request.user.groups.filter(name="Finance Administrator")
+            or request.user.is_superuser
+        ):
             if obj:
                 return [
                     "cost_centre_code",
@@ -196,9 +188,9 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
         urls = super().get_urls()
         extra_urls = [
             path(
-                '<cost_centre_id>/change-permission/',
+                "<cost_centre_id>/change-permission/",
                 self.admin_site.admin_view(self.change_permission),
-                name='change_permission',
+                name="change_permission",
             ),
         ]
 
@@ -207,12 +199,15 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
     def can_change_permissions(self, user, cost_centre):
         # Only super users, finance admins and finance
         # business partners can access this function
-        if not user.groups.filter(
-            name__in=[
-                "Finance Business Partner/BSCE",
-                "Finance Administrator",
-            ]
-        ).exists() and not user.is_superuser:
+        if (
+            not user.groups.filter(
+                name__in=[
+                    "Finance Business Partner/BSCE",
+                    "Finance Administrator",
+                ]
+            ).exists()
+            and not user.is_superuser
+        ):
             return False
 
         # If the user is an FBP, they should only have permission
@@ -230,7 +225,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
     def change_permission(self, request, cost_centre_id, *args, **kwargs):
         cost_centre = self.get_object(request, cost_centre_id)
         cost_centre_url = reverse(
-            'admin:costcentre_costcentre_change',
+            "admin:costcentre_costcentre_change",
             args=[cost_centre_id],
             current_app=self.admin_site.name,
         )
@@ -242,7 +237,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
             return HttpResponseRedirect(cost_centre_url)
 
         url = reverse(
-            'admin:change_permission',
+            "admin:change_permission",
             args=[cost_centre_id],
             current_app=self.admin_site.name,
         )
@@ -256,8 +251,8 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
             user=request.user,
         )
 
-        if request.method == 'POST':
-            if 'submit_give_permission' in request.POST:
+        if request.method == "POST":
+            if "submit_give_permission" in request.POST:
                 give_permission_form = GivePermissionAdminForm(
                     request.POST,
                     cost_centre=cost_centre,
@@ -273,12 +268,12 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
                     )
                     self.message_user(
                         request,
-                        'Successfully gave user permission '
-                        'to edit cost centre forecast',
+                        "Successfully gave user permission "
+                        "to edit cost centre forecast",
                     )
 
                     return HttpResponseRedirect(url)
-            elif 'submit_remove_permission' in request.POST:
+            elif "submit_remove_permission" in request.POST:
                 remove_permission_form = RemovePermissionAdminForm(
                     request.POST,
                     cost_centre=cost_centre,
@@ -289,7 +284,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
                     if remove_permission_form.cleaned_data["users"].count() == 0:
                         self.message_user(
                             request,
-                            'No users selected',
+                            "No users selected",
                         )
                     else:
                         for user in remove_permission_form.cleaned_data["users"]:
@@ -297,7 +292,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
 
                         self.message_user(
                             request,
-                            'Successfully removed users from cost centre',
+                            "Successfully removed users from cost centre",
                         )
 
                         return HttpResponseRedirect(url)
@@ -308,12 +303,12 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
         )
 
         context = self.admin_site.each_context(request)
-        context['opts'] = self.model._meta
-        context['give_permission_form'] = give_permission_form
-        context['users_with_edit_permission'] = users_with_edit_permission
-        context['remove_permission_form'] = remove_permission_form
-        context['original'] = cost_centre
-        context['title'] = "User with permission to edit cost centre"
+        context["opts"] = self.model._meta
+        context["give_permission_form"] = give_permission_form
+        context["users_with_edit_permission"] = users_with_edit_permission
+        context["remove_permission_form"] = remove_permission_form
+        context["original"] = cost_centre
+        context["title"] = "User with permission to edit cost centre"
 
         return TemplateResponse(
             request,

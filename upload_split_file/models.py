@@ -1,18 +1,10 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
 from django_pivot.pivot import pivot
 
 from core.metamodels import BaseModel
 from core.models import FinancialYear
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    MonthlyFigureAbstract,
-)
-
-
+from forecast.models import FinancialCode, FinancialPeriod, MonthlyFigureAbstract
 from previous_years.models import ArchivedFinancialCode
 
 
@@ -32,7 +24,8 @@ class PaySplitCoefficientAbstract(BaseModel):
     # The coefficient is passed as a percentage with 2 decimal places
     # store it as integer to avoid rounding problems
     split_coefficient = models.IntegerField(
-        default=0, validators=[MinValueValidator(0), MaxValueValidator(9999)],
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(9999)],
     )
 
     class Meta:
@@ -44,7 +37,10 @@ class PaySplitCoefficientAbstract(BaseModel):
 
 
 class PreviousYearPaySplitCoefficient(PaySplitCoefficientAbstract):
-    financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT,)
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
     financial_code_to = models.ForeignKey(
         ArchivedFinancialCode,
         on_delete=models.PROTECT,
@@ -66,7 +62,10 @@ class PivotManager(models.Manager):
 
         q1 = self.get_queryset().filter(**filter_dict).order_by(*order_list)
         pivot_data = pivot(
-            q1, columns, "financial_period__period_short_name", "split_coefficient",
+            q1,
+            columns,
+            "financial_period__period_short_name",
+            "split_coefficient",
         )
         return pivot_data
 
@@ -87,7 +86,10 @@ class UploadPaySplitCoefficient(PaySplitCoefficientAbstract):
 
 class TemporaryCalculatedValues(BaseModel):
     # temporary storage for the value calculated.
-    financial_code = models.OneToOneField(FinancialCode, on_delete=models.CASCADE,)
+    financial_code = models.OneToOneField(
+        FinancialCode,
+        on_delete=models.CASCADE,
+    )
     calculated_amount = models.BigIntegerField(null=True, blank=True)
 
 

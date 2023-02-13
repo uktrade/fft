@@ -1,29 +1,13 @@
 import os
 
-from django.core.management.base import (
-    CommandError,
-)
+from django.core.management.base import CommandError
 
-from core.utils.command_helpers import (
-    CommandUpload,
-)
-
-from end_of_month.upload_archived_month import (
-    WrongArchivePeriodException,
-)
-
+from core.utils.command_helpers import CommandUpload
+from end_of_month.upload_archived_month import WrongArchivePeriodException
 from forecast.import_csv import WrongChartOFAccountCodeException
-from forecast.utils.import_helpers import (
-    UploadFileDataError,
-    UploadFileFormatError,
-)
-
-
+from forecast.utils.import_helpers import UploadFileDataError, UploadFileFormatError
 from previous_years.import_previous_year import upload_previous_year_from_file
-from previous_years.utils import (
-    ArchiveYearError,
-)
-
+from previous_years.utils import ArchiveYearError
 from upload_file.models import FileUpload
 
 
@@ -38,7 +22,7 @@ class Command(CommandUpload):
         path = options["path"]
         year = options["financial_year"]
 
-        file_name = self.path_to_upload(path, 'xlsx')
+        file_name = self.path_to_upload(path, "xlsx")
         fileobj = FileUpload(
             document_file_name=file_name,
             document_type=FileUpload.PREVIOUSYEAR,
@@ -48,12 +32,13 @@ class Command(CommandUpload):
 
         try:
             upload_previous_year_from_file(fileobj, year)
-        except (WrongChartOFAccountCodeException,
-                WrongArchivePeriodException,
-                UploadFileDataError,
-                UploadFileFormatError,
-                ArchiveYearError
-                ) as ex:
+        except (
+            WrongChartOFAccountCodeException,
+            WrongArchivePeriodException,
+            UploadFileDataError,
+            UploadFileFormatError,
+            ArchiveYearError,
+        ) as ex:
             raise CommandError(f"Failure uploading historical actuals: {str(ex)}")
             return
 
@@ -61,7 +46,5 @@ class Command(CommandUpload):
             os.remove(file_name)
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"Uploaded historical actuals for year {year}. "
-            )
+            self.style.SUCCESS(f"Uploaded historical actuals for year {year}. ")
         )

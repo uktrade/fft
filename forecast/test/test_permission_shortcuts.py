@@ -1,20 +1,11 @@
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-
-from guardian.shortcuts import (
-    get_objects_for_user as guardian_get_objects_for_user,
-)
+from guardian.shortcuts import get_objects_for_user as guardian_get_objects_for_user
 
 from core.test.test_base import TEST_COST_CENTRE, TEST_EMAIL
-
-from costcentre.test.factories import (
-    CostCentreFactory,
-)
-
-from forecast.permission_shortcuts import (
-    assign_perm,
-)
+from costcentre.test.factories import CostCentreFactory
+from forecast.permission_shortcuts import assign_perm
 
 
 class PermissionShortcutsTest(
@@ -23,12 +14,8 @@ class PermissionShortcutsTest(
     def setUp(self):
         test_cost_centre = TEST_COST_CENTRE
 
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
-        self.cost_centre = CostCentreFactory.create(
-            cost_centre_code=test_cost_centre
-        )
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
+        self.cost_centre = CostCentreFactory.create(cost_centre_code=test_cost_centre)
 
     def test_assign_perm(self):
         assign_perm(
@@ -38,9 +25,7 @@ class PermissionShortcutsTest(
         )
 
         # Bust permissions cache (refresh_from_db does not work)
-        self.test_user, _ = get_user_model().objects.get_or_create(
-            email=TEST_EMAIL
-        )
+        self.test_user, _ = get_user_model().objects.get_or_create(email=TEST_EMAIL)
 
         assert self.test_user.has_perm("forecast.can_view_forecasts")
 

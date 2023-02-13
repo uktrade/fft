@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0006_auto_20210312_1632'),
+        ("forecast", "0006_auto_20210312_1632"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='OSCARReturn',
+            name="OSCARReturn",
         ),
         migrations.RunSQL(
             'DROP VIEW if exists "forecast_oscarreturn";',

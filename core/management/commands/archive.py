@@ -12,14 +12,11 @@ from chartofaccountDIT.archive import (
     archive_programme_code,
     archive_project_code,
 )
-
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.archive import archive_cost_centre
-
 from treasuryCOA.archive import archive_treasury_l5
-
 from treasurySS.archive import archive_treasury_segment
+
 
 ARCHIVE_TYPE = {
     "CostCentre": archive_cost_centre,
@@ -62,11 +59,7 @@ class Command(BaseCommand):
             archive_cost_centre(financial_year)
             archive_treasury_l5(financial_year)
             archive_treasury_segment(financial_year)
-            self.stdout.write(
-                self.style.SUCCESS("Archived all.")
-            )
+            self.stdout.write(self.style.SUCCESS("Archived all."))
         else:
             row = ARCHIVE_TYPE[archive_type](financial_year)
-            self.stdout.write(
-                self.style.SUCCESS("Archived " + str(row) + " rows")
-            )
+            self.stdout.write(self.style.SUCCESS("Archived " + str(row) + " rows"))

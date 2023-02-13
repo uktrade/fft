@@ -8,13 +8,8 @@ from core.import_csv import (
     import_obj,
 )
 
-from .models import (
-    EstimateRow,
-    Segment,
-    SegmentGrandParent,
-    SegmentParent,
-    SubSegment,
-)
+from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, SubSegment
+
 
 # Segment Department Code
 # Segment Department Long Name
@@ -86,9 +81,7 @@ SEGMENT_KEY = {
 ESTIMATE_ROW_KEY = {
     IMPORT_CSV_MODEL_KEY: EstimateRow,
     IMPORT_CSV_PK_KEY: "Estimates Row Code",
-    IMPORT_CSV_FIELDLIST_KEY: {
-        "estimate_row_long_name": "Estimates Row Long Name"
-    },
+    IMPORT_CSV_FIELDLIST_KEY: {"estimate_row_long_name": "Estimates Row Long Name"},
 }
 
 SUB_SEGMENT_KEY = {
@@ -110,7 +103,8 @@ def import_treasury_ss(csvfile):
         csvfile,
         SUB_SEGMENT_KEY,
         operator.eq,
-        "Segment Department Code", "UKT013.GROUP",
+        "Segment Department Code",
+        "UKT013.GROUP",
     )
 
 

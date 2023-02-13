@@ -1,14 +1,9 @@
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import (
-    Group,
-    Permission,
-)
+from django.contrib.auth.models import Group, Permission
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import (
@@ -18,16 +13,13 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
 from forecast.models import (
     FinancialCode,
     FinancialPeriod,
@@ -35,9 +27,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.permission_shortcuts import assign_perm
-from forecast.test.factories import (
-    FinancialCodeFactory,
-)
+from forecast.test.factories import FinancialCodeFactory
 
 
 class AddForecastRowTest(BaseTestCase):
@@ -71,9 +61,7 @@ class AddForecastRowTest(BaseTestCase):
     def edit_row_get_response(self):
         edit_view_url = reverse(
             "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            },
+            kwargs={"cost_centre_code": self.cost_centre_code},
         )
 
         return self.client.get(edit_view_url)
@@ -87,8 +75,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
         )
@@ -98,8 +86,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -116,7 +104,9 @@ class AddForecastRowTest(BaseTestCase):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         # financial period with actual
-        financial_period = FinancialPeriod.objects.get(financial_period_code=1,)
+        financial_period = FinancialPeriod.objects.get(
+            financial_period_code=1,
+        )
         financial_period.actual_loaded = True
         financial_period.save()
 
@@ -126,8 +116,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -142,7 +132,10 @@ class AddForecastRowTest(BaseTestCase):
 
         monthly_figure = ForecastMonthlyFigure.objects.first()
 
-        assert monthly_figure.financial_period.financial_period_code == financial_period.financial_period_code  # noqa
+        assert (
+            monthly_figure.financial_period.financial_period_code
+            == financial_period.financial_period_code
+        )  # noqa
 
     def test_duplicate_values_invalid(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
@@ -151,8 +144,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -171,8 +164,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -206,8 +199,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': self.cost_centre_code,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": self.cost_centre_code,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -226,8 +219,8 @@ class AddForecastRowTest(BaseTestCase):
             reverse(
                 "add_forecast_row",
                 kwargs={
-                    'cost_centre_code': cost_centre_code_2,
-                    'financial_year': self.financial_year,
+                    "cost_centre_code": cost_centre_code_2,
+                    "financial_year": self.financial_year,
                 },
             ),
             {
@@ -255,11 +248,7 @@ class ChooseCostCentreTest(BaseTestCase):
     def test_choose_cost_centre(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
 
         self.assertEqual(
             response.status_code,
@@ -267,12 +256,8 @@ class ChooseCostCentreTest(BaseTestCase):
         )
 
         response = self.client.post(
-            reverse(
-                "choose_cost_centre"
-            ),
-            data={
-                "cost_centre": self.cost_centre_code
-            },
+            reverse("choose_cost_centre"),
+            data={"cost_centre": self.cost_centre_code},
         )
 
         self.assertEqual(
@@ -286,11 +271,7 @@ class ChooseCostCentreTest(BaseTestCase):
     def test_cost_centre_json(self):
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
 
         self.assertEqual(
             response.status_code,
@@ -299,12 +280,12 @@ class ChooseCostCentreTest(BaseTestCase):
 
         self.assertContains(
             response,
-            f'window.costCentres = [{{"name": "{self.cost_centre.cost_centre_name}", "code": "{self.cost_centre_code}"}}];'  # noqa E501
+            f'window.costCentres = [{{"name": "{self.cost_centre.cost_centre_name}", "code": "{self.cost_centre_code}"}}];',  # noqa E501
         )
 
     def test_finance_admin_cost_centre_access(self):
         finance_admins = Group.objects.get(
-            name='Finance Administrator',
+            name="Finance Administrator",
         )
         finance_admins.user_set.add(self.test_user)
         finance_admins.save()
@@ -315,11 +296,7 @@ class ChooseCostCentreTest(BaseTestCase):
         )
 
         # Check that the cost centres can be accessed
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
 
         self.assertEqual(
             response.status_code,
@@ -328,7 +305,7 @@ class ChooseCostCentreTest(BaseTestCase):
 
     def test_finance_business_partner_cost_centre_access(self):
         finance_business_partners = Group.objects.get(
-            name='Finance Business Partner/BSCE',
+            name="Finance Business Partner/BSCE",
         )
         finance_business_partners.user_set.add(self.test_user)
         finance_business_partners.save()
@@ -339,25 +316,41 @@ class ChooseCostCentreTest(BaseTestCase):
         )
 
         # Check that no cost centres can be accessed
-        response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            )
-        )
+        response = self.client.get(reverse("choose_cost_centre"))
         assert response.status_code == 403
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         response = self.client.get(
-            reverse(
-                "choose_cost_centre"
-            ),
+            reverse("choose_cost_centre"),
         )
 
         self.assertEqual(
             response.status_code,
             200,
         )
+
+
+class EditCostCentre000Test(BaseTestCase):
+    def setUp(self):
+        self.client.force_login(self.test_user)
+
+        self.cost_centre_code = "000001"
+        self.cost_centre = CostCentreFactory.create(
+            cost_centre_code=self.cost_centre_code
+        )
+
+    def test_choose_cost_centre(self):
+        assign_perm("change_costcentre", self.test_user, self.cost_centre)
+
+        edit_forecast_url = reverse(
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
+        )
+
+        # Should be allowed
+        resp = self.client.get(edit_forecast_url)
+
+        self.assertEqual(resp.status_code, 200)
 
 
 class EditForecastLockTest(BaseTestCase):
@@ -371,19 +364,14 @@ class EditForecastLockTest(BaseTestCase):
 
     def test_edit_forecast_view_permission(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
 
         edit_forecast_url = reverse(
-            "edit_forecast",
-            kwargs={
-                'cost_centre_code': self.cost_centre_code
-            }
+            "edit_forecast", kwargs={"cost_centre_code": self.cost_centre_code}
         )
 
         # Should be allowed
@@ -411,7 +399,7 @@ class EditForecastLockTest(BaseTestCase):
 
         # Add edit whilst lock permission
         can_edit_whilst_locked = Permission.objects.get(
-            codename='can_edit_whilst_locked'
+            codename="can_edit_whilst_locked"
         )
         self.test_user.user_permissions.add(can_edit_whilst_locked)
         self.test_user.save()
@@ -447,9 +435,7 @@ class EditForecastFigureViewTest(BaseTestCase):
         )
 
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
 
@@ -459,9 +445,9 @@ class EditForecastFigureViewTest(BaseTestCase):
         update_forecast_figure_url = reverse(
             "update_forecast_figure",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
-                'financial_year': self.financial_year
-            }
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            },
         )
 
         amount = 999999999999999999
@@ -479,15 +465,17 @@ class EditForecastFigureViewTest(BaseTestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        assert ForecastMonthlyFigure.objects.first().amount == settings.MAX_FORECAST_FIGURE  # noqa
+        assert (
+            ForecastMonthlyFigure.objects.first().amount == settings.MAX_FORECAST_FIGURE
+        )  # noqa
 
     def test_edit_forecast_min_amount(self):
         update_forecast_figure_url = reverse(
             "update_forecast_figure",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
-                'financial_year': self.financial_year
-            }
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            },
         )
 
         amount = -999999999999999999
@@ -505,15 +493,15 @@ class EditForecastFigureViewTest(BaseTestCase):
 
         self.assertEqual(resp.status_code, 200)
 
-        assert ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE  # noqa
+        assert (
+            ForecastMonthlyFigure.objects.first().amount == settings.MIN_FORECAST_FIGURE
+        )  # noqa
 
 
 class ViewEditTest(BaseTestCase):
     def setUp(self):
         # Add forecast view permission
-        can_view_forecasts = Permission.objects.get(
-            codename='can_view_forecasts'
-        )
+        can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
 
         self.test_user.user_permissions.add(can_view_forecasts)
         self.test_user.save()
@@ -538,9 +526,9 @@ class ViewEditTest(BaseTestCase):
         edit_forecast_url = reverse(
             "edit_forecast",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
-                'financial_year': self.financial_year
-            }
+                "cost_centre_code": self.cost_centre_code,
+                "financial_year": self.financial_year,
+            },
         )
 
         response = self.client.get(edit_forecast_url)
@@ -552,9 +540,9 @@ class ViewEditTest(BaseTestCase):
         view_forecast_url = reverse(
             "forecast_cost_centre",
             kwargs={
-                'cost_centre_code': self.cost_centre_code,
+                "cost_centre_code": self.cost_centre_code,
                 "period": self.financial_year,
-            }
+            },
         )
 
         response = self.client.get(view_forecast_url)
@@ -563,32 +551,32 @@ class ViewEditTest(BaseTestCase):
         cost_centre_links = soup.find_all("a", class_="cost-centre-heading-link")
 
         assert len(cost_centre_links) == 1
-        assert cost_centre_links[0]['href'] == view_forecast_url
+        assert cost_centre_links[0]["href"] == view_forecast_url
 
         # Checks Group Code in 'Edit Forecast' tab links to 'View Forecast' GC tab
         view_group_forecast_url = reverse(
             "forecast_group",
             kwargs={
-                'group_code': self.group.group_code,
-                'period': self.financial_year,
-            }
+                "group_code": self.group.group_code,
+                "period": self.financial_year,
+            },
         )
 
         group_code_links = soup.find_all("a", class_="group-link")
 
         assert len(group_code_links) == 1
-        assert group_code_links[0]['href'] == view_group_forecast_url
+        assert group_code_links[0]["href"] == view_group_forecast_url
 
         # Checks Directorate in 'Edit Forecast' tab links to 'View Forecast' tab
         view_directorate_forecast_url = reverse(
             "forecast_directorate",
             kwargs={
-                'directorate_code': self.directorate.directorate_code,
-                'period': self.financial_year,
-            }
+                "directorate_code": self.directorate.directorate_code,
+                "period": self.financial_year,
+            },
         )
 
         directorate_code_links = soup.find_all("a", class_="directorate-link")
 
         assert len(directorate_code_links) == 1
-        assert directorate_code_links[0]['href'] == view_directorate_forecast_url
+        assert directorate_code_links[0]["href"] == view_directorate_forecast_url

@@ -1,22 +1,10 @@
-from django.contrib import (
-    admin,
-    messages,
-)
+from django.contrib import admin, messages
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 
-from core.admin import (
-    AdminEditOnly,
-    AdminExport,
-    AdminImportExport,
-    AdminReadOnly,
-)
+from core.admin import AdminEditOnly, AdminExport, AdminImportExport, AdminReadOnly
 from core.utils.export_helpers import generic_table_iterator
-
-from treasurySS.export_csv import (
-    _export_segment_iterator,
-    _export_sub_segment_iterator,
-)
+from treasurySS.export_csv import _export_segment_iterator, _export_sub_segment_iterator
 from treasurySS.import_csv import import_SS_class
 from treasurySS.models import (
     ArchivedSubSegment,
@@ -30,8 +18,12 @@ from treasurySS.models import (
 
 
 class SegmentAdmin(AdminEditOnly, AdminExport):
-    list_display = ("segment_code", "segment_long_name",
-                    "segment_parent_code", "organization_code")
+    list_display = (
+        "segment_code",
+        "segment_long_name",
+        "segment_parent_code",
+        "organization_code",
+    )
 
     def organization_code(self, instance):
         return instance.organization.organization_code
@@ -128,13 +120,10 @@ class SubSegmentAdmin(AdminEditOnly, AdminImportExport):
     # Give a user friendly message if
     # giving the same budget code to two subsegment
     # in the same segment
-    def change_view(self, request, object_id, form_url='', extra_context=None):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         try:
             return super(SubSegmentAdmin, self).change_view(
-                request,
-                object_id,
-                form_url,
-                extra_context
+                request, object_id, form_url, extra_context
             )
         except IntegrityError as err:
             messages.error(request, err)

@@ -1,26 +1,15 @@
-from behave import (
-    given,
-    when,
-    then,
-)
-
+from behave import given, then, when
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.ui import WebDriverWait
 
-from features.environment import (
-    TEST_COST_CENTRE_CODE,
-    create_test_user,
-)
-
+from features.environment import TEST_COST_CENTRE_CODE, create_test_user
 from forecast.models import FinancialPeriod
-from forecast.test.factories import (
-    FinancialPeriodFactory,
-)
+from forecast.test.factories import FinancialPeriodFactory
 
 
-@given(u'adjustment 1 is set to display')
+@given("adjustment 1 is set to display")
 def step_impl(context):
 
     financial_period = FinancialPeriod.objects.filter(
@@ -40,7 +29,7 @@ def step_impl(context):
         financial_period.save()
 
 
-@given(u'adjustment 1 is set to hide')
+@given("adjustment 1 is set to hide")
 def step_impl(context):
     financial_period = FinancialPeriod.objects.filter(
         financial_period_code=13,
@@ -59,23 +48,21 @@ def step_impl(context):
         financial_period.save()
 
 
-@when(u'the user views the edit forecast page')
+@when("the user views the edit forecast page")
 def step_impl(context):
     create_test_user(context)
 
-    context.browser.get(
-        f'{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/'
-    )
+    context.browser.get(f"{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/")
 
 
-@then(u'the adjustment 1 column is shown')
+@then("the adjustment 1 column is shown")
 def step_impl(context):
     WebDriverWait(context.browser, 5000).until(
         ec.presence_of_element_located((By.ID, "id_0_13"))
     )
 
 
-@then(u'the adjustment 1 column is hidden')
+@then("the adjustment 1 column is hidden")
 def step_impl(context):
     adjustment_1_hidden = False
 

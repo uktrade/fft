@@ -1,6 +1,4 @@
-
 from bs4 import BeautifulSoup
-
 from django.urls import reverse
 
 from core.test.test_base import BaseTestCase

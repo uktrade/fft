@@ -2,7 +2,6 @@ import io
 
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-
 from openpyxl import load_workbook
 
 from chartofaccountDIT.test.factories import (
@@ -10,22 +9,15 @@ from chartofaccountDIT.test.factories import (
     ProgrammeCodeFactory,
     ProjectCodeFactory,
 )
-
 from core.models import FinancialYear
-from core.test.test_base import BaseTestCase, TEST_COST_CENTRE
+from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import get_current_financial_year
-
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
     DirectorateFactory,
 )
-
-from forecast.models import (
-    FinancialCode,
-    FinancialPeriod,
-    ForecastMonthlyFigure,
-)
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.test_utils import create_budget
 
@@ -46,7 +38,8 @@ class DownloadEditForecastTest(BaseTestCase):
         self.test_user.save()
 
         self.group = DepartmentalGroupFactory(
-            group_code=self.group_code, group_name=self.group_name,
+            group_code=self.group_code,
+            group_name=self.group_name,
         )
         self.directorate = DirectorateFactory(
             directorate_code=self.directorate_code,
@@ -86,7 +79,9 @@ class DownloadEditForecastTest(BaseTestCase):
         apr_figure.save
         self.amount_may = 1234567
         may_figure = ForecastMonthlyFigure.objects.create(
-            financial_period=FinancialPeriod.objects.get(financial_period_code=2,),
+            financial_period=FinancialPeriod.objects.get(
+                financial_period_code=2,
+            ),
             amount=self.amount_may,
             financial_code=financial_code_obj,
             financial_year=year_obj,
@@ -141,14 +136,16 @@ class DownloadEditForecastTest(BaseTestCase):
                 "export_edit_forecast_data_cost_centre",
                 kwargs={
                     "cost_centre": self.cost_centre_code,
-                    "financial_year": self.current_year
+                    "financial_year": self.current_year,
                 },
             ),
         )
         self.assertEqual(download_forecast_url.status_code, 200)
 
         file = io.BytesIO(download_forecast_url.content)
-        wb = load_workbook(filename=file,)
+        wb = load_workbook(
+            filename=file,
+        )
         ws = wb.active
         # 4 rows: Heading, row with Apr/May figure,
         # row with 0 figures and grand totals
@@ -186,7 +183,7 @@ class DownloadEditForecastTest(BaseTestCase):
                 "export_edit_forecast_data_cost_centre",
                 kwargs={
                     "cost_centre": self.cost_centre_code,
-                    "financial_year": self.current_year
+                    "financial_year": self.current_year,
                 },
             )
         )
@@ -194,8 +191,8 @@ class DownloadEditForecastTest(BaseTestCase):
 
     def test_user_cannot_download_wrong_forecast(self):
         """
-            User can't access download URL if they do not
-            have editing permission for certain Cost Centre
+        User can't access download URL if they do not
+        have editing permission for certain Cost Centre
         """
         # Assigns user to one cost centre
         assign_perm("change_costcentre", self.test_user, self.cost_centre)
@@ -203,16 +200,14 @@ class DownloadEditForecastTest(BaseTestCase):
         # Changes cost_centre_code to one that user can view but NOT edit
         test_cost_centre_code = TEST_COST_CENTRE + 1
 
-        CostCentreFactory.create(
-            cost_centre_code=test_cost_centre_code
-        )
+        CostCentreFactory.create(cost_centre_code=test_cost_centre_code)
 
         download_forecast_url = self.client.get(
             reverse(
                 "export_edit_forecast_data_cost_centre",
                 kwargs={
                     "cost_centre": test_cost_centre_code,
-                    "financial_year": self.current_year
+                    "financial_year": self.current_year,
                 },
             )
         )
@@ -226,7 +221,7 @@ class DownloadEditForecastTest(BaseTestCase):
                 "export_edit_forecast_data_cost_centre",
                 kwargs={
                     "cost_centre": self.cost_centre_code,
-                    "financial_year": self.current_year
+                    "financial_year": self.current_year,
                 },
             )
         )

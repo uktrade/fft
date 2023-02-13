@@ -1,19 +1,9 @@
 from core.models import FinancialYear
 from core.utils.export_helpers import export_to_excel
-from core.utils.generic_helpers import (
-    get_current_financial_year,
-    today_string,
-)
-
-from forecast.models import (
-    BudgetMonthlyFigure,
-)
-from forecast.utils.query_fields import (
-    ForecastQueryFields,
-)
-from forecast.utils.export_helpers import (
-    get_obj_value,
-)
+from core.utils.generic_helpers import get_current_financial_year, today_string
+from forecast.models import BudgetMonthlyFigure
+from forecast.utils.export_helpers import get_obj_value
+from forecast.utils.query_fields import ForecastQueryFields
 
 
 def export_mi_iterator(queryset, fields):
@@ -104,9 +94,10 @@ def export_mi_iterator(queryset, fields):
 
 
 def create_mi_source_report(financial_year):
-    title = \
-        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display} " \
+    title = (
+        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display} "
         f"Report {today_string()}"
+    )
     fields = ForecastQueryFields()
     queryset = fields.datamodel.view_data.raw_data_annotated(
         fields.MI_REPORT_DOWNLOAD_COLUMNS, year=financial_year
@@ -116,9 +107,10 @@ def create_mi_source_report(financial_year):
 
 def create_mi_previous_year_source_report():
     previous_year = get_current_financial_year() - 1
-    title = \
-        f"MI {FinancialYear.objects.get(pk=previous_year).financial_year_display} " \
+    title = (
+        f"MI {FinancialYear.objects.get(pk=previous_year).financial_year_display} "
         f"Report {today_string()}"
+    )
     fields = ForecastQueryFields(previous_year)
     queryset = fields.datamodel.view_data.raw_data_annotated(
         fields.MI_REPORT_DOWNLOAD_COLUMNS, year=previous_year
@@ -127,9 +119,10 @@ def create_mi_previous_year_source_report():
 
 
 def create_mi_budget_report(financial_year):
-    title = \
-        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display}  " \
+    title = (
+        f"MI {FinancialYear.objects.get(pk=financial_year).financial_year_display}  "
         f"Budget {today_string()}"
+    )
     fields = ForecastQueryFields()
     queryset = BudgetMonthlyFigure.pivot.pivot_data(
         fields.MI_REPORT_DOWNLOAD_COLUMNS,

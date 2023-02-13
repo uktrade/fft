@@ -2,30 +2,28 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-
 from django_tables2 import MultiTableMixin
 
 from core.utils.generic_helpers import (
     get_current_financial_year,
     get_financial_year_obj,
 )
-
 from end_of_month.utils import monthly_variance_exists
-
 from forecast.forms import ForecastPeriodForm
 from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import (
     can_edit_cost_centre,
-    can_future_forecast_be_edited,
     can_forecast_be_edited,
+    can_future_forecast_be_edited,
     can_view_forecasts,
 )
+from forecast.utils.edit_helpers import formatted_cost_centre_code
 from forecast.utils.query_fields import (
-    ForecastQueryFields,
     SHOW_COSTCENTRE,
     SHOW_DIRECTORATE,
     SHOW_DIT,
     SHOW_GROUP,
+    ForecastQueryFields,
 )
 
 
@@ -72,7 +70,9 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
         current_financial_year = get_current_financial_year()
-        self.cost_centre_code = self.kwargs["cost_centre_code"]
+        self.cost_centre_code = \
+            formatted_cost_centre_code(self.kwargs["cost_centre_code"])
+
         if "financial_year" in self.kwargs:
             self.financial_year = int(self.kwargs["financial_year"])
         else:

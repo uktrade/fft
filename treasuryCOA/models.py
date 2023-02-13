@@ -1,22 +1,16 @@
 from django.db import models
 
-from core.metamodels import (
-    ArchivedModel,
-    IsActiveModel,
-)
+from core.metamodels import ArchivedModel, IsActiveModel
 
 
 # Account codes from Treasury
 # the following table could be normalised more, but I don't think it matters
 class L1Account(IsActiveModel):
     account_l1_code = models.BigIntegerField(
-        primary_key=True,
-        verbose_name="account l1 code"
+        primary_key=True, verbose_name="account l1 code"
     )
     account_l1_long_name = models.CharField(
-        max_length=255,
-        verbose_name="account l1 long name",
-        blank=True
+        max_length=255, verbose_name="account l1 long name", blank=True
     )
     account_code = models.CharField(
         max_length=255,

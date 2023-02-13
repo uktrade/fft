@@ -1,12 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from end_of_month.utils import InvalidPeriodError
-
-
-from forecast.models import (
-    MAX_PERIOD_CODE,
-    FinancialPeriod,
-)
+from forecast.models import MAX_PERIOD_CODE, FinancialPeriod
 
 
 def validate_period_code(period_code):

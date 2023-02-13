@@ -7,16 +7,9 @@ from end_of_month.end_of_month_actions import (
     delete_last_end_of_month_archive,
     end_of_month_archive,
 )
-from end_of_month.models import (
-    EndOfMonthStatus,
-)
-from end_of_month.test.test_utils import (
-    MonthlyFigureSetup,
-)
-
-from forecast.models import (
-    ForecastMonthlyFigure,
-)
+from end_of_month.models import EndOfMonthStatus
+from end_of_month.test.test_utils import MonthlyFigureSetup
+from forecast.models import ForecastMonthlyFigure
 
 
 class DeleteEndOfMonthArchiveTest(TestCase):
