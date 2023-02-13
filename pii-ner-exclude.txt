@@ -819,5 +819,10 @@ ClamAVFileUploadHandler
 django_chunk_upload_handlers.s3.S3FileUploadHandler
 Order
 django.core.cache.backends.db.
+Archived Financial Period Name
+Year
+Archiving Year
+Exclude Adj
+Previous Year Actual
 
 
