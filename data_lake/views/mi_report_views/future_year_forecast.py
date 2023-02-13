@@ -3,7 +3,6 @@ from data_lake.views.utils import FigureFieldData
 from rest_framework.viewsets import ViewSet
 
 from data_lake.views.mi_report_views.utils import (
-    ARCHIVED_PERIOD_0_NAME,
     MIReportFieldList,
 )
 
