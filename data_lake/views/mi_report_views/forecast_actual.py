@@ -1,6 +1,6 @@
-from rest_framework.viewsets import ViewSet
-
+from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.mi_report_views.utils import MIReportFieldList
+
 from data_lake.views.utils import FigureFieldData
 from end_of_month.models import EndOfMonthStatus
 from mi_report_data.models import (
@@ -10,7 +10,7 @@ from mi_report_data.models import (
 )
 
 
-class MIReportForecastActualDataSet(ViewSet, MIReportFieldList):
+class MIReportForecastActualDataSet(DataLakeViewSet, MIReportFieldList):
     filename = "mi_data_forecast_actual"
     forecast_title = [
         "Financial Code ID",

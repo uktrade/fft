@@ -1,12 +1,13 @@
 import csv
 
 from django.http import HttpResponse
-from rest_framework.viewsets import ViewSet
+
+from data_lake.views.data_lake_view import DataLakeViewSet
 
 from forecast.models import FinancialPeriod
 
 
-class MIFinancialPeriodDataSet(ViewSet):
+class MIFinancialPeriodDataSet(DataLakeViewSet):
     filename = "financial_period"
     title_list = [
         "Financial Period Code",

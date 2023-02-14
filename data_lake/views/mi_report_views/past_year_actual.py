@@ -1,11 +1,10 @@
-from rest_framework.viewsets import ViewSet
-
+from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.mi_report_views.utils import MIReportFieldList
 from data_lake.views.utils import FigureFieldData
 from mi_report_data.models import ReportPreviousYearDataView
 
 
-class MIReportPreviousYearDataSet(ViewSet, MIReportFieldList):
+class MIReportPreviousYearDataSet(DataLakeViewSet, MIReportFieldList):
     filename = "mi_data_previous_year_actual"
     forecast_title = [
         "Previous Financial Code ID",
