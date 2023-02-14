@@ -3,7 +3,6 @@ import csv
 from django.http import HttpResponse
 
 from data_lake.views.data_lake_view import DataLakeViewSet
-
 from forecast.models import FinancialPeriod
 
 
