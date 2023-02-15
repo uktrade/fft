@@ -12,19 +12,28 @@ from forecast.models import MAX_PERIOD_CODE
 
 
 class Command(CommandUpload):
-    help = "Overwrite a specific month in a specific archive"
+    help = (
+        "Overwrite the forecast for a single period "
+        "(1 to 15 starting from April) in a specific archive period."
+    )
 
     def add_arguments(self, parser):
         parser.add_argument("path")
-        parser.add_argument("period_upload", type=int)
-        parser.add_argument("archive_period", type=int)
-        parser.add_argument("financial_year", type=int)
+        parser.add_argument(
+            "period_upload",
+            type=int,
+            help="Period to be uploaded: 1 to 15 starting from April",
+        )
+        parser.add_argument(
+            "archive_period",
+            type=int,
+            help="Archive period to be updated: 1 to 15 starting from April",
+        )
 
     def handle(self, *args, **options):
         path = options["path"]
         period = options["period_upload"]
         archive_period = options["archive_period"]
-        year = options["financial_year"]
 
         if archive_period > MAX_PERIOD_CODE or archive_period < 1:
             self.stdout.write(
@@ -39,7 +48,7 @@ class Command(CommandUpload):
         csvfile = open(file_name, newline="", encoding="cp1252")
 
         try:
-            import_single_archived_period(csvfile, period, archive_period, year)
+            import_single_archived_period(csvfile, period, archive_period)
         except (WrongChartOFAccountCodeException, WrongArchivePeriodException) as ex:
             raise CommandError(f"Failure uploading forecast period: {str(ex)}")
             csvfile.close()
