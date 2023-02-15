@@ -40,7 +40,7 @@ class UploadSingleMonthTest(TestCase):
             f"{self.init_data.project_code},"
             f"{new_amount}\n"
         )
-        import_single_archived_period(in_mem_csv, 4, 2, 2020)
+        import_single_archived_period(in_mem_csv, 4, 2)
         new_amount_in_db = ForecastMonthlyFigure.objects.get(
             financial_code=fin_code_obj,
             financial_period_id=4,
@@ -60,10 +60,10 @@ class UploadSingleMonthTest(TestCase):
             f"80000\n"
         )
         with self.assertRaises(WrongArchivePeriodException):
-            import_single_archived_period(in_mem_csv, 2, 3, 2020)
+            import_single_archived_period(in_mem_csv, 2, 3)
 
         with self.assertRaises(WrongArchivePeriodException):
-            import_single_archived_period(in_mem_csv, 10, 7, 2020)
+            import_single_archived_period(in_mem_csv, 10, 7)
 
     def test_chart_of_account_error(self):
         in_mem_csv = StringIO(
@@ -71,4 +71,4 @@ class UploadSingleMonthTest(TestCase):
             "1,3,4,5,6,7,8\n"
         )
         with self.assertRaises(WrongChartOFAccountCodeException):
-            import_single_archived_period(in_mem_csv, 4, 2, 2020)
+            import_single_archived_period(in_mem_csv, 4, 2)
