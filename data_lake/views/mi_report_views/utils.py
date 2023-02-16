@@ -75,14 +75,14 @@ class MIReportFieldList(FigureFieldData):
         forecast_queryset = (
             qryset.objects.select_related(*self.select_related_list)
             .filter(**filter_dict)
-            .filter(
-                financial_code__cost_centre__cost_centre_code__in=[
-                    "109075",
-                    "109451",
-                    "109714",
-                    "109838",
-                ]
-            )
+            # .filter(
+            #     financial_code__cost_centre__cost_centre_code__in=[
+            #         "109075",
+            #         "109451",
+            #         "109714",
+            #         "109838",
+            #     ]
+            # )
             .annotate(**annotation_dict)
             .values_list(
                 *self.chart_of_account_field_list,
