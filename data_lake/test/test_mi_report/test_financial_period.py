@@ -1,5 +1,6 @@
 from data_lake.test.utils import DataLakeTesting
 
+
 class PastActualTests(DataLakeTesting):
     def test_data_returned_in_response(self):
 

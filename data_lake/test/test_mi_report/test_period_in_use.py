@@ -1,6 +1,6 @@
 from data_lake.test.utils import DataLakeTesting
-from previous_years.test.test_utils import PastYearForecastSetup
 from end_of_month.models import EndOfMonthStatus
+from previous_years.test.test_utils import PastYearForecastSetup
 
 
 class PastActualTests(DataLakeTesting, PastYearForecastSetup):
@@ -9,13 +9,12 @@ class PastActualTests(DataLakeTesting, PastYearForecastSetup):
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
         )
         assert max_period_id == 0
-        for period in range(max_period_id+1, max_period_id+4):
+        for period in range(max_period_id + 1, max_period_id + 4):
             end_of_month_info = EndOfMonthStatus.objects.get(
                 archived_period__financial_period_code=period
             )
             end_of_month_info.archived = True
             end_of_month_info.save()
-
 
         self.url_name = "mi_report_financial_period_in_use"
         response = self.get_data()
