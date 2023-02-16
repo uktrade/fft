@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.db import connection
 
 from core.import_csv import csv_header_to_dict, get_fk
+from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.models import EndOfMonthStatus
 from forecast.import_csv import WrongAmountException, WrongChartOFAccountCodeException
 from forecast.models import (
@@ -43,11 +44,18 @@ def sql_for_single_month_copy(
 
 
 def import_single_archived_period(  # noqa C901
-    csvfile, month_to_upload, archive_period, fin_year
+    csvfile, month_to_upload, archive_period
 ):
+    financial_year = get_current_financial_year()
+
+    # Only forecast is archived each month.
+    # Actuals are not archived, because they don't change.
+    # As convention, the archive period is identical to the latest
+    # actual period. So a period smaller or equal to the archive period
+    # indicates a month with actuals.
     if month_to_upload <= archive_period:
         raise WrongArchivePeriodException(
-            "You are trying to amend Actuals. Only forecast can be amended."
+            "You are trying to amend actuals. Only forecast can be amended."
         )
 
     end_of_month_info = EndOfMonthStatus.objects.get(
@@ -62,14 +70,14 @@ def import_single_archived_period(  # noqa C901
 
     archive_period_id = end_of_month_info.id
     ActualUploadMonthlyFigure.objects.filter(
-        financial_year=fin_year, financial_period=period_obj
+        financial_year=financial_year, financial_period=period_obj
     ).delete()
 
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
 
     row_number = 1
-    fin_obj, msg = get_fk(FinancialYear, fin_year)
+    fin_obj, msg = get_fk(FinancialYear, financial_year)
     period_obj = FinancialPeriod.objects.get(pk=month_to_upload)
 
     month_col = col_key[period_obj.period_short_name.lower()]
@@ -133,20 +141,22 @@ def import_single_archived_period(  # noqa C901
     logger.info(f"Completed processing  {row_number} rows.")
     # Now copy the newly uploaded figures to the monthly figure table
     ForecastMonthlyFigure.objects.filter(
-        financial_year=fin_year,
+        financial_year=financial_year,
         financial_period=period_obj,
         archived_status_id=archive_period_id,
     ).delete()
-    sql_insert = sql_for_single_month_copy(month_to_upload, archive_period_id, fin_year)
+    sql_insert = sql_for_single_month_copy(
+        month_to_upload, archive_period_id, financial_year
+    )
     with connection.cursor() as cursor:
         cursor.execute(sql_insert)
     ForecastMonthlyFigure.objects.filter(
-        financial_year=fin_year,
+        financial_year=financial_year,
         financial_period=period_obj,
         amount=0,
         starting_amount=0,
         archived_status_id=archive_period_id,
     ).delete()
     ActualUploadMonthlyFigure.objects.filter(
-        financial_year=fin_year, financial_period=period_obj
+        financial_year=financial_year, financial_period=period_obj
     ).delete()
