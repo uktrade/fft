@@ -449,6 +449,63 @@ FCO Mapping
 Action Time
 Content Type
 message)s
+CREATE VIEW mi_report_data_forecast_actual_query
+f.financial_period_id
+mi_report_data_query
+SELECT coalesce(b.financial_code_id
+OscarReturnConfig
+ForecastConfig
+CoreConfig
+DownloadFileConfig
+PingdomConfig
+MiReportDataConfig
+dal_select2
+DjangoTemplates
+OPTIONS
+ELASTIC_APM_ENVIRONMENT
+ELASTIC_APM_SECRET_TOKEN
+NAME
+VERBOSE_LOOKUPS
+GIT_COMMIT
+TEMP_FILE_AWS_ACCESS_KEY_ID
+CacheControl
+CssFinder
+WhiteNoiseMiddleware
+core.no_cache_middleware
+SessionStorage
+DatabaseCache
+Home 2
+Home.as_view
+chartofaccountDIT/"
+mi_data
+Financial Period Code
+Financial Period Name
+Content-Disposition"
+filename={self.filename}.csv
+gtm.start
+Date().getTime
+https://www.googletagmanager.com/gtm.js?id=
+charset="utf-8"/
+sizes="167x167
+sizes="152x152
+Forecast Tool</span></a
+aria-controls="navigation
+navigation">Menu
+request.path|startswith:'/chartofaccountDIT/
+request.path|startswith:'/gifthospitality/
+Gifts &amp
+href="/download_file
+Download MI
+MI
+Download OSCAR
+Project Percentages
+target="_blank
+Accessibility Statement
+viewBox="0 0 483.2
+height="17
+8.7 39.7 21.8l42.7-27.2A97.63
+GOVUKFrontend.initAll
+Download MI Data
 Compile
 npm
 Dev
@@ -506,6 +563,9 @@ Compile SCSS
 elevate$(COLOUR_NONE
 test$(COLOUR_NONE
 create_data_lake_stub_data
+CROSS
+mi_report_empty_data
+VIEW
 financial_row_unique_5a
 financial_row_unique_4b
 Centre
@@ -593,5 +653,206 @@ directorate_code=
 GGGG1
 remove_user_from_cost_centre
 Formula
+financial_code_%(app_label)s_%(class)ss
+financial_archived_period_%(app_label)s_%(class)ss
+Dataworkspace
+ReportYTDView(UniqueDataKeyWithArchived
+adj2
+public.previous_years_archivedforecastdata
+cost_centre_code
+a_cc on cost_centre_id =
+a_a2.id
+COALESCE(c.analysis2_code_id
+unnest(array
+Data Workspace
+DROP VIEW IF EXISTS mi_report_monthly_forecast_apr
+DROP VIEW IF EXISTS mi_report_monthly_forecast_dec
+DROP VIEW IF EXISTS mi_report_monthly_forecast_adj1
+CREATE VIEW mi_report_monthly_forecast_apr
+SELECT
+CREATE VIEW mi_report_monthly_forecast_may
+SELECT archived_period_id
+CREATE VIEW mi_report_monthly_forecast_aug
+CREATE VIEW mi_report_monthly_forecast_sep
+CREATE VIEW mi_report_monthly_forecast_oct
+CREATE VIEW mi_report_monthly_forecast_dec
+CREATE VIEW mi_report_monthly_forecast_feb
+mi_report_monthly_forecast_adj1'
+ReportAugDataView
+mi_report_monthly_forecast_aug
+mi_report_monthly_forecast_feb
+mi_report_monthly_forecast_jul
+mi_report_monthly_forecast_may
+mi_report_monthly_forecast_sep'
+mi_report_monthly_forecast_sep
+mi_report_monthly_forecast_jan
+mi_report_monthly_forecast_adj1
+ReportBudgetArchivedData
+DROP VIEW IF EXISTS
+archived_id
+ON cost_centre_id = p.cost_centre_code AND c.natural_account_code_id
+f"{drop_previous_year_sql
+ReportPreviousYearData(UniqueDataKeyWithArchived
+# Archived
+CREATE VIEW last_year_financial_code as SELECT p.id
+Download MI Forecast Data
+Download MI Budget Data
+Download Previous Year Data
+NULL AND forecast_forecastmonthlyfigure.financial_period_id IN
+CREATE VIEW public.mi_report_current_forecast AS
+MIReportCurrentActualData'
+MIReportCurrentForecastData
+ReportYTDView(UniqueDataKey
+DROP VIEW mi_report_current_period
+CREATE VIEW mi_report_current_period
+CREATE VIEW mi_report_current_forecast
+DROP VIEW IF EXISTS mi_report_current_period
+CREATE VIEW mi_report_archived_budget_view
+SELECT f.financial_code_id
+f.archived_status_id
+f.expenditure_type
+CREATE VIEW dw_current_year_outturn
+EXISTS dw_actual_ytd
+Actual Loaded"
+DROP VIEW IF EXISTS dw_current_year_outturn
+DROP VIEW IF EXISTS dw_prev_year_outturn
+run_rate_ytd
+pa_ytd.previous_year_ytd
+pa_ytd
+public.dw_budget_ytd b_ytd
+current_year_forecast_budget_variance
+actual_forecast_budget_variance_ytd
+COALESCE(rates.run_rate_ytd
+COALESCE(b.financial_period_code
+ON fa_ytd.financial_code
+a_ytd
+ON rates.financial_code
+rates.financial_period_code
+COALESCE(cy_o.current_year_outturn
+previous_year_ytd
+t3 WHERE dw_simulation_mi_report_previous_year_actual.financial_code = t1.financial_code
+t2.financial_code AND dw_simulation_mi_report_previous_year_actual.financial_code =
+DELETE
+t3
+t3 WHERE
+Previous Financial Code ID
+DROP VIEW IF EXISTS dw_current_year_data
+DROP TABLE IF EXISTS public.dw_simulation_mi_report_forecast_actual
+CREATE VIEW dw_current_year_data as SELECT COALESCE(b.financial_code
+Download Period
+p.expenditure_type
+COALESCE(c.ytd_actual_forecast_budget_variance
+COALESCE(c.full_year_budget
+COALESCE(c.full_year_actual_forecast_budget_variance
+ON COALESCE(c.cost_centre_code
+b_o
+DROP VIEW IF EXISTS dw_budget_full_table
+CREATE VIEW dw_budget_full_table
+FROM dw_budget_full_table GROUP
+DROP TABLE IF
+coalesce(nov,0
+DROP VIEW IF EXISTS dw_previous_period_forecast
+DROP TABLE
+CREATE VIEW dw_previous_period_forecast
+CREATE VIEW dw_prev_year_outturn
+COALESCE(fp.previous_period_forecast
+ON fp_o.financial_code
+Download Future Year Data
+Future Forecast
+Download Future Year Data
+Future Forecast
+Forecast Data
+Download Future Year Budget Data
+data_lake_mi_report_future_year_forecast_data/
+Forecast Data
+Download Future Year Budget Data
+data_lake_mi_report_future_year_forecast_data/
+0004_full_data
+DROP VIEW IF EXISTS dw_full_year_future_years
+DROP VIEW IF EXISTS dw_no_data_future_year_full_table
+u CROSS
+e.archived_financial_period_code
+CREATE VIEW dw_full_year_future_years
+FROM dw_future_year_budget_forecast GROUP
+DROP VIEW IF EXISTS dw_current_past_year
+CREATE VIEW dw_current_past_year
+DROP VIEW IF EXISTS dw_future_year_data
+DROP VIEW IF EXISTS dw_ytd_future_years
+DROP VIEW IF EXISTS dw_budget_forecast_future_years
+FROM dw_budget_forecast_future_years GROUP
+b_ytd
+CREATE VIEW dw_future_year_data
+SUM
+p.programme_code
+ReportBudgetPeriod0Data
+ReportPeriod0DataView
+DROP VIEW IF EXISTS mi_report_forecast_period_0_view
+DROP VIEW IF EXISTS mi_report_budget_period_0_view
+" CREATE VIEW mi_report_forecast_period_0_view
+CREATE VIEW mi_report_budget_period_0_view
+mi_report_forecast_period_0_view"
+mi_report_budget_period_0_view
+0007_future_year_period_0
+Finance Forecast Tool Admin
+" Django settings for
+Django 2.0.2
+VCAP_SERVICES
+future_years.apps
+FutureYearsConfig
+previous_years.apps
+treasurySS.apps
+end_of_month.apps
+importdata.apps
+adv_cache_tag
+BACKEND
+AutoField
+AUTHBROKER_CLIENT_ID
+AWS
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+AxesMiddleware
+AxesBackend
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+Order
+django.core.cache.backends.db.
+Archived Financial Period Name
+Year
+Archiving Year
+Exclude Adj
+Previous Year Actual
+CREATE VIEW mi_report_forecast_period_0_view
+SELECT 0
+EXISTS
+mi_report_forecast_period_0_view
+mi_report_monthly_forecast_apr
+mi_report_monthly_forecast_nov
+mi_report_monthly_forecast_adj3
+BigIntegerField(default=0
+financial_year_id
+CREATE VIEW mi_report_future_year_period_0_budget
+download_mi_report_data
+jun
+jul
+coalesce(sep,0
+w[l].push
+dataLayer
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
+href="/profile">Ross#}
+role="button
+Level Navigation
+Chart
+Home
+svg aria-hidden="true
+Crown
+data_lake_financial_year
+mi_report_budget_data/
+mi_report_financial_period_in_use/
+Test Group
+Test Directorate
 
 

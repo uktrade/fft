@@ -162,8 +162,8 @@ class SetFullYearArchive(MonthlyFigureSetup):
             self.monthly_figure_update(tested_period + 1, change_amount, "Budget")
         self.set_period_total(0)
 
-    def __init__(self, last_archived_period=16):
-        super().__init__()
+    def __init__(self, last_archived_period=16, year=0):
+        super().__init__(year)
         self.setup_forecast()
         self.setup_budget()
         # prepares the lists used to store the totals
