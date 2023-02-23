@@ -1,7 +1,3 @@
-import csv
-
-from django.http import HttpResponse
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.mi_report_views.utils import ARCHIVED_PERIOD_0_NAME
 from end_of_month.models import EndOfMonthStatus
