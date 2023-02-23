@@ -58,7 +58,7 @@ class MIReportFieldList(FigureFieldData):
             filter_dict["financial_period_id__lte"] = 12
         # Use annotation to show the name for period 0
         # it does not exist in the financial period model,
-        # becasue it is an artefact for the reports
+        # because it is an artefact for the reports
         archive_period_name_field = "archived_period_name"
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),

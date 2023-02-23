@@ -15,14 +15,6 @@ class MIReportPeriodInUseDataSet(DataLakeViewSet):
         "Financial Period Name",
     ]
 
-    def list(self, request):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
-        writer = csv.writer(response, csv.excel)
-        writer.writerow(self.title_list)
-        self.write_data(writer)
-        return response
-
     def write_data(self, writer):
         max_period_id = (
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
