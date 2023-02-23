@@ -7,6 +7,7 @@ from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.models import EndOfMonthStatus, MonthlyTotalBudget
 from end_of_month.monthly_outturn import create_outturn_for_variance
 from forecast.models import MAX_PERIOD_CODE, BudgetMonthlyFigure, ForecastMonthlyFigure
+from mi_report_data.utils import refresh_materialised_views
 
 
 logger = logging.getLogger(__name__)
@@ -155,6 +156,9 @@ def end_of_month_archive(period_id, used_for_current_month=False):
     # create the outturn for the archived period.
     create_outturn_for_variance(period_id, current_year, used_for_current_month)
 
+    # Refresh the views used to send daqta to data workspace
+    refresh_materialised_views()
+
 
 def delete_end_of_month_archive(period_id):
     if period_id > MAX_PERIOD_CODE or period_id < 1:
@@ -190,6 +194,8 @@ def delete_end_of_month_archive(period_id):
     end_of_month_info.archived = False
     end_of_month_info.archived_date = timezone.now()
     end_of_month_info.save()
+    # Refresh the views used to send daqta to data workspace
+    refresh_materialised_views()
 
 
 def get_last_restore_period_id():

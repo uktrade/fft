@@ -15,6 +15,7 @@ from forecast.models import (
     ForecastMonthlyFigure,
 )
 from forecast.utils.import_helpers import CheckFinancialCode
+from mi_report_data.utils import refresh_materialised_views
 
 
 logger = logging.getLogger(__name__)
@@ -160,3 +161,6 @@ def import_single_archived_period(  # noqa C901
     ActualUploadMonthlyFigure.objects.filter(
         financial_year=financial_year, financial_period=period_obj
     ).delete()
+
+    # Refresh the views used to send data to data workspace
+    refresh_materialised_views()

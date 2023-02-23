@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 drop_view_sql = """
         DROP VIEW IF EXISTS mi_report_monthly_forecast_apr; 
         DROP VIEW IF EXISTS mi_report_monthly_forecast_may; 
@@ -157,10 +158,11 @@ CREATE MATERIALIZED VIEW mi_report_monthly_forecast_adj3 as
     (SELECT financial_year FROM public.core_financialyear where current = true);
 """
 
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('mi_report_data', '0008_period_0_model'),
+        ("mi_report_data", "0008_period_0_model"),
     ]
 
     operations = [

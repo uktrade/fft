@@ -303,7 +303,6 @@ AUTHBROKER_ANONYMOUS_PATHS = [
     "/data-lake/mi_report_financial_period/",
     "/data-lake/mi_report_future_year_forecast_data/",
     "/data-lake/mi_report_future_year_budget_data/",
-
 ]
 
 # Hawk
