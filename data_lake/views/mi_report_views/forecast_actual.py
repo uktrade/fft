@@ -38,6 +38,8 @@ class MIReportForecastActualDataSet(DataLakeViewSet, MIReportFieldList):
         # =======
         # for period in range(0, max_period_id + 1):
         #     self.write_queryset_data(writer, archived_forecast_actual_view[period])
+        for period in range(0, 1):
+            self.write_queryset_data(writer, archived_forecast_actual_view[period])
         # =======
         # Output the current period in two part:
         # first the actuals and after the forecast
