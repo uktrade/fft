@@ -35,12 +35,10 @@ class MIReportForecastActualDataSet(DataLakeViewSet, MIReportFieldList):
         # Each db query is derived from the query used to display the yearly
         # data. Not the most efficient way to do it, but it avoids having two ways
         # of extracting the same data
-        # =======
-        # for period in range(0, max_period_id + 1):
-        #     self.write_queryset_data(writer, archived_forecast_actual_view[period])
-        for period in range(0, 1):
+        # Using materialized views to reduce the running time
+        for period in range(0, max_period_id + 1):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
-        # =======
+
         # Output the current period in two part:
         # first the actuals and after the forecast
         # The current period in FFT data has Null as archived period
