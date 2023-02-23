@@ -31,7 +31,7 @@ from data_lake.views.natural_code import NaturalCodeViewSet
 from data_lake.views.programme_code import ProgrammeCodeViewSet
 from data_lake.views.project_code import ProjectCodeViewSet
 
-
+# When you add a new url, remember to add it to AUTHBROKER_ANONYMOUS_PATHS
 urlpatterns = [
     path(
         "budget_forecast/",
