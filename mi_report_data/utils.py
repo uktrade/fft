@@ -1,6 +1,6 @@
 from django.db import connection
 
-
+# TODO remove materialised view mi_report_periods. It does not seem to be used anywhere
 def refresh_materialised_views():
     # Brute force: execute an sql query refreshing all the materialized views
     # used to get the archived data in the correct format for the data workspace
