@@ -296,6 +296,13 @@ AUTHBROKER_ANONYMOUS_PATHS = [
     "/data-lake/actual_split/",
     "/data-lake/budget_actual/",
     "/data-lake/budget_forecast/",
+    "/data-lake/mi_report_forecast_data/",
+    "/data-lake/mi_report_budget_data/",
+    "/data-lake/mi_report_previous_year_data/",
+    "/data-lake/mi_report_financial_period_in_use/",
+    "/data-lake/mi_report_financial_period/",
+    "/data-lake/mi_report_future_year_forecast_data/",
+    "/data-lake/mi_report_future_year_budget_data/",
 ]
 
 # Hawk

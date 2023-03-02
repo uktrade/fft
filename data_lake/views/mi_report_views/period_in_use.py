@@ -1,7 +1,3 @@
-import csv
-
-from django.http import HttpResponse
-
 from data_lake.views.data_lake_view import DataLakeViewSet
 from data_lake.views.mi_report_views.utils import ARCHIVED_PERIOD_0_NAME
 from end_of_month.models import EndOfMonthStatus
@@ -14,14 +10,6 @@ class MIReportPeriodInUseDataSet(DataLakeViewSet):
         "Financial Period Code",
         "Financial Period Name",
     ]
-
-    def list(self, request):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
-        writer = csv.writer(response, csv.excel)
-        writer.writerow(self.title_list)
-        self.write_data(writer)
-        return response
 
     def write_data(self, writer):
         max_period_id = (

@@ -1,8 +1,5 @@
-import csv
-
 from django.db.models import ExpressionWrapper, IntegerField, Value
 from django.db.models.functions import Coalesce
-from django.http import HttpResponse
 
 from core.utils.generic_helpers import get_current_financial_year
 from data_lake.views.utils import FigureFieldData
@@ -16,15 +13,7 @@ class MIReportFieldList(FigureFieldData):
     filter_on_archived_period = False
     exclude_adj_period = True
 
-    def list(self, request):
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
-        writer = csv.writer(response, csv.excel)
-        writer.writerow(self.title_list)
-        self.write_data(writer)
-        return response
-
-    def write_queryset_data(self, writer, qryset):
+    def write_queryset_data(self, writer, queryset):
         # Apply the filters and annotations common to  the budget, forecast and actual
         # data feed
         #
@@ -58,7 +47,7 @@ class MIReportFieldList(FigureFieldData):
             filter_dict["financial_period_id__lte"] = 12
         # Use annotation to show the name for period 0
         # it does not exist in the financial period model,
-        # becasue it is an artefact for the reports
+        # because it is an artefact for the reports
         archive_period_name_field = "archived_period_name"
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),
@@ -73,7 +62,7 @@ class MIReportFieldList(FigureFieldData):
         }
 
         forecast_queryset = (
-            qryset.objects.select_related(*self.select_related_list)
+            queryset.objects.select_related(*self.select_related_list)
             .filter(**filter_dict)
             # .filter(
             #     financial_code__cost_centre__cost_centre_code__in=[

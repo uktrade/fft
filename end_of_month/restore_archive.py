@@ -13,6 +13,7 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
+from mi_report_data.utils import refresh_materialised_views
 
 
 logger = logging.getLogger(__name__)
@@ -73,6 +74,8 @@ def restore_archive(period_id):
     FinancialPeriod.objects.filter(financial_period_code__gt=period_id,).update(
         actual_loaded=False,
     )
+    # Refresh the views used to send daqta to data workspace
+    refresh_materialised_views()
 
 
 def restore_last_end_of_month_archive():
