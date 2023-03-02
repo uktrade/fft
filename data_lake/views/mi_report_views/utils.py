@@ -13,14 +13,6 @@ class MIReportFieldList(FigureFieldData):
     filter_on_archived_period = False
     exclude_adj_period = True
 
-    # def list(self, request):
-    #     response = HttpResponse(content_type="text/csv")
-    #     response["Content-Disposition"] = f"attachment; filename={self.filename}.csv"
-    #     writer = csv.writer(response, csv.excel)
-    #     writer.writerow(self.title_list)
-    #     self.write_data(writer)
-    #     return response
-
     def write_queryset_data(self, writer, queryset):
         # Apply the filters and annotations common to  the budget, forecast and actual
         # data feed
