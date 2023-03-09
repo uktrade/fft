@@ -28,18 +28,16 @@ class MIReportForecastActualDataSet(DataLakeViewSet, MIReportFieldList):
     data_field_list = ["actual", "forecast", "financial_period__actual_loaded"]
 
     def write_data(self, writer):
-        # TO DO REINSTATE IT
-        # max_period_id = (
-        #     EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
-        # )
+        max_period_id = (
+            EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
+        )
         # Output the archived period.
         # Each db query is derived from the query used to display the yearly
         # data. Not the most efficient way to do it, but it avoids having two ways
         # of extracting the same data
         # Using materialized views to reduce the running time
-        # TO DO REINSTATE IT
-        # for period in range(0, max_period_id + 1):
-        #     self.write_queryset_data(writer, archived_forecast_actual_view[period])
+        for period in range(0, max_period_id + 1):
+            self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
         # Output the current period in two part:
         # first the actuals and after the forecast
