@@ -49,12 +49,24 @@ class MIReportFieldList(FigureFieldData):
         # it does not exist in the financial period model,
         # because it is an artefact for the reports
         archive_period_name_field = "archived_period_name"
+        archive_period_code_field = "archived_period_code"
+        financial_period_code_field = "financial_period_code"
+
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),
             contract_field: Coalesce(self.contract_field, Value("0")),
             project_field: Coalesce(self.project_field, Value("0")),
             archive_period_name_field: Coalesce(
                 "archived_period__period_short_name", Value(ARCHIVED_PERIOD_0_NAME)
+            ),
+            archive_period_name_field: Coalesce(
+                "archived_period__period_short_name", Value(ARCHIVED_PERIOD_0_NAME)
+            ),
+            archive_period_code_field: Coalesce(
+                "archived_period__financial_period_code", 0
+            ),
+            financial_period_code_field: Coalesce(
+                "financial_period__financial_period_code", 0
             ),
             "archiving_year": ExpressionWrapper(
                 Value(current_year), output_field=IntegerField()
@@ -77,9 +89,9 @@ class MIReportFieldList(FigureFieldData):
                 *self.chart_of_account_field_list,
                 "financial_code",
                 *self.data_field_list,
-                "financial_period__financial_period_code",
+                financial_period_code_field,
                 "financial_period__period_short_name",
-                "archived_period__financial_period_code",
+                archive_period_code_field,
                 archive_period_name_field,
                 "financial_year_id",
                 "archiving_year",
