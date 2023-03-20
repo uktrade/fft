@@ -51,7 +51,7 @@ class MIReportFieldList(FigureFieldData):
         archive_period_name_field = "archived_period_name"
         archive_period_code_field = "archived_period_code"
         financial_period_code_field = "financial_period_code"
-
+        financial_code_field = "financial_code_id"
         annotation_dict = {
             market_field: Coalesce(self.market_field, Value("0")),
             contract_field: Coalesce(self.contract_field, Value("0")),
@@ -59,9 +59,7 @@ class MIReportFieldList(FigureFieldData):
             archive_period_name_field: Coalesce(
                 "archived_period__period_short_name", Value(ARCHIVED_PERIOD_0_NAME)
             ),
-            archive_period_name_field: Coalesce(
-                "archived_period__period_short_name", Value(ARCHIVED_PERIOD_0_NAME)
-            ),
+            financial_code_field: Coalesce("financial_code", 0),
             archive_period_code_field: Coalesce(
                 "archived_period__financial_period_code", 0
             ),
@@ -87,7 +85,7 @@ class MIReportFieldList(FigureFieldData):
             .annotate(**annotation_dict)
             .values_list(
                 *self.chart_of_account_field_list,
-                "financial_code",
+                financial_code_field,
                 *self.data_field_list,
                 financial_period_code_field,
                 "financial_period__period_short_name",
