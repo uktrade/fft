@@ -12,5 +12,5 @@ class ForecastTests(DataLakeTesting):
         rows = response.content.decode("utf-8").split("\n")
 
         cols = rows[0].split(",")
-        assert len(cols) == 18
+        assert len(cols) == 17
         assert len(rows) == 170
