@@ -71,12 +71,10 @@ class MIReportFieldList(FigureFieldData):
         # Create the annotation for the data fields
         # if they return a null value, the air-flow pipeline crashes
         data_field_no_null = []
-        data_field_annotation = {}
         for data_field in self.data_field_list:
             data_field_name = f"{data_field}_no_null"
-            data_field_annotation[data_field_name] = Coalesce("data_field", 0)
+            annotation_dict[data_field_name] = Coalesce(data_field, 0)
             data_field_no_null.append(data_field_name)
-
         forecast_queryset = (
             queryset.objects.select_related(*self.select_related_list)
             .filter(**filter_dict)
@@ -89,7 +87,6 @@ class MIReportFieldList(FigureFieldData):
             #     ]
             # )
             .annotate(**annotation_dict)
-            .annotate(**data_field_annotation)
             .values_list(
                 *self.chart_of_account_field_list,
                 "financial_code",
