@@ -24,7 +24,7 @@ class MIReportForecastActualDataSet(DataLakeViewSet, MIReportFieldList):
     ]
     title_list = FigureFieldData.chart_of_account_titles.copy()
     title_list.extend(forecast_title)
-    data_field_list = ["actual", "forecast"]
+    data_field_list = ["actual_no_null", "forecast"]
 
     def write_data(self, writer):
         max_period_id = (
