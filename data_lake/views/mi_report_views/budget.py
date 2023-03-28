@@ -28,6 +28,8 @@ class MIReportBudgetDataSet(DataLakeViewSet, MIReportFieldList):
 
     def write_data(self, writer):
         self.filter_on_archived_period = True
+        # Sometimes budgets are set in the adjustment periods
+        self.exclude_adj_period = False
         self.write_queryset_data(writer, ReportBudgetArchivedData)
         self.filter_on_archived_period = False
         self.write_queryset_data(writer, ReportBudgetCurrentData)
