@@ -13,4 +13,4 @@ class BudgetTests(DataLakeTesting):
 
         cols = rows[0].split(",")
         assert len(cols) == 16
-        assert len(rows) == 104
+        assert len(rows) == 146
