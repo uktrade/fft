@@ -233,7 +233,7 @@ class ArchivedExpenditureCategory(
             NAC_category_description=obj.NAC_category.NAC_category_description
             if obj.NAC_category
             else None,
-            NAC_pay_nonpay=obj.NAC_category.NAC_pay_nonpay
+            NAC_pay_nonpay=obj.NAC_category.pay_nonpay
             if obj.NAC_category
             else None,
             description=obj.description,
@@ -322,6 +322,32 @@ class NaturalCodeAbstract(models.Model):
     economic_budget_code = models.CharField(
         max_length=255, verbose_name="Expenditure Type", blank=True, null=True,
     )
+    GROSS = "GR"
+    INCOME = "IN"
+    GROSS_INCOME_CHOICE = [
+        (GROSS, "Gross"),
+        (INCOME, "Income")
+    ]
+    gross_income = models.CharField(
+        max_length=20,
+        choices=GROSS_INCOME_CHOICE,
+        blank=True,
+        null=True,
+    )
+    CASH = "CH"
+    NON_CASH = "NC"
+    NOT_DEFINED = "NA"
+
+    CASH_NONCASH = [
+        (CASH, "Cash"),
+        (NON_CASH, "Non-Cash"),
+        (NOT_DEFINED, "N/A Cash")
+    ]
+    cash_non_cash = models.CharField(
+        max_length=20,
+        choices=CASH_NONCASH,
+        default=NOT_DEFINED
+    )
 
     def __str__(self):
         return "{} - {}".format(
@@ -357,32 +383,6 @@ class NaturalCode(NaturalCodeAbstract, IsActiveModel):
         blank=True,
         null=True,
     )
-    GROSS = "GR"
-    INCOME = "IN"
-    GROSS_INCOME_CHOICE = [
-        (GROSS, "Gross"),
-        (INCOME, "Income")
-    ]
-    gross_income = models.CharField(
-        max_length=20,
-        choices=GROSS_INCOME_CHOICE,
-        blank=True,
-        null=True,
-    )
-    CASH = "CH"
-    NON_CASH = "NC"
-    NOT_DEFINED = "NA"
-
-    CASH_NONCASH = [
-        (CASH, "Cash"),
-        (NON_CASH, "Non-Cash"),
-        (NOT_DEFINED, "N/A Cash")
-    ]
-    cash_non_cash = models.CharField(
-        max_length=20,
-        choices=CASH_NONCASH,
-        default=NOT_DEFINED
-    )
 
     def save(self, *args, **kwargs):
         # Override save to copy the economic budget code, for convenience.
@@ -397,7 +397,6 @@ class NaturalCode(NaturalCodeAbstract, IsActiveModel):
             l5_linked = L5Account.objects.get(account_l5_code=link_l5_code,)
             self.economic_budget_code = l5_linked.economic_budget_code
         super(NaturalCode, self).save(*args, **kwargs)
-
 
 class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     """It includes the fields displayed on the FIDO interface,

@@ -5,8 +5,8 @@ from django.db import migrations, models
 def update_pay(apps, schema_editor):
     NacCategory = apps.get_model("chartofaccountDIT", "naccategory")
 
-    model_obj, _ = NacCategory.objects.filter(NAC_category_description="Pay")
-    model_obj.pay_nonpay = NacCategory.PAY
+    model_obj = NacCategory.objects.get(NAC_category_description="Pay")
+    model_obj.pay_nonpay = "P"
     model_obj.save()
 
 
@@ -34,6 +34,26 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='naturalcode',
+            name='gross_income',
+            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+        ),
+        migrations.AddField(
+            model_name='ArchivedNaturalCode',
+            name='cash_non_cash',
+            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+        ),
+        migrations.AddField(
+            model_name='ArchivedNaturalCode',
+            name='gross_income',
+            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+        ),
+        migrations.AddField(
+            model_name='simplehistoryArchivedNaturalCode',
+            name='cash_non_cash',
+            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+        ),
+        migrations.AddField(
+            model_name='simplehistoryArchivedNaturalCode',
             name='gross_income',
             field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
         ),
