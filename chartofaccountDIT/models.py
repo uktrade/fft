@@ -398,6 +398,7 @@ class NaturalCode(NaturalCodeAbstract, IsActiveModel):
             self.economic_budget_code = l5_linked.economic_budget_code
         super(NaturalCode, self).save(*args, **kwargs)
 
+
 class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     """It includes the fields displayed on the FIDO interface,
     and it has no foreign keys in it, to avoid dependencies
