@@ -115,6 +115,9 @@ class NACCategory(IsActiveModel):
         (PAY, "Pay"),
         (NON_PAY, "Non Pay"),
     ]
+    # At the moment, the following field is derived from the description
+    # I decided to create a new field, in case the rule will change in the future.
+    # It is not a big deal to create the extra field!
     pay_nonpay = models.CharField(
         max_length=20,
         choices=PAY_NONPAY_CHOICE,
