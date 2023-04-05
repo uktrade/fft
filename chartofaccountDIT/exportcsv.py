@@ -17,6 +17,9 @@ EXPORT_NAC_ITERATOR_HEADERS = (
         "Commercial Category",
         "Operational Delivery Plan",
         "Prime NAC",
+        "Pay/Non Pay",
+        "Cash/Non Cash",
+        "Gross/Income"
         "Active",
     ]
 )
@@ -33,7 +36,7 @@ def _export_nac_iterator(queryset):
             obj.used_for_budget,
             obj.expenditure_category.NAC_category.NAC_category_description
             if obj.expenditure_category
-            else "-",
+            else "N/A",
             obj.expenditure_category.grouping_description
             if obj.expenditure_category
             else "-",
@@ -46,6 +49,11 @@ def _export_nac_iterator(queryset):
             obj.expenditure_category.linked_budget_code.natural_account_code
             if obj.expenditure_category
             else "-",
+            obj.expenditure_category.NAC_category.get_pay_nonpay_display()
+            if obj.expenditure_category
+            else "N/A",
+            obj.get_cash_non_cash_display(),
+            obj.get_gross_income_display(),
             obj.active,
         ]
 
@@ -63,6 +71,8 @@ def _export_historical_nac_iterator(queryset):
         "Prime NAC",
         "L5 for OSCAR upload",
         "Expenditure Type",
+        "Cash/Non Cash",
+        "Gross/Income"
         "active",
         "financial year",
         "archived",
@@ -82,6 +92,8 @@ def _export_historical_nac_iterator(queryset):
             obj.account_L6_budget,
             obj.account_L5_code_upload,
             obj.economic_budget_code,
+            obj.get_cash_non_cash_display(),
+            obj.get_gross_income_display(),
             obj.active,
             obj.financial_year.financial_year_display,
             obj.archived,
