@@ -859,5 +859,14 @@ f"Invalid
 REFRESH MATERIALIZED VIEW mi_report_monthly_forecast_dec
 f"financial_code_id
 =
+Reconciliations
+Contract Reconciliation (Analysis 1
+Archived Contract Reconciliations (Analysis 1
+NP
+Commercial Category
+level1
+NA
+ORACLE - Inter Entity Code
+FCO Mappings
 
 

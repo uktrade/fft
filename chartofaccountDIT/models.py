@@ -108,6 +108,21 @@ class NACCategory(IsActiveModel):
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", unique=True
     )
+    PAY = "P"
+    NON_PAY = "NP"
+
+    PAY_NONPAY_CHOICE = [
+        (PAY, "Pay"),
+        (NON_PAY, "Non Pay"),
+    ]
+    # At the moment, the following field is derived from the description
+    # I decided to create a new field, in case the rule will change in the future.
+    # It is not a big deal to create the extra field!
+    pay_nonpay = models.CharField(
+        max_length=20,
+        choices=PAY_NONPAY_CHOICE,
+        default=NON_PAY
+    )
     NAC_category_display_order = models.IntegerField(blank=True, null=True,)
 
     def __str__(self):
@@ -197,6 +212,9 @@ class ArchivedExpenditureCategory(
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", blank=True, null=True,
     )
+    NAC_pay_nonpay = models.CharField(
+        max_length=255, verbose_name="Pay Non-Pay", blank=True, null=True,
+    )
     active = models.BooleanField(default=True)
     chart_of_account_code_name = "grouping_description"
 
@@ -213,6 +231,9 @@ class ArchivedExpenditureCategory(
             grouping_description=obj.grouping_description + suffix,
             NAC_category=obj.NAC_category,
             NAC_category_description=obj.NAC_category.NAC_category_description
+            if obj.NAC_category
+            else None,
+            NAC_pay_nonpay=obj.NAC_category.pay_nonpay
             if obj.NAC_category
             else None,
             description=obj.description,
@@ -300,6 +321,32 @@ class NaturalCodeAbstract(models.Model):
 
     economic_budget_code = models.CharField(
         max_length=255, verbose_name="Expenditure Type", blank=True, null=True,
+    )
+    GROSS = "GR"
+    INCOME = "IN"
+    GROSS_INCOME_CHOICE = [
+        (GROSS, "Gross"),
+        (INCOME, "Income")
+    ]
+    gross_income = models.CharField(
+        max_length=20,
+        choices=GROSS_INCOME_CHOICE,
+        blank=True,
+        null=True,
+    )
+    CASH = "CH"
+    NON_CASH = "NC"
+    NOT_DEFINED = "NA"
+
+    CASH_NONCASH = [
+        (CASH, "Cash"),
+        (NON_CASH, "Non-Cash"),
+        (NOT_DEFINED, "N/A Cash")
+    ]
+    cash_non_cash = models.CharField(
+        max_length=20,
+        choices=CASH_NONCASH,
+        default=NOT_DEFINED
     )
 
     def __str__(self):
@@ -449,6 +496,8 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             account_L5_code_upload=account_L5_code_upload_value,
             economic_budget_code=obj.economic_budget_code,
             op_delivery_plan=op_delivery_plan_value,
+            gross_income=obj.gross_income,
+            cash_non_cash=obj.cash_non_cash,
             financial_year=year_obj,
             active=obj.active,
         )
