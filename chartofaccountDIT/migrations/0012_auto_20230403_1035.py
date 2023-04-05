@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 
+
 def update_pay(apps, schema_editor):
     NacCategory = apps.get_model("chartofaccountDIT", "naccategory")
 
