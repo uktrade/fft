@@ -180,10 +180,13 @@ def _export_op_del_cat_iterator(queryset):
 
 
 def _export_nac_cat_iterator(queryset):
-    yield ["Budget Grouping"]
+    yield ["Budget Grouping", "Pay Non-Pay"]
 
     for obj in queryset:
-        yield [obj.NAC_category_description]
+        yield [
+            obj.NAC_category_description,
+            obj.get_pay_nonpay_display(),
+        ]
 
 
 def _export_programme_iterator(queryset):
