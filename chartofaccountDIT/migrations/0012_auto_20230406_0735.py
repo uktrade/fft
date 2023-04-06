@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 
+
 def update_pay(apps, schema_editor):
     NacCategory = apps.get_model("chartofaccountDIT", "naccategory")
 
@@ -10,83 +11,130 @@ def update_pay(apps, schema_editor):
     model_obj.save()
 
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0011_auto_20210430_0925'),
+        ("chartofaccountDIT", "0011_auto_20210430_0925"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='archivedexpenditurecategory',
-            name='NAC_pay_non_pay',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Pay Non-Pay'),
+            model_name="archivedexpenditurecategory",
+            name="NAC_pay_non_pay",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Pay Non-Pay"
+            ),
         ),
         migrations.AddField(
-            model_name='archivednaturalcode',
-            name='NAC_pay_non_pay',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Pay Non-Pay'),
+            model_name="archivednaturalcode",
+            name="NAC_pay_non_pay",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Pay Non-Pay"
+            ),
         ),
         migrations.AddField(
-            model_name='archivednaturalcode',
-            name='cash_non_cash',
-            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+            model_name="archivednaturalcode",
+            name="cash_non_cash",
+            field=models.CharField(
+                choices=[("CH", "Cash"), ("NC", "Non-Cash"), ("NA", "N/A Cash")],
+                default="NA",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='archivednaturalcode',
-            name='gross_income',
-            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+            model_name="archivednaturalcode",
+            name="gross_income",
+            field=models.CharField(
+                blank=True,
+                choices=[("GR", "Gross"), ("IN", "Income")],
+                max_length=20,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='naccategory',
-            name='pay_nonpay',
-            field=models.CharField(choices=[('P', 'Pay'), ('NP', 'Non Pay')], default='NP', max_length=20),
+            model_name="naccategory",
+            name="pay_nonpay",
+            field=models.CharField(
+                choices=[("P", "Pay"), ("NP", "Non Pay")], default="NP", max_length=20
+            ),
         ),
         migrations.AddField(
-            model_name='naturalcode',
-            name='cash_non_cash',
-            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+            model_name="naturalcode",
+            name="cash_non_cash",
+            field=models.CharField(
+                choices=[("CH", "Cash"), ("NC", "Non-Cash"), ("NA", "N/A Cash")],
+                default="NA",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='naturalcode',
-            name='gross_income',
-            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+            model_name="naturalcode",
+            name="gross_income",
+            field=models.CharField(
+                blank=True,
+                choices=[("GR", "Gross"), ("IN", "Income")],
+                max_length=20,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivedexpenditurecategory',
-            name='NAC_pay_non_pay',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Pay Non-Pay'),
+            model_name="simplehistoryarchivedexpenditurecategory",
+            name="NAC_pay_non_pay",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Pay Non-Pay"
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivednaturalcode',
-            name='NAC_pay_non_pay',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='Pay Non-Pay'),
+            model_name="simplehistoryarchivednaturalcode",
+            name="NAC_pay_non_pay",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="Pay Non-Pay"
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivednaturalcode',
-            name='cash_non_cash',
-            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+            model_name="simplehistoryarchivednaturalcode",
+            name="cash_non_cash",
+            field=models.CharField(
+                choices=[("CH", "Cash"), ("NC", "Non-Cash"), ("NA", "N/A Cash")],
+                default="NA",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistoryarchivednaturalcode',
-            name='gross_income',
-            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+            model_name="simplehistoryarchivednaturalcode",
+            name="gross_income",
+            field=models.CharField(
+                blank=True,
+                choices=[("GR", "Gross"), ("IN", "Income")],
+                max_length=20,
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistorynaccategory',
-            name='pay_nonpay',
-            field=models.CharField(choices=[('P', 'Pay'), ('NP', 'Non Pay')], default='NP', max_length=20),
+            model_name="simplehistorynaccategory",
+            name="pay_nonpay",
+            field=models.CharField(
+                choices=[("P", "Pay"), ("NP", "Non Pay")], default="NP", max_length=20
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistorynaturalcode',
-            name='cash_non_cash',
-            field=models.CharField(choices=[('CH', 'Cash'), ('NC', 'Non-Cash'), ('NA', 'N/A Cash')], default='NA', max_length=20),
+            model_name="simplehistorynaturalcode",
+            name="cash_non_cash",
+            field=models.CharField(
+                choices=[("CH", "Cash"), ("NC", "Non-Cash"), ("NA", "N/A Cash")],
+                default="NA",
+                max_length=20,
+            ),
         ),
         migrations.AddField(
-            model_name='simplehistorynaturalcode',
-            name='gross_income',
-            field=models.CharField(blank=True, choices=[('GR', 'Gross'), ('IN', 'Income')], max_length=20, null=True),
+            model_name="simplehistorynaturalcode",
+            name="gross_income",
+            field=models.CharField(
+                blank=True,
+                choices=[("GR", "Gross"), ("IN", "Income")],
+                max_length=20,
+                null=True,
+            ),
         ),
         migrations.RunPython(update_pay),
     ]

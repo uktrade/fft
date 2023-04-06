@@ -19,8 +19,7 @@ EXPORT_NAC_ITERATOR_HEADERS = (
         "Prime NAC",
         "Pay/Non Pay",
         "Cash/Non Cash",
-        "Gross/Income"
-        "Active",
+        "Gross/Income" "Active",
     ]
 )
 
@@ -72,8 +71,7 @@ def _export_historical_nac_iterator(queryset):
         "L5 for OSCAR upload",
         "Expenditure Type",
         "Cash/Non Cash",
-        "Gross/Income"
-        "active",
+        "Gross/Income" "active",
         "financial year",
         "archived",
     ]

@@ -503,7 +503,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             op_delivery_plan=op_delivery_plan_value,
             gross_income=obj.gross_income,
             cash_non_cash=obj.cash_non_cash,
-            NAC_pay_non_pay= pay_non_pay_value,
+            NAC_pay_non_pay=pay_non_pay_value,
             financial_year=year_obj,
             active=obj.active,
         )
