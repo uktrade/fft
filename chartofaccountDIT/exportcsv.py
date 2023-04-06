@@ -35,7 +35,7 @@ def _export_nac_iterator(queryset):
             obj.used_for_budget,
             obj.expenditure_category.NAC_category.NAC_category_description
             if obj.expenditure_category
-            else "N/A",
+            else "-",
             obj.expenditure_category.grouping_description
             if obj.expenditure_category
             else "-",
@@ -71,7 +71,8 @@ def _export_historical_nac_iterator(queryset):
         "L5 for OSCAR upload",
         "Expenditure Type",
         "Cash/Non Cash",
-        "Gross/Income" "active",
+        "Gross/Income",
+        "active",
         "financial year",
         "archived",
     ]
