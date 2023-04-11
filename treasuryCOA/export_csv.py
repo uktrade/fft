@@ -20,7 +20,7 @@ EXPORT_L5_FIELD_ITERATOR_HEADERS = [
     "Sector",
     "Estimate Column",
     "Usage",
-    "Cash Indicator",
+    "Treasury Cash Indicator",
 ]
 
 

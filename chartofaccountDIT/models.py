@@ -212,7 +212,7 @@ class ArchivedExpenditureCategory(
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", blank=True, null=True,
     )
-    NAC_pay_nonpay = models.CharField(
+    NAC_pay_non_pay = models.CharField(
         max_length=255, verbose_name="Pay Non-Pay", blank=True, null=True,
     )
     active = models.BooleanField(default=True)
@@ -233,7 +233,7 @@ class ArchivedExpenditureCategory(
             NAC_category_description=obj.NAC_category.NAC_category_description
             if obj.NAC_category
             else None,
-            NAC_pay_nonpay=obj.NAC_category.pay_nonpay
+            NAC_pay_non_pay=obj.NAC_category.pay_nonpay
             if obj.NAC_category
             else None,
             description=obj.description,
@@ -402,7 +402,7 @@ class NaturalCode(NaturalCodeAbstract, IsActiveModel):
 class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     """It includes the fields displayed on the FIDO interface,
     and it has no foreign keys in it, to avoid dependencies
-    from other tables. The tables is not normalised by design."""
+    from other tables. The table is not normalised by design."""
 
     natural_account_code = models.IntegerField(verbose_name="PO/Actuals NAC")
     expenditure_category = models.ForeignKey(
@@ -417,6 +417,9 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
     )
     NAC_category = models.CharField(
         max_length=255, verbose_name="Budget Grouping", blank=True, null=True
+    )
+    NAC_pay_non_pay = models.CharField(
+        max_length=255, verbose_name="Pay Non-Pay", blank=True, null=True,
     )
     commercial_category = models.CharField(
         max_length=255, verbose_name="Commercial Category", blank=True, null=True
@@ -455,6 +458,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             NAC_category_value = (
                 obj.expenditure_category.NAC_category.NAC_category_description
             )
+            pay_non_pay_value = obj.expenditure_category.NAC_category.pay_nonpay
             account_L6_budget_value = (
                 obj.expenditure_category.linked_budget_code.natural_account_code
             )
@@ -466,6 +470,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             expenditure_category_value = None
             NAC_category_value = None
             account_L6_budget_value = None
+            pay_non_pay_value = None
 
         if obj.commercial_category:
             commercial_category_value = obj.commercial_category.commercial_category
@@ -498,6 +503,7 @@ class ArchivedNaturalCode(NaturalCodeAbstract, ArchivedModel):
             op_delivery_plan=op_delivery_plan_value,
             gross_income=obj.gross_income,
             cash_non_cash=obj.cash_non_cash,
+            NAC_pay_non_pay=pay_non_pay_value,
             financial_year=year_obj,
             active=obj.active,
         )

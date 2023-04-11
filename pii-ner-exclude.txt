@@ -868,5 +868,18 @@ level1
 NA
 ORACLE - Inter Entity Code
 FCO Mappings
-
+Gross/Income
+Expenditure Category
+Financial Year
+L0 Code
+L2 Code
+L2 Name
+L3 Code
+L3 Name
+L4 Code
+L4 Name
+L5 Code
+L5 Name
+L5 Description
+NAC_pay_non_pay
 
