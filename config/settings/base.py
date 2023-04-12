@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "pingdom.apps.PingdomConfig",
     "data_lake.apps.DataLakeConfig",
     "mi_report_data.apps.MiReportDataConfig",
+    "import_chart_of_account.apps.ImportChartOfAccountConfig",
     "django_extensions",
     "django_tables2",
     "django_filters",
