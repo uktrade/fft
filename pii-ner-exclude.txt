@@ -882,4 +882,7 @@ L5 Code
 L5 Name
 L5 Description
 NAC_pay_non_pay
+Cash/Non Cash
+BigAutoField
+
 
