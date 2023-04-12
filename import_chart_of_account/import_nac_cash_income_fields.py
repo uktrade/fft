@@ -12,7 +12,6 @@ from upload_file.models import FileUpload
 from upload_file.utils import (
     set_file_upload_fatal_error,
     set_file_upload_feedback,
-    set_file_upload_warning,
 )
 
 NAC_HEADER = "natural account code"  # /PS-IGNORE
@@ -42,25 +41,28 @@ def validate_uploaded_file(file_upload: FileUpload):
 
 
 def update_with_sql():
-    current_sql = 'UPDATE "chartofaccountDIT_naturalcode" ' \
-	'SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income ' \
-	'FROM import_chart_of_account_uploadnaturalcode imp ' \
-	'WHERE imp.natural_account_code ' \
-    ' = "chartofaccountDIT_naturalcode".natural_account_code;'
+    current_sql = (
+        'UPDATE "chartofaccountDIT_naturalcode" '
+        "SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income "
+        "FROM import_chart_of_account_uploadnaturalcode imp "
+        "WHERE imp.natural_account_code "
+        ' = "chartofaccountDIT_naturalcode".natural_account_code;'
+    )
 
-    archived_sql = 'UPDATE "chartofaccountDIT_archivednaturalcode" ' \
-	'SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income ' \
-	'FROM import_chart_of_account_uploadnaturalcode imp ' \
-	'WHERE imp.natural_account_code  ' \
-       ' = "chartofaccountDIT_archivednaturalcode".natural_account_code;'
-
+    archived_sql = (
+        'UPDATE "chartofaccountDIT_archivednaturalcode" '
+        "SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income "
+        "FROM import_chart_of_account_uploadnaturalcode imp "
+        "WHERE imp.natural_account_code  "
+        ' = "chartofaccountDIT_archivednaturalcode".natural_account_code;'
+    )
 
     with connection.cursor() as cursor:
         cursor.execute(current_sql)
         cursor.execute(archived_sql)
 
 
-def upload_nac_fields(file_obj: FileUpload) -> int:
+def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
     workbook, worksheet = validate_uploaded_file(file_obj)
 
     header_dict = xslx_header_to_dict(worksheet[1])
@@ -77,15 +79,14 @@ def upload_nac_fields(file_obj: FileUpload) -> int:
     file_obj.save()
     rows_to_process = worksheet.max_row + 1
     row_count = 0
-    gross_income_index = header_dict[CASH_HEADER]
-    cash_non_cash_index = header_dict[INCOME_HEADER]
+    gross_income_index = header_dict[INCOME_HEADER]
+    cash_non_cash_index = header_dict[CASH_HEADER]
     nac_index = header_dict[NAC_HEADER]
 
     error_found = False
     UploadNaturalCode.objects.all().delete()
     for nac_row in worksheet.rows:
         row_count += 1
-        print(row_count)
         if row_count < 2:
             # There is no way to start reading rows from a specific place.
             # so keep reading until the first row with data
@@ -108,10 +109,9 @@ def upload_nac_fields(file_obj: FileUpload) -> int:
                     "",
                 )
                 error_found = True
-
             try:
                 UploadNaturalCode.objects.create(
-                        natural_account_code=nac_value,
+                    natural_account_code=nac_value,
                     gross_income=gross_income_value,
                     cash_non_cash=cash_non_cash_value,
                 )

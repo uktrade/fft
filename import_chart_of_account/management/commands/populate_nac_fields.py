@@ -9,8 +9,10 @@ EXPECTED_EXTENSION = "xlsx"
 
 
 class Command(CommandUpload):
-    help = "Upload the values for Cash/Non Cash and Gross/Income for the NAC." \
-           "It updates archived NACs, and ignore non existing NACs."
+    help = (
+        "Upload the values for Cash/Non Cash and Gross/Income for the NAC."
+        "It updates archived NACs, and ignore non existing NACs."
+    )
 
     def add_arguments(self, parser):
         parser.add_argument("path")
