@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.db import connection
 
 from core.import_csv import xslx_header_to_dict
 from forecast.utils.import_helpers import (
@@ -14,9 +15,9 @@ from upload_file.utils import (
     set_file_upload_warning,
 )
 
-CASH_HEADER = "natural account code"  # /PS-IGNORE
-INCOME_HEADER = "cash non_cash"  # /PS-IGNORE
-NAC_HEADER = "gross income"  # /PS-IGNORE
+NAC_HEADER = "natural account code"  # /PS-IGNORE
+CASH_HEADER = "cash non_cash"  # /PS-IGNORE
+INCOME_HEADER = "gross income"  # /PS-IGNORE
 
 EXPECTED_NAC_HEADERS = [
     NAC_HEADER,
@@ -38,6 +39,25 @@ def validate_uploaded_file(file_upload: FileUpload):
         )
         raise ex
     return workbook, worksheet
+
+
+def update_with_sql():
+    current_sql = 'UPDATE "chartofaccountDIT_naturalcode" ' \
+	'SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income ' \
+	'FROM import_chart_of_account_uploadnaturalcode imp ' \
+	'WHERE imp.natural_account_code ' \
+    ' = "chartofaccountDIT_naturalcode".natural_account_code;'
+
+    archived_sql = 'UPDATE "chartofaccountDIT_archivednaturalcode" ' \
+	'SET cash_non_cash=imp.cash_non_cash, gross_income=imp.gross_income ' \
+	'FROM import_chart_of_account_uploadnaturalcode imp ' \
+	'WHERE imp.natural_account_code  ' \
+       ' = "chartofaccountDIT_archivednaturalcode".natural_account_code;'
+
+
+    with connection.cursor() as cursor:
+        cursor.execute(current_sql)
+        cursor.execute(archived_sql)
 
 
 def upload_nac_fields(file_obj: FileUpload) -> int:
@@ -62,22 +82,24 @@ def upload_nac_fields(file_obj: FileUpload) -> int:
     nac_index = header_dict[NAC_HEADER]
 
     error_found = False
-    for user_row in worksheet.rows:
+    UploadNaturalCode.objects.all().delete()
+    for nac_row in worksheet.rows:
         row_count += 1
+        print(row_count)
         if row_count < 2:
             # There is no way to start reading rows from a specific place.
             # so keep reading until the first row with data
             continue
         if row_count % 100 == 0:
+            print(f"Processing row {row_count}")
             # Display the number of rows processed every 100 rows
             set_file_upload_feedback(
                 file_obj, f"Processing row {row_count} of {rows_to_process}."
             )
-        nac_value = user_row[nac_index].value
-
+        nac_value = nac_row[nac_index].value
         if nac_value:
-            gross_income_value = user_row[gross_income_index].value
-            cash_non_cash_value = user_row[cash_non_cash_index].value
+            gross_income_value = nac_row[gross_income_index].value
+            cash_non_cash_value = nac_row[cash_non_cash_index].value
             if gross_income_value == "" or cash_non_cash_value == "":
                 error_message = f"Row {row_count}: Empty values not allowed."
                 set_file_upload_fatal_error(
@@ -89,9 +111,9 @@ def upload_nac_fields(file_obj: FileUpload) -> int:
 
             try:
                 UploadNaturalCode.objects.create(
-                        nac=nac_value,
-                    gross_income_value=gross_income_value,
-                    cash_non_cash_value=cash_non_cash_value,
+                        natural_account_code=nac_value,
+                    gross_income=gross_income_value,
+                    cash_non_cash=cash_non_cash_value,
                 )
             except IntegrityError as ex:
                 error_found = True
@@ -108,6 +130,7 @@ def upload_nac_fields(file_obj: FileUpload) -> int:
 
     if not error_found:
         #     copy fields to tables
+        update_with_sql()
         final_status = FileUpload.PROCESSED
     if error_found:
         final_status = FileUpload.PROCESSEDWITHERROR

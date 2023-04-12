@@ -13,7 +13,7 @@ class UploadNaturalCode(models.Model):
     )
     cash_non_cash = models.CharField(
         max_length=20,
-        choices=NaturalCode.CASH_NONCASH,
+        choices=NaturalCode.CASH_NONCASH_CHOICE,
         blank=True,
         null=True,
     )
