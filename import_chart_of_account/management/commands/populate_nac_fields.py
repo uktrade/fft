@@ -1,7 +1,7 @@
 import os
 
-from core.remove_users import bulk_delete_users
 from core.utils.command_helpers import CommandUpload
+from import_chart_of_account.import_nac_cash_income_fields import upload_nac_fields
 from upload_file.models import FileUpload
 
 
@@ -32,8 +32,8 @@ class Command(CommandUpload):
             file_location=FileUpload.LOCALFILE,
         )
         fileobj.save()
-        howmany = bulk_delete_users(fileobj)
+        howmany = upload_nac_fields(fileobj)
         if self.upload_s3:
             os.remove(file_name)
 
-        self.stdout.write(self.style.SUCCESS(f"Processed {howmany} users."))
+        self.stdout.write(self.style.SUCCESS(f"Processed {howmany} rows."))
