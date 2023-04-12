@@ -1,5 +1,4 @@
-from django.db import IntegrityError
-from django.db import connection
+from django.db import IntegrityError, connection
 
 from core.import_csv import xslx_header_to_dict
 from forecast.utils.import_helpers import (
@@ -9,10 +8,8 @@ from forecast.utils.import_helpers import (
 )
 from import_chart_of_account.models import UploadNaturalCode
 from upload_file.models import FileUpload
-from upload_file.utils import (
-    set_file_upload_fatal_error,
-    set_file_upload_feedback,
-)
+from upload_file.utils import set_file_upload_fatal_error, set_file_upload_feedback
+
 
 NAC_HEADER = "natural account code"  # /PS-IGNORE
 CASH_HEADER = "cash non_cash"  # /PS-IGNORE
