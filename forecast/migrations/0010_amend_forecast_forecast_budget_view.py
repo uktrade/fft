@@ -12,30 +12,39 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(
             """
-                CREATE OR REPLACE VIEW public.forecast_forecast_budget_view
-                 AS
-                 SELECT COALESCE(b.financial_code_id, f.financial_code_id, o.financial_code_id) AS financial_code_id,
-                    COALESCE(b.financial_year_id, f.financial_year_id, o.financial_year_id) AS financial_year,
-                    COALESCE(b.budget, 0::numeric) AS budget,
-                    COALESCE(f.apr, 0::numeric) AS apr,
-                    COALESCE(f.may, 0::numeric) AS may,
-                    COALESCE(f.jun, 0::numeric) AS jun,
-                    COALESCE(f.jul, 0::numeric) AS jul,
-                    COALESCE(f.aug, 0::numeric) AS aug,
-                    COALESCE(f.sep, 0::numeric) AS sep,
-                    COALESCE(f.oct, 0::numeric) AS oct,
-                    COALESCE(f.nov, 0::numeric) AS nov,
-                    COALESCE(f."dec", 0::numeric) AS "dec",
-                    COALESCE(f.jan, 0::numeric) AS jan,
-                    COALESCE(f.feb, 0::numeric) AS feb,
-                    COALESCE(f.mar, 0::numeric) AS mar,
-                    COALESCE(f.adj1, 0::numeric) AS adj1,
-                    COALESCE(f.adj2, 0::numeric) AS adj2,
-                    COALESCE(f.adj3, 0::numeric) AS adj3,
-                    COALESCE(o.previous_outturn, 0::bigint) AS previous_outturn
-                   FROM annual_forecast f
-                     FULL JOIN yearly_budget b ON b.financial_code_id = f.financial_code_id AND b.financial_year_id = f.financial_year_id 
-                     FULL JOIN end_of_month_monthlyoutturn o ON o.financial_code_id = f.financial_code_id AND o.financial_year_id = f.financial_year_id WHERE o.used_for_current_month = true;           
+             CREATE OR REPLACE VIEW public.forecast_current_budget_previous_outurn_view
+             AS
+             SELECT COALESCE(o.financial_code_id, b.financial_code_id) AS financial_code_id,
+                COALESCE(b.financial_year_id, o.financial_year_id) AS financial_year_id,
+                COALESCE(b.budget, 0::numeric) AS budget,
+                COALESCE(o.previous_outturn, 0::bigint) AS previous_outturn
+               FROM yearly_budget b
+                 FULL JOIN end_of_month_monthlyoutturn o ON o.financial_code_id = b.financial_code_id AND o.financial_year_id = b.financial_year_id
+              WHERE o.used_for_current_month = true;
+           
+            
+            
+          SELECT COALESCE(b.financial_code_id, f.financial_code_id) AS financial_code_id,
+            COALESCE(b.financial_year_id, f.financial_year_id) AS financial_year,
+            COALESCE(b.budget, 0::numeric) AS budget,
+            COALESCE(f.apr, 0::numeric) AS apr,
+            COALESCE(f.may, 0::numeric) AS may,
+            COALESCE(f.jun, 0::numeric) AS jun,
+            COALESCE(f.jul, 0::numeric) AS jul,
+            COALESCE(f.aug, 0::numeric) AS aug,
+            COALESCE(f.sep, 0::numeric) AS sep,
+            COALESCE(f.oct, 0::numeric) AS oct,
+            COALESCE(f.nov, 0::numeric) AS nov,
+            COALESCE(f."dec", 0::numeric) AS "dec",
+            COALESCE(f.jan, 0::numeric) AS jan,
+            COALESCE(f.feb, 0::numeric) AS feb,
+            COALESCE(f.mar, 0::numeric) AS mar,
+            COALESCE(f.adj1, 0::numeric) AS adj1,
+            COALESCE(f.adj2, 0::numeric) AS adj2,
+            COALESCE(f.adj3, 0::numeric) AS adj3,
+            COALESCE(b.previous_outturn, 0::bigint) AS previous_outturn
+           FROM annual_forecast f
+             FULL JOIN forecast_current_budget_previous_outurn_view b ON b.financial_code_id = f.financial_code_id AND b.financial_year_id = f.financial_year_id;
             """
         )
     ]
