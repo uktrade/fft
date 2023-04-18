@@ -882,4 +882,11 @@ L5 Code
 L5 Name
 L5 Description
 NAC_pay_non_pay
+CREATE OR REPLACE VIEW public.forecast_forecast_budget_view AS SELECT COALESCE(b.financial_code_id
+f.financial_code_id
+COALESCE(f.aug
+COALESCE(f.adj1
+COALESCE(f.adj2
+COALESCE(o.previous_outturn
+ON o.financial_code_id = f.financial_code_id
 
