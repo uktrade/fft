@@ -19,8 +19,11 @@ class Migration(migrations.Migration):
                 COALESCE(b.budget, 0::numeric) AS budget,
                 COALESCE(o.previous_outturn, 0::bigint) AS previous_outturn
                FROM yearly_budget b
-                 FULL JOIN end_of_month_monthlyoutturn o ON o.financial_code_id = b.financial_code_id AND o.financial_year_id = b.financial_year_id
-              WHERE o.used_for_current_month = true;
+                 FULL JOIN 
+                 (select * from end_of_month_monthlyoutturn 
+                 WHERE used_for_current_month = true) o 
+                 ON o.financial_code_id = 
+                 b.financial_code_id AND o.financial_year_id = b.financial_year_id;
            
             
  CREATE OR REPLACE VIEW public.forecast_forecast_budget_view
