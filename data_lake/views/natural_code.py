@@ -15,8 +15,8 @@ class NaturalCodeViewSet(DataLakeViewSet):
         "Budget / Forecast NAC Description",
         "PO / Actuals NAC",
         "NAC Description",
-        "Year"
-        "Cash / Non-Cash"
+        "Year",
+        "Cash / Non-Cash",
         "Gross / Income",
     ]
 
@@ -89,7 +89,6 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 current_year,
                 obj.get_cash_non_cash_display(),
                 obj.get_gross_income_display(),
-
             ]
             writer.writerow(row)
 
