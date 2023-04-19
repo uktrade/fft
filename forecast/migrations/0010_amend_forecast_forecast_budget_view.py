@@ -6,7 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('forecast', '0009_futureforecasteditstate_simplehistoryfutureforecasteditstate'),
+        (
+            "forecast",
+            "0009_futureforecasteditstate_simplehistoryfutureforecasteditstate",
+        ),
     ]
 
     operations = [
