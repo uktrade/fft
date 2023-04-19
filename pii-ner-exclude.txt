@@ -888,5 +888,16 @@ Cash/Non Cash
 BigAutoField
 SET
 import_chart_of_account_uploadnaturalcode
+CREATE OR REPLACE VIEW public.forecast_forecast_budget_view AS SELECT COALESCE(b.financial_code_id
+f.financial_code_id
+COALESCE(f.aug
+COALESCE(f.adj1
+COALESCE(f.adj2
+COALESCE(o.previous_outturn
+ON o.financial_code_id = f.financial_code_id
+CREATE OR REPLACE VIEW public.forecast_current_budget_previous_outurn_view AS SELECT COALESCE(o.financial_code_id, b.financial_code_id) AS financial_code_id
+ON o.financial_code_id = b.financial_code_id
+COALESCE(b.previous_outturn
+
 
 
