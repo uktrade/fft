@@ -22,6 +22,7 @@ EXPECTED_NAC_HEADERS = [
     CASH_HEADER,
 ]
 
+# Use the choice field values to validate entries.
 gross_income_values = {
     v.lower(): k for k, v in dict(NaturalCode.GROSS_INCOME_CHOICE).items()
 }
@@ -162,7 +163,7 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
     workbook.close
 
     if not error_found:
-        #     copy fields to tables
+        # copy new fields to tables. Use direct sql for performance
         update_with_sql()
         final_status = FileUpload.PROCESSED
         final_message = f"Processed {rows_to_process} rows."
