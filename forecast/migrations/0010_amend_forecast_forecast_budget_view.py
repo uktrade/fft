@@ -23,7 +23,8 @@ class Migration(migrations.Migration):
               WHERE o.used_for_current_month = true;
            
             
-            
+ CREATE OR REPLACE VIEW public.forecast_forecast_budget_view
+ AS           
           SELECT COALESCE(b.financial_code_id, f.financial_code_id) AS financial_code_id,
             COALESCE(b.financial_year_id, f.financial_year_id) AS financial_year,
             COALESCE(b.budget, 0::numeric) AS budget,
