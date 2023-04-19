@@ -15,7 +15,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
         "Budget / Forecast NAC Description",
         "PO / Actuals NAC",
         "NAC Description",
-        "Year",
+        "Year"
+        "Cash / Non-Cash"
+        "Gross / Income",
     ]
 
     def write_data(self, writer):
@@ -85,6 +87,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 obj.natural_account_code,
                 obj.natural_account_code_description,
                 current_year,
+                obj.get_cash_non_cash_display(),
+                obj.get_gross_income_display(),
+
             ]
             writer.writerow(row)
 
@@ -106,5 +111,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 obj.natural_account_code,
                 obj.natural_account_code_description,
                 obj.financial_year.financial_year,
+                obj.get_cash_non_cash_display(),
+                obj.get_gross_income_display(),
             ]
             writer.writerow(row)
