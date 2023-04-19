@@ -122,8 +122,10 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
                 except KeyError as ex:
                     error_found = True
                     add_row = False
-                    error_message = f"Row {row_count}: {gross_income} " \
-                                    f"not a valid value for 'Gross/Income'"
+                    error_message = (
+                        f"Row {row_count}: {gross_income} "
+                        f"not a valid value for 'Gross/Income'"
+                    )
                     set_file_upload_fatal_error(
                         file_obj,
                         error_message,
@@ -134,8 +136,10 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
                 except KeyError as ex:
                     error_found = True
                     add_row = False
-                    error_message = f"Row {row_count}: {cash_non_cash} " \
-                                    f"not a valid value for 'Cash/Non Cash'"
+                    error_message = (
+                        f"Row {row_count}: {cash_non_cash} "
+                        f"not a valid value for 'Cash/Non Cash'"
+                    )
                     set_file_upload_fatal_error(
                         file_obj,
                         error_message,
@@ -171,8 +175,10 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
 
     if error_found:
         final_status = FileUpload.PROCESSEDWITHERROR
-        final_message = f"Processed {rows_to_process} rows with errors. " \
-                        f"{file_obj.user_error_message}"
+        final_message = (
+            f"Processed {rows_to_process} rows with errors. "
+            f"{file_obj.user_error_message}"
+        )
         success = False
 
     set_file_upload_feedback(
