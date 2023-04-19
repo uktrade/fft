@@ -34,8 +34,10 @@ class Command(CommandUpload):
             file_location=FileUpload.LOCALFILE,
         )
         fileobj.save()
-        howmany = upload_nac_fields(fileobj)
+        message, success = upload_nac_fields(fileobj)
         if self.upload_s3:
             os.remove(file_name)
-
-        self.stdout.write(self.style.SUCCESS(f"Processed {howmany} rows."))
+        if success:
+            self.stdout.write(self.style.SUCCESS(message))
+        else:
+            self.stdout.write(self.style.ERROR(message))
