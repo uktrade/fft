@@ -18,7 +18,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
         "Year",
         "Cash / Non-Cash",
         "Gross / Income",
-        "Pay / Non Pay"
+        "Pay / Non Pay",
     ]
 
     def write_data(self, writer):
