@@ -67,7 +67,9 @@ class NaturalCodeViewSet(DataLakeViewSet):
                     op_delivery_plan_value = (
                         obj.expenditure_category.op_del_category.operating_delivery_description  # noqa E501
                     )
-                pay_non_pay_value = obj.expenditure_category.NAC_category.pay_nonpay
+                pay_non_pay_value = (
+                    obj.expenditure_category.NAC_category.get_pay_nonpay_display()
+                    )
             else:
                 expenditure_category_value = None
                 NAC_category_value = None
