@@ -18,6 +18,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
         "Year",
         "Cash / Non-Cash",
         "Gross / Income",
+        "Pay / Non Pay"
     ]
 
     def write_data(self, writer):
@@ -25,6 +26,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
         current_queryset = (
             NaturalCode.objects.filter(active=True)
             .select_related("expenditure_category")
+            .select_related("expenditure_category__NAC_category")
             .select_related("commercial_category")
             .order_by(
                 "-economic_budget_code",
@@ -65,11 +67,13 @@ class NaturalCodeViewSet(DataLakeViewSet):
                     op_delivery_plan_value = (
                         obj.expenditure_category.op_del_category.operating_delivery_description  # noqa E501
                     )
+                pay_non_pay_value = obj.expenditure_category.NAC_category.pay_nonpay
             else:
                 expenditure_category_value = None
                 NAC_category_value = None
                 account_L6_budget_value = None
                 account_L6_budget_description = None
+                pay_non_pay_value = None
 
             if obj.commercial_category:
                 commercial_category_value = obj.commercial_category.commercial_category
@@ -89,6 +93,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 current_year,
                 obj.get_cash_non_cash_display(),
                 obj.get_gross_income_display(),
+                pay_non_pay_value,
             ]
             writer.writerow(row)
 
@@ -112,5 +117,6 @@ class NaturalCodeViewSet(DataLakeViewSet):
                 obj.financial_year.financial_year,
                 obj.get_cash_non_cash_display(),
                 obj.get_gross_income_display(),
+                obj.NAC_pay_non_pay,
             ]
             writer.writerow(row)
