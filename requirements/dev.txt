@@ -397,7 +397,7 @@ six==1.15.0
     #   python-dateutil
 soupsieve==2.0.1
     # via beautifulsoup4
-sqlparse==0.2.4
+sqlparse==0.4.4
     # via
     #   -r requirements.in/base.in
     #   django
