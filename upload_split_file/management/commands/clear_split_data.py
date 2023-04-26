@@ -1,6 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from upload_split_file.models import PaySplitCoefficient, UploadPaySplitCoefficient, SplitPayActualFigure, TemporaryCalculatedValues
+from upload_split_file.models import (
+    PaySplitCoefficient,
+    UploadPaySplitCoefficient,
+    SplitPayActualFigure,
+    TemporaryCalculatedValues,
+)
 
 
 class Command(BaseCommand):
