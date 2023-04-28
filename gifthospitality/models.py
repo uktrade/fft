@@ -55,8 +55,8 @@ class GiftAndHospitalityCategory(IsActiveModel):
 GIFT_RECEIVED = "Received"
 GIFT_OFFERED = "Offered"
 OFFER_CHOICE = (
-    (GIFT_RECEIVED, "Received by DIT Staff"),
-    (GIFT_OFFERED, "Given by DIT Staff"),
+    (GIFT_RECEIVED, "Received by DBT Staff"),
+    (GIFT_OFFERED, "Given by DBT Staff"),
 )
 
 
@@ -98,7 +98,7 @@ class GiftAndHospitality(BaseModel):
     reason = models.CharField("Description of offer and reason", max_length=1000)
     value = models.IntegerField("Estimated value of offer (£)")
     rep = models.CharField(
-        "DIT representative offered to/from", max_length=200, blank=True
+        "DBT representative offered to/from", max_length=200, blank=True
     )
 
     group = models.ForeignKey(
@@ -106,7 +106,7 @@ class GiftAndHospitality(BaseModel):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name="DIT Group",
+        verbose_name="DBT Group",
     )
 
     # rep = models.CharField("DIT representative offered to/from", max_length=255)

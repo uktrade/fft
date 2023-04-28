@@ -55,7 +55,7 @@ class GiftHospitalityReceivedView(FormView):
         context["section_description"] = (
             "If you have accepted or declined any gift or hospitality "
             "over £10 you must record it in the Register below.  "
-            "The DIT Gifts & Hospitality Policy is "
+            "The DBT Gifts & Hospitality Policy is "
         )
         qs = GiftAndHospitalityClassification.objects.values("pk", "gift_type")
         list_vals = []
@@ -76,7 +76,7 @@ class GiftHospitalityOfferedView(GiftHospitalityReceivedView):
         context["section_description"] = (
             "If you have offered gifts or hospitality "
             "you must record it in the Register below.  "
-            "The DIT Gifts & Hospitality Policy is "
+            "The DBT Gifts & Hospitality Policy is "
         )
         context["gift_type"] = "[]"
         return context

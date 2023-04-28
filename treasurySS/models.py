@@ -153,7 +153,7 @@ class SubSegmentAbstract(models.Model):
         on_delete=models.PROTECT,
         blank=True,
         null=True,
-        verbose_name="DIT Budget Code (used to generate the Oscar return)",
+        verbose_name="DBT Budget Code (used to generate the Oscar return)",
     )
 
     class Meta:

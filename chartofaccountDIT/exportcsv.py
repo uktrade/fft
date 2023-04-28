@@ -229,8 +229,8 @@ def _export_fco_mapping_iterator(queryset):
     yield [
         "FCO (Prism) Code",
         "FCO (Prism) Description",
-        "Oracle (DIT) Code",
-        "Oracle (DIT) Description",
+        "Oracle (DBT) Code",
+        "Oracle (DBT) Description",
         "Active",
     ]
     for obj in queryset:
@@ -247,8 +247,8 @@ def _export_historical_fco_mapping_iterator(queryset):
     yield [
         "FCO (Prism) Code",
         "FCO (Prism) Description",
-        "Oracle (DIT) Code",
-        "Oracle (DIT) Description",
+        "Oracle (DBT) Code",
+        "Oracle (DBT) Description",
         "Budget Grouping",
         "Budget Category",
         "Expenditure Type",

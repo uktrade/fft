@@ -892,5 +892,90 @@ ON o.financial_code_id = f.financial_code_id
 CREATE OR REPLACE VIEW public.forecast_current_budget_previous_outurn_view AS SELECT COALESCE(o.financial_code_id, b.financial_code_id) AS financial_code_id
 ON o.financial_code_id = b.financial_code_id
 COALESCE(b.previous_outturn
+{{ block.super }
+the Department for Business and Trade
+keyboard</li
+VoiceOver)</li
+groups, &lt;script&gt
+elements.</li
+Equality Advisory and Support Service
+class="govuk-body">The Department for Business and Trade
+the Web Content Accessibility Guidelines
+DBT Group
+DBT Representative
+DBT
+{{ block.super }
+ADI
+MonthlyFigure
+Read the ADI
+DBT Information
+DBT Oracle Code
+DBT Oracle Description
+account_L6_code_fk__expenditure_category__NAC_category
+DBT Chart of Account
+DBT Group'
+DBT Staff'
+Oracle (DBT) Description
+DBT Staff
+Department
+Normal Venue
+html.parser
+Forecast / Historical
+Commercial
+the Overseas Team
+EU
+ODA
+Parliament Control Total
+DEL/AME
+Admin/Programme
+Purchase Orders
+Project Codes
+TPG
+Estates
+Contract Reconciliation"
+view.group_name
+view.cost_centre_name
+forecast_cost_centre" view.cost_centre_code view.period %
+export_forecast_data_cost_centre'
+allCC && myCC
+Original Record Id
+Date Of Event / Gift
+NB
+the Business Support Centre of Excellence
+NON-VOTED_NIF
+NON-BUDGET
+DEL ADMIN
+DBT Budget Code
+f"{self.sub_segment_code} - {
+f"{self.sub_segment_code} - "
+Archived Treasury Segment
+Segment Grand Parent
+Sub Segment Code
+Sub Segment Long Name
+natural_account_code_description
+Oracle) Description
+Oracle Code
+Oracle Description
+Cost Centre Description
+Departmental Groups,
+BSCE
+BP Name
+BP
+Groups
+Surname
+Gifts
+Hospitality Records
+Add Gift/Hospitality Received
+Register
+The DBT Gifts & Hospitality Policy
+Add Gift/Hospitality Offered
+Completed Gift/Hospitality Offered Form
+Completed Gift/Hospitality Received Form
+Add Gift/Hosp Received
+Add Gift/Hosp Offered
+Archived Treasury Segment'
+Sub Segment'
+Oscar Return'
+Project Details - DBT{%
 
 

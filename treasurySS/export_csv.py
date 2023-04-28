@@ -9,7 +9,7 @@ def _export_sub_segment_iterator(queryset):
         "Sub Segment Code",
         "Sub Segment Long Name",
         "Control budget detail code",
-        "DIT Budget Code (used to generate the Oscar return)",
+        "DBT Budget Code (used to generate the Oscar return)",
         "Accounting authority code",
         "Accounting authority detail code",
         "Estimates row code",

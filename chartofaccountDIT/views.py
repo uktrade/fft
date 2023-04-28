@@ -187,7 +187,7 @@ class FilteredProgrammeView(FAdminFilteredView):
             "This field tells us why we are spending the money "
             "i.e. what we are trying to deliver on. "
             "This reflects the two most important reporting "
-            "requirements that DIT is likely to have to HMG over "
+            "requirements that DBT is likely to have to HMG over "
             "the next few years (EU exit and ODA) "
             "and Parliament Control Total "
             "(DEL/AME and Admin/Programme)."
