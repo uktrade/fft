@@ -338,14 +338,14 @@ class NaturalCodeAbstract(models.Model):
     NON_CASH = "NC"
     NOT_DEFINED = "NA"
 
-    CASH_NONCASH = [
+    CASH_NONCASH_CHOICE = [
         (CASH, "Cash"),
         (NON_CASH, "Non-Cash"),
         (NOT_DEFINED, "N/A Cash")
     ]
     cash_non_cash = models.CharField(
         max_length=20,
-        choices=CASH_NONCASH,
+        choices=CASH_NONCASH_CHOICE,
         default=NOT_DEFINED
     )
 
