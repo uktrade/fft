@@ -898,6 +898,9 @@ ON o.financial_code_id = f.financial_code_id
 CREATE OR REPLACE VIEW public.forecast_current_budget_previous_outurn_view AS SELECT COALESCE(o.financial_code_id, b.financial_code_id) AS financial_code_id
 ON o.financial_code_id = b.financial_code_id
 COALESCE(b.previous_outturn
+Budget / Forecast NAC
+PO / Actuals NAC
+Gross / Income
 {{ block.super }
 the Department for Business and Trade
 keyboard</li
