@@ -2,9 +2,9 @@ from django.core.management.base import BaseCommand
 
 from upload_split_file.models import (
     PaySplitCoefficient,
-    UploadPaySplitCoefficient,
     SplitPayActualFigure,
     TemporaryCalculatedValues,
+    UploadPaySplitCoefficient,
 )
 
 
