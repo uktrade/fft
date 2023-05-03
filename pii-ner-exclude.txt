@@ -584,8 +584,6 @@ sizes="152x152
 Forecast Tool</span></a
 aria-controls="navigation
 navigation">Menu
-request.path|startswith:'/chartofaccountDIT/
-request.path|startswith:'/gifthospitality/
 Gifts &amp
 href="/download_file
 Download MI
@@ -882,6 +880,12 @@ L5 Code
 L5 Name
 L5 Description
 NAC_pay_non_pay
+Cash/Non Cash
+BigAutoField
+Cash/Non Cash
+BigAutoField
+SET
+import_chart_of_account_uploadnaturalcode
 CREATE OR REPLACE VIEW public.forecast_forecast_budget_view AS SELECT COALESCE(b.financial_code_id
 f.financial_code_id
 COALESCE(f.aug
@@ -892,6 +896,9 @@ ON o.financial_code_id = f.financial_code_id
 CREATE OR REPLACE VIEW public.forecast_current_budget_previous_outurn_view AS SELECT COALESCE(o.financial_code_id, b.financial_code_id) AS financial_code_id
 ON o.financial_code_id = b.financial_code_id
 COALESCE(b.previous_outturn
+Budget / Forecast NAC
+PO / Actuals NAC
+Gross / Income
 {{ block.super }
 the Department for Business and Trade
 keyboard</li
