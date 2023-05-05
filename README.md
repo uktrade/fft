@@ -8,6 +8,8 @@ A database called "fido" will be automatically created.
 
 Run the following to perform initial migrations:
 
+This is a Copilot branch...
+
 ```
 make migrate
 ```
