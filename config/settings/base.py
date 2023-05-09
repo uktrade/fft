@@ -26,8 +26,6 @@ SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
-VCAP_SERVICES = env.json("VCAP_SERVICES", {})
-
 INSTALLED_APPS = [
     "user",
     "authbroker_client",
@@ -101,13 +99,10 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
         "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
     }
 
-VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
-
-if "postgres" in VCAP_SERVICES:
-    DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
-else:
-    DATABASE_URL = os.getenv("DATABASE_URL")
-
+DATABASE_CREDENTIALS = env.json("DATABASE_CREDENTIALS", default={})
+os.environ["DATABASE_URL"] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
+    **DATABASE_CREDENTIALS
+)
 DATABASES = {"default": env.db()}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -162,39 +157,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
 # AWS
-if "aws-s3-bucket" in VCAP_SERVICES:
-    for bucket in VCAP_SERVICES["aws-s3-bucket"]:
-        app_bucket_credentials = bucket["credentials"]
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
+AWS_REGION = env("AWS_REGION", default="")
+AWS_S3_REGION_NAME = env("AWS_REGION", default="")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default="")
 
-        # If "temp" is in instance name it means it's the temp files bucket
-        if "temp" in bucket["instance_name"]:
-            TEMP_FILE_AWS_ACCESS_KEY_ID = app_bucket_credentials["aws_access_key_id"]
-            TEMP_FILE_AWS_SECRET_ACCESS_KEY = app_bucket_credentials[
-                "aws_secret_access_key"
-            ]
-            TEMP_FILE_AWS_REGION = app_bucket_credentials["aws_region"]
-            TEMP_FILE_AWS_S3_REGION_NAME = app_bucket_credentials["aws_region"]
-            TEMP_FILE_AWS_STORAGE_BUCKET_NAME = app_bucket_credentials["bucket_name"]
-        else:
-            AWS_ACCESS_KEY_ID = app_bucket_credentials["aws_access_key_id"]
-            AWS_SECRET_ACCESS_KEY = app_bucket_credentials["aws_secret_access_key"]
-            AWS_REGION = app_bucket_credentials["aws_region"]
-            AWS_S3_REGION_NAME = app_bucket_credentials["aws_region"]
-            AWS_STORAGE_BUCKET_NAME = app_bucket_credentials["bucket_name"]
-else:
-    AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID", default="")
-    AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY", default="")
-    AWS_REGION = env("AWS_REGION", default="")
-    AWS_S3_REGION_NAME = env("AWS_REGION", default="")
-    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default="")
-
-    TEMP_FILE_AWS_ACCESS_KEY_ID = env("TEMP_FILE_AWS_ACCESS_KEY_ID", default="")
-    TEMP_FILE_AWS_SECRET_ACCESS_KEY = env("TEMP_FILE_AWS_SECRET_ACCESS_KEY", default="")
-    TEMP_FILE_AWS_REGION = env("TEMP_FILE_AWS_REGION", default="")
-    TEMP_FILE_AWS_S3_REGION_NAME = env("TEMP_FILE_AWS_REGION", default="")
-    TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env(
-        "TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default=""
-    )
+TEMP_FILE_AWS_ACCESS_KEY_ID = env("TEMP_FILE_AWS_ACCESS_KEY_ID", default="")
+TEMP_FILE_AWS_SECRET_ACCESS_KEY = env("TEMP_FILE_AWS_SECRET_ACCESS_KEY", default="")
+TEMP_FILE_AWS_REGION = env("TEMP_FILE_AWS_REGION", default="")
+TEMP_FILE_AWS_S3_REGION_NAME = env("TEMP_FILE_AWS_REGION", default="")
+TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env(
+    "TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default=""
+)
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
@@ -205,16 +180,7 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
-if "redis" in VCAP_SERVICES:
-    credentials = VCAP_SERVICES["redis"][0]["credentials"]
-
-    CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
-        credentials["password"],
-        credentials["host"],
-        credentials["port"],
-    )
-else:
-    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
 
 # celery
 CELERY_ACCEPT_CONTENT = ["application/json"]
