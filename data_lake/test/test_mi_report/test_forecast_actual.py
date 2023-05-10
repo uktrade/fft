@@ -2,10 +2,10 @@ from data_lake.test.utils import DataLakeTesting
 from end_of_month.test.test_utils import SetFullYearArchive
 
 
-class ForecastTests(DataLakeTesting):
+class Forecast1Tests(DataLakeTesting):
     def test_forecast_data_returned_in_response(self):
         SetFullYearArchive()
-        self.url_name = "mi_report_forecast_data"
+        self.url_name = "mi_report_forecast_data_1"
         response = self.get_data()
 
         assert response["Content-Type"] == "text/csv"

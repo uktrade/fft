@@ -17,7 +17,8 @@ from data_lake.views.inter_entity import InterEntityViewSet
 from data_lake.views.mi_report_views.budget import MIReportBudgetDataSet
 from data_lake.views.mi_report_views.financial_period import MIFinancialPeriodDataSet
 from data_lake.views.mi_report_views.forecast_actual import (
-    MIReportForecastActualDataSet,
+    MIReportForecastActual1DataSet,
+    MIReportForecastActual2DataSet
 )
 from data_lake.views.mi_report_views.future_year_budget import (
     MIReportFutureYearBudgetDataSet,
@@ -120,9 +121,14 @@ urlpatterns = [
         name="data_lake_expenditure_category",
     ),
     path(
-        "mi_report_forecast_data/",
-        MIReportForecastActualDataSet.as_view({"get": "list"}),
-        name="mi_report_forecast_data",
+        "mi_report_forecast_data_1/",
+        MIReportForecastActual1DataSet.as_view({"get": "list"}),
+        name="mi_report_forecast_data_1",
+    ),
+    path(
+        "mi_report_forecast_data_2/",
+        MIReportForecastActual2DataSet.as_view({"get": "list"}),
+        name="mi_report_forecast_data_2",
     ),
     path(
         "mi_report_budget_data/",
