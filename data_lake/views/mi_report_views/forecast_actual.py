@@ -10,6 +10,7 @@ from mi_report_data.models import (
 
 BREAK_YEAR_PERIOD = 5
 
+
 # The view returning the current year data was timing out
 # because of the volume of data
 # So I split it in two parts, using BREAK_YEAR_PERIOD to split
