@@ -15,7 +15,7 @@ BREAK_YEAR_PERIOD = 5
 # The view returning the current year data was timing out
 # because of the volume of data
 # So I split it in two parts, using BREAK_YEAR_PERIOD to split
-class MIReportForecastActualBase(DataLakeViewSet, MIReportFieldList):
+class MIReportForecastActualBase(MIReportFieldList):
     forecast_title = [
         "Financial Code ID",
         "Actual",
@@ -32,7 +32,7 @@ class MIReportForecastActualBase(DataLakeViewSet, MIReportFieldList):
     data_field_list = ["actual", "forecast"]
 
 
-class MIReportForecastActual1DataSet(MIReportForecastActualBase):
+class MIReportForecastActual1DataSet(DataLakeViewSet, MIReportForecastActualBase):
     filename = "mi_data_forecast_actual_1"
 
     def write_data(self, writer):
@@ -57,7 +57,7 @@ class MIReportForecastActual1DataSet(MIReportForecastActualBase):
         self.write_queryset_data(writer, ReportCurrentActualData)
 
 
-class MIReportForecastActual2DataSet(MIReportForecastActualBase):
+class MIReportForecastActual2DataSet(DataLakeViewSet, MIReportForecastActualBase):
     filename = "mi_data_forecast_actual_2"
 
     def write_data(self, writer):
