@@ -3,7 +3,6 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "DIT" "forecast_dit" view.period %}
     {% breadcrumb view.group_name "forecast_group" view.group_code view.period %}
     {% breadcrumb view.directorate_name "forecast_directorate" view.directorate_code view.period %}
 {% endblock %}

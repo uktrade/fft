@@ -113,7 +113,7 @@ def import_cc_dit_specific(csvfile):
 
 import_cc_dit_specific_class = ImportInfo(
     {},
-    "DIT Information",
+    "DBT Information",
     [
         "Cost Centre",
         "BP Name",

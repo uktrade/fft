@@ -228,11 +228,11 @@ class HistoricalProjectTable(ProjectTable):
 
 class FCOMappingTable(FadminTable):
     oracle_code = tables.Column(
-        verbose_name="DIT (Oracle) Code",
+        verbose_name="DBT (Oracle) Code",
         accessor="account_L6_code_fk.natural_account_code",
     )
     oracle_description = tables.Column(
-        verbose_name="DIT (Oracle) Description",
+        verbose_name="DBT (Oracle) Description",
         accessor="account_L6_code_fk.natural_account_code_description",
     )
 

@@ -97,9 +97,9 @@ class GiftAndHospitalityReceivedForm(forms.ModelForm):
             "company": _("Company received from"),
             "company_name": _("Please enter other company"),
             "company_rep": _("Company Representative received from"),
-            "group": _("DIT Group offered to"),
-            "rep": _("DIT Representative offered to"),
-            "grade": _("DIT Representative Grade"),
+            "group": _("DBT Group offered to"),
+            "rep": _("DBT Representative offered to"),
+            "grade": _("DBT Representative Grade"),
         }
 
         widgets = {
@@ -136,7 +136,7 @@ class GiftAndHospitalityOfferedForm(GiftAndHospitalityReceivedForm):
             "company": _("Company offered to"),
             "company_name": _("Please enter other company"),
             "company_rep": _("Company Representative offered to"),
-            "group": _("DIT Group received from"),
-            "rep": _("DIT Representative received from"),
+            "group": _("DBT Group received from"),
+            "rep": _("DBT Representative received from"),
             "date_agreed": _("Date of event / gift offered"),
         }

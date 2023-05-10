@@ -34,7 +34,7 @@ def export_forecast_data_generic(period, data_filter, title):
 @user_passes_test(can_view_forecasts, login_url="index")
 def export_forecast_data_dit(request, period):
     filter = {}
-    title = f"DIT {get_period_for_title(period)}"
+    title = f"DBT {get_period_for_title(period)}"
     return export_forecast_data_generic(period, filter, title)
 
 
@@ -113,7 +113,7 @@ def export_forecast_data_expenditure_dit(
         fields.budget_category_id_field: f"{expenditure_category_id}",
         fields.budget_type_field: f"{budget_type_id}",
     }
-    title = f"DIT {get_period_for_title(period)} Expenditure"
+    title = f"DBT {get_period_for_title(period)} Expenditure"
     return export_forecast_data_generic(period, filter, title)
 
 
@@ -156,7 +156,7 @@ def export_forecast_data_programme_detail_dit(
         fields.programme_code_field: f"{programme_code_id}",
         fields.expenditure_type_name_field: f"{forecast_expenditure_type_name}",
     }
-    title = f"DIT {programme_code_id} {get_period_for_title(period)}"
+    title = f"DBT {programme_code_id} {get_period_for_title(period)}"
     return export_forecast_data_generic(period, filter, title)
 
 
@@ -205,7 +205,7 @@ def export_forecast_data_project_detail_dit(request, project_code_id, period):
     filter = {
         fields.project_code_field: f"{project_code_id}",
     }
-    title = f"DIT {project_code_id} {get_period_for_title(period)}"
+    title = f"DBT {project_code_id} {get_period_for_title(period)}"
     return export_forecast_data_generic(period, filter, title)
 
 

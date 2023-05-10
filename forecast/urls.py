@@ -84,7 +84,7 @@ urlpatterns = [
         name="choose_cost_centre",
     ),
     path(
-        "view/dit/<int:period>/",
+        "view/dbt/<int:period>/",
         DITView.as_view(),
         name="forecast_dit",
     ),
@@ -109,7 +109,7 @@ urlpatterns = [
         name="forecast_cost_centre",
     ),
     path(
-        "view/dit/<expenditure_category>/<budget_type>/<int:period>/",
+        "view/dbt/<expenditure_category>/<budget_type>/<int:period>/",
         DITExpenditureDetailsView.as_view(),
         name="expenditure_details_dit",
     ),

@@ -115,7 +115,7 @@ h_list = [
 
 import_adi_file_class = ImportInfo(
     {},
-    "DIT Information",
+    "DBT Information",
     h_list,
     import_adi_file,
 )

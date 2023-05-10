@@ -103,7 +103,7 @@ class ArchivedAnalysis2(Analysis2Abstract, ArchivedModel):
         ordering = ["financial_year", "analysis2_code"]
 
 
-# Category defined by DIT
+# Category defined by DBT
 class NACCategory(IsActiveModel):
     NAC_category_description = models.CharField(
         max_length=255, verbose_name="Budget Grouping", unique=True
@@ -721,9 +721,9 @@ class FCOMapping(FCOMappingAbstract, IsActiveModel):
 
 class ArchivedFCOMapping(FCOMappingAbstract, ArchivedModel):
     fco_code = models.IntegerField(verbose_name="FCO (Prism) Code")
-    account_L6_code = models.IntegerField(verbose_name="Oracle (DIT) Code",)
+    account_L6_code = models.IntegerField(verbose_name="Oracle (DBT) Code",)
     account_L6_description = models.CharField(
-        max_length=200, verbose_name="Oracle (DIT) Description",
+        max_length=200, verbose_name="Oracle (DBT) Description",
     )
     nac_category_description = models.CharField(
         max_length=200, verbose_name="Budget Grouping", blank=True, null=True,
