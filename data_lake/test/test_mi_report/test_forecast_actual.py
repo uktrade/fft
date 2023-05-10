@@ -15,6 +15,7 @@ class Forecast1Tests(DataLakeTesting):
         assert len(cols) == 17
         assert len(rows) == 74
 
+
 class Forecast2Tests(DataLakeTesting):
     def test_forecast_data_returned_in_response(self):
         SetFullYearArchive()
@@ -27,4 +28,3 @@ class Forecast2Tests(DataLakeTesting):
         cols = rows[0].split(",")
         assert len(cols) == 17
         assert len(rows) == 98
-

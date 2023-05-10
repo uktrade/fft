@@ -55,7 +55,6 @@ class MIReportForecastActual1DataSet(MIReportForecastActualBase):
         self.write_queryset_data(writer, ReportCurrentActualData)
 
 
-
 class MIReportForecastActual2DataSet(MIReportForecastActualBase):
     filename = "mi_data_forecast_actual_2"
 
@@ -66,4 +65,3 @@ class MIReportForecastActual2DataSet(MIReportForecastActualBase):
 
         for period in range(BREAK_YEAR_PERIOD, max_period_id + 1):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
-

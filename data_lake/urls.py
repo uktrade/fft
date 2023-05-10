@@ -18,7 +18,7 @@ from data_lake.views.mi_report_views.budget import MIReportBudgetDataSet
 from data_lake.views.mi_report_views.financial_period import MIFinancialPeriodDataSet
 from data_lake.views.mi_report_views.forecast_actual import (
     MIReportForecastActual1DataSet,
-    MIReportForecastActual2DataSet
+    MIReportForecastActual2DataSet,
 )
 from data_lake.views.mi_report_views.future_year_budget import (
     MIReportFutureYearBudgetDataSet,
