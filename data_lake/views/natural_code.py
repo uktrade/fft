@@ -69,7 +69,7 @@ class NaturalCodeViewSet(DataLakeViewSet):
                     )
                 pay_non_pay_value = (
                     obj.expenditure_category.NAC_category.get_pay_nonpay_display()
-                    )
+                )
             else:
                 expenditure_category_value = None
                 NAC_category_value = None
