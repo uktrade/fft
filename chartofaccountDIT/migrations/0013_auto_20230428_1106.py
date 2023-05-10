@@ -6,28 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0012_auto_20230406_0735'),
+        ("chartofaccountDIT", "0012_auto_20230406_0735"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='archivedfcomapping',
-            name='account_L6_code',
-            field=models.IntegerField(verbose_name='Oracle (DBT) Code'),
+            model_name="archivedfcomapping",
+            name="account_L6_code",
+            field=models.IntegerField(verbose_name="Oracle (DBT) Code"),
         ),
         migrations.AlterField(
-            model_name='archivedfcomapping',
-            name='account_L6_description',
-            field=models.CharField(max_length=200, verbose_name='Oracle (DBT) Description'),
+            model_name="archivedfcomapping",
+            name="account_L6_description",
+            field=models.CharField(
+                max_length=200, verbose_name="Oracle (DBT) Description"
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedfcomapping',
-            name='account_L6_code',
-            field=models.IntegerField(verbose_name='Oracle (DBT) Code'),
+            model_name="simplehistoryarchivedfcomapping",
+            name="account_L6_code",
+            field=models.IntegerField(verbose_name="Oracle (DBT) Code"),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedfcomapping',
-            name='account_L6_description',
-            field=models.CharField(max_length=200, verbose_name='Oracle (DBT) Description'),
+            model_name="simplehistoryarchivedfcomapping",
+            name="account_L6_description",
+            field=models.CharField(
+                max_length=200, verbose_name="Oracle (DBT) Description"
+            ),
         ),
     ]

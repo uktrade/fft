@@ -7,71 +7,159 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('chartofaccountDIT', '0013_auto_20230428_1106'),
-        ('core', '0012_auto_20220427_1046'),
-        ('treasurySS', '0004_auto_20210818_1002'),
+        ("chartofaccountDIT", "0013_auto_20230428_1106"),
+        ("core", "0012_auto_20220427_1046"),
+        ("treasurySS", "0004_auto_20210818_1002"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='archivedsubsegment',
-            options={'verbose_name': 'Archived Treasury Segment'},
+            name="archivedsubsegment",
+            options={"verbose_name": "Archived Treasury Segment"},
         ),
         migrations.AlterModelOptions(
-            name='simplehistoryarchivedsubsegment',
-            options={'get_latest_by': 'history_date', 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical Archived Treasury Segment'},
+            name="simplehistoryarchivedsubsegment",
+            options={
+                "get_latest_by": "history_date",
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical Archived Treasury Segment",
+            },
         ),
         migrations.AlterModelOptions(
-            name='simplehistorysubsegment',
-            options={'get_latest_by': 'history_date', 'ordering': ('-history_date', '-history_id'), 'verbose_name': 'historical Sub Segment'},
+            name="simplehistorysubsegment",
+            options={
+                "get_latest_by": "history_date",
+                "ordering": ("-history_date", "-history_id"),
+                "verbose_name": "historical Sub Segment",
+            },
         ),
         migrations.AlterModelOptions(
-            name='subsegment',
-            options={'verbose_name': 'Sub Segment'},
+            name="subsegment",
+            options={"verbose_name": "Sub Segment"},
         ),
         migrations.AlterField(
-            model_name='archivedsubsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="archivedsubsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.AlterField(
-            model_name='archivedsubsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.budgettype', verbose_name='DBT Budget Code (used to generate the Oscar return)'),
+            model_name="archivedsubsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.budgettype",
+                verbose_name="DBT Budget Code (used to generate the Oscar return)",
+            ),
         ),
         migrations.AlterField(
-            model_name='archivedsubsegment',
-            name='financial_year',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='treasuryss_archivedsubsegment', to='core.financialyear'),
+            model_name="archivedsubsegment",
+            name="financial_year",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="treasuryss_archivedsubsegment",
+                to="core.financialyear",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedsubsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="simplehistoryarchivedsubsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryarchivedsubsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='chartofaccountDIT.budgettype', verbose_name='DBT Budget Code (used to generate the Oscar return)'),
+            model_name="simplehistoryarchivedsubsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="chartofaccountDIT.budgettype",
+                verbose_name="DBT Budget Code (used to generate the Oscar return)",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistorysubsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="simplehistorysubsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistorysubsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='chartofaccountDIT.budgettype', verbose_name='DBT Budget Code (used to generate the Oscar return)'),
+            model_name="simplehistorysubsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="chartofaccountDIT.budgettype",
+                verbose_name="DBT Budget Code (used to generate the Oscar return)",
+            ),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='control_budget_detail_code',
-            field=models.CharField(choices=[('NON-BUDGET', 'NON-BUDGET'), ('DEL', (('DEL ADMIN', 'DEL ADMIN'), ('DEL PROG', 'DEL PROG'))), ('AME', (('DEPT AME', 'DEPT AME'), ('NON-DEPT AME', 'NON-DEPT AME')))], default='NON-BUDGET', max_length=50, verbose_name='control budget detail code'),
+            model_name="subsegment",
+            name="control_budget_detail_code",
+            field=models.CharField(
+                choices=[
+                    ("NON-BUDGET", "NON-BUDGET"),
+                    ("DEL", (("DEL ADMIN", "DEL ADMIN"), ("DEL PROG", "DEL PROG"))),
+                    (
+                        "AME",
+                        (("DEPT AME", "DEPT AME"), ("NON-DEPT AME", "NON-DEPT AME")),
+                    ),
+                ],
+                default="NON-BUDGET",
+                max_length=50,
+                verbose_name="control budget detail code",
+            ),
         ),
         migrations.AlterField(
-            model_name='subsegment',
-            name='dit_budget_type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to='chartofaccountDIT.budgettype', verbose_name='DBT Budget Code (used to generate the Oscar return)'),
+            model_name="subsegment",
+            name="dit_budget_type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="chartofaccountDIT.budgettype",
+                verbose_name="DBT Budget Code (used to generate the Oscar return)",
+            ),
         ),
     ]

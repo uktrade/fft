@@ -7,39 +7,73 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('costcentre', '0006_auto_20230428_1106'),
-        ('gifthospitality', '0004_data_20200717'),
+        ("costcentre", "0006_auto_20230428_1106"),
+        ("gifthospitality", "0004_data_20200717"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='group',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='costcentre.departmentalgroup', verbose_name='DBT Group'),
+            model_name="giftandhospitality",
+            name="group",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="costcentre.departmentalgroup",
+                verbose_name="DBT Group",
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='offer',
-            field=models.CharField(choices=[('Received', 'Received by DBT Staff'), ('Offered', 'Given by DBT Staff')], max_length=200),
+            model_name="giftandhospitality",
+            name="offer",
+            field=models.CharField(
+                choices=[
+                    ("Received", "Received by DBT Staff"),
+                    ("Offered", "Given by DBT Staff"),
+                ],
+                max_length=200,
+            ),
         ),
         migrations.AlterField(
-            model_name='giftandhospitality',
-            name='rep',
-            field=models.CharField(blank=True, max_length=200, verbose_name='DBT representative offered to/from'),
+            model_name="giftandhospitality",
+            name="rep",
+            field=models.CharField(
+                blank=True,
+                max_length=200,
+                verbose_name="DBT representative offered to/from",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistorygiftandhospitality',
-            name='group',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='costcentre.departmentalgroup', verbose_name='DBT Group'),
+            model_name="simplehistorygiftandhospitality",
+            name="group",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="costcentre.departmentalgroup",
+                verbose_name="DBT Group",
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistorygiftandhospitality',
-            name='offer',
-            field=models.CharField(choices=[('Received', 'Received by DBT Staff'), ('Offered', 'Given by DBT Staff')], max_length=200),
+            model_name="simplehistorygiftandhospitality",
+            name="offer",
+            field=models.CharField(
+                choices=[
+                    ("Received", "Received by DBT Staff"),
+                    ("Offered", "Given by DBT Staff"),
+                ],
+                max_length=200,
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistorygiftandhospitality',
-            name='rep',
-            field=models.CharField(blank=True, max_length=200, verbose_name='DBT representative offered to/from'),
+            model_name="simplehistorygiftandhospitality",
+            name="rep",
+            field=models.CharField(
+                blank=True,
+                max_length=200,
+                verbose_name="DBT representative offered to/from",
+            ),
         ),
     ]

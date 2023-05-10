@@ -6,28 +6,72 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('upload_file', '0004_auto_20211209_1149'),
+        ("upload_file", "0004_auto_20211209_1149"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='fileupload',
-            name='document_type',
-            field=models.CharField(choices=[('actuals', 'Actuals'), ('budget', 'Budget'), ('previousyear', 'Previous Year'), ('projectpercentage', 'Project Percentages'), {'forecast', 'Forecast'}, {'Other', 'other'}], default='actuals', max_length=100),
+            model_name="fileupload",
+            name="document_type",
+            field=models.CharField(
+                choices=[
+                    ("actuals", "Actuals"),
+                    ("budget", "Budget"),
+                    ("previousyear", "Previous Year"),
+                    ("projectpercentage", "Project Percentages"),
+                    {"forecast", "Forecast"},
+                    {"Other", "other"},
+                ],
+                default="actuals",
+                max_length=100,
+            ),
         ),
         migrations.AlterField(
-            model_name='fileupload',
-            name='file_location',
-            field=models.CharField(choices=[('actuals', 'Actuals'), ('budget', 'Budget'), ('previousyear', 'Previous Year'), ('projectpercentage', 'Project Percentages'), {'forecast', 'Forecast'}, {'Other', 'other'}], default='S3', max_length=100),
+            model_name="fileupload",
+            name="file_location",
+            field=models.CharField(
+                choices=[
+                    ("actuals", "Actuals"),
+                    ("budget", "Budget"),
+                    ("previousyear", "Previous Year"),
+                    ("projectpercentage", "Project Percentages"),
+                    {"forecast", "Forecast"},
+                    {"Other", "other"},
+                ],
+                default="S3",
+                max_length=100,
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryfileupload',
-            name='document_type',
-            field=models.CharField(choices=[('actuals', 'Actuals'), ('budget', 'Budget'), ('previousyear', 'Previous Year'), ('projectpercentage', 'Project Percentages'), {'forecast', 'Forecast'}, {'Other', 'other'}], default='actuals', max_length=100),
+            model_name="simplehistoryfileupload",
+            name="document_type",
+            field=models.CharField(
+                choices=[
+                    ("actuals", "Actuals"),
+                    ("budget", "Budget"),
+                    ("previousyear", "Previous Year"),
+                    ("projectpercentage", "Project Percentages"),
+                    {"forecast", "Forecast"},
+                    {"Other", "other"},
+                ],
+                default="actuals",
+                max_length=100,
+            ),
         ),
         migrations.AlterField(
-            model_name='simplehistoryfileupload',
-            name='file_location',
-            field=models.CharField(choices=[('actuals', 'Actuals'), ('budget', 'Budget'), ('previousyear', 'Previous Year'), ('projectpercentage', 'Project Percentages'), {'forecast', 'Forecast'}, {'Other', 'other'}], default='S3', max_length=100),
+            model_name="simplehistoryfileupload",
+            name="file_location",
+            field=models.CharField(
+                choices=[
+                    ("actuals", "Actuals"),
+                    ("budget", "Budget"),
+                    ("previousyear", "Previous Year"),
+                    ("projectpercentage", "Project Percentages"),
+                    {"forecast", "Forecast"},
+                    {"Other", "other"},
+                ],
+                default="S3",
+                max_length=100,
+            ),
         ),
     ]
