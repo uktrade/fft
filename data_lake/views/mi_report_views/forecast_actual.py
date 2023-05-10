@@ -9,8 +9,13 @@ from mi_report_data.models import (
 )
 
 
-class MIReportForecastActual1DataSet(DataLakeViewSet, MIReportFieldList):
-    filename = "mi_data_forecast_actual"
+BREAK_YEAR_PERIOD = 5
+
+
+# The view returning the current year data was timing out
+# because of the volume of data
+# So I split it in two parts, using BREAK_YEAR_PERIOD to split
+class MIReportForecastActualBase(MIReportFieldList):
     forecast_title = [
         "Financial Code ID",
         "Actual",
@@ -26,16 +31,20 @@ class MIReportForecastActual1DataSet(DataLakeViewSet, MIReportFieldList):
     title_list.extend(forecast_title)
     data_field_list = ["actual", "forecast"]
 
+
+class MIReportForecastActual1DataSet(DataLakeViewSet, MIReportForecastActualBase):
+    filename = "mi_data_forecast_actual_1"
+
     def write_data(self, writer):
         max_period_id = (
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
         )
-        # Output the archived period.
+        # Output the first semester of archived periods.
         # Each db query is derived from the query used to display the yearly
         # data. Not the most efficient way to do it, but it avoids having two ways
         # of extracting the same data
         # Using materialized views to reduce the running time
-        for period in range(0, max_period_id + 1):
+        for period in range(0, min(BREAK_YEAR_PERIOD, max_period_id + 1)):
             self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
         # Output the current period in two part:
@@ -47,40 +56,14 @@ class MIReportForecastActual1DataSet(DataLakeViewSet, MIReportFieldList):
         self.write_queryset_data(writer, ReportCurrentForecastData)
         self.write_queryset_data(writer, ReportCurrentActualData)
 
-class MIReportForecastActual2DataSet(DataLakeViewSet, MIReportFieldList):
-    filename = "mi_data_forecast_actual"
-    forecast_title = [
-        "Financial Code ID",
-        "Actual",
-        "Forecast",
-        "Financial Period Code",
-        "Financial Period Name",
-        "Archived Financial Period Code",
-        "Archived Financial Period Name",
-        "Year",
-        "Archiving Year",
-    ]
-    title_list = FigureFieldData.chart_of_account_titles.copy()
-    title_list.extend(forecast_title)
-    data_field_list = ["actual", "forecast"]
+
+class MIReportForecastActual2DataSet(DataLakeViewSet, MIReportForecastActualBase):
+    filename = "mi_data_forecast_actual_2"
 
     def write_data(self, writer):
         max_period_id = (
             EndOfMonthStatus.archived_period_objects.get_latest_archived_period()
         )
-        # Output the archived period.
-        # Each db query is derived from the query used to display the yearly
-        # data. Not the most efficient way to do it, but it avoids having two ways
-        # of extracting the same data
-        # Using materialized views to reduce the running time
-        for period in range(0, max_period_id + 1):
-            self.write_queryset_data(writer, archived_forecast_actual_view[period])
 
-        # Output the current period in two part:
-        # first the actuals and after the forecast
-        # The current period in FFT data has Null as archived period
-        # For convenience, when sending data to data workspace we change the Null
-        # to the next available archived period.
-        # It would be better to change the name of the field, but it is late for it!
-        self.write_queryset_data(writer, ReportCurrentForecastData)
-        self.write_queryset_data(writer, ReportCurrentActualData)
+        for period in range(BREAK_YEAR_PERIOD, max_period_id + 1):
+            self.write_queryset_data(writer, archived_forecast_actual_view[period])
