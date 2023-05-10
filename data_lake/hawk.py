@@ -50,7 +50,7 @@ def seen_nonce(access_key_id, nonce, _):
     seen_cache_key = not cache.add(
         cache_key,
         True,
-        timeout=600,
+        timeout=60,
     )
 
     if seen_cache_key:
