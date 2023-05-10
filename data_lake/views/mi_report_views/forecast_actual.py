@@ -8,6 +8,7 @@ from mi_report_data.models import (
     archived_forecast_actual_view,
 )
 
+
 BREAK_YEAR_PERIOD = 5
 
 
