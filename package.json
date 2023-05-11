@@ -18,7 +18,7 @@
     "react-scripts": "^5.0.0"
   },
   "scripts": {
-    "start-front-end": "cd front_end && npm run start",
+    "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
     "build": "cd front_end && npm run build"
   },

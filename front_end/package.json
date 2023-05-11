@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "NODE_ENV=production react-scripts build",
-    "start": "BROWSER=none NODE_ENV=development react-scripts start",
+    "dev": "BROWSER=none NODE_ENV=development react-scripts start",
     "bdd": "BROWSER=none NODE_ENV=development react-scripts build"
   },
   "dependencies": {
