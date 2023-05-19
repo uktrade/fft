@@ -42,8 +42,11 @@ jobs:
           name: Install latest NPM
           command: npm install npm
       - run:
-          name: Install React app
+          name: Install front end deps
           command: npm install
+      - run:
+          name: Install React app
+          command: npm run build
       - run:
           name: Collect static
           command: |
