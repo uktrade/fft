@@ -180,7 +180,8 @@ AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
-CELERY_BROKER_URL = f'rediss://${env("REDIS_ENDPOINT", default=None)}'
+REDIS_ENDPOINT = env("REDIS_ENDPOINT", default=None)
+CELERY_BROKER_URL = f"rediss://{REDIS_ENDPOINT}"
 
 # celery
 CELERY_ACCEPT_CONTENT = ["application/json"]
