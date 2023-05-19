@@ -34,16 +34,16 @@ X_ROBOTS_TAG = [
     "nofollow",
 ]
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CELERY_BROKER_URL,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-        "KEY_PREFIX": "cache_",
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": CELERY_BROKER_URL,
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#         },
+#         "KEY_PREFIX": "cache_",
+#     }
+# }
 
 LOGGING = {
     "version": 1,
