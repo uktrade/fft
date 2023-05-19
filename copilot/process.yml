@@ -2,4 +2,4 @@ application:
   name: fft
   process:
     - web
-    - celery
+
