@@ -100,7 +100,9 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
     }
 
 DATABASE_CREDENTIALS = env.json("DATABASE_CREDENTIALS", default={})
-os.environ["DATABASE_URL"] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
+os.environ[
+    "DATABASE_URL"
+] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
     **DATABASE_CREDENTIALS
 )
 DATABASES = {"default": env.db()}
@@ -167,9 +169,7 @@ TEMP_FILE_AWS_ACCESS_KEY_ID = env("TEMP_FILE_AWS_ACCESS_KEY_ID", default="")
 TEMP_FILE_AWS_SECRET_ACCESS_KEY = env("TEMP_FILE_AWS_SECRET_ACCESS_KEY", default="")
 TEMP_FILE_AWS_REGION = env("TEMP_FILE_AWS_REGION", default="")
 TEMP_FILE_AWS_S3_REGION_NAME = env("TEMP_FILE_AWS_REGION", default="")
-TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env(
-    "TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default=""
-)
+TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env("TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default="")
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
@@ -182,6 +182,9 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 # Redis
 REDIS_ENDPOINT = env("REDIS_ENDPOINT", default=None)
 CELERY_BROKER_URL = f"rediss://{REDIS_ENDPOINT}:6379"
+
+if REDIS_ENDPOINT:
+    print("REDIS_ENDPOINT is populated")
 
 # celery
 CELERY_ACCEPT_CONTENT = ["application/json"]
