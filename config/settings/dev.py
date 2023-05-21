@@ -31,16 +31,16 @@ X_ROBOTS_TAG = [
 # Django staff SSO user migration process requries the following
 MIGRATE_EMAIL_USER_ON_LOGIN = True
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": CELERY_BROKER_URL,
-#         "OPTIONS": {
-#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#         },
-#         "KEY_PREFIX": "cache_",
-#     }
-# }
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": CELERY_BROKER_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "cache_",
+    }
+}
 
 LOGGING = {
     "version": 1,

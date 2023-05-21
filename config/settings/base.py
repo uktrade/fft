@@ -181,7 +181,7 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
 REDIS_ENDPOINT = env("REDIS_ENDPOINT", default=None)
-CELERY_BROKER_URL = f"rediss://{REDIS_ENDPOINT}"
+CELERY_BROKER_URL = f"rediss://{REDIS_ENDPOINT}:6379"
 
 # celery
 CELERY_ACCEPT_CONTENT = ["application/json"]
