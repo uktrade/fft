@@ -100,6 +100,7 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
     }
 
 DATABASE_CREDENTIALS = env.json("DATABASE_CREDENTIALS", default={})
+
 os.environ[
     "DATABASE_URL"
 ] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
