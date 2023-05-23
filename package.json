@@ -1,5 +1,5 @@
 {
-  "name": "fido",
+  "name": "fft",
   "version": "0.2.0",
   "private": true,
   "engines": {
@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
-    "postci": "npm install",
+    "preci": "npm install",
     "build": "cd front_end && npm run build"
   },
   "eslintConfig": {
