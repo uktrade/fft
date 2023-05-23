@@ -21,7 +21,7 @@
     "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
     "build": "npm install",
-    "postinstall": "cd front_end && npm run build"
+    "postbuild": "cd front_end && npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
