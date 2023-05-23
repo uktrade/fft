@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
-    "prebuild": "npm install",
+    "postbuild": "npm install",
     "build": "cd front_end && npm run build"
   },
   "eslintConfig": {
