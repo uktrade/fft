@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
-    "build": "cd front_end && npm run build && cd .. & npm install"
+    "build": "cd front_end && npm run build && cd .. && npm install"
   },
   "eslintConfig": {
     "extends": "react-app"
