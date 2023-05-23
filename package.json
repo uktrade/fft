@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "14.x"
+    "node": "15.x"
   },
   "dependencies": {
     "govuk-frontend": "^4.0.0",
@@ -21,7 +21,7 @@
   "scripts": {
     "dev": "cd front_end && npm run dev",
     "bdd": "cd front_end && npm run bdd",
-    "preci": "npm install",
+    "postbuild": "npm install",
     "build": "cd front_end && npm run build"
   },
   "eslintConfig": {
