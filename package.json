@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "engines": {
-    "node": "15.x"
+    "node": "19.x"
   },
   "dependencies": {
     "govuk-frontend": "^4.0.0",
