@@ -37,6 +37,7 @@ class ArchivedNaturalCodeAdmin(AdminArchived, AdminExport):
         "natural_account_code",
         "natural_account_code_description",
         "account_L5_code",
+        "economic_budget_code",
         "expenditure_category",
         "commercial_category",
         "used_for_budget",
