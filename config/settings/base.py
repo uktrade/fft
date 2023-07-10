@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 import environ
-
+from dbt_copilot_python.network import setup_allowed_hosts
+from dbt_copilot_python import database_from_env
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -24,7 +25,8 @@ DEBUG = env.bool("DEBUG", default=False)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = [...]
+ALLOWED_HOSTS = setup_allowed_hosts(ALLOWED_HOSTS)
 
 INSTALLED_APPS = [
     "user",
@@ -106,7 +108,7 @@ os.environ[
 ] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
     **DATABASE_CREDENTIALS
 )
-DATABASES = {"default": env.db()}
+DATABASES = {"default": database_from_env("DATABASE_CREDENTIALS")}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
