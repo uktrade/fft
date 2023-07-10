@@ -54,7 +54,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
     # via celery
 dbt-copilot-python==0.1.0
-    # via -r requirements.in/prod.in
+    # via -r requirements.in/base.in
 decorator==4.2.1
     # via -r requirements.in/base.in
 diff-match-patch==20121119
