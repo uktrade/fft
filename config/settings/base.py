@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 import environ
+from dbt_copilot_python.database import database_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
-from dbt_copilot_python import database_from_env
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
