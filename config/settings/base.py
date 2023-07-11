@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 import os
-
+import dj_database_url
 import environ
-from dbt_copilot_python.database import database_from_env
+from dbt_copilot_python.database import database_from_env, database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
@@ -101,14 +101,22 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
         "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
     }
 
-DATABASE_CREDENTIALS = env.json("DATABASE_CREDENTIALS", default={})
+# DATABASE_CREDENTIALS = env.json("DATABASE_CREDENTIALS", default={})
+#
+# os.environ[
+#     "DATABASE_URL"
+# ] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
+#     **DATABASE_CREDENTIALS
+# )
+# DATABASES = database_from_env("DATABASE_CREDENTIALS")
 
-os.environ[
-    "DATABASE_URL"
-] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
-    **DATABASE_CREDENTIALS
-)
-DATABASES = database_from_env("DATABASE_CREDENTIALS")
+DATABASES = {
+    'default': dj_database_url.config(
+        default=database_url_from_env("DATABASE_CREDENTIALS"),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 

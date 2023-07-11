@@ -79,7 +79,7 @@ coverage==5.2
     # via pytest-cov
 crayons==0.3.1
     # via webdriver-manager
-dbt-copilot-python==0.1.0
+dbt-copilot-python==0.1.1
     # via -r requirements.in/base.in
 decorator==4.2.1
     # via -r requirements.in/base.in
