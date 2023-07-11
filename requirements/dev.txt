@@ -87,11 +87,12 @@ diff-match-patch==20121119
     # via
     #   -r requirements.in/base.in
     #   django-import-export
-dj-database-url==0.5.0
+dj-database-url==2.0.0
     # via -r requirements.in/base.in
 django==3.2.16
     # via
     #   -r requirements.in/base.in
+    #   dj-database-url
     #   django-appconf
     #   django-axes
     #   django-chunk-upload-handlers
@@ -417,7 +418,9 @@ tomli==2.0.1
     #   black
     #   build
 typing-extensions==4.1.1
-    # via black
+    # via
+    #   black
+    #   dj-database-url
 unicodecsv==0.14.1
     # via -r requirements.in/base.in
 urllib3==1.26.5
