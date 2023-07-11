@@ -108,7 +108,7 @@ os.environ[
 ] = "{engine}://{username}:{password}@{host}:{port}/{dbname}".format(
     **DATABASE_CREDENTIALS
 )
-DATABASES = {"default": database_from_env("DATABASE_CREDENTIALS")}
+DATABASES = database_from_env("DATABASE_CREDENTIALS")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
