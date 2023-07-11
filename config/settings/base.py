@@ -112,9 +112,7 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=database_url_from_env("DATABASE_CREDENTIALS"),
-        conn_max_age=600,
-        conn_health_checks=True,
+        default=database_url_from_env("DATABASE_CREDENTIALS")
     )
 }
 
