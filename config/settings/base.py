@@ -25,7 +25,7 @@ DEBUG = env.bool("DEBUG", default=False)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
-ALLOWED_HOSTS = [...]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 ALLOWED_HOSTS = setup_allowed_hosts(ALLOWED_HOSTS)
 
 INSTALLED_APPS = [
