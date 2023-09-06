@@ -1,3 +1,6 @@
+SLACK_WORKSPACE_ID
+SLACK_CHANNEL_ID
+SLACK_TOKEN
 MonthlyFigureFactory
 export_edit_forecast_data_cost_centre
 Apr/May
