@@ -302,7 +302,7 @@ pydot==1.2.4
     # via -r requirements.in/base.in
 pyflakes==2.2.0
     # via flake8
-pygments==2.8.1
+pygments==2.15.0
     # via -r requirements.in/base.in
 pyparsing==2.2.0
     # via
