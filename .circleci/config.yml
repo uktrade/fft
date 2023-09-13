@@ -22,9 +22,8 @@ jobs:
           POSTGRES_PASSWORD: postgres
 
     steps:
-      - browser-tools/install-browser-tools:
-          chrome-version: 116.0.5845.110
-          replace-existing: true
+      - run: sudo apt-get update
+      - browser-tools/install-browser-tools
       - checkout
       - run: mkdir test-reports
       - run:
