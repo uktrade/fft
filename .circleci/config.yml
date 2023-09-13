@@ -23,6 +23,9 @@ jobs:
 
     steps:
       - run: sudo apt-get update
+      - browser-tools/install-chrome:
+          chrome-version: 116.0.5845.96 
+          replace-existing: true
       - browser-tools/install-browser-tools
       - checkout
       - run: mkdir test-reports
