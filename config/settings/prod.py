@@ -151,4 +151,3 @@ PROD_ALIAS = os.environ.get("PROD_ALIAS", None)
 
 if PROD_ALIAS:
     ALLOWED_HOSTS.append(PROD_ALIAS)
-    
