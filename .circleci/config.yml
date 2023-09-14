@@ -63,6 +63,7 @@ jobs:
           name: Run tests
           command: |
             pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
+      - run: python -m pip install webdriver-manager --upgrade
       - run:
           name: Run BDD tests
           command: |
