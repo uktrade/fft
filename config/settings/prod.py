@@ -147,7 +147,7 @@ SECURE_BROWSER_XSS_FILTER = True
 AUDIT_LOG_USER_FIELD = "username"
 
 # AWS Copilot prod web service host alias
-PROD_ALIAS = os.environ.get("PROD_ALIAS", None)
+PROD_ALIAS = env("PROD_ALIAS")
 
 if PROD_ALIAS:
     ALLOWED_HOSTS.append(PROD_ALIAS)
