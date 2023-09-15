@@ -5,7 +5,7 @@ from core.utils.export_helpers import export_to_excel
 from costcentre.models import CostCentre
 
 
-def export_cost_centre_user_iterator(queryset):
+def download_cost_centre_user_iterator(queryset):
     yield [
         "Cost Centre",
         "First Name",  # /PS-IGNORE
@@ -21,8 +21,10 @@ def export_cost_centre_user_iterator(queryset):
             ]
 
 
-def export_cost_centres(request):
+def download_cost_centres(request):
     title = f"cost_centre_users_{today_string()}"
     return export_to_excel(
-        CostCentre.objects.filter(active=True), export_cost_centre_user_iterator, title
+        CostCentre.objects.filter(active=True),
+        download_cost_centre_user_iterator,
+        title,
     )
