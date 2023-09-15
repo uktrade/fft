@@ -95,6 +95,11 @@ AUTHBROKER_URL = "dont-use-in-prod"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "front_end/build/static"),
+    os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
+)
+
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
