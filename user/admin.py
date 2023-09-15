@@ -106,7 +106,7 @@ class UserAdmin(UserAdmin):
         urls = super().get_urls()
         export_urls = [
             path("export-users/", download_users_to_excel),
-            path("export-cc-user/", export_cost_centres)
+            path("export-cc-user/", export_cost_centres),
         ]
         return export_urls + urls
 
