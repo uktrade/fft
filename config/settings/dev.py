@@ -73,7 +73,7 @@ ASYNC_FILE_UPLOAD = True
 
 sentry_sdk.init(
     os.environ.get("SENTRY_DSN"),
-    environment=os.environ.get("SENTR   Y_ENVIRONMENT"),
+    environment=os.environ.get("SENTRY_ENVIRONMENT"),
     integrations=[DjangoIntegration()],
 )
 

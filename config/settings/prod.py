@@ -7,7 +7,6 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from .base import *  # noqa
 
 
-WHITENOISE_MANIFEST_STRICT = False
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
