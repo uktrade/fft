@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import path
 
 from core.utils.generic_helpers import log_object_change
+from costcentre.export_user_cost_centre import export_cost_centres
 from user.download_users import download_users_to_excel
 
 
@@ -105,6 +106,7 @@ class UserAdmin(UserAdmin):
         urls = super().get_urls()
         export_urls = [
             path("export-users/", download_users_to_excel),
+            path("export-cc-user/", export_cost_centres)
         ]
         return export_urls + urls
 
