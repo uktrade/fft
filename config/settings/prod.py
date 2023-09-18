@@ -18,7 +18,7 @@ AUTHENTICATION_BACKENDS += [
 ]
 
 INSTALLED_APPS += [
-    "elasticapm.contrib.django",
+    # "elasticapm.contrib.django",
     "django_audit_log_middleware",
 ]
 
