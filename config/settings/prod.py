@@ -1,5 +1,6 @@
 import sys
 
+import logging
 import sentry_sdk
 from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -46,9 +47,20 @@ X_ROBOTS_TAG = [
 #     }
 # }
 
+class ForceExcInfoFilter(logging.Filter):
+    def filter(self, record):
+        if record.levelno >= logging.ERROR:
+            record.exc_info = True
+        return True
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "filters": {
+        'force_exc_info': {
+            '()': 'path.to.custom_filters.ForceExcInfoFilter',
+        },
+    },
     "formatters": {
         "ecs_formatter": {
             "()": ECSFormatter,
@@ -60,6 +72,7 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
             "formatter": "ecs_formatter",
+            'filters': ['force_exc_info'],
         },
         "stdout": {
             "class": "logging.StreamHandler",
@@ -75,6 +88,7 @@ LOGGING = {
             ],
             "level": "INFO",
             "propagate": True,
+            "exc_info": True,
         },
         "forecast.import_csv": {
             "handlers": [
