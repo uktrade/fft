@@ -58,7 +58,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "filters": {
         'force_exc_info': {
-            '()': 'path.to.custom_filters.ForceExcInfoFilter',
+            '()': ForceExcInfoFilter,
         },
     },
     "formatters": {
