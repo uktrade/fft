@@ -12,6 +12,7 @@ class DownloadUserTest(TestCase):
         self.group, _ = Group.objects.get_or_create(name="test role")
 
     def test_user_no_role(self):
+        # a useless change
         queryset = download_users_queryset()
         assert queryset.count() == 0
 
