@@ -51,7 +51,7 @@ class ForceExcInfoFilter(logging.Filter):
     def filter(self, record):
         if record.levelno >= logging.ERROR:
             record.exc_info = sys.exc_info()
-        return True
+        return None
 
 LOGGING = {
     "version": 1,
