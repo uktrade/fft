@@ -50,8 +50,8 @@ X_ROBOTS_TAG = [
 class ForceExcInfoFilter(logging.Filter):
     def filter(self, record):
         if record.levelno >= logging.ERROR:
-            record.exc_info = sys.exc_info()
-        return None
+            record.exc_info = True
+        return False
 
 LOGGING = {
     "version": 1,
