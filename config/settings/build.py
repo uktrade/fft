@@ -11,6 +11,8 @@ SECRET_KEY = "dont-use-in-prod"
 
 ALLOWED_HOSTS = "*"
 
+WHITENOISE_MANIFEST_STRICT=False
+
 INSTALLED_APPS = [
     "user",
     "authbroker_client",
