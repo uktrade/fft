@@ -22,6 +22,8 @@ STATICFILES_DIRS = (
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+WHITENOISE_MANIFEST_STRICT = True
+
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [
     "noindex",
