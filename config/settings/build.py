@@ -11,6 +11,7 @@ SECRET_KEY = "dont-use-in-prod"
 
 ALLOWED_HOSTS = "*"
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 WHITENOISE_MANIFEST_STRICT=False
 
 INSTALLED_APPS = [
