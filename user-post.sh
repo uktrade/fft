@@ -5,4 +5,4 @@ pip install -r requirements.txt
 npm ci
 
 python manage.py compilescss --settings=config.settings.build
-python manage.py collectstatic --settings=config.settings.build --noinput
+python manage.py collectstatic --settings=config.settings.build --noinput --clear

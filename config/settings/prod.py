@@ -1,5 +1,6 @@
 import sys
 
+import logging
 import sentry_sdk
 from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -47,56 +48,86 @@ X_ROBOTS_TAG = [
 #     }
 # }
 
+class ForceExcInfoFilter(logging.Filter):
+    def filter(self, record):
+        if record.levelno >= logging.ERROR:
+            record.exc_info = sys.exc_info()
+        return False
+
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "filters": {
+#         'force_exc_info': {
+#             '()': ForceExcInfoFilter,
+#         },
+#     },
+#     "formatters": {
+#         "ecs_formatter": {
+#             "()": ECSFormatter,
+#         },
+#         "simple": {"format": "%(levelname)s %(message)s"},
+#     },
+#     "handlers": {
+#         "ecs": {
+#             "class": "logging.StreamHandler",
+#             "stream": sys.stdout,
+#             "formatter": "ecs_formatter",
+#             'filters': ['force_exc_info'],
+#         },
+#         "stdout": {
+#             "class": "logging.StreamHandler",
+#             "stream": sys.stdout,
+#             "formatter": "simple",
+#             "level": "INFO",
+#         },
+#     },
+#     "loggers": {
+#         "django.request": {
+#             "handlers": [
+#                 "ecs",
+#             ],
+#             "level": "INFO",
+#             "propagate": True,
+#             "exc_info": True,
+#         },
+#         "forecast.import_csv": {
+#             "handlers": [
+#                 "stdout",
+#             ],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#         "forecast.views.upload_file": {
+#             "handlers": [
+#                 "stdout",
+#             ],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#         "forecast.tasks": {
+#             "handlers": [
+#                 "stdout",
+#             ],
+#             "level": "INFO",
+#             "propagate": True,
+#         },
+#     },
+# }
+import logging
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-        "simple": {"format": "%(levelname)s %(message)s"},
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-        "stdout": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "simple",
-            "level": "INFO",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
         },
     },
-    "loggers": {
-        "django.request": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.import_csv": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.views.upload_file": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.tasks": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',  # Change to 'DEBUG' if you want to capture all logs
+            'propagate': True,
         },
     },
 }
