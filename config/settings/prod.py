@@ -18,7 +18,7 @@ AUTHENTICATION_BACKENDS += [
 ]
 
 INSTALLED_APPS += [
-    "elasticapm.contrib.django",
+    # "elasticapm.contrib.django",
     "django_audit_log_middleware",
 ]
 
@@ -28,6 +28,7 @@ STATICFILES_DIRS = (
 )
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_MANIFEST_STRICT=False
 
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [
@@ -103,11 +104,11 @@ LOGGING = {
 # Set async file uploading
 ASYNC_FILE_UPLOAD = True
 
-sentry_sdk.init(
-    os.environ.get("SENTRY_DSN"),
-    environment=os.environ.get("SENTRY_ENVIRONMENT"),
-    integrations=[DjangoIntegration()],
-)
+# sentry_sdk.init(
+#     os.environ.get("SENTRY_DSN"),
+#     environment=os.environ.get("SENTRY_ENVIRONMENT"),
+#     integrations=[DjangoIntegration()],
+# )
 
 # Django staff SSO user migration process requries the following
 MIGRATE_EMAIL_USER_ON_LOGIN = True

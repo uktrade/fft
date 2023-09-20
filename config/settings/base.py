@@ -95,13 +95,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-if env("ELASTIC_APM_ENVIRONMENT", default=None):
-    ELASTIC_APM = {
-        "SERVICE_NAME": "fft",
-        "SECRET_TOKEN": env.bool("ELASTIC_APM_SECRET_TOKEN", default=None),
-        "SERVER_URL": "https://apm.elk.uktrade.digital",
-        "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
-    }
+# if env("ELASTIC_APM_ENVIRONMENT", default=None):
+#     ELASTIC_APM = {
+#         "SERVICE_NAME": "fft",
+#         "SECRET_TOKEN": env.bool("ELASTIC_APM_SECRET_TOKEN", default=None),
+#         "SERVER_URL": "https://apm.elk.uktrade.digital",
+#         "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
+#     }
 
 DATABASES = {
     "default": dj_database_url.config(

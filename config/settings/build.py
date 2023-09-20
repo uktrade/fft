@@ -11,6 +11,9 @@ SECRET_KEY = "dont-use-in-prod"
 
 ALLOWED_HOSTS = "*"
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_MANIFEST_STRICT=False
+
 INSTALLED_APPS = [
     "user",
     "authbroker_client",
@@ -94,6 +97,11 @@ AUTHBROKER_URL = "dont-use-in-prod"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "front_end/build/static"),
+    os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
+)
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
