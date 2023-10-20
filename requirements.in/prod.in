@@ -1,5 +1,0 @@
--r base.in
-
-gevent
-psycogreen==1.0.2
-django-audit-log-middleware

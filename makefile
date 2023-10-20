@@ -91,14 +91,8 @@ bash:
 	docker-compose run --rm fido bash
 
 all-requirements:
-	docker-compose run --rm fido pip-compile --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm fido pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm fido pip-compile --output-file requirements/prod.txt requirements.in/prod.in
-
-upgrade-package:
-	pip-compile -P $(package) --output-file requirements/base.txt requirements.in/base.in
-	pip-compile -P $(package) --output-file requirements/dev.txt requirements.in/dev.in
-	pip-compile -P $(package) --output-file requirements/prod.txt requirements.in/prod.in
+	poetry export --with dev --without-hashes --output requirements/dev.txt
+	poetry export --with prod --without-hashes --output requirements/prod.txt
 
 test:
 	docker-compose run --rm fido python manage.py test $(test)
