@@ -91,8 +91,7 @@ bash:
 	docker-compose run --rm fido bash
 
 all-requirements:
-	poetry export --with dev --without-hashes --output requirements/dev.txt
-	poetry export --with prod --without-hashes --output requirements/prod.txt
+	poetry export --with prod --without-hashes --output requirements.txt
 
 test:
 	docker-compose run --rm fido python manage.py test $(test)
