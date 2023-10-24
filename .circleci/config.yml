@@ -4,22 +4,25 @@ orbs:
   browser-tools: circleci/browser-tools@1.4.5 # /PS-IGNORE
 jobs:
   build:
-    docker:
-      - image: cimg/python:3.9-browsers
-        environment:
-          FLASK_CONFIG: testing
-          DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
-          DJANGO_SETTINGS_MODULE: config.settings.ci
-          SECRET_KEY: used_for_testing
-          ALLOWED_HOSTS: "*"
-          SELENIUM_ADDRESS: localhost
-          SELENIUM_HOST: localhost
-          USE_SELENIUM_HUB: False
-      - image: circleci/postgres:11-alpine-ram
-        environment:
-          POSTGRES_USER: ubuntu
-          POSTGRES_DB: fido_test
-          POSTGRES_PASSWORD: ""
+    # docker:
+    #   - image: cimg/python:3.9-browsers
+    #     environment:
+    #       FLASK_CONFIG: testing
+    #       DATABASE_URL: psql://ubuntu@localhost:5432/fido_test
+    #       DJANGO_SETTINGS_MODULE: config.settings.ci
+    #       SECRET_KEY: used_for_testing
+    #       ALLOWED_HOSTS: "*"
+    #       SELENIUM_ADDRESS: localhost
+    #       SELENIUM_HOST: localhost
+    #       USE_SELENIUM_HUB: False
+    #   - image: circleci/postgres:11-alpine-ram
+    #     environment:
+    #       POSTGRES_USER: ubuntu
+    #       POSTGRES_DB: fido_test
+    #       POSTGRES_PASSWORD: ""
+    machine:
+      image: ubuntu-2204:2023.04.2
+      docker_layer_caching: true
 
     steps:
       # - browser-tools/install-browser-tools
