@@ -22,9 +22,10 @@ jobs:
           POSTGRES_PASSWORD: ""
 
     steps:
-      - browser-tools/install-browser-tools
+      # - browser-tools/install-browser-tools
       - checkout
       - run: mkdir test-reports
+      - run: touch .env
       # - run:
       #     name: Download Selenium
       #     command: |
