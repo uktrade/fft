@@ -103,7 +103,7 @@ s3transfer = "0.4.2"
 six = "1.15.0"
 sqlparse = "0.2.4"
 tablib = { version = "2.0.0", extras = ["html", "ods", "xls", "xlsx", "yaml"] }
-urllib3 = "1.26.16"
+urllib3 = "1.26.18"
 vine = "5.0.0"
 wcwidth = "0.1.7"
 xlrd = "1.1.0"
