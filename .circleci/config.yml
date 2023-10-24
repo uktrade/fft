@@ -35,9 +35,10 @@ jobs:
             java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
           background: true
       - run:
-          name: Install Python deps
+          name: Install Poetry and dependencies
           command: |
-            pip install -r requirements/dev.txt
+            pip install poetry
+            poetry install --with dev
       - run:
           name: Install latest NPM
           command: npm install npm
