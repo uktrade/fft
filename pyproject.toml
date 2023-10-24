@@ -101,7 +101,7 @@ requests = "2.25.1"
 requests-oauthlib = "1.0.0"
 s3transfer = "0.4.2"
 six = "1.15.0"
-sqlparse = "0.2.4"
+sqlparse = "0.4.4"
 tablib = { version = "2.0.0", extras = ["html", "ods", "xls", "xlsx", "yaml"] }
 urllib3 = "1.26.16"
 vine = "5.0.0"
