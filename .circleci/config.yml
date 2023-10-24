@@ -16,6 +16,9 @@ jobs:
           name: Build images
           command: make build
       - run:
+          name: Run containers
+          command: make up-detatched
+      - run:
           name: Install latest NPM
           command: npm install npm
       - run:

@@ -36,6 +36,9 @@ build:
 up:
 	docker-compose up
 
+up-detatched:
+	docker-compose up -d
+
 down:
 	docker-compose down
 
