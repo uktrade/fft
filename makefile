@@ -99,6 +99,9 @@ test:
 pytest:
 	docker-compose run --rm fido pytest -raP --capture=sys --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
 
+black-check:
+	docker-compose run --rm fido black --check .
+
 black:
 	docker-compose run --rm fido black .
 

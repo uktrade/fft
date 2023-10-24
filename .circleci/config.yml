@@ -25,21 +25,18 @@ jobs:
       - browser-tools/install-browser-tools
       - checkout
       - run: mkdir test-reports
+      # - run:
+      #     name: Download Selenium
+      #     command: |
+      #       curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
+      # - run:
+      #     name: Start Selenium
+      #     command: |
+      #       java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+      #     background: true
       - run:
-          name: Download Selenium
-          command: |
-            curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
-      - run:
-          name: Start Selenium
-          command: |
-            java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
-          background: true
-      - run:
-          name: Install Poetry and dependencies
-          command: |
-            pip install --upgrade pip
-            pip install poetry
-            poetry install --with dev
+          name: Build images
+          command: make build
       - run:
           name: Install latest NPM
           command: npm install npm
@@ -48,33 +45,25 @@ jobs:
           command: npm install
       - run:
           name: Collect static
-          command: |
-            python manage.py collectstatic --noinput
+          command: make collectstatic
       - run:
           name: Compile CSS
-          command: |
-            python manage.py compilescss
+          command: make compilescss
       - run:
           name: Run tests
-          command: |
-            pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
-      - run: python -m pip install webdriver-manager --upgrade
+          command: make pytest
       - run:
           name: Run BDD tests
-          command: |
-            python manage.py behave --settings=config.settings.bdd
+          command: make bdd
       - run:
           name: Run Flake8
-          command: |
-            python -m flake8
+          command: make flake8
       - run:
           name: Run isort
-          command: |
-            python -m isort --check .
+          command: make isort-check
       - run:
           name: Run black
-          command: |
-            python -m black --check .
+          command: make black-check
 
       - store_artifacts:
           path: test-reports/
