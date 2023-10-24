@@ -36,6 +36,9 @@ build:
 up:
 	docker-compose up
 
+up-detatched:
+	docker-compose up -d
+
 down:
 	docker-compose down
 
@@ -91,20 +94,16 @@ bash:
 	docker-compose run --rm fido bash
 
 all-requirements:
-	docker-compose run --rm fido pip-compile --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm fido pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm fido pip-compile --output-file requirements/prod.txt requirements.in/prod.in
-
-upgrade-package:
-	pip-compile -P $(package) --output-file requirements/base.txt requirements.in/base.in
-	pip-compile -P $(package) --output-file requirements/dev.txt requirements.in/dev.in
-	pip-compile -P $(package) --output-file requirements/prod.txt requirements.in/prod.in
+	poetry export --with prod --without-hashes --output requirements.txt
 
 test:
 	docker-compose run --rm fido python manage.py test $(test)
 
 pytest:
 	docker-compose run --rm fido pytest -raP --capture=sys --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
+
+black-check:
+	docker-compose run --rm --no-deps fido black --check .
 
 black:
 	docker-compose run --rm fido black .
@@ -114,9 +113,6 @@ isort-check:
 
 isort:
 	docker-compose run --rm fido isort .
-
-black-check:
-	docker-compose run --rm --no-deps fido black --check .
 
 superuser:
 	docker-compose run --rm fido python manage.py createsuperuser
