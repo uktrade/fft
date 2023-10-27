@@ -1,17 +1,10 @@
 {
-  "name": "FFT",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "build": "NODE_ENV=production react-scripts build",
-    "start": "BROWSER=none NODE_ENV=development react-scripts start",
-    "bdd": "BROWSER=none NODE_ENV=development react-scripts build"
-  },
-  "dependencies": {
-    "braces": "^3.0.2",
-    "dot-prop": "^5.2.0",
-    "mem": "^6.1.1",
-    "minimist": "^1.2.5",
-    "react-scripts": "^4.0.3"
-  }
+    "name": "FFT",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "build": "NODE_ENV=production react-scripts build",
+        "start": "BROWSER=none NODE_ENV=development react-scripts start",
+        "bdd": "BROWSER=none NODE_ENV=development react-scripts build"
+    }
 }
