@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+
 import os
 
 import environ
@@ -316,3 +317,17 @@ CACHES = {
         "LOCATION": "django_cache_table",
     }
 }
+
+
+# Need to FORK django-bootstrap-breadcrumbs to fix this
+import django
+from django.utils.encoding import smart_str
+
+
+django.utils.encoding.smart_text = smart_str
+
+# Need to FORK django-adv-cache-tag to fix this
+from urllib.parse import quote
+
+
+django.utils.http.urlquote = quote
