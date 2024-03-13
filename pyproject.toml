@@ -34,8 +34,6 @@ django-simple-history = "3.0.0"
 django-staff-sso-client = "^4.2.1"
 django-tables2 = "2.4.0"
 django-webpack-loader = "0.7.0"
-# FIXME: Don't use this FORK, fork our own version! of django-bootstrap-breadcrumbs (or get rid)
-django-bootstrap-breadcrumbs = { git = "https://github.com/2mal16/bootstrap-breadcrumbs", rev = "3741bdf" }
 djangorestframework = "^3.14.0"
 docutils = "0.14"
 elastic-apm = "6.2.2"

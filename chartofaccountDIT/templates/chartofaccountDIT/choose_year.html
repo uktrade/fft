@@ -1,5 +1,5 @@
 {% extends "wide_content.html" %}
-{% load django_bootstrap_breadcrumbs %}
+{% load breadcrumbs %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -19,7 +19,7 @@
                     {{year.display}}  Chart of Account
                   </a>
                 </li>
-            {%  endfor  %}
+            {% endfor %}
       </ul>
     </nav>
 {% endblock %}
