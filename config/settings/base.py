@@ -318,14 +318,3 @@ CACHES = {
         "LOCATION": "django_cache_table",
     }
 }
-
-
-from urllib.parse import quote
-
-import django
-from django.utils.encoding import smart_str
-
-# Need to FORK django-bootstrap-breadcrumbs to fix this
-django.utils.encoding.smart_text = smart_str
-# Need to FORK django-adv-cache-tag to fix this
-django.utils.http.urlquote = quote
