@@ -1,7 +1,7 @@
 version: '3'
 services:
  db:
-   image: postgres:11
+   image: postgres:13
    environment:
      - POSTGRES_DB=fido
      - POSTGRES_PASSWORD=postgres
@@ -17,6 +17,8 @@ services:
       context: .
       dockerfile: "docker/Dockerfile.dev"
    env_file: .env
+   environment:
+     - DATABASE_URL=psql://postgres:postgres@db:5432/fido
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./:/app/
@@ -46,7 +48,7 @@ services:
     ports:
       - "4444:4444"
  chrome:
-    image: selenium/node-chrome-debug:3.141.59-vanadium
+    image: selenium/node-chrome:3.141.59-vanadium
     volumes:
       - /dev/shm:/dev/shm
     depends_on:

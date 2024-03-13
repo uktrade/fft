@@ -1,53 +1,53 @@
 version: 2.1
 
 orbs:
-  browser-tools: circleci/browser-tools@1.4.5 # /PS-IGNORE
+      browser-tools: circleci/browser-tools@1.4.5 # /PS-IGNORE
 jobs:
-  build:
-    machine:
-      image: ubuntu-2204:2023.04.2
-      docker_layer_caching: true
+      build:
+            machine:
+                  image: ubuntu-2204:2023.04.2
+                  docker_layer_caching: true
 
-    steps:
-      - checkout
-      - run: mkdir test-reports
-      - run: cp circleci.env .env
-      - run:
-          name: Build images
-          command: make build
-      - run:
-          name: Run containers
-          command: make up-detatched
-      - run:
-          name: Install latest NPM
-          command: npm install npm
-      - run:
-          name: Install React app
-          command: npm install
-      - run:
-          name: Collect static
-          command: make collectstatic
-      - run:
-          name: Compile CSS
-          command: make compilescss
-      - run:
-          name: Run tests
-          command: make pytest
-      - run:
-          name: Run BDD tests
-          command: make bdd
-      - run:
-          name: Run Flake8
-          command: make flake8
-      - run:
-          name: Run isort
-          command: make isort-check
-      - run:
-          name: Run black
-          command: make black-check
+            steps:
+                  - checkout
+                  - run: mkdir test-reports
+                  - run: cp .env.ci .env
+                  - run:
+                          name: Build images
+                          command: make build
+                  - run:
+                          name: Run containers
+                          command: make up-detatched
+                  - run:
+                          name: Install latest NPM
+                          command: npm install npm
+                  - run:
+                          name: Install React app
+                          command: npm install
+                  - run:
+                          name: Collect static
+                          command: make collectstatic
+                  - run:
+                          name: Compile CSS
+                          command: make compilescss
+                  - run:
+                          name: Run Flake8
+                          command: make flake8
+                  - run:
+                          name: Run isort
+                          command: make isort-check
+                  - run:
+                          name: Run black
+                          command: make black-check
+                  - run:
+                          name: Run tests
+                          command: make pytest
+                  - run:
+                          name: Run BDD tests
+                          command: make bdd
 
-      - store_artifacts:
-          path: test-reports/
-          destination: tr1
-      - store_test_results:
-          path: test-reports/
+                  - store_artifacts:
+                          path: test-reports/
+                          destination: tr1
+                  - store_test_results:
+                          path: test-reports/
