@@ -14,7 +14,6 @@ import os
 
 import environ
 
-
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 env = environ.Env()
@@ -319,15 +318,12 @@ CACHES = {
 }
 
 
-# Need to FORK django-bootstrap-breadcrumbs to fix this
+from urllib.parse import quote
+
 import django
 from django.utils.encoding import smart_str
 
-
+# Need to FORK django-bootstrap-breadcrumbs to fix this
 django.utils.encoding.smart_text = smart_str
-
 # Need to FORK django-adv-cache-tag to fix this
-from urllib.parse import quote
-
-
 django.utils.http.urlquote = quote
