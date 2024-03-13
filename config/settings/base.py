@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 import environ
+from django.urls import reverse_lazy
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
@@ -153,7 +154,7 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
 AUTHBROKER_SCOPES = "read write"
 
-LOGIN_URL = "/auth/login"
+LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "index"
 GIT_COMMIT = env("GIT_COMMIT", default=None)
 
@@ -259,6 +260,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    "user.backends.CustomAuthbrokerBackend",
     "guardian.backends.ObjectPermissionBackend",
     "axes.backends.AxesBackend",
 ]
