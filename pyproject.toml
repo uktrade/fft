@@ -16,8 +16,6 @@ decorator = "4.2.1"
 dj-database-url = "0.5.0"
 django = "^4.2.11"
 django-admin-list-filter-dropdown = "1.0.1"
-# FIXME: Don't use this FORK, fork our own version! of django-adv-cache-tag (or get rid)
-erudit-django-adv-cache-tag = { git = "https://github.com/erudit/django-adv-cache-tag", tag = "1.1.5" }
 django-autocomplete-light = "3.3.2"
 django-axes = "5.9.0"
 django-compressor = "^4.4"

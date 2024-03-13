@@ -1124,24 +1124,6 @@ starlette = ["starlette"]
 tornado = ["tornado"]
 
 [[package]]
-name = "erudit-django-adv-cache-tag"
-version = "1.1.5"
-description = "An advanced template tag for caching in django: versioning, compress, partial caching, easy inheritance"
-optional = false
-python-versions = ">=3.4"
-files = []
-develop = false
-
-[package.extras]
-dev = ["django"]
-
-[package.source]
-type = "git"
-url = "https://github.com/erudit/django-adv-cache-tag"
-reference = "1.1.5"
-resolved_reference = "3f86f93840fffc21ab4ae17626f582aa89635fd8"
-
-[[package]]
 name = "et-xmlfile"
 version = "1.0.1"
 description = "An implementation of lxml.xmlfile for the standard library"
@@ -2765,4 +2747,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "ea0c767714bb32b3005ea56f0e3efe2d236e7e88988dfbfc9de566bbd301eb03"
+content-hash = "ab3b771a29fd13638eb8759d8ab78315ea4af5280d19165d58adb45dfc684479"

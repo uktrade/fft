@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "simple_history",
     "axes",
-    "adv_cache_tag",
     "django_chunk_upload_handlers",
 ]
 
