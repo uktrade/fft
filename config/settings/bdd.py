@@ -6,6 +6,7 @@ DEBUG = False
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 
 INSTALLED_APPS += ("behave_django",)
+INSTALLED_APPS.remove("authbroker_client")
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "front_end/build/static"),
