@@ -323,8 +323,10 @@ CACHES = {
 from urllib.parse import quote
 
 import django
-from django.utils.encoding import smart_str
+from django.utils.encoding import force_str, smart_str
 
+# Need to FORK compressor to fix this
+django.utils.encoding.force_text = force_str
 # Need to FORK django-bootstrap-breadcrumbs to fix this
 django.utils.encoding.smart_text = smart_str
 # Need to FORK django-adv-cache-tag to fix this
