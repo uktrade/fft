@@ -78,8 +78,6 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-window.actuals = []
-
 export const processForecastData = (forecastData) => {
     let rows = [];
 

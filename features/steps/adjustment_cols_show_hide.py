@@ -67,7 +67,7 @@ def step_impl(context):
     adjustment_1_hidden = False
 
     try:
-        context.browser.find_element_by_id("id_0_13")
+        context.browser.find_element(By.ID, "id_0_13")
     except NoSuchElementException:
         adjustment_1_hidden = True
 

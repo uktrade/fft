@@ -1,5 +1,5 @@
 {% extends "forecast/edit/forecast_base.html" %}
-{% load util %}
+{% load util vite %}
 {% load breadcrumbs %}
 
 {% block breadcrumbs %}
@@ -40,12 +40,13 @@
     </form>
 {% endblock %}
 {% block scripts %}
-    {% render_front_end_script %}
     <script>
         window.actuals = {{ actuals|safe }};
         window.period_display = {{ period_display|safe }};
         window.table_data = {{ forecast_dump|safe }};
-        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }}
-        window.financial_year = {{ view.financial_year|safe }}
+        window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
+        window.financial_year = {{ view.financial_year|safe }};
     </script>
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
 {% endblock %}

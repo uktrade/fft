@@ -23,7 +23,7 @@ def step_impl(context):
 @then("I should see a link to the admin website")
 def step_impl(context):
     try:
-        context.browser.find_element_by_id("admin_page")
+        context.browser.find_element(By.ID, "admin_page")
     except NoSuchElementException:
         return False
     return True

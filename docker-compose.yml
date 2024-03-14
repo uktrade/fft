@@ -1,65 +1,61 @@
-version: '3'
+version: "3"
+
 services:
- db:
-   image: postgres:12
-   environment:
-     - POSTGRES_DB=fido
-     - POSTGRES_PASSWORD=postgres
-   ports:
-     - "5432:5432"
-   healthcheck:
+  web:
+    build:
+      context: .
+      dockerfile: "docker/Dockerfile.dev"
+    image: fft/web:latest
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=psql://postgres:postgres@db:5432/fido
+      - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "0.0.0.0:8000:8000"
+    volumes:
+      - ./:/app/
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    image: fft/web:latest
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=psql://postgres:postgres@db:5432/fido
+      - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
+    command: celery -A config worker -l info
+    volumes:
+      - ./:/app/
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=fido
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
- fido:
-   build:
-      context: .
-      dockerfile: "docker/Dockerfile.dev"
-   env_file: .env
-   environment:
-     - DATABASE_URL=psql://postgres:postgres@db:5432/fido
-     - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
-   command: python manage.py runserver 0.0.0.0:8000
-   volumes:
-     - ./:/app/
-   ports:
-     - "0.0.0.0:8000:8000"
-   depends_on:
-     - db
-   restart: always
- celery:
-   build:
-      context: .
-      dockerfile: "docker/Dockerfile.dev"
-   env_file: .env
-   environment:
-     - DATABASE_URL=psql://postgres:postgres@db:5432/fido
-     - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
-   command: celery -A config worker -l info
-   volumes:
-     - .:/app
-   depends_on:
-     - db
-     - redis
- redis:
-   image: redis:buster
-   ports:
-     - "6379:6379"
- selenium-hub:
-    image: selenium/hub:3.141.59-vanadium
-    container_name: selenium-hub
+
+  redis:
+    image: redis:6-bookworm
+    ports:
+      - "6379:6379"
+
+  chrome:
+    image: seleniarm/standalone-chromium:latest
+    shm_size: 2gb
+    depends_on:
+      - web
     ports:
       - "4444:4444"
- chrome:
-    image: selenium/node-chrome:3.141.59-vanadium
-    volumes:
-      - /dev/shm:/dev/shm
-    depends_on:
-      - selenium-hub
-      - fido
-    environment:
-      - HUB_HOST=selenium-hub
-      - HUB_PORT=4444
-    ports:
-      - "5901:5900"

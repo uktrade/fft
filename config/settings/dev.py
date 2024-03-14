@@ -15,11 +15,6 @@ AUTHENTICATION_BACKENDS += [
     "user.backends.CustomAuthbrokerBackend",
 ]
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "front_end/build/static"),
-    os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
-)
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)

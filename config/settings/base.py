@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from pathlib import Path
 
 import environ
 from django.urls import reverse_lazy
 
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
 env.read_env()
@@ -159,8 +160,12 @@ GIT_COMMIT = env("GIT_COMMIT", default=None)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    ("vite", BASE_DIR / "front_end" / "build"),
+    BASE_DIR / "node_modules" / "govuk-frontend",
+]
 
 # AWS
 if "aws-s3-bucket" in VCAP_SERVICES:
@@ -316,3 +321,8 @@ CACHES = {
         "LOCATION": "django_cache_table",
     }
 }
+
+# Vite
+VITE_DEV = env.bool("VITE_DEV", default=False)
+VITE_DEV_SERVER_URL = env.str("VITE_DEV_SERVER_URL", default="http://localhost:5173")
+VITE_MANIFEST_PATH = BASE_DIR / "front_end" / "build" / ".vite" / "manifest.json"

@@ -27,7 +27,7 @@ def check_error_message(
     WebDriverWait(context.browser, 5000).until(
         ec.presence_of_element_located((By.ID, "paste_error_msg"))
     )
-    error_msg = context.browser.find_element_by_id("paste_error_msg").get_attribute(
+    error_msg = context.browser.find_element(By.ID, "paste_error_msg").get_attribute(
         "innerHTML"
     )
 
@@ -44,7 +44,7 @@ def step_impl(context):
         ec.presence_of_element_located((By.ID, "id_0_4"))
     )
 
-    april_value = context.browser.find_element_by_id("id_0_1").get_attribute(
+    april_value = context.browser.find_element(By.ID, "id_0_1").get_attribute(
         "innerHTML"
     )
 
@@ -67,13 +67,13 @@ def step_impl(context):
         ec.presence_of_element_located((By.ID, "select_row_0"))
     )
 
-    april_value = context.browser.find_element_by_id("id_0_1").get_attribute(
+    april_value = context.browser.find_element(By.ID, "id_0_1").get_attribute(
         "innerHTML"
     )
 
     assert april_value == "0"
 
-    first_select = context.browser.find_element_by_id("select_row_0")
+    first_select = context.browser.find_element(By.ID, "select_row_0")
     first_select.click()
 
 
@@ -173,7 +173,7 @@ def step_impl(context):
 
 @then("the clipboard data is displayed in the forecast table")
 def step_impl(context):
-    april_value = context.browser.find_element_by_id("id_0_1").get_attribute(
+    april_value = context.browser.find_element(By.ID, "id_0_1").get_attribute(
         "innerHTML"
     )
 
@@ -261,7 +261,7 @@ def step_impl(context):
 
 @then("the actuals data is unchanged")
 def step_impl(context):
-    april_value = context.browser.find_element_by_id("id_0_1").get_attribute(
+    april_value = context.browser.find_element(By.ID, "id_0_1").get_attribute(
         "innerHTML"
     )
     assert april_value == "0"

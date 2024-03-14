@@ -15,9 +15,9 @@ from django.core.cache import cache
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
 
 from chartofaccountDIT.test.factories import (
     Analysis1Factory,
@@ -186,7 +186,7 @@ def paste(context):
         action_chains = ActionChains(context.browser)
         action_chains.key_down(Keys.SHIFT).key_down(Keys.INSERT).perform()
     except pyperclip.PyperclipException:
-        first_select = context.browser.find_element_by_id("clipboard-test")
+        first_select = context.browser.find_element(By.ID, "clipboard-test")
         first_select.send_keys(Keys.CONTROL, "v")
 
     # Wait for UI to update
@@ -221,22 +221,19 @@ def before_scenario(context, scenario):
 
 def before_feature(context, feature):
     if settings.USE_SELENIUM_HUB:
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless=new")
         context.browser = webdriver.Remote(
-            command_executor="http://{}:4444/wd/hub".format(settings.SELENIUM_ADDRESS),
-            desired_capabilities=DesiredCapabilities.CHROME,
+            "http://{}:4444".format(settings.SELENIUM_ADDRESS),
+            options=options,
         )
-        context.browser.implicitly_wait(5)
     else:
-        chrome_options = Options()
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.headless = True
+        # NOTE: This has not been tested recently and might need changing to work.
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless=new")
+        context.browser = webdriver.Chrome(options=options)
 
-        context.browser = webdriver.Chrome(
-            ChromeDriverManager().install(),
-            options=chrome_options,
-        )
-        context.browser.implicitly_wait(5)
+    context.browser.implicitly_wait(5)
 
 
 def after_feature(context, feature):

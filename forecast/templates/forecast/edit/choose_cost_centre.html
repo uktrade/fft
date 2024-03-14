@@ -1,5 +1,5 @@
 {% extends "wide_content.html" %}
-{% load util %}
+{% load util vite %}
 
 {% load breadcrumbs %}
 
@@ -15,11 +15,12 @@
     <div id="cost-centre-list-app"></div>
 {% endblock %}
 {% block scripts %}
-    {% render_front_end_script %}
     <script>
         window.costCentres = {{ view.get_user_cost_centres|safe }};
         window.currentFinancialYear = {{ view.get_financial_year|safe }};
         window.currentFinancialYearDisplay = "{{ view.get_financial_year_display|safe }}";
         window.financialYears = {{ view.get_financial_years|safe }};
     </script>
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
 {% endblock %}
