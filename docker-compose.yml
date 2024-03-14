@@ -32,6 +32,8 @@ services:
       context: .
       dockerfile: "docker/Dockerfile.dev"
    env_file: .env
+   environment:
+     - DATABASE_URL=psql://postgres:postgres@db:5432/fido
    command: celery -A config worker -l info
    volumes:
      - .:/app
