@@ -62,4 +62,4 @@ services:
       - HUB_HOST=selenium-hub
       - HUB_PORT=4444
     ports:
-      - "5900:5900"
+      - "5901:5900"
