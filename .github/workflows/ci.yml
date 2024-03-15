@@ -18,20 +18,17 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.9"
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
 
       - name: Create a .env file
         run: cp .env.ci .env
 
       - name: Build images
         run: make build
-
-      - name: First use
-        run: make first-use
 
       - nmae: Run containers
         run: make up-detatched
