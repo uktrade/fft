@@ -1,0 +1,73 @@
+name: FFT CI
+
+on:
+  pull_request:
+  merge_group:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: KengoTODA/actions-setup-docker-compose@v1
+        if: ${{ env.ACT }}
+        name: Install `docker-compose` for local simulations
+        with:
+          version: '2.14.2'
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create a .env file
+        run: cp .env.ci .env
+
+      - name: Build images
+        run: make build
+
+      - name: First use
+        run: make first-use
+
+      - nmae: Run containers
+        run: make up-detatched
+
+      - name: Install React app
+        run: npm install
+
+      - name: Collect static
+        run: make collectstatic
+
+      - name: Compile CSS
+        run: make compilescss
+
+      - name: Run tests
+        run: make pytest
+
+      - name: Run BDD tests
+        run: make bdd
+      
+      - name: Run Flake8
+        run: make flake8
+
+      - name: Run isort
+        run: make isort-check
+        
+      - name: Run black
+        run: make black-check
+
+      - name: Install node packages
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Run checks
+        run: make check-ci
+
+      - name: Docker compose down
+        run: docker-compose down
