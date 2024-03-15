@@ -1,6 +1,6 @@
 {% load sass_tags %}
 {% load util %}
-{% load django_bootstrap_breadcrumbs %}
+{% load breadcrumbs %}
 {% load forecast_permissions %}
 {% load upload_permissions %}
 {% load download_permissions %}
@@ -210,7 +210,7 @@
     {% block breadcrumbs %}
         {% breadcrumb "Home" "index" %}
     {% endblock %}
-    {% render_breadcrumbs "breadcrumbs.html" %}
+    {% render_breadcrumbs %}
     <main class="govuk-main-wrapper " id="main-content" role="main">
         {% block content %}{% endblock %}
     </main>
