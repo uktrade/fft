@@ -19,6 +19,7 @@ services:
    env_file: .env
    environment:
      - DATABASE_URL=psql://postgres:postgres@db:5432/fido
+     - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
    command: python manage.py runserver 0.0.0.0:8000
    volumes:
      - ./:/app/
