@@ -1,69 +1,58 @@
-# FFT
+# FFT (Financial Forecast Tool)
 
-## The Project
+## Requirements
 
-## Set up
+- [Docker](https://www.docker.com/) - To get the project running locally.
+- Access to Vault. (dit/finance/)
+- SSO Access to Finance Admin Tool[non prod].
 
-A database called "fido" will be automatically created.
+## Initial Setup
 
-Run the following to perform initial migrations:
+First you will need to make a copy of the `.env.example` file and rename it to `.env`. This file contains most of the environment variables that the project needs to run.
 
-```
-make migrate
-```
-
-In order to add stub data for local development purposes run:
-
-```
-make create-stub-data
+```bash
+cp .env.example .env
 ```
 
-You can add forecast data if you are developing forecast related functions:
+To get `AUTHBROKER_CLIENT_ID`, `AUTHBROKER_CLIENT_SECRET` and `AUTHBROKER_URL` variables, you need to have access to `dit/finance/` directory in Vault. You can get access to this directory by asking SRE to add you to the finance team on GitHub.
 
-```
-docker-compose run web python manage.py create_stub_forecast_data
-```
+Make sure your SSO profile has access rights for FFT on [dev](https://fft.trade.dev.uktrade.digital) environment. If not, please contact SRE for access to Finance Admin Tool[non prod].
 
-You can add Gift and Hospitality data if you are developing Gift and Hospitality related functions:
+In your terminal run `make setup` command from the project’s root directory.
 
-```
-make gift-hospitality-table
+```bash
+make setup
 ```
 
-Now access any page within the site and log in with your single sign on credentials.
+This command will run the initial migrations, create stub data and a test user.
 
-You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
+In another terminal run `npm run dev` to load the node packages for the frontend.
 
+```bash
+npm run dev
 ```
+
+### Local Development
+
+If you can connect to the dev environment but still have issues such as; `403 - Forbidden Error` on your local, there are few steps you can follow to resolve this:
+
+- Using dev tools on your browser, go to Application tab and clear data for Local Storage, Session Storage and Cookies.
+
+- If the problem persists you may need to temporarily pause your VPN while you work on FFT on your local.
+
+You can access the webserver on port `8000`:
+
+- [http://localhost:8000/](http://localhost:8000/)
+
+### Access to Admin Tool
+
+You need to run `make elevate` command to elevate your user permissions in order to access the admin tool.
+
+```bash
 make elevate
 ```
 
-### Compile the front end
-
-```
-npm install
-make collectstatic
-```
-
-### Environment variables
-
-You need to populate the .env file in the project root folder with the following variables:
-
-- AUTHBROKER_CLIENT_ID
-- AUTHBROKER_CLIENT_SECRET
-
-These can be provided by a member of the team.
-
-### Integration between Django and React
-
-The process described in this post was followed:
-https://www.techiediaries.com/django-react-rest/
-
-To enable the forecast edit interface:
-
-```
-npm start
-```
+After running this command refresh the FFT page and you will have the admin privileges.
 
 ### Running docker-compose run with port access
 
@@ -110,13 +99,17 @@ npm run bdd
 ## SSH into web container
 
 ```
+
 docker-compose exec web bash
+
 ```
 
 ## Run BDD tests
 
 ```
+
 python manage.py behave --settings=config.settings.bdd
+
 ```
 
 ### Notes
@@ -164,3 +157,4 @@ The names of the management commands denote their function.
 - Amend the custom_usermodel table to be the same as the new User app one
 - Add the user app initial migration to the list of django migrations that have been run
 - Deploy new codebase
+```
