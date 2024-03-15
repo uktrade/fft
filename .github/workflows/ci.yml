@@ -30,7 +30,7 @@ jobs:
       - name: Build images
         run: make build
 
-      - nmae: Run containers
+      - name: Run containers
         run: make up-detatched
 
       - name: Install React app
