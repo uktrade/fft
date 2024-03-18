@@ -9,9 +9,11 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+
 import os
 
 import environ
+from django.urls import reverse_lazy
 
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
@@ -60,7 +62,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_bootstrap_breadcrumbs",
     "dal",
     "dal_select2",
     "storages",
@@ -70,7 +71,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "simple_history",
     "axes",
-    "adv_cache_tag",
     "django_chunk_upload_handlers",
 ]
 
@@ -153,7 +153,7 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
 AUTHBROKER_SCOPES = "read write"
 
-LOGIN_URL = "/auth/login"
+LOGIN_URL = reverse_lazy("authbroker_client:login")
 LOGIN_REDIRECT_URL = "index"
 GIT_COMMIT = env("GIT_COMMIT", default=None)
 
