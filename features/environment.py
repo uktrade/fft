@@ -221,7 +221,6 @@ def before_scenario(context, scenario):
 
 def before_feature(context, feature):
     if settings.USE_REMOTE_CHROME:
-
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new")
         context.browser = webdriver.Remote(
