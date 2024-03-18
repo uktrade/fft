@@ -326,3 +326,6 @@ CACHES = {
 VITE_DEV = env.bool("VITE_DEV", default=False)
 VITE_DEV_SERVER_URL = env.str("VITE_DEV_SERVER_URL", default="http://localhost:5173")
 VITE_MANIFEST_PATH = BASE_DIR / "front_end" / "build" / ".vite" / "manifest.json"
+
+# Selenium (BDD tests)
+USE_REMOTE_CHROME = env("USE_REMOTE_CHROME", default=True)

@@ -15,6 +15,4 @@ SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="chrome")
 
 ASYNC_FILE_UPLOAD = True
 
-USE_SELENIUM_HUB = env("USE_SELENIUM_HUB", default=True)
-
 AXES_ENABLED = False
