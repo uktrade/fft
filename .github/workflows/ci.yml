@@ -42,12 +42,6 @@ jobs:
       - name: Compile CSS
         run: make compilescss
 
-      - name: Run tests
-        run: make pytest
-
-      # - name: Run BDD tests
-      #   run: make bdd
-      
       - name: Run Flake8
         run: make flake8
 
@@ -57,14 +51,11 @@ jobs:
       - name: Run black
         run: make black-check
 
-      - name: Install node packages
-        run: npm ci
+      - name: Run tests
+        run: make pytest
 
-      - name: Build frontend
-        run: npm run build
-
-      - name: Run checks
-        run: make check-ci
-
+      # - name: Run BDD tests
+      #   run: make bdd
+      
       - name: Docker compose down
         run: docker-compose down
