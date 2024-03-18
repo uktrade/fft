@@ -985,7 +985,7 @@ class ForecastMonthlyFigure(MonthlyFigureAbstract):
     archived_status = models.ForeignKey(
         "end_of_month.EndOfMonthStatus",
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="forecast_forecastmonthlyfigures",
         blank=True,
         null=True,
     )
@@ -1040,7 +1040,7 @@ class BudgetMonthlyFigure(MonthlyFigureAbstract):
     archived_status = models.ForeignKey(
         "end_of_month.EndOfMonthStatus",
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
         blank=True,
         null=True,
     )

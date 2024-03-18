@@ -44,7 +44,7 @@ class PreviousYearPaySplitCoefficient(PaySplitCoefficientAbstract):
     financial_code_to = models.ForeignKey(
         ArchivedFinancialCode,
         on_delete=models.PROTECT,
-        related_name="to_%(app_label)s_%(class)ss",
+        related_name="+",
     )
 
     class Meta:
