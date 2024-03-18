@@ -1,24 +1,27 @@
 {
-  "name": "fido",
+  "name": "fft",
   "version": "0.2.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "^20.0.0"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.1",
+    "@vitejs/plugin-react": "^4.2.1",
     "govuk-frontend": "^4.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
-    "react-scripts": "^5.0.0",
     "redux": "^4.1.2",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "vite": "^5.1.6"
   },
   "scripts": {
-    "start": "cd front_end && npm run start",
-    "bdd": "cd front_end && npm run bdd",
-    "postinstall": "cd front_end && npm run build"
+    "build": "vite build",
+    "start": "vite",
+    "bdd": "NODE_ENV=development vite build",
+    "postinstall": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -34,10 +37,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "http://mywebsite.com/relativepath",
-  "devDependencies": {
-    "react-hot-loader": "^4.12.21",
-    "set-value": ">=4.0.1"
   }
 }

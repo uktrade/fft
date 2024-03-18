@@ -20,7 +20,7 @@ def step_impl(context):
         ec.presence_of_element_located((By.ID, "id_0_6"))
     )
 
-    sept_cell = context.browser.find_element_by_id("id_0_6")
+    sept_cell = context.browser.find_element(By.ID, "id_0_6")
     action_chains = ActionChains(context.browser)
     action_chains.double_click(sept_cell).perform()
 
@@ -58,7 +58,7 @@ def step_impl(context):
         ec.presence_of_element_located((By.ID, "id_0_6"))
     )
 
-    sept_cell = context.browser.find_element_by_id("id_0_6")
+    sept_cell = context.browser.find_element(By.ID, "id_0_6")
     action_chains = ActionChains(context.browser)
     action_chains.double_click(sept_cell).perform()
 

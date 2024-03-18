@@ -30,7 +30,7 @@ def step_impl(context):
 
 @then("there are six actuals columns")
 def step_impl(context):
-    actuals_header = context.browser.find_element_by_id("actuals_header")
+    actuals_header = context.browser.find_element(By.ID, "actuals_header")
 
     actuals_colspan = actuals_header.get_attribute("colspan")
 
@@ -52,7 +52,7 @@ def step_impl(context):
 
 @then("there are three actuals columns")
 def step_impl(context):
-    actuals_header = context.browser.find_element_by_id("actuals_header")
+    actuals_header = context.browser.find_element(By.ID, "actuals_header")
 
     actuals_colspan = actuals_header.get_attribute("colspan")
 

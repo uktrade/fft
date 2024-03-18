@@ -43,76 +43,76 @@ down:
 	docker-compose down
 
 create-stub-data:
-	docker-compose --rm run fido python manage.py migrate
-	docker-compose --rm run fido python manage.py create_stub_data All
-	docker-compose --rm run fido python manage.py create_stub_forecast_data
-	docker-compose --rm run fido python manage.py create_test_user
+	docker-compose --rm run web python manage.py migrate
+	docker-compose --rm run web python manage.py create_stub_data All
+	docker-compose --rm run web python manage.py create_stub_forecast_data
+	docker-compose --rm run web python manage.py create_test_user
 
 first-use:
 	docker-compose down
-	docker-compose run --rm fido python manage.py migrate
-	docker-compose run --rm fido python manage.py create_stub_data All
-	docker-compose run --rm fido python manage.py create_stub_future_forecast_data
-	docker-compose run --rm fido python manage.py create_stub_forecast_data
-	docker-compose run --rm fido python manage.py create_stub_future_forecast_data
-	docker-compose run --rm fido python manage.py create_data_lake_stub_data
-	docker-compose run --rm fido python manage.py populate_gift_hospitality_table
-	docker-compose run --rm fido python manage.py create_test_user --password=password
-	docker-compose run --rm fido python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password  # /PS-IGNORE
-	docker-compose run --rm fido python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password  # /PS-IGNORE
+	docker-compose run --rm web python manage.py migrate
+	docker-compose run --rm web python manage.py create_stub_data All
+	docker-compose run --rm web python manage.py create_stub_future_forecast_data
+	docker-compose run --rm web python manage.py create_stub_forecast_data
+	docker-compose run --rm web python manage.py create_stub_future_forecast_data
+	docker-compose run --rm web python manage.py create_data_lake_stub_data
+	docker-compose run --rm web python manage.py populate_gift_hospitality_table
+	docker-compose run --rm web python manage.py create_test_user --password=password
+	docker-compose run --rm web python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password  # /PS-IGNORE
+	docker-compose run --rm web python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password  # /PS-IGNORE
 	docker-compose up
 
 gift-hospitality-table:
-	docker-compose run fido python manage.py populate_gift_hospitality_table
+	docker-compose run web python manage.py populate_gift_hospitality_table
 
 migrations:
-	docker-compose run --rm fido python manage.py makemigrations
+	docker-compose run --rm web python manage.py makemigrations
 
 migrate:
-	docker-compose run --rm fido python manage.py migrate
+	docker-compose run --rm web python manage.py migrate
 
 compilescss:
-	docker-compose run --rm fido python manage.py compilescss
+	docker-compose run --rm web python manage.py compilescss
 
 shell:
-	docker-compose run --rm fido python manage.py shell
+	docker-compose run --rm web python manage.py shell
 
 flake8:
-	docker-compose run --rm fido flake8 $(file)
+	docker-compose run --rm web flake8 $(file)
 
 bdd:
 	npm run bdd; \
-	docker-compose exec fido sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
+	docker-compose exec web sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
 
 elevate:
-	docker-compose run --rm fido python manage.py elevate_sso_user_permissions
+	docker-compose run --rm web python manage.py elevate_sso_user_permissions
 
 collectstatic:
-	docker-compose run --rm fido python manage.py collectstatic
+	docker-compose run --rm web python manage.py collectstatic
 
 bash:
-	docker-compose run --rm fido bash
+	docker-compose run --rm web bash
 
 all-requirements:
 	poetry export --with prod --without-hashes --output requirements.txt
 
 test:
-	docker-compose run --rm fido python manage.py test $(test)
+	docker-compose run --rm web python manage.py test $(test)
 
 pytest:
-	docker-compose run --rm fido pytest -raP --capture=sys --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
+	docker-compose run --rm web pytest -raP --capture=sys --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
 
 black-check:
-	docker-compose run --rm --no-deps fido black --check .
+	docker-compose run --rm --no-deps web black --check .
 
 black:
-	docker-compose run --rm fido black .
+	docker-compose run --rm web black .
 
 isort-check:
-	docker-compose run --rm fido isort --check .
+	docker-compose run --rm web isort --check .
 
 isort:
-	docker-compose run --rm fido isort .
+	docker-compose run --rm web isort .
 
 superuser:
-	docker-compose run --rm fido python manage.py createsuperuser
+	docker-compose run --rm web python manage.py createsuperuser

@@ -15,11 +15,6 @@ FRONT_END_SERVER = env(
     default="http://localhost:3000",
 )
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "front_end/build/static"),
-    os.path.join(BASE_DIR, "node_modules/govuk-frontend"),
-)
-
 SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 AUTHENTICATION_BACKENDS += [
