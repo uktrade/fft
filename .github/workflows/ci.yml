@@ -54,8 +54,8 @@ jobs:
       - name: Run tests
         run: make pytest
 
-      # - name: Run BDD tests
-      #   run: make bdd
-      
+      - name: Run BDD tests
+        run: make bdd
+
       - name: Docker compose down
         run: docker-compose down
