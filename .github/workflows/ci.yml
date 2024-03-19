@@ -14,6 +14,7 @@ jobs:
         name: Install `docker-compose` for local simulations
         with:
           version: '2.14.2'
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
@@ -23,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-
+          
       - name: Create a .env file
         run: cp .env.ci .env
 
