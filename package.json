@@ -21,7 +21,6 @@
   "scripts": {
     "build": "vite build",
     "start": "vite",
-    "bdd": "NODE_ENV=development vite build",
     "postinstall": "npm run build"
   },
   "eslintConfig": {
