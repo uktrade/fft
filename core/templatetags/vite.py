@@ -24,7 +24,7 @@ register = template.Library()
 VITE_STATICFILES_PREFIX = "vite"
 
 
-@cache
+# @cache
 def get_manifest() -> dict[str, dict[str, Any]]:
     with settings.VITE_MANIFEST_PATH.open() as f:
         manifest = json.load(f)

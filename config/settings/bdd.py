@@ -14,3 +14,5 @@ SELENIUM_ADDRESS = env("SELENIUM_ADDRESS", default="chrome")
 ASYNC_FILE_UPLOAD = True
 
 AXES_ENABLED = False
+
+VITE_DEV = False
