@@ -1524,28 +1524,18 @@ marshmallow = "2.19.2"
 
 [[package]]
 name = "libsass"
-version = "0.20.0"
+version = "0.23.0"
 description = "Sass for Python: A straightforward binding of libsass for Python."
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "libsass-0.20.0-cp27-cp27m-macosx_10_14_intel.whl", hash = "sha256:107c409524c6a4ed14410fa9dafa9ee59c6bd3ecae75d73af749ab2b75685726"},
-    {file = "libsass-0.20.0-cp27-cp27m-win32.whl", hash = "sha256:98f6dee9850b29e62977a963e3beb3cfeb98b128a267d59d2c3d675e298c8d57"},
-    {file = "libsass-0.20.0-cp27-cp27m-win_amd64.whl", hash = "sha256:b077261a04ba1c213e932943208471972c5230222acb7fa97373e55a40872cbb"},
-    {file = "libsass-0.20.0-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:e6a547c0aa731dcb4ed71f198e814bee0400ce04d553f3f12a53bc3a17f2a481"},
-    {file = "libsass-0.20.0-cp36-abi3-manylinux1_x86_64.whl", hash = "sha256:74f6fb8da58179b5d86586bc045c16d93d55074bc7bb48b6354a4da7ac9f9dfd"},
-    {file = "libsass-0.20.0-cp36-cp36m-win32.whl", hash = "sha256:a43f3830d83ad9a7f5013c05ce239ca71744d0780dad906587302ac5257bce60"},
-    {file = "libsass-0.20.0-cp36-cp36m-win_amd64.whl", hash = "sha256:fd19c8f73f70ffc6cbcca8139da08ea9a71fc48e7dfc4bb236ad88ab2d6558f1"},
-    {file = "libsass-0.20.0-cp37-abi3-macosx_10_14_x86_64.whl", hash = "sha256:8cf72552b39e78a1852132e16b706406bc76029fe3001583284ece8d8752a60a"},
-    {file = "libsass-0.20.0-cp37-cp37m-win32.whl", hash = "sha256:7555d9b24e79943cfafac44dbb4ca7e62105c038de7c6b999838c9ff7b88645d"},
-    {file = "libsass-0.20.0-cp37-cp37m-win_amd64.whl", hash = "sha256:794f4f4661667263e7feafe5cc866e3746c7c8a9192b2aa9afffdadcbc91c687"},
-    {file = "libsass-0.20.0-cp38-cp38-win32.whl", hash = "sha256:3bc0d68778b30b5fa83199e18795314f64b26ca5871e026343e63934f616f7f7"},
-    {file = "libsass-0.20.0-cp38-cp38-win_amd64.whl", hash = "sha256:5c8ff562b233734fbc72b23bb862cc6a6f70b1e9bf85a58422aa75108b94783b"},
-    {file = "libsass-0.20.0.tar.gz", hash = "sha256:b7452f1df274b166dc22ee2e9154c4adca619bcbbdf8041a7aa05f372a1dacbc"},
+    {file = "libsass-0.23.0-cp38-abi3-macosx_11_0_x86_64.whl", hash = "sha256:34cae047cbbfc4ffa832a61cbb110f3c95f5471c6170c842d3fed161e40814dc"},
+    {file = "libsass-0.23.0-cp38-abi3-macosx_14_0_arm64.whl", hash = "sha256:ea97d1b45cdc2fc3590cb9d7b60f1d8915d3ce17a98c1f2d4dd47ee0d9c68ce6"},
+    {file = "libsass-0.23.0-cp38-abi3-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:4a218406d605f325d234e4678bd57126a66a88841cb95bee2caeafdc6f138306"},
+    {file = "libsass-0.23.0-cp38-abi3-win32.whl", hash = "sha256:31e86d92a5c7a551df844b72d83fc2b5e50abc6fbbb31e296f7bebd6489ed1b4"},
+    {file = "libsass-0.23.0-cp38-abi3-win_amd64.whl", hash = "sha256:a2ec85d819f353cbe807432d7275d653710d12b08ec7ef61c124a580a8352f3c"},
+    {file = "libsass-0.23.0.tar.gz", hash = "sha256:6f209955ede26684e76912caf329f4ccb57e4a043fd77fe0e7348dd9574f1880"},
 ]
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 name = "markuppy"
@@ -2832,4 +2822,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "02c61e3aca9c357ec8827185d7b3af49b015efa952688e364db136c0c7362994"
+content-hash = "be9a6478393b628208bb6b421c273b8ed6dcc83ea080a543810d4703fa382cd3"
