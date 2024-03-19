@@ -6,6 +6,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
 
+
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
