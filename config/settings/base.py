@@ -16,7 +16,6 @@ from pathlib import Path
 import environ
 from django.urls import reverse_lazy
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
@@ -66,7 +65,6 @@ INSTALLED_APPS = [
     "dal",
     "dal_select2",
     "storages",
-    "sass_processor",
     "guardian",
     "reversion",
     "rest_framework",
@@ -239,7 +237,6 @@ CAN_CREATE_TEST_USER = False
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    "sass_processor.finders.CssFinder",
 ]
 
 NUM_META_COLS = 8

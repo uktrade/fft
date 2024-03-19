@@ -6,7 +6,6 @@ from django_log_formatter_ecs import ECSFormatter
 
 from .base import *  # noqa
 
-
 CAN_ELEVATE_SSO_USER_PERMISSIONS = True
 CAN_CREATE_TEST_USER = True
 
@@ -14,8 +13,6 @@ FRONT_END_SERVER = env(
     "FRONT_END_SERVER",
     default="http://localhost:3000",
 )
-
-SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
 
 AUTHENTICATION_BACKENDS += [
     "user.backends.CustomAuthbrokerBackend",
