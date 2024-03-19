@@ -6,7 +6,6 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 from .base import *  # noqa
 
-
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
     "django_audit_log_middleware.AuditLogMiddleware",
@@ -20,8 +19,6 @@ INSTALLED_APPS += [
     "elasticapm.contrib.django",
     "django_audit_log_middleware",
 ]
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [

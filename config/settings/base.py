@@ -16,7 +16,6 @@ from pathlib import Path
 import environ
 from django.urls import reverse_lazy
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env()
@@ -167,6 +166,16 @@ STATICFILES_DIRS = [
     BASE_DIR / "node_modules" / "govuk-frontend",
 ]
 
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # AWS
 if "aws-s3-bucket" in VCAP_SERVICES:
     for bucket in VCAP_SERVICES["aws-s3-bucket"]:
@@ -206,9 +215,6 @@ AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 
 AWS_DEFAULT_ACL = None
-
-# File storage
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # Redis
 if "redis" in VCAP_SERVICES:
