@@ -77,7 +77,6 @@ flake8:
 	docker-compose run --rm web flake8 $(file)
 
 bdd:
-	npm run bdd; \
 	docker-compose exec web sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
 
 elevate:

@@ -5,6 +5,7 @@
 {% load download_permissions %}
 {% load upload_percentage_permissions %}
 {% load vite %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
@@ -35,17 +36,16 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/assets/images/favicon.ico" type="image/x-icon"/>
-    <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png">
+    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-180x180.png' %}">
+    <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-167x167.png' %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-152x152.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'govuk/assets/images/govuk-apple-touch-icon.png' %}">
 
     {% vite_css "styles/styles.scss" %}
 
-    {% load static %}
-    <meta property="og:image" content="/assets/images/govuk-opengraph-image.png">
+    <meta property="og:image" content="{% static 'govuk/assets/images/govuk-opengraph-image.png' %}">
 </head>
 
 <body onresize="checkMenuState();"
@@ -247,5 +247,6 @@
         window.GOVUKFrontend.initAll()
     </script>
 {% endblock %}
+{% vite_dev_client react=False %}
 </body>
 </html>
