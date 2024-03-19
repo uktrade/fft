@@ -68,7 +68,7 @@ class EndOfMonthStatus(BaseModel):
     archived_period = models.OneToOneField(
         FinancialPeriod,
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
     archived_date = models.DateTimeField(
         blank=True,
@@ -101,13 +101,13 @@ class MonthlyOutturn(BaseModel):
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
     # Period for which the outturn is calculated.
     outturn_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
-        related_name="end_of_month_outturn_period",
+        related_name="+",
     )
 
     # Period using this outturn to calculate the variance.
@@ -116,7 +116,7 @@ class MonthlyOutturn(BaseModel):
     next_forecast_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
 
     class Meta:
@@ -138,17 +138,17 @@ class MonthlyTotalBudget(BaseModel):
     financial_code = models.ForeignKey(
         FinancialCode,
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
     archived_status = models.ForeignKey(
         "end_of_month.EndOfMonthStatus",
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
     archived_period = models.ForeignKey(
         FinancialPeriod,
         on_delete=models.PROTECT,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
 
     class Meta:

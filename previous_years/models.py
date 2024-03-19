@@ -177,7 +177,7 @@ class ArchivedActualUploadMonthlyFigure(MonthlyFigureAbstract):
     financial_code = models.ForeignKey(
         ArchivedFinancialCode,
         on_delete=models.CASCADE,
-        related_name="%(app_label)s_%(class)ss",
+        related_name="+",
     )
 
     class Meta:

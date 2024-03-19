@@ -224,7 +224,7 @@ class ReportPreviousYearDataView(UniqueDataKey):
     financial_code = models.ForeignKey(
         ArchivedFinancialCode,
         on_delete=models.DO_NOTHING,
-        related_name="archivedfinancial_code_%(app_label)s_%(class)ss",
+        related_name="+",
     )
 
     class Meta:
