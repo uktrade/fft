@@ -1,4 +1,5 @@
-import '../styles/styles.scss';
+import 'vite/modulepreload-polyfill'
+import '../styles/styles.scss'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Forecast from './Apps/Forecast'
