@@ -24,18 +24,18 @@ jobs:
       - run:
           name: Collect static
           command: make collectstatic
-      # - run:
-      #     name: Run Flake8
-      #     command: make flake8
-      # - run:
-      #     name: Run isort
-      #     command: make isort-check
-      # - run:
-      #     name: Run black
-      #     command: make black-check
-      # - run:
-      #     name: Run tests
-      #     command: make pytest
+      - run:
+          name: Run Flake8
+          command: make flake8
+      - run:
+          name: Run isort
+          command: make isort-check
+      - run:
+          name: Run black
+          command: make black-check
+      - run:
+          name: Run tests
+          command: make pytest
       - run:
           name: Run BDD tests
           command: make bdd
