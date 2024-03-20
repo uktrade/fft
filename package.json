@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "vite build",
-    "start": "vite",
+    "dev": "vite",
     "postinstall": "npm run build"
   },
   "eslintConfig": {

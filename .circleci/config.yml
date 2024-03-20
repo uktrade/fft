@@ -19,11 +19,8 @@ jobs:
           name: Run containers
           command: make up-detatched
       - run:
-          name: Install latest NPM
-          command: npm install npm
-      - run:
-          name: Install React app
-          command: npm install
+          name: Install npm packages
+          command: npm ci
       - run:
           name: Run postinstall script
           command: npm run postinstall
