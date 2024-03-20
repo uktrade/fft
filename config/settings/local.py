@@ -15,8 +15,6 @@ FRONT_END_SERVER = env(
     default="http://localhost:3000",
 )
 
-SASS_PROCESSOR_INCLUDE_DIRS = [os.path.join("/node_modules")]
-
 AUTHENTICATION_BACKENDS += [
     "user.backends.CustomAuthbrokerBackend",
 ]

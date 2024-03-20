@@ -224,7 +224,7 @@ def before_feature(context, feature):
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new")
         context.browser = webdriver.Remote(
-            "http://{}:4444".format(settings.SELENIUM_ADDRESS),
+            command_executor="http://{}:4444".format(settings.SELENIUM_ADDRESS),
             options=options,
         )
     else:

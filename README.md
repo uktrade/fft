@@ -41,7 +41,8 @@ make elevate
 ### Compile the front end
 
 ```
-make compilescss & make collectstatic
+npm install
+make collectstatic
 ```
 
 ### Environment variables

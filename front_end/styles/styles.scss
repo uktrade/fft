@@ -1,9 +1,10 @@
+$govuk-assets-path: "/static/govuk/assets/";
 $govuk-page-width: 1800px;
-@import "./node_modules/govuk-frontend/govuk/all";
-@import "./header";
-@import "./action-bar";
-@import "./table";
-@import "./cost-centre-filter";
+@import "govuk-frontend/govuk/all";
+@import "./header.scss";
+@import "./action-bar.scss";
+@import "./table.scss";
+@import "./cost-centre-filter.scss";
 
 body {
   font-size: 16px;
@@ -35,7 +36,7 @@ body {
 }
 
 input {
-    @include govuk-font($size: 19);
+  @include govuk-font($size: 19);
 }
 
 .highlight {
@@ -44,28 +45,30 @@ input {
 }
 
 input.cell-input {
-    padding:0px;
-    outline: 2px solid #FF0000 !important;
-    outline: 5px auto #FF0000 !important;
-    width:100px;
-    text-align: left;
+  padding: 0px;
+  outline: 2px solid #ff0000 !important;
+  outline: 5px auto #ff0000 !important;
+  width: 100px;
+  text-align: left;
 }
 
 .indicate-action {
-  text-decoration: underline!important;
+  text-decoration: underline !important;
 }
 
 .sub-total {
-  background-color: rgba(86, 148, 202, 0.40);
+  background-color: rgba(86, 148, 202, 0.4);
   color: $govuk-body-background-colour;
+
   .actual-month {
     background-color: rgba(86, 148, 202, 0.5) !important;
   }
 }
 
 .mid-total {
-  background-color: rgba(43, 148, 202, 0.60);
+  background-color: rgba(43, 148, 202, 0.6);
   color: $govuk-body-background-colour;
+
   .actual-month {
     background-color: rgba(86, 148, 202, 0.65) !important;
   }
@@ -74,6 +77,7 @@ input.cell-input {
 .grand-total {
   background-color: rgba(86, 148, 202, 0.75);
   color: $govuk-body-background-colour;
+
   .actual-month {
     background-color: rgba(86, 148, 202, 1) !important;
   }
@@ -92,7 +96,8 @@ input.cell-input {
     float: left;
   }
 
-  select, input {
+  select,
+  input {
     display: inline;
   }
 
@@ -112,14 +117,21 @@ input.cell-input {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
   a:visited {
     color: #4c2c92;
   }
-  a:focus{border-color:#fd0;color:#0b0c0c;background-color:#fd0;box-shadow:inset 0 0 0 1px #fd0}
+
+  a:focus {
+    border-color: #fd0;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: inset 0 0 0 1px #fd0;
+  }
 }
 
 .forecast-month {
-  padding-left:8px!important;
+  padding-left: 8px !important;
   text-align: right;
   display: block;
 
@@ -129,21 +141,30 @@ input.cell-input {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
   a:visited {
     color: #4c2c92;
   }
-  a:focus{border-color:#fd0;color:#0b0c0c;background-color:#fd0;box-shadow:inset 0 0 0 1px #fd0}
+
+  a:focus {
+    border-color: #fd0;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: inset 0 0 0 1px #fd0;
+  }
 }
 
 .forecast-month-cell {
-  padding-left:8px!important;
+  padding-left: 8px !important;
 }
 
 .figure-cell {
-  text-align: right!important;
+  text-align: right !important;
 }
 
-table, td, th {
+table,
+td,
+th {
   white-space: nowrap;
 }
 
@@ -152,11 +173,16 @@ table, td, th {
 }
 
 .no-select {
-    user-select: none; /* supported by Chrome and Opera */
-   -webkit-user-select: none; /* Safari */
-   -khtml-user-select: none; /* Konqueror HTML */
-   -moz-user-select: none; /* Firefox */
-   -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+  /* supported by Chrome and Opera */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
 }
 
 .selection {
@@ -168,7 +194,7 @@ table, td, th {
 }
 
 .selected {
-  background-color: #fff5b7;  // 25% tint of govt yellow
+  background-color: #fff5b7; // 25% tint of govt yellow
 }
 
 .selected.edited {
@@ -177,7 +203,7 @@ table, td, th {
 
 .selected.not-editable {
   background-color: govuk-colour("mid-grey");
-  color:white;
+  color: white;
 }
 
 .selected.edited {
@@ -199,8 +225,8 @@ table, td, th {
 
 .link-button {
   border: none;
-  padding: 0!important;
-  font-size:16px;
+  padding: 0 !important;
+  font-size: 16px;
   font-family: "GDS Transport", Arial, sans-serif;
   color: #069;
   text-decoration: underline;
@@ -213,12 +239,14 @@ table, td, th {
   label {
     display: inline;
     font-weight: bold;
-    margin-right:10px;
+    margin-right: 10px;
   }
+
   select {
     display: inline;
-    margin-top:15px;
+    margin-top: 15px;
   }
+
   input {
     display: inline;
   }
@@ -226,7 +254,7 @@ table, td, th {
 
 @media (min-width: 1200px) {
   .wide-table {
-    display: inline-block!important;
+    display: inline-block !important;
     min-width: 100%;
 
     .govuk-header__logo {
@@ -234,8 +262,8 @@ table, td, th {
     }
 
     .govuk-width-container {
-      max-width: none!important;
-      margin: 0 30px!important;
+      max-width: none !important;
+      margin: 0 30px !important;
     }
 
     .govuk-grid-column-two-thirds {
@@ -248,6 +276,7 @@ table, td, th {
   .govuk-summary-list__value:last-child {
     width: auto;
   }
+
   .govuk-summary-list__value {
     width: auto;
   }
@@ -259,7 +288,7 @@ table, td, th {
 
 .total {
   font-weight: bold;
-  padding:10px 22px 10px 10px;
+  padding: 10px 22px 10px 10px;
 }
 
 .total-figure {
@@ -267,7 +296,7 @@ table, td, th {
 }
 
 .govuk-summary-list {
-  display:inline-block;
+  display: inline-block;
 }
 
 .date-selection-download {
@@ -275,7 +304,7 @@ table, td, th {
 }
 
 .last-col {
-  padding-right:10px!important;
+  padding-right: 10px !important;
 }
 
 // style django tables 2 filter as per govt front end
@@ -286,27 +315,28 @@ table, td, th {
     line-height: 1.31579;
   }
 }
+
 #id_search_all {
-    font-family: "GDS Transport",Arial,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: 400;
-    font-size: 16px;
-    font-size: 1rem;
-    line-height: 1.25;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 100%;
-    height: 40px;
-    height: 2.5rem;
-    margin-top: 0;
-    padding: 5px;
-    border: 2px solid #0b0c0c;
-    border-radius: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    max-width: 23ex;
-    appearance: none;
+  font-family: "GDS Transport", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  height: 2.5rem;
+  margin-top: 0;
+  padding: 5px;
+  border: 2px solid #0b0c0c;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  max-width: 23ex;
+  appearance: none;
 }
 
 .pagination {
@@ -327,7 +357,7 @@ table, td, th {
 }
 
 .select-all {
-  width:80px;
+  width: 80px;
   display: block;
 }
 

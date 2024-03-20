@@ -8,7 +8,12 @@ export default defineConfig({
     outDir: "build",
     manifest: true,
     rollupOptions: {
-      input: "front_end/src/index.jsx",
+      input: ["front_end/src/index.jsx", "front_end/styles/styles.scss"],
+    },
+  },
+  server: {
+    proxy: {
+      "/static/": "http://localhost:8000",
     },
   },
 });

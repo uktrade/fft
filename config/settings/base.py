@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     "dal",
     "dal_select2",
     "storages",
-    "sass_processor",
     "guardian",
     "reversion",
     "rest_framework",
@@ -167,6 +166,16 @@ STATICFILES_DIRS = [
     BASE_DIR / "node_modules" / "govuk-frontend",
 ]
 
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    # WhiteNoise
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 # AWS
 if "aws-s3-bucket" in VCAP_SERVICES:
     for bucket in VCAP_SERVICES["aws-s3-bucket"]:
@@ -207,9 +216,6 @@ AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 
 AWS_DEFAULT_ACL = None
 
-# File storage
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
 # Redis
 if "redis" in VCAP_SERVICES:
     credentials = VCAP_SERVICES["redis"][0]["credentials"]
@@ -232,7 +238,6 @@ CAN_CREATE_TEST_USER = False
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    "sass_processor.finders.CssFinder",
 ]
 
 NUM_META_COLS = 8

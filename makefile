@@ -18,7 +18,6 @@ help:
 	@echo -e "$(COLOUR_YELLOW)make gift-hospitality-table$(COLOUR_NONE) : Create gifts and hospitality data"
 	@echo -e "$(COLOUR_YELLOW)make migrations$(COLOUR_NONE) : Run Django makemigrations"
 	@echo -e "$(COLOUR_YELLOW)make migrate$(COLOUR_NONE) : Run Django migrate"
-	@echo -e "$(COLOUR_YELLOW)make compilescss$(COLOUR_NONE) : Compile SCSS into CSS"
 	@echo -e "$(COLOUR_YELLOW)make shell$(COLOUR_NONE) : Run a Django shell"
 	@echo -e "$(COLOUR_YELLOW)make flake8$(COLOUR_NONE) : Run flake8 checks"
 	@echo -e "$(COLOUR_YELLOW)make bdd$(COLOUR_NONE) : Run Django BDD tests"
@@ -71,9 +70,6 @@ migrations:
 migrate:
 	docker-compose run --rm web python manage.py migrate
 
-compilescss:
-	docker-compose run --rm web python manage.py compilescss
-
 shell:
 	docker-compose run --rm web python manage.py shell
 
@@ -81,7 +77,6 @@ flake8:
 	docker-compose run --rm web flake8 $(file)
 
 bdd:
-	npm run bdd; \
 	docker-compose exec web sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
 
 elevate:

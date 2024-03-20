@@ -41,7 +41,9 @@ def vite_static(filename: str) -> str:
 @register.simple_tag
 def vite_css(filename: str) -> str:
     if settings.VITE_DEV:
-        return ""
+        return mark_safe(
+            f'<link rel="stylesheet" href="{settings.VITE_DEV_SERVER_URL}/{filename}">'  # noqa: E501
+        )
 
     return mark_safe(f'<link rel="stylesheet" href="{vite_static(filename)}">')
 
