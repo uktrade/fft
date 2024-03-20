@@ -12,8 +12,6 @@ MIDDLEWARE += [
     "django_audit_log_middleware.AuditLogMiddleware",
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 AUTHENTICATION_BACKENDS += [
     "user.backends.CustomAuthbrokerBackend",
 ]
