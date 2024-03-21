@@ -1,4 +1,4 @@
-name: Code formatting and linting
+name: Pytest
 
 on:
   pull_request:
@@ -36,11 +36,8 @@ jobs:
       - name: Collect static
         run: make collectstatic
 
-      - name: Run Flake8
-        run: make flake8
+      - name: Run tests
+        run: make pytest
 
-      - name: Run isort
-        run: make isort-check
-
-      - name: Run black
-        run: make black-check
+      - name: Docker compose down
+        run: docker compose down
