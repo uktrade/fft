@@ -18,6 +18,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+
+      - uses: browser-actions/setup-chrome@v1
           
       - name: Create a .env file
         run: cp .env.ci .env
