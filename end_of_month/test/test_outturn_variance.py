@@ -7,9 +7,8 @@ from end_of_month.test.test_utils import MonthlyFigureSetup
 
 
 class ReadMonthlyVarianceTest(TestCase):
-    archived_figure = []
-
     def setUp(self):
+        self.archived_figure = []
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
         for period in range(0, 16):
