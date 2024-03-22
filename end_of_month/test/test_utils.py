@@ -124,9 +124,6 @@ class MonthlyFigureSetup:
 
 
 class SetFullYearArchive(MonthlyFigureSetup):
-    archived_forecast = []
-    archived_budget = []
-
     def set_period_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.all()
@@ -164,6 +161,8 @@ class SetFullYearArchive(MonthlyFigureSetup):
 
     def __init__(self, last_archived_period=16, year=0):
         super().__init__(year)
+        self.archived_forecast = []
+        self.archived_budget = []
         self.setup_forecast()
         self.setup_budget()
         # prepares the lists used to store the totals
