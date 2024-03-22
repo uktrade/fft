@@ -114,7 +114,7 @@ class EndOfMonthForecastTest(TestCase):
 
 class TestReadArchivedForecastTest:
     @pytest.fixture(autouse=True)
-    def _setup(self):
+    def _setup(self, db):
         self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
@@ -333,7 +333,7 @@ class EndOfMonthBudgetTest(TestCase):
 
 class TestReadArchivedBudgetTest:
     @pytest.fixture(autouse=True)
-    def _setup(self):
+    def _setup(self, db):
         self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
