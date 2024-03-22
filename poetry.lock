@@ -1568,30 +1568,6 @@ files = [
 ]
 
 [[package]]
-name = "ptyprocess"
-version = "0.5.2"
-description = "Run a subprocess in a pseudo terminal"
-optional = false
-python-versions = "*"
-files = [
-    {file = "ptyprocess-0.5.2-py2.py3-none-any.whl", hash = "sha256:e8c43b5eee76b2083a9badde89fd1bbce6c8942d1045146e100b7b5e014f4f1a"},
-    {file = "ptyprocess-0.5.2.tar.gz", hash = "sha256:e64193f0047ad603b71f202332ab5527c5e52aa7c8b609704fc28c0dc20c4365"},
-]
-
-[[package]]
-name = "public"
-version = "1.0.3"
-description = "@public decorator, public(*objects) function - add objects names to __all__"
-optional = false
-python-versions = "*"
-files = [
-    {file = "public-1.0.3.tar.gz", hash = "sha256:b923b41a57ef886f4d0aee932aac848506680f3d746326149079f73a6403485f"},
-]
-
-[package.dependencies]
-setuptools = "*"
-
-[[package]]
 name = "pycodestyle"
 version = "2.6.0"
 description = "Python style guide checker"
@@ -1622,17 +1598,6 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 files = [
     {file = "pyflakes-2.2.0-py2.py3-none-any.whl", hash = "sha256:0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92"},
     {file = "pyflakes-2.2.0.tar.gz", hash = "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"},
-]
-
-[[package]]
-name = "pyparsing"
-version = "2.2.0"
-description = "Python parsing module"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pyparsing-2.2.0-py2.py3-none-any.whl", hash = "sha256:fee43f17a9c4087e7ed1605bd6df994c6173c1e977d7ade7b651292fab2bd010"},
-    {file = "pyparsing-2.2.0.tar.gz", hash = "sha256:0832bcf47acd283788593e7a0f542407bd9550a55a8a8435214a1960e04bcb04"},
 ]
 
 [[package]]
@@ -1748,17 +1713,6 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
-
-[[package]]
-name = "pytz"
-version = "2021.3"
-description = "World timezone definitions, modern and historical"
-optional = false
-python-versions = "*"
-files = [
-    {file = "pytz-2021.3-py2.py3-none-any.whl", hash = "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c"},
-    {file = "pytz-2021.3.tar.gz", hash = "sha256:acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"},
-]
 
 [[package]]
 name = "pyyaml"
@@ -2241,21 +2195,6 @@ files = [
 ]
 
 [[package]]
-name = "zipp"
-version = "3.1.0"
-description = "Backport of pathlib-compatible object wrapper for zip files"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "zipp-3.1.0-py3-none-any.whl", hash = "sha256:aa36550ff0c0b7ef7fa639055d797116ee891440eac1a56f378e2d3179e0320b"},
-    {file = "zipp-3.1.0.tar.gz", hash = "sha256:c599e4d75c98f6798c509911d08a22e6c021d074469042177c8c86fb92eefd96"},
-]
-
-[package.extras]
-docs = ["jaraco.packaging (>=3.2)", "rst.linker (>=1.9)", "sphinx"]
-testing = ["func-timeout", "jaraco.itertools"]
-
-[[package]]
 name = "zope-event"
 version = "4.4"
 description = "Very basic event publishing system"
@@ -2333,4 +2272,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "e95cf32fdd0d7ba4b281a69392b3150179c5a3d516781d9d97ada544d20f5012"
+content-hash = "7201b789a737cf4f503b1daef38e0eb02eb21492947e53efcb695e931306049d"
