@@ -112,7 +112,9 @@ class EndOfMonthForecastTest(TestCase):
 
 
 class ReadArchivedForecastTest(TestCase):
-    archived_figure = []
+    @classmethod
+    def setUpTestData(cls):
+        cls.archived_figure = []
 
     def setUp(self):
         self.init_data = MonthlyFigureSetup()
@@ -334,7 +336,9 @@ class EndOfMonthBudgetTest(TestCase):
 
 
 class ReadArchivedBudgetTest(TestCase):
-    archived_figure = []
+    @classmethod
+    def setUpTestData(cls):
+        cls.archived_figure = []
 
     def setUp(self):
         self.init_data = MonthlyFigureSetup()

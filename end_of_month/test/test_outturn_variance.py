@@ -7,7 +7,9 @@ from end_of_month.test.test_utils import MonthlyFigureSetup
 
 
 class ReadMonthlyVarianceTest(TestCase):
-    archived_figure = []
+    @classmethod
+    def setUpTestData(cls):
+        cls.archived_figure = []
 
     def setUp(self):
         self.init_data = MonthlyFigureSetup()
