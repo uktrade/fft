@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 
-import core
 from chartofaccountDIT.models import (
     Analysis1,
     Analysis2,
