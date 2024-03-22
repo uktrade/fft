@@ -1478,17 +1478,6 @@ docs = ["Sphinx (>=1.6)", "sphinx-bootstrap-theme (>=0.6.0)"]
 testing = ["pytest (<5.0)", "pytest (>=5.0)", "pytest-html (>=1.19.0)"]
 
 [[package]]
-name = "parso"
-version = "0.1.1"
-description = "A Python Parser"
-optional = false
-python-versions = "*"
-files = [
-    {file = "parso-0.1.1-py2.py3-none-any.whl", hash = "sha256:a7bb86fe0844304869d1c08e8bd0e52be931228483025c422917411ab82d628a"},
-    {file = "parso-0.1.1.tar.gz", hash = "sha256:5815f3fe254e5665f3c5d6f54f086c2502035cb631a91341591b5a564203cffb"},
-]
-
-[[package]]
 name = "pathspec"
 version = "0.12.1"
 description = "Utility library for gitignore style pattern matching of file paths."
@@ -2344,4 +2333,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "93005c5d4dcee0052c4533ae167e253de3b6ac098e68ca6ffd88c2fb1df8ed8c"
+content-hash = "e95cf32fdd0d7ba4b281a69392b3150179c5a3d516781d9d97ada544d20f5012"
