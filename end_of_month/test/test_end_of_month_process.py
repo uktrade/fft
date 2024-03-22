@@ -112,8 +112,9 @@ class EndOfMonthForecastTest(TestCase):
 
 
 class ReadArchivedForecastTest(TestCase):
+    archived_figure = []
+
     def setUp(self):
-        self.archived_figure = []
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
 
@@ -333,8 +334,9 @@ class EndOfMonthBudgetTest(TestCase):
 
 
 class ReadArchivedBudgetTest(TestCase):
+    archived_figure = []
+
     def setUp(self):
-        self.archived_figure = []
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
         for period in range(0, 16):

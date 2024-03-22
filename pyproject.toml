@@ -147,6 +147,7 @@ wheel = "0.38.1"
 pep517 = "0.10.0"
 apipkg = "1.5"
 toml = "0.10.1"
+pytest-random-order = "^1.1.1"
 
 
 [build-system]

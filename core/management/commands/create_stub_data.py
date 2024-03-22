@@ -360,10 +360,8 @@ class Command(BaseCommand):
         # The modified save writes the current user to the log, but
         # the user is not available while we are running a command.
         # So set  the test flag to stop writing to the log
-        core._called_from_test = True
         p = what()
         p.create()
-        del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
                 "Successfully completed stub data creation for {}.".format(p.name)
@@ -371,10 +369,8 @@ class Command(BaseCommand):
         )
 
     def clear(self, what):
-        core._called_from_test = True
         p = what()
         p.clear()
-        del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS("Successfully cleared stub data for {}.".format(p.name))
         )
