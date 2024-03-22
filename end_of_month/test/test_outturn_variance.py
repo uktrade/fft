@@ -1,21 +1,17 @@
+import pytest
 from django.db.models import F
-from django.test import TestCase
 
 from end_of_month.end_of_month_actions import end_of_month_archive
 from end_of_month.models import forecast_budget_view_model
 from end_of_month.test.test_utils import MonthlyFigureSetup
 
 
-class ReadMonthlyVarianceTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.archived_figure = []
-
-    def setUp(self):
+class TestReadMonthlyVarianceTest:
+    @pytest.fixture(autouse=True)
+    def _setup(self):
+        self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
-        for period in range(0, 16):
-            self.archived_figure.append(0)
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]

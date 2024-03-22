@@ -95,7 +95,7 @@ test:
 	docker-compose run --rm web python manage.py test $(test)
 
 pytest:
-	docker-compose run --rm web pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -v --random-order
+	docker-compose run --rm web pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles --random-order -n 4 -v
 
 black-check:
 	docker-compose run --rm --no-deps web black --check .

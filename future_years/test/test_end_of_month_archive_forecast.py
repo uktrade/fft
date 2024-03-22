@@ -2,12 +2,12 @@ from django.test import TestCase
 
 from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.end_of_month_actions import end_of_month_archive
-from end_of_month.test.test_end_of_month_process import ReadArchivedForecastTest
+from end_of_month.test.test_end_of_month_process import TestReadArchivedForecastTest
 from end_of_month.test.test_utils import MonthlyFigureSetup
 from forecast.models import ForecastMonthlyFigure
 
 
-class ReadArchivedFutureDataForecast(ReadArchivedForecastTest):
+class ReadArchivedFutureDataForecast(TestReadArchivedForecastTest, TestCase):
     def setUp(self):
         super().setUp()
         current_year = get_current_financial_year()

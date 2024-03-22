@@ -1,3 +1,4 @@
+import pytest
 from django.db.models import F
 from django.test import TestCase
 
@@ -111,17 +112,12 @@ class EndOfMonthForecastTest(TestCase):
         self.assertEqual(count, 129)
 
 
-class ReadArchivedForecastTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.archived_figure = []
-
-    def setUp(self):
+class TestReadArchivedForecastTest:
+    @pytest.fixture(autouse=True)
+    def _setup(self):
+        self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
-
-        for period in range(0, 16):
-            self.archived_figure.append(0)
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
@@ -335,16 +331,12 @@ class EndOfMonthBudgetTest(TestCase):
         self.assertEqual(budget_total_count, 12)
 
 
-class ReadArchivedBudgetTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.archived_figure = []
-
-    def setUp(self):
+class TestReadArchivedBudgetTest:
+    @pytest.fixture(autouse=True)
+    def _setup(self):
+        self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
-        for period in range(0, 16):
-            self.archived_figure.append(0)
 
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
