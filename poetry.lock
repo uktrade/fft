@@ -661,45 +661,51 @@ tags = ["django-taggit"]
 
 [[package]]
 name = "django-axes"
-version = "5.41.1"
+version = "6.4.0"
 description = "Keep track of failed login attempts in Django-powered sites."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-axes-5.41.1.tar.gz", hash = "sha256:aa43fe3a5763bea28d320b1d98e481c12e2dbc12f4dd851aaf7308e80629df9f"},
-    {file = "django_axes-5.41.1-py3-none-any.whl", hash = "sha256:38b89dc71104ace0498d08d7100a1af67688d151206e3c17d98f75bff1351c38"},
+    {file = "django-axes-6.4.0.tar.gz", hash = "sha256:aff0e853ae9cddbdd9e8dc703b46915a9960012dab602552f61b43c0777bc731"},
+    {file = "django_axes-6.4.0-py3-none-any.whl", hash = "sha256:70508d108abc19bcfdd3e9ef7c9d526a014029a8e2ba51f03a5a8348d6eca1b9"},
 ]
 
 [package.dependencies]
 django = ">=3.2"
-django-ipware = ">=3"
-setuptools = "*"
+
+[package.extras]
+ipware = ["django-ipware (>=3)"]
 
 [[package]]
 name = "django-chunk-upload-handlers"
-version = "0.0.10"
+version = "0.0.14"
 description = "Chunking Django file handlers for S3 and ClamAV service uploads"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "django_chunk_upload_handlers-0.0.10.tar.gz", hash = "sha256:5e86ee0c8cf8efc8f7911b6cfb0ebd6be87e0b3a8f03b91d345d56f824c6cff7"},
+    {file = "django_chunk_upload_handlers-0.0.14.tar.gz", hash = "sha256:4a8c7113f1fea9f307b4caa79995dc5824c7f5bc70bdc486cb93b5091d782854"},
 ]
 
 [package.dependencies]
 boto3 = ">=1.17.89"
-django = ">=3.0.14"
+django = ">=4.2.9,<4.3.0"
 django-storages = ">=1.11.1"
 
 [[package]]
 name = "django-environ"
-version = "0.4.5"
-description = "Django-environ allows you to utilize 12factor inspired environment variables to configure your Django application."
+version = "0.11.2"
+description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
 optional = false
-python-versions = "*"
+python-versions = ">=3.6,<4"
 files = [
-    {file = "django-environ-0.4.5.tar.gz", hash = "sha256:6c9d87660142608f63ec7d5ce5564c49b603ea8ff25da595fd6098f6dc82afde"},
-    {file = "django_environ-0.4.5-py2.py3-none-any.whl", hash = "sha256:c57b3c11ec1f319d9474e3e5a79134f40174b17c7cc024bbb2fad84646b120c4"},
+    {file = "django-environ-0.11.2.tar.gz", hash = "sha256:f32a87aa0899894c27d4e1776fa6b477e8164ed7f6b3e410a62a6d72caaf64be"},
+    {file = "django_environ-0.11.2-py2.py3-none-any.whl", hash = "sha256:0ff95ab4344bfeff693836aa978e6840abef2e2f1145adff7735892711590c05"},
 ]
+
+[package.extras]
+develop = ["coverage[toml] (>=5.0a4)", "furo (>=2021.8.17b43,<2021.9.dev0)", "pytest (>=4.6.11)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
+docs = ["furo (>=2021.8.17b43,<2021.9.dev0)", "sphinx (>=3.5.0)", "sphinx-notfound-page"]
+testing = ["coverage[toml] (>=5.0a4)", "pytest (>=4.6.11)"]
 
 [[package]]
 name = "django-extensions"
@@ -717,17 +723,17 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-filter"
-version = "2.4.0"
+version = "24.1"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.8"
 files = [
-    {file = "django-filter-2.4.0.tar.gz", hash = "sha256:84e9d5bb93f237e451db814ed422a3a625751cbc9968b484ecc74964a8696b06"},
-    {file = "django_filter-2.4.0-py3-none-any.whl", hash = "sha256:e00d32cebdb3d54273c48f4f878f898dced8d5dfaad009438fe61ebdf535ace1"},
+    {file = "django-filter-24.1.tar.gz", hash = "sha256:65cb43ce272077e5ac6aae1054d76c121cd6b552e296a82a13921e9371baf8c1"},
+    {file = "django_filter-24.1-py3-none-any.whl", hash = "sha256:335bcae6cbd3e984b024841070f567b22faea57594f27d37c52f8f131f8d8621"},
 ]
 
 [package.dependencies]
-Django = ">=2.2"
+Django = ">=4.2"
 
 [[package]]
 name = "django-guardian"
@@ -745,19 +751,19 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-import-export"
-version = "2.9.0"
+version = "3.3.7"
 description = "Django application and library for importing and exporting data with included admin integration."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-import-export-2.9.0.tar.gz", hash = "sha256:02ce3a8e191992fa7aa1d660877ac6764fa9e32a5ba6394293f2fc761a5bdd19"},
-    {file = "django_import_export-2.9.0-py3-none-any.whl", hash = "sha256:126d32a4410c42b6e1bf060355bf45968f6fe427c3b7ed04c96873bd45d7549a"},
+    {file = "django-import-export-3.3.7.tar.gz", hash = "sha256:39a4216c26a2dba6429b64c68b3fe282a6279bb71afb4015c13df0696bdbb4cd"},
+    {file = "django_import_export-3.3.7-py3-none-any.whl", hash = "sha256:dffedd53bed33cfcceb3b2f13d4fd93a21826f9a2ae37b9926a1e1f4be24bcb9"},
 ]
 
 [package.dependencies]
 diff-match-patch = "*"
 Django = ">=3.2"
-tablib = {version = ">=3.0.0", extras = ["html", "ods", "xls", "xlsx", "yaml"]}
+tablib = {version = "3.5.0", extras = ["html", "ods", "xls", "xlsx", "yaml"]}
 
 [[package]]
 name = "django-ipware"
@@ -772,17 +778,18 @@ files = [
 
 [[package]]
 name = "django-log-formatter-ecs"
-version = "0.0.3"
+version = "0.0.5"
 description = "ECS log formatter for Django"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "django_log_formatter_ecs-0.0.3.tar.gz", hash = "sha256:116d98d61b407dbff6654c7854072d6f3ab519bfc4718330e7aa91d07d17dfc3"},
+    {file = "django_log_formatter_ecs-0.0.5-py3-none-any.whl", hash = "sha256:1e8731dd25a11ac64e789f19931e12fe7ef8ad1a172b7bceb2ea5cab185a583e"},
+    {file = "django_log_formatter_ecs-0.0.5.tar.gz", hash = "sha256:6b9784fe31eb1bd6598dc7db0f7f647e03ea6c3926c73cd1c9221adefee289ad"},
 ]
 
 [package.dependencies]
-django-ipware = ">=2.1.0"
-kubi-ecs-logger = ">=0.0.6"
+django-ipware = ">=3.0,<4.0"
+kubi-ecs-logger = ">=0.1.0,<0.2.0"
 
 [[package]]
 name = "django-pivot"
@@ -800,18 +807,21 @@ django = ">=3.2"
 
 [[package]]
 name = "django-redis"
-version = "4.12.1"
+version = "5.4.0"
 description = "Full featured redis cache backend for Django."
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 files = [
-    {file = "django-redis-4.12.1.tar.gz", hash = "sha256:306589c7021e6468b2656edc89f62b8ba67e8d5a1c8877e2688042263daa7a63"},
-    {file = "django_redis-4.12.1-py3-none-any.whl", hash = "sha256:1133b26b75baa3664164c3f44b9d5d133d1b8de45d94d79f38d1adc5b1d502e5"},
+    {file = "django-redis-5.4.0.tar.gz", hash = "sha256:6a02abaa34b0fea8bf9b707d2c363ab6adc7409950b2db93602e6cb292818c42"},
+    {file = "django_redis-5.4.0-py3-none-any.whl", hash = "sha256:ebc88df7da810732e2af9987f7f426c96204bf89319df4c6da6ca9a2942edd5b"},
 ]
 
 [package.dependencies]
-Django = ">=2.2"
-redis = ">=3.0.0"
+Django = ">=3.2"
+redis = ">=3,<4.0.0 || >4.0.0,<4.0.1 || >4.0.1"
+
+[package.extras]
+hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-reversion"
@@ -2392,4 +2402,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9a0766ca458333d5bbdfada242b2fedadb93ad678747451f6655da9074044f21"
+content-hash = "d111b3e48ff1073131a56094cb6945245bc8281a8b81c95b61b9952946854fdd"
