@@ -360,7 +360,7 @@ class TestReadArchivedBudgetTest:
         for period in range(1, tested_period + 1):
             # Check the full total. It is saved in a different table, for convenience
             monthly_budget = MonthlyTotalBudget.objects.get(archived_period=period)
-            assert self.archived_figure[period], monthly_budget.amount)
+            assert self.archived_figure[period] == monthly_budget.amount
             # Check that nothig has corrupted the archived figures
             assert self.archived_figure[period] == self.get_period_budget_total(period)
 
