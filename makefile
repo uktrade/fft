@@ -77,7 +77,7 @@ flake8:
 	docker-compose run --rm web flake8 $(file)
 
 bdd:
-	docker-compose exec web -t python manage.py behave $(feature) --settings=config.settings.bdd --no-capture --no-color
+	docker-compose exec web -T python manage.py behave $(feature) --settings=config.settings.bdd --no-capture --no-color
 
 elevate:
 	docker-compose run --rm web python manage.py elevate_sso_user_permissions
