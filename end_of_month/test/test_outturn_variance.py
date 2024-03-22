@@ -50,17 +50,17 @@ class TestReadMonthlyVarianceTest:
         end_of_month_archive(tested_period, True)
         # run a query giving the full total
         archived_total = self.get_period_total(tested_period)
-        self.assertEqual(total_before, archived_total)
+        assert total_before == archived_total
 
         previous_outurn = self.get_current_previous_outturn()
-        self.assertEqual(total_before, previous_outurn)
+        assert total_before == previous_outurn
 
         change_amount = tested_period * 10000
         self.init_data.monthly_figure_update(tested_period + 1, change_amount)
         current_total = self.get_current_total()
         self.archived_figure[tested_period] = archived_total
-        self.assertNotEqual(current_total, previous_outurn)
-        self.assertEqual(current_total, (previous_outurn + change_amount))
+        assert current_total != previous_outurn
+        assert current_total == (previous_outurn + change_amount)
 
     # The following tests check that the previous outturn figure is not changed by
     # changing the current figures.
