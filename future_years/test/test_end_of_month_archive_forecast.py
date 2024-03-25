@@ -7,9 +7,8 @@ from end_of_month.test.test_utils import MonthlyFigureSetup
 from forecast.models import ForecastMonthlyFigure
 
 
-class ReadArchivedFutureDataForecast(TestReadArchivedForecastTest, TestCase):
-    def setUp(self):
-        super().setUp()
+class ReadArchivedFutureDataForecast(TestReadArchivedForecastTest):
+    def _post_setup(self):
         current_year = get_current_financial_year()
         # Create a set of future forecast data
         self.init_data.set_year(current_year + 2)

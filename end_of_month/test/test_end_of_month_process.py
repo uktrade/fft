@@ -118,6 +118,10 @@ class TestReadArchivedForecastTest:
         self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
+        self.post_setup()
+
+    def post_setup(self):
+        pass
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
@@ -335,6 +339,10 @@ class TestReadArchivedBudgetTest:
         self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
+        self.post_setup()
+    
+    def post_setup(self):
+        pass
 
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]

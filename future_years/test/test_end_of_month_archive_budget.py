@@ -8,8 +8,7 @@ from forecast.models import BudgetMonthlyFigure
 
 
 class ReadArchivedFutureDataForecast(TestReadArchivedBudgetTest):
-    def setUp(self):
-        super().setUp()
+    def post_setup(self):
         current_year = get_current_financial_year()
         # Create a set of future budget data
         self.init_data.set_year(current_year + 2)
