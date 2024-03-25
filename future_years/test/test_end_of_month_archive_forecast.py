@@ -1,3 +1,4 @@
+import pytest
 from django.test import TestCase
 
 from core.utils.generic_helpers import get_current_financial_year
@@ -8,7 +9,10 @@ from forecast.models import ForecastMonthlyFigure
 
 
 class ReadArchivedFutureDataForecast(TestReadArchivedForecastTest):
-    def _post_setup(self):
+    @pytest.fixture(autouse=True)
+    def _setup(self, db):
+        self.archived_figure = [0 for _ in range(16)]
+        self.init_data = MonthlyFigureSetup()
         current_year = get_current_financial_year()
         # Create a set of future forecast data
         self.init_data.set_year(current_year + 2)

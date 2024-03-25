@@ -8,7 +8,6 @@ from end_of_month.test.test_utils import MonthlyFigureSetup
 from forecast.models import BudgetMonthlyFigure
 
 
-# fails
 class ReadArchivedFutureDataForecast(TestReadArchivedBudgetTest):
     @pytest.fixture(autouse=True)
     def _setup(self, db):

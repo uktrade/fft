@@ -118,10 +118,6 @@ class TestReadArchivedForecastTest:
         self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
-        self.post_setup()
-
-    def post_setup(self):
-        pass
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
@@ -333,7 +329,6 @@ class EndOfMonthBudgetTest(TestCase):
         self.assertEqual(budget_total_count, 12)
 
 
-# fails
 class TestReadArchivedBudgetTest:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
@@ -344,10 +339,6 @@ class TestReadArchivedBudgetTest:
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.filter(financial_year=self.init_data.year_used)
-        print("period", period)
-        print("data_model", data_model)
-        print("year_used", self.init_data.year_used)
-        print("tot_q", tot_q)
         return tot_q[0].budget
 
     def get_current_budget_total(self):
