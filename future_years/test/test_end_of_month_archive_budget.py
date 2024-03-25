@@ -1,3 +1,4 @@
+import pytest
 from django.test import TestCase
 
 from core.utils.generic_helpers import get_current_financial_year
@@ -7,8 +8,12 @@ from end_of_month.test.test_utils import MonthlyFigureSetup
 from forecast.models import BudgetMonthlyFigure
 
 
+# fails
 class ReadArchivedFutureDataForecast(TestReadArchivedBudgetTest):
-    def post_setup(self):
+    @pytest.fixture(autouse=True)
+    def _setup(self, db):
+        self.archived_figure = [0 for _ in range(16)]
+        self.init_data = MonthlyFigureSetup()
         current_year = get_current_financial_year()
         # Create a set of future budget data
         self.init_data.set_year(current_year + 2)
