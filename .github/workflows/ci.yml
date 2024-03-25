@@ -47,35 +47,6 @@ jobs:
 
       - name: Run tests
         run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
-
-      - name: Run tests
-        run: make pytest
-        continue-on-error: true
 
       - name: Run BDD tests
         run: make bdd
