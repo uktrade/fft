@@ -340,7 +340,7 @@ class TestReadArchivedBudgetTest:
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_budget()
         self.post_setup()
-    
+
     def post_setup(self):
         pass
 
