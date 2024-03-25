@@ -6,7 +6,7 @@ from end_of_month.models import forecast_budget_view_model
 from end_of_month.test.test_utils import MonthlyFigureSetup
 
 
-class TestReadMonthlyVarianceTest:
+class TestReadMonthlyVariance:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
         self.archived_figure = [0 for _ in range(16)]

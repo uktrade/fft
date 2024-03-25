@@ -112,7 +112,7 @@ class EndOfMonthForecastTest(TestCase):
         self.assertEqual(count, 129)
 
 
-class TestReadArchivedForecastTest:
+class TestReadArchivedForecast:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
         self.archived_figure = [0 for _ in range(16)]
@@ -329,7 +329,8 @@ class EndOfMonthBudgetTest(TestCase):
         self.assertEqual(budget_total_count, 12)
 
 
-class TestReadArchivedBudgetTest:
+# failed
+class TestReadArchivedBudget:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
         self.archived_figure = [0 for _ in range(16)]
@@ -362,7 +363,7 @@ class TestReadArchivedBudgetTest:
             # Check the full total. It is saved in a different table, for convenience
             monthly_budget = MonthlyTotalBudget.objects.get(archived_period=period)
             assert self.archived_figure[period] == monthly_budget.amount
-            # Check that nothig has corrupted the archived figures
+            # Check that nothing has corrupted the archived figures
             assert self.archived_figure[period] == self.get_period_budget_total(period)
 
     # The following tests check that the archived figures are not changed by
