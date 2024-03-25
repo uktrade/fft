@@ -339,6 +339,7 @@ class TestReadArchivedBudgetTest:
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.filter(financial_year=self.init_data.year_used)
+        print(period, data_model, self.init_data.year_used, tot_q, tot_q.budget)
         return tot_q[0].budget
 
     def get_current_budget_total(self):

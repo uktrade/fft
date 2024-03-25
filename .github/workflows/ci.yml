@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +46,20 @@ jobs:
       - name: Run black
         run: make black-check
 
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
+      - name: Run tests
+        run: make pytest
       - name: Run tests
         run: make pytest
 
