@@ -1,113 +1,131 @@
 SHELL := /bin/bash
 APPLICATION_NAME="Financial Forecast Tool"
 
-# Colour coding for output
-COLOUR_NONE=\033[0m
-COLOUR_GREEN=\033[32;01m
-COLOUR_YELLOW=\033[33;01m
-COLOUR_RED='\033[0;31m'
+.PHONY: help test setup
+help: # List commands and their descriptions
+	@grep -E '^[a-zA-Z0-9_-]+: # .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ": # "; printf "\n\033[93;01m%-30s %-30s\033[0m\n\n", "Command", "Description"}; {split($$1,a,":"); printf "\033[96m%-30s\033[0m \033[92m%s\033[0m\n", a[1], $$2}'
 
-.PHONY: help test
-help:
-	@echo -e "$(COLOUR_GREEN)|--- $(APPLICATION_NAME) ---|$(COLOUR_NONE)"
-	@echo -e "$(COLOUR_YELLOW)make build$(COLOUR_NONE) : Run docker-compose build"
-	@echo -e "$(COLOUR_YELLOW)make up$(COLOUR_NONE) : Run docker-compose up"
-	@echo -e "$(COLOUR_YELLOW)make down$(COLOUR_NONE) : Run docker-compose down"
-	@echo -e "$(COLOUR_YELLOW)make create-stub-data$(COLOUR_NONE) : Create dataset for use with local development"
-	@echo -e "$(COLOUR_YELLOW)make first-use$(COLOUR_NONE) : Create development environment and set up with test data and test users"
-	@echo -e "$(COLOUR_YELLOW)make gift-hospitality-table$(COLOUR_NONE) : Create gifts and hospitality data"
-	@echo -e "$(COLOUR_YELLOW)make migrations$(COLOUR_NONE) : Run Django makemigrations"
-	@echo -e "$(COLOUR_YELLOW)make migrate$(COLOUR_NONE) : Run Django migrate"
-	@echo -e "$(COLOUR_YELLOW)make shell$(COLOUR_NONE) : Run a Django shell"
-	@echo -e "$(COLOUR_YELLOW)make flake8$(COLOUR_NONE) : Run flake8 checks"
-	@echo -e "$(COLOUR_YELLOW)make bdd$(COLOUR_NONE) : Run Django BDD tests"
-	@echo -e "$(COLOUR_YELLOW)make elevate$(COLOUR_NONE) : Elevate user permission to superuser"
-	@echo -e "$(COLOUR_YELLOW)make collectstatic$(COLOUR_NONE) : Run Django BDD tests"
-	@echo -e "$(COLOUR_YELLOW)make bash$(COLOUR_NONE) : Start a bash session on the application container"
-	@echo -e "$(COLOUR_YELLOW)make all-requirements$(COLOUR_NONE) : Generate pip requirements files"
-	@echo -e "$(COLOUR_YELLOW)make test$(COLOUR_NONE) : Run Django tests"
-	@echo -e "$(COLOUR_YELLOW)make pytest$(COLOUR_NONE) : Run pytest"
-	@echo -e "$(COLOUR_YELLOW)make black$(COLOUR_NONE) : Run black formatter"
+build: # Build the docker images for the project
+	docker compose build
 
-build:
-	docker-compose build
+up: # Start the project
+	docker compose up
 
-up:
-	docker-compose up
+up-detatched: # Start the project in detached mode
+	docker compose up -d
 
-up-detatched:
-	docker-compose up -d
+down: # Stop the project
+	docker compose down
 
-down:
-	docker-compose down
+# Run a command in a new container
+run = docker compose run --rm
 
-create-stub-data:
-	docker-compose --rm run web python manage.py migrate
-	docker-compose --rm run web python manage.py create_stub_data All
-	docker-compose --rm run web python manage.py create_stub_forecast_data
-	docker-compose --rm run web python manage.py create_test_user
+# Run a command in a new container without starting linked services
+run-no-deps = $(run) --no-deps
 
-first-use:
-	docker-compose down
-	docker-compose run --rm web python manage.py migrate
-	docker-compose run --rm web python manage.py create_stub_data All
-	docker-compose run --rm web python manage.py create_stub_future_forecast_data
-	docker-compose run --rm web python manage.py create_stub_forecast_data
-	docker-compose run --rm web python manage.py create_stub_future_forecast_data
-	docker-compose run --rm web python manage.py create_data_lake_stub_data
-	docker-compose run --rm web python manage.py populate_gift_hospitality_table
-	docker-compose run --rm web python manage.py create_test_user --password=password
-	docker-compose run --rm web python manage.py create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password  # /PS-IGNORE
-	docker-compose run --rm web python manage.py create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password  # /PS-IGNORE
-	docker-compose up
+# Run a command in an existing container
+exec = docker compose exec
 
-gift-hospitality-table:
-	docker-compose run web python manage.py populate_gift_hospitality_table
+# Run on existing container if available otherwise a new one
+web := ${if $(shell docker ps -q -f name=web),$(exec) web,$(run) web}
+db := ${if $(shell docker ps -q -f name=db),$(exec) db,$(run) db}
 
-migrations:
-	docker-compose run --rm web python manage.py makemigrations
+manage = python manage.py
 
-migrate:
-	docker-compose run --rm web python manage.py migrate
+create-stub-data: # Create stub data for testing
+	make migrate
+	$(web) $(manage) create_stub_data All
+	$(web) $(manage) create_stub_forecast_data
+	$(web) $(manage) create_stub_future_forecast_data
+	$(web) $(manage) create_data_lake_stub_data
+	$(web) $(manage) create_test_user
 
-shell:
-	docker-compose run --rm web python manage.py shell
+setup: # Set up the project from scratch
+	make down
+	make create-stub-data
+	make gift-hospitality-table
+	$(web) $(manage) create_test_user --password=password
+	$(web) $(manage) create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password  # /PS-IGNORE
+	$(web) $(manage) create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password  # /PS-IGNORE
+	make up
 
-flake8:
-	docker-compose run --rm web flake8 $(file)
+gift-hospitality-table: # Populate gift hospitality table
+	$(web) $(manage) populate_gift_hospitality_table
 
-bdd:
-	docker-compose exec -T web python manage.py behave $(feature) --settings=config.settings.bdd --no-capture
+shell: # Open the web container Python/Django shell
+	$(web) $(manage) shell_plus
 
-elevate:
-	docker-compose run --rm web python manage.py elevate_sso_user_permissions
+bdd: # Run BDD tests
+	$(exec) -T web $(manage) behave $(feature) --settings=config.settings.bdd --no-capture
 
-collectstatic:
-	docker-compose run --rm web python manage.py collectstatic
+elevate: # Elevate SSO user permissions
+	$(web) $(manage) elevate_sso_user_permissions
 
-bash:
-	docker-compose run --rm web bash
+collectstatic: # Run Django collectstatic
+	$(web) $(manage) collectstatic
 
-all-requirements:
+bash: # Open the web container bash
+	$(web) bash
+
+all-requirements: # Generate requirements.txt
 	poetry export --with prod --without-hashes --output requirements.txt
 
-test:
-	docker-compose run --rm web python manage.py test $(test)
+test: # Run tests
+	$(web) $(manage) test $(test)
 
-pytest:
-	docker-compose run --rm web pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles --random-order -n 4 -v
+pytest: # Run pytest ignoring; node_modules, front_end, features, staticfiles.
+	$(web) pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles --random-order -n 4 -v
 
-black-check:
-	docker-compose run --rm --no-deps web black --check .
+superuser: # Create superuser
+	$(web) $(manage) createsuperuser
 
-black:
-	docker-compose run --rm web black .
+# Formatting
+black-check: # Run black-check
+	$(run-no-deps) web black --check .
 
-isort-check:
-	docker-compose run --rm web isort --check .
+black: # Run black
+	$(web) black .
 
-isort:
-	docker-compose run --rm web isort .
+isort-check: # Run isort-check
+	$(web) isort --check .
 
-superuser:
-	docker-compose run --rm web python manage.py createsuperuser
+isort: # Run isort
+	$(web) isort .
+
+flake8: # Run flake8 
+	$(web) flake8 $(file)
+
+check: # Run formatters to see if there are any errors
+	make flake8
+	make black-check
+	make isort-check
+
+fix: # Run formatters to fix any issues that can be fixed automatically
+	make black
+	make isort
+
+# DB
+migrations: # Create needed migrations
+	$(web) $(manage) makemigrations
+
+migrate: # Run migrations against the local db
+	$(web) $(manage) migrate
+
+empty-migration: # Create an empty migration
+	$(web) $(manage) makemigrations $(app) --empty --name=$(name)
+
+db-reset: # Reset the database
+	docker compose stop db
+	docker compose rm -f db
+	docker compose up -d db
+
+db-shell: # Open the database container postgres shell
+	$(db) psql -U postgres
+
+DUMP_NAME = local
+
+db-dump: # Dump the current database, use `DUMP_NAME` to change the name of the dump
+	@PGPASSWORD='postgres' pg_dump postgres -U postgres -h localhost -p 5432 -O -x -c -f ./.dumps/$(DUMP_NAME).dump
+
+db-from-dump: # Load a dumped database, use `DUMP_NAME` to change the name of the dump
+	@PGPASSWORD='postgres' psql -h localhost -U postgres postgres -f ./.dumps/$(DUMP_NAME).dump

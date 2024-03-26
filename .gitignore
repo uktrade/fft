@@ -165,3 +165,6 @@ ner_output_file.txt
 
 # pyenv
 .python-version
+
+# DB
+.dumps/
