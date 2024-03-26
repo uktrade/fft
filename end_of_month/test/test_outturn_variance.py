@@ -1,19 +1,17 @@
+import pytest
 from django.db.models import F
-from django.test import TestCase
 
 from end_of_month.end_of_month_actions import end_of_month_archive
 from end_of_month.models import forecast_budget_view_model
 from end_of_month.test.test_utils import MonthlyFigureSetup
 
 
-class ReadMonthlyVarianceTest(TestCase):
-    archived_figure = []
-
-    def setUp(self):
+class TestReadMonthlyVariance:
+    @pytest.fixture(autouse=True)
+    def _setup(self, db):
+        self.archived_figure = [0 for _ in range(16)]
         self.init_data = MonthlyFigureSetup()
         self.init_data.setup_forecast()
-        for period in range(0, 16):
-            self.archived_figure.append(0)
 
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
@@ -52,17 +50,17 @@ class ReadMonthlyVarianceTest(TestCase):
         end_of_month_archive(tested_period, True)
         # run a query giving the full total
         archived_total = self.get_period_total(tested_period)
-        self.assertEqual(total_before, archived_total)
+        assert total_before == archived_total
 
         previous_outurn = self.get_current_previous_outturn()
-        self.assertEqual(total_before, previous_outurn)
+        assert total_before == previous_outurn
 
         change_amount = tested_period * 10000
         self.init_data.monthly_figure_update(tested_period + 1, change_amount)
         current_total = self.get_current_total()
         self.archived_figure[tested_period] = archived_total
-        self.assertNotEqual(current_total, previous_outurn)
-        self.assertEqual(current_total, (previous_outurn + change_amount))
+        assert current_total != previous_outurn
+        assert current_total == (previous_outurn + change_amount)
 
     # The following tests check that the previous outturn figure is not changed by
     # changing the current figures.

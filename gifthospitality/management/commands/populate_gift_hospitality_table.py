@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
 
-import core
 from gifthospitality.models import (
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
@@ -264,10 +263,8 @@ class Command(BaseCommand):
         )
 
     def create(self, what):
-        core._called_from_test = True
         p = what()
         p.create()
-        del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
                 "Successfully completed G and H data creation for {}.".format(p.name)
@@ -275,10 +272,8 @@ class Command(BaseCommand):
         )
 
     def clear(self, what):
-        core._called_from_test = True
         p = what()
         p.clear()
-        del core._called_from_test
         self.stdout.write(
             self.style.SUCCESS(
                 "Successfully cleared Gift and Hospitality data for {}.".format(p.name)

@@ -77,7 +77,7 @@ flake8:
 	docker-compose run --rm web flake8 $(file)
 
 bdd:
-	docker-compose exec web sh -c "python manage.py behave $(feature) --settings=config.settings.bdd --no-capture"
+	docker-compose exec -T web python manage.py behave $(feature) --settings=config.settings.bdd --no-capture
 
 elevate:
 	docker-compose run --rm web python manage.py elevate_sso_user_permissions
@@ -95,7 +95,7 @@ test:
 	docker-compose run --rm web python manage.py test $(test)
 
 pytest:
-	docker-compose run --rm web pytest -raP --capture=sys --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles -n 4
+	docker-compose run --rm web pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles --random-order -n 4 -v
 
 black-check:
 	docker-compose run --rm --no-deps web black --check .
