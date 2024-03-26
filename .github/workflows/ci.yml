@@ -1,0 +1,53 @@
+name: FFT CI
+
+on:
+  pull_request:
+  merge_group:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Create a .env file
+        run: cp .env.ci .env
+
+      - name: Build images
+        run: make build
+
+      - name: Run containers
+        run: make up-detatched
+
+      - name: Install React app
+        run: npm ci
+
+      - name: Collect static
+        run: make collectstatic
+
+      - name: Run Flake8
+        run: make flake8
+
+      - name: Run isort
+        run: make isort-check
+
+      - name: Run black
+        run: make black-check
+
+      - name: Run tests
+        run: make pytest
+
+      - name: Run BDD tests
+        run: make bdd
+
+      - name: Docker compose down
+        run: docker compose down
