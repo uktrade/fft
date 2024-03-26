@@ -329,14 +329,7 @@ class EndOfMonthBudgetTest(TestCase):
         self.assertEqual(budget_total_count, 12)
 
 
-# failed
-class TestReadArchivedBudget:
-    @pytest.fixture(autouse=True)
-    def _setup(self, db):
-        self.archived_figure = [0 for _ in range(16)]
-        self.init_data = MonthlyFigureSetup()
-        self.init_data.setup_budget()
-
+class ReadArchivedBudgetTestMixin:
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.filter(financial_year=self.init_data.year_used)
@@ -426,3 +419,11 @@ class TestReadArchivedBudget:
         tested_period = 12
         self.test_read_archived_figure_feb()
         self.check_archive_period(tested_period)
+
+
+class TestReadArchivedBudget(ReadArchivedBudgetTestMixin):
+    @pytest.fixture(autouse=True)
+    def _setup(self, db):
+        self.archived_figure = [0 for _ in range(16)]
+        self.init_data = MonthlyFigureSetup()
+        self.init_data.setup_budget()
