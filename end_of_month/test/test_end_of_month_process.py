@@ -112,13 +112,7 @@ class EndOfMonthForecastTest(TestCase):
         self.assertEqual(count, 129)
 
 
-class TestReadArchivedForecast:
-    @pytest.fixture(autouse=True)
-    def _setup(self, db):
-        self.archived_figure = [0 for _ in range(16)]
-        self.init_data = MonthlyFigureSetup()
-        self.init_data.setup_forecast()
-
+class ReadArchivedForecastTestMixin:
     def get_period_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.filter(
@@ -220,6 +214,14 @@ class TestReadArchivedForecast:
         tested_period = 12
         self.test_read_archived_figure_feb()
         self.check_archive_period(tested_period)
+
+
+class TestReadArchivedForecast(ReadArchivedForecastTestMixin):
+    @pytest.fixture(autouse=True)
+    def _setup(self, db):
+        self.archived_figure = [0 for _ in range(16)]
+        self.init_data = MonthlyFigureSetup()
+        self.init_data.setup_forecast()
 
 
 class EndOfMonthBudgetTest(TestCase):
@@ -333,7 +335,6 @@ class ReadArchivedBudgetTestMixin:
     def get_period_budget_total(self, period):
         data_model = forecast_budget_view_model[period]
         tot_q = data_model.objects.filter(financial_year=self.init_data.year_used)
-        print(period, data_model, self.init_data.year_used, tot_q, tot_q[0].budget)
         return tot_q[0].budget
 
     def get_current_budget_total(self):
