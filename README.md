@@ -87,9 +87,7 @@ for example:
 0004_data_20200501_1345
 ```
 
-## Running BDD tests
-
-### Run BDD front end from host machine
+## Running the BDD tests
 
 Run the chrome container:
 
