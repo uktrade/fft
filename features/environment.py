@@ -223,6 +223,7 @@ def before_feature(context, feature):
     if settings.USE_REMOTE_CHROME:
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new")
+        options.add_argument("--disable-dev-shm-usage")
         context.browser = webdriver.Remote(
             command_executor="http://{}:4444".format(settings.SELENIUM_ADDRESS),
             options=options,
@@ -231,6 +232,7 @@ def before_feature(context, feature):
         # NOTE: This has not been tested recently and might need changing to work.
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new")
+        options.add_argument("--disable-dev-shm-usage")
         context.browser = webdriver.Chrome(options=options)
 
     context.browser.implicitly_wait(5)
