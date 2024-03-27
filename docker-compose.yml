@@ -53,9 +53,8 @@ services:
       - "6379:6379"
 
   chrome:
-    image: seleniarm/standalone-chromium:latest
-    volumes:
-      - /dev/shm:/dev/shm
+    image: selenium/standalone-chrome:latest
+    shm_size: 2gb
     depends_on:
       - web
     ports:
