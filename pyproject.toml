@@ -29,12 +29,9 @@ django-simple-history = "3.0.0"
 django-staff-sso-client = "^4.2.2"
 django-tables2 = "2.4.0"
 djangorestframework = "^3.14.0"
-docutils = "0.14"                           # TO RECHECK
 elastic-apm = "6.2.2"
-future = "^1.0.0"
 gunicorn = "19.9.0"
 psycopg2 = "2.8.6"
-raven = "6.9.0"                             # TO RECHECK
 django-chunk-upload-handlers = "0.0.10"
 sentry-sdk = "1.25.1"
 whitenoise = "^6.6.0"
@@ -47,7 +44,6 @@ requests = "^2.25.1"
 
 # Locked versions (not direct dependencies)
 redis = "3.5.3" # TO RECHECK
-six = "1.15.0"  # TO RECHECK
 
 
 [tool.poetry.group.prod]
