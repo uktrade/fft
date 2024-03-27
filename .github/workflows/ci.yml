@@ -46,6 +46,9 @@ jobs:
       - name: Run tests
         run: make pytest
 
+      - name: Bring up chrome
+        run: docker compose up -d chrome
+
       - name: Run BDD tests
         run: make bdd
 

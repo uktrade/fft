@@ -54,8 +54,10 @@ services:
 
   chrome:
     image: seleniarm/standalone-chromium:latest
-    shm_size: 2gb
+    shm_size: 3gb
     depends_on:
       - web
     ports:
       - "4444:4444"
+    profiles:
+      - selenium
