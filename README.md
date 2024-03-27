@@ -31,10 +31,12 @@ make setup
 > This command will run the initial migrations, create stub data and test users.
 > A database named "fido" will be automatically created.
 
-Open a second terminal and run `npm run dev` to load the node packages for the frontend.
-npm install
+Open a second terminal and run the following to set up the frontend.
 
 ```bash
+# install the dependencies
+npm install
+# start the dev server
 npm run dev
 ```
 
