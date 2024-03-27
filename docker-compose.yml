@@ -54,7 +54,8 @@ services:
 
   chrome:
     image: seleniarm/standalone-chromium:latest
-    shm_size: 3gb
+    volumes:
+      - /dev/shm:/dev/shm
     depends_on:
       - web
     ports:
