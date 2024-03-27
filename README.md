@@ -91,28 +91,22 @@ for example:
 
 ### Run BDD front end from host machine
 
-Make sure you are running the chrome container:
+Run the chrome container:
 
 ```bash
 docker compose up -d chrome
 ```
 
-And you have built the frontend assets:
+Build the frontend assets:
 
 ```bash
 npm run bdd
 ```
 
-### SSH into web container
+Run the tests:
 
 ```bash
-docker compose exec web bash
-```
-
-### Run BDD tests
-
-```bash
-python manage.py behave --settings=config.settings.bdd
+make bdd
 ```
 
 ## Notes
