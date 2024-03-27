@@ -1,77 +1,71 @@
-# FFT
+# FFT (Financial Forecast Tool)
 
-## The Project
+## Requirements
 
-## Set up
+- [docker](https://docs.docker.com/engine/install/)
+- [poetry](https://python-poetry.org/docs/#installation)
 
-A database called "fido" will be automatically created.
+## Local setup
 
-Run the following to perform initial migrations:
+First you will need to make a copy of the `.env.example` file and rename it to `.env`.
+This file contains most of the environment variables that the project needs to run.
 
-```
-make migrate
-```
-
-In order to add stub data for local development purposes run:
-
-```
-make create-stub-data
+```bash
+cp .env.example .env
 ```
 
-You can add forecast data if you are developing forecast related functions:
+Fill out the required variables in your `.env` file.
 
+> [!TIP]
+> For the `AUTHBROKER_CLIENT_ID`, `AUTHBROKER_CLIENT_SECRET` and `AUTHBROKER_URL`
+> variables, ask a member of the team to assist you in getting the values from the dev
+> environment.
+
+In a terminal run the `make setup` command from the project’s root directory.
+
+```bash
+make setup
 ```
-docker-compose run web python manage.py create_stub_forecast_data
+
+> [!NOTE]
+> This command will run the initial migrations, create stub data and test users.
+> A database named "fido" will be automatically created.
+
+Open a second terminal and run the following to set up the frontend.
+
+```bash
+# install the dependencies
+npm install
+# start the dev server
+npm run dev
 ```
 
-You can add Gift and Hospitality data if you are developing Gift and Hospitality related functions:
+You should now be able to access the application at http://localhost:8000/.
 
-```
-make gift-hospitality-table
-```
+If you want full admin access, you can elevate your by running:
 
-Now access any page within the site and log in with your single sign on credentials.
-
-You now need to elevate your user permissions in order to access the admin tool. You can do this by running:
-
-```
+```bash
 make elevate
 ```
 
-### Compile the front end
+> [!TIP]
+> Don't forget to refresh the page.
 
-```
-npm install
-make collectstatic
-```
+## Local Development
 
-### Environment variables
+If you can connect to the dev environment but still have issues such as; `403 - Forbidden Error` on your local, there are few steps you can follow to resolve this:
 
-You need to populate the .env file in the project root folder with the following variables:
+- Using dev tools on your browser, go to Application tab and clear data for Local Storage, Session Storage and Cookies.
 
-- AUTHBROKER_CLIENT_ID
-- AUTHBROKER_CLIENT_SECRET
+- If the problem persists you may need to temporarily pause your VPN while you work on FFT on your local.
 
-These can be provided by a member of the team.
-
-### Integration between Django and React
-
-The process described in this post was followed:
-https://www.techiediaries.com/django-react-rest/
-
-To enable the forecast edit interface:
-
-```
-npm start
-```
-
-### Running docker-compose run with port access
+## Running docker-compose run with port access
 
 ```
 docker-compose run --service-ports
 ```
 
-### Important notes on design
+## Important notes on design
 
 We use Django Guardian for model instance level permissions https://github.com/django-guardian/django-guardian
 
@@ -79,7 +73,7 @@ Django Guardian **should not be used directly**. There is a set of wrapper funct
 
 These add an additional permission check for the user being able to view forecasts at all.
 
-### Creating data/non-auto migrations
+## Creating data/non-auto migrations
 
 When adding data or non-auto generated migrations, please use the convention:
 
@@ -93,45 +87,27 @@ for example:
 0004_data_20200501_1345
 ```
 
-### Running manage.py on an app droplet
+## Running the BDD tests
 
+Run the chrome container:
+
+```bash
+docker compose up -d chrome
 ```
-/home/vcap/deps/1/bin/python3.6 ~/app/manage.py
-```
 
-### Running BDD tests
+Build the frontend assets:
 
-## Run BDD front end from host machine
-
-```
+```bash
 npm run bdd
-``
-
-## SSH into web container
-
-```
-docker-compose exec web bash
 ```
 
-## Run BDD tests
+Run the tests:
 
+```bash
+make bdd
 ```
-python manage.py behave --settings=config.settings.bdd
-```
 
-### Notes
-
-In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
-
-### Product URLs
-
-#### Dev URL
-
-https://fft.trade.dev.uktrade.digital/core/
-
-#### Production URL
-
-https://fft.trade.gov.uk/core/
+## Notes
 
 ### Managing user permissions
 
@@ -144,20 +120,20 @@ https://fft.trade.gov.uk/core/
 
 The names of the management commands denote their function.
 
-### Permissions within the system
+## Permissions within the system
 
-#### Any logged in SSO user
+### Any logged in SSO user
 
 - Access Chart of Account Gifts and Hospitality Register
 
-#### Specific permissions
+### Specific permissions
 
 - Upload budget and Oracle actuals file
 - Download Oscar report file
 - View forecast (permission to view all forecast data)
 - Edit 1 - n cost centres (specific user can edit cost centre data)
 
-#### Migrating to new user model (to be removed once complete)
+### Migrating to new user model (to be removed once complete)
 
 - Take the system off line
 - Add username field to HistoricalUser table (max length 150, allow null)

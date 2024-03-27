@@ -53,9 +53,11 @@ services:
       - "6379:6379"
 
   chrome:
-    image: seleniarm/standalone-chromium:latest
+    image: selenium/standalone-chrome:latest
     shm_size: 2gb
     depends_on:
       - web
     ports:
       - "4444:4444"
+    profiles:
+      - selenium
