@@ -87,21 +87,29 @@ for example:
 0004_data_20200501_1345
 ```
 
-### Running BDD tests
+## Running BDD tests
 
-## Run BDD front end from host machine
+### Run BDD front end from host machine
+
+Make sure you are running the chrome container:
+
+```bash
+docker compose up -d chrome
+```
+
+And you have built the frontend assets:
 
 ```bash
 npm run bdd
 ```
 
-## SSH into web container
+### SSH into web container
 
 ```bash
 docker compose exec web bash
 ```
 
-## Run BDD tests
+### Run BDD tests
 
 ```bash
 python manage.py behave --settings=config.settings.bdd
@@ -109,9 +117,7 @@ python manage.py behave --settings=config.settings.bdd
 
 ## Notes
 
-In order to get the node docker container working, this guide was followed: https://jdlm.info/articles/2019/09/06/lessons-building-node-app-docker.html
-
-## Managing user permissions
+### Managing user permissions
 
 4 management commands have been added to make dealing with user cost centre easier:
 

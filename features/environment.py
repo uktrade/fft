@@ -231,7 +231,6 @@ def before_feature(context, feature):
         # NOTE: This has not been tested recently and might need changing to work.
         options = webdriver.ChromeOptions()
         options.add_argument("--headless=new")
-        options.add_argument("--disable-dev-shm-usage")
         context.browser = webdriver.Chrome(options=options)
 
     context.browser.implicitly_wait(5)
