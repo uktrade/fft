@@ -21,6 +21,5 @@ class Command(BaseCommand):
             ArchiveYearError,
         ) as ex:
             raise CommandError(f"Failure archiving forecast/actual figures: {str(ex)}")
-            return
 
         self.stdout.write(self.style.SUCCESS("Current financial year archived. "))

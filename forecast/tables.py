@@ -122,7 +122,10 @@ class ForecastSubTotalTable(tables.Table):
     # Display actual/forecast labels
     is_forecast = True
 
-    def __init__(self, column_dict={}, *args, **kwargs):
+    def __init__(self, column_dict=None, *args, **kwargs):
+        if column_dict is None:
+            column_dict = {}
+
         cols = [(budget_field, tables.Column(budget_header, empty_values=()))]
 
         year_period_list = []
@@ -253,9 +256,9 @@ class ForecastSubTotalTable(tables.Table):
         self.forecast_cols = (12 + len(extra_column_to_display)) - self.num_actuals
 
         super().__init__(
+            *args,
             extra_columns=extra_column_to_display,
             sequence=column_list,
-            *args,
             **kwargs,
         )
         # change the stile for columns showing "actuals".
@@ -287,8 +290,17 @@ class ForecastWithLinkTable(ForecastSubTotalTable, tables.Table):
     display_view_details = True
 
     def __init__(
-        self, column_name, viewname, arg_link, code="", column_dict={}, *args, **kwargs
+        self,
+        column_name,
+        viewname,
+        arg_link,
+        code="",
+        column_dict=None,
+        *args,
+        **kwargs,
     ):
+        if column_dict is None:
+            column_dict = {}
 
         link_args = []
         if code:

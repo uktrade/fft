@@ -33,24 +33,36 @@ def _export_nac_iterator(queryset):
             obj.natural_account_code_description,
         ] + l5_field_obj(obj.account_L5_code) + [
             obj.used_for_budget,
-            obj.expenditure_category.NAC_category.NAC_category_description
-            if obj.expenditure_category
-            else "-",
-            obj.expenditure_category.grouping_description
-            if obj.expenditure_category
-            else "-",
-            obj.commercial_category.commercial_category
-            if obj.commercial_category
-            else "N/A",
-            obj.expenditure_category.op_del_category.operating_delivery_description
-            if obj.expenditure_category and obj.expenditure_category.op_del_category
-            else "N/A",
-            obj.expenditure_category.linked_budget_code.natural_account_code
-            if obj.expenditure_category
-            else "-",
-            obj.expenditure_category.NAC_category.get_pay_nonpay_display()
-            if obj.expenditure_category
-            else "N/A",
+            (
+                obj.expenditure_category.NAC_category.NAC_category_description
+                if obj.expenditure_category
+                else "-"
+            ),
+            (
+                obj.expenditure_category.grouping_description
+                if obj.expenditure_category
+                else "-"
+            ),
+            (
+                obj.commercial_category.commercial_category
+                if obj.commercial_category
+                else "N/A"
+            ),
+            (
+                obj.expenditure_category.op_del_category.operating_delivery_description
+                if obj.expenditure_category and obj.expenditure_category.op_del_category
+                else "N/A"
+            ),
+            (
+                obj.expenditure_category.linked_budget_code.natural_account_code
+                if obj.expenditure_category
+                else "-"
+            ),
+            (
+                obj.expenditure_category.NAC_category.get_pay_nonpay_display()
+                if obj.expenditure_category
+                else "N/A"
+            ),
             obj.get_cash_non_cash_display(),
             obj.get_gross_income_display(),
             obj.active,
@@ -81,9 +93,11 @@ def _export_historical_nac_iterator(queryset):
             obj.natural_account_code,
             obj.natural_account_code_description,
             obj.used_for_budget,
-            obj.expenditure_category.grouping_description
-            if obj.expenditure_category
-            else "-",
+            (
+                obj.expenditure_category.grouping_description
+                if obj.expenditure_category
+                else "-"
+            ),
             obj.NAC_category,
             obj.commercial_category,
             obj.account_L5_code,
@@ -117,9 +131,11 @@ def _export_exp_cat_iterator(queryset):
             obj.further_description,
             obj.linked_budget_code.natural_account_code,
             obj.linked_budget_code.natural_account_code_description,
-            obj.op_del_category.operating_delivery_description
-            if obj.op_del_category
-            else "-",
+            (
+                obj.op_del_category.operating_delivery_description
+                if obj.op_del_category
+                else "-"
+            ),
         ]
 
 

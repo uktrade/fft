@@ -71,8 +71,8 @@ def restore_archive(period_id):
     ).update(archived=False, archived_date=None)
 
     # Clear the actual loaded flag for periods after the se
-    FinancialPeriod.objects.filter(financial_period_code__gt=period_id,).update(
-        actual_loaded=False,
+    FinancialPeriod.objects.filter(financial_period_code__gt=period_id).update(
+        actual_loaded=False
     )
     # Refresh the views used to send daqta to data workspace
     refresh_materialised_views()

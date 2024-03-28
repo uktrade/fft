@@ -29,7 +29,7 @@ class CostHierarchy:
         )
         self.counter += 1
         directorate_code_base = int(group_code[0:4]) * 10
-        for i in range(howmany_directorate):
+        for _ in range(howmany_directorate):
             self.create_directorate(
                 departmental_group,
                 "{}A".format(directorate_code_base),
@@ -47,7 +47,7 @@ class CostHierarchy:
             group=departmental_group,
         )
         self.counter += 1
-        for i in range(howmany_cost_centres):
+        for _ in range(howmany_cost_centres):
             CostCentre.objects.create(
                 cost_centre_code=888810 + self.counter,
                 active=True,

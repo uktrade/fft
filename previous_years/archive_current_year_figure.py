@@ -22,7 +22,10 @@ logger = logging.getLogger(__name__)
 def archive_to_temp_previous_year_figures(
     row_to_archive, financial_year_obj, financialcode_obj
 ):
-    (previous_year_obj, created,) = ArchivedForecastDataUpload.objects.get_or_create(
+    (
+        previous_year_obj,
+        created,
+    ) = ArchivedForecastDataUpload.objects.get_or_create(
         financial_year=financial_year_obj,
         financial_code=financialcode_obj,
     )

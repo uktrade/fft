@@ -48,8 +48,6 @@ from .models import EstimateRow, Segment, SegmentGrandParent, SegmentParent, Sub
 # PESA Services Code
 # PESA Regional Code
 
-
-# noqa: E501 tells Flake8 to ignore lines that are to long
 SEGMENT_GP_KEY = {
     IMPORT_CSV_MODEL_KEY: SegmentGrandParent,
     IMPORT_CSV_PK_KEY: "Segment Grand Parent Code",

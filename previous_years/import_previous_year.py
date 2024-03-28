@@ -313,7 +313,9 @@ def upload_previous_year_from_file(file_upload, year):
             str(ex),
             str(ex),
         )
+        workbook.close()
         raise ex
+
     try:
         upload_previous_year(worksheet, year, file_upload)
     except (UploadFileDataError, ArchiveYearError) as ex:
@@ -322,6 +324,7 @@ def upload_previous_year_from_file(file_upload, year):
             str(ex),
             str(ex),
         )
-        workbook.close
+        workbook.close()
         raise ex
-    workbook.close
+
+    workbook.close()

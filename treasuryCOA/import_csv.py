@@ -52,7 +52,6 @@ from treasuryCOA.models import L1Account, L2Account, L3Account, L4Account, L5Acc
 #     'Cash Indicator Code': 38
 # }
 
-# noqa: E501 tells Flake8 to ignore lines that are to long
 L1_KEY = {
     IMPORT_CSV_MODEL_KEY: L1Account,
     IMPORT_CSV_PK_KEY: "Account L1 Code",

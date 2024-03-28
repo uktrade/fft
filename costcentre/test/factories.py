@@ -15,7 +15,7 @@ from costcentre.models import (
 fake = Faker()
 
 
-class DepartmentalGroupFactory(factory.DjangoModelFactory):
+class DepartmentalGroupFactory(factory.django.DjangoModelFactory):
     """
     Define DepartmentalGroup Factory
     """
@@ -30,7 +30,7 @@ class DepartmentalGroupFactory(factory.DjangoModelFactory):
     active = True
 
 
-class DirectorateFactory(factory.DjangoModelFactory):
+class DirectorateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Directorate
         django_get_or_create = ("directorate_code",)
@@ -41,7 +41,7 @@ class DirectorateFactory(factory.DjangoModelFactory):
     active = True
 
 
-class FinancialYearFactory(factory.DjangoModelFactory):
+class FinancialYearFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FinancialYear
         django_get_or_create = ("financial_year",)
@@ -49,7 +49,7 @@ class FinancialYearFactory(factory.DjangoModelFactory):
     financial_year = 2019
 
 
-class FinanceBusinessPartnerFactory(factory.DjangoModelFactory):
+class FinanceBusinessPartnerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BusinessPartner
         django_get_or_create = ("name", "surname")
@@ -58,7 +58,7 @@ class FinanceBusinessPartnerFactory(factory.DjangoModelFactory):
     surname = "FBP"
 
 
-class BSCEFactory(factory.DjangoModelFactory):
+class BSCEFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BSCEEmail
         django_get_or_create = ("bsce_email",)
@@ -66,7 +66,7 @@ class BSCEFactory(factory.DjangoModelFactory):
     bsce_email = "bsceuser@test.com"  # /PS-IGNORE
 
 
-class CostCentreFactory(factory.DjangoModelFactory):
+class CostCentreFactory(factory.django.DjangoModelFactory):
     """
     Define CostCentre Factory
     """
@@ -83,7 +83,7 @@ class CostCentreFactory(factory.DjangoModelFactory):
     bsce_email = factory.SubFactory(BSCEFactory)
 
 
-class ArchivedCostCentreFactory(factory.DjangoModelFactory):
+class ArchivedCostCentreFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ArchivedCostCentre
 

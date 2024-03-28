@@ -176,9 +176,7 @@ def export_forecast_to_excel(  # noqa C901
         row_count += 1
         # Formula for Year To Date. Don't use it if there are no actuals
         if howmany_actuals:
-            ws[
-                f"{year_to_date_col}{row_count}"
-            ].value = (
+            ws[f"{year_to_date_col}{row_count}"].value = (
                 f"=SUM({first_figure_col}{row_count}:{last_actual_col}{row_count})"
             )
         else:
@@ -186,12 +184,12 @@ def export_forecast_to_excel(  # noqa C901
                 ws[f"{year_to_date_col}{row_count}"].value = 0
 
         # Formula for calculating the full year
-        ws[
-            f"{year_total_col}{row_count}"
-        ].value = f"=SUM({first_figure_col}{row_count}:{last_month_col}{row_count})"
-        ws[
-            f"{over_under_spend_col}{row_count}"
-        ].value = f"=({budget_col}{row_count}-{year_total_col}{row_count})"
+        ws[f"{year_total_col}{row_count}"].value = (
+            f"=SUM({first_figure_col}{row_count}:{last_month_col}{row_count})"
+        )
+        ws[f"{over_under_spend_col}{row_count}"].value = (
+            f"=({budget_col}{row_count}-{year_total_col}{row_count})"
+        )
 
         format_numbers(ws, row_count, budget_index)
         unlock_forecast_cells(ws, row_count, first_forecast_index, last_month_index + 1)

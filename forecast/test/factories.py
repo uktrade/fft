@@ -14,7 +14,7 @@ from forecast.models import (
 )
 
 
-class FinancialPeriodFactory(factory.DjangoModelFactory):
+class FinancialPeriodFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FinancialPeriod
 
@@ -24,7 +24,7 @@ class FinancialPeriodFactory(factory.DjangoModelFactory):
     period_calendar_code = 4
 
 
-class FinancialCodeFactory(factory.DjangoModelFactory):
+class FinancialCodeFactory(factory.django.DjangoModelFactory):
     programme = factory.SubFactory(ProgrammeCodeFactory)
     cost_centre = factory.SubFactory(CostCentreFactory)
     natural_account_code = factory.SubFactory(NaturalCodeFactory)
@@ -33,18 +33,18 @@ class FinancialCodeFactory(factory.DjangoModelFactory):
         model = FinancialCode
 
 
-class BudgetMonthlyFigureFactory(factory.DjangoModelFactory):
+class BudgetMonthlyFigureFactory(factory.django.DjangoModelFactory):
     financial_code = factory.SubFactory(FinancialCodeFactory)
     financial_year = factory.Iterator(FinancialYear.objects.all())
     financial_period = factory.Iterator(FinancialPeriod.objects.all())
 
 
-class BudgetFactory(factory.DjangoModelFactory):
+class BudgetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BudgetMonthlyFigure
 
 
-class FinancialCodeFactory(factory.DjangoModelFactory):
+class FinancialCodeFactory(factory.django.DjangoModelFactory):
     programme = factory.SubFactory(ProgrammeCodeFactory)
     cost_centre = factory.SubFactory(CostCentreFactory)
     natural_account_code = factory.SubFactory(NaturalCodeFactory)
@@ -53,7 +53,7 @@ class FinancialCodeFactory(factory.DjangoModelFactory):
         model = FinancialCode
 
 
-class MonthlyFigureFactory(factory.DjangoModelFactory):
+class MonthlyFigureFactory(factory.django.DjangoModelFactory):
     financial_year = factory.Iterator(FinancialYear.objects.all())
     financial_period = factory.Iterator(FinancialPeriod.objects.all())
     financial_code = factory.SubFactory(FinancialCodeFactory)
@@ -63,16 +63,16 @@ class MonthlyFigureFactory(factory.DjangoModelFactory):
         model = ForecastMonthlyFigure
 
 
-class ForecastEditStateFactory(factory.DjangoModelFactory):
+class ForecastEditStateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ForecastEditState
 
 
-class FutureForecastEditStateFactory(factory.DjangoModelFactory):
+class FutureForecastEditStateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FutureForecastEditState
 
 
-class UnlockedForecastEditorFactory(factory.DjangoModelFactory):
+class UnlockedForecastEditorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = UnlockedForecastEditor

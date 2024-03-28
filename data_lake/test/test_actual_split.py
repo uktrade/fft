@@ -51,7 +51,6 @@ class ActualSplitTests(DataLakeTesting):
             natural_account_code=nac_obj,
             project_code=project_obj,
         )
-        self.financial_code_obj.save
         financial_period_queryset = FinancialPeriod.objects.filter(
             financial_period_code__lt=4
         )

@@ -273,9 +273,7 @@ class FinancialPeriodManager(models.Manager):
         )
 
     def reset_actuals(self):
-        self.get_queryset().filter(actual_loaded=True,).update(
-            actual_loaded=False,
-        )
+        self.get_queryset().filter(actual_loaded=True).update(actual_loaded=False)
 
     def get_max_period(self):
         return self.get_queryset().order_by("-financial_period_code").first()
@@ -574,9 +572,9 @@ class SubTotalForecast:
             if self.output_subtotal[column]:
                 subtotal_row = self.subtotals[column].copy()
                 level = self.subtotal_columns.index(column)
-                subtotal_row[
-                    self.display_total_column
-                ] = f"Total {self.previous_values[column]}"
+                subtotal_row[self.display_total_column] = (
+                    f"Total {self.previous_values[column]}"
+                )
                 show_class = TOTAL_CLASS
                 for out_total in self.subtotal_columns[level + 1 :]:
                     subtotal_row[self.display_total_column] = (
@@ -671,7 +669,7 @@ class SubTotalForecast:
                     self.output_subtotal[column] = True
             if subtotal_time:
                 self.do_output_subtotal(current_row)
-            for k, totals in self.subtotals.items():
+            for _, totals in self.subtotals.items():
                 self.add_row_to_subtotal(current_row, totals)
             self.output_row_to_table(current_row, "")
 
@@ -701,7 +699,13 @@ class SubTotalForecast:
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    def pivot_data(self, columns, filter_dict={}, year=0, order_list=[]):
+    def pivot_data(self, columns, filter_dict=None, year=0, order_list=None):
+        if filter_dict is None:
+            filter_dict = {}
+
+        if order_list is None:
+            order_list = []
+
         if year == 0:
             year = get_current_financial_year()
 
@@ -728,11 +732,17 @@ class DisplaySubTotalManager(models.Manager):
         display_total_column,
         subtotal_columns,
         data_columns,
-        filter_dict={},
+        filter_dict=None,
         year=0,
-        order_list=[],
+        order_list=None,
         show_grand_total=True,
     ):
+        if filter_dict is None:
+            filter_dict = {}
+
+        if order_list is None:
+            order_list = []
+
         # If requesting a subtotal, the
         # list of columns must be specified
         if not subtotal_columns:
@@ -768,7 +778,13 @@ class DisplaySubTotalManager(models.Manager):
             show_grand_total,
         )
 
-    def raw_data_annotated(self, columns, filter_dict={}, year=0, order_list=[]):
+    def raw_data_annotated(self, columns, filter_dict=None, year=0, order_list=None):
+        if filter_dict is None:
+            filter_dict = {}
+
+        if order_list is None:
+            order_list = []
+
         annotations = {
             budget_field: Sum("budget"),
             "Apr": Sum("apr"),

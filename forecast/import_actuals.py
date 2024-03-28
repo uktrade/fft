@@ -212,6 +212,7 @@ def validate_trial_balance_report(file_upload, month_number, year):
             str(ex),
             str(ex),
         )
+        workbook.close()
         raise ex
 
     try:
@@ -222,8 +223,9 @@ def validate_trial_balance_report(file_upload, month_number, year):
             str(ex),
             str(ex),
         )
-        workbook.close
+        workbook.close()
         raise ex
+
     return workbook, worksheet
 
 
@@ -284,7 +286,7 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         else:
             # needed to avoid processing empty rows at the end of the file
             break
-    workbook.close
+    workbook.close()
 
     final_status = FileUpload.PROCESSED
     if check_financial_code.error_found:

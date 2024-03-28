@@ -67,17 +67,17 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             natural_account_code=nac_obj,
             project_code=project_obj,
         )
-        financial_code_obj.save
         self.amount_apr_current_year = 987654300
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_apr_current_year,
         )
-        apr_figure.save
         self.amount_apr_next_year = 9898989800
-        next_year_april_figures = ForecastMonthlyFigure.objects.create(
+        # next year april figures
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=1,
             ),
@@ -85,7 +85,6 @@ class DownloadForecastHierarchyTest(BaseTestCase):
             financial_code=financial_code_obj,
             financial_year=next_year_obj,
         )
-        next_year_april_figures.save
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
         self.test_user.user_permissions.add(can_view_forecasts)

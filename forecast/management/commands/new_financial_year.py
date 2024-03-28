@@ -23,7 +23,7 @@ class Command(CommandWithUserCheck):
             )
             self.stdout.write(self.style.ERROR(full_error_message))
             raise CommandError(full_error_message)
-            return False
+
         return True
 
     def handle_user(self, *args, **options):

@@ -10,7 +10,7 @@ from treasurySS.models import (
 )
 
 
-class SegmentGrandParentFactory(factory.DjangoModelFactory):
+class SegmentGrandParentFactory(factory.django.DjangoModelFactory):
     """
     Define SegmentGrandParent Factory
     """
@@ -20,7 +20,7 @@ class SegmentGrandParentFactory(factory.DjangoModelFactory):
         django_get_or_create = ("segment_grand_parent_code",)
 
 
-class SegmentParentFactory(factory.DjangoModelFactory):
+class SegmentParentFactory(factory.django.DjangoModelFactory):
     """
     Define SegmentParent Factory
     """
@@ -32,7 +32,7 @@ class SegmentParentFactory(factory.DjangoModelFactory):
         django_get_or_create = ("segment_parent_code",)
 
 
-class SegmentFactory(factory.DjangoModelFactory):
+class SegmentFactory(factory.django.DjangoModelFactory):
     """
     Define Segment Factory
     """
@@ -44,7 +44,7 @@ class SegmentFactory(factory.DjangoModelFactory):
         django_get_or_create = ("segment_code",)
 
 
-class EstimateRowFactory(factory.DjangoModelFactory):
+class EstimateRowFactory(factory.django.DjangoModelFactory):
     """
     Define EstimateRow Factory
     """
@@ -53,7 +53,7 @@ class EstimateRowFactory(factory.DjangoModelFactory):
         model = EstimateRow
 
 
-class SubSegmentFactory(factory.DjangoModelFactory):
+class SubSegmentFactory(factory.django.DjangoModelFactory):
     """
     Define SubSegment Factory
     """

@@ -40,7 +40,7 @@ class ImportForecastTest(BaseTestCase):
         Analysis2Factory.create(analysis2_code=self.analisys2)
         self.year_obj = FinancialYear.objects.get(financial_year=2019)
         self.year_obj.current = True
-        self.year_obj.save
+        self.year_obj.save()
 
     def get_csv_data(self):
         header = (

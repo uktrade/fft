@@ -157,7 +157,7 @@ def handle_split_project_by_directorate(
     if rounding:
         # allocate to the last processed row the difference
         transferred_to_obj.calculated_amount += rounding
-        transferred_to_obj.save
+        transferred_to_obj.save()
 
     copy_values(financial_period_id, directorate_code, expenditure_code_list)
 

@@ -85,7 +85,6 @@ class FutureFigureSetup:
             natural_account_code=nac_obj,
             project_code=project_obj,
         )
-        self.financial_code_obj.save
 
     def setup_forecast(self, future: bool):
         value_dict = {}

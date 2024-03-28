@@ -93,7 +93,6 @@ class MonthlyFigureSetup:
             natural_account_code=nac_obj,
             project_code=project_obj,
         )
-        self.financial_code_obj.save
 
         if year == 0:
             year = get_current_financial_year()
@@ -166,7 +165,7 @@ class SetFullYearArchive(MonthlyFigureSetup):
         self.setup_forecast()
         self.setup_budget()
         # prepares the lists used to store the totals
-        for period in range(0, last_archived_period):
+        for _ in range(0, last_archived_period):
             self.archived_forecast.append(0)
             self.archived_budget.append(0)
         self.set_archive_period(last_archived_period)

@@ -54,9 +54,11 @@ def export_cc_iterator(queryset):
             obj.active,
             obj.used_for_travel,
             obj.disabled_with_actual,
-            obj.directorate.group.treasury_segment_fk.segment_long_name
-            if obj.directorate.group.treasury_segment_fk
-            else "-",
+            (
+                obj.directorate.group.treasury_segment_fk.segment_long_name
+                if obj.directorate.group.treasury_segment_fk
+                else "-"
+            ),
         ]
 
 
@@ -86,9 +88,11 @@ def export_group_iterator(queryset):
         yield [
             obj.group_code,
             obj.group_name,
-            obj.treasury_segment_fk.segment_long_name
-            if obj.treasury_segment_fk
-            else "-",
+            (
+                obj.treasury_segment_fk.segment_long_name
+                if obj.treasury_segment_fk
+                else "-"
+            ),
             obj.active,
         ]
 
