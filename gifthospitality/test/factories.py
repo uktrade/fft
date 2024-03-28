@@ -1,4 +1,4 @@
-import factory
+from factory.django import DjangoModelFactory
 
 from gifthospitality.models import (
     GiftAndHospitality,
@@ -8,7 +8,7 @@ from gifthospitality.models import (
 )
 
 
-class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
+class GiftsAndHospitalityFactory(DjangoModelFactory):
     """
     Define GiftsAndHospitality Factory
     """
@@ -17,7 +17,7 @@ class GiftsAndHospitalityFactory(factory.DjangoModelFactory):
         model = GiftAndHospitality
 
 
-class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
+class GiftsAndHospitalityCategoryFactory(DjangoModelFactory):
     """
     Define GiftsAndHospitalityCategory Factory
     """
@@ -26,7 +26,7 @@ class GiftsAndHospitalityCategoryFactory(factory.DjangoModelFactory):
         model = GiftAndHospitalityCategory
 
 
-class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
+class GiftsAndHospitalityClassificationFactory(DjangoModelFactory):
     """
     Define CostCentre Factory
     """
@@ -35,7 +35,7 @@ class GiftsAndHospitalityClassificationFactory(factory.DjangoModelFactory):
         model = GiftAndHospitalityClassification
 
 
-class GiftsAndHospitalityCompanyFactory(factory.DjangoModelFactory):
+class GiftsAndHospitalityCompanyFactory(DjangoModelFactory):
     """
     Define CostCentre Factory
     """

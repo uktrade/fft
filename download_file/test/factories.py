@@ -1,8 +1,8 @@
-import factory
+from factory.django import DjangoModelFactory
 
 from upload_file.models import FileUpload
 
 
-class FileUploadFactory(factory.DjangoModelFactory):
+class FileUploadFactory(DjangoModelFactory):
     class Meta:
         model = FileUpload

@@ -1,4 +1,4 @@
-import factory
+from factory.django import DjangoModelFactory
 
 from treasuryCOA.models import (
     HistoricL5Account,
@@ -10,7 +10,7 @@ from treasuryCOA.models import (
 )
 
 
-class L1AccountFactory(factory.DjangoModelFactory):
+class L1AccountFactory(DjangoModelFactory):
     """
     Define L1Account Factory
     """
@@ -21,7 +21,7 @@ class L1AccountFactory(factory.DjangoModelFactory):
     account_l1_code = 1111111
 
 
-class L2AccountFactory(factory.DjangoModelFactory):
+class L2AccountFactory(DjangoModelFactory):
     """
     Define L2Account Factory
     """
@@ -33,7 +33,7 @@ class L2AccountFactory(factory.DjangoModelFactory):
     account_l1 = factory.SubFactory(L1AccountFactory)
 
 
-class L3AccountFactory(factory.DjangoModelFactory):
+class L3AccountFactory(DjangoModelFactory):
     """
     Define L3Account Factory
     """
@@ -45,7 +45,7 @@ class L3AccountFactory(factory.DjangoModelFactory):
     account_l2 = factory.SubFactory(L2AccountFactory)
 
 
-class L4AccountFactory(factory.DjangoModelFactory):
+class L4AccountFactory(DjangoModelFactory):
     """
     Define L4Account Factory
     """
@@ -57,7 +57,7 @@ class L4AccountFactory(factory.DjangoModelFactory):
     account_l3 = factory.SubFactory(L3AccountFactory)
 
 
-class L5AccountFactory(factory.DjangoModelFactory):
+class L5AccountFactory(DjangoModelFactory):
     """
     Define L5Account Factory
     """
@@ -70,7 +70,7 @@ class L5AccountFactory(factory.DjangoModelFactory):
     account_l4 = factory.SubFactory(L4AccountFactory)
 
 
-class HistoricL5AccountFactory(factory.DjangoModelFactory):
+class HistoricL5AccountFactory(DjangoModelFactory):
     """
     Define HistoricL5Account Factory
     """

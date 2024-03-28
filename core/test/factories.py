@@ -1,4 +1,4 @@
-import factory
+from factory.django import DjangoModelFactory
 from django.contrib.auth import get_user_model
 from faker import Faker
 
