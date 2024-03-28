@@ -8,7 +8,7 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.12"
 celery = "^5.3.6"
 dj-database-url = "^2.1.0"
 django = "^4.2.11"
@@ -84,7 +84,7 @@ line_length = 88
 lines_after_imports = 2
 
 [tool.black]
-target-version = ["py310", "py311", "py312"]
+target-version = ["py312"]
 exclude = '''
 (
     \.direnv
@@ -108,8 +108,8 @@ exclude = '''
 # Same as Black.
 line-length = 88
 indent-width = 4
-# Target python 3.10.
-target-version = "py310"
+# Target python 3.12.
+target-version = "py312"
 # In addition to the standard set of exclusions, omit all tests, plus a specific file.
 extend-exclude = ["config/*", "features/*", "migrations", "manage.py"]
 
