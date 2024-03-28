@@ -1,4 +1,4 @@
-from factory.django import DjangoModelFactory
+import factory
 
 from chartofaccountDIT.models import (
     Analysis1,
@@ -26,7 +26,7 @@ from chartofaccountDIT.models import (
 )
 
 
-class Analysis1Factory(DjangoModelFactory):
+class Analysis1Factory(factory.django.DjangoModelFactory):
     """
     Define Analysis1 Factory
     """
@@ -37,12 +37,12 @@ class Analysis1Factory(DjangoModelFactory):
     active = True
 
 
-class HistoricalAnalysis1Factory(DjangoModelFactory):
+class HistoricalAnalysis1Factory(factory.django.DjangoModelFactory):
     class Meta:
         model = ArchivedAnalysis1
 
 
-class Analysis2Factory(DjangoModelFactory):
+class Analysis2Factory(factory.django.DjangoModelFactory):
     """
     Define Analysis2 Factory
     """
@@ -53,12 +53,12 @@ class Analysis2Factory(DjangoModelFactory):
     active = True
 
 
-class HistoricalAnalysis2Factory(DjangoModelFactory):
+class HistoricalAnalysis2Factory(factory.django.DjangoModelFactory):
     class Meta:
         model = ArchivedAnalysis2
 
 
-class NACCategoryFactory(DjangoModelFactory):
+class NACCategoryFactory(factory.django.DjangoModelFactory):
     """
     Define NACCategory Factory
     """
@@ -69,7 +69,7 @@ class NACCategoryFactory(DjangoModelFactory):
     NAC_category_description = factory.Faker("name")
 
 
-class OperatingDeliveryCategoryFactory(DjangoModelFactory):
+class OperatingDeliveryCategoryFactory(factory.django.DjangoModelFactory):
     """
     Define OperatingDeliveryCategory Factory
     """
@@ -78,7 +78,7 @@ class OperatingDeliveryCategoryFactory(DjangoModelFactory):
         model = OperatingDeliveryCategory
 
 
-class ExpenditureCategoryFactory(DjangoModelFactory):
+class ExpenditureCategoryFactory(factory.django.DjangoModelFactory):
     """
     Define ExpenditureCategory Factory
     """
@@ -90,14 +90,14 @@ class ExpenditureCategoryFactory(DjangoModelFactory):
         model = ExpenditureCategory
 
 
-class HistoricalExpenditureCategoryFactory(DjangoModelFactory):
+class HistoricalExpenditureCategoryFactory(factory.django.DjangoModelFactory):
     grouping_description = "Test Archived Budget Category"
 
     class Meta:
         model = ArchivedExpenditureCategory
 
 
-class CommercialCategoryFactory(DjangoModelFactory):
+class CommercialCategoryFactory(factory.django.DjangoModelFactory):
     """
     Define CommercialCategory Factory
     """
@@ -108,14 +108,14 @@ class CommercialCategoryFactory(DjangoModelFactory):
         model = CommercialCategory
 
 
-class HistoricalCommercialCategoryFactory(DjangoModelFactory):
+class HistoricalCommercialCategoryFactory(factory.django.DjangoModelFactory):
     active = True
 
     class Meta:
         model = ArchivedCommercialCategory
 
 
-class NaturalCodeFactory(DjangoModelFactory):
+class NaturalCodeFactory(factory.django.DjangoModelFactory):
     """
     Define NaturalCode Factory
     """
@@ -130,7 +130,7 @@ class NaturalCodeFactory(DjangoModelFactory):
     used_for_budget = False
 
 
-class HistoricalNaturalCodeFactory(DjangoModelFactory):
+class HistoricalNaturalCodeFactory(factory.django.DjangoModelFactory):
 
     active = True
     natural_account_code = 87654321
@@ -141,7 +141,7 @@ class HistoricalNaturalCodeFactory(DjangoModelFactory):
         model = ArchivedNaturalCode
 
 
-class ProgrammeCodeFactory(DjangoModelFactory):
+class ProgrammeCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ProgrammeCode Factory
     """
@@ -156,7 +156,7 @@ class ProgrammeCodeFactory(DjangoModelFactory):
     budget_type = factory.Iterator(BudgetType.objects.all())
 
 
-class HistoricalProgrammeCodeFactory(DjangoModelFactory):
+class HistoricalProgrammeCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ArchivedProgrammeCode Factory
     """
@@ -170,7 +170,7 @@ class HistoricalProgrammeCodeFactory(DjangoModelFactory):
         model = ArchivedProgrammeCode
 
 
-class InterEntityL1Factory(DjangoModelFactory):
+class InterEntityL1Factory(factory.django.DjangoModelFactory):
     """
     Define InterEntityL1 Factory
     """
@@ -179,7 +179,7 @@ class InterEntityL1Factory(DjangoModelFactory):
         model = InterEntityL1
 
 
-class InterEntityFactory(DjangoModelFactory):
+class InterEntityFactory(factory.django.DjangoModelFactory):
     """
     Define InterEntity Factory
     """
@@ -191,14 +191,14 @@ class InterEntityFactory(DjangoModelFactory):
         model = InterEntity
 
 
-class HistoricalInterEntityFactory(DjangoModelFactory):
+class HistoricalInterEntityFactory(factory.django.DjangoModelFactory):
     active = True
 
     class Meta:
         model = ArchivedInterEntity
 
 
-class ProjectCodeFactory(DjangoModelFactory):
+class ProjectCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ProjectCode Factory
     """
@@ -212,7 +212,7 @@ class ProjectCodeFactory(DjangoModelFactory):
     project_description = "Project Description"
 
 
-class HistoricalProjectCodeFactory(DjangoModelFactory):
+class HistoricalProjectCodeFactory(factory.django.DjangoModelFactory):
     """
     Define ArchivedProjectCode Factory
     """
@@ -225,7 +225,7 @@ class HistoricalProjectCodeFactory(DjangoModelFactory):
         model = ArchivedProjectCode
 
 
-class FCOMappingFactory(DjangoModelFactory):
+class FCOMappingFactory(factory.django.DjangoModelFactory):
     """
     Define FCOMapping Factory
     """
@@ -238,7 +238,7 @@ class FCOMappingFactory(DjangoModelFactory):
         model = FCOMapping
 
 
-class HistoricalFCOMappingFactory(DjangoModelFactory):
+class HistoricalFCOMappingFactory(factory.django.DjangoModelFactory):
     """
     Define ArchivedFCOMapping Factory
     """
