@@ -84,7 +84,7 @@ def upload_figures(uploadmodel, data_row, year_obj, financialcode_obj, month_dic
         if period_figure is None:
             period_figure = 0
         # We import from Excel, and the user may have entered spaces in an empty cell.
-        if type(period_figure) == str:
+        if isinstance(period_figure, str):
             period_figure = period_figure.strip()
         if period_figure == "-":
             # we accept the '-' as it is a recognised value in Finance for 0
@@ -99,7 +99,10 @@ def upload_figures(uploadmodel, data_row, year_obj, financialcode_obj, month_dic
                 f"Non-numeric value in {data_row[month_idx].coordinate}:{period_figure}"  # noqa
             )
         if period_figure:
-            (figure_obj, created,) = uploadmodel.objects.get_or_create(
+            (
+                figure_obj,
+                created,
+            ) = uploadmodel.objects.get_or_create(
                 financial_year=year_obj,
                 financial_code=financialcode_obj,
                 financial_period=period_obj,
@@ -215,6 +218,7 @@ def upload_figure_from_file(file_upload, year):
         title = "Budgets"
     else:
         title = "Forecasts"
+
     try:
         workbook, worksheet = validate_excel_file(file_upload, title)
     except UploadFileFormatError as ex:
@@ -223,8 +227,11 @@ def upload_figure_from_file(file_upload, year):
             str(ex),
             str(ex),
         )
+        workbook.close()
         raise ex
+
     header_dict = xslx_header_to_dict(worksheet[1])
+
     try:
         check_header(header_dict, EXPECTED_FIGURE_HEADERS)
     except UploadFileFormatError as ex:
@@ -233,19 +240,21 @@ def upload_figure_from_file(file_upload, year):
             str(ex),
             str(ex),
         )
-        workbook.close
+        workbook.close()
         raise ex
+
     try:
         upload_financial_figures(worksheet, year, header_dict, file_upload)
-    except (UploadFileDataError) as ex:
+    except UploadFileDataError as ex:
         set_file_upload_fatal_error(
             file_upload,
             str(ex),
             str(ex),
         )
-        workbook.close
+        workbook.close()
         raise ex
-    workbook.close
+
+    workbook.close()
 
 
 def upload_budget_from_file(file_upload, year):

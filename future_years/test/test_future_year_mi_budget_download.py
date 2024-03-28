@@ -40,16 +40,15 @@ class DownloadFutureMIBudgetViewTests(BaseTestCase):
             natural_account_code=nac_obj,
             project_code=project_obj,
         )
-        financial_code_obj.save
-        apr_figure = BudgetMonthlyFigure.objects.create(
+        # apr figure
+        BudgetMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_apr,
         )
-        apr_figure.save
-
-        may_figure = BudgetMonthlyFigure.objects.create(
+        # may figure
+        BudgetMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=2,
             ),
@@ -57,15 +56,14 @@ class DownloadFutureMIBudgetViewTests(BaseTestCase):
             financial_code=financial_code_obj,
             financial_year=year_obj,
         )
-        may_figure.save
 
         financial_code_obj1 = FinancialCode.objects.create(
             programme=self.programme_obj,
             cost_centre=cost_centre,
             natural_account_code=nac_obj,
         )
-
-        may_figure1 = BudgetMonthlyFigure.objects.create(
+        # another may figure
+        BudgetMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=2,
             ),
@@ -73,7 +71,6 @@ class DownloadFutureMIBudgetViewTests(BaseTestCase):
             financial_code=financial_code_obj1,
             financial_year=year_obj,
         )
-        may_figure1.save
 
         self.year_total = self.amount_apr + self.amount_may
 

@@ -34,8 +34,8 @@ jobs:
       - name: Collect static
         run: make collectstatic
 
-      - name: Run Flake8
-        run: make flake8
+      - name: Run ruff
+        run: make ruff
 
       - name: Run isort
         run: make isort-check

@@ -141,37 +141,34 @@ class ViewForecastNaturalAccountCodeTest(BaseTestCase):
             cost_centre=self.cost_centre,
             natural_account_code=self.nac1_obj,
         )
-        financial_code1_obj.save
         financial_code2_obj = FinancialCode.objects.create(
             programme=programme_obj,
             cost_centre=self.cost_centre,
             natural_account_code=self.nac2_obj,
         )
-        financial_code2_obj.save
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
             amount=self.amount1_apr,
         )
-        apr_figure.save
-
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # another apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code2_obj,
             financial_year=year_obj,
             amount=self.amount2_apr,
         )
-        apr_figure.save
 
         self.amount_may = 1234567
-        may_figure = ForecastMonthlyFigure.objects.create(
+        # may figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=4),
             financial_code=financial_code1_obj,
             financial_year=year_obj,
             amount=self.amount_may,
         )
-        may_figure.save
 
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
@@ -343,26 +340,25 @@ class ViewProgrammeDetailsTest(BaseTestCase):
             cost_centre=self.cost_centre,
             natural_account_code=nac_obj,
         )
-        financial_code_obj.save
         self.forecast_expenditure_type_id = (
             financial_code_obj.forecast_expenditure_type.forecast_expenditure_type_name
         )
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             amount=amount_apr,
             financial_code=financial_code_obj,
             financial_year=year_obj,
         )
-        apr_figure.save
 
         self.amount_may = 1234567
-        may_figure = ForecastMonthlyFigure.objects.create(
+        # may figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=4),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_may,
         )
-        may_figure.save
 
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")
@@ -612,32 +608,31 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             natural_account_code=nac_obj,
             project_code=self.project_obj,
         )
-        financial_code_obj.save
+
         financial_code_obj1 = FinancialCode.objects.create(
             programme=self.programme_obj,
             cost_centre=self.cost_centre1,
             natural_account_code=nac_obj,
             project_code=self.project_obj,
         )
-        financial_code_obj1.save
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_apr,
         )
-        apr_figure.save
-
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # another apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj1,
             financial_year=year_obj,
             amount=-self.amount_apr,
         )
-        apr_figure.save
 
         self.amount_may = 891000
-        may_figure = ForecastMonthlyFigure.objects.create(
+        # may figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=2,
             ),
@@ -645,9 +640,8 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             financial_code=financial_code_obj,
             financial_year=year_obj,
         )
-        may_figure.save
-
-        may_figure = ForecastMonthlyFigure.objects.create(
+        # another may figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=2,
             ),
@@ -655,7 +649,6 @@ class ViewForecastHierarchyZeroProjectTest(BaseTestCase):
             financial_code=financial_code_obj1,
             financial_year=year_obj,
         )
-        may_figure.save
 
         # Assign forecast view permission
         can_view_forecasts = Permission.objects.get(codename="can_view_forecasts")

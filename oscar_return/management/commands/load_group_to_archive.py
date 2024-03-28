@@ -29,10 +29,9 @@ class Command(CommandUpload):
             import_segment_group(csvfile, year)
         except (ArchiveYearError, WrongHeaderException) as ex:
             raise CommandError(f"Failure uploading forecast period: {str(ex)}")
+        finally:
             csvfile.close()
-            return
 
-        csvfile.close()
         if self.upload_s3:
             os.remove(file_name)
         self.stdout.write(

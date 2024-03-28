@@ -164,7 +164,7 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
         else:
             # needed to avoid processing empty rows at the end of the file
             break
-    workbook.close
+    workbook.close()
 
     if not error_found:
         # copy new fields to tables. Use direct sql for performance
@@ -184,5 +184,5 @@ def upload_nac_fields(file_obj: FileUpload) -> int:  # noqa C901
     set_file_upload_feedback(
         file_obj, f"Processed {rows_to_process} rows.", final_status
     )
-    file_obj.user_error_message
+
     return final_message, success

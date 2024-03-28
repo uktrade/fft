@@ -59,32 +59,29 @@ class EditForecastTest(BaseTestCase):
             cost_centre=self.cost_centre,
             natural_account_code=NaturalCodeFactory.create(),
         )
-        financial_code_obj.save
 
         self.current_financial_year = get_current_financial_year()
-        this_year_figure = ForecastMonthlyFigure.objects.create(
+        # this year figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=get_financial_year_obj(self.current_financial_year),
             amount=self.current_year_amount,
         )
-        this_year_figure.save
-
-        next_year_figure = ForecastMonthlyFigure.objects.create(
+        # next year figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=get_financial_year_obj(self.current_financial_year + 1),
             amount=self.next_year_amount,
         )
-        next_year_figure.save
-
-        next_next_year_figure = ForecastMonthlyFigure.objects.create(
+        # next next year figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=get_financial_year_obj(self.current_financial_year + 2),
             amount=self.next_next_year_amount,
         )
-        next_next_year_figure.save
 
     def test_correct_current_forecast(self):
         # Checks the 'Edit-Forecast tab' returns an 'OK' status code
@@ -467,16 +464,15 @@ class EditFutureForecastTest(BaseTestCase):
             cost_centre=self.cost_centre,
             natural_account_code=nac_obj,
         )
-        financial_code_obj.save
 
         self.current_financial_year = get_current_financial_year()
-        this_year_figure = ForecastMonthlyFigure.objects.create(
+        # this year figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=get_financial_year_obj(self.current_financial_year),
             amount=self.current_year_amount,
         )
-        this_year_figure.save
 
     def test_empty_future_forecast(self):
         # Tests that there are no emtpy rows derived from forecasts data in other years

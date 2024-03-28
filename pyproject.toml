@@ -70,7 +70,7 @@ pytest-random-order = "^1.1.1"
 pyperclip = "^1.8.0"
 freezegun = "^1.0.0"
 isort = "^5.10.1"
-flake8 = "^7.0.0"
+ruff = "^0.3.4"
 
 [build-system]
 requires = ["poetry-core"]
@@ -84,8 +84,7 @@ line_length = 88
 lines_after_imports = 2
 
 [tool.black]
-# Exclude files with # noqa directive for flake8. They have long lines,
-# and black will move the flake8 directive to a new line, and flake8 will complain.
+target-version = ["py310", "py311", "py312"]
 exclude = '''
 (
     \.direnv
@@ -104,3 +103,18 @@ exclude = '''
     | upload_split_file/downloads.py
 )
 '''
+
+[tool.ruff]
+# Same as Black.
+line-length = 88
+indent-width = 4
+# Target python 3.10.
+target-version = "py310"
+# In addition to the standard set of exclusions, omit all tests, plus a specific file.
+extend-exclude = ["config/*", "features/*", "migrations", "manage.py"]
+
+[tool.ruff.lint]
+# Enable flake8-bugbear (`B`) rules.
+select = ["E", "F", "B"]
+# Never enforce `E501` (line length violations).
+ignore = ["E501", "B904"]

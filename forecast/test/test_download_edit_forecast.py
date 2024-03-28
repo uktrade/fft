@@ -69,16 +69,16 @@ class DownloadEditForecastTest(BaseTestCase):
             natural_account_code=self.nac_obj,
             project_code=self.project_obj,
         )
-        financial_code_obj.save
-        apr_figure = ForecastMonthlyFigure.objects.create(
+        # apr figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj,
             financial_year=year_obj,
             amount=self.amount_apr,
         )
-        apr_figure.save
         self.amount_may = 1234567
-        may_figure = ForecastMonthlyFigure.objects.create(
+        # may figure
+        ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(
                 financial_period_code=2,
             ),
@@ -86,7 +86,6 @@ class DownloadEditForecastTest(BaseTestCase):
             financial_code=financial_code_obj,
             financial_year=year_obj,
         )
-        may_figure.save
 
         # This will create a row with no figures.
         # Changed to create a record with value 0
@@ -100,7 +99,6 @@ class DownloadEditForecastTest(BaseTestCase):
             natural_account_code=self.nac_obj,
             project_code=project_obj1,
         )
-        financial_code_obj1.save
         ForecastMonthlyFigure.objects.create(
             financial_period=FinancialPeriod.objects.get(financial_period_code=1),
             financial_code=financial_code_obj1,

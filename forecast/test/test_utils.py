@@ -17,14 +17,15 @@ def create_budget(financial_code_obj, year_obj):
     budget_july = 1234567
     budget_total = budget_apr + budget_may + budget_july
     # Save several months, and check that the total is displayed
-    apr_budget = BudgetMonthlyFigure.objects.create(
+    # apr figure
+    BudgetMonthlyFigure.objects.create(
         financial_period=FinancialPeriod.objects.get(financial_period_code=1),
         financial_code=financial_code_obj,
         financial_year=year_obj,
         amount=budget_apr,
     )
-    apr_budget.save
-    may_budget = BudgetMonthlyFigure.objects.create(
+    # may budget
+    BudgetMonthlyFigure.objects.create(
         financial_period=FinancialPeriod.objects.get(
             financial_period_code=2,
         ),
@@ -32,8 +33,8 @@ def create_budget(financial_code_obj, year_obj):
         financial_code=financial_code_obj,
         financial_year=year_obj,
     )
-    may_budget.save
-    july_budget = BudgetMonthlyFigure.objects.create(
+    # july budget
+    BudgetMonthlyFigure.objects.create(
         financial_period=FinancialPeriod.objects.get(
             financial_period_code=4,
         ),
@@ -41,7 +42,6 @@ def create_budget(financial_code_obj, year_obj):
         financial_code=financial_code_obj,
         financial_year=year_obj,
     )
-    july_budget.save
     return budget_total
 
 

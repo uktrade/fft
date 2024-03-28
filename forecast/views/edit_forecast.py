@@ -547,4 +547,4 @@ class ErrorView(
     TemplateView,
 ):
     def dispatch(self, request, *args, **kwargs):
-        1 / 0
+        return 1 / 0

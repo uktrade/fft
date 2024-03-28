@@ -395,7 +395,7 @@ class CheckFinancialCode:
             return None
 
     def clean_data(self, data):
-        if type(data) == str:
+        if isinstance(data, str):
             return data.strip()
         else:
             return data

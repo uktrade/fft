@@ -92,11 +92,11 @@ isort-check: # Run isort-check
 isort: # Run isort
 	$(web) isort .
 
-flake8: # Run flake8 
-	$(web) flake8 $(file)
+ruff: # Run ruff 
+	$(web) ruff check
 
 check: # Run formatters to see if there are any errors
-	make flake8
+	make ruff
 	make black-check
 	make isort-check
 

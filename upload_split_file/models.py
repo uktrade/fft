@@ -58,7 +58,12 @@ class PreviousYearPaySplitCoefficient(PaySplitCoefficientAbstract):
 class PivotManager(models.Manager):
     """Managers returning the data in Monthly figures pivoted"""
 
-    def pivot_data(self, columns, filter_dict={}, order_list=[]):
+    def pivot_data(self, columns, filter_dict=None, order_list=None):
+        if filter_dict is None:
+            filter_dict = {}
+
+        if order_list is None:
+            order_list = []
 
         q1 = self.get_queryset().filter(**filter_dict).order_by(*order_list)
         pivot_data = pivot(

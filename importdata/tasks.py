@@ -12,7 +12,7 @@ def import_task(requester, type, file, import_func):
         import_status=AsyncImportLog.STATUS_STARTED,
         imported_by=requester,
     )
-    log.save
+    log.save()
     return True
 
     logid = log.id
@@ -31,5 +31,5 @@ def import_task(requester, type, file, import_func):
         import_message=message,
         import_end=datetime.now(),
     )
-    log.save
+    log.save()
     return result

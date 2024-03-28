@@ -124,7 +124,7 @@ def bulk_delete_users(file_obj: FileUpload) -> int:
         else:
             # needed to avoid processing empty rows at the end of the file
             break
-    workbook.close
+    workbook.close()
 
     final_status = FileUpload.PROCESSED
     if error_found:

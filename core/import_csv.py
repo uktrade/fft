@@ -60,10 +60,10 @@ def add_position(d, h):
     dictionary inside"""
     c = {}
     for k, v in d.items():
-        if type(v) is dict:
+        if isinstance(v, dict):
             c[k] = add_position(v, h)
         else:
-            if type(v) is str:
+            if isinstance(v, str):
                 v = v.lower()
             if v in h:
                 c[k] = h[v]
@@ -145,7 +145,7 @@ def read_csv_from_dict(d, row, year):
 
     default_list = {}
     for k, v in d[IMPORT_CSV_FIELDLIST_KEY].items():
-        if type(v) is dict:
+        if isinstance(v, dict):
             default_list[k], errormsg = read_csv_from_dict(v, row, year)
         else:
             default_list[k] = get_value_from_field(
@@ -185,8 +185,8 @@ def get_col_from_obj_key(obj_key):
     if IMPORT_CSV_IS_FK in obj_key:
         header_list.append(obj_key[IMPORT_CSV_IS_FK])
     if IMPORT_CSV_FIELDLIST_KEY in obj_key:
-        for k, v in obj_key[IMPORT_CSV_FIELDLIST_KEY].items():
-            if type(v) is dict:
+        for _, v in obj_key[IMPORT_CSV_FIELDLIST_KEY].items():
+            if isinstance(v, dict):
                 header_list = header_list + get_col_from_obj_key(v)
             else:
                 header_list.append(v)
@@ -254,13 +254,22 @@ class ImportInfo:
 
     def __init__(
         self,
-        key={},
+        key=None,
         title="",
-        h_list=[],
+        h_list=None,
         special_import_func=None,
-        filter=[],
+        filter=None,
         extra_func=None,
     ):
+        if key is None:
+            key = {}
+
+        if h_list is None:
+            h_list = []
+
+        if filter is None:
+            filter = []
+
         self.key = key
         self.special_func = special_import_func
         if bool(key):
@@ -328,7 +337,7 @@ def get_field_name(obj_key, prefix):
         field_list.append(prefix + model._meta.pk.name)
     if IMPORT_CSV_FIELDLIST_KEY in obj_key:
         for k, v in obj_key[IMPORT_CSV_FIELDLIST_KEY].items():
-            if type(v) is dict:
+            if isinstance(v, dict):
                 field_list = field_list + get_field_name(v, prefix + k + "__")
             else:
                 field_list.append(prefix + k)

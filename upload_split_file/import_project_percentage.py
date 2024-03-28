@@ -139,7 +139,7 @@ class UploadProjectPercentages:
     def get_valid_percentage_value(self, period_percentage):
         # We import from Excel, and the user
         # may have entered spaces in an empty cell.
-        if type(period_percentage) == str:
+        if isinstance(period_percentage, str):
             period_percentage = period_percentage.strip()
         if period_percentage == "-":
             # we accept the '-' as it is a recognised value in Finance for 0
@@ -306,7 +306,7 @@ def upload_project_percentage_from_file(worksheet, file_upload, include_archived
         upload.copy_uploaded_percentage()
         upload.apply_percentages()
 
-    except (UploadFileDataError) as ex:
+    except UploadFileDataError as ex:
         set_file_upload_fatal_error(
             file_upload,
             str(ex),
@@ -326,4 +326,4 @@ def upload_project_percentage(file_upload, include_archived=False):
         )
         return
     upload_project_percentage_from_file(worksheet, file_upload, include_archived)
-    workbook.close
+    workbook.close()

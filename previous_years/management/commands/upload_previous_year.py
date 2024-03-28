@@ -40,7 +40,6 @@ class Command(CommandUpload):
             ArchiveYearError,
         ) as ex:
             raise CommandError(f"Failure uploading historical actuals: {str(ex)}")
-            return
 
         if self.upload_s3:
             os.remove(file_name)
