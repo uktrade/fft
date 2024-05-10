@@ -54,7 +54,7 @@ def insert_total_budget_query(
         f"created, updated, amount, archived_period_id, "
         f"financial_code_id, financial_year_id, archived_status_id)"
         f"SELECT now(), now(), budget, {archived_period_id},"
-        f"financial_code_id, financial_year_id, {archived_status_id}"
+        f"financial_code_id, financial_year_id, {archived_status_id} "
         f"FROM public.yearly_budget "
         f"WHERE financial_year_id = {financial_year_id};"
     )

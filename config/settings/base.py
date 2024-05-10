@@ -15,6 +15,8 @@ from pathlib import Path
 
 import environ
 from django.urls import reverse_lazy
+from django_log_formatter_asim import ASIMFormatter
+from django_log_formatter_ecs import ECSFormatter
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -334,3 +336,39 @@ VITE_MANIFEST_PATH = BASE_DIR / "front_end" / "build" / ".vite" / "manifest.json
 
 # Selenium (BDD tests)
 USE_REMOTE_CHROME = env("USE_REMOTE_CHROME", default=True)
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+        "asim": {
+            "()": ASIMFormatter,
+        },
+        # TODO (DWPF-1696): Remove ECS formatter
+        "ecs": {
+            "()": ECSFormatter,
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

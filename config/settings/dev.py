@@ -1,10 +1,7 @@
-import sys
-
 import sentry_sdk
-from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .base import *  # noqa
+from .paas import *  # noqa
 
 
 MIDDLEWARE += [
@@ -23,40 +20,6 @@ X_ROBOTS_TAG = [
 
 # Django staff SSO user migration process requries the following
 MIGRATE_EMAIL_USER_ON_LOGIN = True
-
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": CELERY_BROKER_URL,
-        "KEY_PREFIX": "cache_",
-    }
-}
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-    },
-    "loggers": {
-        "django.request": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
 
 # Set async file uploading
 ASYNC_FILE_UPLOAD = True

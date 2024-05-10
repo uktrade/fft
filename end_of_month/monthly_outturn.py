@@ -82,8 +82,8 @@ def create_outturn_for_variance(period_code, year, used_for_current_month=False)
         f"SUM(apr + may + jun + jul + aug + sep + oct + "
         f'nov + "dec" + jan + feb + mar + adj1 + adj2 + adj3), '
         f"{use_for_current_data_value} "
-        f"FROM {db_view_name}  "
-        f"WHERE financial_year = {year}"
+        f"FROM {db_view_name} "
+        f"WHERE financial_year = {year} "
         f"GROUP BY financial_code_id, financial_year, archived_period_id;"
     )
 
