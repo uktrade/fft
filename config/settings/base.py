@@ -17,6 +17,7 @@ import environ
 from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
+from dbt_copilot_python.utility import is_copilot
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -222,15 +223,16 @@ AWS_DEFAULT_ACL = None
 if "redis" in VCAP_SERVICES:
     credentials = VCAP_SERVICES["redis"][0]["credentials"]
 
-    CELERY_BROKER_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
+    REDIS_URL = "rediss://:{}@{}:{}/0?ssl_cert_reqs=required".format(
         credentials["password"],
         credentials["host"],
         credentials["port"],
     )
 else:
-    CELERY_BROKER_URL = env("CELERY_BROKER_URL", default=None)
+    REDIS_URL = env.str("REDIS_ENDPOINT")
 
-# celery
+# Celery
+CELERY_BROKER_URL = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 
@@ -324,8 +326,9 @@ HAWK_INCOMING_SECRET_KEY = env.str("HAWK_INCOMING_SECRET_KEY", default=None)
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
-        "LOCATION": "django_cache_table",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+        "KEY_PREFIX": "cache_",
     }
 }
 

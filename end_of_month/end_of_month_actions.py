@@ -35,7 +35,7 @@ class RestoreNonExistingArchiveError(Exception):
 
 def insert_query(table_name, archived_status_id):
     return (
-        f"INSERT INTO public.{table_name}("
+        f"INSERT INTO public.{table_name} ("
         f"created, updated, amount, starting_amount, financial_code_id, "
         f"financial_period_id, financial_year_id) "
         f"SELECT "
@@ -52,8 +52,8 @@ def insert_total_budget_query(
     return (
         f"INSERT INTO public.end_of_month_monthlytotalbudget ("
         f"created, updated, amount, archived_period_id, "
-        f"financial_code_id, financial_year_id, archived_status_id)"
-        f"SELECT now(), now(), budget, {archived_period_id},"
+        f"financial_code_id, financial_year_id, archived_status_id) "
+        f"SELECT now(), now(), budget, {archived_period_id}, "
         f"financial_code_id, financial_year_id, {archived_status_id} "
         f"FROM public.yearly_budget "
         f"WHERE financial_year_id = {financial_year_id};"
