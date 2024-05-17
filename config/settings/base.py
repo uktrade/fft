@@ -14,10 +14,10 @@ import os
 from pathlib import Path
 
 import environ
+from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
-from dbt_copilot_python.utility import is_copilot
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
