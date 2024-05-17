@@ -1,10 +1,7 @@
-import sys
-
 import sentry_sdk
-from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from .base import *  # noqa
+from .paas import *  # noqa
 
 
 MIDDLEWARE += [
@@ -26,68 +23,6 @@ X_ROBOTS_TAG = [
     "noindex",
     "nofollow",
 ]
-
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": CELERY_BROKER_URL,
-        "KEY_PREFIX": "cache_",
-    }
-}
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-        "simple": {"format": "%(levelname)s %(message)s"},
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-        "stdout": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "simple",
-            "level": "INFO",
-        },
-    },
-    "loggers": {
-        "django.request": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.import_csv": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.views.upload_file": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-        "forecast.tasks": {
-            "handlers": [
-                "stdout",
-            ],
-            "level": "INFO",
-            "propagate": True,
-        },
-    },
-}
 
 # Set async file uploading
 ASYNC_FILE_UPLOAD = True
