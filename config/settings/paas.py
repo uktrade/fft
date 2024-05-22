@@ -7,7 +7,8 @@ from .base import *
 
 
 # TODO (DWPF-1696): Remove ECS formatter
-LOGGING["handlers"]["console"]["formatter"] = "ecs"
+# FIXME
+# LOGGING["handlers"]["console"]["formatter"] = "ecs"
 
 if is_copilot():
     ALLOWED_HOSTS = setup_allowed_hosts(ALLOWED_HOSTS)
