@@ -137,7 +137,7 @@ class FinancialCodeAdmin(AdminReadOnly):
         ("programme", RelatedDropdownFilter),
         ("analysis1_code", RelatedDropdownFilter),
         ("analysis2_code", RelatedDropdownFilter),
-        ("project_code,", RelatedDropdownFilter),
+        ("project_code", RelatedDropdownFilter),
     )
 
     def get_readonly_fields(self, request, obj=None):
