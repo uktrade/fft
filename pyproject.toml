@@ -37,7 +37,7 @@ mohawk = "^1.1.0"
 boto3 = "^1.17.89"
 django-storages = "^1.14.2"
 openpyxl = "^3.0.5"
-requests = "^2.25.1"
+requests = "^2.32.0"
 redis = "^5.0.3"
 
 # Are these packages still needed?
