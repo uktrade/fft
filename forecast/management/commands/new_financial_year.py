@@ -1,12 +1,14 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
+from chartofaccountDIT.models import NaturalCode
 from core.utils.command_helpers import CommandWithUserCheck, get_no_answer
 from core.utils.generic_helpers import (
     create_financial_year_display,
     get_current_financial_year,
     get_year_display,
 )
+from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST
 
 
 class Command(CommandWithUserCheck):
@@ -27,6 +29,11 @@ class Command(CommandWithUserCheck):
         return True
 
     def handle_user(self, *args, **options):
+        try:
+            pre_new_financial_year_checks()
+        except NewFinancialYearError as err:
+            raise CommandError(str(err)) from err
+
         current_financial_year = get_current_financial_year()
         current_financial_year_display = get_year_display(current_financial_year)
         new_financial_year = current_financial_year + 1
@@ -67,4 +74,27 @@ class Command(CommandWithUserCheck):
 
         self.stdout.write(
             self.style.SUCCESS(f"FFT ready for {new_financial_year_display} ")
+        )
+
+
+class NewFinancialYearError(Exception):
+    pass
+
+
+def pre_new_financial_year_checks() -> None:
+    """Pre-flight checks for changing to a new financial year.
+
+    This function will raise `NewFinancialYearError` if any issues are found.
+
+    Checks:
+        - Look for NACs with invalid economic budget codes.
+    """
+    problem_nacs = NaturalCode.objects.exclude(
+        economic_budget_code__in=VALID_ECONOMIC_CODE_LIST
+    )
+
+    if bool(problem_nacs):
+        problem_nac_ids = problem_nacs.values_list("natural_account_code", flat=True)
+        raise NewFinancialYearError(
+            f"Possible problem NACs found: {", ".join(problem_nac_ids)}"
         )
