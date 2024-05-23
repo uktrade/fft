@@ -94,7 +94,7 @@ def pre_new_financial_year_checks() -> None:
     )
 
     if bool(problem_nacs):
-        problem_nac_ids = problem_nacs.values_list("natural_account_code", flat=True)
+        problem_nac_ids = [str(nac.natural_account_code) for nac in problem_nacs]
         raise NewFinancialYearError(
             f"Possible problem NACs found: {", ".join(problem_nac_ids)}"
         )
