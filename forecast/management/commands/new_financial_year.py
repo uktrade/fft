@@ -29,10 +29,10 @@ class Command(CommandWithUserCheck):
         return True
 
     def handle_user(self, *args, **options):
-        try:
-            pre_new_financial_year_checks()
-        except NewFinancialYearError as err:
-            raise CommandError(str(err)) from err
+        # try:
+        #     pre_new_financial_year_checks()
+        # except NewFinancialYearError as err:
+        #     raise CommandError(str(err)) from err
 
         current_financial_year = get_current_financial_year()
         current_financial_year_display = get_year_display(current_financial_year)
