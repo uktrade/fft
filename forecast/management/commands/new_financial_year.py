@@ -1,13 +1,13 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
-from chartofaccountDIT.models import NaturalCode
 from core.utils.command_helpers import CommandWithUserCheck, get_no_answer
 from core.utils.generic_helpers import (
     create_financial_year_display,
     get_current_financial_year,
     get_year_display,
 )
+from forecast.models import FinancialCode
 from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST
 
 
@@ -29,10 +29,10 @@ class Command(CommandWithUserCheck):
         return True
 
     def handle_user(self, *args, **options):
-        # try:
-        #     pre_new_financial_year_checks()
-        # except NewFinancialYearError as err:
-        #     raise CommandError(str(err)) from err
+        try:
+            pre_new_financial_year_checks()
+        except NewFinancialYearError as err:
+            raise CommandError(str(err)) from err
 
         current_financial_year = get_current_financial_year()
         current_financial_year_display = get_year_display(current_financial_year)
@@ -89,8 +89,8 @@ def pre_new_financial_year_checks() -> None:
     Checks:
         - Look for NACs with invalid economic budget codes.
     """
-    problem_nacs = NaturalCode.objects.exclude(
-        economic_budget_code__in=VALID_ECONOMIC_CODE_LIST
+    problem_nacs = FinancialCode.objects.exclude(
+        natural_account_code__economic_budget_code__in=VALID_ECONOMIC_CODE_LIST
     )
 
     if bool(problem_nacs):
