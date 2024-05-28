@@ -87,8 +87,9 @@ def pre_new_financial_year_checks() -> None:
     This function will raise `NewFinancialYearError` if any issues are found.
 
     Checks:
-        - Look for NACs with invalid economic budget codes.
+        - Look for used NACs with invalid economic budget codes.
     """
+    # It's possible this needs to be scoped to a financial year in the future.
     problem_nacs = FinancialCode.objects.exclude(
         natural_account_code__economic_budget_code__in=VALID_ECONOMIC_CODE_LIST
     )
