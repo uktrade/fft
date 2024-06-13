@@ -16,4 +16,6 @@ if is_copilot():
         default=database_url_from_env("DATABASE_CREDENTIALS")
     )
 
+    REDIS_URL = env("REDIS_URL", default=None) + "?ssl_cert_reqs=required"
+
     LOGGING["handlers"]["console"]["formatter"] = "asim"

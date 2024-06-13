@@ -133,12 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },  # noqa
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
-    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # Internationalization
@@ -199,22 +195,16 @@ if "aws-s3-bucket" in VCAP_SERVICES:
 
         # If "temp" is in instance name it means it's the temp files bucket
         if "temp" in bucket["instance_name"]:
-            TEMP_FILE_AWS_ACCESS_KEY_ID = app_bucket_credentials[
-                "aws_access_key_id"
-            ]
+            TEMP_FILE_AWS_ACCESS_KEY_ID = app_bucket_credentials["aws_access_key_id"]
             TEMP_FILE_AWS_SECRET_ACCESS_KEY = app_bucket_credentials[
                 "aws_secret_access_key"
             ]
             TEMP_FILE_AWS_REGION = app_bucket_credentials["aws_region"]
             TEMP_FILE_AWS_S3_REGION_NAME = app_bucket_credentials["aws_region"]
-            TEMP_FILE_AWS_STORAGE_BUCKET_NAME = app_bucket_credentials[
-                "bucket_name"
-            ]
+            TEMP_FILE_AWS_STORAGE_BUCKET_NAME = app_bucket_credentials["bucket_name"]
         else:
             AWS_ACCESS_KEY_ID = app_bucket_credentials["aws_access_key_id"]
-            AWS_SECRET_ACCESS_KEY = app_bucket_credentials[
-                "aws_secret_access_key"
-            ]
+            AWS_SECRET_ACCESS_KEY = app_bucket_credentials["aws_secret_access_key"]
             AWS_REGION = app_bucket_credentials["aws_region"]
             AWS_S3_REGION_NAME = app_bucket_credentials["aws_region"]
             AWS_STORAGE_BUCKET_NAME = app_bucket_credentials["bucket_name"]
@@ -225,12 +215,8 @@ else:
     AWS_S3_REGION_NAME = env("AWS_REGION", default="")
     AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME", default="")
 
-    TEMP_FILE_AWS_ACCESS_KEY_ID = env(
-        "TEMP_FILE_AWS_ACCESS_KEY_ID", default=""
-    )
-    TEMP_FILE_AWS_SECRET_ACCESS_KEY = env(
-        "TEMP_FILE_AWS_SECRET_ACCESS_KEY", default=""
-    )
+    TEMP_FILE_AWS_ACCESS_KEY_ID = env("TEMP_FILE_AWS_ACCESS_KEY_ID", default="")
+    TEMP_FILE_AWS_SECRET_ACCESS_KEY = env("TEMP_FILE_AWS_SECRET_ACCESS_KEY", default="")
     TEMP_FILE_AWS_REGION = env("TEMP_FILE_AWS_REGION", default="")
     TEMP_FILE_AWS_S3_REGION_NAME = env("TEMP_FILE_AWS_REGION", default="")
     TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env(
@@ -357,12 +343,8 @@ CACHES = {
 
 # Vite
 VITE_DEV = env.bool("VITE_DEV", default=False)
-VITE_DEV_SERVER_URL = env.str(
-    "VITE_DEV_SERVER_URL", default="http://localhost:5173"
-)
-VITE_MANIFEST_PATH = (
-    BASE_DIR / "front_end" / "build" / ".vite" / "manifest.json"
-)
+VITE_DEV_SERVER_URL = env.str("VITE_DEV_SERVER_URL", default="http://localhost:5173")
+VITE_MANIFEST_PATH = BASE_DIR / "front_end" / "build" / ".vite" / "manifest.json"
 
 # Selenium (BDD tests)
 USE_REMOTE_CHROME = env("USE_REMOTE_CHROME", default=True)
