@@ -295,7 +295,6 @@ class ProgrammeAdmin(AdminActiveField, AdminImportExtraExport):
             if obj:
                 return [
                     "programme_code",
-                    "budget_type",
                     "created",
                     "updated",
                 ]  # don't allow to edit the code
