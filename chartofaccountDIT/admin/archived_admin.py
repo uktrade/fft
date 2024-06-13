@@ -235,7 +235,6 @@ class ArchivedProgrammeAdmin(AdminArchived, AdminExport):
             return [
                 "financial_year",
                 "programme_code",
-                "budget_type",
                 "created",
                 "archived",
                 "updated",
