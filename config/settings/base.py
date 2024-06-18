@@ -238,7 +238,7 @@ if "redis" in VCAP_SERVICES:
         credentials["port"],
     )
 else:
-    REDIS_URL = env.str("REDIS_ENDPOINT")
+    REDIS_URL = env("CACHE_ENDPOINT", default=None)
 
 # Celery
 CELERY_BROKER_URL = REDIS_URL
