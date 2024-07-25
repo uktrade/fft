@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 import environ
+from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
@@ -107,12 +109,19 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
 
 VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
-if "postgres" in VCAP_SERVICES:
-    DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+if is_copilot():
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=database_url_from_env("DATABASE_CREDENTIALS")
+        )
+    }
 else:
-    DATABASE_URL = os.getenv("DATABASE_URL")
+    if "postgres" in VCAP_SERVICES:
+        DATABASE_URL = VCAP_SERVICES["postgres"][0]["credentials"]["uri"]
+    else:
+        DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {"default": env.db()}
+    DATABASES = {"default": env.db()}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -229,7 +238,7 @@ if "redis" in VCAP_SERVICES:
         credentials["port"],
     )
 else:
-    REDIS_URL = env.str("REDIS_ENDPOINT")
+    REDIS_URL = env("CACHE_ENDPOINT", default=None)
 
 # Celery
 CELERY_BROKER_URL = REDIS_URL
