@@ -104,6 +104,10 @@ fix: # Run formatters to fix any issues that can be fixed automatically
 	make black
 	make isort
 
+# Front End
+webpack: # Run webpack
+	npm run dev
+
 # DB
 migrations: # Create needed migrations
 	$(web) $(manage) makemigrations
