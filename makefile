@@ -67,7 +67,7 @@ collectstatic: # Run Django collectstatic
 bash: # Open the web container bash
 	$(web) bash
 
-all-requirements: # Generate requirements.txt
+requirements: # Generate requirements.txt
 	poetry export --with prod --without-hashes --output requirements.txt
 
 test: # Run tests
