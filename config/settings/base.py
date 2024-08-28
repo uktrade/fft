@@ -17,10 +17,8 @@ import dj_database_url
 import environ
 from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.utility import is_copilot
-from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -77,6 +75,9 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
+    "transactions",
+    "my_hr",
+    "payroll"
 ]
 
 ROOT_URLCONF = "config.urls"
