@@ -75,9 +75,10 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
-    "transactions",
-    "my_hr",
-    "payroll"
+    "myhr",
+    "payroll",
+    "transaction",
+    "app_layer"
 ]
 
 ROOT_URLCONF = "config.urls"

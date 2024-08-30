@@ -3,6 +3,7 @@ from django.db import models
 
 class Payroll(models.Model):
     payroll_id = models.CharField(max_length=100, unique=True, primary_key=True)
+    created_at = models.DateTimeField(auto_now=True)
     business_unit_number = models.CharField(max_length=100)
     business_unit_name = models.CharField(max_length=100)
     cost_center_number = models.CharField(max_length=100)

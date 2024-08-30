@@ -1,7 +1,8 @@
 from django.db import models
 
-class Transactions(models.Model):
+class Transaction(models.Model):
     transaction_id = models.CharField(max_length=100, unique=True, primary_key=True)
+    created_at = models.DateTimeField(auto_now=True)
     source = models.CharField(max_length=100)
     entity = models.CharField(max_length=100)
     cost_centre = models.CharField(max_length=100)
