@@ -75,10 +75,11 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
-    "myhr",
+    "hr",
     "payroll",
     "transaction",
-    "app_layer"
+    "app_layer",
+    "zero_transaction"
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -167,7 +168,8 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
 AUTHBROKER_SCOPES = "read write"
 
-LOGIN_URL = reverse_lazy("authbroker_client:login")
+# LOGIN_URL = reverse_lazy("authbroker_client:login")
+LOGIN_URL = "/admin" # This is a workaround for the authbroker_client:login not working. Do not commit this change.
 LOGIN_REDIRECT_URL = "index"
 GIT_COMMIT = env("GIT_COMMIT", default=None)
 

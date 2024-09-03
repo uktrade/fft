@@ -60,7 +60,7 @@ class FinancialYearManager(models.Manager):
             .order_by("financial_year")
         )
 
-
+# NOTE: This model is used in the upload budgets form
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""
 

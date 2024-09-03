@@ -17,5 +17,26 @@ class Transaction(models.Model):
     supplier_name = models.CharField(max_length=100)
     level4_code = models.CharField(max_length=100)
 
+    def parse_csv(self, file_path):
+        with open(file_path, mode='r', encoding='utf-8-sig') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                Transaction.objects.create(
+                    transaction_id=row['transaction_id'],
+                    source=row['source'],
+                    entity=row['entity'],
+                    cost_centre=row['cost_centre'],
+                    group=row['group'],
+                    account=row['account'],
+                    programme=row['programme'],
+                    line_description=row['line_description'],
+                    net=row['net'],
+                    fiscal_period=row['fiscal_period'],
+                    date_of_journal=row['date_of_journal'],
+                    purchase_order_number=row['purchase_order_number'],
+                    supplier_name=row['supplier_name'],
+                    level4_code=row['level4_code'],
+                )
+
     def __str__(self):
         return self.transaction_id

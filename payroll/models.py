@@ -26,5 +26,34 @@ class Payroll(models.Model):
     debit_amount = models.DecimalField(max_digits=10, decimal_places=2)
     credit_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def parse_csv(self, file_path):
+        with open(file_path, mode='r', encoding='utf-8-sig') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                Payroll.objects.create(
+                    payroll_id=row['payroll_id'],
+                    business_unit_number=row['business_unit_number'],
+                    business_unit_name=row['business_unit_name'],
+                    cost_center_number=row['cost_center_number'],
+                    cost_center_name=row['cost_center_name'],
+                    employee_name=row['employee_name'],
+                    employee_number=row['employee_number'],
+                    assignment_number=row['assignment_number'],
+                    payroll_name=row['payroll_name'],
+                    employee_organization=row['employee_organization'],
+                    employee_location=row['employee_location'],
+                    person_type=row['person_type'],
+                    employee_category=row['employee_category'],
+                    assignment_type=row['assignment_type'],
+                    position=row['position'],
+                    grade=row['grade'],
+                    account_code=row['account_code'],
+                    account_name=row['account_name'],
+                    pay_element_name=row['pay_element_name'],
+                    effective_date=row['effective_date'],
+                    debit_amount=row['debit_amount'],
+                    credit_amount=row['credit_amount'],
+                )
+
     def __str__(self):
         return self.payroll_id
