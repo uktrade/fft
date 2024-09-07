@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     "hr",
     "payroll",
     "transaction",
-    "app_layer",
+    # "app_layer",
     "zero_transaction"
 ]
 

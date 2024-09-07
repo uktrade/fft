@@ -1,4 +1,8 @@
+import csv
+import boto3
+from io import StringIO
 from django.db import models
+# from app_layer.log import LogService
 
 
 class Payroll(models.Model):
@@ -26,12 +30,27 @@ class Payroll(models.Model):
     debit_amount = models.DecimalField(max_digits=10, decimal_places=2)
     credit_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def parse_csv(self, file_path):
-        with open(file_path, mode='r', encoding='utf-8-sig') as file:
+
+    class Meta:
+        abstract = False
+
+    def parse_csv(self, bucket_name: str, file_path: str):
+        try:
+            # Initialize S3 client
+            s3 = boto3.client('s3')
+
+            # Get the file from S3
+            s3_object = s3.get_object(Bucket=bucket_name, Key=file_path)
+
+            # Read the file content
+            file_content = s3_object['Body'].read().decode('utf-8-sig')
+
+            # Use StringIO to read the content as a CSV
+            file = StringIO(file_content)
             reader = csv.DictReader(file)
+
             for row in reader:
                 Payroll.objects.create(
-                    payroll_id=row['payroll_id'],
                     business_unit_number=row['business_unit_number'],
                     business_unit_name=row['business_unit_name'],
                     cost_center_number=row['cost_center_number'],
@@ -54,6 +73,12 @@ class Payroll(models.Model):
                     debit_amount=row['debit_amount'],
                     credit_amount=row['credit_amount'],
                 )
+        except Exception as e:
+            # log.exc('an error occurred while parsing the payroll CSV file', e)
+            raise e
 
-    def __str__(self):
-        return self.payroll_id
+
+    def get_unique_rows_by_cost_center(self, cost_center_number: str):
+        rows = Payroll.objects.filter(cost_center_number=cost_center_number)
+        unique_rows = rows.distinct('employee_number')
+        return unique_rows

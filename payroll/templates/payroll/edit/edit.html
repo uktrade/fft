@@ -1,0 +1,42 @@
+{% extends "payroll/edit/payroll_base.html" %}
+{% load util vite %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Select cost centre" "select_cost_centre" %}
+    {% breadcrumb "Edit payroll forecast" "edit_payroll" %}
+{% endblock %}
+
+{% block title %}Edit Payroll{% endblock %}
+
+{% block page_content %}
+    <div class="govuk-grid-row date-selection-download">
+
+    </div>
+
+    <div class="action-bar-wrapper">
+        <div id="action-bar"  class="action-bar">
+            <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code view.financial_year %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+              Add a new row
+            </a>
+            <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code  view.financial_year %}">
+                Download
+            </a>
+        </div>
+    </div>
+
+    <div id="payroll-app"></div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        {#window.actuals = {{ actuals|safe }};#}
+        {#window.period_display = {{ period_display|safe }};#}
+        {#window.table_data = {{ forecast_dump|safe }};#}
+        {#window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};#}
+        {#window.financial_year = {{ view.financial_year|safe }};#}
+        window.payroll_data = {{ payroll_data|safe }};
+    </script>
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
+{% endblock %}

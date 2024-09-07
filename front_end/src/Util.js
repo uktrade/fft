@@ -1,19 +1,22 @@
+import TableHeader from "./Components/TableHeader/index.jsx";
+import React from "react";
+
 export const getCellId = (key, index) => {
     return "id_" + key + "_" + index;
 }
 
-export const months = [ 
-    "apr", 
-    "may", 
+export const months = [
+    "apr",
+    "may",
     "jun",
-    "jul", 
-    "aug", 
-    "sep", 
-    "oct", 
-    "nov", 
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
     "dec",
-    "jan", 
-    "feb", 
+    "jan",
+    "feb",
     "mar"
 ];
 
@@ -76,6 +79,54 @@ export async function postData(url = '', data = {}) {
         status: response.status,
         data: jsonData // parses JSON response into native JavaScript objects
     }
+}
+
+
+export const processPayrollData = (payrollData) => {
+    let payrollEmployeeCols = [
+        "name",
+        "grade",
+        "staff_number",
+        "fte",
+        "programme_code",
+        "budget_type",
+        "eu_non_eu",
+        "assignment_status",
+    ]
+
+    // Mapping of the data keys from API response to payrollEmployeeCols
+    const keyMapping = {
+        "employee_name": "name",
+        "grade": "grade",
+        "employee_number": "staff_number",
+    };
+
+    let rows = [];
+
+    payrollData.forEach(function (rowData, rowIndex) {
+        let cells = {};
+        let colIndex = 0;
+
+        for (const payrollEmployeeCol of payrollEmployeeCols) {
+            const apiFieldKey = Object.keys(keyMapping).find(key => keyMapping[key] === payrollEmployeeCol);
+            if (apiFieldKey) {
+                cells[payrollEmployeeCol] = {
+                    rowIndex: rowIndex,
+                    colIndex: colIndex,
+                    key: payrollEmployeeCol,
+                    value: rowData[apiFieldKey],
+                    isEditable: false
+                };
+
+                colIndex++;
+            }
+        }
+
+        rows.push(cells);
+    });
+
+
+    return rows;
 }
 
 export const processForecastData = (forecastData) => {

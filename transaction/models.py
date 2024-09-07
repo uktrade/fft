@@ -1,3 +1,7 @@
+import csv
+from io import StringIO
+
+import boto3
 from django.db import models
 
 class Transaction(models.Model):
@@ -17,9 +21,21 @@ class Transaction(models.Model):
     supplier_name = models.CharField(max_length=100)
     level4_code = models.CharField(max_length=100)
 
-    def parse_csv(self, file_path):
-        with open(file_path, mode='r', encoding='utf-8-sig') as file:
+    def parse_csv(self, bucket_name: str, file_path: str):
+        try:
+            # Initialize S3 client
+            s3 = boto3.client('s3')
+
+            # Get the file from S3
+            s3_object = s3.get_object(Bucket=bucket_name, Key=file_path)
+
+            # Read the file content
+            file_content = s3_object['Body'].read().decode('utf-8-sig')
+
+            # Use StringIO to read the content as a CSV
+            file = StringIO(file_content)
             reader = csv.DictReader(file)
+
             for row in reader:
                 Transaction.objects.create(
                     transaction_id=row['transaction_id'],
@@ -37,6 +53,9 @@ class Transaction(models.Model):
                     supplier_name=row['supplier_name'],
                     level4_code=row['level4_code'],
                 )
+        except Exception as e:
+            # log.exc('an error occurred while parsing the CSV file', e)
+            raise e
 
     def __str__(self):
         return self.transaction_id
