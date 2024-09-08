@@ -5,6 +5,46 @@ from django.db import models
 # from app_layer.log import LogService
 
 
+
+class EmployeePayroll(models.Model):
+    name = models.CharField(max_length=100)
+    grade = models.CharField(max_length=100)
+    staff_number = models.CharField(max_length=100)
+    fte = models.DecimalField(max_digits=5, decimal_places=2)
+    programme_code = models.CharField(max_length=100)
+    budget_type = models.CharField(max_length=100)
+    eu_non_eu = models.CharField(max_length=100)
+    assignment_status = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = False
+
+class NonEmployeePayroll(models.Model):
+    name = models.CharField(max_length=100)
+    grade = models.CharField(max_length=100)
+    staff_number = models.CharField(max_length=100)
+    fte = models.DecimalField(max_digits=5, decimal_places=2)
+    programme_code = models.CharField(max_length=100)
+    budget_type = models.CharField(max_length=100)
+    eu_non_eu = models.CharField(max_length=100)
+    assignment_status = models.CharField(max_length=100)
+    person_type = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = False
+
+class ForcastPayroll(models.Model):
+    name = models.CharField(max_length=100)
+    nac = models.CharField(max_length=100)
+    nac_description = models.CharField(max_length=100)
+    project_code = models.CharField(max_length=100)
+    programme_code = models.CharField(max_length=100)
+    budget_type = models.CharField(max_length=100)
+
+    class Meta:
+        abstract = False
+
+
 class Payroll(models.Model):
     payroll_id = models.CharField(max_length=100, unique=True, primary_key=True)
     created_at = models.DateTimeField(auto_now=True)

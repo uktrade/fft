@@ -83,7 +83,7 @@ export async function postData(url = '', data = {}) {
 
 
 export const processPayrollData = (payrollData) => {
-    let payrollEmployeeCols = [
+    let employeePayrollCols = [
         "name",
         "grade",
         "staff_number",
@@ -94,37 +94,27 @@ export const processPayrollData = (payrollData) => {
         "assignment_status",
     ]
 
-    // Mapping of the data keys from API response to payrollEmployeeCols
-    const keyMapping = {
-        "employee_name": "name",
-        "grade": "grade",
-        "employee_number": "staff_number",
-    };
-
     let rows = [];
 
     payrollData.forEach(function (rowData, rowIndex) {
-        let cells = {};
-        let colIndex = 0;
+        let cells = {}
+        let colIndex = 0
 
-        for (const payrollEmployeeCol of payrollEmployeeCols) {
-            const apiFieldKey = Object.keys(keyMapping).find(key => keyMapping[key] === payrollEmployeeCol);
-            if (apiFieldKey) {
-                cells[payrollEmployeeCol] = {
-                    rowIndex: rowIndex,
-                    colIndex: colIndex,
-                    key: payrollEmployeeCol,
-                    value: rowData[apiFieldKey],
-                    isEditable: false
-                };
-
-                colIndex++;
+        // eslint-disable-next-line
+        for (const employeePayrollCol of employeePayrollCols) {
+            cells[employeePayrollCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: employeePayrollCol,
+                value: rowData[employeePayrollCol],
+                isEditable: false
             }
+
+            colIndex++
         }
 
         rows.push(cells);
     });
-
 
     return rows;
 }

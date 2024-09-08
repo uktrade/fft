@@ -10,15 +10,10 @@ from costcentre.models import CostCentre
 from forecast.views.base import (
     CostCentrePermissionTest,
 )
-from payroll.models import Payroll
+from payroll.models import Payroll, EmployeePayroll
+from payroll.serialisers import PayrollSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class PayrollSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payroll
-        fields = ['payroll_id', 'created_at', 'business_unit_number', 'business_unit_name', 'cost_center_number', 'cost_center_name', 'employee_name', 'employee_number', 'assignment_number', 'payroll_name', 'employee_organization', 'employee_location', 'person_type', 'employee_category', 'assignment_type', 'position', 'grade', 'account_code', 'account_name', 'pay_element_name', 'effective_date', 'debit_amount', 'credit_amount']
 
 
 class EditPayrollView(
@@ -43,16 +38,20 @@ class EditPayrollView(
             "cost_centre_code": cost_centre.cost_centre_code,
         }
 
-    def get_payroll_data(self):
-        # Fetch payroll data logic here
-        payroll_data = list(Payroll.objects.all().values())
-        return payroll_data
+    def get_payroll_serialiser(self):
+        get_all_employee_data = EmployeePayroll.objects.all()
+        payroll_serialiser = PayrollSerializer(get_all_employee_data, many=True)
+        return payroll_serialiser
 
 
     def get_context_data(self, **kwargs):
+        payroll_serialiser = self.get_payroll_serialiser()
+        serialiser_data = payroll_serialiser.data
+        payroll_data = json.dumps(serialiser_data)
+
         self.title = "Edit payroll forecast"
         context = super().get_context_data(**kwargs)
-        context['payroll_data'] = self.get_payroll_data()
+        context['payroll_data'] = payroll_data
         return context
 
 

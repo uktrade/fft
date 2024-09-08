@@ -73,18 +73,6 @@ function Table({rowData, sheetUpdating}) {
                         <TableHeader colName="budget_type">Budget type</TableHeader>
                         <TableHeader colName="eu_non_eu">EU/Non-EU</TableHeader>
                         <TableHeader colName="assignment_status">Assignment status</TableHeader>
-                        <th className="govuk-table__header">Apr</th>
-                        <th className="govuk-table__header">May</th>
-                        <th className="govuk-table__header">Jun</th>
-                        <th className="govuk-table__header">Jul</th>
-                        <th className="govuk-table__header">Aug</th>
-                        <th className="govuk-table__header">Sep</th>
-                        <th className="govuk-table__header">Oct</th>
-                        <th className="govuk-table__header">Nov</th>
-                        <th className="govuk-table__header">Dec</th>
-                        <th className="govuk-table__header">Jan</th>
-                        <th className="govuk-table__header">Feb</th>
-                        <th className="govuk-table__header">Mar</th>
                     </tr>
                 </thead>
                 <tbody className="govuk-table__body">
@@ -147,22 +135,11 @@ function Table({rowData, sheetUpdating}) {
                                 <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
 
-                            {window.period_display.map((value, index) => {
-                                return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />
-                            })}
-                            <InfoCell className="figure-cell" rowIndex={rowIndex}>
-                                <AggregateValue rowIndex={rowIndex} actualsOnly={false} extraClasses="" />
-                            </InfoCell>
-                            <InfoCell className="figure-cell" rowIndex={rowIndex}>
-                                <OverspendUnderspend rowIndex={rowIndex} />
-                            </InfoCell>
-                            <InfoCell className="figure-cell" rowIndex={rowIndex}>
-                                <VariancePercentage rowIndex={rowIndex} />
-                            </InfoCell>
-                            <InfoCell className="figure-cell" rowIndex={rowIndex}>
-                                <AggregateValue rowIndex={rowIndex} actualsOnly={true} extraClasses="last-col" />
-                            </InfoCell>
+                            {/*{window.period_display.map((value, index) => {*/}
+                            {/*    return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />*/}
+                            {/*})}*/}
                         </tr>
+
                     })}
                 </tbody>
             </table>

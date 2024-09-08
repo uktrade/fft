@@ -29,6 +29,15 @@ function EditPayroll() {
     const [sheetUpdating, setSheetUpdating] = useState(false)
 
     useEffect(() => {
+        if (window.payroll_data) {
+            console.log('Payroll Data empty?:', window.payroll_data.empty);
+            console.log('Payroll Data:', window.payroll_data);
+        } else {
+            console.log('Payroll Data is not available');
+        }
+    }, []);
+
+    useEffect(() => {
         const timer = () => {
                 setTimeout(() => {
                 if (window.payroll_data) {
@@ -37,7 +46,6 @@ function EditPayroll() {
                         type: SET_CELLS,
                         cells: rows
                       })
-
                 } else {
                     timer()
                 }
