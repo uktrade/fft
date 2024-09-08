@@ -5,21 +5,6 @@ export const getCellId = (key, index) => {
     return "id_" + key + "_" + index;
 }
 
-export const months = [
-    "apr",
-    "may",
-    "jun",
-    "jul",
-    "aug",
-    "sep",
-    "oct",
-    "nov",
-    "dec",
-    "jan",
-    "feb",
-    "mar"
-];
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -94,12 +79,13 @@ export const processPayrollData = (payrollData) => {
         "assignment_status",
     ]
 
+
     let rows = [];
+    let colIndex = 0
+    let cells = {}
+
 
     payrollData.forEach(function (rowData, rowIndex) {
-        let cells = {}
-        let colIndex = 0
-
         // eslint-disable-next-line
         for (const employeePayrollCol of employeePayrollCols) {
             cells[employeePayrollCol] = {
@@ -109,13 +95,11 @@ export const processPayrollData = (payrollData) => {
                 value: rowData[employeePayrollCol],
                 isEditable: false
             }
-
             colIndex++
         }
-
-        rows.push(cells);
     });
 
+    rows.push(cells);
     return rows;
 }
 

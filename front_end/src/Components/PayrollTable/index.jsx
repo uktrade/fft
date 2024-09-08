@@ -1,7 +1,7 @@
 import React, {Fragment, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from 'nanoid'
-import TableCell from '../../Components/TableCell/index'
+import PayrollTableCell from '../../Components/PayrollTableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
 import CellValue from '../../Components/CellValue/index'
 import AggregateValue from '../../Components/AggregateValue/index'
@@ -73,6 +73,18 @@ function Table({rowData, sheetUpdating}) {
                         <TableHeader colName="budget_type">Budget type</TableHeader>
                         <TableHeader colName="eu_non_eu">EU/Non-EU</TableHeader>
                         <TableHeader colName="assignment_status">Assignment status</TableHeader>
+                        <th className="govuk-table__header">Apr</th>
+                        <th className="govuk-table__header">May</th>
+                        <th className="govuk-table__header">Jun</th>
+                        <th className="govuk-table__header">Jul</th>
+                        <th className="govuk-table__header">Aug</th>
+                        <th className="govuk-table__header">Sep</th>
+                        <th className="govuk-table__header">Oct</th>
+                        <th className="govuk-table__header">Nov</th>
+                        <th className="govuk-table__header">Dec</th>
+                        <th className="govuk-table__header">Jan</th>
+                        <th className="govuk-table__header">Feb</th>
+                        <th className="govuk-table__header">Mar</th>
                     </tr>
                 </thead>
                 <tbody className="govuk-table__body">
@@ -88,7 +100,7 @@ function Table({rowData, sheetUpdating}) {
                                             "cellId": null
                                         })
                                     )
-                                        if (selectedRow === rowIndex) {
+                                    if (selectedRow === rowIndex) {
                                             dispatch(
                                                 SET_SELECTED_ROW({
                                                     selectedRow: null
@@ -134,10 +146,35 @@ function Table({rowData, sheetUpdating}) {
                             <InfoCell className="figure-cell" cellKey={"assignment_status"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
+                            {Object.keys(window.payroll_monthly_data).map((dataKey, index) => {
+                                const monthValues = window.payroll_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
 
-                            {/*{window.period_display.map((value, index) => {*/}
-                            {/*    return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />*/}
-                            {/*})}*/}
+                                return (
+                                    Object.keys(monthValues).map((monthKey) => {
+                                        const monthValue = monthValues[monthKey]; // Access the value for each month
+                                        console.log('monthValue', monthValue)
+                                        console.log('monthKey', monthKey)
+                                        return (
+                                            <PayrollTableCell
+                                                key={nanoid()}
+                                                sheetUpdating={sheetUpdating}
+                                                cellId={getCellId(rowIndex, `${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
+                                                rowIndex={rowIndex}
+                                                cellKey={monthKey} // Pass the monthKey (e.g., "apr")
+                                                cellValue={monthValue}
+                                            >
+
+                                                {/*<CellValue*/}
+                                                {/*    rowIndex={rowIndex}*/}
+                                                {/*    cellKey={monthKey}*/}
+                                                {/*    value={monthValue} // Display the value (e.g., 1)*/}
+                                                {/*/>*/}
+
+                                            </PayrollTableCell>
+                                        );
+                                    })
+                                );
+                            })}
                         </tr>
 
                     })}

@@ -3,7 +3,27 @@ from rest_framework import serializers
 from payroll.models import EmployeePayroll
 
 
-class PayrollSerializer(serializers.ModelSerializer):
+class EmployeeMonthlyPayrollSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeePayroll
+        fields = [
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+            "jan",
+            "feb",
+            "mar",
+        ]
+        read_only_fields = fields
+
+
+class EmployeePayrollSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeePayroll
         fields = [

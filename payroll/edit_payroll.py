@@ -1,17 +1,14 @@
 import json
 import logging
 
-from django.core.serializers import serialize
 from django.views.generic.base import TemplateView
-from rest_framework import serializers
-from rest_framework.response import Response
 
 from costcentre.models import CostCentre
 from forecast.views.base import (
     CostCentrePermissionTest,
 )
-from payroll.models import Payroll, EmployeePayroll
-from payroll.serialisers import PayrollSerializer
+from payroll.models import EmployeePayroll
+from payroll.serialisers import EmployeePayrollSerializer, EmployeeMonthlyPayrollSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -38,20 +35,31 @@ class EditPayrollView(
             "cost_centre_code": cost_centre.cost_centre_code,
         }
 
-    def get_payroll_serialiser(self):
+    def get_employee_payroll_serialiser(self):
         get_all_employee_data = EmployeePayroll.objects.all()
-        payroll_serialiser = PayrollSerializer(get_all_employee_data, many=True)
+        payroll_serialiser = EmployeePayrollSerializer(get_all_employee_data, many=True)
         return payroll_serialiser
 
 
+    def get_employee_payroll_monthly_serialiser(self):
+        get_all_employee_data = EmployeePayroll.objects.all()
+        payroll_monthly_serialiser = EmployeeMonthlyPayrollSerializer(get_all_employee_data, many=True)
+        return payroll_monthly_serialiser
+
     def get_context_data(self, **kwargs):
-        payroll_serialiser = self.get_payroll_serialiser()
-        serialiser_data = payroll_serialiser.data
-        payroll_data = json.dumps(serialiser_data)
+        employee_payroll_serialiser = self.get_employee_payroll_serialiser()
+        employee_payroll_serialiser_data = employee_payroll_serialiser.data
+        employee_payroll_data = json.dumps(employee_payroll_serialiser_data)
+
+        employee_payroll_monthly_serialiser = self.get_employee_payroll_monthly_serialiser()
+        employee_payroll_monthly_serialiser_data = employee_payroll_monthly_serialiser.data
+        employee_payroll_monthly_data = json.dumps(employee_payroll_monthly_serialiser_data)
+
 
         self.title = "Edit payroll forecast"
         context = super().get_context_data(**kwargs)
-        context['payroll_data'] = payroll_data
+        context['payroll_data'] = employee_payroll_data
+        context['payroll_monthly_data'] = employee_payroll_monthly_data
         return context
 
 

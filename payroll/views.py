@@ -7,15 +7,3 @@ def payroll_list(request):
 
 def payroll_edit(request):
     return render(request, 'payroll/edit/edit.html')
-
-class EditPayrollView(TemplateView):
-    template_name = 'payroll/edit/edit.html'
-
-    def get_payroll_data(self):
-        # Fetch payroll data logic here
-        return Payroll.objects.all()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['payroll_data'] = self.get_payroll_data()
-        return context

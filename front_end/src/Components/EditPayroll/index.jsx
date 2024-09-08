@@ -30,11 +30,17 @@ function EditPayroll() {
 
     useEffect(() => {
         if (window.payroll_data) {
-            console.log('Payroll Data empty?:', window.payroll_data.empty);
             console.log('Payroll Data:', window.payroll_data);
         } else {
             console.log('Payroll Data is not available');
         }
+
+        if (window.payroll_monthly_data) {
+            console.log('Payroll Monthly Data:', window.payroll_monthly_data);
+        } else {
+            console.log('Payroll Monthly Data is not available');
+        }
+
     }, []);
 
     useEffect(() => {

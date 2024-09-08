@@ -15,6 +15,20 @@ class EmployeePayroll(models.Model):
     budget_type = models.CharField(max_length=100)
     eu_non_eu = models.CharField(max_length=100)
     assignment_status = models.CharField(max_length=100)
+    current_month = models.CharField(max_length=100)
+    current_year = models.CharField(max_length=100)
+    apr = models.IntegerField(editable=True, verbose_name='april')
+    may = models.IntegerField(editable=True, verbose_name='may')
+    jun = models.IntegerField(editable=True, verbose_name='june')
+    jul = models.IntegerField(editable=True, verbose_name='july')
+    aug = models.IntegerField(editable=True, verbose_name='august')
+    sep = models.IntegerField(editable=True, verbose_name='september')
+    oct = models.IntegerField(editable=True, verbose_name='october')
+    nov = models.IntegerField(editable=True, verbose_name='november')
+    dec = models.IntegerField(editable=True, verbose_name='december')
+    jan = models.IntegerField(editable=True, verbose_name='january')
+    feb = models.IntegerField(editable=True, verbose_name='february')
+    mar = models.IntegerField(editable=True, verbose_name='march')
 
     class Meta:
         abstract = False
@@ -29,6 +43,20 @@ class NonEmployeePayroll(models.Model):
     eu_non_eu = models.CharField(max_length=100)
     assignment_status = models.CharField(max_length=100)
     person_type = models.CharField(max_length=100)
+    current_month = models.CharField(max_length=100)
+    current_year = models.CharField(max_length=100)
+    apr = models.IntegerField(editable=True, verbose_name='april')
+    may = models.IntegerField(editable=True, verbose_name='may')
+    jun = models.IntegerField(editable=True, verbose_name='june')
+    jul = models.IntegerField(editable=True, verbose_name='july')
+    aug = models.IntegerField(editable=True, verbose_name='august')
+    sep = models.IntegerField(editable=True, verbose_name='september')
+    oct = models.IntegerField(editable=True, verbose_name='october')
+    nov = models.IntegerField(editable=True, verbose_name='november')
+    dec = models.IntegerField(editable=True, verbose_name='december')
+    jan = models.IntegerField(editable=True, verbose_name='january')
+    feb = models.IntegerField(editable=True, verbose_name='february')
+    mar = models.IntegerField(editable=True, verbose_name='march')
 
     class Meta:
         abstract = False

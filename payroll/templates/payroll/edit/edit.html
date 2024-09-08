@@ -17,20 +17,18 @@
 
     <div class="action-bar-wrapper">
         <div id="action-bar"  class="action-bar">
-            <a id="add_forecast_row" href="{% url 'add_forecast_row' view.cost_centre_details.cost_centre_code view.financial_year %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-              Add a new row
-            </a>
-            <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code  view.financial_year %}">
-                Download
-            </a>
+
         </div>
     </div>
+
+    <label for="payroll-app" class="govuk-heading-m">Payroll</label>
 
     <div id="payroll-app"></div>
 {% endblock %}
 {% block scripts %}
     <script>
         window.payroll_data = {{ payroll_data|safe }};
+        window.payroll_monthly_data = {{ payroll_monthly_data|safe }};
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
