@@ -1,14 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './../Store';
-import EditPayroll from './../Components/EditPayroll/index'
+import EditPayrollEmployee from './../Components/EditPayrollEmployee/index'
 
-function Payroll() {
+function PayrollEmployee() {
     return (
         <Provider store={store}>
-            <EditPayroll />
+            <EditPayrollEmployee />
         </Provider>
     );
 }
 
-export default Payroll;
+export default PayrollEmployee;

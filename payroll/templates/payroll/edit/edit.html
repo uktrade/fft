@@ -12,23 +12,20 @@
 
 {% block page_content %}
     <div class="govuk-grid-row date-selection-download">
-
     </div>
 
     <div class="action-bar-wrapper">
-        <div id="action-bar"  class="action-bar">
-
+        <div id="action-bar"  class="action-bar" hidden="hidden">
         </div>
     </div>
 
-    <label for="payroll-app" class="govuk-heading-m">Payroll</label>
-
-    <div id="payroll-app"></div>
+    <label for="payroll-employee-app" class="govuk-heading-m">Payroll</label>
+    <div id="payroll-employee-app"></div>
 {% endblock %}
 {% block scripts %}
     <script>
-        window.payroll_data = {{ payroll_data|safe }};
-        window.payroll_monthly_data = {{ payroll_monthly_data|safe }};
+        window.payroll_employee_data = {{ payroll_employee_data|safe }};
+        window.payroll_employee_monthly_data = {{ payroll_employee_monthly_data|safe }};
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

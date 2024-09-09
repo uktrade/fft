@@ -4,16 +4,8 @@ import { nanoid } from 'nanoid'
 import PayrollTableCell from '../../Components/PayrollTableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
 import CellValue from '../../Components/CellValue/index'
-import AggregateValue from '../../Components/AggregateValue/index'
-import VariancePercentage from '../../Components/VariancePercentage/index'
 import TableHeader from '../../Components/TableHeader/index'
-import TotalCol from '../../Components/TotalCol/index'
 import ToggleCell from '../../Components/ToggleCell/index'
-import TotalAggregate from '../../Components/TotalAggregate/index'
-import TotalBudget from '../../Components/TotalBudget/index'
-import OverspendUnderspend from '../../Components/OverspendUnderspend/index'
-import TotalOverspendUnderspend from '../../Components/TotalOverspendUnderspend/index'
-import TotalVariancePercentage from '../../Components/TotalVariancePercentage/index'
 import ActualsHeaderRow from '../../Components/ActualsHeaderRow/index'
 import {
     getCellId
@@ -146,8 +138,8 @@ function Table({rowData, sheetUpdating}) {
                             <InfoCell className="figure-cell" cellKey={"assignment_status"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
-                            {Object.keys(window.payroll_monthly_data).map((dataKey, index) => {
-                                const monthValues = window.payroll_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
+                            {Object.keys(window.payroll_employee_monthly_data).map((dataKey, index) => {
+                                const monthValues = window.payroll_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
 
                                 return (
                                     Object.keys(monthValues).map((monthKey) => {
@@ -163,13 +155,6 @@ function Table({rowData, sheetUpdating}) {
                                                 cellKey={monthKey} // Pass the monthKey (e.g., "apr")
                                                 cellValue={monthValue}
                                             >
-
-                                                {/*<CellValue*/}
-                                                {/*    rowIndex={rowIndex}*/}
-                                                {/*    cellKey={monthKey}*/}
-                                                {/*    value={monthValue} // Display the value (e.g., 1)*/}
-                                                {/*/>*/}
-
                                             </PayrollTableCell>
                                         );
                                     })

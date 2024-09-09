@@ -114,24 +114,25 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
 
 
     const updateValue = () => {
+        // setValue(value)
+        console.log('cell value:', value)
+        console.log('cell key:', cellKey)
+
+
         return;
-        let newAmount = value * 100
+        let newValue = 0
 
-        if (newAmount > Number.MAX_SAFE_INTEGER) {
-            newAmount = Number.MAX_SAFE_INTEGER
+        if (value > 1) {
+            newValue = 1
         }
 
-        if (newAmount < Number.MIN_SAFE_INTEGER) {
-            newAmount = Number.MIN_SAFE_INTEGER
+        if (value < 0) {
+            newValue = 0
         }
 
-        let intAmount = parseInt(newAmount, 10)
+        let intNewValue = parseInt(newValue, 10)
 
-        if (cell && intAmount === cell.amount) {
-            return
-        }
-
-        if (!cell && intAmount === 0) {
+        if (getValue() === intNewValue) {
             return
         }
 

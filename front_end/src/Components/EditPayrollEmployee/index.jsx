@@ -15,7 +15,7 @@ import {
 } from '../../Util'
 
 
-function EditPayroll() {
+function EditPayrollEmployee() {
     console.log("EditPayroll component has been rendered");
     const dispatch = useDispatch();
 
@@ -29,14 +29,14 @@ function EditPayroll() {
     const [sheetUpdating, setSheetUpdating] = useState(false)
 
     useEffect(() => {
-        if (window.payroll_data) {
-            console.log('Payroll Data:', window.payroll_data);
+        if (window.payroll_employee_data) {
+            console.log('Payroll Data:', window.payroll_employee_data);
         } else {
             console.log('Payroll Data is not available');
         }
 
-        if (window.payroll_monthly_data) {
-            console.log('Payroll Monthly Data:', window.payroll_monthly_data);
+        if (window.payroll_employee_monthly_data) {
+            console.log('Payroll Monthly Data:', window.payroll_employee_monthly_data);
         } else {
             console.log('Payroll Monthly Data is not available');
         }
@@ -46,8 +46,8 @@ function EditPayroll() {
     useEffect(() => {
         const timer = () => {
                 setTimeout(() => {
-                if (window.payroll_data) {
-                    let rows = processPayrollData(window.payroll_data)
+                if (window.payroll_employee_data) {
+                    let rows = processPayrollData(window.payroll_employee_data)
                       dispatch({
                         type: SET_CELLS,
                         cells: rows
@@ -259,4 +259,4 @@ function EditPayroll() {
     );
 }
 
-export default EditPayroll
+export default EditPayrollEmployee
