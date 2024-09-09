@@ -25,8 +25,8 @@ function Table({rowData, sheetUpdating}) {
     return (
         <Fragment>
             <table
-                className="govuk-table payroll-table" id="payroll-table">
-                <caption className="govuk-table__caption govuk-!-font-size-17">Payroll data</caption>
+                className="govuk-table payroll-non-table" id="payroll-non-table">
+                <caption className="govuk-table__caption govuk-!-font-size-17">Non Payroll data</caption>
                 <thead className="govuk-table__head">
                     <ActualsHeaderRow />
                     <tr index="0">
@@ -138,8 +138,8 @@ function Table({rowData, sheetUpdating}) {
                             <InfoCell className="figure-cell" cellKey={"assignment_status"} rowIndex={rowIndex}>
                                 <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
-                            {Object.keys(window.payroll_employee_monthly_data).map((dataKey, index) => {
-                                const monthValues = window.payroll_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
+                            {Object.keys(window.payroll_non_employee_monthly_data).map((dataKey, index) => {
+                                const monthValues = window.payroll_non_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
 
                                 return (
                                     Object.keys(monthValues).map((monthKey) => {

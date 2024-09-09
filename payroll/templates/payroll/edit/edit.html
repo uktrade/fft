@@ -15,17 +15,27 @@
     </div>
 
     <div class="action-bar-wrapper">
-        <div id="action-bar"  class="action-bar" hidden="hidden">
+        <div id="action-bar"  class="action-bar" hidden="hidden"></div>
+    </div>
+
+    <div class="payroll-section">
+        <label for="payroll-employee-app" class="govuk-heading-m">Payroll</label>
+        <div id="payroll-employee-app">
         </div>
     </div>
 
-    <label for="payroll-employee-app" class="govuk-heading-m">Payroll</label>
-    <div id="payroll-employee-app"></div>
+    <div class="non-payroll-section">
+        <label for="payroll-non-employee-app" class="govuk-heading-m">Non Payroll</label>
+        <div id="payroll-non-employee-app">
+        </div>
+    </div>
 {% endblock %}
 {% block scripts %}
     <script>
         window.payroll_employee_data = {{ payroll_employee_data|safe }};
         window.payroll_employee_monthly_data = {{ payroll_employee_monthly_data|safe }};
+        window.payroll_non_employee_data = {{ payroll_non_employee_data|safe }};
+        window.payroll_non_employee_monthly_data = {{ payroll_non_employee_monthly_data|safe }};
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

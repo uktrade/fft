@@ -60,6 +60,9 @@ class EditPayrollView(
         context = super().get_context_data(**kwargs)
         context['payroll_employee_data'] = employee_payroll_data
         context['payroll_employee_monthly_data'] = employee_payroll_monthly_data
+
+        context['payroll_non_employee_data'] = employee_payroll_data
+        context['payroll_non_employee_monthly_data'] = employee_payroll_monthly_data
         return context
 
 
