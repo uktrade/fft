@@ -68,6 +68,7 @@ export async function postData(url = '', data = {}) {
 
 
 export const processPayrollData = (payrollData) => {
+    console.log('payrollData data', payrollData)
     let employeePayrollCols = [
         "name",
         "grade",
@@ -82,10 +83,10 @@ export const processPayrollData = (payrollData) => {
 
     let rows = [];
     let colIndex = 0
-    let cells = {}
-
 
     payrollData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
         // eslint-disable-next-line
         for (const employeePayrollCol of employeePayrollCols) {
             cells[employeePayrollCol] = {
@@ -96,10 +97,14 @@ export const processPayrollData = (payrollData) => {
                 isEditable: false
             }
             colIndex++
+
         }
+
+        rows.push(cells)
     });
 
-    rows.push(cells);
+
+    console.log('rows data', rows)
     return rows;
 }
 

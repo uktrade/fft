@@ -141,7 +141,8 @@ function Table({rowData, sheetUpdating}) {
                             {Object.keys(window.payroll_non_employee_monthly_data).map((dataKey, index) => {
                                 const monthValues = window.payroll_non_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
 
-                                return (
+                                if (rowIndex === index) {
+                                    return (
                                     Object.keys(monthValues).map((monthKey) => {
                                         const monthValue = monthValues[monthKey]; // Access the value for each month
                                         return (
@@ -157,6 +158,9 @@ function Table({rowData, sheetUpdating}) {
                                         );
                                     })
                                 );
+                                }
+
+
                             })}
                         </tr>
 
