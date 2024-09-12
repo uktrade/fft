@@ -1,6 +1,3 @@
-import TableHeader from "./Components/TableHeader/index.jsx";
-import React from "react";
-
 export const getCellId = (key, index) => {
     return "id_" + key + "_" + index;
 }

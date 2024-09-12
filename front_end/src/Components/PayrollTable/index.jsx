@@ -140,7 +140,6 @@ function Table({rowData, sheetUpdating}) {
                             </InfoCell>
                             {Object.keys(window.payroll_employee_monthly_data).map((dataKey, index) => {
                                 const monthValues = window.payroll_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
-
                                 if (rowIndex === index) {
                                     return (
                                         Object.keys(monthValues).map((monthKey) => {
@@ -161,7 +160,6 @@ function Table({rowData, sheetUpdating}) {
                                 }
                             })}
                         </tr>
-
                     })}
                 </tbody>
             </table>

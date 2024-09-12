@@ -140,30 +140,26 @@ function Table({rowData, sheetUpdating}) {
                             </InfoCell>
                             {Object.keys(window.payroll_non_employee_monthly_data).map((dataKey, index) => {
                                 const monthValues = window.payroll_non_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
-
                                 if (rowIndex === index) {
                                     return (
-                                    Object.keys(monthValues).map((monthKey) => {
-                                        const monthValue = monthValues[monthKey]; // Access the value for each month
-                                        return (
-                                            <PayrollTableCell
-                                                key={nanoid()}
-                                                sheetUpdating={sheetUpdating}
-                                                cellId={getCellId(rowIndex, `${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
-                                                rowIndex={rowIndex}
-                                                cellKey={monthKey} // Pass the monthKey (e.g., "apr")
-                                                cellValue={monthValue}
-                                            >
-                                            </PayrollTableCell>
-                                        );
-                                    })
-                                );
+                                        Object.keys(monthValues).map((monthKey) => {
+                                            const monthValue = monthValues[monthKey]; // Access the value for each month
+                                            return (
+                                                <PayrollTableCell
+                                                    key={nanoid()}
+                                                    sheetUpdating={sheetUpdating}
+                                                    cellId={getCellId(rowIndex, `${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
+                                                    rowIndex={rowIndex}
+                                                    cellKey={monthKey} // Pass the monthKey (e.g., "apr")
+                                                    cellValue={monthValue}
+                                                >
+                                                </PayrollTableCell>
+                                            );
+                                        })
+                                    );
                                 }
-
-
                             })}
                         </tr>
-
                     })}
                 </tbody>
             </table>
