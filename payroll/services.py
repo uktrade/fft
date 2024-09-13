@@ -1,12 +1,11 @@
 import datetime
 from collections import defaultdict
-
-from payroll.models import EmployeePayroll, NonEmployeePayroll, HR
+from hr.models import HRModel
+from payroll.models import EmployeePayroll, NonEmployeePayroll
 
 
 def update_employee_tables():
-    # Get all objects from HR table
-    hr_objects = HR.objects.all()
+    hr_objects = HRModel.objects.all()
 
     # Loop through all objects and update the employee table based on the HR record.wmi_person
     # If wmi_person is payroll, then put it in the employee table (EmployeePayroll)
@@ -14,7 +13,7 @@ def update_employee_tables():
     # If the record does not exist, create it
 
     for hr_record in hr_objects:
-        name = hr_record.first_name + " " + hr_record.last_name
+        name = f'{hr_record.first_name} {hr_record.last_name}'
         grade = hr_record.grade
         se_no = hr_record.se_no
         fte = hr_record.fte
@@ -80,12 +79,10 @@ def get_forecast_basic_pay_for_employee_non_employee_payroll() -> dict:
 
     # Sum the basic pay for each month for employees and non-employees
     for employee_record in employee_objects:
-        employee_monthly_totals[employee_record.current_month.lower()] \
-            += employee_record.basic_pay
+        employee_monthly_totals[employee_record.current_month.lower()] += employee_record.basic_pay
 
     for non_employee_record in non_employee_objects:
-        non_employee_monthly_totals[non_employee_record.current_month.lower()] \
-            += non_employee_record.basic_pay
+        non_employee_monthly_totals[non_employee_record.current_month.lower()] += non_employee_record.basic_pay
 
     # Build the monthly totals lists
     for month in months:

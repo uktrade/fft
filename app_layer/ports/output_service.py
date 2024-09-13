@@ -2,8 +2,6 @@
 
 from abc import ABCMeta, abstractmethod
 
-from app_layer.log import LogService
-
 
 class OutputService(metaclass=ABCMeta):
     """
@@ -41,5 +39,5 @@ class OutputService(metaclass=ABCMeta):
     ```
     """
     @abstractmethod
-    def send(self, log: LogService, ssm_client, file_path: str, content: str):
+    def send(self, ssm_client, file_path: str, content: str):
         pass

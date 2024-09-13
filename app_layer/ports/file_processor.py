@@ -41,7 +41,7 @@ class FileProcessor(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def send_to_output(self, log, output_adapter, file_path: str, content: str):
+    def send_to_output(self, output_adapter, file_path: str, content: str):
         """
         send_to_output(self, log: LogService, output_adapter, file_path: str, content: str)
 

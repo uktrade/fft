@@ -1,10 +1,11 @@
 import os
 from typing import Optional, Any, List
-
-from app_layer.log import LogService
 from app_layer.ports.file_processor import FileProcessor
+from hr.models import HRModel
 
 from payroll import models as payroll_models
+from payroll.models import PayrollModel
+
 
 class CsvFileProcessor(FileProcessor):
     """
@@ -17,32 +18,40 @@ class CsvFileProcessor(FileProcessor):
     - send_to_output(log: LogService, output_adapter, file_path: str, content: str)
     """
 
-    def process_file(self, bucket_name: str, file_path: str, results: List[Optional[Any]] = None):
+    def process_file(self, bucket_name: str, file_path: str):
         # log.deb(f'processing csv file: {file_path}...')
         is_valid = os.path.basename(file_path.lower()).startswith(('hrauto',
                                                                    'payrollauto'))
 
-
         if not is_valid:
-        #     log.err(f'invalid csv file: {file_path}. will not process.')
             return False
+
+        results = []
+        file_type_mapping = {
+            'hrauto': 'hr',
+            'payrollauto': 'payroll'
+        }
+
+        # Determine file type based on prefix
+        for prefix, filetype in file_type_mapping.items():
+            if file_path.lower().startswith(prefix):
+                results.append(dict(file_type=filetype))
+                break
+
+        # Get file type (without popping from list) from results list (value type dict)
+        filetype = results[-1].get('file_type')
 
         # Extract file_name from file_path
-        file_name = os.path.basename(file_path)
-        if file_name.lower().startswith('hrauto'):
-            hr_model = payroll_models.HR()
+        if filetype == 'hr':
+            hr_model = HRModel()
             hr_model.parse_csv(bucket_name, file_path)
-        elif file_name.lower().startswith('payrollauto'):
-            payroll_model = payroll_models.Payroll()
-            payroll_data = payroll_model.parse_csv(bucket_name, file_path)
-            if results is not None:
-                results.append(payroll_data)
+        elif filetype == 'payroll':
+            payroll_model = PayrollModel()
+            payroll_model.parse_csv(bucket_name, file_path)
         else:
-            # log.deb(f'unknown file: {file_name}. will not continue processing.')
             return False
 
-        # log.deb(f'processed file: {file_name}')
         return True
 
-    def send_to_output(self, log: LogService, output_adapter, file_path: str, content: str):
+    def send_to_output(self, output_adapter, file_path: str, content: str):
         output_adapter.send(file_path, content)
