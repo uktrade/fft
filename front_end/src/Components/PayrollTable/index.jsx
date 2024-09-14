@@ -11,7 +11,7 @@ import {
 } from '../../Util'
 
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
-import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
+import {SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL, SET_EMPLOYEE_SELECTED_ROW} from '../../Reducers/Selected'
 import PayrollCellValue from "../PayrollCellValue/index.jsx";
 
 
@@ -19,7 +19,7 @@ function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
     const rows = useSelector(state => state.allCells.employeeCells);
 
-    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const selectedRow = useSelector(state => state.selected.employeeSelectedRow);
     const allSelected = useSelector(state => state.selected.all);
 
     return (
@@ -94,14 +94,14 @@ function Table({rowData, sheetUpdating}) {
                                     )
                                     if (selectedRow === rowIndex) {
                                             dispatch(
-                                                SET_SELECTED_ROW({
-                                                    selectedRow: null
+                                                SET_EMPLOYEE_SELECTED_ROW({
+                                                    employeeSelectedRow: null
                                                 })
                                             )
                                         } else {
                                             dispatch(
-                                                SET_SELECTED_ROW({
-                                                    selectedRow: rowIndex
+                                                SET_EMPLOYEE_SELECTED_ROW({
+                                                    employeeSelectedRow: rowIndex
                                                 })
                                             )
                                         }

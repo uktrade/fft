@@ -49,7 +49,7 @@ const NonPayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValu
 
     const [isUpdating, setIsUpdating] = useState(false)
 
-    const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow);
+    const selectedRow = useSelector(state => state.selected.nonEmployeeSelectedRow, checkSelectRow);
     const allSelected = useSelector(state => state.selected.all);
 
 

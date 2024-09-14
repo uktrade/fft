@@ -50,7 +50,7 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
 
     const [isUpdating, setIsUpdating] = useState(false)
 
-    const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow);
+    const selectedRow = useSelector(state => state.selected.employeeSelectedRow, checkSelectRow);
     const allSelected = useSelector(state => state.selected.all);
 
 
@@ -116,10 +116,6 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
 
     const updateValue = () => {
         // setValue(value)
-        console.log('staff number:', cells[rowIndex]["staff_number"].value)
-        console.log('cell value:', value)
-        console.log('cell key:', cellKey)
-
         let newValue = 0
 
         if (value > 1) {

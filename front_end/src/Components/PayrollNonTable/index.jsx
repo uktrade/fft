@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from 'nanoid'
 import PayrollNonTableCell from '../../Components/PayrollNonTableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
-import CellValue from '../../Components/CellValue/index'
 import TableHeader from '../../Components/TableHeader/index'
 import ToggleCell from '../../Components/ToggleCell/index'
 import ActualsHeaderRow from '../../Components/ActualsHeaderRow/index'
@@ -12,7 +11,7 @@ import {
 } from '../../Util'
 
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
-import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
+import { SELECT_ALL, UNSELECT_ALL, SET_NON_EMPLOYEE_SELECTED_ROW } from '../../Reducers/Selected'
 import PayrollNonCellValue from "../PayrollNonCellValue/index.jsx";
 
 
@@ -20,7 +19,7 @@ function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
     const rows = useSelector(state => state.allCells.nonEmployeeCells);
 
-    const selectedRow = useSelector(state => state.selected.selectedRow);
+    const selectedRow = useSelector(state => state.selected.nonEmployeeSelectedRow);
     const allSelected = useSelector(state => state.selected.all);
 
     return (
@@ -95,14 +94,14 @@ function Table({rowData, sheetUpdating}) {
                                     )
                                     if (selectedRow === rowIndex) {
                                             dispatch(
-                                                SET_SELECTED_ROW({
-                                                    selectedRow: null
+                                                SET_NON_EMPLOYEE_SELECTED_ROW({
+                                                    nonEmployeeSelectedRow: null
                                                 })
                                             )
                                         } else {
                                             dispatch(
-                                                SET_SELECTED_ROW({
-                                                    selectedRow: rowIndex
+                                                SET_NON_EMPLOYEE_SELECTED_ROW({
+                                                    nonEmployeeSelectedRow: rowIndex
                                                 })
                                             )
                                         }
