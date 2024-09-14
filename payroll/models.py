@@ -77,7 +77,7 @@ class NonEmployeePayroll(models.Model):
     class Meta:
         abstract = False
 
-class PayrollModel(models.Model):
+class PayrollEntry(models.Model):
     business_unit_number = models.CharField(max_length=100)
     business_unit_name = models.CharField(max_length=100)
     cost_center_number = models.CharField(max_length=100)
@@ -126,7 +126,7 @@ class PayrollModel(models.Model):
             reader = csv.DictReader(file)
 
             for row in reader:
-                payroll_entry = PayrollModel(
+                payroll_entry = PayrollEntry(
                     business_unit_number=row['business_unit_number'],
                     business_unit_name=row['business_unit_name'],
                     cost_center_number=row['cost_center_number'],
@@ -159,7 +159,7 @@ class PayrollModel(models.Model):
 
     @staticmethod
     def delete_all_records():
-        PayrollModel.objects.all().delete()
+        PayrollEntry.objects.all().delete()
 
 class PayrollLookup():
     def __init__(self):

@@ -27,6 +27,17 @@ class UserBehaviour(TaskSet):
             },
         )
 
+    @task(3)
+    def post_to_edit_payroll(self):
+        self.client.post(
+            f"/payroll/edit/{os.environ['TEST_COST_CENTRE_CODE']}/",
+            data={
+                "all_selected": True,
+                "paste_content": paste_content,
+                "csrfmiddlewaretoken": os.environ["CRSF_TOKEN"],
+                "headers": sso_headers,
+            },
+        )
 
 class FFTUser(HttpLocust):
     task_set = UserBehaviour

@@ -4,7 +4,7 @@ from app_layer.ports.file_processor import FileProcessor
 from hr.models import HRModel
 
 from payroll import models as payroll_models
-from payroll.models import PayrollModel
+from payroll.models import PayrollEntry
 
 
 class CsvFileProcessor(FileProcessor):
@@ -46,7 +46,7 @@ class CsvFileProcessor(FileProcessor):
             hr_model = HRModel()
             hr_model.parse_csv(bucket_name, file_path)
         elif filetype == 'payroll':
-            payroll_model = PayrollModel()
+            payroll_model = PayrollEntry()
             payroll_model.parse_csv(bucket_name, file_path)
         else:
             return False

@@ -2,9 +2,10 @@ import React, {Fragment, useState, useEffect, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
+    formatValue,
     postData,
-    processForecastData,
-    formatValue
+    processForecastData, processPayrollData
+
 } from '../../Util'
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
@@ -115,11 +116,10 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
 
     const updateValue = () => {
         // setValue(value)
+        console.log('staff number:', cells[rowIndex]["staff_number"].value)
         console.log('cell value:', value)
         console.log('cell key:', cellKey)
 
-
-        return;
         let newValue = 0
 
         if (value > 1) {
@@ -141,22 +141,18 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
 
         let payload = new FormData()
-        payload.append("natural_account_code", cells[rowIndex]["natural_account_code"].value)
-        payload.append("programme_code", cells[rowIndex]["programme"].value)
-        payload.append("project_code", cells[rowIndex]["project_code"].value)
-        payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value)
-        payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value)
+        payload.append("staff_number", cells[rowIndex]["staff_number"].value)
         payload.append("csrfmiddlewaretoken", crsfToken)
         payload.append("month", cellKey)
-        payload.append("amount", intAmount)
+        payload.append("amount", getValue())
 
         postData(
-            `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
+            `/payroll/paste-payroll/${window.cost_centre}/${window.financial_year}`,
             payload
         ).then((response) => {
             setIsUpdating(false)
             if (response.status === 200) {
-                let rows = processForecastData(response.data)
+                let rows = processPayrollData(response.data)
                   dispatch({
                     type: SET_CELLS,
                     cells: rows
