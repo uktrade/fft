@@ -1,7 +1,7 @@
 import React, {Fragment, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from 'nanoid'
-import PayrollTableCell from '../../Components/PayrollTableCell/index'
+import PayrollNonTableCell from '../../Components/PayrollNonTableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
 import CellValue from '../../Components/CellValue/index'
 import TableHeader from '../../Components/TableHeader/index'
@@ -13,11 +13,12 @@ import {
 
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
+import PayrollNonCellValue from "../PayrollNonCellValue/index.jsx";
 
 
 function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
-    const rows = useSelector(state => state.allCells.cells);
+    const rows = useSelector(state => state.allCells.nonEmployeeCells);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
@@ -115,28 +116,28 @@ function Table({rowData, sheetUpdating}) {
                                 </button>
                             </td>
                             <ToggleCell colName={"name"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"name"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"name"} />
                             </ToggleCell>
                             <InfoCell className="figure-cell" cellKey={"fte"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"fte"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"fte"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"staff_number"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"staff_number"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"staff_number"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"grade"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"grade"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"grade"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"programme_code"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"programme_code"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"programme_code"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"budget_type"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"budget_type"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"budget_type"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"eu_non_eu"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"eu_non_eu"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"eu_non_eu"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"assignment_status"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
+                                <PayrollNonCellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
                             {Object.keys(window.payroll_non_employee_monthly_data).map((dataKey, index) => {
                                 const monthValues = window.payroll_non_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })
@@ -145,7 +146,7 @@ function Table({rowData, sheetUpdating}) {
                                         Object.keys(monthValues).map((monthKey) => {
                                             const monthValue = monthValues[monthKey]; // Access the value for each month
                                             return (
-                                                <PayrollTableCell
+                                                <PayrollNonTableCell
                                                     key={nanoid()}
                                                     sheetUpdating={sheetUpdating}
                                                     cellId={getCellId(rowIndex, `${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
@@ -153,7 +154,7 @@ function Table({rowData, sheetUpdating}) {
                                                     cellKey={monthKey} // Pass the monthKey (e.g., "apr")
                                                     cellValue={monthValue}
                                                 >
-                                                </PayrollTableCell>
+                                                </PayrollNonTableCell>
                                             );
                                         })
                                     );

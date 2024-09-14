@@ -4,14 +4,13 @@ import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
     formatValue,
     postData,
-    processPayrollData
+    processNonPayrollData
 
 } from '../../Util'
 import { SET_ERROR } from '../../Reducers/Error'
-import { SET_EMPLOYEE_CELLS } from '../../Reducers/Cells'
+import { SET_NON_EMPLOYEE_CELLS } from '../../Reducers/Cells'
 
-const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue}) => {
-
+const NonPayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue}) => {
     let editing = false
     let isEditable = true
 
@@ -44,8 +43,8 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
 
     const dispatch = useDispatch();
 
-    const cells = useSelector(state => state.allCells.employeeCells);
-    const cell = useSelector(state => state.allCells.employeeCells[rowIndex][cellKey]);
+    const cells = useSelector(state => state.allCells.nonEmployeeCells);
+    const cell = useSelector(state => state.allCells.nonEmployeeCells[rowIndex][cellKey]);
     const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
     const [isUpdating, setIsUpdating] = useState(false)
@@ -92,7 +91,7 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         }
 
         if (!cell)
-            return "govuk-table__cell payroll-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
+            return "govuk-table__cell non-payroll-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
 
         // let negative = ''
 
@@ -100,7 +99,7 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         //     negative = " negative"
         // }
 
-        return "govuk-table__cell payroll-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
+        return "govuk-table__cell non-payroll-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
     }
 
     const setContentState = (value) => {
@@ -152,9 +151,9 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         ).then((response) => {
             setIsUpdating(false)
             if (response.status === 200) {
-                let rows = processPayrollData(response.data)
+                let rows = processNonPayrollData(response.data)
                   dispatch({
-                    type: SET_EMPLOYEE_CELLS,
+                    type: SET_NON_EMPLOYEE_CELLS,
                     cells: rows
                   })
             } else {
@@ -269,4 +268,4 @@ const comparisonFn = function(prevProps, nextProps) {
     )
 };
 
-export default memo(PayrollTableCell, comparisonFn);
+export default memo(NonPayrollTableCell, comparisonFn);

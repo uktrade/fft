@@ -64,6 +64,44 @@ export async function postData(url = '', data = {}) {
 }
 
 
+export const processNonPayrollData = (payrollData) => {
+    console.log('payrollNonData data', payrollData)
+    let nonEmployeePayrollCols = [
+        "name",
+        "grade",
+        "staff_number",
+        "fte",
+        "programme_code",
+        "budget_type",
+        "eu_non_eu",
+        "assignment_status",
+    ]
+
+    let rows = [];
+    let colIndex = 0
+
+    payrollData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
+        // eslint-disable-next-line
+        for (const nonEmployeePayrollCol of nonEmployeePayrollCols) {
+            cells[nonEmployeePayrollCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: nonEmployeePayrollCol,
+                value: rowData[nonEmployeePayrollCol],
+                isEditable: false
+            }
+            colIndex++
+        }
+
+        rows.push(cells)
+    });
+
+    console.log('processed payroll non employee rows data', rows)
+    return rows;
+}
+
 export const processPayrollData = (payrollData) => {
     console.log('payrollData data', payrollData)
     let employeePayrollCols = [
@@ -76,7 +114,6 @@ export const processPayrollData = (payrollData) => {
         "eu_non_eu",
         "assignment_status",
     ]
-
 
     let rows = [];
     let colIndex = 0
@@ -100,8 +137,7 @@ export const processPayrollData = (payrollData) => {
         rows.push(cells)
     });
 
-
-    console.log('rows data', rows)
+    console.log('processed payroll employee rows data', rows)
     return rows;
 }
 

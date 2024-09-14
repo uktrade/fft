@@ -6,12 +6,12 @@ import { store } from '../../Store';
 import EditActionBar from '../../Components/EditActionBar/index'
 
 import { SET_ERROR } from '../../Reducers/Error'
-import { SET_CELLS } from '../../Reducers/Cells'
+import {SET_NON_EMPLOYEE_CELLS} from '../../Reducers/Cells'
 import { OPEN_FILTER_IF_CLOSED } from '../../Reducers/Filter'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 import {
     getCellId,
-    processPayrollData,
+    processNonPayrollData,
 } from '../../Util'
 
 
@@ -23,7 +23,7 @@ function EditPayrollNonEmployee() {
     const selectedRow = useSelector(state => state.selected.selectedRow)
     const allSelected = useSelector(state => state.selected.all)
 
-    const cells = useSelector(state => state.allCells.cells);
+    const cells = useSelector(state => state.allCells.nonEmployeeCells);
     const editCellId = useSelector(state => state.edit.cellId);
 
     const [sheetUpdating, setSheetUpdating] = useState(false)
@@ -47,9 +47,9 @@ function EditPayrollNonEmployee() {
         const timer = () => {
                 setTimeout(() => {
                 if (window.payroll_non_employee_data) {
-                    let rows = processPayrollData(window.payroll_non_employee_data)
+                    let rows = processNonPayrollData(window.payroll_non_employee_data)
                       dispatch({
-                        type: SET_CELLS,
+                        type: SET_NON_EMPLOYEE_CELLS,
                         cells: rows
                       })
                 } else {

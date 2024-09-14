@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from 'nanoid'
 import PayrollTableCell from '../../Components/PayrollTableCell/index'
 import InfoCell from '../../Components/InfoCell/index'
-import CellValue from '../../Components/CellValue/index'
 import TableHeader from '../../Components/TableHeader/index'
 import ToggleCell from '../../Components/ToggleCell/index'
 import ActualsHeaderRow from '../../Components/ActualsHeaderRow/index'
@@ -13,11 +12,12 @@ import {
 
 import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
+import PayrollCellValue from "../PayrollCellValue/index.jsx";
 
 
 function Table({rowData, sheetUpdating}) {
     const dispatch = useDispatch();
-    const rows = useSelector(state => state.allCells.cells);
+    const rows = useSelector(state => state.allCells.employeeCells);
 
     const selectedRow = useSelector(state => state.selected.selectedRow);
     const allSelected = useSelector(state => state.selected.all);
@@ -115,28 +115,28 @@ function Table({rowData, sheetUpdating}) {
                                 </button>
                             </td>
                             <ToggleCell colName={"name"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"name"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"name"} />
                             </ToggleCell>
                             <InfoCell className="figure-cell" cellKey={"fte"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"fte"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"fte"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"staff_number"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"staff_number"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"staff_number"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"grade"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"grade"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"grade"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"programme_code"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"programme_code"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"programme_code"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"budget_type"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"budget_type"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"budget_type"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"eu_non_eu"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"eu_non_eu"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"eu_non_eu"} />
                             </InfoCell>
                             <InfoCell className="figure-cell" cellKey={"assignment_status"} rowIndex={rowIndex}>
-                                <CellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
+                                <PayrollCellValue rowIndex={rowIndex} cellKey={"assignment_status"} />
                             </InfoCell>
                             {Object.keys(window.payroll_employee_monthly_data).map((dataKey, index) => {
                                 const monthValues = window.payroll_employee_monthly_data[dataKey]; // Access the month object (e.g., { "apr": 1, "may": 1, ... })

@@ -18,24 +18,32 @@
         <div id="action-bar"  class="action-bar" hidden="hidden"></div>
     </div>
 
-    <div id="payroll-employee-app"></div>
+    <div class="payroll-section">
+        <label for="payroll-employee-app" class="govuk-heading-m">Payroll</label>
+        <div id="payroll-employee-app">
+        </div>
+    </div>
+
+    <div class="non-payroll-section">
+        <label for="payroll-non-employee-app" class="govuk-heading-m">Non Payroll</label>
+        <div id="payroll-non-employee-app">
+        </div>
+    </div>
+
     <form id="id_paste_data_form" action="{% url 'paste_payroll' view.cost_centre_details.cost_centre_code  view.financial_year%}" method="post" novalidate="novalidate">
         {% csrf_token %}
         {{ paste_form }}
     </form>
 
-    <div id="payroll-non-employee-app"></div>
-    <form id="id_paste_data_form" action="{% url 'paste_payroll' view.cost_centre_details.cost_centre_code  view.financial_year%}" method="post" novalidate="novalidate">
-        {% csrf_token %}
-        {{ paste_form }}
-    </form>
 {% endblock %}
 {% block scripts %}
     <script>
         window.payroll_employee_data = {{ payroll_employee_data|safe }};
         window.payroll_employee_monthly_data = {{ payroll_employee_monthly_data|safe }};
+
         window.payroll_non_employee_data = {{ payroll_non_employee_data|safe }};
         window.payroll_non_employee_monthly_data = {{ payroll_non_employee_monthly_data|safe }};
+
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
         window.financial_year = {{ view.financial_year|safe }};
     </script>
