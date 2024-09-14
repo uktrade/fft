@@ -18,10 +18,14 @@ const selected = createSlice({
         SELECT_ALL: (state, action) => {
             state.all = true
             state.selectedRow = -1
+            state.nonEmployeeSelectedRow = -1
+            state.employeeSelectedRow = -1
         },
         UNSELECT_ALL: (state, action) => {
             state.all = false
             state.selectedRow = -1
+            state.nonEmployeeSelectedRow = -1
+            state.employeeSelectedRow = -1
         },
         SET_EMPLOYEE_SELECTED_ROW: (state, action) => {
             state.all = false
