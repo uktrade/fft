@@ -148,7 +148,7 @@ function Table({rowData, sheetUpdating}) {
                                                 <PayrollTableCell
                                                     key={nanoid()}
                                                     sheetUpdating={sheetUpdating}
-                                                    cellId={getCellId(rowIndex, `${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
+                                                    cellId={getCellId(rowIndex, `pe_${dataKey}_${monthKey}`)} // Unique ID based on dataKey and monthKey
                                                     rowIndex={rowIndex}
                                                     cellKey={monthKey} // Pass the monthKey (e.g., "apr")
                                                     cellValue={monthValue}

@@ -6,10 +6,6 @@ import {
 } from '../../Util'
 
 const PayrollNonCellValue = ({rowIndex, cellKey, format}) => {
-    console.log("PayrollNonCellValue component has been rendered");
-    console.log("rowIndex: ", rowIndex);
-    console.log("cellKey: ", cellKey);
-    console.log("format: ", format);
     const cell = useSelector(state => state.allCells.nonEmployeeCells[rowIndex][cellKey]);
 
     const getValue = (value) => {

@@ -1,6 +1,9 @@
 import json
+import logging
 
 from django import forms
+
+logger = logging.getLogger(__name__)
 
 # Form for pasting HR data into the payroll table
 class PasteHRForm(forms.Form):
@@ -15,14 +18,12 @@ class PasteHRForm(forms.Form):
     )
 
     def clean_pasted_at_row(self):
-        data = self.cleaned_data["pasted_at_row"]
+        data = dict(self.data.lists())
 
         if not data:
             return None
 
         try:
-            json_data = json.loads(data)
+            return data
         except json.JSONDecodeError:
             raise forms.ValidationError("invalid row data supplied")
-
-        return json_data

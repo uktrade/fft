@@ -4,14 +4,10 @@ import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import {
     formatValue,
     postData,
-    processPayrollData
-
 } from '../../Util'
 import { SET_ERROR } from '../../Reducers/Error'
-import { SET_EMPLOYEE_CELLS } from '../../Reducers/Cells'
 
 const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue}) => {
-
     let editing = false
     let isEditable = true
 
@@ -104,29 +100,28 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
     }
 
     const setContentState = (value) => {
-        var re = /^-?\d*\.?\d{0,12}$/; 
-        var isValid = (value.match(re) !== null);
-
-        if (!isValid) {
-            return
-        }
+        // var re = /^-?\d*\.?\d{0,12}$/;
+        // var isValid = (value.match(re) !== null);
+        //
+        // if (!isValid) {
+        //     return
+        // }
         setValue(value)
     }
 
 
     const updateValue = () => {
-        // setValue(value)
-        let newValue = 0
+        setValue(value)
+        // let newValue = 0
+        // if (value > 1) {
+        //     newValue = 1
+        // }
+        //
+        // if (value < 0) {
+        //     newValue = 0
+        // }
 
-        if (value > 1) {
-            newValue = 1
-        }
-
-        if (value < 0) {
-            newValue = 0
-        }
-
-        let intNewValue = parseInt(newValue, 10)
+        let intNewValue = parseInt(value, 10)
 
         if (getValue() === intNewValue) {
             return
@@ -137,10 +132,11 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value
 
         let payload = new FormData()
+        payload.append("table", "payroll")
         payload.append("staff_number", cells[rowIndex]["staff_number"].value)
         payload.append("csrfmiddlewaretoken", crsfToken)
         payload.append("month", cellKey)
-        payload.append("amount", getValue())
+        payload.append("amount", value)
 
         postData(
             `/payroll/paste-payroll/${window.cost_centre}/${window.financial_year}`,
@@ -148,11 +144,14 @@ const PayrollTableCell = ({rowIndex, cellId, cellKey, sheetUpdating, cellValue})
         ).then((response) => {
             setIsUpdating(false)
             if (response.status === 200) {
-                let rows = processPayrollData(response.data)
-                  dispatch({
-                    type: SET_EMPLOYEE_CELLS,
-                    cells: rows
-                  })
+                const month = response.data.month;
+                // const payroll = response.data.payroll;
+                window.payroll_employee_monthly_data = month
+                // let rows = processPayrollData(response.data)
+                //   dispatch({
+                //     type: SET_EMPLOYEE_CELLS,
+                //     cells: rows
+                //   })
             } else {
                 dispatch(
                     SET_ERROR({
