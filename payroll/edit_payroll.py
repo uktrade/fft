@@ -21,6 +21,21 @@ class EditPayrollUpdatesView(
     CostCentrePermissionTest,
     FormView,
 ):
+    """
+    EditPayrollUpdatesView is a class-based view in Django for handling the editing
+    of payroll updates through a form. It validates the form data and updates the
+    respective payroll records in the database.
+
+    Attributes:
+        form_class: The form class associated with this view.
+
+    Methods:
+        form_valid(form):
+            Validates the form data. If the form is valid, it updates the payroll
+            records based on the provided data. Handles both 'employee' and 'non_employee'
+            payroll updates. Returns a JsonResponse with serialized payroll data or
+            calls form_invalid if an error occurs.
+    """
     form_class = PasteHRForm
 
     @transaction.atomic
@@ -35,13 +50,6 @@ class EditPayrollUpdatesView(
             month_name = paste_content["month"][0]
             amount_value = paste_content["amount"][0]
             table = paste_content["table"][0]
-
-            logger.info(f"cost_centre_code: {cost_centre_code}")
-            logger.info(f"paste_content: {paste_content}")
-            logger.info(f"month name: {month_name}")
-            logger.info(f"amount value: {amount_value}")
-            logger.info(f"staff_employee: {staff_employee}")
-            logger.info(f"table: {table}")
 
             # get the first item from the list from table data
             if table == "non_payroll":
@@ -134,6 +142,43 @@ class EditPayrollView(
     CostCentrePermissionTest,
     TemplateView,
 ):
+    """
+        EditPayrollView class is a Django view that deals with rendering the payroll editing template
+        and providing payroll data for employees and non-employees.
+
+        Attributes:
+            template_name: A string representing the template name used to render the view.
+
+        Methods:
+            class_name:
+                Returns a string representing additional CSS class to be used in the template.
+
+            cost_centre_details:
+                Retrieves details about the cost centre based on the cost centre code.
+                Returns a dictionary with cost centre details including group, directorate, and cost centre names and codes.
+
+            get_employee_payroll_serialiser:
+                Retrieves all employee payroll data and serializes it.
+                Returns an instance of EmployeePayrollSerializer containing all employee payroll data.
+
+            get_employee_payroll_monthly_serialiser:
+                Retrieves all employee monthly payroll data and serializes it.
+                Returns an instance of EmployeeMonthlyPayrollSerializer containing all employee monthly payroll data.
+
+            get_non_employee_payroll_serialiser:
+                Retrieves all non-employee payroll data and serializes it.
+                Returns an instance of NonEmployeePayrollSerializer containing all non-employee payroll data.
+
+            get_non_employee_payroll_monthly_serialiser:
+                Retrieves all non-employee monthly payroll data and serializes it.
+                Returns an instance of NonEmployeeMonthlyPayrollSerializer containing all non-employee monthly payroll data.
+
+            get_context_data:
+                Assembles the context data for rendering the template.
+                Includes serialized payroll data for employees and non-employees, both regular and monthly data,
+                and a form instance for pasting HR data.
+                Returns a dictionary containing the context data to be passed to the template.
+    """
     template_name = "payroll/edit/edit.html"
 
     def class_name(self):
