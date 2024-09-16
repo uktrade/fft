@@ -50,68 +50,70 @@ class EditPayrollUpdatesView(
             month_name = paste_content["month"][0]
             amount_value = paste_content["amount"][0]
             table = paste_content["table"][0]
+            amount = float(amount_value)
 
             # get the first item from the list from table data
             if table == "non_payroll":
                 non_employee_payroll = NonEmployeePayroll.objects.get(
                     staff_number=staff_employee,
-                    # cost_centre_code=cost_centre_code,
+                    cost_centre_code=cost_centre_code,
                 )
+
                 if month_name == "jan":
-                    non_employee_payroll.jan = int(amount_value)
+                    non_employee_payroll.jan = amount
                 if month_name == "feb":
-                    non_employee_payroll.feb = int(amount_value)
+                    non_employee_payroll.feb = amount
                 if month_name == "mar":
-                    non_employee_payroll.mar = int(amount_value)
+                    non_employee_payroll.mar = amount
                 if month_name == "apr":
-                    non_employee_payroll.apr = int(amount_value)
+                    non_employee_payroll.apr = amount
                 if month_name == "may":
-                    non_employee_payroll.may = int(amount_value)
+                    non_employee_payroll.may = amount
                 if month_name == "jun":
-                    non_employee_payroll.jun = int(amount_value)
+                    non_employee_payroll.jun = amount
                 if month_name == "jul":
-                    non_employee_payroll.jul = int(amount_value)
+                    non_employee_payroll.jul = amount
                 if month_name == "aug":
-                    non_employee_payroll.aug = int(amount_value)
+                    non_employee_payroll.aug = amount
                 if month_name == "sep":
-                    non_employee_payroll.sep = int(amount_value)
+                    non_employee_payroll.sep = amount
                 if month_name == "oct":
-                    non_employee_payroll.oct = int(amount_value)
+                    non_employee_payroll.oct = amount
                 if month_name == "nov":
-                    non_employee_payroll.nov = int(amount_value)
+                    non_employee_payroll.nov = amount
                 if month_name == "dec":
-                    non_employee_payroll.dec = int(amount_value)
+                    non_employee_payroll.dec = amount
 
                 non_employee_payroll.save()
             else:
                 employee_payroll = EmployeePayroll.objects.get(
                     staff_number=staff_employee,
-                    # cost_centre_code=cost_centre_code,
+                    cost_centre_code=cost_centre_code,
                 )
                 if month_name == "jan":
-                    employee_payroll.jan = int(amount_value)
+                    employee_payroll.jan = amount
                 if month_name == "feb":
-                    employee_payroll.feb = int(amount_value)
+                    employee_payroll.feb = amount
                 if month_name == "mar":
-                    employee_payroll.mar = int(amount_value)
+                    employee_payroll.mar = amount
                 if month_name == "apr":
-                    employee_payroll.apr = int(amount_value)
+                    employee_payroll.apr = amount
                 if month_name == "may":
-                    employee_payroll.may = int(amount_value)
+                    employee_payroll.may = amount
                 if month_name == "jun":
-                    employee_payroll.jun = int(amount_value)
+                    employee_payroll.jun = amount
                 if month_name == "jul":
-                    employee_payroll.jul = int(amount_value)
+                    employee_payroll.jul = amount
                 if month_name == "aug":
-                    employee_payroll.aug = int(amount_value)
+                    employee_payroll.aug = amount
                 if month_name == "sep":
-                    employee_payroll.sep = int(amount_value)
+                    employee_payroll.sep = amount
                 if month_name == "oct":
-                    employee_payroll.oct = int(amount_value)
+                    employee_payroll.oct = amount
                 if month_name == "nov":
-                    employee_payroll.nov = int(amount_value)
+                    employee_payroll.nov = amount
                 if month_name == "dec":
-                    employee_payroll.dec = int(amount_value)
+                    employee_payroll.dec = amount
 
                 employee_payroll.save()
 
@@ -198,22 +200,24 @@ class EditPayrollView(
         }
 
     def get_employee_payroll_serialiser(self):
-        get_all_employee_data = EmployeePayroll.objects.all()
+        logger.info(f"employee payroll serialiser - cost_centre_code: {self.cost_centre_code}")
+        get_all_employee_data = EmployeePayroll.objects.filter(cost_centre_code=self.cost_centre_code)
         payroll_serialiser = EmployeePayrollSerializer(get_all_employee_data, many=True)
         return payroll_serialiser
 
     def get_employee_payroll_monthly_serialiser(self):
-        get_all_employee_data = EmployeePayroll.objects.all()
+        get_all_employee_data = EmployeePayroll.objects.filter(cost_centre_code=self.cost_centre_code)
         payroll_monthly_serialiser = EmployeeMonthlyPayrollSerializer(get_all_employee_data, many=True)
         return payroll_monthly_serialiser
 
     def get_non_employee_payroll_serialiser(self):
-        get_all_non_employee_data = NonEmployeePayroll.objects.all()
+        logger.info(f"non employee payroll serialiser - cost_centre_code: {self.cost_centre_code}")
+        get_all_non_employee_data = NonEmployeePayroll.objects.filter(cost_centre_code=self.cost_centre_code)
         non_payroll_serialiser = NonEmployeePayrollSerializer(get_all_non_employee_data, many=True)
         return non_payroll_serialiser
 
     def get_non_employee_payroll_monthly_serialiser(self):
-        get_all_non_employee_data = NonEmployeePayroll.objects.all()
+        get_all_non_employee_data = NonEmployeePayroll.objects.filter(cost_centre_code=self.cost_centre_code)
         non_payroll_monthly_serialiser = NonEmployeeMonthlyPayrollSerializer(get_all_non_employee_data, many=True)
         return non_payroll_monthly_serialiser
 

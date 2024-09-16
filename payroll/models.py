@@ -91,7 +91,7 @@ class EmployeePayroll(models.Model):
             Indicates whether the model is abstract. In this case, set to False.
     """
     id = models.CharField(max_length=100, unique=True, primary_key=True)
-    # cost_centre_code = models.CharField(max_length=100)
+    cost_centre_code = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     grade = models.CharField(max_length=100)
     staff_number = models.CharField(max_length=100)
@@ -114,9 +114,9 @@ class EmployeePayroll(models.Model):
     jan = models.IntegerField(editable=True, verbose_name='january')
     feb = models.IntegerField(editable=True, verbose_name='february')
     mar = models.IntegerField(editable=True, verbose_name='march')
-    basic_pay = models.DecimalField(max_digits=10, decimal_places=2)
-    superannuation = models.DecimalField(max_digits=10, decimal_places=2)
-    ernic = models.DecimalField(max_digits=10, decimal_places=2)
+    basic_pay = models.FloatField(editable=True, verbose_name='basic pay')
+    superannuation = models.FloatField(editable=True, verbose_name='superannuation')
+    ernic = models.FloatField(editable=True, verbose_name='ernic')
 
     class Meta:
         abstract = False
@@ -158,7 +158,7 @@ class NonEmployeePayroll(models.Model):
         abstract (bool): Indicates that this model is not abstract.
     """
     id = models.CharField(max_length=100, unique=True, primary_key=True)
-    # cost_centre_code = models.CharField(max_length=100)
+    cost_centre_code = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     grade = models.CharField(max_length=100)
     staff_number = models.CharField(max_length=100)
@@ -182,9 +182,9 @@ class NonEmployeePayroll(models.Model):
     jan = models.IntegerField(editable=True, verbose_name='january')
     feb = models.IntegerField(editable=True, verbose_name='february')
     mar = models.IntegerField(editable=True, verbose_name='march')
-    basic_pay = models.DecimalField(max_digits=10, decimal_places=2)
-    superannuation = models.DecimalField(max_digits=10, decimal_places=2)
-    ernic = models.DecimalField(max_digits=10, decimal_places=2)
+    basic_pay = models.FloatField(editable=True, verbose_name='basic pay')
+    superannuation = models.FloatField(editable=True, verbose_name='superannuation')
+    ernic = models.FloatField(editable=True, verbose_name='ernic')
 
     class Meta:
         abstract = False

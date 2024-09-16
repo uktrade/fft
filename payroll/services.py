@@ -1,4 +1,5 @@
 import datetime
+from calendar import month
 from collections import defaultdict
 from hr.models import HRModel
 from payroll.models import EmployeePayroll, NonEmployeePayroll
@@ -60,7 +61,7 @@ def update_employee_tables():
             non_employee_record.current_year = current_year
             non_employee_record.save()
 
-def get_forecast_basic_pay_for_employee(cost_center_code, financial_year):
+def get_forecast_basic_pay_for_employee(cost_centre_code, financial_year):
     """
     Generates a forecast of basic pay, ERNIC, and superannuation for employees in a given cost center and financial year.
 
@@ -89,10 +90,7 @@ def get_forecast_basic_pay_for_employee(cost_center_code, financial_year):
     # Get all objects from EmployeePayroll table where cost_center_code is equal to the cost_center_code
 
     # employee_objects = EmployeePayroll.objects.filter(cost_center_code=cost_center_code, current_year=financial_year)
-    employee_objects = EmployeePayroll.objects.all()
-
-    # Get all objects from NonEmployeePayroll table
-    non_employee_objects = NonEmployeePayroll.objects.all()
+    employee_objects = EmployeePayroll.objects.filter(cost_centre_code=cost_centre_code)
 
     # Loop through all objects and create a list of dictionaries for each month (april to march)
     # Each dictionary will have the following keys:
@@ -130,82 +128,84 @@ def get_forecast_basic_pay_for_employee(cost_center_code, financial_year):
     }
 
     # Loop through employee_monthly_totals and create a forecast_row for each month
-    for month, total in employee_monthly_totals.items():
-        month_number = month_map[month]
-        forecast_row = {
-            {
-                "programme_description": "Basic Pay",
-                "nac_description": "Basic Pay",
-                "natural_account_code": "0000",
-                "programme": "Basic Pay",
-                "cost_centre": cost_center_code,
-                "analysis1_code": "0000",
-                "analysis2_code": "0000",
-                "project_code": "0000",
-                "monthly_figures": [
-                    {
-                        "actual": False,
-                        "month": month_number,
-                        "amount": total,
-                        "starting_amount": total,
-                        "archived_status": None,
-                    }
-                ],
-                "budget": 0
-            }
-        }
-        forecast_months.append(forecast_row)
-
+    ernic_totals = []
     for month, total in employee_ernic_totals.items():
         month_number = month_map[month]
-        forecast_row = {
-            {
-                "programme_description": "ERNIC",
-                "nac_description": "ERNIC",
-                "natural_account_code": "0000",
-                "programme": "ERNIC",
-                "cost_centre": cost_center_code,
-                "analysis1_code": "0000",
-                "analysis2_code": "0000",
-                "project_code": "0000",
-                "monthly_figures": [
-                    {
-                        "actual": False,
-                        "month": month_number,
-                        "amount": total,
-                        "starting_amount": total,
-                        "archived_status": None,
-                    }
-                ],
-                "budget": 0
-            }
-        }
-        forecast_months.append(forecast_row)
 
+        ernic_month = {
+            "actual": False,
+            "month": month_number,
+            "amount": total,
+            "starting_amount": total,
+            "archived_status": None,
+        }
+        ernic_totals.append(ernic_month)
+
+    forecast_row = {
+        "programme_description": "ERNIC",
+        "nac_description": "ERNIC",
+        "natural_account_code": "0000",
+        "programme": "ERNIC",
+        "cost_centre": cost_centre_code,
+        "analysis1_code": "0000",
+        "analysis2_code": "0000",
+        "project_code": "0000",
+        "monthly_figures": ernic_totals,
+        "budget": 0
+    }
+    forecast_months.append(forecast_row)
+
+    superannuation_totals = []
     for month, total in employee_superannuation_totals.items():
         month_number = month_map[month]
-        forecast_row = {
-            {
-                "programme_description": "Superannuation",
-                "nac_description": "Superannuation",
-                "natural_account_code": "0000",
-                "programme": "Superannuation",
-                "cost_centre": cost_center_code,
-                "analysis1_code": "0000",
-                "analysis2_code": "0000",
-                "project_code": "0000",
-                "monthly_figures": [
-                    {
-                        "actual": False,
-                        "month": month_number,
-                        "amount": total,
-                        "starting_amount": total,
-                        "archived_status": None,
-                    }
-                ],
-                "budget": 0
-            }
+        superannuation_month = {
+            "actual": False,
+            "month": month_number,
+            "amount": total,
+            "starting_amount": total,
+            "archived_status": None,
         }
-        forecast_months.append(forecast_row)
+        superannuation_totals.append(superannuation_month)
+
+    forecast_row = {
+        "programme_description": "Superannuation",
+        "nac_description": "Superannuation",
+        "natural_account_code": "0000",
+        "programme": "Superannuation",
+        "cost_centre": cost_centre_code,
+        "analysis1_code": "0000",
+        "analysis2_code": "0000",
+        "project_code": "0000",
+        "monthly_figures": superannuation_totals,
+        "budget": 0
+    }
+    forecast_months.append(forecast_row)
+
+    basic_pay_totals = []
+    for month, total in employee_monthly_totals.items():
+        month_number = month_map[month]
+
+        basic_pay_month = {
+            "actual": False,
+            "month": month_number,
+            "amount": total,
+            "starting_amount": total,
+            "archived_status": None,
+        }
+        basic_pay_totals.append(basic_pay_month)
+
+    forecast_row = {
+        "programme_description": "Basic Pay",
+        "nac_description": "Basic Pay",
+        "natural_account_code": "0000",
+        "programme": "Basic Pay",
+        "cost_centre": cost_centre_code,
+        "analysis1_code": "0000",
+        "analysis2_code": "0000",
+        "project_code": "0000",
+        "monthly_figures": basic_pay_totals,
+        "budget": 0
+    }
+    forecast_months.append(forecast_row)
 
     return forecast_months
