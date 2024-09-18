@@ -43,11 +43,12 @@ class GroupView(TemplateView):
         group_serialiser_data = group_serialiser.data
         group_data = json.dumps(group_serialiser_data)
 
-        logger.info(f"Group data: {group_data}")
+        logger.info(f"group data: {group_data}")
 
         context = super().get_context_data(**kwargs)
         context['group'] = 'MyHR'
         context['myhr_group_data'] = group_data
+        context['myhr_next_view'] = 'directorate'
         return context
 
 

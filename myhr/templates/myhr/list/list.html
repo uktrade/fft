@@ -28,6 +28,7 @@
 {% block scripts %}
     <script>
         window.myhr_group_data = {{ myhr_group_data|safe }};
+        window.myhr_next_view = "{{ myhr_next_view }}";
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

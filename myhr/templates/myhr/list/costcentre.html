@@ -6,6 +6,7 @@
     {{ block.super }}
     {% breadcrumb "MyHR" "myhr_list" %}
     {% breadcrumb "Directorate" "myhr_directorate" %}
+    {% breadcrumb "Cost Centre" "myhr_costcentre" %}
 {% endblock %}
 
 {% block title %}Directorate{% endblock %}
@@ -19,7 +20,7 @@
     </div>
 
     <div class="group-section">
-        <label for="myhr-employee-app" class="govuk-heading-m">Directorate</label>
+        <label for="myhr-employee-app" class="govuk-heading-m">Cost Centre</label>
         <div id="myhr-employee-app">
         </div>
     </div>
@@ -29,7 +30,6 @@
 {% block scripts %}
     <script>
         window.myhr_group_data = {{ myhr_group_data|safe }};
-        window.myhr_next_view = "{{ myhr_next_view }}";
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
