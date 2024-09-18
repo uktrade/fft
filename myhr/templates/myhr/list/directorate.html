@@ -1,0 +1,35 @@
+{% extends "myhr/list/myhr_base.html" %}
+{% load util vite %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "MyHR" "myhr_list" %}
+    {% breadcrumb "Directorate" "myhr_directorate" %}
+{% endblock %}
+
+{% block title %}Directorate{% endblock %}
+
+{% block page_content %}
+    <div class="govuk-grid-row date-selection-download">
+    </div>
+
+    <div class="action-bar-wrapper">
+        <div id="action-bar"  class="action-bar" hidden="hidden"></div>
+    </div>
+
+    <div class="group-section">
+        <label for="myhr-employee-app" class="govuk-heading-m">Directorate</label>
+        <div id="myhr-employee-app">
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block scripts %}
+    <script>
+        window.myhr_group_data = {{ myhr_group_data|safe }};
+    </script>
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
+{% endblock %}

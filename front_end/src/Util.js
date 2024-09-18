@@ -102,6 +102,40 @@ export const processNonPayrollData = (payrollData) => {
     return rows;
 }
 
+export const processGroupData = (groupData) => {
+    console.log('groupData data', groupData)
+    let groupCols = [
+        "group",
+        "fte",
+        "count",
+    ]
+
+    let rows = [];
+    let colIndex = 0
+
+    groupData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
+        // eslint-disable-next-line
+        for (const groupCol of groupCols) {
+            cells[groupCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: groupCol,
+                value: rowData[groupCol],
+                isEditable: false
+            }
+            colIndex++
+
+        }
+
+        rows.push(cells)
+    });
+
+    console.log('processed group rows data', rows)
+    return rows;
+}
+
 export const processPayrollData = (payrollData) => {
     console.log('payrollData data', payrollData)
     let employeePayrollCols = [

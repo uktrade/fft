@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "axes",
     "django_chunk_upload_handlers",
     "payroll",
+    "myhr",
     "hr",
     "app_layer",
 ]

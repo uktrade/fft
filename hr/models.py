@@ -7,7 +7,7 @@ from payroll.models import PayrollLookup, PayrollEntry
 
 
 class HRModel(models.Model):
-    group = models.CharField(max_length=255)
+    group = models.CharField(max_length=255, verbose_name='group')
     directorate = models.CharField(max_length=255)
     cc = models.CharField(max_length=255)
     cc_name = models.CharField(max_length=255)
@@ -32,9 +32,6 @@ class HRModel(models.Model):
     costing_cc = models.CharField(max_length=255)
     return_field = models.CharField(max_length=255)  # Assuming 'Return' is a field name; rename if necessary
     programme_code = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.se_no})"
 
     def parse_csv(self, bucket_name: str, file_path: str):
         try:
@@ -111,15 +108,14 @@ class HRModel(models.Model):
             if current_payroll_record is None:
                 continue
 
-            total_debit = current_payroll_record.debit_amount - current_payroll_record.credit_amount
             tool_type_payment = lookup.get_tool_type_payment(current_payroll_record.pay_element_name).lower()
 
             if tool_type_payment == 'basic pay':
-                hr_record.basic_pay += total_debit
+                hr_record.basic_pay += current_payroll_record.debit_amount - current_payroll_record.credit_amount
             elif tool_type_payment == 'superannuation':
-                hr_record.superannuation += total_debit
+                hr_record.superannuation = int(hr_record.superannuation) + int(current_payroll_record.superannuation)
             elif tool_type_payment == 'ernic':
-                hr_record.ernic += total_debit
+                hr_record.ernic = int(hr_record.ernic) + int(current_payroll_record.ernic)
             else:
                 # log the pay_element_name as not found
                 pass
@@ -127,7 +123,7 @@ class HRModel(models.Model):
             hr_record.save()
 
         # For each HR record get the record.basic_pay and set record.wmi_person to 'Yes' if basic_pay is greater than 0
-        # and set record.wmi_person to 'No' if basic_pay is less than or equal to 0
+        # and set record.wmi_person to 'nonpayroll' if basic_pay is less than or equal to 0
         for hr_record in hr_records:
             hr_record.wmi_person = 'payroll' if hr_record.basic_pay > 0 else 'nonpayroll'
             hr_record.save()

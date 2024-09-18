@@ -1,0 +1,14 @@
+{% extends "wide_content.html" %}
+
+{% block content %}
+<div class="app-pane__content">
+    <h1 class="govuk-heading-l">{{ view.title }}</h1>
+
+        <dl class="govuk-summary-list">
+
+    </dl>
+
+    {% block page_content %}
+    {% endblock %}
+</div>
+{% endblock %}

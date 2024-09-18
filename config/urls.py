@@ -36,6 +36,7 @@ urlpatterns = [
     path("oscar_return/", include("oscar_return.urls")),
     path("upload_split_file/", include("upload_split_file.urls")),
     path("payroll/", include("payroll.urls")),
+    path("myhr/", include("myhr.urls")),
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
     path(
