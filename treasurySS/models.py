@@ -116,11 +116,11 @@ class SubSegmentAbstract(models.Model):
     DELPROG = "DEL PROG"
     AMEDEPT = "DEPT AME"
     AMENODEPT = "NON-DEPT AME"
-    CONTROL_BUDGET_CHOICES = {
+    CONTROL_BUDGET_CHOICES = (
         (DEL, ((DELADM, "DEL ADMIN"), (DELPROG, "DEL PROG"))),
         (AME, ((AMEDEPT, "DEPT AME"), (AMENODEPT, "NON-DEPT AME"))),
         (NB, NB),
-    }
+    )
     sub_segment_code = models.CharField(
         max_length=8, primary_key=True, verbose_name="sub segment code"
     )

@@ -91,6 +91,10 @@ def get_end_of_month(period_code):
 
 
 def end_of_month_archive(period_id, used_for_current_month=False):
+    """Archive a financial period at the end of the month.
+
+    This is a top-level business logic unit and belongs in a service.
+    """
     end_of_month_info = get_end_of_month(period_id)
 
     current_year = get_current_financial_year()

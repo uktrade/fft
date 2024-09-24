@@ -34,11 +34,12 @@ manage = python manage.py
 
 create-stub-data: # Create stub data for testing
 	make migrate
+	$(web) $(manage) set_current_year
 	$(web) $(manage) create_stub_data All
 	$(web) $(manage) create_stub_forecast_data
 	$(web) $(manage) create_stub_future_forecast_data
 	$(web) $(manage) create_data_lake_stub_data
-	$(web) $(manage) create_test_user
+	$(web) $(manage) create_test_user --password=password
 
 setup: # Set up the project from scratch
 	make down
@@ -71,10 +72,10 @@ requirements: # Generate requirements.txt
 	poetry export --with prod --without-hashes --output requirements.txt
 
 test: # Run tests
-	$(web) $(manage) test $(test)
+	$(web) pytest $(test)
 
-pytest: # Run pytest ignoring; node_modules, front_end, features, staticfiles.
-	$(web) pytest --ignore=node_modules --ignore=front_end --ignore=features --ignore=staticfiles --random-order -n 4 -v
+test-ci: # Run tests with settings for CI
+	$(web) pytest --random-order -n 4 -v
 
 superuser: # Create superuser
 	$(web) $(manage) createsuperuser
@@ -112,6 +113,9 @@ webpack: # Run webpack
 migrations: # Create needed migrations
 	$(web) $(manage) makemigrations
 
+check-migrations: # Check if there are needed migrations
+	$(web) $(manage) makemigrations --check
+
 migrate: # Run migrations against the local db
 	$(web) $(manage) migrate
 
@@ -122,6 +126,8 @@ db-reset: # Reset the database
 	docker compose stop db
 	docker compose rm -f db
 	docker compose up -d db
+
+db-init: create-stub-data # Initialise the database
 
 db-shell: # Open the database container postgres shell
 	$(db) psql -U postgres
