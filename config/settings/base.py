@@ -40,6 +40,7 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 VCAP_SERVICES = env.json("VCAP_SERVICES", {})
 
 INSTALLED_APPS = [
+    "staff.apps.StaffConfig",
     "user",
     "authbroker_client",
     "future_years.apps.FutureYearsConfig",

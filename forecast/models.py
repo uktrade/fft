@@ -153,6 +153,11 @@ class ForecastExpenditureType(BaseModel):
         return self.forecast_expenditure_type_name
 
 
+class FinancialPeriodQuerySet(models.QuerySet):
+    def months(self):
+        return self.filter(financial_period_code__lte=12)
+
+
 class FinancialPeriodManager(models.Manager):
     def month_display_list(self):
         return list(
@@ -296,7 +301,7 @@ class FinancialPeriod(BaseModel):
     actual_loaded_previous_year = models.BooleanField(default=False)
     display_figure = models.BooleanField(default=True)
 
-    objects = models.Manager()  # The default manager.
+    objects = FinancialPeriodQuerySet.as_manager()
     financial_period_info = FinancialPeriodManager()
 
     class Meta:

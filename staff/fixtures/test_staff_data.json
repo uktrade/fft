@@ -1,0 +1,322 @@
+[
+  {
+    "model": "staff.staff",
+    "pk": 1,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000001",
+      "first_name": "John",
+      "last_name": "Smith"
+    }
+  },
+  {
+    "model": "staff.staff",
+    "pk": 2,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000002",
+      "first_name": "Jane",
+      "last_name": "Doe"
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 1,
+    "fields": {
+      "staff": 1,
+      "year": 2024,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 2,
+    "fields": {
+      "staff": 1,
+      "year": 2025,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 3,
+    "fields": {
+      "staff": 1,
+      "year": 2026,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 4,
+    "fields": {
+      "staff": 1,
+      "year": 2027,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 5,
+    "fields": {
+      "staff": 2,
+      "year": 2024,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 6,
+    "fields": {
+      "staff": 2,
+      "year": 2025,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 7,
+    "fields": {
+      "staff": 2,
+      "year": 2026,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.staffforecast",
+    "pk": 8,
+    "fields": {
+      "staff": 2,
+      "year": 2027,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "staff.payelementgroup",
+    "pk": 1,
+    "fields": {
+      "name": "Basic Pay",
+      "natural_code": 71111001
+    }
+  },
+  {
+    "model": "staff.payelementgroup",
+    "pk": 2,
+    "fields": {
+      "name": "ERNIC",
+      "natural_code": 71111002
+    }
+  },
+  {
+    "model": "staff.payelementgroup",
+    "pk": 3,
+    "fields": {
+      "name": "Superannuation",
+      "natural_code": 71111003
+    }
+  },
+  {
+    "model": "staff.payelement",
+    "pk": 1,
+    "fields": {
+      "name": "Basic Pay 1",
+      "natural_code": 71111001,
+      "group": 1
+    }
+  },
+  {
+    "model": "staff.payelement",
+    "pk": 2,
+    "fields": {
+      "name": "Basic Pay 2",
+      "natural_code": 71111001,
+      "group": 1
+    }
+  },
+  {
+    "model": "staff.payelement",
+    "pk": 3,
+    "fields": {
+      "name": "ERNIC",
+      "natural_code": 71111002,
+      "group": 2
+    }
+  },
+  {
+    "model": "staff.payelement",
+    "pk": 4,
+    "fields": {
+      "name": "Superannuation",
+      "natural_code": 71111003,
+      "group": 3
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 1,
+    "fields": {
+      "staff": 1,
+      "pay_element": 1,
+      "debit_amount": "2500.00",
+      "credit_amount": "500.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 2,
+    "fields": {
+      "staff": 1,
+      "pay_element": 2,
+      "debit_amount": "300.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 3,
+    "fields": {
+      "staff": 1,
+      "pay_element": 3,
+      "debit_amount": "100.00",
+      "credit_amount": "10.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 4,
+    "fields": {
+      "staff": 1,
+      "pay_element": 4,
+      "debit_amount": "400.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 5,
+    "fields": {
+      "staff": 2,
+      "pay_element": 1,
+      "debit_amount": "3000.00",
+      "credit_amount": "300.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 6,
+    "fields": {
+      "staff": 2,
+      "pay_element": 2,
+      "debit_amount": "0.00",
+      "credit_amount": "20.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 7,
+    "fields": {
+      "staff": 2,
+      "pay_element": 3,
+      "debit_amount": "500.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "staff.payroll",
+    "pk": 8,
+    "fields": {
+      "staff": 2,
+      "pay_element": 4,
+      "debit_amount": "600.00",
+      "credit_amount": "0.00"
+    }
+  }
+]
