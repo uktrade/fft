@@ -86,6 +86,7 @@ class Command(BaseCommand):
             action = create_future_year_figure
             msg = "created"
 
+        # if 2020 is the current financial year then this will be 2021, 2022, 2023
         for interval in range(1, 4):
             year_obj = get_financial_year_obj(financial_year + interval)
 
