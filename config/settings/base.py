@@ -114,7 +114,9 @@ VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
 if is_copilot():
     DATABASES = {
-        "default": dj_database_url.config(default=database_url_from_env("DATABASE_CREDENTIALS"))
+        "default": dj_database_url.config(
+            default=database_url_from_env("DATABASE_CREDENTIALS")
+        )
     }
 else:
     if "postgres" in VCAP_SERVICES:
@@ -130,7 +132,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},  # noqa
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },  # noqa
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -152,7 +156,9 @@ def FILTERS_VERBOSE_LOOKUPS():
     from django_filters.conf import DEFAULTS
 
     verbose_lookups = DEFAULTS["VERBOSE_LOOKUPS"].copy()
-    verbose_lookups.update({"icontains": "", "contains": "", "startswith": "", "istartswith": ""})
+    verbose_lookups.update(
+        {"icontains": "", "contains": "", "startswith": "", "istartswith": ""}
+    )
     return verbose_lookups
 
 
@@ -193,7 +199,9 @@ if "aws-s3-bucket" in VCAP_SERVICES:
         # If "temp" is in instance name it means it's the temp files bucket
         if "temp" in bucket["instance_name"]:
             TEMP_FILE_AWS_ACCESS_KEY_ID = app_bucket_credentials["aws_access_key_id"]
-            TEMP_FILE_AWS_SECRET_ACCESS_KEY = app_bucket_credentials["aws_secret_access_key"]
+            TEMP_FILE_AWS_SECRET_ACCESS_KEY = app_bucket_credentials[
+                "aws_secret_access_key"
+            ]
             TEMP_FILE_AWS_REGION = app_bucket_credentials["aws_region"]
             TEMP_FILE_AWS_S3_REGION_NAME = app_bucket_credentials["aws_region"]
             TEMP_FILE_AWS_STORAGE_BUCKET_NAME = app_bucket_credentials["bucket_name"]
@@ -214,7 +222,9 @@ else:
     TEMP_FILE_AWS_SECRET_ACCESS_KEY = env("TEMP_FILE_AWS_SECRET_ACCESS_KEY", default="")
     TEMP_FILE_AWS_REGION = env("TEMP_FILE_AWS_REGION", default="")
     TEMP_FILE_AWS_S3_REGION_NAME = env("TEMP_FILE_AWS_REGION", default="")
-    TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env("TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default="")
+    TEMP_FILE_AWS_STORAGE_BUCKET_NAME = env(
+        "TEMP_FILE_AWS_STORAGE_BUCKET_NAME", default=""
+    )
 
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.amazonaws.com" % AWS_STORAGE_BUCKET_NAME
 AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
@@ -387,7 +397,9 @@ SENTRY_DSN = env("SENTRY_DSN", None)
 # Configure sentry if a DSN is set
 if SENTRY_DSN:
     # AWS Prefix needs to be removed once migration is complete
-    sentry_environment = f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
+    sentry_environment = (
+        f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
+    )
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         environment=sentry_environment,
