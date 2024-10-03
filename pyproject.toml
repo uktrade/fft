@@ -120,3 +120,9 @@ extend-exclude = ["config/*", "features/*", "migrations", "manage.py"]
 select = ["E", "F", "B"]
 # Never enforce `E501` (line length violations).
 ignore = ["E501", "B904"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--ignore=front_end --ignore=features --ignore=staticfiles --ds=config.settings.ci --reuse-db"
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+filterwarnings = ["ignore::DeprecationWarning"]

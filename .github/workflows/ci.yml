@@ -44,10 +44,13 @@ jobs:
         run: make black-check
 
       - name: Run tests
-        run: make pytest
+        run: make test-ci
 
       - name: Bring up chrome
         run: docker compose up -d chrome
+
+      - name: Run makemigrations in check mode
+        run: make check-migrations
 
       - name: Run BDD tests
         run: make bdd
