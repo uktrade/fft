@@ -15,11 +15,14 @@ from pathlib import Path
 
 import dj_database_url
 import environ
+import sentry_sdk
 from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.utility import is_copilot
 from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -384,3 +387,25 @@ LOGGING = {
         },
     },
 }
+
+
+# Sentry
+# https://docs.sentry.io/platforms/python/guides/django/
+SENTRY_ENVIRONMENT = env.str("SENTRY_ENVIRONMENT", None)
+SENTRY_DSN = env.str("SENTRY_DSN", None)
+
+# Configure sentry if a DSN is set
+if SENTRY_DSN:
+    # TODO: AWS Prefix needs to be removed once migration is complete.
+    sentry_environment = (
+        f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
+    )
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        environment=sentry_environment,
+        release=GIT_COMMIT,
+        integrations=[DjangoIntegration(), RedisIntegration()],
+        enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
+        traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
+        send_default_pii=True,
+    )
