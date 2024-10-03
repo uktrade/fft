@@ -2,7 +2,7 @@ import { createStore, combineReducers } from 'redux';
 // import { persistReducer } from 'redux-persist';
 // import storage from 'redux-persist/lib/storage';
 
-import { allCells } from './Reducers/Cells';
+import {allCells} from './Reducers/Cells';
 import selected from './Reducers/Selected';
 import edit from './Reducers/Edit';
 import error from './Reducers/Error';

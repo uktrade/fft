@@ -2,21 +2,6 @@ export const getCellId = (key, index) => {
     return "id_" + key + "_" + index;
 }
 
-export const months = [ 
-    "apr", 
-    "may", 
-    "jun",
-    "jul", 
-    "aug", 
-    "sep", 
-    "oct", 
-    "nov", 
-    "dec",
-    "jan", 
-    "feb", 
-    "mar"
-];
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -76,6 +61,118 @@ export async function postData(url = '', data = {}) {
         status: response.status,
         data: jsonData // parses JSON response into native JavaScript objects
     }
+}
+
+
+export const processNonPayrollData = (payrollData) => {
+    console.log('payrollNonData data', payrollData)
+    let nonEmployeePayrollCols = [
+        "name",
+        "grade",
+        "staff_number",
+        "fte",
+        "programme_code",
+        "budget_type",
+        "eu_non_eu",
+        "assignment_status",
+    ]
+
+    let rows = [];
+    let colIndex = 0
+
+    payrollData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
+        // eslint-disable-next-line
+        for (const nonEmployeePayrollCol of nonEmployeePayrollCols) {
+            cells[nonEmployeePayrollCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: nonEmployeePayrollCol,
+                value: rowData[nonEmployeePayrollCol],
+                isEditable: false
+            }
+            colIndex++
+        }
+
+        rows.push(cells)
+    });
+
+    console.log('processed payroll non employee rows data', rows)
+    return rows;
+}
+
+export const processGroupData = (groupData) => {
+    console.log('groupData data', groupData)
+    let groupCols = [
+        "group",
+        "fte",
+        "count",
+    ]
+
+    let rows = [];
+    let colIndex = 0
+
+    groupData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
+        // eslint-disable-next-line
+        for (const groupCol of groupCols) {
+            cells[groupCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: groupCol,
+                value: rowData[groupCol],
+                isEditable: false
+            }
+            colIndex++
+
+        }
+
+        rows.push(cells)
+    });
+
+    console.log('processed group rows data', rows)
+    return rows;
+}
+
+export const processPayrollData = (payrollData) => {
+    console.log('payrollData data', payrollData)
+    let employeePayrollCols = [
+        "name",
+        "grade",
+        "staff_number",
+        "fte",
+        "programme_code",
+        "budget_type",
+        "eu_non_eu",
+        "assignment_status",
+    ]
+
+    let rows = [];
+    let colIndex = 0
+
+    payrollData.forEach(function (rowData, rowIndex) {
+        let cells = {}
+
+        // eslint-disable-next-line
+        for (const employeePayrollCol of employeePayrollCols) {
+            cells[employeePayrollCol] = {
+                rowIndex: rowIndex,
+                colIndex: colIndex,
+                key: employeePayrollCol,
+                value: rowData[employeePayrollCol],
+                isEditable: false
+            }
+            colIndex++
+
+        }
+
+        rows.push(cells)
+    });
+
+    console.log('processed payroll employee rows data', rows)
+    return rows;
 }
 
 export const processForecastData = (forecastData) => {

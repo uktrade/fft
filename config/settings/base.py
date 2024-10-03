@@ -18,12 +18,10 @@ import environ
 import sentry_sdk
 from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.utility import is_copilot
-from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -80,6 +78,10 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
+    "payroll",
+    "myhr",
+    "hr",
+    "app_layer",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -168,7 +170,8 @@ AUTHBROKER_CLIENT_ID = env("AUTHBROKER_CLIENT_ID", default=None)
 AUTHBROKER_CLIENT_SECRET = env("AUTHBROKER_CLIENT_SECRET", default=None)
 AUTHBROKER_SCOPES = "read write"
 
-LOGIN_URL = reverse_lazy("authbroker_client:login")
+# LOGIN_URL = reverse_lazy("authbroker_client:login")
+LOGIN_URL = "/admin" # This is a workaround for the authbroker_client:login not working. Do not commit this change.
 LOGIN_REDIRECT_URL = "index"
 GIT_COMMIT = env("GIT_COMMIT", default=None)
 

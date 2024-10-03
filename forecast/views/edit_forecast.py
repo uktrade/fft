@@ -51,7 +51,7 @@ from forecast.views.base import (
     NoCostCentreCodeInURLError,
     NoFinancialYearInURLError,
 )
-
+from payroll.services import get_forecast_basic_pay_for_employee
 
 UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
 UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE = "Future forecast editing is locked"
@@ -97,9 +97,11 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
         )
         .order_by(*edit_forecast_order())
     )
+
     financial_code_serialiser = FinancialCodeSerializer(
         financial_codes, many=True, context={"financial_year": financial_year}
     )
+
     return financial_code_serialiser
 
 
@@ -479,7 +481,15 @@ class EditForecastView(
         )
 
         serialiser_data = financial_code_serialiser.data
+
+        data = get_forecast_basic_pay_for_employee(self.cost_centre_code, self.financial_year)
+
+        # Add each item from data list to the top of the serialiser_data list
+        for item in data:
+            serialiser_data.insert(0, item)
+
         forecast_dump = json.dumps(serialiser_data)
+        logger.info(f"forecast_dump data: {forecast_dump}")
         if self.financial_year == get_current_financial_year():
             self.title = "Edit forecast"
             actual_data = (

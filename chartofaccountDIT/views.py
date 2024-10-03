@@ -59,7 +59,7 @@ class FilteredNACListView(FAdminFilteredView):
             "This field tells us what we are "
             "spending the money on. "
             "The structure follows the Treasury Common Chart of "
-            "Accounts and groups a set of transactions "
+            "Accounts and groups a set of transaction "
             "into a clearly defined category."
         )
         return context
@@ -211,7 +211,7 @@ class FilteredInterEntityView(FAdminFilteredView):
         context = super().get_context_data(**kwargs)
         context["section_name"] = self.name
         context["section_description"] = (
-            "This field is used to identify transactions with "
+            "This field is used to identify transaction with "
             "Other Government Departments (OGDs) / Bodies which "
             "is needed for the year-end accounts. To be used "
             "when setting up Purchase Orders and / or "

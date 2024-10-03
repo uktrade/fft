@@ -1,0 +1,26 @@
+{% extends "wide_content.html" %}
+{% load util vite %}
+
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Select cost centre" "select_cost_centre" %}
+{% endblock %}
+
+{% block title %}Edit Payroll - Select Cost Centre{% endblock %}
+
+{% block content %}
+    <h3 class="govuk-heading-l">My cost centres</h3>
+    <div id="cost-centre-payroll-list-app"></div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        window.costCentres = {{ view.get_user_cost_centres|safe }};
+        window.currentFinancialYear = {{ view.get_financial_year|safe }};
+        window.currentFinancialYearDisplay = "{{ view.get_financial_year_display|safe }}";
+        window.financialYears = {{ view.get_financial_years|safe }};
+    </script>
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "payroll/list/payroll_base.html" %}
+{% load util vite %}
+{% load breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "View Payroll" "payroll_list" %}
+{% endblock %}
+
+{% block title %}View Payroll{% endblock %}
+
+{% block content %}
+    <h1>View Payroll</h1>
+    <p>This is the View Payroll page.</p>
+{% endblock %}

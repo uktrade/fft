@@ -1,0 +1,140 @@
+﻿AccountCode,AccountName,PayElementName,ToolTypePayment,CabinetOfficeReturns
+52241001,Other Goods/Services,NI Employer,NI Employer,Y
+51131001,Basic Salary - Ministers,BIS Private Secretary,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Basic Pay,Basic Pay,Y
+51112001,Employer's Social Security Costs - Permanent UK Staff,NI Employer,NI Employer,Y
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS O ALPHA ERS OCP Contribution,Superannuation,Y
+51114003,Covid 19 Allowances - Permanent UK Staff,Covid19 WFH Expenses Non Taxable,Do Not Use In Forecast,N (Taxable Recovery No Cost To Department)
+52121009,Child Care,BIS Childcare Voucher Admin Fee,Do Not Use In Forecast,N
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS PTN LEGALGEN ERS OCP Contribution,NI Employer,Y
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS PTN Mini ASLC,NI Employer,Y
+51114001,Allowances - Permanent UK Staff,BIS Temp Cover Supplement,Basic Pay,Only when Ongoing Date Confirmed
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Prog and Prjt Mgmt,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Arrears Basic Pay,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OSP Deduction,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC OSP Payment,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Statutory Sick Pay,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Career Break Leave,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Non Consolidated Bonus Non Pen,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Temp Cover Supplement,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC Arrears OSP Deduction New,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC Arrears OSP Payment New,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Analysts,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Arrears Enhancement Analysts,Basic Pay,Y
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS O PREMIUM ERS OCP Contribution,Superannuation,Y
+51114001,Allowances - Permanent UK Staff,BIS Salary Enhancement,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Recr Resp Allowance Pen,Basic Pay,Y
+51116001,Bonuses - Permanent UK Staff,BIS Special Merit Bonus,Do Not Use In Forecast,N
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS O CLASSIC ERS OCP Contribution,Superannuation,Y
+51114001,Allowances - Permanent UK Staff,BIS Arrears Enhancement Prog and Prjt Mgmt,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,BIS Mark Time Pen,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Arrears Statutory Sick Pay,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Misc Taxable Allowance,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Cash Pens,Basic Pay,Y
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS O NUVOS ERS OCP Contribution,Superannuation,Y
+51114001,Allowances - Permanent UK Staff,BIS London Enhancement Statistician,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Arrears Career Break Leave,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Flexible Benefit,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Arrears Unpaid Special Leave,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement FDECC Economist,Basic Pay,Y
+51111004,Salaries - Permanent - Annual Leave Deductions,BIS Arrears Annual Leave Payment,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Fast Stream Payment,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS London Enhancement Operational Reseach,Basic Pay,Y
+44825028,GSSC ASPP Recoverable,GSSC SHPP Birth Statutory Pay,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OShPP Birth Deduction,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OShPP Birth Payment,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC ShPP Birth Recovery RTI Balance Feed,Do Not Use In Forecast,N
+51111004,Salaries - Permanent - Annual Leave Deductions,BIS Annual Leave Payment,Do Not Use In Forecast,N
+44825028,GSSC ASPP Recoverable,GSSC SMP Recoverable,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC OMP Deduction,Basic Pay,Y
+51112002,GSSC Statutory Maternity Pay,GSSC Statutory Maternity Pay,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Arrears Mark Time Pen,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OMP Payment,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Arrears Extra Duty Weekend,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Saturday 125,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Sunday 125,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Weekday 100,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS On Call Allowance,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Science and Engineering,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Bank Holiday Overtime 125,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Saturday 200,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Sunday 200,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Overtime Sunday 125,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Procurement,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Arrears Bank Holiday Overtime 150,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Overtime Saturday 125,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Scientific,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Extra Duty Weekend,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Enhancement Cash Pens,Do Not Use In Forecast,N
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS O CLASSIC PLUS ERS OCP Contribution,Superannuation,Y
+51114001,Allowances - Permanent UK Staff,BIS Private Office Enhancement Allowance,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Overtime Sunday 200,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Overtime Saturday 200,Do Not Use In Forecast,N
+52114005,"Honoraria, Fees and Expenses",BIS Honorarium Recurring,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement FDECC Operational Research,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS London Enhancement Economist,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Misc Tax and Pen,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Arrears Overtime Weekday 150,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Electronic Engineers,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Cost of Living Additional No Tax No NI,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Unpaid Special Leave,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Communications,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Arrears Extra Duty,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement FDECC Statistician,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Electrical Engineering Inspector,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Accountants,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Arrears Accountancy allowance,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Accountancy allowance,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Unauthorised Leave Deduction,Do Not Use In Forecast,N
+51171007,Other Allowances,BIS Arrears Passport Claims Gross Up,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Emergency Response Allowance,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Enhancement Science and Engineering,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Arrears Bank Holiday Overtime 200,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Overtime Weekday 100,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Traveltime Weekday 100,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OPP Deduction,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC OPP Payment,Basic Pay,Y
+51112004,GSSC Statutory Paternity Pay,GSSC Statutory Paternity Pay Birth,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Recr Resp Allowance Pen,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Environmental Inspector Manager,Basic Pay,Y
+52121015,Staff Transfer/Detached Duty Costs,BIS Offshore Allowance Full Days,Basic Pay,Y
+52121015,Staff Transfer/Detached Duty Costs,BIS Offshore Allowance Half Days,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Retention Pay Additional,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement Environmental Investigator,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,GSSC Arrears OMP Deduction,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC Arrears OMP Payment,Do Not Use In Forecast,N
+51112002,GSSC Statutory Maternity Pay,GSSC Arrears Statutory Maternity Pay,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS London Enhancement Accountant,Basic Pay,Y
+51115001,Overtime - Permanent UK Staff,BIS Bank Holiday Overtime 200,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Pivotal Role Allowance,Basic Pay,Y
+51171007,Other Allowances,BIS Car Allowance,Do Not Use In Forecast,N
+52121009,Child Care,BIS Childcare Voucher Admin Fee Employer,Do Not Use In Forecast,N
+52121009,Child Care,BIS Childcare Vouchers Employer Funded,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS London Enhancement Librarianship,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Arrears Special Merit Bonus,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OAP Deduction,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC OAP Payment,Do Not Use In Forecast,N
+51112002,GSSC Statutory Maternity Pay,GSSC Statutory Adoption Pay,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,BIS Childcare Vouchers Adjust,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Keep in Touch Days New,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,BIS Flexi Hours Pay,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Arrears Retention Pay Additional,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,BIS Arrears Non Consolidated Perf Non Pens,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,GSSC Arrears Unpaid Parental Leave,Do Not Use In Forecast,N
+51113001,Employer's Pension Costs - Permanent UK Staff,BIS Pension Payment,Superannuation,Y
+51114001,Allowances - Permanent UK Staff,BIS New Arrears Private Office Enhancement Allowance,Do Not Use In Forecast,N
+51115001,Overtime - Permanent UK Staff,BIS Overtime Weekday 150,Do Not Use In Forecast,N
+51111001,Salaries - Permanent UK Staff,BIS OMP Payment for CCVs,Basic Pay,Y
+51171007,Other Allowances,BIS BNFL Payment,Do Not Use In Forecast,N
+51171007,Other Allowances,BIS Pension RDA Payment,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Misc Taxable Allowance,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Typing Skills Supplement,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Mark Time Non Pen,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS DDaT Specialist Allowance,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement IT Intelligent Customer Function,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Enhancement KIM,Basic Pay,Y
+51114001,Allowances - Permanent UK Staff,BIS Arrears Enhancement Communications,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Special Allowance,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Personal Pay Addition,Basic Pay,Y
+51111001,Salaries - Permanent UK Staff,BIS Non Consolidated Perf Non Pens,Do Not Use In Forecast,N
+51114001,Allowances - Permanent UK Staff,BIS Basic Pay Pen,Basic Pay,Y

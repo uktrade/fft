@@ -1,0 +1,28 @@
+{% extends "wide_content.html" %}
+
+{% block content %}
+<div class="app-pane__content">
+    <h1 class="govuk-heading-l">{{ view.title }}</h1>
+
+        <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Group
+            </dt>
+            <a href="{% url 'forecast_group' view.cost_centre_details.group_code view.financial_year %}" target="_blank" class="govuk-summary-list__value group-link">{{ view.cost_centre_details.group }} ({{ view.cost_centre_details.group_code }}) </a>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Directorate
+            </dt>
+            <a href="{% url 'forecast_directorate' view.cost_centre_details.directorate_code view.financial_year %}" target="_blank" class="govuk-summary-list__value directorate-link">
+                {{ view.cost_centre_details.directorate }}
+                ({{ view.cost_centre_details.directorate_code }})
+            </a>
+        </div>
+    </dl>
+
+    {% block page_content %}
+    {% endblock %}
+</div>
+{% endblock %}
