@@ -1,5 +1,4 @@
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
+from dbt_copilot_python.utility import is_copilot
 
 from .paas import *  # noqa
 
@@ -14,9 +13,12 @@ AUTHENTICATION_BACKENDS += [
 ]
 
 INSTALLED_APPS += [
-    "elasticapm.contrib.django",
     "django_audit_log_middleware",
 ]
+
+# TODO: Remove once we have migrated to the DBT Platform.
+if not is_copilot():
+    INSTALLED_APPS += ["elasticapm.contrib.django"]
 
 # X_ROBOTS_TAG (https://man.uktrade.io/docs/procedures/1st-go-live.html)
 X_ROBOTS_TAG = [
