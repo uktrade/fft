@@ -391,12 +391,12 @@ LOGGING = {
 
 # Sentry
 # https://docs.sentry.io/platforms/python/guides/django/
-SENTRY_ENVIRONMENT = env("SENTRY_ENVIRONMENT", None)
-SENTRY_DSN = env("SENTRY_DSN", None)
+SENTRY_ENVIRONMENT = env.str("SENTRY_ENVIRONMENT", None)
+SENTRY_DSN = env.str("SENTRY_DSN", None)
 
 # Configure sentry if a DSN is set
 if SENTRY_DSN:
-    # AWS Prefix needs to be removed once migration is complete
+    # TODO: AWS Prefix needs to be removed once migration is complete.
     sentry_environment = (
         f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
     )
