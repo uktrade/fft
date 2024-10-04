@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
+    "csp",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -282,6 +283,7 @@ MIDDLEWARE = [
     "core.no_cache_middleware.NoCacheMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -410,3 +412,10 @@ if SENTRY_DSN:
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
         send_default_pii=True,
     )
+
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ["'self'"]
+
+CSP_REPORT_ONLY = True
+CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)

@@ -44,6 +44,7 @@ granian = "^1.6.3"
 django-import-export = "^3.3.07"
 dbt-copilot-python = "^0.2.1"
 django-log-formatter-asim = "^0.0.4"
+django-csp = "^3.8"
 
 [tool.poetry.group.prod]
 optional = true
