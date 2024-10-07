@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
+    "csp",
 ]
 
 ROOT_URLCONF = "config.urls"
