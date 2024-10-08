@@ -11,7 +11,7 @@ class Staff(models.Model):
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
 
 
-class StaffForecast(models.QuerySet):
+class StaffForecastQuerySet(models.QuerySet):
     pass
 
 
@@ -24,7 +24,7 @@ class StaffForecast(models.Model):
             )
         ]
 
-    objects = StaffForecast.as_manager()
+    objects = StaffForecastQuerySet.as_manager()
 
     staff = models.ForeignKey(Staff, models.PROTECT, related_name="forecast")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)

@@ -1,6 +1,8 @@
+from functools import wraps
 from django.http import HttpResponse, HttpRequest
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import user_passes_test
+from django.core.exceptions import PermissionDenied
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
@@ -10,17 +12,23 @@ from .models import StaffForecast
 
 
 # TODO: Remove once no longer needed.
-def _user_is_superuser(user):
-    return user.is_superuser
+def superuser_view(view_func):
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied
+        return view_func(*args, **kwargs)
+
+    return wrapper
 
 
-@user_passes_test(_user_is_superuser)
+@superuser_view
 def edit_payroll_page(request: HttpRequest) -> HttpResponse:
     context = {}
     return TemplateResponse(request, "staff/page/edit_payroll.html", context)
 
 
-@user_passes_test(_user_is_superuser)
+@superuser_view
 def staff_debug_page(request: HttpRequest) -> HttpResponse:
     if request.GET.get("cost_centre"):
         cost_centre = CostCentre.objects.get(pk=request.GET.get("cost_centre"))
