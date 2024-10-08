@@ -30,6 +30,19 @@ class StaffForecast(models.Model):
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
     # pariod 1 -> 12 = apr -> mar
+    # Here is a useful text snippet:
+    #   apr period_1
+    #   may period_2
+    #   jun period_3
+    #   jul period_4
+    #   aug period_5
+    #   sep period_6
+    #   oct period_7
+    #   nov period_8
+    #   dec period_9
+    #   jan period_10
+    #   feb period_11
+    #   mar period_12
     period_1 = models.BooleanField(default=True)
     period_2 = models.BooleanField(default=True)
     period_3 = models.BooleanField(default=True)

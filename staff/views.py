@@ -3,6 +3,9 @@ from django.http import HttpResponse, HttpRequest
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
@@ -23,8 +26,42 @@ def superuser_view(view_func):
 
 
 @superuser_view
-def edit_payroll_page(request: HttpRequest) -> HttpResponse:
-    context = {}
+def edit_payroll_page(
+    request: HttpRequest, cost_centre_code: str, financial_year: int
+) -> HttpResponse:
+    cost_centre = get_object_or_404(CostCentre, pk=cost_centre_code)
+    financial_year = get_object_or_404(FinancialYear, pk=financial_year)
+
+    payroll_qs = (
+        StaffForecast.objects.filter(
+            staff__cost_centre=cost_centre,
+            year=financial_year,
+        )
+        .annotate(
+            name=Concat("staff__first_name", Value(" "), "staff__last_name"),
+        )
+        .values(
+            "name",
+            employee_no=F("staff__employee_no"),
+            apr=F("period_1"),
+            may=F("period_2"),
+            jun=F("period_3"),
+            jul=F("period_4"),
+            aug=F("period_5"),
+            sep=F("period_6"),
+            oct=F("period_7"),
+            nov=F("period_8"),
+            dec=F("period_9"),
+            jan=F("period_10"),
+            feb=F("period_11"),
+            mar=F("period_12"),
+        )
+    )
+    payroll_data = list(payroll_qs)
+
+    context = {
+        "payroll_data": payroll_data,
+    }
     return TemplateResponse(request, "staff/page/edit_payroll.html", context)
 
 

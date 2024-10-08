@@ -10,6 +10,14 @@
 
 {% block content %}
 
-<!-- TODO: edit payroll react table -->
+{{ payroll_data|json_script:'payroll-data' }}
+
+<script>
+    function getScriptJsonData(id) {
+        return JSON.parse(document.getElementById(id).textContent);
+    }
+
+    console.log(getScriptJsonData("payroll-data"));
+</script>
 
 {% endblock content %}
