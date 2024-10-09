@@ -12,12 +12,21 @@
 
 {{ payroll_data|json_script:'payroll-data' }}
 
-<script>
+<script type="module">
     function getScriptJsonData(id) {
-        return JSON.parse(document.getElementById(id).textContent);
+        return new Promise((resolve, reject) => {
+            const json = JSON.parse(document.getElementById(id).textContent);
+            resolve(json);
+        });
     }
 
-    console.log(getScriptJsonData("payroll-data"));
+    function getPayrollData() {
+        return getScriptJsonData("payroll-data");
+    }
+
+    // EXAMPLE
+    // const payrollData = await getPayrollData();
+    // console.log(payrollData);
 </script>
 
 {% endblock content %}
