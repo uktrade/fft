@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import staff_debug_page, edit_payroll_page
+from .views import payroll_debug_page, edit_payroll_page
 
-app_name = "staff"
+app_name = "payroll"
 
 urlpatterns = [
     path(
@@ -10,5 +10,5 @@ urlpatterns = [
         edit_payroll_page,
         name="edit_payroll",
     ),
-    path("debug/", staff_debug_page, name="debug"),
+    path("debug/", payroll_debug_page, name="debug"),
 ]

@@ -1,7 +1,6 @@
 from functools import wraps
 from django.http import HttpResponse, HttpRequest
 from django.template.response import TemplateResponse
-from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.db.models import F, Value
@@ -9,9 +8,12 @@ from django.db.models.functions import Concat
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
-from staff.services.staff import payroll_forecast_report, cur_payroll_forecast_report
+from payroll.services.payroll import (
+    payroll_forecast_report,
+    cur_payroll_forecast_report,
+)
 
-from .models import StaffForecast
+from .models import EmployeePayPeriods
 
 
 # TODO: Remove once no longer needed.
@@ -33,16 +35,16 @@ def edit_payroll_page(
     financial_year = get_object_or_404(FinancialYear, pk=financial_year)
 
     payroll_qs = (
-        StaffForecast.objects.filter(
-            staff__cost_centre=cost_centre,
+        EmployeePayPeriods.objects.filter(
+            employee__cost_centre=cost_centre,
             year=financial_year,
         )
         .annotate(
-            name=Concat("staff__first_name", Value(" "), "staff__last_name"),
+            name=Concat("employee__first_name", Value(" "), "employee__last_name"),
         )
         .values(
             "name",
-            employee_no=F("staff__employee_no"),
+            employee_no=F("employee__employee_no"),
             apr=F("period_1"),
             may=F("period_2"),
             jun=F("period_3"),
@@ -62,11 +64,11 @@ def edit_payroll_page(
     context = {
         "payroll_data": payroll_data,
     }
-    return TemplateResponse(request, "staff/page/edit_payroll.html", context)
+    return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
 
 
 @superuser_view
-def staff_debug_page(request: HttpRequest) -> HttpResponse:
+def payroll_debug_page(request: HttpRequest) -> HttpResponse:
     if request.GET.get("cost_centre"):
         cost_centre = CostCentre.objects.get(pk=request.GET.get("cost_centre"))
     else:
@@ -79,17 +81,17 @@ def staff_debug_page(request: HttpRequest) -> HttpResponse:
     else:
         financial_year = FinancialYear.objects.current()
 
-    staff_forecast = StaffForecast.objects.filter(
-        staff__cost_centre=cost_centre,
+    employee_pay_periods = EmployeePayPeriods.objects.filter(
+        employee__cost_centre=cost_centre,
         year=financial_year,
     )
 
     context = {
         "cost_centre": cost_centre,
         "financial_year": financial_year,
-        "staff_forecast": staff_forecast,
+        "employee_pay_periods": employee_pay_periods,
         "new_payroll_forecast_report": payroll_forecast_report(cost_centre),
         "cur_payroll_forecast_report": cur_payroll_forecast_report(cost_centre),
     }
 
-    return TemplateResponse(request, "staff/page/debug.html", context)
+    return TemplateResponse(request, "payroll/page/debug.html", context)

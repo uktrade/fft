@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Staff(models.Model):
+class Employee(models.Model):
     cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
@@ -11,22 +11,16 @@ class Staff(models.Model):
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
 
 
-class StaffForecastQuerySet(models.QuerySet):
-    pass
-
-
-class StaffForecast(models.Model):
+class EmployeePayPeriods(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=("staff", "year"),
-                name="unique_staff_forecast",
+                fields=("employee", "year"),
+                name="unique_employee_pay_periods",
             )
         ]
 
-    objects = StaffForecastQuerySet.as_manager()
-
-    staff = models.ForeignKey(Staff, models.PROTECT, related_name="forecast")
+    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
     # pariod 1 -> 12 = apr -> mar
@@ -62,7 +56,7 @@ class StaffForecast(models.Model):
 
 
 # aka "ToolTypePayment"
-class PayElementGroup(models.Model):
+class PayElementTypeGroup(models.Model):
     name = models.CharField(max_length=32, unique=True)
     natural_code = models.ForeignKey("chartofaccountDIT.NaturalCode", models.PROTECT)
 
@@ -70,19 +64,21 @@ class PayElementGroup(models.Model):
         return self.name
 
 
-class PayElement(models.Model):
+class PayElementType(models.Model):
     name = models.CharField(max_length=128, unique=True)
     # aka "account code"
     natural_code = models.ForeignKey("chartofaccountDIT.NaturalCode", models.PROTECT)
-    group = models.ForeignKey(PayElementGroup, models.PROTECT)
+    group = models.ForeignKey(PayElementTypeGroup, models.PROTECT)
 
     def __str__(self) -> str:
         return self.name
 
 
-class Payroll(models.Model):
-    staff = models.ForeignKey(Staff, models.PROTECT)
-    pay_element = models.ForeignKey(PayElement, models.PROTECT)
+class EmployeePayElement(models.Model):
+    """A many-to-many through model that represents an employee's pay make-up."""
+
+    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_element")
+    type = models.ForeignKey(PayElementType, models.PROTECT)
     # Support up to 9,999,999.99.
     debit_amount = models.DecimalField(max_digits=9, decimal_places=2)
     # Support up to 9,999,999.99.

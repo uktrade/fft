@@ -35,7 +35,7 @@ urlpatterns = [
     path("data-lake/", include("data_lake.urls")),
     path("oscar_return/", include("oscar_return.urls")),
     path("upload_split_file/", include("upload_split_file.urls")),
-    path("staff/", include("staff.urls")),
+    path("payroll/", include("payroll.urls")),
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
     path(

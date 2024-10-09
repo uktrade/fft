@@ -1,6 +1,6 @@
 [
   {
-    "model": "staff.staff",
+    "model": "payroll.employee",
     "pk": 1,
     "fields": {
       "cost_centre": "888812",
@@ -10,7 +10,7 @@
     }
   },
   {
-    "model": "staff.staff",
+    "model": "payroll.employee",
     "pk": 2,
     "fields": {
       "cost_centre": "888812",
@@ -20,10 +20,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 1,
     "fields": {
-      "staff": 1,
+      "employee": 1,
       "year": 2024,
       "period_1": true,
       "period_2": true,
@@ -40,10 +40,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 2,
     "fields": {
-      "staff": 1,
+      "employee": 1,
       "year": 2025,
       "period_1": true,
       "period_2": true,
@@ -60,10 +60,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 3,
     "fields": {
-      "staff": 1,
+      "employee": 1,
       "year": 2026,
       "period_1": true,
       "period_2": true,
@@ -80,10 +80,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 4,
     "fields": {
-      "staff": 1,
+      "employee": 1,
       "year": 2027,
       "period_1": true,
       "period_2": true,
@@ -100,10 +100,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 5,
     "fields": {
-      "staff": 2,
+      "employee": 2,
       "year": 2024,
       "period_1": true,
       "period_2": true,
@@ -120,10 +120,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 6,
     "fields": {
-      "staff": 2,
+      "employee": 2,
       "year": 2025,
       "period_1": true,
       "period_2": true,
@@ -140,10 +140,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 7,
     "fields": {
-      "staff": 2,
+      "employee": 2,
       "year": 2026,
       "period_1": true,
       "period_2": true,
@@ -160,10 +160,10 @@
     }
   },
   {
-    "model": "staff.staffforecast",
+    "model": "payroll.employeepayperiods",
     "pk": 8,
     "fields": {
-      "staff": 2,
+      "employee": 2,
       "year": 2027,
       "period_1": true,
       "period_2": true,
@@ -180,7 +180,7 @@
     }
   },
   {
-    "model": "staff.payelementgroup",
+    "model": "payroll.payelementtypegroup",
     "pk": 1,
     "fields": {
       "name": "Basic Pay",
@@ -188,7 +188,7 @@
     }
   },
   {
-    "model": "staff.payelementgroup",
+    "model": "payroll.payelementtypegroup",
     "pk": 2,
     "fields": {
       "name": "ERNIC",
@@ -196,7 +196,7 @@
     }
   },
   {
-    "model": "staff.payelementgroup",
+    "model": "payroll.payelementtypegroup",
     "pk": 3,
     "fields": {
       "name": "Superannuation",
@@ -204,7 +204,7 @@
     }
   },
   {
-    "model": "staff.payelement",
+    "model": "payroll.payelementtype",
     "pk": 1,
     "fields": {
       "name": "Basic Pay 1",
@@ -213,7 +213,7 @@
     }
   },
   {
-    "model": "staff.payelement",
+    "model": "payroll.payelementtype",
     "pk": 2,
     "fields": {
       "name": "Basic Pay 2",
@@ -222,7 +222,7 @@
     }
   },
   {
-    "model": "staff.payelement",
+    "model": "payroll.payelementtype",
     "pk": 3,
     "fields": {
       "name": "ERNIC",
@@ -231,7 +231,7 @@
     }
   },
   {
-    "model": "staff.payelement",
+    "model": "payroll.payelementtype",
     "pk": 4,
     "fields": {
       "name": "Superannuation",
@@ -240,81 +240,81 @@
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 1,
     "fields": {
-      "staff": 1,
-      "pay_element": 1,
+      "employee": 1,
+      "type": 1,
       "debit_amount": "2500.00",
       "credit_amount": "500.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 2,
     "fields": {
-      "staff": 1,
-      "pay_element": 2,
+      "employee": 1,
+      "type": 2,
       "debit_amount": "300.00",
       "credit_amount": "0.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 3,
     "fields": {
-      "staff": 1,
-      "pay_element": 3,
+      "employee": 1,
+      "type": 3,
       "debit_amount": "100.00",
       "credit_amount": "10.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 4,
     "fields": {
-      "staff": 1,
-      "pay_element": 4,
+      "employee": 1,
+      "type": 4,
       "debit_amount": "400.00",
       "credit_amount": "0.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 5,
     "fields": {
-      "staff": 2,
-      "pay_element": 1,
+      "employee": 2,
+      "type": 1,
       "debit_amount": "3000.00",
       "credit_amount": "300.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 6,
     "fields": {
-      "staff": 2,
-      "pay_element": 2,
+      "employee": 2,
+      "type": 2,
       "debit_amount": "0.00",
       "credit_amount": "20.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 7,
     "fields": {
-      "staff": 2,
-      "pay_element": 3,
+      "employee": 2,
+      "type": 3,
       "debit_amount": "500.00",
       "credit_amount": "0.00"
     }
   },
   {
-    "model": "staff.payroll",
+    "model": "payroll.employeepayelement",
     "pk": 8,
     "fields": {
-      "staff": 2,
-      "pay_element": 4,
+      "employee": 2,
+      "type": 4,
       "debit_amount": "600.00",
       "credit_amount": "0.00"
     }

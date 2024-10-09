@@ -1,16 +1,16 @@
 {% extends "base_generic.html" %}
 {% load breadcrumbs %}
 
-{% block title %}Staff debug{% endblock title %}
+{% block title %}Employee debug{% endblock title %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Staff debug" "edit_payroll" %}
+    {% breadcrumb "Employee debug" "edit_payroll" %}
 {% endblock breadcrumbs %}
 
 {% block content %}
 
-<h1 class="govuk-heading-l">Staff debug</h1>
+<h1 class="govuk-heading-l">Employee debug</h1>
 
 <p>Cost centre: {{ cost_centre }}</p>
 <p>Financial year: {{ financial_year }}</p>
@@ -35,10 +35,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for obj in staff_forecast %}
+        {% for obj in employee_pay_periods %}
             <tr>
-                <td>{{ obj.staff.employee_no }}</td>
-                <td>{{ obj.staff.first_name }} {{ obj.staff.last_name }}</td>
+                <td>{{ obj.employee.employee_no }}</td>
+                <td>{{ obj.employee.first_name }} {{ obj.employee.last_name }}</td>
                 {% for enabled in obj.periods %}
                     <td>{{ enabled }}</td>
                 {% endfor %}

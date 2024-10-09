@@ -9,8 +9,8 @@ User = get_user_model()
 @pytest.fixture
 def user(db, client):
     user = User.objects.create_user(
-        username="staff.test",
-        email="staff.test@example.com",
+        username="test",
+        email="test@example.com",
         password="password",
     )
     user.save()
@@ -21,8 +21,8 @@ def user(db, client):
 @pytest.mark.parametrize(
     "url",
     [
-        "/staff/edit-payroll/",
-        "/staff/debug/",
+        "/payroll/edit-payroll/",
+        "/payroll/debug/",
     ],
 )
 def test_only_superuser_can_access(client, user, url):
