@@ -244,7 +244,11 @@
 {% block scripts %}
     <script src="/static/govuk/all.js"></script>
     <script>
-        window.GOVUKFrontend.initAll()
+        window.GOVUKFrontend.initAll();
+
+        function getCsrfToken() {
+            return "{{ csrf_token }}";
+        }
     </script>
 {% endblock %}
 {% vite_dev_client react=False %}

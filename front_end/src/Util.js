@@ -39,6 +39,9 @@ export const formatValue = (value) => {
 }
 
 export async function postData(url = '', data = {}) {
+    // NOTE: This doesn't work! We set `CSRF_COOKIE_HTTPONLY = True` so the code which
+    // uses this function include the CSRF token as part of the submitted form data by
+    // pulling it from DOM.
     var csrftoken = getCookie('csrftoken');
 
     /*

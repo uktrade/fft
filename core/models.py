@@ -61,6 +61,17 @@ class FinancialYearManager(models.Manager):
         )
 
 
+class FinancialYearQuerySet(models.QuerySet):
+    def current(self):
+        return self.filter(current=True).first()
+
+    def future(self):
+        current_financial_year = self.current().financial_year
+        return self.filter(financial_year__gt=current_financial_year).order_by(
+            "-financial_year"
+        )
+
+
 class FinancialYear(BaseModel):
     """Key and representation of the financial year"""
 
@@ -69,7 +80,7 @@ class FinancialYear(BaseModel):
     current = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     archived_at = models.DateTimeField(blank=True, null=True)
-    objects = models.Manager()  # The default manager.
+    objects = FinancialYearQuerySet.as_manager()
     financial_year_objects = FinancialYearManager()
 
     def __str__(self):

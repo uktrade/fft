@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom'
 import Forecast from './Apps/Forecast'
 import CostCentre from './Apps/CostCentre'
 import * as serviceWorker from './serviceWorker'
+import { postData } from './Util'
+
+window.postData = postData;
 
 if (document.getElementById('forecast-app')) {
 	ReactDOM.render(<Forecast />, document.getElementById('forecast-app'))
