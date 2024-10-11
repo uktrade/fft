@@ -1,11 +1,12 @@
 from decimal import Decimal
+
 from django.db.models import F, Q, Sum
 
+from core.models import FinancialYear
 from costcentre.models import CostCentre
 from forecast.models import FinancialCode, ForecastingDataView
-from core.models import FinancialYear
 
-from ..models import PayElementTypeGroup, Employee, EmployeePayPeriods
+from ..models import Employee, EmployeePayPeriods, PayElementTypeGroup
 
 
 def employee_created(employee: Employee) -> None:

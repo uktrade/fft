@@ -1,18 +1,19 @@
+import json
 from dataclasses import asdict, dataclass
 from functools import wraps
-import json
-from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.template.response import TemplateResponse
+
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from django.db.models import F, Value
 from django.db.models.functions import Concat
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.template.response import TemplateResponse
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.services.payroll import (
-    payroll_forecast_report,
     cur_payroll_forecast_report,
+    payroll_forecast_report,
 )
 
 from .models import EmployeePayPeriods

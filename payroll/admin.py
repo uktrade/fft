@@ -4,8 +4,8 @@ from payroll.services.payroll import employee_created
 
 from .models import (
     Employee,
-    EmployeePayPeriods,
     EmployeePayElement,
+    EmployeePayPeriods,
     PayElementType,
     PayElementTypeGroup,
 )

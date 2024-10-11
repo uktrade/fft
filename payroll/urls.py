@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import payroll_debug_page, edit_payroll_page
+from .views import edit_payroll_page, payroll_debug_page
+
 
 app_name = "payroll"
 
