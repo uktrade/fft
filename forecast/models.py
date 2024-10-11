@@ -155,6 +155,7 @@ class ForecastExpenditureType(BaseModel):
 
 class FinancialPeriodQuerySet(models.QuerySet):
     def months(self):
+        """Filter by real months, excluding the 3 adjustment periods (13, 14, 15)."""
         return self.filter(financial_period_code__lte=12)
 
 
