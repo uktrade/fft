@@ -1,15 +1,15 @@
 from django.urls import path
 
-from .views import edit_payroll_page, payroll_debug_page
+from . import views
 
 
 app_name = "payroll"
 
 urlpatterns = [
+    # TODO: Add choose financial year and cost centre url.
     path(
-        "edit-payroll/<str:cost_centre_code>/<int:financial_year>/",
-        edit_payroll_page,
-        name="edit_payroll",
+        "edit/<str:cost_centre_code>/<int:financial_year>/",
+        views.edit_payroll_page,
+        name="edit",
     ),
-    path("debug/", payroll_debug_page, name="debug"),
 ]

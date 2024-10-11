@@ -1,6 +1,5 @@
 import json
 from dataclasses import asdict, dataclass
-from functools import wraps
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import F, Value
@@ -11,23 +10,8 @@ from django.template.response import TemplateResponse
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
-from payroll.services.payroll import (
-    cur_payroll_forecast_report,
-    payroll_forecast_report,
-)
 
 from .models import EmployeePayPeriods
-
-
-# TODO: Remove once no longer needed.
-def superuser_view(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied
-        return view_func(request, *args, **kwargs)
-
-    return wrapper
 
 
 @dataclass
@@ -48,15 +32,12 @@ class EmployeePayroll:
     period_12: bool
 
 
-@dataclass
-class EmployeePayrollPayload:
-    payload: list[EmployeePayroll]
-
-
-@superuser_view
 def edit_payroll_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int
 ) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     cost_centre = get_object_or_404(CostCentre, pk=cost_centre_code)
     financial_year = get_object_or_404(FinancialYear, pk=financial_year)
 
@@ -127,33 +108,3 @@ def edit_payroll_page(
         assert not errors
 
         return JsonResponse({"errors": errors, "data": data})
-
-
-@superuser_view
-def payroll_debug_page(request: HttpRequest) -> HttpResponse:
-    if request.GET.get("cost_centre"):
-        cost_centre = CostCentre.objects.get(pk=request.GET.get("cost_centre"))
-    else:
-        cost_centre = CostCentre.objects.first()
-
-    if request.GET.get("financial_year"):
-        financial_year = FinancialYear.objects.get(
-            financial_year=request.GET.get("financial_year")
-        )
-    else:
-        financial_year = FinancialYear.objects.current()
-
-    employee_pay_periods = EmployeePayPeriods.objects.filter(
-        employee__cost_centre=cost_centre,
-        year=financial_year,
-    )
-
-    context = {
-        "cost_centre": cost_centre,
-        "financial_year": financial_year,
-        "employee_pay_periods": employee_pay_periods,
-        "new_payroll_forecast_report": payroll_forecast_report(cost_centre),
-        "cur_payroll_forecast_report": cur_payroll_forecast_report(cost_centre),
-    }
-
-    return TemplateResponse(request, "payroll/page/debug.html", context)

@@ -45,6 +45,9 @@ class EmployeePayPeriodsAdmin(admin.ModelAdmin):
         "period_11",
         "period_12",
     ]
+    list_filter = [
+        "year",
+    ]
 
 
 @admin.register(EmployeePayElement)
@@ -59,9 +62,16 @@ class EmployeePayElementAdmin(admin.ModelAdmin):
 
 @admin.register(PayElementType)
 class PayElementTypeAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        "name",
+        "natural_code",
+        "group",
+    ]
 
 
 @admin.register(PayElementTypeGroup)
 class PayElementTypeGroupAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        "name",
+        "natural_code",
+    ]

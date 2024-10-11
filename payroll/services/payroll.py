@@ -4,9 +4,8 @@ from django.db.models import F, Q, Sum
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
-from forecast.models import FinancialCode, ForecastingDataView
 
-from ..models import Employee, EmployeePayPeriods, PayElementTypeGroup
+from ..models import Employee, EmployeePayPeriods
 
 
 def employee_created(employee: Employee) -> None:
@@ -48,20 +47,4 @@ def payroll_forecast_report(cost_centre: CostCentre) -> None:
         .annotate(**period_sum_annotations)
     )
 
-    return qs
-
-
-def cur_payroll_forecast_report(cost_centre: CostCentre) -> None:
-    current_financial_year = FinancialYear.objects.current()
-
-    nacs = PayElementTypeGroup.objects.values("natural_code")
-    financial_codes = FinancialCode.objects.filter(
-        programme__budget_type="DEL",  # FIXME
-        cost_centre=cost_centre,
-        natural_account_code__in=nacs,
-    )
-
-    qs = ForecastingDataView.objects.all()
-    qs = qs.filter(financial_code__in=financial_codes)
-    qs = qs.filter(financial_year=current_financial_year.financial_year)
     return qs

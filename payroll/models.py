@@ -13,6 +13,7 @@ class Employee(models.Model):
 
 class EmployeePayPeriods(models.Model):
     class Meta:
+        verbose_name_plural = "employee pay periods"
         constraints = [
             models.UniqueConstraint(
                 fields=("employee", "year"),
