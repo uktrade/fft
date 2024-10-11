@@ -132,3 +132,18 @@ export const processForecastData = (forecastData) => {
 
     return rows;
 }
+
+
+/**
+ * Retrieves JSON data from an HTML element with the given ID.
+ *
+ * @param {string} id The ID of the HTML element containing the JSON data.
+ * @returns {Promise<Object>} A promise resolving to the parsed JSON data.
+ */
+export function getScriptJsonData(id) {
+    // The promise is here to facilitate a smooth future transition to an API call.
+    return new Promise((resolve, reject) => {
+        const json = JSON.parse(document.getElementById(id).textContent);
+        resolve(json);
+    });
+}

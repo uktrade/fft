@@ -10,109 +10,11 @@
 
 {% block content %}
     {{ payroll_data|json_script:'payroll-data' }}
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Employee no.</th>
-                <th>period_1</th>
-                <th>period_2</th>
-                <th>period_3</th>
-                <th>period_4</th>
-                <th>period_5</th>
-                <th>period_6</th>
-                <th>period_7</th>
-                <th>period_8</th>
-                <th>period_9</th>
-                <th>period_10</th>
-                <th>period_11</th>
-                <th>period_12</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for obj in payroll_data %}
-                <tr>
-                    <td>{{ obj.name }}</td>
-                    <td>{{ obj.employee_no }}</td>
-                    <td><input type="checkbox" {% if obj.period_1 %}checked{% endif %}></td>
-                    <td>{{ obj.period_2 }}</td>
-                    <td>{{ obj.period_3 }}</td>
-                    <td>{{ obj.period_4 }}</td>
-                    <td>{{ obj.period_5 }}</td>
-                    <td>{{ obj.period_6 }}</td>
-                    <td>{{ obj.period_7 }}</td>
-                    <td>{{ obj.period_8 }}</td>
-                    <td>{{ obj.period_9 }}</td>
-                    <td>{{ obj.period_10 }}</td>
-                    <td>{{ obj.period_11 }}</td>
-                    <td>{{ obj.period_12 }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="payroll-app"></div>
 {% endblock content %}
 
 {% block scripts %}
-{{ block.super }}
-{% vite_dev_client %}
-{% vite_js 'src/index.jsx' %}
-<script type="module">
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-    }
-
-    /**
-     * Retrieves JSON data from an HTML element with the given ID.
-     *
-     * @param {string} id The ID of the HTML element containing the JSON data.
-     * @returns {Promise<Object>} A promise resolving to the parsed JSON data.
-     */
-    function getScriptJsonData(id) {
-        // The promise is here to facilitate a smooth future transition to an API call.
-        return new Promise((resolve, reject) => {
-            const json = JSON.parse(document.getElementById(id).textContent);
-            resolve(json);
-        });
-    }
-
-    /**
-     * @typedef {Object} EmployeeData
-     * @property {string} name - The employee's name.
-     * @property {string} employee_no - The employee's number.
-     * @property {boolean} period_1 - Whether the employee is active in April.
-     * @property {boolean} period_2 - Whether the employee is active in May.
-     * @property {boolean} period_3 - Whether the employee is active in June.
-     * @property {boolean} period_4 - Whether the employee is active in July.
-     * @property {boolean} period_5 - Whether the employee is active in August.
-     * @property {boolean} period_6 - Whether the employee is active in September.
-     * @property {boolean} period_7 - Whether the employee is active in October.
-     * @property {boolean} period_8 - Whether the employee is active in November.
-     * @property {boolean} period_9 - Whether the employee is active in December.
-     * @property {boolean} period_10 - Whether the employee is active in January.
-     * @property {boolean} period_11 - Whether the employee is active in Febuary.
-     * @property {boolean} period_12 - Whether the employee is active in March.
-     */
-
-    /**
-     * Fetch employee data and return it as a promise.
-     *
-     * @returns {Promise<EmployeeData[]>} A promise resolving to an array of objects containing employee information.
-     */
-    function getPayrollData() {
-        return getScriptJsonData("payroll-data");
-    }
-
-    // EXAMPLE
-    // fetch the payroll data
-    const payrollData = await getPayrollData();
-    // on each row, flip a random pay period
-    for (const row of payrollData) {
-        const periodKey = `period_${getRandomInt(13)+1}`;
-        row[periodKey] = !row[periodKey];
-    }
-    // post the data back
-    let r = await postData("", JSON.stringify({"payload": payrollData}));
-    // log the response
-    console.log(r.data);
-</script>
+    {{ block.super }}
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
 {% endblock scripts %}
