@@ -1,4 +1,4 @@
-import { getScriptJsonData, postData, PostDataResponse } from "../../Util";
+import { getScriptJsonData, postData } from "../../Util";
 
 import * as types from "./types";
 
@@ -15,7 +15,7 @@ export function getPayrollData() {
  * Post modified payroll data.
  *
  * @param {types.PayrollData[]} payroll - Payroll data to be sent.
- * @returns {PostDataResponse} - Updated payroll data receieved.
+ * @returns {import("../../Util").PostDataResponse} - Updated payroll data receieved.
  */
 export function postPayrollData(payroll) {
   return postData("", payroll);
