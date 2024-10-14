@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} EmployeeData
+ * @typedef {Object} PayrollData
  * @property {string} name - The employee's name.
  * @property {string} employee_no - The employee's number.
  * @property {boolean} period_1 - Whether the employee is active in April.

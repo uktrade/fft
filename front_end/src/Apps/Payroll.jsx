@@ -10,7 +10,7 @@ export default function Payroll() {
 
   useEffect(() => {
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
-  });
+  }, []);
 
   // Handlers
   function handleLogPayroll() {

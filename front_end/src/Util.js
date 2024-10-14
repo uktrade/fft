@@ -38,6 +38,19 @@ export const formatValue = (value) => {
     return nfObject.format(pounds); 
 }
 
+/**
+ * @typedef {object} PostDataResponse
+ * @property {number} status
+ * @property {object} data
+ */
+
+/**
+ * POST data to an API.
+ * 
+ * @param {string} url - URL to POST data to.
+ * @param {object} data - Payload to send.
+ * @returns {PostDataResponse}
+ */
 export async function postData(url = '', data = {}) {
     // NOTE: This doesn't work! We set `CSRF_COOKIE_HTTPONLY = True` so the code which
     // uses this function include the CSRF token as part of the submitted form data by
