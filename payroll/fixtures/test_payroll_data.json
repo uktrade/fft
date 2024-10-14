@@ -1,0 +1,322 @@
+[
+  {
+    "model": "payroll.employee",
+    "pk": 1,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000001",
+      "first_name": "John",
+      "last_name": "Smith"
+    }
+  },
+  {
+    "model": "payroll.employee",
+    "pk": 2,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000002",
+      "first_name": "Jane",
+      "last_name": "Doe"
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 1,
+    "fields": {
+      "employee": 1,
+      "year": 2024,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 2,
+    "fields": {
+      "employee": 1,
+      "year": 2025,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 3,
+    "fields": {
+      "employee": 1,
+      "year": 2026,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 4,
+    "fields": {
+      "employee": 1,
+      "year": 2027,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 5,
+    "fields": {
+      "employee": 2,
+      "year": 2024,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 6,
+    "fields": {
+      "employee": 2,
+      "year": 2025,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 7,
+    "fields": {
+      "employee": 2,
+      "year": 2026,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 8,
+    "fields": {
+      "employee": 2,
+      "year": 2027,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.payelementtypegroup",
+    "pk": 1,
+    "fields": {
+      "name": "Basic Pay",
+      "natural_code": 71111001
+    }
+  },
+  {
+    "model": "payroll.payelementtypegroup",
+    "pk": 2,
+    "fields": {
+      "name": "ERNIC",
+      "natural_code": 71111002
+    }
+  },
+  {
+    "model": "payroll.payelementtypegroup",
+    "pk": 3,
+    "fields": {
+      "name": "Superannuation",
+      "natural_code": 71111003
+    }
+  },
+  {
+    "model": "payroll.payelementtype",
+    "pk": 1,
+    "fields": {
+      "name": "Basic Pay 1",
+      "natural_code": 71111001,
+      "group": 1
+    }
+  },
+  {
+    "model": "payroll.payelementtype",
+    "pk": 2,
+    "fields": {
+      "name": "Basic Pay 2",
+      "natural_code": 71111001,
+      "group": 1
+    }
+  },
+  {
+    "model": "payroll.payelementtype",
+    "pk": 3,
+    "fields": {
+      "name": "ERNIC",
+      "natural_code": 71111002,
+      "group": 2
+    }
+  },
+  {
+    "model": "payroll.payelementtype",
+    "pk": 4,
+    "fields": {
+      "name": "Superannuation",
+      "natural_code": 71111003,
+      "group": 3
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 1,
+    "fields": {
+      "employee": 1,
+      "type": 1,
+      "debit_amount": "2500.00",
+      "credit_amount": "500.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 2,
+    "fields": {
+      "employee": 1,
+      "type": 2,
+      "debit_amount": "300.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 3,
+    "fields": {
+      "employee": 1,
+      "type": 3,
+      "debit_amount": "100.00",
+      "credit_amount": "10.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 4,
+    "fields": {
+      "employee": 1,
+      "type": 4,
+      "debit_amount": "400.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 5,
+    "fields": {
+      "employee": 2,
+      "type": 1,
+      "debit_amount": "3000.00",
+      "credit_amount": "300.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 6,
+    "fields": {
+      "employee": 2,
+      "type": 2,
+      "debit_amount": "0.00",
+      "credit_amount": "20.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 7,
+    "fields": {
+      "employee": 2,
+      "type": 3,
+      "debit_amount": "500.00",
+      "credit_amount": "0.00"
+    }
+  },
+  {
+    "model": "payroll.employeepayelement",
+    "pk": 8,
+    "fields": {
+      "employee": 2,
+      "type": 4,
+      "debit_amount": "600.00",
+      "credit_amount": "0.00"
+    }
+  }
+]
