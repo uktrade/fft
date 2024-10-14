@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %}
+{% load breadcrumbs vite %}
+
+{% block title %}Edit payroll{% endblock title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit payroll" "edit_payroll" %}
+{% endblock breadcrumbs %}
+
+{% block content %}
+    {{ payroll_data|json_script:'payroll-data' }}
+    <div id="payroll-app"></div>
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% vite_dev_client %}
+    {% vite_js 'src/index.jsx' %}
+{% endblock scripts %}
