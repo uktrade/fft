@@ -21,42 +21,16 @@ export default function PayrollTable({ headers, payrollData }) {
               <tr className="govuk-table__row" key={row.employee_no}>
                 <td className="govuk-table__cell">{row.name}</td>
                 <td className="govuk-table__cell">{row.employee_no}</td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_1} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_2} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_3} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_4} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_5} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_6} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_7} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_8} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_9} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_10} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_11} readOnly />
-                </td>
-                <td className="govuk-table__cell">
-                  <input type="checkbox" checked={row.period_12} readOnly />
-                </td>
+
+                {Array.from({ length: 12 }, (period, index) => (
+                  <td className="govuk-table__cell" key={period}>
+                    <input
+                      type="checkbox"
+                      checked={row[`period_${index + 1}`]}
+                      readOnly
+                    />
+                  </td>
+                ))}
               </tr>
             );
           })}
