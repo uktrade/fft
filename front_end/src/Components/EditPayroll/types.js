@@ -12,7 +12,7 @@
  * @property {boolean} period_8 - Whether the employee is active in November.
  * @property {boolean} period_9 - Whether the employee is active in December.
  * @property {boolean} period_10 - Whether the employee is active in January.
- * @property {boolean} period_11 - Whether the employee is active in Febuary.
+ * @property {boolean} period_11 - Whether the employee is active in February.
  * @property {boolean} period_12 - Whether the employee is active in March.
  */
 

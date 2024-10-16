@@ -1,4 +1,5 @@
 import * as types from "./types";
+import PayrollTable from "../../Components/PayrollTable/index";
 
 /**
  *
@@ -6,14 +7,28 @@ import * as types from "./types";
  * @param {types.PayrollData[]} props.payroll
  * @returns
  */
-export default function EditPayoll({ payroll, onLogPayroll }) {
+export default function EditPayroll({ payroll, onLogPayroll }) {
+  const headers = [
+    "Name",
+    "Employee No",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+  ];
   return (
     <>
       <h1>Edit payroll</h1>
-      <button onClick={onLogPayroll}>Log payroll</button>
-      {payroll.map((row) => {
-        return <p>{row.name}</p>;
-      })}
+      {/* <button onClick={onLogPayroll}>Log payroll</button> */}
+      <PayrollTable headers={headers} payrollData={payroll}></PayrollTable>
     </>
   );
 }
