@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 
-import EditPayoll from "../Components/EditPayroll";
+import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
 
 const initialPayrollState = [];
@@ -17,7 +17,7 @@ export default function Payroll() {
     dispatch({ type: "logged" });
   }
 
-  return <EditPayoll payroll={payroll} onLogPayroll={handleLogPayroll} />;
+  return <EditPayroll payroll={payroll} onLogPayroll={handleLogPayroll} />;
 }
 
 function payrollReducer(payroll, action) {
