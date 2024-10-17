@@ -17,7 +17,17 @@ export default function Payroll() {
     dispatch({ type: "logged" });
   }
 
-  return <EditPayroll payroll={payroll} onLogPayroll={handleLogPayroll} />;
+  function handleTogglePayPeriods(employeeNo, index, enabled) {
+    dispatch({ type: "updatePayPeriods", employeeNo, index, enabled });
+  }
+
+  return (
+    <EditPayroll
+      payroll={payroll}
+      onLogPayroll={handleLogPayroll}
+      onTogglePayPeriods={handleTogglePayPeriods}
+    />
+  );
 }
 
 function payrollReducer(payroll, action) {
@@ -28,6 +38,16 @@ function payrollReducer(payroll, action) {
     case "logged": {
       console.log(payroll);
       return payroll;
+    }
+    case "updatePayPeriods": {
+      payroll.map((employeeRow) => {
+        if (employeeRow.employeeNo == action.employeeNo)
+          for (let i = index + 1; i < 12; i++) {
+            employeeRow.pay_periods[i].value = !enabled;
+          }
+        console.log("MODIFIED PAYROLL", payroll);
+        return payroll;
+      });
     }
   }
 }

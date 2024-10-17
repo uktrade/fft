@@ -53,7 +53,7 @@ def edit_payroll_page(
             payroll = {
                 "name": obj.name,
                 "employee_no": obj.employee.employee_no,
-                "periods": obj.periods,
+                "pay_periods": obj.periods,
             }
             payroll_data.append(payroll)
 
