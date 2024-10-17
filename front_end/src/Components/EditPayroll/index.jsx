@@ -32,7 +32,6 @@ export default function EditPayroll({
     <>
       <h1>Edit payroll</h1>
       {/* <button onClick={onLogPayroll}>Log payroll</button> */}
-      {console.log("EDIT PAYROLL", payroll)}
       <PayrollTable
         headers={headers}
         payrollData={payroll}

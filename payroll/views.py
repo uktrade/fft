@@ -2,7 +2,7 @@ import json
 from dataclasses import asdict, dataclass
 
 from django.core.exceptions import PermissionDenied
-from django.db.models import F, Value
+from django.db.models import Value
 from django.db.models.functions import Concat
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
