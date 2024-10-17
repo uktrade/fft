@@ -7,7 +7,11 @@ import PayrollTable from "./PayrollTable/index";
  * @param {types.PayrollData[]} props.payroll
  * @returns
  */
-export default function EditPayroll({ payroll, onLogPayroll }) {
+export default function EditPayroll({
+  payroll,
+  onSavePayroll,
+  onTogglePayPeriods,
+}) {
   const headers = [
     "Name",
     "Employee No",
@@ -27,8 +31,14 @@ export default function EditPayroll({ payroll, onLogPayroll }) {
   return (
     <>
       <h1>Edit payroll</h1>
-      {/* <button onClick={onLogPayroll}>Log payroll</button> */}
-      <PayrollTable headers={headers} payrollData={payroll}></PayrollTable>
+      <PayrollTable
+        headers={headers}
+        payroll={payroll}
+        onTogglePayPeriods={onTogglePayPeriods}
+      ></PayrollTable>
+      <button className="govuk-button" onClick={onSavePayroll}>
+        Save payroll
+      </button>
     </>
   );
 }

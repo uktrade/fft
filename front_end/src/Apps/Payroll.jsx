@@ -13,11 +13,25 @@ export default function Payroll() {
   }, []);
 
   // Handlers
-  function handleLogPayroll() {
-    dispatch({ type: "logged" });
+  async function handleSavePayroll() {
+    try {
+      api.postPayrollData(payroll);
+    } catch (error) {
+      console.error("Error saving payroll: ", error);
+    }
   }
 
-  return <EditPayroll payroll={payroll} onLogPayroll={handleLogPayroll} />;
+  function handleTogglePayPeriods(employeeNo, index, enabled) {
+    dispatch({ type: "updatePayPeriods", employeeNo, index, enabled });
+  }
+
+  return (
+    <EditPayroll
+      payroll={payroll}
+      onSavePayroll={handleSavePayroll}
+      onTogglePayPeriods={handleTogglePayPeriods}
+    />
+  );
 }
 
 function payrollReducer(payroll, action) {
@@ -25,9 +39,24 @@ function payrollReducer(payroll, action) {
     case "fetched": {
       return action.data;
     }
-    case "logged": {
-      console.log(payroll);
-      return payroll;
+    case "updatePayPeriods": {
+      return payroll.map((employeeRow) => {
+        if (employeeRow.employee_no == action.employeeNo) {
+          const updatedPayPeriods = employeeRow.pay_periods.map(
+            (period, index) => {
+              if (index + 1 >= action.index + 1) {
+                return !action.enabled;
+              }
+              return period;
+            }
+          );
+          return {
+            ...employeeRow,
+            pay_periods: updatedPayPeriods,
+          };
+        }
+        return employeeRow;
+      });
     }
   }
 }

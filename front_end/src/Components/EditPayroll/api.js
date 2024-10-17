@@ -15,8 +15,10 @@ export function getPayrollData() {
  * Post modified payroll data.
  *
  * @param {types.PayrollData[]} payroll - Payroll data to be sent.
- * @returns {import("../../Util").PostDataResponse} - Updated payroll data receieved.
+ * @returns {import("../../Util").PostDataResponse} - Updated payroll data received.
  */
 export function postPayrollData(payroll) {
-  return postData("", payroll);
+  const response = postData("", payroll);
+  console.log("response", response);
+  return response;
 }
