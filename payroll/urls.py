@@ -13,7 +13,7 @@ urlpatterns = [
         name="edit",
     ),
     path(
-        "<str:cost_centre_code>/<int:financial_year>/",
+        "api/<str:cost_centre_code>/<int:financial_year>/",
         views.PayrollView.as_view(),
         name="api",
     ),
