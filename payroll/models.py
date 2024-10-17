@@ -58,6 +58,11 @@ class EmployeePayPeriods(models.Model):
     def periods(self) -> list[bool]:
         return [getattr(self, f"period_{i + 1}") for i in range(12)]
 
+    @periods.setter
+    def periods(self, value: list[bool]) -> None:
+        for i, enabled in enumerate(value):
+            setattr(self, f"period_{i + 1}", enabled)
+
 
 # aka "ToolTypePayment"
 class PayElementTypeGroup(models.Model):
