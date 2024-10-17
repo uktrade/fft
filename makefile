@@ -39,6 +39,7 @@ create-stub-data: # Create stub data for testing
 	$(web) $(manage) create_stub_forecast_data
 	$(web) $(manage) create_stub_future_forecast_data
 	$(web) $(manage) create_data_lake_stub_data
+	$(web) $(manage) loaddata test_payroll_data
 	$(web) $(manage) create_test_user --password=password
 
 setup: # Set up the project from scratch
