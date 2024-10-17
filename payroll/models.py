@@ -10,6 +10,9 @@ class Employee(models.Model):
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
 
+    def get_full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
 
 class EmployeePayPeriods(models.Model):
     class Meta:

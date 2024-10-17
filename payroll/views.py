@@ -7,11 +7,14 @@ from django.db.models.functions import Concat
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.views import View
+from rest_framework import serializers
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 
 from .models import EmployeePayPeriods
+from .serializers import PayrollSerializer
 
 
 @dataclass
@@ -30,6 +33,45 @@ class EmployeePayroll:
     period_10: bool
     period_11: bool
     period_12: bool
+
+
+class JsonErrorResponse(JsonResponse):
+    def __init__(self, message):
+        super().__init__(data={"error_message": message}, status=500)
+
+
+class PayrollView(View):
+    def get_queryset(self):
+        return EmployeePayPeriods.objects.filter(
+            employee__cost_centre=self.kwargs["cost_centre_code"],
+            year=self.kwargs["financial_year"],
+        )
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = PayrollSerializer(queryset, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonErrorResponse("Invalid JSON")
+
+        if not isinstance(data, list):
+            return JsonErrorResponse("Expected an array")
+
+        for payroll in data:
+            employee_no = payroll["employee_no"]
+            instance = EmployeePayPeriods.objects.get(employee__employee_no=payroll[""])
+
+            serializer = PayrollSerializer(payroll)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except serializers.ValidationError:
+                return JsonErrorResponse("Invalid payroll data")
+
+            serializer.save()
 
 
 def edit_payroll_page(
