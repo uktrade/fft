@@ -34,7 +34,7 @@ export default function EditPayroll({
       {/* <button onClick={onLogPayroll}>Log payroll</button> */}
       <PayrollTable
         headers={headers}
-        payrollData={payroll}
+        payroll={payroll}
         onTogglePayPeriods={onTogglePayPeriods}
       ></PayrollTable>
     </>

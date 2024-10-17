@@ -3,14 +3,10 @@ import EmployeeRow from "../EmployeeRow";
 /**
  *
  * @param {object} props
- * @param {types.PayrollData[]} props.payrollData
+ * @param {types.PayrollData[]} props.payroll
  * @returns
  */
-export default function PayrollTable({
-  headers,
-  payrollData,
-  onTogglePayPeriods,
-}) {
+export default function PayrollTable({ headers, payroll, onTogglePayPeriods }) {
   return (
     <>
       <table className="govuk-table">
@@ -26,7 +22,7 @@ export default function PayrollTable({
           </tr>
         </thead>
         <tbody className="govuk-table__body">
-          {payrollData.map((row) => {
+          {payroll.map((row) => {
             return (
               <EmployeeRow
                 row={row}
