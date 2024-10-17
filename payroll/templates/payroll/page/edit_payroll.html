@@ -9,12 +9,15 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-    {{ payroll_data|json_script:'payroll-data' }}
     <div id="payroll-app"></div>
 {% endblock content %}
 
 {% block scripts %}
     {{ block.super }}
+    <script>
+        window.costCentreCode = "{{ cost_centre_code|escapejs }}";
+        window.financialYear = new Number("{{ financial_year }}");
+    </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
 {% endblock scripts %}

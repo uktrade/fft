@@ -1,0 +1,74 @@
+[
+  {
+    "model": "costcentre.departmentalgroup",
+    "pk": "8888AA",
+    "fields": {
+      "created": "2024-10-03T16:05:41.208Z",
+      "updated": "2024-10-03T16:05:41.208Z",
+      "active": true,
+      "group_name": "Departmental Group 0",
+      "director_general": null,
+      "treasury_segment_fk": null
+    }
+  },
+  {
+    "model": "costcentre.directorate",
+    "pk": "88880A",
+    "fields": {
+      "created": "2024-10-03T16:05:41.226Z",
+      "updated": "2024-10-03T16:05:41.226Z",
+      "active": true,
+      "directorate_name": "Directorate 1",
+      "director": null,
+      "group": "8888AA"
+    }
+  },
+  {
+    "model": "costcentre.costcentre",
+    "pk": "888812",
+    "fields": {
+      "created": "2024-10-03T16:05:41.230Z",
+      "updated": "2024-10-03T16:05:41.230Z",
+      "active": true,
+      "cost_centre_name": "Cost Centre 2",
+      "directorate": "88880A",
+      "deputy_director": null,
+      "business_partner": null,
+      "bsce_email": null,
+      "disabled_with_actual": false,
+      "used_for_travel": true
+    }
+  },
+  {
+    "model": "costcentre.costcentre",
+    "pk": "888813",
+    "fields": {
+      "created": "2024-10-03T16:05:41.233Z",
+      "updated": "2024-10-03T16:05:41.233Z",
+      "active": true,
+      "cost_centre_name": "Cost Centre 3",
+      "directorate": "88880A",
+      "deputy_director": null,
+      "business_partner": null,
+      "bsce_email": null,
+      "disabled_with_actual": false,
+      "used_for_travel": true
+    }
+  },
+  {
+    "model": "costcentre.costcentre",
+    "pk": "888814",
+    "fields": {
+      "created": "2024-10-03T16:05:41.236Z",
+      "updated": "2024-10-03T16:05:41.236Z",
+      "active": true,
+      "cost_centre_name": "Cost Centre 4",
+      "directorate": "88880A",
+      "deputy_director": null,
+      "business_partner": null,
+      "bsce_email": null,
+      "disabled_with_actual": false,
+      "used_for_travel": true
+    }
+  }
+]

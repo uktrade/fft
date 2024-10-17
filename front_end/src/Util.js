@@ -38,6 +38,23 @@ export const formatValue = (value) => {
     return nfObject.format(pounds); 
 }
 
+export async function getData(url) {
+    const request = new Request(
+        url,
+        {
+            method: "GET",
+        },
+    );
+
+    let resp = await fetch(request);
+
+    if (!resp.ok) {
+      throw new Error("Something went wrong");
+    }
+
+    return await resp.json();
+}
+
 /**
  * @typedef {object} PostDataResponse
  * @property {number} status
