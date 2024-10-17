@@ -9,7 +9,7 @@ import PayrollTable from "./PayrollTable/index";
  */
 export default function EditPayroll({
   payroll,
-  onLogPayroll,
+  onSavePayroll,
   onTogglePayPeriods,
 }) {
   const headers = [
@@ -31,12 +31,14 @@ export default function EditPayroll({
   return (
     <>
       <h1>Edit payroll</h1>
-      {/* <button onClick={onLogPayroll}>Log payroll</button> */}
       <PayrollTable
         headers={headers}
         payroll={payroll}
         onTogglePayPeriods={onTogglePayPeriods}
       ></PayrollTable>
+      <button className="govuk-button" onClick={onSavePayroll}>
+        Save payroll
+      </button>
     </>
   );
 }

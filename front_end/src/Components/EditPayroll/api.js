@@ -18,5 +18,7 @@ export function getPayrollData() {
  * @returns {import("../../Util").PostDataResponse} - Updated payroll data received.
  */
 export function postPayrollData(payroll) {
-  return postData("", payroll);
+  const response = postData("", payroll);
+  console.log("response", response);
+  return response;
 }

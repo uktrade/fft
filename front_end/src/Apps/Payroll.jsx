@@ -13,8 +13,12 @@ export default function Payroll() {
   }, []);
 
   // Handlers
-  function handleLogPayroll() {
-    dispatch({ type: "logged" });
+  async function handleSavePayroll() {
+    try {
+      api.postPayrollData(payroll);
+    } catch (error) {
+      console.error("Error saving payroll: ", error);
+    }
   }
 
   function handleTogglePayPeriods(employeeNo, index, enabled) {
@@ -24,7 +28,7 @@ export default function Payroll() {
   return (
     <EditPayroll
       payroll={payroll}
-      onLogPayroll={handleLogPayroll}
+      onSavePayroll={handleSavePayroll}
       onTogglePayPeriods={handleTogglePayPeriods}
     />
   );
@@ -34,10 +38,6 @@ function payrollReducer(payroll, action) {
   switch (action.type) {
     case "fetched": {
       return action.data;
-    }
-    case "logged": {
-      console.log(payroll);
-      return payroll;
     }
     case "updatePayPeriods": {
       return payroll.map((employeeRow) => {
