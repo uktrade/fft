@@ -14,7 +14,7 @@ export function getPayrollData() {
  * Post modified payroll data.
  *
  * @param {types.PayrollData[]} payrollData - Payroll data to be sent.
- * @returns {import("../../Util").PostDataResponse} - Updated payroll data receieved.
+ * @returns {import("../../Util").PostDataResponse} - Updated payroll data received.
  */
 export function postPayrollData(payrollData) {
   return postData(getPayrollApiUrl(), payrollData);
