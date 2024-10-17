@@ -42,32 +42,20 @@ def edit_payroll_page(
     financial_year = get_object_or_404(FinancialYear, pk=financial_year)
 
     if request.method == "GET":
-        payroll_qs = (
-            EmployeePayPeriods.objects.filter(
-                employee__cost_centre=cost_centre,
-                year=financial_year,
-            )
-            .annotate(
-                name=Concat("employee__first_name", Value(" "), "employee__last_name"),
-            )
-            .values(
-                "name",
-                "period_1",
-                "period_2",
-                "period_3",
-                "period_4",
-                "period_5",
-                "period_6",
-                "period_7",
-                "period_8",
-                "period_9",
-                "period_10",
-                "period_11",
-                "period_12",
-                employee_no=F("employee__employee_no"),
-            )
+        payroll_qs = EmployeePayPeriods.objects.filter(
+            employee__cost_centre=cost_centre,
+            year=financial_year,
+        ).annotate(
+            name=Concat("employee__first_name", Value(" "), "employee__last_name"),
         )
-        payroll_data = list(payroll_qs)
+        payroll_data: list[dict] = []
+        for obj in payroll_qs:
+            payroll = {
+                "name": obj.name,
+                "employee_no": obj.employee.employee_no,
+                "periods": obj.periods,
+            }
+            payroll_data.append(payroll)
 
         context = {
             "payroll_data": payroll_data,
