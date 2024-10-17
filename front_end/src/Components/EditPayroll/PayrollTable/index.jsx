@@ -26,7 +26,6 @@ export default function PayrollTable({
           </tr>
         </thead>
         <tbody className="govuk-table__body">
-          {console.log("PAYROLL TABLE", payrollData)}
           {payrollData.map((row) => {
             return (
               <EmployeeRow

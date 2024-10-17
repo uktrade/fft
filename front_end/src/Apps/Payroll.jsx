@@ -40,15 +40,33 @@ function payrollReducer(payroll, action) {
       return payroll;
     }
     case "updatePayPeriods": {
-      payroll.map((employeeRow) => {
-        if (employeeRow.employeeNo == action.employeeNo)
-          console.log(employeeRow.pay_periods[index + 1]);
-        for (let i = action.index + 1; i < 12; i++) {
-          employeeRow.pay_periods[i] = !action.enabled;
+      return payroll.map((employeeRow) => {
+        if (employeeRow.employee_no == action.employeeNo) {
+          const updatedPayPeriods = employeeRow.pay_periods.map(
+            (period, index) => {
+              if (index >= action.index + 1) {
+                return !action.enabled;
+              }
+              return period;
+            }
+          );
+          return {
+            ...employeeRow,
+            pay_periods: updatedPayPeriods,
+          };
         }
-        console.log("MODIFIED PAYROLL", payroll);
+        return payroll;
       });
-      return payroll;
     }
   }
+
+  // payroll.map((employeeRow) => {
+  //   if (employeeRow.employee_no == action.employeeNo)
+  //     for (let i = action.index + 1; i < 12; i++) {
+  //       employeeRow.pay_periods[i] = !action.enabled;
+  //     }
+  //   console.log("MODIFIED PAYROLL", payroll);
+  // });
+  // return payroll;
+  // // Need to handle the state or something
 }
