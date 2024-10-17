@@ -5,9 +5,6 @@ const EmployeeRow = ({ row, onTogglePayPeriods }) => {
     <tr className="govuk-table__row">
       <td className="govuk-table__cell">{row.name}</td>
       <td className="govuk-table__cell">{row.employee_no}</td>
-      {console.log("row", row)}
-      {console.log("pay periods in employee row", row.pay_periods)}
-
       {row.pay_periods.map((enabled, index) => {
         return (
           <td className="govuk-table__cell" key={index}>
