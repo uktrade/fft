@@ -1,5 +1,5 @@
 import * as types from "./types";
-import PayrollTable from "../../Components/PayrollTable/index";
+import PayrollTable from "./PayrollTable/index";
 
 /**
  *
