@@ -845,6 +845,24 @@ django = ">=4.2.9,<4.3.0"
 django-storages = ">=1.11.1"
 
 [[package]]
+name = "django-csp"
+version = "3.8"
+description = "Django Content Security Policy support."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django_csp-3.8-py3-none-any.whl", hash = "sha256:19b2978b03fcd73517d7d67acbc04fbbcaec0facc3e83baa502965892d1e0719"},
+    {file = "django_csp-3.8.tar.gz", hash = "sha256:ef0f1a9f7d8da68ae6e169c02e9ac661c0ecf04db70e0d1d85640512a68471c0"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+
+[package.extras]
+jinja2 = ["jinja2 (>=2.9.6)"]
+tests = ["jinja2 (>=2.9.6)", "pytest", "pytest-cov", "pytest-django", "pytest-ruff"]
+
+[[package]]
 name = "django-environ"
 version = "0.11.2"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -2960,4 +2978,4 @@ testing = ["coverage[toml]", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "feaef5b68afa6e91a5348333ffbfacafe3156cedf3280297a626c7839e308870"
+content-hash = "1629136e0bc04c33a447c8e09f3ee7fa2cacb9622b7d52c1de60782ca85c4fd5"
