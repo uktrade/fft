@@ -7,7 +7,7 @@ import * as types from "./types";
  * @returns {Promise<types.PayrollData[]>} A promise resolving to an array of objects containing employee information.
  */
 export function getPayrollData() {
-  return getData(getPayrollApiUrl());
+  return getData(getPayrollApiUrl()).then((data) => data.data);
 }
 
 /**

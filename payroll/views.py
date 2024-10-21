@@ -32,7 +32,7 @@ class PayrollView(View):
                 financial_year=self.financial_year,
             )
         )
-        return JsonResponse(data, safe=False)
+        return JsonResponse({"data": data})
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
