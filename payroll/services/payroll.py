@@ -1,8 +1,8 @@
 from decimal import Decimal
 from typing import Iterator, TypedDict
 
-from django.db.models import F, Q, Sum
 from django.db import transaction
+from django.db.models import F, Q, Sum
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
@@ -28,7 +28,9 @@ def create_employee_pay_periods(employee: Employee) -> None:
         EmployeePayPeriods.objects.get_or_create(employee=employee, year=financial_year)
 
 
-def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear) -> None:
+def payroll_forecast_report(
+    cost_centre: CostCentre, financial_year: FinancialYear
+) -> None:
 
     period_sum_annotations = {
         f"period_{i+1}_sum": Sum(

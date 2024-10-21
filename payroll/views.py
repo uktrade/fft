@@ -61,8 +61,20 @@ def edit_payroll_page(
         "cost_centre_code": cost_centre_obj.cost_centre_code,
         "financial_year": financial_year_obj.financial_year,
         "payroll_forecast_report": payroll_forecast_report_data,
-        "months": ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
-
+        "months": [
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+            "Jan",
+            "Feb",
+            "Mar",
+        ],
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
