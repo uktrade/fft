@@ -53,10 +53,28 @@ def edit_payroll_page(
 
     cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
     financial_year_obj = get_object_or_404(FinancialYear, pk=financial_year)
+    payroll_forecast_report_data = payroll_service.payroll_forecast_report(
+        cost_centre_obj, financial_year_obj
+    )
 
     context = {
         "cost_centre_code": cost_centre_obj.cost_centre_code,
         "financial_year": financial_year_obj.financial_year,
+        "payroll_forecast_report": payroll_forecast_report_data,
+        "months": [
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+            "Jan",
+            "Feb",
+            "Mar",
+        ],
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
