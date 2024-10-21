@@ -5,8 +5,9 @@ import Forecast from './Apps/Forecast'
 import CostCentre from './Apps/CostCentre'
 import Payroll from './Apps/Payroll'
 import * as serviceWorker from './serviceWorker'
-import { postData } from './Util'
+import { getData, postData } from './Util'
 
+window.getData = getData;
 window.postData = postData;
 
 if (document.getElementById('forecast-app')) {

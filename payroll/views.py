@@ -42,7 +42,7 @@ class PayrollView(View):
             financial_year=self.financial_year,
             payroll_data=data,
         )
-        return HttpResponse(status=200)
+        return JsonResponse({})
 
 
 def edit_payroll_page(
