@@ -30,6 +30,8 @@ exec = docker compose exec
 web := ${if $(shell docker ps -q -f name=web),$(exec) web,$(run) web}
 db := ${if $(shell docker ps -q -f name=db),$(exec) db,$(run) db}
 
+run-host = poetry run
+
 manage = python manage.py
 
 create-stub-data: # Create stub data for testing
@@ -39,6 +41,7 @@ create-stub-data: # Create stub data for testing
 	$(web) $(manage) create_stub_forecast_data
 	$(web) $(manage) create_stub_future_forecast_data
 	$(web) $(manage) create_data_lake_stub_data
+	$(web) $(manage) loaddata test_payroll_data
 	$(web) $(manage) create_test_user --password=password
 
 setup: # Set up the project from scratch
@@ -82,26 +85,30 @@ superuser: # Create superuser
 
 # Formatting
 black-check: # Run black-check
-	$(run-no-deps) web black --check .
+	$(run-host) black --check .
 
 black: # Run black
-	$(web) black .
+	$(run-host) black .
 
 isort-check: # Run isort-check
-	$(web) isort --check .
+	$(run-host) isort --check .
 
 isort: # Run isort
-	$(web) isort .
+	$(run-host) isort .
+
+ruff-check: # Run ruff in check mode
+	$(run-host) ruff check
 
 ruff: # Run ruff 
-	$(web) ruff check
+	$(run-host) ruff check --fix .
 
 check: # Run formatters to see if there are any errors
-	make ruff
+	make ruff-check
 	make black-check
 	make isort-check
 
 fix: # Run formatters to fix any issues that can be fixed automatically
+	make ruff
 	make black
 	make isort
 

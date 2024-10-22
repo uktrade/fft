@@ -38,7 +38,46 @@ export const formatValue = (value) => {
     return nfObject.format(pounds); 
 }
 
+/**
+ * Make a HTTP request to fetch JSON data.
+ * 
+ * @param {string} url The HTTP request URL for the API.
+ * @returns JSON response data.
+ */
+export async function getData(url) {
+    const request = new Request(
+        url,
+        {
+            method: "GET",
+        },
+    );
+
+    let resp = await fetch(request);
+
+    if (!resp.ok) {
+      throw new Error("Something went wrong");
+    }
+
+    return await resp.json();
+}
+
+/**
+ * @typedef {object} PostDataResponse
+ * @property {number} status
+ * @property {object} data
+ */
+
+/**
+ * POST data to an API.
+ * 
+ * @param {string} url - URL to POST data to.
+ * @param {object} data - Payload to send.
+ * @returns {PostDataResponse}
+ */
 export async function postData(url = '', data = {}) {
+    // NOTE: This doesn't work! We set `CSRF_COOKIE_HTTPONLY = True` so the code which
+    // uses this function include the CSRF token as part of the submitted form data by
+    // pulling it from DOM.
     var csrftoken = getCookie('csrftoken');
 
     /*
@@ -128,4 +167,19 @@ export const processForecastData = (forecastData) => {
     });
 
     return rows;
+}
+
+
+/**
+ * Retrieves JSON data from an HTML element with the given ID.
+ *
+ * @param {string} id The ID of the HTML element containing the JSON data.
+ * @returns {Promise<Object>} A promise resolving to the parsed JSON data.
+ */
+export function getScriptJsonData(id) {
+    // The promise is here to facilitate a smooth future transition to an API call.
+    return new Promise((resolve, reject) => {
+        const json = JSON.parse(document.getElementById(id).textContent);
+        resolve(json);
+    });
 }
