@@ -28,9 +28,7 @@ def create_employee_pay_periods(employee: Employee) -> None:
         EmployeePayPeriods.objects.get_or_create(employee=employee, year=financial_year)
 
 
-def payroll_forecast_report(
-    cost_centre: CostCentre, financial_year: FinancialYear
-) -> None:
+def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):
 
     period_sum_annotations = {
         f"period_{i+1}_sum": Sum(
@@ -82,6 +80,16 @@ def update_payroll_data(
     financial_year: FinancialYear,
     payroll_data: list[EmployeePayroll],
 ) -> None:
+    """Update a cost centre payroll for a given year using the provided list.
+
+    This function is wrapped with a transaction, so if any of the payroll updates fail,
+    the whole batch will be rolled back.
+
+    Raises:
+        ValueError: If an employee_no is empty.
+        ValueError: If there are not 12 items in the pay_periods list.
+        ValueError: If any of the pay_periods are not of type bool.
+    """
     for payroll in payroll_data:
         if not payroll["employee_no"]:
             raise ValueError("employee_no is empty")

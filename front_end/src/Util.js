@@ -38,6 +38,12 @@ export const formatValue = (value) => {
     return nfObject.format(pounds); 
 }
 
+/**
+ * Make a HTTP request to fetch JSON data.
+ * 
+ * @param {string} url The HTTP request URL for the API.
+ * @returns JSON response data.
+ */
 export async function getData(url) {
     const request = new Request(
         url,

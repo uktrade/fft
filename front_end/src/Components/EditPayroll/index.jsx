@@ -30,7 +30,6 @@ export default function EditPayroll({
   ];
   return (
     <>
-      <h1>Edit payroll</h1>
       <PayrollTable
         headers={headers}
         payroll={payroll}

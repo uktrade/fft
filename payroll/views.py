@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -13,7 +14,10 @@ from .services import payroll as payroll_service
 
 
 # TODO: check user has access to cost centre
-class PayrollView(View):
+class PayrollView(UserPassesTestMixin, View):
+    def test_func(self) -> bool | None:
+        return self.request.user.is_superuser
+
     def setup(self, request, *args, **kwargs) -> None:
         super().setup(request, *args, **kwargs)
         self.cost_centre = get_object_or_404(
