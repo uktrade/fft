@@ -22,20 +22,14 @@ jobs:
       - name: Create a .env file
         run: cp .env.ci .env
 
-      - name: Build images
-        run: make build
+      - name: Install poetry
+        run: pip install poetry
 
-      - name: Run containers
-        run: make up-detatched
-
-      - name: Install React app
-        run: npm ci
-
-      - name: Collect static
-        run: make collectstatic
+      - name: Install python dependencies
+        run: poetry install
 
       - name: Run ruff
-        run: make ruff
+        run: make ruff-check
 
       - name: Run isort
         run: make isort-check
@@ -43,14 +37,26 @@ jobs:
       - name: Run black
         run: make black-check
 
+      - name: Install React app
+        run: npm ci
+
+      - name: Build images
+        run: make build
+
+      - name: Run containers
+        run: make up-detatched
+
+      - name: Run makemigrations in check mode
+        run: make check-migrations
+
+      - name: Collect static
+        run: make collectstatic
+
       - name: Run tests
         run: make test-ci
 
       - name: Bring up chrome
         run: docker compose up -d chrome
-
-      - name: Run makemigrations in check mode
-        run: make check-migrations
 
       - name: Run BDD tests
         run: make bdd
