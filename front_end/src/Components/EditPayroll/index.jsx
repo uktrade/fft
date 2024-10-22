@@ -11,6 +11,7 @@ export default function EditPayroll({
   payroll,
   onSavePayroll,
   onTogglePayPeriods,
+  saveSuccess,
 }) {
   const headers = [
     "Name",
@@ -30,6 +31,18 @@ export default function EditPayroll({
   ];
   return (
     <>
+      {saveSuccess && (
+        <div className="govuk-notification-banner govuk-notification-banner--success">
+          <div className="govuk-notification-banner__header">
+            <h2
+              className="govuk-notification-banner__title"
+              id="govuk-notification-banner-title"
+            >
+              Success
+            </h2>
+          </div>
+        </div>
+      )}
       <PayrollTable
         headers={headers}
         payroll={payroll}
