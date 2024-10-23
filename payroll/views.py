@@ -82,3 +82,7 @@ def edit_payroll_page(
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
+
+
+def upload_payroll_page(request: HttpRequest) -> HttpResponse:
+    pass
