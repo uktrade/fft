@@ -80,6 +80,12 @@ class ChooseCostCentreView(
 
         return json.dumps(cost_centres)
 
+    def get_is_forecast_or_payroll(self):
+        if "forecast" in self.request.path:
+            return ["forecast"]
+
+        return ["payroll"]
+
     def get_form_kwargs(self):
         kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
         kwargs["user"] = self.request.user

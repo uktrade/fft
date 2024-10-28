@@ -16,6 +16,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
+        window.isForecastOrPayroll = {{ view.get_is_forecast_or_payroll|safe }}
         window.costCentres = {{ view.get_user_cost_centres|safe }};
         window.currentFinancialYear = {{ view.get_financial_year|safe }};
         window.currentFinancialYearDisplay = "{{ view.get_financial_year_display|safe }}";
