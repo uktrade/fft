@@ -6,7 +6,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
     const [financialYears, setFinancialYears] = useState([])
     const [forecastFinYearDisplay, setForecastFinYearDisplay] = useState(null)
     const [forecastFinYear, setForecastFinYear] = useState(null)
-    const [nextPage, setNextPage] = useState([])
+    const [nextPage, setNextPage] = useState(null)
 
     useEffect(() => {
         const timer = () => {
