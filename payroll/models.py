@@ -2,7 +2,14 @@ from django.db import models
 
 
 class Employee(models.Model):
-    cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
+    cost_centre = models.ForeignKey(
+        "costcentre.CostCentre",
+        models.PROTECT,
+    )
+    # programme_code = models.ForeignKey(
+    #     "chartofaccountDIT.ProgrammeCode",
+    #     models.PROTECT,
+    # )
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
