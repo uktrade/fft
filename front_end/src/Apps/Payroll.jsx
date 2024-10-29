@@ -22,7 +22,7 @@ export default function Payroll() {
   // Handlers
   async function handleSavePayroll() {
     try {
-      await api.postPayrollData(payroll);
+      api.postPayrollData(payroll);
 
       setSaveSuccess(true);
       localStorage.setItem("saveSuccess", "true");
