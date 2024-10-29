@@ -23,7 +23,7 @@ class ChooseCostCentreView(
     template_name = "forecast/edit/choose_cost_centre.html"
     form_class = MyCostCentresForm
     cost_centre = None
-    next_page = ["forecast"]
+    next_page = "forecast"
 
     def test_func(self):
         can_edit = can_edit_at_least_one_cost_centre(self.request.user)

@@ -16,7 +16,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
-        window.nextPage = {{ view.next_page|safe }}
+        window.nextPage = "{{ view.next_page }}";
         window.costCentres = {{ view.get_user_cost_centres|safe }};
         window.currentFinancialYear = {{ view.get_financial_year|safe }};
         window.currentFinancialYearDisplay = "{{ view.get_financial_year_display|safe }}";

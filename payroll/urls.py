@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     path(
         "edit/choose-cost-centre/",
-        ChooseCostCentreView.as_view(next_page=["payroll"]),
+        ChooseCostCentreView.as_view(next_page="payroll"),
         name="choose_cost_centre",
     ),
 ]
