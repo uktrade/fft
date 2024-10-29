@@ -23,6 +23,7 @@ class ChooseCostCentreView(
     template_name = "forecast/edit/choose_cost_centre.html"
     form_class = MyCostCentresForm
     cost_centre = None
+    next_page = ["forecast"]
 
     def test_func(self):
         can_edit = can_edit_at_least_one_cost_centre(self.request.user)
@@ -80,11 +81,8 @@ class ChooseCostCentreView(
 
         return json.dumps(cost_centres)
 
-    def get_is_forecast_or_payroll(self):
-        return ["forecast"] if "forecast" in self.request.path else ["payroll"]
-
     def get_page_header(self):
-        return "Forecast" if "forecast" in self.request.path else "Payroll"
+        return self.next_page[0].capitalize()
 
     def get_form_kwargs(self):
         kwargs = super(ChooseCostCentreView, self).get_form_kwargs()

@@ -6,7 +6,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
     const [financialYears, setFinancialYears] = useState([])
     const [forecastFinYearDisplay, setForecastFinYearDisplay] = useState(null)
     const [forecastFinYear, setForecastFinYear] = useState(null)
-    const [isForecastOrPayroll, setIsForecastOrPayroll] = useState([])
+    const [nextPage, setNextPage] = useState([])
 
     useEffect(() => {
         const timer = () => {
@@ -19,7 +19,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
                     if (window.financialYears){
                         setFinancialYears(window.financialYears)
                     }
-                    setIsForecastOrPayroll(window.isForecastOrPayroll)
+                    setNextPage(window.nextPage)
                 } else {
                     timer()
                 }
@@ -70,7 +70,7 @@ const CostCentreList = ({rowIndex, cellKey, format}) => {
             <ul className="cost-centre-list">
               {displayedCentres.map((costCentre, index) => {
                 return <li key={index}>
-                    <a href={ `/${isForecastOrPayroll}/edit/${costCentre.code}/${forecastFinYear}` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
+                    <a href={ `/${nextPage}/edit/${costCentre.code}/${forecastFinYear}` } className="govuk-link">{costCentre.code} - {costCentre.name}</a>
                 </li>
               })}
             </ul>
