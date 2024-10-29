@@ -82,7 +82,7 @@ class ChooseCostCentreView(
         return json.dumps(cost_centres)
 
     def get_page_header(self):
-        return self.next_page[0].capitalize()
+        return self.next_page.capitalize()
 
     def get_form_kwargs(self):
         kwargs = super(ChooseCostCentreView, self).get_form_kwargs()
