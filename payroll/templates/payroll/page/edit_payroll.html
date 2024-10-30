@@ -5,7 +5,6 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    <!-- This breadcrumb currently goes to the forecast and not payroll url -->
     {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
     {% breadcrumb "Edit payroll" "edit_payroll" %}
 {% endblock breadcrumbs %}
