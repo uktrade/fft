@@ -5,6 +5,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
+    {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
     {% breadcrumb "Edit payroll" "edit_payroll" %}
 {% endblock breadcrumbs %}
 
@@ -14,7 +15,7 @@
 
     <h1 class="govuk-heading-l">Forecast</h1>
     <p class="govuk-body-s">
-        This is a temporary table to demostrate the forecast figures. Eventually these
+        This is a temporary table to demonstrate the forecast figures. Eventually these
         figures would end up in the "Edit forecast" table.
     </p>
     <table class="govuk-table">
