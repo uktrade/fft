@@ -220,7 +220,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     }
 
     const isCellUpdating = () => {
-        if (cell && !isEditable)
+        if (cell && !isEditable || isOverride())
             return false
 
         if (isUpdating)
@@ -267,7 +267,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
                 className={getClasses()}
                 id={getId()}
                 onDoubleClick={ () => {
-                    if (isEditable) {
+                    if (isEditable && !isOverride()) {
                         dispatch(
                             SET_EDITING_CELL({
                                 "cellId": cellId
