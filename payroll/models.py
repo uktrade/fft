@@ -6,10 +6,15 @@ class Employee(models.Model):
         "costcentre.CostCentre",
         models.PROTECT,
     )
-    # programme_code = models.ForeignKey(
-    #     "chartofaccountDIT.ProgrammeCode",
-    #     models.PROTECT,
-    # )
+    # I've been informed that an employee should only be associated to a single
+    # programme code. However, programme codes are actually assigned on a per pay
+    # element basis and in some cases an employee can be associated to multiple. This is
+    # seen as an edge case and we want to model it such that an employee only has a
+    # single programme code. We will have to handle this discrepancy somewhere.
+    programme_code = models.ForeignKey(
+        "chartofaccountDIT.ProgrammeCode",
+        models.PROTECT,
+    )
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
