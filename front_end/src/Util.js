@@ -151,13 +151,16 @@ export const processForecastData = (forecastData) => {
 
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
+          // if toggled, do lookup, change monthly figures else:
+          // Replace forecast only, not actuals
             cells[monthlyFigure.month] = {
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: monthlyFigure.month,
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
-                isEditable: !monthlyFigure.actual
+                isEditable: !monthlyFigure.actual,
+                overrideAmount: 40102 // Test figure, needs to pull from payroll forecast table
             }
 
             colIndex++

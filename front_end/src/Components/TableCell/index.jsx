@@ -46,6 +46,16 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
     const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
+    const isOverride = () => {
+      return (cell && cell.overrideAmount && cell.isEditable) // Add 'toggle is on' logic
+
+      // If cell is override then add not editable class and colour change etc
+    }
+
+    if (isOverride()) {
+      cell.amount = cell.overrideAmount
+    }
+
     const [isUpdating, setIsUpdating] = useState(false)
 
     const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow);
@@ -83,8 +93,9 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     }
 
     const wasEdited = () => {
-        if (!isEditable)
+        if (!isEditable || isOverride())
             return false
+
 
         return cell.amount !== cell.startingAmount
     }
@@ -92,7 +103,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const getClasses = () => {
         let editable = ''
 
-        if (!isEditable) {
+        if (!isEditable || isOverride()) { // or isOverride
             editable = ' not-editable'
         }
 
@@ -105,7 +116,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
             negative = " negative"
         }
 
-        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
+        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + (isOverride() ? 'override ' : '') + editable + negative
     }
 
     const setContentState = (value) => {
