@@ -20,6 +20,8 @@
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Programme code</th>
+                <th scope="col" class="govuk-table__header">Natural code</th>
                 <th scope="col" class="govuk-table__header">Pay type</th>
                 {% for month in months %}
                     <th scope="col" class="govuk-table__header">{{ month }}</th>
@@ -29,6 +31,8 @@
         <tbody class="govuk-table__body">
             {% for row in payroll_forecast_report %}
                 <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">{{ row.programme_code }}</th>
+                    <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__natural_code }}</th>
                     <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__name }}</th>
                     <td class="govuk-table__cell">{{ row.period_1_sum }}</td>
                     <td class="govuk-table__cell">{{ row.period_2_sum }}</td>
