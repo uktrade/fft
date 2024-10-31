@@ -48,8 +48,6 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
 
     const isOverride = () => {
       return (cell && cell.overrideAmount && cell.isEditable) // Add 'toggle is on' logic
-
-      // If cell is override then add not editable class and colour change etc
     }
 
     if (isOverride()) {
@@ -103,7 +101,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const getClasses = () => {
         let editable = ''
 
-        if (!isEditable || isOverride()) { // or isOverride
+        if (!isEditable || isOverride()) {
             editable = ' not-editable'
         }
 

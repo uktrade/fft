@@ -32,7 +32,7 @@ function EditForecast() {
         const timer = () => {
                 setTimeout(() => {
                 if (window.table_data) {
-                    let rows = processForecastData(window.table_data)
+                    let rows = processForecastData(window.table_data, window.payroll_forecast_data)
                       dispatch({
                         type: SET_CELLS,
                         cells: rows

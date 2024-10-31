@@ -117,7 +117,7 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-export const processForecastData = (forecastData) => {
+export const processForecastData = (forecastData, payrollData = null) => {
     let rows = [];
 
     let financialCodeCols = [
@@ -148,11 +148,14 @@ export const processForecastData = (forecastData) => {
 
             colIndex++
         }
+        
+        console.log("Row", rowData)
+        console.log("Data", payrollData)
 
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
-          // if toggled, do lookup, change monthly figures else:
-          // Replace forecast only, not actuals
+          // if toggled, set override amount, else leave it empty or zero,
+          // isEditable needs to be false when override
             cells[monthlyFigure.month] = {
                 rowIndex: rowIndex,
                 colIndex: colIndex,
@@ -160,7 +163,7 @@ export const processForecastData = (forecastData) => {
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
                 isEditable: !monthlyFigure.actual,
-                overrideAmount: 40102 // Test figure, needs to pull from payroll forecast table
+                overrideAmount: 1000 // Test figure, setting to 0 will show normal values
             }
 
             colIndex++

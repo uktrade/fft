@@ -46,6 +46,7 @@
         window.table_data = {{ forecast_dump|safe }};
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
         window.financial_year = {{ view.financial_year|safe }};
+        window.payroll_forecast_data = {{ view.get_payroll_forecast_report|safe }};
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
