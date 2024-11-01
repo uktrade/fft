@@ -13,6 +13,7 @@ from payroll.forms import VacancyForm
 from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
+from .services.ingest import import_payroll
 
 
 # TODO: check user has access to cost centre
@@ -119,3 +120,14 @@ def add_vacancy_page(
         form = VacancyForm()
         context["form"] = form
     return render(request, "payroll/page/add_vacancy.html", context)
+
+
+def import_payroll_page(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    if request.method == "POST":
+        import_payroll(request.FILES["hr_csv"], request.FILES["payroll_csv"])
+
+    context = {}
+    return TemplateResponse(request, "payroll/page/import_payroll.html", context)

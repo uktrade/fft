@@ -28,4 +28,6 @@ urlpatterns = [
         views.add_vacancy_page,
         name="add_vacancy",
     ),
+    # TODO: Remove temporary views when ready.
+    path("import", views.import_payroll_page, name="import"),
 ]
