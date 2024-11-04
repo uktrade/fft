@@ -120,6 +120,9 @@ export async function postData(url = '', data = {}) {
 export const processForecastData = (forecastData, payrollData = null, isChecked = false) => {
     let rows = [];
 
+    // Should only do this if isChecked and superuser/allowed to
+    const mappedPayrollData = processPayrollData(payrollData)
+
     let financialCodeCols = [
         "analysis1_code",
         "analysis2_code",
@@ -148,14 +151,28 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
 
             colIndex++
         }
-        
-        // console.log("Row", rowData)
-        // console.log("Data", payrollData)
+
+        const forecastKey = makeKey(
+          rowData.programme,
+          rowData.natural_account_code,
+          rowData.analysis1_code,
+          rowData.analysis2_code,
+          rowData.project_code
+        );
 
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
           // if toggled, set override amount, else leave it empty or zero,
-          // isEditable needs to be false when override
+          // isEditable needs to be false when override, if actual, then do not change
+          let overrideAmount = null
+
+          if (isChecked && mappedPayrollData[forecastKey]) {
+            const period = `period_${(parseInt(key)+1)}_sum`
+            // Data needs to be adjusted for how forecast displays decimals, not sure if they need rounding
+            overrideAmount = mappedPayrollData[forecastKey][period] * 100
+            console.log(period, overrideAmount)
+          }
+
             cells[monthlyFigure.month] = {
                 rowIndex: rowIndex,
                 colIndex: colIndex,
@@ -163,7 +180,7 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
                 isEditable: !monthlyFigure.actual,
-                overrideAmount: isChecked ? 1000 : 0 // Test figure, setting to 0 will show normal values
+                overrideAmount: overrideAmount,
             }
 
             colIndex++
@@ -172,9 +189,24 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
         rows.push(cells)
     });
 
-    console.log("rows:", rows)
-
     return rows;
+}
+
+const processPayrollData = (payrollData) => {
+  const results = {};
+
+  for (const [key, value] of Object.entries(payrollData)) {
+    const generatedKey = makeKey(value.programme_code, value.pay_element__type__group__natural_code)
+    
+    results[generatedKey] = value;
+  }
+
+  return results
+}
+
+// Todo: set project to null, hardcoded for testing
+const makeKey = (programme, nac, analysis1=null, analysis2=null, project=5000) => {
+  return `${programme}/${nac}/${analysis1}/${analysis2}/${project}`
 }
 
 
