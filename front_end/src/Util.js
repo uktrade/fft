@@ -119,9 +119,12 @@ export async function postData(url = '', data = {}) {
 
 export const processForecastData = (forecastData, payrollData = null, isChecked = false) => {
     let rows = [];
+    let mappedPayrollData = null
 
     // Should only do this if isChecked and superuser/allowed to
-    const mappedPayrollData = processPayrollData(payrollData)
+    if (isChecked) {
+      mappedPayrollData = processPayrollData(payrollData)
+    }
 
     let financialCodeCols = [
         "analysis1_code",
