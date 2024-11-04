@@ -179,7 +179,7 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
                 key: monthlyFigure.month,
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
-                isEditable: !monthlyFigure.actual || !isChecked,
+                isEditable: !monthlyFigure.actual,
                 overrideAmount: overrideAmount,
             }
 

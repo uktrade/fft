@@ -47,6 +47,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
     const isOverride = () => {
+      // Is override if cell exists, has an override amount and is not an actual
       return (cell && cell.overrideAmount && cell.isEditable)
     }
 
@@ -91,9 +92,8 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     }
 
     const wasEdited = () => {
-        if (!isEditable || isOverride())
+        if (!isEditable)
             return false
-
 
         return cell.amount !== cell.startingAmount
     }
@@ -101,7 +101,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const getClasses = () => {
         let editable = ''
 
-        if (!isEditable || isOverride()) {
+        if (!isEditable) {
             editable = ' not-editable'
         }
 
@@ -218,7 +218,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     }
 
     const isCellUpdating = () => {
-        if (cell && !isEditable || isOverride())
+        if (cell && !isEditable)
             return false
 
         if (isUpdating)
