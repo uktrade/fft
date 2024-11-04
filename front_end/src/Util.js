@@ -117,7 +117,7 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-export const processForecastData = (forecastData, payrollData = null) => {
+export const processForecastData = (forecastData, payrollData = null, isChecked = false) => {
     let rows = [];
 
     let financialCodeCols = [
@@ -149,8 +149,8 @@ export const processForecastData = (forecastData, payrollData = null) => {
             colIndex++
         }
         
-        console.log("Row", rowData)
-        console.log("Data", payrollData)
+        // console.log("Row", rowData)
+        // console.log("Data", payrollData)
 
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
@@ -163,7 +163,7 @@ export const processForecastData = (forecastData, payrollData = null) => {
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
                 isEditable: !monthlyFigure.actual,
-                overrideAmount: 1000 // Test figure, setting to 0 will show normal values
+                overrideAmount: isChecked ? 1000 : 0 // Test figure, setting to 0 will show normal values
             }
 
             colIndex++
@@ -171,6 +171,8 @@ export const processForecastData = (forecastData, payrollData = null) => {
 
         rows.push(cells)
     });
+
+    console.log("rows:", rows)
 
     return rows;
 }
