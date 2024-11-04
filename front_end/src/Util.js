@@ -204,8 +204,7 @@ const processPayrollData = (payrollData) => {
   return results
 }
 
-// Todo: set project to null, hardcoded for testing
-const makeKey = (programme, nac, analysis1=null, analysis2=null, project=5000) => {
+const makeKey = (programme, nac, analysis1=null, analysis2=null, project=null) => {
   return `${programme}/${nac}/${analysis1}/${analysis2}/${project}`
 }
 
