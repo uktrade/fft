@@ -162,15 +162,12 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
 
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
-          // if toggled, set override amount, else leave it empty or zero,
-          // isEditable needs to be false when override, if actual, then do not change
           let overrideAmount = null
 
           if (isChecked && mappedPayrollData[forecastKey]) {
             const period = `period_${(parseInt(key)+1)}_sum`
             // Data needs to be adjusted for how forecast displays decimals, not sure if they need rounding
             overrideAmount = mappedPayrollData[forecastKey][period] * 100
-            console.log(period, overrideAmount)
           }
 
             cells[monthlyFigure.month] = {
@@ -179,7 +176,7 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
                 key: monthlyFigure.month,
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
-                isEditable: !monthlyFigure.actual,
+                isEditable: !monthlyFigure.actual || !isChecked,
                 overrideAmount: overrideAmount,
             }
 

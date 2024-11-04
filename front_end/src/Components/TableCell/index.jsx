@@ -47,7 +47,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const editCellId = useSelector(state => state.edit.cellId, checkValue);
 
     const isOverride = () => {
-      return (cell && cell.overrideAmount && cell.isEditable) // Add 'toggle is on' logic
+      return (cell && cell.overrideAmount && cell.isEditable)
     }
 
     if (isOverride()) {
