@@ -501,6 +501,7 @@ class EditForecastView(
         context["forecast_dump"] = forecast_dump
         context["actuals"] = actual_data
         context["period_display"] = period_display
+        context["is_superuser"] = self.request.user.is_superuser
 
         return context
 
@@ -518,9 +519,6 @@ class EditForecastView(
                     item[key] = str(value)
 
         return json.dumps(data)
-
-    def get_is_superuser(self):
-        return self.request.user.is_superuser
 
     @property
     def future_year_display(self):
