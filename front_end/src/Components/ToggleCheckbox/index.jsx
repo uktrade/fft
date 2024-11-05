@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-export default function ToggleCheckbox({ isChecked, setIsChecked, id, value, label }) {
+export default function ToggleCheckbox({ payrollToggle, setPayrollToggle, id, value, label }) {
 
   const handleToggle = () => {
-    setIsChecked(!isChecked);
+    setPayrollToggle(!payrollToggle);
   }
 
   return (
@@ -17,7 +17,7 @@ export default function ToggleCheckbox({ isChecked, setIsChecked, id, value, lab
                 id={id}
                 name={id}
                 type="checkbox"
-                checked={isChecked}
+                checked={payrollToggle}
                 onChange={handleToggle}
                 value={value}
               />

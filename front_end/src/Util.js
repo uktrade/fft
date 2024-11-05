@@ -117,12 +117,12 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-export const processForecastData = (forecastData, payrollData = null, isChecked = false) => {
+export const processForecastData = (forecastData, payrollData = null, payrollToggle = false) => {
     let rows = [];
     let mappedPayrollData = null
 
-    // Should only do this if isChecked and superuser/allowed to
-    if (isChecked) {
+    // Should only do this if payrollToggle and superuser/allowed to
+    if (payrollToggle) {
       mappedPayrollData = processPayrollData(payrollData)
     }
 
@@ -167,7 +167,7 @@ export const processForecastData = (forecastData, payrollData = null, isChecked 
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
           let overrideAmount = null
 
-          if (isChecked && mappedPayrollData[forecastKey]) {
+          if (payrollToggle && mappedPayrollData[forecastKey]) {
             const period = `period_${(parseInt(key)+1)}_sum`
             // Data needs to be adjusted for how forecast displays decimals, not sure if they need rounding
             overrideAmount = mappedPayrollData[forecastKey][period] * 100

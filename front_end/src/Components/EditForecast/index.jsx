@@ -28,13 +28,13 @@ function EditForecast() {
     const editCellId = useSelector(state => state.edit.cellId);
 
     const [sheetUpdating, setSheetUpdating] = useState(false)
-    const [isChecked, setIsChecked] = useState(false)
+    const [payrollToggle, setPayrollToggle] = useState(false)
 
     useEffect(() => {
         const timer = () => {
                 setTimeout(() => {
                 if (window.table_data) {
-                    let rows = processForecastData(window.table_data, window.payroll_forecast_data, isChecked)
+                    let rows = processForecastData(window.table_data, window.payroll_forecast_data, payrollToggle)
                       dispatch({
                         type: SET_CELLS,
                         cells: rows
@@ -47,7 +47,7 @@ function EditForecast() {
         }
 
         timer()
-    }, [dispatch, isChecked])
+    }, [dispatch, payrollToggle])
 
     useEffect(() => {
         const capturePaste = (event) => {
@@ -319,7 +319,7 @@ function EditForecast() {
 
     return (
         <Fragment>
-          <ToggleCheckbox isChecked={isChecked} setIsChecked={setIsChecked} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />
+          <ToggleCheckbox payrollToggle={payrollToggle} setPayrollToggle={setPayrollToggle} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />
             {errorMessage != null &&
                 <div className="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabIndex="-1" data-module="govuk-error-summary">
                   <h2 className="govuk-error-summary__title" id="error-summary-title">
