@@ -475,12 +475,10 @@ class EditForecastView(
                 "cost_centre_code": self.cost_centre_code,
             }
         )
-
         financial_code_serialiser = get_financial_code_serialiser(
             self.cost_centre_code,
             self.financial_year,
         )
-
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():
