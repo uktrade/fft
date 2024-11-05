@@ -519,6 +519,9 @@ class EditForecastView(
 
         return json.dumps(data)
 
+    def get_is_superuser(self):
+        return self.request.user.is_superuser
+
     @property
     def future_year_display(self):
         if self._future_year_display is None:
