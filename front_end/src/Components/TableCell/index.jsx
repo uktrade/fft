@@ -9,9 +9,10 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
 
     let editing = false
+    const isToggle = JSON.parse(localStorage.getItem('isToggle'))
 
     const checkValue = (val) => {
         if (cellId === val) {
@@ -169,7 +170,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         ).then((response) => {
             setIsUpdating(false)
             if (response.status === 200) {
-                let rows = processForecastData(response.data)
+                let rows = processForecastData(response.data, payrollData, isToggle)
                   dispatch({
                     type: SET_CELLS,
                     cells: rows

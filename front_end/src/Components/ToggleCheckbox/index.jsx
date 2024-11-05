@@ -1,9 +1,13 @@
 import { useState } from "react";
 
-export default function ToggleCheckbox({ payrollToggle, setPayrollToggle, id, value, label }) {
+export default function ToggleCheckbox({ toggle, setToggle, id, value, label }) {
 
   const handleToggle = () => {
-    setPayrollToggle(!payrollToggle);
+    setToggle(!toggle);
+
+    // To fix: Hacky method, set to local storage so this value can be passed
+    // to processForecastData when updating a cell
+    localStorage.setItem('isToggle', JSON.stringify(true));
   }
 
   return (
@@ -17,7 +21,7 @@ export default function ToggleCheckbox({ payrollToggle, setPayrollToggle, id, va
                 id={id}
                 name={id}
                 type="checkbox"
-                checked={payrollToggle}
+                checked={toggle}
                 onChange={handleToggle}
                 value={value}
               />
