@@ -49,7 +49,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
 
     const isOverride = () => {
       // Is override if cell exists, has an override amount and is not an actual
-      return (cell && (cell.overrideAmount || cell.overrideAmount == 0) && cell.isEditable)
+      return (cell && cell.overrideAmount != null && cell.isEditable)
     }
 
     if (isOverride()) {
