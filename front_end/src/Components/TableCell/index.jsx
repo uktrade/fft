@@ -160,11 +160,12 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
         payload.append("amount", intAmount)
 
         postData(
-            `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
-            payload
+          `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
+          payload
         ).then((response) => {
-            setIsUpdating(false)
-            if (response.status === 200) {
+          setIsUpdating(false)
+          if (response.status === 200) {
+                // TODO (FFT-100): Test paste to excel with locked payroll forecast rows
                 let rows = processForecastData(response.data, payrollData, isPayrollEnabled)
                   dispatch({
                     type: SET_CELLS,
