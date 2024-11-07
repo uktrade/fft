@@ -12,7 +12,7 @@ import { SET_CELLS } from '../../Reducers/Cells'
 const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
 
     let editing = false
-    const isToggle = JSON.parse(localStorage.getItem('isToggle'))
+    const isPayrollEnabled = JSON.parse(localStorage.getItem('isPayrollEnabled'))
 
     const checkValue = (val) => {
         if (cellId === val) {
@@ -170,7 +170,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
         ).then((response) => {
             setIsUpdating(false)
             if (response.status === 200) {
-                let rows = processForecastData(response.data, payrollData, isToggle)
+                let rows = processForecastData(response.data, payrollData, isPayrollEnabled)
                   dispatch({
                     type: SET_CELLS,
                     cells: rows

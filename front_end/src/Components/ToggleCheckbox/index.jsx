@@ -7,7 +7,7 @@ export default function ToggleCheckbox({ toggle, setToggle, id, value, label }) 
 
     // To fix: Hacky method, set to local storage so this value can be passed
     // to processForecastData when updating a cell
-    localStorage.setItem('isToggle', JSON.stringify(true));
+    localStorage.setItem('isPayrollEnabled', JSON.stringify(true));
   }
 
   return (
