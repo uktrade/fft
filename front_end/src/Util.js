@@ -117,11 +117,11 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-export const processForecastData = (forecastData, payrollData = null, payrollToggle = false) => {
+export const processForecastData = (forecastData, payrollData = null, isPayrollEnabled = false) => {
     let rows = [];
     let mappedPayrollData = null
 
-    if (payrollToggle) {
+    if (isPayrollEnabled) {
       mappedPayrollData = processPayrollData(payrollData)
     }
 
@@ -166,7 +166,7 @@ export const processForecastData = (forecastData, payrollData = null, payrollTog
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
           let overrideAmount = null
 
-          if (payrollToggle && mappedPayrollData[forecastKey]) {
+          if (isPayrollEnabled && mappedPayrollData[forecastKey]) {
             const period = `period_${(parseInt(key)+1)}_sum`
             overrideAmount = mappedPayrollData[forecastKey][period] * 100
           }
