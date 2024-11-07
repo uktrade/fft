@@ -168,6 +168,8 @@ export const processForecastData = (forecastData, payrollData = null, isPayrollE
 
           if (isPayrollEnabled && mappedPayrollData[forecastKey]) {
             const period = `period_${(parseInt(key)+1)}_sum`
+            // TODO (FFT-99): Decide on decimal vs pence
+            // Old code stores monetary values in pence whereas new code has used decimals.
             overrideAmount = mappedPayrollData[forecastKey][period] * 100
           }
 
