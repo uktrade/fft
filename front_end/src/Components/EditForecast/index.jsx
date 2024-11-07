@@ -14,7 +14,7 @@ import {
     postData,
     processForecastData,
 } from '../../Util'
-import ToggleCheckbox from '../ToggleCheckbox';
+import ToggleCheckbox from '../Common/ToggleCheckbox';
 
 
 function EditForecast() {
