@@ -30,6 +30,12 @@ function EditForecast() {
     const [sheetUpdating, setSheetUpdating] = useState(false)
     const [isPayrollEnabled, setIsPayrollEnabled] = useState(false)
 
+    const handleIsPayrollEnabled = () => {
+      setIsPayrollEnabled(!isPayrollEnabled);
+  
+      localStorage.setItem('isPayrollEnabled', JSON.stringify(!isPayrollEnabled));
+    }
+
     useEffect(() => {
         const timer = () => {
                 setTimeout(() => {
@@ -319,7 +325,7 @@ function EditForecast() {
 
     return (
         <Fragment>
-          {window.can_toggle_payroll === "True" && <ToggleCheckbox toggle={isPayrollEnabled} setToggle={setIsPayrollEnabled} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />}
+          {window.can_toggle_payroll === "True" && <ToggleCheckbox toggle={isPayrollEnabled} handler={handleIsPayrollEnabled} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />}
             {errorMessage != null &&
                 <div className="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabIndex="-1" data-module="govuk-error-summary">
                   <h2 className="govuk-error-summary__title" id="error-summary-title">
