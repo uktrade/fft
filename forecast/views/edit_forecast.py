@@ -4,6 +4,7 @@ import re
 from decimal import Decimal
 
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.http import JsonResponse
@@ -511,12 +512,7 @@ class EditForecastView(
         )
         data = list(queryset)
 
-        for item in data:
-            for key, value in item.items():
-                if isinstance(value, Decimal):
-                    item[key] = str(value)
-
-        return json.dumps(data)
+        return json.dumps(data, cls=DjangoJSONEncoder)
 
     @property
     def future_year_display(self):
