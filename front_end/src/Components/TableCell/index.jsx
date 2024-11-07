@@ -100,23 +100,18 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
     }
 
     const getClasses = () => {
-        let editable = ''
-
-        if (!isEditable) {
-            editable = ' not-editable'
-        }
-
-        if (!cell)
-            return "govuk-table__cell forecast-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
-
-        let negative = ''
-
-        if (cell.amount < 0) {
-            negative = " negative"
-        }
-
-        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + (isOverride() ? 'override ' : '') + editable + negative
-    }
+      const classes = ["govuk-table__cell", "forecast-month-cell", "figure-cell"];
+  
+      if (!isEditable) classes.push("not-editable");
+      if (isSelected()) classes.push("selected");
+      if (!cell) return classes.join(" ");
+  
+      if (cell && cell.amount < 0) classes.push("negative");
+      if (isOverride()) classes.push("override");
+      if (wasEdited()) classes.push("edited");
+  
+      return classes.join(" ");
+    };
 
     const setContentState = (value) => {
         var re = /^-?\d*\.?\d{0,12}$/; 
