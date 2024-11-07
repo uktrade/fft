@@ -319,7 +319,7 @@ function EditForecast() {
 
     return (
         <Fragment>
-          {window.is_superuser === "True" && <ToggleCheckbox toggle={payrollToggle} setToggle={setPayrollToggle} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />}
+          {window.can_toggle_payroll === "True" && <ToggleCheckbox toggle={payrollToggle} setToggle={setPayrollToggle} id="payroll-forecast" value="payroll" label="Toggle payroll forecast rows" />}
             {errorMessage != null &&
                 <div className="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabIndex="-1" data-module="govuk-error-summary">
                   <h2 className="govuk-error-summary__title" id="error-summary-title">

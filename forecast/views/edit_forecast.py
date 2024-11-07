@@ -499,7 +499,7 @@ class EditForecastView(
         context["forecast_dump"] = forecast_dump
         context["actuals"] = actual_data
         context["period_display"] = period_display
-        context["is_superuser"] = self.request.user.is_superuser
+        context["can_toggle_payroll"] = self.request.user.is_superuser
 
         return context
 
