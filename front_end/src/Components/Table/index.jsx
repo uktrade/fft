@@ -23,7 +23,7 @@ import { SET_EDITING_CELL } from '../../Reducers/Edit'
 import { SET_SELECTED_ROW, SELECT_ALL, UNSELECT_ALL } from '../../Reducers/Selected'
 
 
-function Table({rowData, sheetUpdating}) {
+function Table({rowData, sheetUpdating, payrollData}) {
     const dispatch = useDispatch();
     const rows = useSelector(state => state.allCells.cells);
 
@@ -167,7 +167,7 @@ function Table({rowData, sheetUpdating}) {
                                 <CellValue rowIndex={rowIndex} cellKey={"budget"} format={true} />
                             </InfoCell>
                             {window.period_display.map((value, index) => {
-                                return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />
+                                return <TableCell key={nanoid()} sheetUpdating={sheetUpdating} payrollData={payrollData} cellId={getCellId(rowIndex, value)} rowIndex={rowIndex} cellKey={value} />
                             })}
                             <InfoCell className="figure-cell" rowIndex={rowIndex}>
                                 <AggregateValue rowIndex={rowIndex} actualsOnly={false} extraClasses="" />

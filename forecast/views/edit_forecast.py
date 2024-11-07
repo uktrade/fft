@@ -6,11 +6,12 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 
+from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year, get_year_display
 from costcentre.models import CostCentre
 from forecast.forms import (
@@ -51,6 +52,7 @@ from forecast.views.base import (
     NoCostCentreCodeInURLError,
     NoFinancialYearInURLError,
 )
+from payroll.services import payroll as payroll_service
 
 
 UNAVAILABLE_FORECAST_EDIT_TITLE = "Forecast editing is locked"
@@ -472,12 +474,10 @@ class EditForecastView(
                 "cost_centre_code": self.cost_centre_code,
             }
         )
-
         financial_code_serialiser = get_financial_code_serialiser(
             self.cost_centre_code,
             self.financial_year,
         )
-
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():
@@ -498,8 +498,19 @@ class EditForecastView(
         context["forecast_dump"] = forecast_dump
         context["actuals"] = actual_data
         context["period_display"] = period_display
+        context["can_toggle_payroll"] = self.request.user.is_superuser
 
         return context
+
+    def get_payroll_forecast_report(self):
+        cost_centre_obj = get_object_or_404(CostCentre, pk=self.cost_centre_code)
+        financial_year_obj = get_object_or_404(FinancialYear, pk=self.financial_year)
+        queryset = payroll_service.payroll_forecast_report(
+            cost_centre_obj, financial_year_obj
+        )
+        data = list(queryset)
+
+        return data
 
     @property
     def future_year_display(self):

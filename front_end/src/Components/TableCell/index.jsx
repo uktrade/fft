@@ -9,9 +9,10 @@ import {
 import { SET_ERROR } from '../../Reducers/Error'
 import { SET_CELLS } from '../../Reducers/Cells'
 
-const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
+const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating, payrollData}) => {
 
     let editing = false
+    const isPayrollEnabled = JSON.parse(localStorage.getItem('isPayrollEnabled'))
 
     const checkValue = (val) => {
         if (cellId === val) {
@@ -45,6 +46,15 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     const cells = useSelector(state => state.allCells.cells);
     const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
     const editCellId = useSelector(state => state.edit.cellId, checkValue);
+
+    const isOverride = () => {
+      // Is override if cell exists, has an override amount and is not an actual
+      return (cell && cell.overrideAmount !== null && cell.isEditable)
+    }
+
+    if (isOverride()) {
+      cell.amount = cell.overrideAmount
+    }
 
     const [isUpdating, setIsUpdating] = useState(false)
 
@@ -90,23 +100,18 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
     }
 
     const getClasses = () => {
-        let editable = ''
-
-        if (!isEditable) {
-            editable = ' not-editable'
-        }
-
-        if (!cell)
-            return "govuk-table__cell forecast-month-cell figure-cell " + (isSelected() ? 'selected' : '') + editable
-
-        let negative = ''
-
-        if (cell.amount < 0) {
-            negative = " negative"
-        }
-
-        return "govuk-table__cell forecast-month-cell figure-cell " + (wasEdited() ? 'edited ' : '') + (isSelected() ? 'selected' : '')  + editable + negative
-    }
+      const classes = ["govuk-table__cell", "forecast-month-cell", "figure-cell"];
+  
+      if (!isEditable) classes.push("not-editable");
+      if (isSelected()) classes.push("selected");
+      if (!cell) return classes.join(" ");
+  
+      if (cell && cell.amount < 0) classes.push("negative");
+      if (isOverride()) classes.push("override");
+      if (wasEdited()) classes.push("edited");
+  
+      return classes.join(" ");
+    };
 
     const setContentState = (value) => {
         var re = /^-?\d*\.?\d{0,12}$/; 
@@ -155,12 +160,13 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
         payload.append("amount", intAmount)
 
         postData(
-            `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
-            payload
+          `/forecast/update-forecast/${window.cost_centre}/${window.financial_year}`,
+          payload
         ).then((response) => {
-            setIsUpdating(false)
-            if (response.status === 200) {
-                let rows = processForecastData(response.data)
+          setIsUpdating(false)
+          if (response.status === 200) {
+                // TODO (FFT-100): Test paste to excel with locked payroll forecast rows
+                let rows = processForecastData(response.data, payrollData, isPayrollEnabled)
                   dispatch({
                     type: SET_CELLS,
                     cells: rows
@@ -256,7 +262,7 @@ const TableCell = ({rowIndex, cellId, cellKey, sheetUpdating}) => {
                 className={getClasses()}
                 id={getId()}
                 onDoubleClick={ () => {
-                    if (isEditable) {
+                    if (isEditable && !isOverride()) {
                         dispatch(
                             SET_EDITING_CELL({
                                 "cellId": cellId
