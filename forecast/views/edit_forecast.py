@@ -511,7 +511,7 @@ class EditForecastView(
         )
         data = list(queryset)
 
-        return json.dumps(data, cls=DjangoJSONEncoder)
+        return data
 
     @property
     def future_year_display(self):
