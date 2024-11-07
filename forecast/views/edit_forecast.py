@@ -3,7 +3,6 @@ import logging
 import re
 
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.http import JsonResponse
