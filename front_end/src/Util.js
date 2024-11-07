@@ -154,7 +154,7 @@ export const processForecastData = (forecastData, payrollData = null, payrollTog
             colIndex++
         }
 
-        const forecastKey = makeKey(
+        const forecastKey = makeFinancialCodeKey(
           rowData.programme,
           rowData.natural_account_code,
           rowData.analysis1_code,
@@ -194,7 +194,7 @@ const processPayrollData = (payrollData) => {
   const results = {};
 
   for (const [key, value] of Object.entries(payrollData)) {
-    const generatedKey = makeKey(value.programme_code, value.pay_element__type__group__natural_code)
+    const generatedKey = makeFinancialCodeKey(value.programme_code, value.pay_element__type__group__natural_code)
     
     results[generatedKey] = value;
   }
@@ -202,7 +202,7 @@ const processPayrollData = (payrollData) => {
   return results
 }
 
-const makeKey = (programme, nac, analysis1=null, analysis2=null, project=null) => {
+const makeFinancialCodeKey = (programme, nac, analysis1=null, analysis2=null, project=null) => {
   return `${programme}/${nac}/${analysis1}/${analysis2}/${project}`
 }
 
