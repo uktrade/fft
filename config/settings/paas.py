@@ -4,6 +4,8 @@ from dbt_copilot_python.utility import is_copilot
 from .base import *
 
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # TODO (DWPF-1696): Remove ECS formatter
 LOGGING["handlers"]["console"]["formatter"] = "ecs"
 

@@ -28,7 +28,6 @@ django-staff-sso-client = "^4.2.2"
 django-tables2 = "^2.4.0"
 djangorestframework = "^3.15.2"
 elastic-apm = "^6.2.2"
-gunicorn = "^22.0.0"
 psycopg2 = "^2.8.6"
 django-chunk-upload-handlers = "^0.0.14"
 sentry-sdk = "^2.8.0"
@@ -39,6 +38,7 @@ django-storages = "^1.14.2"
 openpyxl = "^3.0.5"
 requests = "^2.32.0"
 redis = "^5.0.3"
+granian = "^1.6.3"
 
 # Are these packages still needed?
 django-import-export = "^3.3.07"
@@ -49,8 +49,6 @@ django-log-formatter-asim = "^0.0.4"
 optional = true
 
 [tool.poetry.group.prod.dependencies]
-gevent = "^24.2.1"
-psycogreen = "^1.0.2"
 django-audit-log-middleware = "^0.0.5"
 
 [tool.poetry.group.dev]
