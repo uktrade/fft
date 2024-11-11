@@ -38,14 +38,17 @@
         {% csrf_token %}
         {{ paste_form }}
     </form>
-{% endblock %}
-{% block scripts %}
+    {% endblock %}
+    {% block scripts %}
+    {{ view.get_payroll_forecast_report|json_script:'payroll_forecast_data' }}
     <script>
         window.actuals = {{ actuals|safe }};
         window.period_display = {{ period_display|safe }};
         window.table_data = {{ forecast_dump|safe }};
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
         window.financial_year = {{ view.financial_year|safe }};
+        window.payroll_forecast_data = JSON.parse(document.getElementById("payroll_forecast_data").textContent);
+        window.can_toggle_payroll = "{{ can_toggle_payroll }}";
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

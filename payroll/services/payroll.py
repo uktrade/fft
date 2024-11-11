@@ -29,7 +29,6 @@ def create_employee_pay_periods(employee: Employee) -> None:
 
 
 def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):
-
     period_sum_annotations = {
         f"period_{i+1}_sum": Sum(
             F("pay_element__debit_amount") - F("pay_element__credit_amount"),
@@ -44,7 +43,16 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
-        .values("pay_element__type__group", "pay_element__type__group__name")
+        .order_by(
+            "programme_code",
+            "pay_element__type__group",
+        )
+        .values(
+            "programme_code",
+            "pay_element__type__group__natural_code",
+            "pay_element__type__group",
+            "pay_element__type__group__name",
+        )
         .annotate(**period_sum_annotations)
     )
 

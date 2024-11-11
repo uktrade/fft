@@ -117,8 +117,13 @@ export async function postData(url = '', data = {}) {
     }
 }
 
-export const processForecastData = (forecastData) => {
+export const processForecastData = (forecastData, payrollData = null, isPayrollEnabled = false) => {
     let rows = [];
+    let mappedPayrollData = null
+
+    if (isPayrollEnabled) {
+      mappedPayrollData = processPayrollData(payrollData)
+    }
 
     let financialCodeCols = [
         "analysis1_code",
@@ -149,15 +154,33 @@ export const processForecastData = (forecastData) => {
             colIndex++
         }
 
+        const forecastKey = makeFinancialCodeKey(
+          rowData.programme,
+          rowData.natural_account_code,
+          rowData.analysis1_code,
+          rowData.analysis2_code,
+          rowData.project_code
+        );
+
         // eslint-disable-next-line
         for (const [key, monthlyFigure] of Object.entries(rowData["monthly_figures"])) {
+          let overrideAmount = null
+
+          if (isPayrollEnabled && mappedPayrollData[forecastKey]) {
+            const period = `period_${(parseInt(key)+1)}_sum`
+            // TODO (FFT-99): Decide on decimal vs pence
+            // Old code stores monetary values in pence whereas new code has used decimals.
+            overrideAmount = mappedPayrollData[forecastKey][period] * 100
+          }
+
             cells[monthlyFigure.month] = {
                 rowIndex: rowIndex,
                 colIndex: colIndex,
                 key: monthlyFigure.month,
                 amount: monthlyFigure.amount,
                 startingAmount: monthlyFigure.starting_amount,
-                isEditable: !monthlyFigure.actual
+                isEditable: !monthlyFigure.actual,
+                overrideAmount: overrideAmount,
             }
 
             colIndex++
@@ -167,6 +190,22 @@ export const processForecastData = (forecastData) => {
     });
 
     return rows;
+}
+
+const processPayrollData = (payrollData) => {
+  const results = {};
+
+  for (const [key, value] of Object.entries(payrollData)) {
+    const generatedKey = makeFinancialCodeKey(value.programme_code, value.pay_element__type__group__natural_code)
+    
+    results[generatedKey] = value;
+  }
+
+  return results
+}
+
+const makeFinancialCodeKey = (programme, nac, analysis1=null, analysis2=null, project=null) => {
+  return `${programme}/${nac}/${analysis1}/${analysis2}/${project}`
 }
 
 

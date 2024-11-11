@@ -8,7 +8,7 @@
     {% breadcrumb "Choose cost centre" "choose_cost_centre" %}
 {% endblock %}
 
-{% block title %}Edit Forecast - Choose Cost Centre{% endblock %}
+{% block title %}Edit {{ view.get_page_header }} - Choose Cost Centre{% endblock %}
 
 {% block content %}
     <h3 class="govuk-heading-l">My cost centres</h3>
@@ -16,6 +16,7 @@
 {% endblock %}
 {% block scripts %}
     <script>
+        window.nextPage = "{{ view.next_page }}";
         window.costCentres = {{ view.get_user_cost_centres|safe }};
         window.currentFinancialYear = {{ view.get_financial_year|safe }};
         window.currentFinancialYearDisplay = "{{ view.get_financial_year_display|safe }}";

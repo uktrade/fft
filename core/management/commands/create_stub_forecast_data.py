@@ -34,7 +34,7 @@ def create_monthly_figures():
     current_financial_year = FinancialYear.objects.get(current=True)
     cost_centre_fk = CostCentre.objects.first()
     programme_list = ProgrammeCode.objects.all()
-    project_list = ProjectCode.objects.all()
+    project_list = list(ProjectCode.objects.all()) + [None]
     natural_account_list = NaturalCode.objects.all()
     financial_periods = FinancialPeriod.objects.exclude(
         period_long_name__icontains="adj"

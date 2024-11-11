@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
@@ -7,15 +7,27 @@ const initialPayrollState = [];
 
 export default function Payroll() {
   const [payroll, dispatch] = useReducer(payrollReducer, initialPayrollState);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
+    const savedSuccessFlag = localStorage.getItem("saveSuccess");
+    if (savedSuccessFlag === "true") {
+      setSaveSuccess(true);
+      localStorage.removeItem("saveSuccess");
+    }
+
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
   }, []);
 
   // Handlers
   async function handleSavePayroll() {
     try {
-      api.postPayrollData(payroll);
+      await api.postPayrollData(payroll);
+
+      setSaveSuccess(true);
+      localStorage.setItem("saveSuccess", "true");
+
+      window.location.reload();
     } catch (error) {
       console.error("Error saving payroll: ", error);
     }
@@ -30,6 +42,7 @@ export default function Payroll() {
       payroll={payroll}
       onSavePayroll={handleSavePayroll}
       onTogglePayPeriods={handleTogglePayPeriods}
+      saveSuccess={saveSuccess}
     />
   );
 }
