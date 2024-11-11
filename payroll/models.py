@@ -39,7 +39,7 @@ class EmployeePayPeriods(models.Model):
     employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
-    # pariod 1 -> 12 = apr -> mar
+    # period 1 -> 12 = apr -> mar
     # Here is a useful text snippet:
     #   apr period_1
     #   may period_2
@@ -104,3 +104,25 @@ class EmployeePayElement(models.Model):
     debit_amount = models.DecimalField(max_digits=9, decimal_places=2)
     # Support up to 9,999,999.99.
     credit_amount = models.DecimalField(max_digits=9, decimal_places=2)
+
+
+class Vacancy(models.Model):
+    # recruitment_type = models.ForeignKey(RecruitmentType, models.PROTECT)
+    # real_colour_of_money, vacancy_type, recharge_percent, recharge_reason = needs research
+    # recruitment_stage = enum, need to check values
+    grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
+    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
+
+    PROGRAMME_SWITCH_VACANCY_CHOICES = [
+        ("PS", "Programme Switch"),
+        ("V", "Vacancy"),
+    ]
+    programme_switch_vacancy = models.CharField(
+        max_length=2,
+        choices=PROGRAMME_SWITCH_VACANCY_CHOICES,
+        verbose_name="Programme switch / Vacancy",
+    )
+
+    appointee_name = models.CharField(max_length=255, null=True, blank=True)
+    hiring_manager = models.CharField(max_length=255, null=True, blank=True)
+    hr_ref = models.CharField(max_length=255, null=True, blank=True)
