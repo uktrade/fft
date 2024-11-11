@@ -20,9 +20,10 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     # FIXME
-    # grade
-    # fte
-    #
+    # grade (FK to grade)
+    # fte = models.FloatField()
+    # eu/non_eu (from programme)
+    # assignment_status (enum?)
 
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
@@ -70,6 +71,10 @@ class EmployeePayPeriods(models.Model):
     period_10 = models.BooleanField(default=True)
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
+    # FIXME
+    # capital (real_colour_of_money)
+    # recharge = models.CharField(max_length=50, null=True, blank=True)
+    # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
 
     @property
     def periods(self) -> list[bool]:
