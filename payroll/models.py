@@ -19,6 +19,10 @@ class Employee(models.Model):
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
+    # FIXME
+    # grade
+    # fte
+    #
 
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
