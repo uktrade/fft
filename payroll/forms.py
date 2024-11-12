@@ -8,10 +8,16 @@ class VacancyForm(forms.ModelForm):
         model = Vacancy
         fields = "__all__"
         widgets = {
-            'grade': forms.Select(attrs={'class': 'govuk-select'}),
-            'programme_code': forms.Select(attrs={'class': 'govuk-select'}),
-            'programme_switch_vacancy': forms.Select(attrs={'class': 'govuk-select'}),
-            'appointee_name': forms.TextInput(attrs={'class': 'govuk-input govuk-input--width-20'}),
-            'hiring_manager': forms.TextInput(attrs={'class': 'govuk-input govuk-input--width-20'}),
-            'hr_ref': forms.TextInput(attrs={'class': 'govuk-input govuk-input--width-20'}),
+            "grade": forms.Select(attrs={"class": "govuk-select"}),
+            "programme_code": forms.Select(attrs={"class": "govuk-select"}),
+            "programme_switch_vacancy": forms.Select(attrs={"class": "govuk-select"}),
+            "appointee_name": forms.TextInput(
+                attrs={"class": "govuk-input govuk-input--width-20"}
+            ),
+            "hiring_manager": forms.TextInput(
+                attrs={"class": "govuk-input govuk-input--width-20"}
+            ),
+            "hr_ref": forms.TextInput(
+                attrs={"class": "govuk-input govuk-input--width-20"}
+            ),
         }

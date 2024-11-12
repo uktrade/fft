@@ -114,7 +114,9 @@ class Vacancy(models.Model):
     # real_colour_of_money, vacancy_type, recharge_percent, recharge_reason = needs research
     # recruitment_stage = enum, need to check values
     grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
+    programme_code = models.ForeignKey(
+        "chartofaccountDIT.ProgrammeCode", models.PROTECT
+    )
 
     PROGRAMME_SWITCH_VACANCY_CHOICES = [
         ("PS", "Programme Switch"),
