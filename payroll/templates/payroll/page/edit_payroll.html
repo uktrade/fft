@@ -6,7 +6,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
-    {% breadcrumb "Edit payroll" "edit_payroll" %}
+    {% breadcrumb "Edit payroll" "" %}
 {% endblock breadcrumbs %}
 
 {% block content %}
@@ -51,6 +51,9 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <h1 class="govuk-heading-l">Vacancies</h1>
+    <a class="govuk-button" href="{% url 'payroll:add_vacancy' cost_centre_code financial_year %}">Add Vacancy</a>
 {% endblock content %}
 
 {% block scripts %}

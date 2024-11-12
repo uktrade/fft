@@ -107,6 +107,9 @@ class EmployeePayElement(models.Model):
 
 
 class Vacancy(models.Model):
+    class Meta:
+        verbose_name_plural = "Vacancies"
+
     # recruitment_type = models.ForeignKey(RecruitmentType, models.PROTECT)
     # real_colour_of_money, vacancy_type, recharge_percent, recharge_reason = needs research
     # recruitment_stage = enum, need to check values

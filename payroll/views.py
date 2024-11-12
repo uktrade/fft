@@ -3,12 +3,14 @@ import json
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.views import View
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
+from payroll.forms import VacancyForm
+from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
 
@@ -60,6 +62,7 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
+    vacancies = Vacancy.objects.all()
 
     context = {
         "cost_centre_code": cost_centre_obj.cost_centre_code,
@@ -79,6 +82,27 @@ def edit_payroll_page(
             "Feb",
             "Mar",
         ],
+        "vacancies": vacancies,
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
+
+
+def add_vacancy_page(request: HttpRequest, cost_centre_code: str, financial_year: int):
+    if request.method == "POST":
+        form = VacancyForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(
+                "payroll:edit",
+                cost_centre_code=cost_centre_code,
+                financial_year=financial_year,
+            )
+    else:
+        form = VacancyForm()
+        context = {
+            "form": form,
+            "cost_centre_code": cost_centre_code,
+            "financial_year": financial_year,
+        }
+    return render(request, "payroll/page/add_vacancy.html", context)
