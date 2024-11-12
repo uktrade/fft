@@ -88,7 +88,14 @@ def edit_payroll_page(
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
 
 
-def add_vacancy_page(request: HttpRequest, cost_centre_code: str, financial_year: int) -> HttpResponse:
+def add_vacancy_page(
+    request: HttpRequest, cost_centre_code: str, financial_year: int
+) -> HttpResponse:
+    context = {
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
+    }
+
     if request.method == "POST":
         form = VacancyForm(request.POST)
         if form.is_valid():
@@ -98,11 +105,10 @@ def add_vacancy_page(request: HttpRequest, cost_centre_code: str, financial_year
                 cost_centre_code=cost_centre_code,
                 financial_year=financial_year,
             )
+        else:
+            context["form"] = form
+            return render(request, "payroll/page/add_vacancy.html", context)
     else:
         form = VacancyForm()
-        context = {
-            "form": form,
-            "cost_centre_code": cost_centre_code,
-            "financial_year": financial_year,
-        }
+        context["form"] = form
     return render(request, "payroll/page/add_vacancy.html", context)

@@ -28,9 +28,3 @@
     </form>
 
 {% endblock content %}
-
-{% block scripts %}
-    {{ block.super }}
-    {% vite_dev_client %}
-    {% vite_js 'src/index.jsx' %}
-{% endblock scripts %}
