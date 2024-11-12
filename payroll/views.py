@@ -88,7 +88,7 @@ def edit_payroll_page(
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
 
 
-def add_vacancy_page(request: HttpRequest, cost_centre_code: str, financial_year: int):
+def add_vacancy_page(request: HttpRequest, cost_centre_code: str, financial_year: int) -> HttpResponse:
     if request.method == "POST":
         form = VacancyForm(request.POST)
         if form.is_valid():

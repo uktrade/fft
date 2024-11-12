@@ -119,11 +119,11 @@ class Vacancy(models.Model):
     )
 
     PROGRAMME_SWITCH_VACANCY_CHOICES = [
-        ("PS", "Programme Switch"),
-        ("V", "Vacancy"),
+        ("programme_switch", "Programme Switch"),
+        ("vacancy", "Vacancy"),
     ]
     programme_switch_vacancy = models.CharField(
-        max_length=2,
+        max_length=16,
         choices=PROGRAMME_SWITCH_VACANCY_CHOICES,
         verbose_name="Programme switch / Vacancy",
     )
