@@ -117,7 +117,9 @@ class Vacancy(models.Model):
     # Programme switch / vacancy is redundant ?
 
     grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
+    programme_code = models.ForeignKey(
+        "chartofaccountDIT.ProgrammeCode", models.PROTECT
+    )
 
     PROGRAMME_SWITCH_VACANCY_CHOICES = [
         ("programme_switch", "Programme Switch"),
