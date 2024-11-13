@@ -61,7 +61,12 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
 
 class EmployeePayroll(TypedDict):
     name: str
+    grade: str
     employee_no: str
+    fte: float
+    programme_code: str
+    budget_type: str
+    assignment_status: str
     pay_periods: list[bool]
 
 
@@ -69,7 +74,9 @@ def get_payroll_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[EmployeePayroll]:
-    qs = EmployeePayPeriods.objects.select_related("employee")
+    qs = EmployeePayPeriods.objects.select_related(
+        "employee__programme_code__budget_type"
+    )
     qs = qs.filter(
         employee__cost_centre=cost_centre,
         year=financial_year,
@@ -77,7 +84,12 @@ def get_payroll_data(
     for obj in qs:
         yield EmployeePayroll(
             name=obj.employee.get_full_name(),
+            grade=obj.employee.grade.pk,
             employee_no=obj.employee.employee_no,
+            fte=obj.employee.fte,
+            programme_code=obj.employee.programme_code.pk,
+            budget_type=obj.employee.programme_code.budget_type.budget_type_display,
+            assignment_status=obj.employee.assignment_status,
             pay_periods=obj.periods,
         )
 

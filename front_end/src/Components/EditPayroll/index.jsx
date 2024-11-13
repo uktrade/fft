@@ -15,7 +15,12 @@ export default function EditPayroll({
 }) {
   const headers = [
     "Name",
+    "Grade",
     "Employee No",
+    "FTE",
+    "Programme Code",
+    "Budget Type",
+    "Assignment Status",
     "Apr",
     "May",
     "Jun",

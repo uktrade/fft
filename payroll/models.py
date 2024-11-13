@@ -19,11 +19,17 @@ class Employee(models.Model):
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
-    # FIXME
-    # grade (FK to grade)
-    # fte = models.FloatField()
-    # eu/non_eu (from programme)
-    # assignment_status (enum?)
+    grade = models.ForeignKey(
+        to="gifthospitality.Grade",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    fte = models.FloatField(default=1.0)
+    assignment_status = models.CharField(max_length=32)
+
+    # TODO: Missing fields from Admin Tool
+    # EU/Non-EU (from programme code model)
 
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
@@ -72,7 +78,7 @@ class EmployeePayPeriods(models.Model):
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
     # FIXME
-    # capital (real_colour_of_money)
+    # capital (Real colour of money)
     # recharge = models.CharField(max_length=50, null=True, blank=True)
     # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
 
