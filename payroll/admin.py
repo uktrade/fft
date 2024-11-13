@@ -84,7 +84,6 @@ class VacancyAdmin(admin.ModelAdmin):
         "cost_centre",
         "grade",
         "programme_code",
-        "programme_switch_vacancy",
         "appointee_name",
         "hiring_manager",
         "hr_ref",

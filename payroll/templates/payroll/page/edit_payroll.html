@@ -58,7 +58,6 @@
       <thead class="govuk-table__head">
           <tr class="govuk-table__row">
               <th scope="col" class="govuk-table__header">Grade</th>
-              <th scope="col" class="govuk-table__header">Programme Switch / Vacancy</th>
               <th scope="col" class="govuk-table__header">Programme</th>
               <th scope="col" class="govuk-table__header">Appointee Name</th>
               <th scope="col" class="govuk-table__header">Hiring Manager</th>
@@ -69,7 +68,6 @@
           {% for vacancy in vacancies %}
               <tr class="govuk-table__row">
                   <td class="govuk-table__cell">{{ vacancy.grade }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.get_programme_switch_vacancy_display }}</td>
                   <td class="govuk-table__cell">{{ vacancy.programme_code }}</td>
                   <td class="govuk-table__cell">{{ vacancy.appointee_name|default:"" }}</td>
                   <td class="govuk-table__cell">{{ vacancy.hiring_manager|default:"" }}</td>

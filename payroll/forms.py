@@ -11,7 +11,6 @@ class VacancyForm(forms.ModelForm):
         widgets = {
             "grade": forms.Select(attrs={"class": "govuk-select"}),
             "programme_code": forms.Select(attrs={"class": "govuk-select"}),
-            "programme_switch_vacancy": forms.Select(attrs={"class": "govuk-select"}),
             "appointee_name": forms.TextInput(
                 attrs={"class": "govuk-input govuk-input--width-20"}
             ),
