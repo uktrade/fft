@@ -57,21 +57,28 @@
     <table class="govuk-table">
       <thead class="govuk-table__head">
           <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Recruitment Type</th>
               <th scope="col" class="govuk-table__header">Grade</th>
               <th scope="col" class="govuk-table__header">Programme</th>
+              <th scope="col" class="govuk-table__header">Budget Type</th>
               <th scope="col" class="govuk-table__header">Appointee Name</th>
               <th scope="col" class="govuk-table__header">Hiring Manager</th>
               <th scope="col" class="govuk-table__header">HR Ref</th>
+              <th scope="col" class="govuk-table__header">Recruitment Stage</th>
           </tr>
       </thead>
       <tbody class="govuk-table__body">
           {% for vacancy in vacancies %}
               <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ vacancy.get_recruitment_type_display }}</td>
                   <td class="govuk-table__cell">{{ vacancy.grade }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.programme_code }}</td>
+                  <td class="govuk-table__cell">{{ vacancy.programme_code.programme_code }}</td>
+                  <td class="govuk-table__cell">{{ vacancy.programme_code.budget_type }}</td>
                   <td class="govuk-table__cell">{{ vacancy.appointee_name|default:"" }}</td>
                   <td class="govuk-table__cell">{{ vacancy.hiring_manager|default:"" }}</td>
                   <td class="govuk-table__cell">{{ vacancy.hr_ref|default:"" }}</td>
+                  <td class="govuk-table__cell">{{ vacancy.get_recruitment_stage_display }}</td>
+
               </tr>
           {% endfor %}
       </tbody>

@@ -16,7 +16,9 @@
     <form method="post">
       {% csrf_token %}
       <div class="govuk-form-group">
+        {% include "_form_field.html" with field=form.recruitment_type %}
         {% include "_form_field.html" with field=form.grade %}
+        {% include "_form_field.html" with field=form.recruitment_stage %}
         {% include "_form_field.html" with field=form.programme_code %}
         {% include "_form_field.html" with field=form.appointee_name %}
         {% include "_form_field.html" with field=form.hiring_manager %}

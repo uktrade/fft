@@ -9,7 +9,9 @@ class VacancyForm(forms.ModelForm):
         fields = "__all__"
         exclude = ["cost_centre"]
         widgets = {
+            "recruitment_type": forms.Select(attrs={"class": "govuk-select"}),
             "grade": forms.Select(attrs={"class": "govuk-select"}),
+            "recruitment_stage": forms.Select(attrs={"class": "govuk-select"}),
             "programme_code": forms.Select(attrs={"class": "govuk-select"}),
             "appointee_name": forms.TextInput(
                 attrs={"class": "govuk-input govuk-input--width-20"}
