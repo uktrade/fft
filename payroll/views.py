@@ -62,7 +62,7 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
-    vacancies = Vacancy.objects.all()
+    vacancies = Vacancy.objects.filter(cost_centre=cost_centre_code)
 
     context = {
         "cost_centre_code": cost_centre_obj.cost_centre_code,
@@ -95,11 +95,15 @@ def add_vacancy_page(
         "cost_centre_code": cost_centre_code,
         "financial_year": financial_year,
     }
+    cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
 
     if request.method == "POST":
         form = VacancyForm(request.POST)
         if form.is_valid():
-            form.save()
+            vacancy = form.save(commit=False)
+            vacancy.cost_centre = cost_centre_obj
+            vacancy.save()
+
             return redirect(
                 "payroll:edit",
                 cost_centre_code=cost_centre_code,

@@ -110,13 +110,14 @@ class Vacancy(models.Model):
     class Meta:
         verbose_name_plural = "Vacancies"
 
-    # recruitment_type = models.ForeignKey(RecruitmentType, models.PROTECT)
-    # real_colour_of_money, vacancy_type, recharge_percent, recharge_reason = needs research
-    # recruitment_stage = enum, need to check values
+    cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
+
+    # recruitment_type and recruitment_stage = static values, enum, need to check values
+    # Vacancy type?
+    # Programme switch / vacancy is redundant ?
+
     grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey(
-        "chartofaccountDIT.ProgrammeCode", models.PROTECT
-    )
+    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
 
     PROGRAMME_SWITCH_VACANCY_CHOICES = [
         ("programme_switch", "Programme Switch"),

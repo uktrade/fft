@@ -81,6 +81,7 @@ class PayElementTypeGroupAdmin(admin.ModelAdmin):
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
     list_display = [
+        "cost_centre",
         "grade",
         "programme_code",
         "programme_switch_vacancy",

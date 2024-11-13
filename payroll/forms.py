@@ -7,6 +7,7 @@ class VacancyForm(forms.ModelForm):
     class Meta:
         model = Vacancy
         fields = "__all__"
+        exclude = ['cost_centre']
         widgets = {
             "grade": forms.Select(attrs={"class": "govuk-select"}),
             "programme_code": forms.Select(attrs={"class": "govuk-select"}),
