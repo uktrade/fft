@@ -150,9 +150,13 @@ db-from-dump: # Load a dumped database, use `DUMP_NAME` to change the name of th
 # platform-helper
 commit ?= "$$(git rev-parse --short HEAD | cut -c 1-7)"
 env ?= "dev"
+name ?= "web"
 
 codebase-build:
 	AWS_PROFILE=fft platform-helper codebase build --app fft --codebase fft --commit $(commit)
 
 codebase-deploy:
 	AWS_PROFILE=fft platform-helper codebase deploy --app fft --codebase fft --commit $(commit) --env $(env)
+
+copilot-ssh:
+	AWS_PROFILE=fft copilot svc exec --app fft --env $(env) --name $(name) --command 'launcher bash'
