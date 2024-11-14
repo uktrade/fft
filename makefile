@@ -152,7 +152,7 @@ commit ?= "$$(git rev-parse --short HEAD | cut -c 1-7)"
 env ?= "dev"
 
 codebase-build:
-	platform-helper codebase build --app fft --codebase fft --commit $(commit)
+	AWS_PROFILE=fft platform-helper codebase build --app fft --codebase fft --commit $(commit)
 
 codebase-deploy:
-	platform-helper codebase deploy --app fft --codebase fft --commit $(commit) --env $(env)
+	AWS_PROFILE=fft platform-helper codebase deploy --app fft --codebase fft --commit $(commit) --env $(env)
