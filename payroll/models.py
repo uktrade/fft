@@ -39,7 +39,7 @@ class EmployeePayPeriods(models.Model):
     employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
-    # pariod 1 -> 12 = apr -> mar
+    # period 1 -> 12 = apr -> mar
     # Here is a useful text snippet:
     #   apr period_1
     #   may period_2
@@ -104,3 +104,56 @@ class EmployeePayElement(models.Model):
     debit_amount = models.DecimalField(max_digits=9, decimal_places=2)
     # Support up to 9,999,999.99.
     credit_amount = models.DecimalField(max_digits=9, decimal_places=2)
+
+
+class RecruitmentType(models.TextChoices):
+    EXPRESSION_OF_INTEREST = "expression_of_interest", "Expression of Interest"
+    EXTERNAL_RECRUITMENT_NON_BULK = (
+        "external_recruitment_non_bulk",
+        "External Recruitment (Non Bulk)",
+    )
+    EXTERNAL_RECRUITMENT_BULK = (
+        "external_recruitment_bulk",
+        "External Recruitment (Bulk campaign)",
+    )
+    INTERNAL_MANAGED_MOVE = "internal_managed_move", "Internal Managed Move"
+    INTERNAL_REDEPLOYMENT = "internal_redeployment", "Internal Redeployment"
+    OTHER = "other", "Other"
+    INACTIVE_POST = "inactive_post", "Inactive Post"
+    EXPECTED_UNKNOWN_LEAVERS = "expected_unknown_leavers", "Expected Unknown Leavers"
+    MISSING_STAFF = "missing_staff", "Missing Staff"
+
+
+class RecruitmentStage(models.IntegerChoices):
+    PREPARING = 1, "Preparing"
+    ADVERT = 2, "Advert (Vac ref to be provided)"
+    SIFT = 3, "Sift"
+    INTERVIEW = 4, "Interview"
+    ONBOARDING = 5, "Onboarding"
+    UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
+    NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
+    NOT_REQUIRED = 8, "Not required"
+
+
+class Vacancy(models.Model):
+    class Meta:
+        verbose_name_plural = "Vacancies"
+
+    cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
+
+    grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
+    programme_code = models.ForeignKey(
+        "chartofaccountDIT.ProgrammeCode", models.PROTECT
+    )
+    recruitment_type = models.CharField(
+        max_length=29,
+        choices=RecruitmentType.choices,
+        default=RecruitmentType.EXPRESSION_OF_INTEREST,
+    )
+    recruitment_stage = models.IntegerField(
+        choices=RecruitmentStage.choices, default=RecruitmentStage.PREPARING
+    )
+
+    appointee_name = models.CharField(max_length=255, null=True, blank=True)
+    hiring_manager = models.CharField(max_length=255, null=True, blank=True)
+    hr_ref = models.CharField(max_length=255, null=True, blank=True)
