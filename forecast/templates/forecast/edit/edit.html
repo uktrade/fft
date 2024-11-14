@@ -1,4 +1,5 @@
 {% extends "forecast/edit/forecast_base.html" %}
+{% load payroll_permissions %}
 {% load util vite %}
 {% load breadcrumbs %}
 
@@ -41,6 +42,7 @@
     {% endblock %}
     {% block scripts %}
     {{ view.get_payroll_forecast_report|json_script:'payroll_forecast_data' }}
+    {% can_edit_payroll user as can_edit_payroll %}
     <script>
         window.actuals = {{ actuals|safe }};
         window.period_display = {{ period_display|safe }};
@@ -48,7 +50,7 @@
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
         window.financial_year = {{ view.financial_year|safe }};
         window.payroll_forecast_data = JSON.parse(document.getElementById("payroll_forecast_data").textContent);
-        window.can_toggle_payroll = "{{ can_toggle_payroll }}";
+        window.can_edit_payroll = "{{ can_edit_payroll }}";
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
