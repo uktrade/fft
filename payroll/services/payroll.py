@@ -42,6 +42,7 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
         Employee.objects.filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+            pay_element__isnull=False,
         )
         .order_by(
             "programme_code",

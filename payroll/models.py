@@ -2,6 +2,10 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 
+class EmployeeQuerySet(models.QuerySet):
+    pass
+
+
 class Employee(models.Model):
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
@@ -30,6 +34,8 @@ class Employee(models.Model):
 
     # TODO: Missing fields from Admin Tool
     # EU/Non-EU (from programme code model)
+
+    objects = EmployeeQuerySet.as_manager()
 
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
