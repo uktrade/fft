@@ -147,16 +147,26 @@ db-dump: # Dump the current database, use `DUMP_NAME` to change the name of the 
 db-from-dump: # Load a dumped database, use `DUMP_NAME` to change the name of the dump
 	@PGPASSWORD='postgres' psql -h localhost -U postgres postgres -f ./.dumps/$(DUMP_NAME).dump
 
+
 # platform-helper
-commit ?= "$$(git rev-parse --short HEAD)"
-env ?= "dev"
-name ?= "web"
+
+# target specific variables (not global)
+codebase-build codebase-deploy copilot-ssh: profile = "fft"
+codebase-build codebase-deploy copilot-ssh: app = "fft"
+codebase-build codebase-deploy copilot-ssh: codebase = "fft"
+codebase-build codebase-deploy: commit := $(shell git rev-parse --short HEAD)
+codebase-deploy: env = "dev"
+copilot-ssh: name = "web"
 
 codebase-build:
-	AWS_PROFILE=fft platform-helper codebase build --app fft --codebase fft --commit $(commit)
+	AWS_PROFILE=$(profile) platform-helper codebase build --app $(app) --codebase $(codebase) --commit $(commit)
 
 codebase-deploy:
-	AWS_PROFILE=fft platform-helper codebase deploy --app fft --codebase fft --commit $(commit) --env $(env)
+	AWS_PROFILE=$(profile) platform-helper codebase deploy --app $(app) --codebase $(codebase) --commit $(commit) --env $(env)
 
 copilot-ssh:
-	AWS_PROFILE=fft copilot svc exec --app fft --env $(env) --name $(name) --command 'launcher bash'
+	AWS_PROFILE=$(profile) copilot svc exec --app $(app) --env $(env) --name $(name) --command 'launcher bash'
+
+foo:
+	NAME=sam
+	echo "$$(NAME)"
