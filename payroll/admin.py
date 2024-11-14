@@ -8,6 +8,7 @@ from .models import (
     EmployeePayPeriods,
     PayElementType,
     PayElementTypeGroup,
+    Vacancy,
 )
 
 
@@ -74,4 +75,16 @@ class PayElementTypeGroupAdmin(admin.ModelAdmin):
     list_display = [
         "name",
         "natural_code",
+    ]
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(admin.ModelAdmin):
+    list_display = [
+        "cost_centre",
+        "grade",
+        "programme_code",
+        "appointee_name",
+        "hiring_manager",
+        "hr_ref",
     ]
