@@ -3,12 +3,14 @@ import json
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
 from django.views import View
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
+from payroll.forms import VacancyForm
+from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
 
@@ -60,6 +62,7 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
+    vacancies = Vacancy.objects.filter(cost_centre=cost_centre_code)
 
     context = {
         "cost_centre_code": cost_centre_obj.cost_centre_code,
@@ -79,6 +82,40 @@ def edit_payroll_page(
             "Feb",
             "Mar",
         ],
+        "vacancies": vacancies,
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
+
+
+def add_vacancy_page(
+    request: HttpRequest, cost_centre_code: str, financial_year: int
+) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    context = {
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
+    }
+    cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
+
+    if request.method == "POST":
+        form = VacancyForm(request.POST)
+        if form.is_valid():
+            vacancy = form.save(commit=False)
+            vacancy.cost_centre = cost_centre_obj
+            vacancy.save()
+
+            return redirect(
+                "payroll:edit",
+                cost_centre_code=cost_centre_code,
+                financial_year=financial_year,
+            )
+        else:
+            context["form"] = form
+            return render(request, "payroll/page/add_vacancy.html", context)
+    else:
+        form = VacancyForm()
+        context["form"] = form
+    return render(request, "payroll/page/add_vacancy.html", context)

@@ -1,0 +1,31 @@
+{% extends "base_generic.html" %}
+{% load breadcrumbs %}
+
+{% block title %}Create Vacancy{% endblock title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
+    {% breadcrumb "Edit payroll" "payroll:edit" cost_centre_code financial_year %}
+    {% breadcrumb "Create Vacancy" "" %}
+{% endblock breadcrumbs %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">Create Vacancy</h1>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="govuk-form-group">
+        {% include "_form_field.html" with field=form.recruitment_type %}
+        {% include "_form_field.html" with field=form.grade %}
+        {% include "_form_field.html" with field=form.recruitment_stage %}
+        {% include "_form_field.html" with field=form.programme_code %}
+        {% include "_form_field.html" with field=form.appointee_name %}
+        {% include "_form_field.html" with field=form.hiring_manager %}
+        {% include "_form_field.html" with field=form.hr_ref %}
+      </div>
+      <button class="govuk-button" type="submit">Create Vacancy</button>
+      <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Back</a>
+    </form>
+
+{% endblock content %}
