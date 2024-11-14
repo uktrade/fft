@@ -148,7 +148,7 @@ db-from-dump: # Load a dumped database, use `DUMP_NAME` to change the name of th
 	@PGPASSWORD='postgres' psql -h localhost -U postgres postgres -f ./.dumps/$(DUMP_NAME).dump
 
 # platform-helper
-commit ?= "$$(git rev-parse --short HEAD | cut -c 1-7)"
+commit ?= "$$(git rev-parse --short HEAD)"
 env ?= "dev"
 name ?= "web"
 
