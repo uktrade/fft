@@ -91,6 +91,9 @@ def edit_payroll_page(
 def add_vacancy_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int
 ) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
     context = {
         "cost_centre_code": cost_centre_code,
         "financial_year": financial_year,
