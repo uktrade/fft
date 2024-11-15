@@ -25,7 +25,7 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
         return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
-        if obj.financial_year_id > get_current_financial_year():
+        if obj.financial_year_id > self.context["current_financial_year"]:
             return False
         return obj.financial_period.actual_loaded
 
@@ -67,6 +67,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
+        # FIXME: 400+ queries! try this as a prefetch similar to forecast or change to a lookup
         financial_year = self.context["financial_year"]
         budget = (
             BudgetMonthlyFigure.objects.values(

@@ -83,24 +83,32 @@ def get_financial_codes_for_year(cost_centre_code, financial_year):
 def get_financial_code_serialiser(cost_centre_code, financial_year):
     # Only selects the financial codes relevant to the financial year being edited.
     # Financial codes are used in budgets and forecast/actuals.
-    forecasts = ForecastMonthlyFigure.objects.filter(
+    forecasts = ForecastMonthlyFigure.objects.select_related("financial_period").filter(
         financial_year_id=financial_year,
         archived_status__isnull=True,
     )
     financial_codes = (
         get_financial_codes_for_year(cost_centre_code, financial_year)
+        .select_related("programme", "natural_account_code")
         .prefetch_related(
             Prefetch(
                 "forecast_forecastmonthlyfigures",
                 queryset=forecasts,
                 to_attr="monthly_figure_items",
             ),
-            "forecast_forecastmonthlyfigures__financial_period",
+            # FIXME: check this isn't needed
+            # "forecast_forecastmonthlyfigures__financial_period",
         )
         .order_by(*edit_forecast_order())
     )
+
     financial_code_serialiser = FinancialCodeSerializer(
-        financial_codes, many=True, context={"financial_year": financial_year}
+        financial_codes,
+        many=True,
+        context={
+            "financial_year": financial_year,
+            "current_financial_year": get_current_financial_year(),
+        },
     )
     return financial_code_serialiser
 
@@ -478,6 +486,7 @@ class EditForecastView(
             self.cost_centre_code,
             self.financial_year,
         )
+        # FIXME: holy moly it's slow!
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():
