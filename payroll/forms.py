@@ -1,7 +1,6 @@
 from django import forms
 
 from payroll.models import Vacancy
-from payroll.validators import validate_only_letters_numbers_spaces
 
 
 class VacancyForm(forms.ModelForm):

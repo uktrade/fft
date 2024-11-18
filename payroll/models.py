@@ -1,5 +1,5 @@
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 
 
 class Employee(models.Model):
@@ -143,7 +143,9 @@ class Vacancy(models.Model):
     cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
 
     grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
+    programme_code = models.ForeignKey(
+        "chartofaccountDIT.ProgrammeCode", models.PROTECT
+    )
     recruitment_type = models.CharField(
         max_length=29,
         choices=RecruitmentType.choices,
