@@ -52,7 +52,7 @@ services:
       - "6379:6379"
 
   chrome:
-    image: selenium/standalone-chrome:latest
+    image: selenium/standalone-chromium:latest
     shm_size: 2gb
     depends_on:
       - web
