@@ -162,7 +162,7 @@ class Vacancy(models.Model):
         validators=[
             RegexValidator(
                 regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed",
+                message="Only letters, spaces, - and ' are allowed.",
             )
         ],
     )
@@ -173,7 +173,7 @@ class Vacancy(models.Model):
         validators=[
             RegexValidator(
                 regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed",
+                message="Only letters, spaces, - and ' are allowed.",
             )
         ],
     )
@@ -184,7 +184,7 @@ class Vacancy(models.Model):
         validators=[
             RegexValidator(
                 regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed",
+                message="Only letters, spaces, - and ' are allowed.",
             )
         ],
     )
