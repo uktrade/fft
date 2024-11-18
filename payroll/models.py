@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -154,6 +155,36 @@ class Vacancy(models.Model):
         choices=RecruitmentStage.choices, default=RecruitmentStage.PREPARING
     )
 
-    appointee_name = models.CharField(max_length=255, null=True, blank=True)
-    hiring_manager = models.CharField(max_length=255, null=True, blank=True)
-    hr_ref = models.CharField(max_length=255, null=True, blank=True)
+    appointee_name = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed.",
+            )
+        ],
+    )
+    hiring_manager = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed.",
+            )
+        ],
+    )
+    hr_ref = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed.",
+            )
+        ],
+    )
