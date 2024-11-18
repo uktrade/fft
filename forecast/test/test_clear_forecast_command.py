@@ -1,5 +1,3 @@
-from io import StringIO
-
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
@@ -20,7 +18,9 @@ class ClearForecastCommandNoArchiveTest(TestCase):
     def assertFiguresCount(self, should_exist=True):
         count_assert = self.assertNotEqual if should_exist else self.assertEqual
         count_assert(
-            BudgetMonthlyFigure.objects.filter(financial_year=self.current_year).count(),
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.current_year
+            ).count(),
             0,
         )
         count_assert(
@@ -80,7 +80,9 @@ class ClearForecastCommandWithArchiveTest(TestCase):
     def assertFiguresCount(self, should_exist=True):
         count_assert = self.assertNotEqual if should_exist else self.assertEqual
         count_assert(
-            BudgetMonthlyFigure.objects.filter(financial_year=self.current_year).count(),
+            BudgetMonthlyFigure.objects.filter(
+                financial_year=self.current_year
+            ).count(),
             0,
         )
         count_assert(
