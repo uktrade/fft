@@ -13,33 +13,18 @@
 {% block content %}
     <h1 class="govuk-heading-l">Create Vacancy</h1>
 
-    {% if form.errors %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-      <h2 class="govuk-error-summary__title" id="error-summary-title">
-        There is a problem
-      </h2>
-      <div class="govuk-error-summary__body">
-        <ul class="govuk-list govuk-error-summary__list">
-            {% for field, errors in form.errors.items %}
-            <li>
-                <a href="#id_{{ field }}">{{ errors|join:", " }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-      </div>
-    </div>
-    {% endif %}
+    {% include "payroll/partials/_error_summary.html" with form=form %}
 
     <form method="post" novalidate>
       {% csrf_token %}
       <div class="govuk-form-group">
-        {% include "_form_field.html" with field=form.recruitment_type %}
-        {% include "_form_field.html" with field=form.grade %}
-        {% include "_form_field.html" with field=form.recruitment_stage %}
-        {% include "_form_field.html" with field=form.programme_code %}
-        {% include "_form_field.html" with field=form.appointee_name %}
-        {% include "_form_field.html" with field=form.hiring_manager %}
-        {% include "_form_field.html" with field=form.hr_ref %}
+        {% include "payroll/partials/_form_field.html" with field=form.recruitment_type %}
+        {% include "payroll/partials/_form_field.html" with field=form.grade %}
+        {% include "payroll/partials/_form_field.html" with field=form.recruitment_stage %}
+        {% include "payroll/partials/_form_field.html" with field=form.programme_code %}
+        {% include "payroll/partials/_form_field.html" with field=form.appointee_name %}
+        {% include "payroll/partials/_form_field.html" with field=form.hiring_manager %}
+        {% include "payroll/partials/_form_field.html" with field=form.hr_ref %}
       </div>
       <button class="govuk-button" type="submit">Create Vacancy</button>
       <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Back</a>

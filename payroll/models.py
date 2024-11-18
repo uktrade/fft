@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 
 class Employee(models.Model):
@@ -142,9 +143,7 @@ class Vacancy(models.Model):
     cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
 
     grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey(
-        "chartofaccountDIT.ProgrammeCode", models.PROTECT
-    )
+    programme_code = models.ForeignKey("chartofaccountDIT.ProgrammeCode", models.PROTECT)
     recruitment_type = models.CharField(
         max_length=29,
         choices=RecruitmentType.choices,
@@ -154,6 +153,36 @@ class Vacancy(models.Model):
         choices=RecruitmentStage.choices, default=RecruitmentStage.PREPARING
     )
 
-    appointee_name = models.CharField(max_length=255, null=True, blank=True)
-    hiring_manager = models.CharField(max_length=255, null=True, blank=True)
-    hr_ref = models.CharField(max_length=255, null=True, blank=True)
+    appointee_name = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed",
+            )
+        ],
+    )
+    hiring_manager = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed",
+            )
+        ],
+    )
+    hr_ref = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        validators=[
+            RegexValidator(
+                regex=r"^[a-zA-Z '-]*$",
+                message="Only letters, spaces, - and ' are allowed",
+            )
+        ],
+    )
