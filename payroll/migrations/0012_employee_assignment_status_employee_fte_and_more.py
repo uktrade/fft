@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
             "gifthospitality",
             "0006_alter_simplehistorygiftandhospitality_options_and_more",
         ),
-        ("payroll", "0009_remove_vacancy_programme_switch_vacancy"),
+        ("payroll", "0011_alter_vacancy_appointee_name_and_more"),
     ]
 
     operations = [
