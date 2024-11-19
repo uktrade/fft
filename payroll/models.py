@@ -1,5 +1,21 @@
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import F, Q, Sum
+
+
+class EmployeeQuerySet(models.QuerySet):
+    def with_basic_pay(self):
+        return self.annotate(
+            basic_pay=Sum(
+                F("pay_element__debit_amount") - F("pay_element__credit_amount"),
+                # TODO (FFT-107): Resolve hard-coded references to "Basic Pay"
+                # This might change when we get round to ingesting the data, so I'm OK
+                # with it staying like this for now.
+                filter=Q(pay_element__type__group__name="Basic Pay"),
+                default=0,
+                output_field=models.FloatField(),
+            )
+        )
 
 
 class Employee(models.Model):
@@ -19,6 +35,19 @@ class Employee(models.Model):
     employee_no = models.CharField(max_length=8, unique=True)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
+    grade = models.ForeignKey(
+        to="gifthospitality.Grade",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+    )
+    fte = models.FloatField(default=1.0)
+    assignment_status = models.CharField(max_length=32)
+
+    # TODO: Missing fields from Admin Tool which aren't required yet.
+    # EU/Non-EU (from programme code model)
+
+    objects = EmployeeQuerySet.as_manager()
 
     def __str__(self) -> str:
         return f"{self.employee_no} - {self.first_name} {self.last_name}"
@@ -66,6 +95,11 @@ class EmployeePayPeriods(models.Model):
     period_10 = models.BooleanField(default=True)
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
+
+    # TODO: Missing fields from Admin Tool which aren't required yet.
+    # capital (Real colour of money)
+    # recharge = models.CharField(max_length=50, null=True, blank=True)
+    # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
 
     @property
     def periods(self) -> list[bool]:

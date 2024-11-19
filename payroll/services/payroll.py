@@ -42,6 +42,7 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
         Employee.objects.filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+            pay_element__isnull=False,
         )
         .order_by(
             "programme_code",
@@ -61,7 +62,13 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
 
 class EmployeePayroll(TypedDict):
     name: str
+    grade: str
     employee_no: str
+    fte: float
+    programme_code: str
+    budget_type: str
+    assignment_status: str
+    basic_pay: float
     pay_periods: list[bool]
 
 
@@ -69,16 +76,31 @@ def get_payroll_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[EmployeePayroll]:
-    qs = EmployeePayPeriods.objects.select_related("employee")
-    qs = qs.filter(
-        employee__cost_centre=cost_centre,
-        year=financial_year,
+    qs = (
+        Employee.objects.select_related(
+            "programme_code__budget_type",
+        )
+        .prefetch_related(
+            "pay_periods",
+        )
+        .filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
+        .with_basic_pay()
     )
     for obj in qs:
         yield EmployeePayroll(
-            name=obj.employee.get_full_name(),
-            employee_no=obj.employee.employee_no,
-            pay_periods=obj.periods,
+            name=obj.get_full_name(),
+            grade=obj.grade.pk,
+            employee_no=obj.employee_no,
+            fte=obj.fte,
+            programme_code=obj.programme_code.pk,
+            budget_type=obj.programme_code.budget_type.budget_type_display,
+            assignment_status=obj.assignment_status,
+            basic_pay=obj.basic_pay,
+            # `first` is OK as there should only be one `pay_periods` with the filters.
+            pay_periods=obj.pay_periods.first().periods,
         )
 
 
