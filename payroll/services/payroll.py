@@ -140,6 +140,7 @@ def update_payroll_data(
 
 
 class Vacancies(TypedDict):
+    id: str
     grade: str
     programme_code: str
     recruitment_type: str
@@ -194,7 +195,6 @@ def update_vacancies_data(
         ValueError: If any of the pay_periods are not of type bool.
     """
 
-    # Need to add id to Vacancies and pay periods to Vacancy model
     for vacancy in vacancies_data:
         if not vacancy["id"]:
             raise ValueError("id is empty")
@@ -206,8 +206,8 @@ def update_vacancies_data(
             raise ValueError("pay_periods items should be of type bool")
 
         pay_periods = EmployeePayPeriods.objects.get(
-            employee__employee_no=vacancy["employee_no"],
-            employee__cost_centre=cost_centre,
+            vacancy__id=vacancy["id"],
+            vacancy__cost_centre=cost_centre,
             year=financial_year,
         )
         pay_periods.periods = vacancy["pay_periods"]

@@ -2,7 +2,10 @@ import { useEffect, useReducer, useState, useMemo } from "react";
 
 import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
-import { payrollHeaders, vacancyHeaders } from "../Components/EditPayroll/constants";
+import {
+  payrollHeaders,
+  vacancyHeaders,
+} from "../Components/EditPayroll/constants";
 
 const initialPayrollState = [];
 
@@ -79,7 +82,7 @@ export default function Payroll() {
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
       <EditPayroll
-        payroll={nonPayroll}
+        payroll={[]}
         headers={vacancyHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
       />
