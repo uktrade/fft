@@ -7,7 +7,9 @@
       "employee_no": "00000001",
       "programme_code": "338887",
       "first_name": "John",
-      "last_name": "Smith"
+      "last_name": "Smith",
+      "grade": "Grade 7",
+      "assignment_status": "Active Assignment"
     }
   },
   {
@@ -18,7 +20,35 @@
       "employee_no": "00000002",
       "programme_code": "338887",
       "first_name": "Jane",
-      "last_name": "Doe"
+      "last_name": "Doe",
+      "grade": "Grade 7",
+      "assignment_status": "Active Contingent Assignment"
+    }
+  },
+  {
+    "model": "payroll.employee",
+    "pk": 3,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000003",
+      "programme_code": "338887",
+      "first_name": "John",
+      "last_name": "Doe",
+      "grade": "Grade 7",
+      "assignment_status": "Loan Out - Non Payroll"
+    }
+  },
+  {
+    "model": "payroll.employee",
+    "pk": 4,
+    "fields": {
+      "cost_centre": "888812",
+      "employee_no": "00000004",
+      "programme_code": "338887",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "grade": "Grade 7",
+      "assignment_status": "Active Assignment"
     }
   },
   {
@@ -179,6 +209,166 @@
       "period_10": true,
       "period_11": true,
       "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 9,
+    "fields": {
+      "employee": 3,
+      "year": 2024,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 10,
+    "fields": {
+      "employee": 3,
+      "year": 2025,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 11,
+    "fields": {
+      "employee": 3,
+      "year": 2026,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 12,
+    "fields": {
+      "employee": 3,
+      "year": 2027,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 13,
+    "fields": {
+      "employee": 4,
+      "year": 2024,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 14,
+    "fields": {
+      "employee": 4,
+      "year": 2025,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 15,
+    "fields": {
+      "employee": 4,
+      "year": 2026,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 16,
+    "fields": {
+      "employee": 4,
+      "year": 2027,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
     }
   },
   {
