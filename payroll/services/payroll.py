@@ -7,7 +7,7 @@ from django.db.models import F, Q, Sum
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 
-from ..models import Employee, EmployeePayPeriods
+from ..models import Employee, EmployeePayPeriods, Vacancy
 
 
 def employee_created(employee: Employee) -> None:
@@ -136,4 +136,79 @@ def update_payroll_data(
             year=financial_year,
         )
         pay_periods.periods = payroll["pay_periods"]
+        pay_periods.save()
+
+
+class Vacancies(TypedDict):
+    grade: str
+    programme_code: str
+    recruitment_type: str
+    recruitment_stage: str
+    appointee_name: str
+    hiring_manager: str
+    hr_ref: str
+    pay_periods: list[bool]  # Needs to be added to model
+
+
+def get_vacancies_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> Iterator[Vacancies]:
+    qs = (
+        Vacancy.objects.filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
+        # .prefetch_related(
+        #     "pay_periods",
+        # )
+    )
+    for obj in qs:
+        yield Vacancies(
+            grade=obj.grade.pk,
+            programme_code=obj.programme_code.pk,
+            recruitment_type=obj.get_recruitment_type_display,
+            recruitment_stage=obj.get_recruitment_stage_display,
+            appointee_name=obj.appointee_name,
+            hiring_manager=obj.hiring_manager,
+            hr_ref=obj.hr_ref,
+            # `first` is OK as there should only be one `pay_periods` with the filters.
+            # pay_periods=obj.pay_periods.first().periods,
+        )
+
+
+@transaction.atomic
+def update_vacancies_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+    vacancies_data: list[Vacancies],
+) -> None:
+    """Update a cost centre payroll for a given year using the provided list.
+
+    This function is wrapped with a transaction, so if any of the vacancy updates fail,
+    the whole batch will be rolled back.
+
+    Raises:
+        ValueError: If a vacancy id is empty.
+        ValueError: If there are not 12 items in the pay_periods list.
+        ValueError: If any of the pay_periods are not of type bool.
+    """
+
+    # Need to add id to Vacancies and pay periods to Vacancy model
+    for vacancy in vacancies_data:
+        if not vacancy["id"]:
+            raise ValueError("id is empty")
+
+        if len(vacancy["pay_periods"]) != 12:
+            raise ValueError("pay_periods list should be of length 12")
+
+        if not all(isinstance(x, bool) for x in vacancy["pay_periods"]):
+            raise ValueError("pay_periods items should be of type bool")
+
+        pay_periods = EmployeePayPeriods.objects.get(
+            employee__employee_no=vacancy["employee_no"],
+            employee__cost_centre=cost_centre,
+            year=financial_year,
+        )
+        pay_periods.periods = vacancy["pay_periods"]
         pay_periods.save()
