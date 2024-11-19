@@ -184,7 +184,7 @@ def update_vacancies_data(
     financial_year: FinancialYear,
     vacancies_data: list[Vacancies],
 ) -> None:
-    """Update a cost centre payroll for a given year using the provided list.
+    """Update a cost centre vacancies for a given year using the provided list.
 
     This function is wrapped with a transaction, so if any of the vacancy updates fail,
     the whole batch will be rolled back.
