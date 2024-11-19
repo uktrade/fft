@@ -1,9 +1,21 @@
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import F, Q, Sum
 
 
 class EmployeeQuerySet(models.QuerySet):
-    pass
+    def with_basic_pay(self):
+        return self.annotate(
+            basic_pay=Sum(
+                F("pay_element__debit_amount") - F("pay_element__credit_amount"),
+                # TODO (FFT-107): Resolve hard-coded references to "Basic Pay"
+                # This might change when we get round to ingesting the data, so I'm OK
+                # with it staying like this for now.
+                filter=Q(pay_element__type__group__name="Basic Pay"),
+                default=0,
+                output_field=models.FloatField(),
+            )
+        )
 
 
 class Employee(models.Model):

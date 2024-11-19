@@ -68,6 +68,7 @@ class EmployeePayroll(TypedDict):
     programme_code: str
     budget_type: str
     assignment_status: str
+    basic_pay: float
     pay_periods: list[bool]
 
 
@@ -75,23 +76,30 @@ def get_payroll_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[EmployeePayroll]:
-    qs = EmployeePayPeriods.objects.select_related(
-        "employee__programme_code__budget_type"
-    )
-    qs = qs.filter(
-        employee__cost_centre=cost_centre,
-        year=financial_year,
+    qs = (
+        Employee.objects.select_related(
+            "programme_code__budget_type",
+        )
+        .prefetch_related(
+            "pay_periods",
+        )
+        .filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
+        .with_basic_pay()
     )
     for obj in qs:
         yield EmployeePayroll(
-            name=obj.employee.get_full_name(),
-            grade=obj.employee.grade.pk,
-            employee_no=obj.employee.employee_no,
-            fte=obj.employee.fte,
-            programme_code=obj.employee.programme_code.pk,
-            budget_type=obj.employee.programme_code.budget_type.budget_type_display,
-            assignment_status=obj.employee.assignment_status,
-            pay_periods=obj.periods,
+            name=obj.get_full_name(),
+            grade=obj.grade.pk,
+            employee_no=obj.employee_no,
+            fte=obj.fte,
+            programme_code=obj.programme_code.pk,
+            budget_type=obj.programme_code.budget_type.budget_type_display,
+            assignment_status=obj.assignment_status,
+            basic_pay=obj.basic_pay,
+            pay_periods=obj.pay_periods.first().periods,
         )
 
 
