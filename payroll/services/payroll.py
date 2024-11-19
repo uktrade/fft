@@ -99,6 +99,7 @@ def get_payroll_data(
             budget_type=obj.programme_code.budget_type.budget_type_display,
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
+            # `first` is OK as there should only be one `pay_periods` with the filters.
             pay_periods=obj.pay_periods.first().periods,
         )
 

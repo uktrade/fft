@@ -44,7 +44,7 @@ class Employee(models.Model):
     fte = models.FloatField(default=1.0)
     assignment_status = models.CharField(max_length=32)
 
-    # TODO: Missing fields from Admin Tool
+    # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)
 
     objects = EmployeeQuerySet.as_manager()
@@ -95,7 +95,8 @@ class EmployeePayPeriods(models.Model):
     period_10 = models.BooleanField(default=True)
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
-    # FIXME
+
+    # TODO: Missing fields from Admin Tool which aren't required yet.
     # capital (Real colour of money)
     # recharge = models.CharField(max_length=50, null=True, blank=True)
     # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
