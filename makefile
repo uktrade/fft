@@ -166,7 +166,3 @@ codebase-deploy:
 
 copilot-ssh:
 	AWS_PROFILE=$(profile) copilot svc exec --app $(app) --env $(env) --name $(name) --command 'launcher bash'
-
-foo:
-	NAME=sam
-	echo "$$(NAME)"
