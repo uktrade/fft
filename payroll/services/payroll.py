@@ -7,25 +7,43 @@ from django.db.models import F, Q, Sum
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 
-from ..models import Employee, EmployeePayPeriods, Vacancy
+from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
 
 def employee_created(employee: Employee) -> None:
     """Hook to be called after an employee instance is created."""
-
     # Create EmployeePayPeriods records for current and future financial years.
-    create_employee_pay_periods(employee)
-
+    create_pay_periods(employee)
     return None
 
 
-def create_employee_pay_periods(employee: Employee) -> None:
+def vacancy_created(vacancy: Vacancy) -> None:
+    """Hook to be called after a vacancy instance is created."""
+    # Create VacancyPayPeriods records for current and future financial years.
+    create_pay_periods(vacancy)
+    return None
+
+
+def create_pay_periods(instance) -> None:
     current_financial_year = FinancialYear.objects.current()
     future_financial_years = FinancialYear.objects.future()
     financial_years = [current_financial_year] + list(future_financial_years)
 
+    pay_periods_model, field_name = None
+
+    if isinstance(instance, Employee):
+        pay_periods_model = EmployeePayPeriods
+        field_name = "employee"
+    elif isinstance(instance, Vacancy):
+        pay_periods_model = VacancyPayPeriods
+        field_name = "vacancy"
+    else:
+        raise ValueError("Unsupported instance type for creating pay periods")
+
     for financial_year in financial_years:
-        EmployeePayPeriods.objects.get_or_create(employee=employee, year=financial_year)
+        pay_periods_model.objects.get_or_create(
+            **{field_name: instance, "year": financial_year}
+        )
 
 
 def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):

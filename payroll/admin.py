@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from payroll.services.payroll import employee_created
+from payroll.services.payroll import employee_created, vacancy_created
 
 from .models import (
     Employee,
@@ -88,3 +88,9 @@ class VacancyAdmin(admin.ModelAdmin):
         "hiring_manager",
         "hr_ref",
     ]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        if not change:
+            vacancy_created(obj)
