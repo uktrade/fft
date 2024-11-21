@@ -50,6 +50,7 @@ export default function Payroll() {
   async function handleSavePayroll() {
     try {
       await api.postPayrollData(allPayroll);
+      await api.postVacancyData(vacancies);
 
       setSaveSuccess(true);
       localStorage.setItem("saveSuccess", "true");
@@ -62,6 +63,10 @@ export default function Payroll() {
 
   function handleTogglePayPeriods(employeeNo, index, enabled) {
     dispatch({ type: "updatePayPeriods", employeeNo, index, enabled });
+  }
+
+  function handleToggleVacancyPayPeriods(id, index, enabled) {
+    dispatchVacancies({ type: "updatePayPeriods", id, index, enabled });
   }
 
   return (
@@ -96,7 +101,7 @@ export default function Payroll() {
       <EditPayroll
         payroll={vacancies}
         headers={vacancyHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
+        onTogglePayPeriods={handleToggleVacancyPayPeriods}
         RowComponent={VacancyRow}
       />
       <button className="govuk-button" onClick={handleSavePayroll}>
