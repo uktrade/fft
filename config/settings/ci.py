@@ -11,3 +11,6 @@ AUTHENTICATION_BACKENDS += [
 ASYNC_FILE_UPLOAD = False
 
 AXES_ENABLED = False
+
+# FIXME: add comment on why we set this
+SIMPLE_HISTORY_ENABLED = False
