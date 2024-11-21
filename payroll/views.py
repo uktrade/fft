@@ -51,6 +51,41 @@ class PayrollView(UserPassesTestMixin, View):
         return JsonResponse({})
 
 
+class VacancyView(UserPassesTestMixin, View):
+    def test_func(self) -> bool | None:
+        return self.request.user.is_superuser
+
+    def setup(self, request, *args, **kwargs) -> None:
+        super().setup(request, *args, **kwargs)
+        self.cost_centre = get_object_or_404(
+            CostCentre,
+            pk=self.kwargs["cost_centre_code"],
+        )
+        self.financial_year = get_object_or_404(
+            FinancialYear,
+            pk=self.kwargs["financial_year"],
+        )
+
+    def get(self, request, *args, **kwargs):
+        data = list(
+            payroll_service.get_vacancies_data(
+                cost_centre=self.cost_centre,
+                financial_year=self.financial_year,
+            )
+        )
+        return JsonResponse({"data": data})
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+
+        payroll_service.update_vacancies_data(
+            cost_centre=self.cost_centre,
+            financial_year=self.financial_year,
+            vacancies_data=data,
+        )
+        return JsonResponse({})
+
+
 def edit_payroll_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int
 ) -> HttpResponse:
@@ -106,6 +141,8 @@ def add_vacancy_page(
             vacancy = form.save(commit=False)
             vacancy.cost_centre = cost_centre_obj
             vacancy.save()
+
+            payroll_service.vacancy_created(vacancy)
 
             return redirect(
                 "payroll:edit",

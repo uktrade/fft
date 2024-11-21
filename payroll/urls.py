@@ -19,6 +19,11 @@ urlpatterns = [
         name="api",
     ),
     path(
+        "api/<str:cost_centre_code>/<int:financial_year>/vacancies/",
+        views.VacancyView.as_view(),
+        name="api_vacancies",
+    ),
+    path(
         "edit/choose-cost-centre/",
         ChooseCostCentreView.as_view(next_page="payroll"),
         name="choose_cost_centre",

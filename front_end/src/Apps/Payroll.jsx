@@ -6,12 +6,19 @@ import {
   payrollHeaders,
   vacancyHeaders,
 } from "../Components/EditPayroll/constants";
+import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
+import VacancyRow from "../Components/EditPayroll/VacancyRow";
 
 const initialPayrollState = [];
+const initialVacanciesState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
+    initialPayrollState
+  );
+  const [vacancies, dispatchVacancies] = useReducer(
+    vacanciesReducer,
     initialPayrollState
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -24,6 +31,9 @@ export default function Payroll() {
     }
 
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
+    api
+      .getVacancyData()
+      .then((data) => dispatchVacancies({ type: "fetched", data }));
   }, []);
 
   // Computed properties
@@ -73,18 +83,21 @@ export default function Payroll() {
         payroll={payroll}
         headers={payrollHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
+        RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Non-payroll</h2>
       <EditPayroll
         payroll={nonPayroll}
         headers={payrollHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
+        RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
       <EditPayroll
-        payroll={[]}
+        payroll={vacancies}
         headers={vacancyHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
+        RowComponent={VacancyRow}
       />
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
@@ -115,6 +128,31 @@ function payrollReducer(payroll, action) {
           };
         }
         return employeeRow;
+      });
+    }
+  }
+}
+
+function vacanciesReducer(vacancies, action) {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
+    }
+    case "updatePayPeriods": {
+      return vacancies.map((vacancy) => {
+        if (vacancy.id == action.id) {
+          const updatedPayPeriods = vacancy.pay_periods.map((period, index) => {
+            if (index + 1 >= action.index + 1) {
+              return !action.enabled;
+            }
+            return period;
+          });
+          return {
+            ...vacancy,
+            pay_periods: updatedPayPeriods,
+          };
+        }
+        return vacancy;
       });
     }
   }

@@ -7,12 +7,18 @@ import PayrollTable from "./PayrollTable/index";
  * @param {types.PayrollData[]} props.payroll
  * @returns
  */
-export default function EditPayroll({ payroll, headers, onTogglePayPeriods }) {
+export default function EditPayroll({
+  payroll,
+  headers,
+  onTogglePayPeriods,
+  RowComponent,
+}) {
   return (
     <PayrollTable
       headers={headers}
       payroll={payroll}
       onTogglePayPeriods={onTogglePayPeriods}
+      RowComponent={RowComponent}
     ></PayrollTable>
   );
 }

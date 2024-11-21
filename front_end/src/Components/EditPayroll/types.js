@@ -11,4 +11,17 @@
  * @property {boolean[]} pay_periods - Whether the employee is being paid in periods.
  */
 
+/**
+ * @typedef {Object} VacancyData
+ * @property {string} grade - The vacancy's grade.
+ * @property {string} programme_code - The vacancy's programme code.
+ * @property {string} budget_type - The vacancy's programme code budget type.
+ * @property {string} recruitment_type - The vacancy's recruitment type.
+ * @property {string} recruitment_stage - The vacancy's recruitment stage.
+ * @property {string} appointee_name - The vacancy's appointee name.
+ * @property {string} hiring_manager - The vacancy's hiring manager.
+ * @property {string} hr_ref - The vacancy's hr ref.
+ * @property {boolean[]} pay_periods - Whether the vacancy is being paid in periods.
+ */
+
 export const Types = {};
