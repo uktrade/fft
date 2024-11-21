@@ -6,15 +6,18 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
-    {% breadcrumb "Edit payroll" "" %}
+    {% breadcrumb "Edit payroll" "edit_payroll" %}
 {% endblock breadcrumbs %}
 
 {% block content %}
     <h1 class="govuk-heading-l">Edit payroll</h1>
-
     <div id="payroll-app"></div>
 
-    <h2 class="govuk-heading-m">Payroll forecast</h2>
+    <h1 class="govuk-heading-l">Forecast</h1>
+    <p class="govuk-body-s">
+        This is a temporary table to demonstrate the forecast figures. Eventually these
+        figures would end up in the "Edit forecast" table.
+    </p>
     <table class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
@@ -48,39 +51,6 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <h2 class="govuk-heading-m">Vacancies</h2>
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-              <th scope="col" class="govuk-table__header">Recruitment Type</th>
-              <th scope="col" class="govuk-table__header">Grade</th>
-              <th scope="col" class="govuk-table__header">Programme</th>
-              <th scope="col" class="govuk-table__header">Budget Type</th>
-              <th scope="col" class="govuk-table__header">Appointee Name</th>
-              <th scope="col" class="govuk-table__header">Hiring Manager</th>
-              <th scope="col" class="govuk-table__header">HR Ref</th>
-              <th scope="col" class="govuk-table__header">Recruitment Stage</th>
-          </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-          {% for vacancy in vacancies %}
-              <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ vacancy.get_recruitment_type_display }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.grade }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.programme_code.programme_code }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.programme_code.budget_type }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.appointee_name|default:"" }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.hiring_manager|default:"" }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.hr_ref|default:"" }}</td>
-                  <td class="govuk-table__cell">{{ vacancy.get_recruitment_stage_display }}</td>
-
-              </tr>
-          {% endfor %}
-      </tbody>
-  </table>
-
-    <a class="govuk-button" href="{% url 'payroll:add_vacancy' cost_centre_code financial_year %}">Add Vacancy</a>
 {% endblock content %}
 
 {% block scripts %}

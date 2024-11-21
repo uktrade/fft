@@ -7,43 +7,25 @@ from django.db.models import F, Q, Sum
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 
-from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
+from ..models import Employee, EmployeePayPeriods
 
 
 def employee_created(employee: Employee) -> None:
     """Hook to be called after an employee instance is created."""
+
     # Create EmployeePayPeriods records for current and future financial years.
-    create_pay_periods(employee)
+    create_employee_pay_periods(employee)
+
     return None
 
 
-def vacancy_created(vacancy: Vacancy) -> None:
-    """Hook to be called after a vacancy instance is created."""
-    # Create VacancyPayPeriods records for current and future financial years.
-    create_pay_periods(vacancy)
-    return None
-
-
-def create_pay_periods(instance) -> None:
+def create_employee_pay_periods(employee: Employee) -> None:
     current_financial_year = FinancialYear.objects.current()
     future_financial_years = FinancialYear.objects.future()
     financial_years = [current_financial_year] + list(future_financial_years)
 
-    pay_periods_model, field_name = None
-
-    if isinstance(instance, Employee):
-        pay_periods_model = EmployeePayPeriods
-        field_name = "employee"
-    elif isinstance(instance, Vacancy):
-        pay_periods_model = VacancyPayPeriods
-        field_name = "vacancy"
-    else:
-        raise ValueError("Unsupported instance type for creating pay periods")
-
     for financial_year in financial_years:
-        pay_periods_model.objects.get_or_create(
-            **{field_name: instance, "year": financial_year}
-        )
+        EmployeePayPeriods.objects.get_or_create(employee=employee, year=financial_year)
 
 
 def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):
@@ -60,7 +42,6 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
         Employee.objects.filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
-            pay_element__isnull=False,
         )
         .order_by(
             "programme_code",
@@ -80,13 +61,7 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
 
 class EmployeePayroll(TypedDict):
     name: str
-    grade: str
     employee_no: str
-    fte: float
-    programme_code: str
-    budget_type: str
-    assignment_status: str
-    basic_pay: float
     pay_periods: list[bool]
 
 
@@ -94,31 +69,16 @@ def get_payroll_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[EmployeePayroll]:
-    qs = (
-        Employee.objects.select_related(
-            "programme_code__budget_type",
-        )
-        .prefetch_related(
-            "pay_periods",
-        )
-        .filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-        )
-        .with_basic_pay()
+    qs = EmployeePayPeriods.objects.select_related("employee")
+    qs = qs.filter(
+        employee__cost_centre=cost_centre,
+        year=financial_year,
     )
     for obj in qs:
         yield EmployeePayroll(
-            name=obj.get_full_name(),
-            grade=obj.grade.pk,
-            employee_no=obj.employee_no,
-            fte=obj.fte,
-            programme_code=obj.programme_code.pk,
-            budget_type=obj.programme_code.budget_type.budget_type_display,
-            assignment_status=obj.assignment_status,
-            basic_pay=obj.basic_pay,
-            # `first` is OK as there should only be one `pay_periods` with the filters.
-            pay_periods=obj.pay_periods.first().periods,
+            name=obj.employee.get_full_name(),
+            employee_no=obj.employee.employee_no,
+            pay_periods=obj.periods,
         )
 
 
@@ -154,79 +114,4 @@ def update_payroll_data(
             year=financial_year,
         )
         pay_periods.periods = payroll["pay_periods"]
-        pay_periods.save()
-
-
-class Vacancies(TypedDict):
-    id: str
-    grade: str
-    programme_code: str
-    recruitment_type: str
-    recruitment_stage: str
-    appointee_name: str
-    hiring_manager: str
-    hr_ref: str
-    pay_periods: list[bool]  # Needs to be added to model
-
-
-def get_vacancies_data(
-    cost_centre: CostCentre,
-    financial_year: FinancialYear,
-) -> Iterator[Vacancies]:
-    qs = (
-        Vacancy.objects.filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-        )
-        # .prefetch_related(
-        #     "pay_periods",
-        # )
-    )
-    for obj in qs:
-        yield Vacancies(
-            grade=obj.grade.pk,
-            programme_code=obj.programme_code.pk,
-            recruitment_type=obj.get_recruitment_type_display,
-            recruitment_stage=obj.get_recruitment_stage_display,
-            appointee_name=obj.appointee_name,
-            hiring_manager=obj.hiring_manager,
-            hr_ref=obj.hr_ref,
-            # `first` is OK as there should only be one `pay_periods` with the filters.
-            # pay_periods=obj.pay_periods.first().periods,
-        )
-
-
-@transaction.atomic
-def update_vacancies_data(
-    cost_centre: CostCentre,
-    financial_year: FinancialYear,
-    vacancies_data: list[Vacancies],
-) -> None:
-    """Update a cost centre vacancies for a given year using the provided list.
-
-    This function is wrapped with a transaction, so if any of the vacancy updates fail,
-    the whole batch will be rolled back.
-
-    Raises:
-        ValueError: If a vacancy id is empty.
-        ValueError: If there are not 12 items in the pay_periods list.
-        ValueError: If any of the pay_periods are not of type bool.
-    """
-
-    for vacancy in vacancies_data:
-        if not vacancy["id"]:
-            raise ValueError("id is empty")
-
-        if len(vacancy["pay_periods"]) != 12:
-            raise ValueError("pay_periods list should be of length 12")
-
-        if not all(isinstance(x, bool) for x in vacancy["pay_periods"]):
-            raise ValueError("pay_periods items should be of type bool")
-
-        pay_periods = EmployeePayPeriods.objects.get(
-            vacancy__id=vacancy["id"],
-            vacancy__cost_centre=cost_centre,
-            year=financial_year,
-        )
-        pay_periods.periods = vacancy["pay_periods"]
         pay_periods.save()

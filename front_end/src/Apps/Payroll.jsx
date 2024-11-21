@@ -1,19 +1,12 @@
-import { useEffect, useReducer, useState, useMemo } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
-import {
-  payrollHeaders,
-  vacancyHeaders,
-} from "../Components/EditPayroll/constants";
 
 const initialPayrollState = [];
 
 export default function Payroll() {
-  const [allPayroll, dispatch] = useReducer(
-    payrollReducer,
-    initialPayrollState
-  );
+  const [payroll, dispatch] = useReducer(payrollReducer, initialPayrollState);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
@@ -26,20 +19,10 @@ export default function Payroll() {
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
   }, []);
 
-  // Computed properties
-  const payroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay > 0),
-    [allPayroll]
-  );
-  const nonPayroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay <= 0),
-    [allPayroll]
-  );
-
   // Handlers
   async function handleSavePayroll() {
     try {
-      await api.postPayrollData(allPayroll);
+      await api.postPayrollData(payroll);
 
       setSaveSuccess(true);
       localStorage.setItem("saveSuccess", "true");
@@ -55,41 +38,12 @@ export default function Payroll() {
   }
 
   return (
-    <>
-      {saveSuccess && (
-        <div className="govuk-notification-banner govuk-notification-banner--success">
-          <div className="govuk-notification-banner__header">
-            <h2
-              className="govuk-notification-banner__title"
-              id="govuk-notification-banner-title"
-            >
-              Success
-            </h2>
-          </div>
-        </div>
-      )}
-      <h2 className="govuk-heading-m">Payroll</h2>
-      <EditPayroll
-        payroll={payroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-      />
-      <h2 className="govuk-heading-m">Non-payroll</h2>
-      <EditPayroll
-        payroll={nonPayroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-      />
-      <h2 className="govuk-heading-m">Vacancies</h2>
-      <EditPayroll
-        payroll={[]}
-        headers={vacancyHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-      />
-      <button className="govuk-button" onClick={handleSavePayroll}>
-        Save payroll
-      </button>
-    </>
+    <EditPayroll
+      payroll={payroll}
+      onSavePayroll={handleSavePayroll}
+      onTogglePayPeriods={handleTogglePayPeriods}
+      saveSuccess={saveSuccess}
+    />
   );
 }
 

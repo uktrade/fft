@@ -41,13 +41,13 @@ create-stub-data: # Create stub data for testing
 	$(web) $(manage) create_stub_forecast_data
 	$(web) $(manage) create_stub_future_forecast_data
 	$(web) $(manage) create_data_lake_stub_data
-	$(web) $(manage) populate_gift_hospitality_table
 	$(web) $(manage) loaddata test_payroll_data
 	$(web) $(manage) create_test_user --password=password
 
 setup: # Set up the project from scratch
 	make down
 	make create-stub-data
+	make gift-hospitality-table
 	$(web) $(manage) create_test_user --password=password
 	$(web) $(manage) create_test_user --email=finance-admin@test.com --group="Finance Administrator" --password=password  # /PS-IGNORE
 	$(web) $(manage) create_test_user --email=finance-bp@test.com --group="Finance Business Partner/BSCE" --password=password  # /PS-IGNORE

@@ -23,9 +23,4 @@ urlpatterns = [
         ChooseCostCentreView.as_view(next_page="payroll"),
         name="choose_cost_centre",
     ),
-    path(
-        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/create",
-        views.add_vacancy_page,
-        name="add_vacancy",
-    ),
 ]

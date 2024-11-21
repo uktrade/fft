@@ -1,51 +1,45 @@
-from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Q, Sum
 
 
-class EmployeeQuerySet(models.QuerySet):
-    def with_basic_pay(self):
-        return self.annotate(
-            basic_pay=Sum(
-                F("pay_element__debit_amount") - F("pay_element__credit_amount"),
-                # TODO (FFT-107): Resolve hard-coded references to "Basic Pay"
-                # This might change when we get round to ingesting the data, so I'm OK
-                # with it staying like this for now.
-                filter=Q(pay_element__type__group__name="Basic Pay"),
-                default=0,
-                output_field=models.FloatField(),
-            )
-        )
-
-
-class Position(models.Model):
-    class Meta:
-        abstract = True
-
+class Employee(models.Model):
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
         models.PROTECT,
     )
+    # I've been informed that an employee should only be associated to a single
+    # programme code. However, programme codes are actually assigned on a per pay
+    # element basis and in some cases an employee can be associated to multiple. This is
+    # seen as an edge case and we want to model it such that an employee only has a
+    # single programme code. We will have to handle this discrepancy somewhere.
     programme_code = models.ForeignKey(
         "chartofaccountDIT.ProgrammeCode",
         models.PROTECT,
     )
-    grade = models.ForeignKey(
-        to="gifthospitality.Grade",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
-    fte = models.FloatField(default=1.0)
+    employee_no = models.CharField(max_length=8, unique=True)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+
+    def __str__(self) -> str:
+        return f"{self.employee_no} - {self.first_name} {self.last_name}"
+
+    def get_full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
 
-class PositionPayPeriods(models.Model):
+class EmployeePayPeriods(models.Model):
     class Meta:
-        abstract = True
+        verbose_name_plural = "employee pay periods"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("employee", "year"),
+                name="unique_employee_pay_periods",
+            )
+        ]
 
+    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
-    # period 1 -> 12 = apr -> mar
+    # pariod 1 -> 12 = apr -> mar
     # Here is a useful text snippet:
     #   apr period_1
     #   may period_2
@@ -82,42 +76,6 @@ class PositionPayPeriods(models.Model):
             setattr(self, f"period_{i + 1}", enabled)
 
 
-class Employee(Position):
-    employee_no = models.CharField(max_length=8, unique=True)
-    first_name = models.CharField(max_length=32)
-    last_name = models.CharField(max_length=32)
-    assignment_status = models.CharField(max_length=32)
-
-    # TODO: Missing fields from Admin Tool which aren't required yet.
-    # EU/Non-EU (from programme code model)
-
-    objects = EmployeeQuerySet.as_manager()
-
-    def __str__(self) -> str:
-        return f"{self.employee_no} - {self.first_name} {self.last_name}"
-
-    def get_full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-
-class EmployeePayPeriods(PositionPayPeriods):
-    class Meta:
-        verbose_name_plural = "employee pay periods"
-        constraints = [
-            models.UniqueConstraint(
-                fields=("employee", "year"),
-                name="unique_employee_pay_periods",
-            )
-        ]
-
-    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
-
-    # TODO: Missing fields from Admin Tool which aren't required yet.
-    # capital (Real colour of money)
-    # recharge = models.CharField(max_length=50, null=True, blank=True)
-    # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
-
-
 # aka "ToolTypePayment"
 class PayElementTypeGroup(models.Model):
     name = models.CharField(max_length=32, unique=True)
@@ -146,93 +104,3 @@ class EmployeePayElement(models.Model):
     debit_amount = models.DecimalField(max_digits=9, decimal_places=2)
     # Support up to 9,999,999.99.
     credit_amount = models.DecimalField(max_digits=9, decimal_places=2)
-
-
-class RecruitmentType(models.TextChoices):
-    EXPRESSION_OF_INTEREST = "expression_of_interest", "Expression of Interest"
-    EXTERNAL_RECRUITMENT_NON_BULK = (
-        "external_recruitment_non_bulk",
-        "External Recruitment (Non Bulk)",
-    )
-    EXTERNAL_RECRUITMENT_BULK = (
-        "external_recruitment_bulk",
-        "External Recruitment (Bulk campaign)",
-    )
-    INTERNAL_MANAGED_MOVE = "internal_managed_move", "Internal Managed Move"
-    INTERNAL_REDEPLOYMENT = "internal_redeployment", "Internal Redeployment"
-    OTHER = "other", "Other"
-    INACTIVE_POST = "inactive_post", "Inactive Post"
-    EXPECTED_UNKNOWN_LEAVERS = "expected_unknown_leavers", "Expected Unknown Leavers"
-    MISSING_STAFF = "missing_staff", "Missing Staff"
-
-
-class RecruitmentStage(models.IntegerChoices):
-    PREPARING = 1, "Preparing"
-    ADVERT = 2, "Advert (Vac ref to be provided)"
-    SIFT = 3, "Sift"
-    INTERVIEW = 4, "Interview"
-    ONBOARDING = 5, "Onboarding"
-    UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
-    NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
-    NOT_REQUIRED = 8, "Not required"
-
-
-class Vacancy(Position):
-    class Meta:
-        verbose_name_plural = "Vacancies"
-
-    recruitment_type = models.CharField(
-        max_length=29,
-        choices=RecruitmentType.choices,
-        default=RecruitmentType.EXPRESSION_OF_INTEREST,
-    )
-    recruitment_stage = models.IntegerField(
-        choices=RecruitmentStage.choices, default=RecruitmentStage.PREPARING
-    )
-
-    appointee_name = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        validators=[
-            RegexValidator(
-                regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed.",
-            )
-        ],
-    )
-    hiring_manager = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        validators=[
-            RegexValidator(
-                regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed.",
-            )
-        ],
-    )
-    hr_ref = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        validators=[
-            RegexValidator(
-                regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed.",
-            )
-        ],
-    )
-
-
-class VacancyPayPeriods(PositionPayPeriods):
-    class Meta:
-        verbose_name_plural = "vacancy pay periods"
-        constraints = [
-            models.UniqueConstraint(
-                fields=("vacancy", "year"),
-                name="unique_vacancy_pay_periods",
-            )
-        ]
-
-    vacancy = models.ForeignKey(Vacancy, models.PROTECT, related_name="pay_periods")
