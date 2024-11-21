@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useState, useMemo } from "react";
+import { useParams } from "react-router-dom";
 
 import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
@@ -19,9 +20,12 @@ export default function Payroll() {
   );
   const [vacancies, dispatchVacancies] = useReducer(
     vacanciesReducer,
-    initialPayrollState
+    initialVacanciesState
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const { cost_centre_code, financial_year } = useParams();
+  const addVacancyUrl = `edit/${cost_centre_code}/${financial_year}/vacancies/create`;
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
@@ -98,6 +102,9 @@ export default function Payroll() {
         RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
+      <a class="govuk-button" href={addVacancyUrl}>
+        Add Vacancy
+      </a>
       <EditPayroll
         payroll={vacancies}
         headers={vacancyHeaders}

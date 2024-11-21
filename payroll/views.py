@@ -10,7 +10,6 @@ from django.views import View
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
-from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
 
@@ -97,7 +96,6 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
-    vacancies = Vacancy.objects.filter(cost_centre=cost_centre_code)
 
     context = {
         "cost_centre_code": cost_centre_obj.cost_centre_code,
@@ -117,7 +115,6 @@ def edit_payroll_page(
             "Feb",
             "Mar",
         ],
-        "vacancies": vacancies,
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
