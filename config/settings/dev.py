@@ -3,6 +3,8 @@ from .paas import *  # noqa
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
+    # TODO: Move to base settings when running on all envs.
+    "csp.middleware.CSPMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS += [
