@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
+    "csp",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -397,16 +398,19 @@ SENTRY_DSN = env.str("SENTRY_DSN", None)
 
 # Configure sentry if a DSN is set
 if SENTRY_DSN:
-    # TODO: AWS Prefix needs to be removed once migration is complete.
-    sentry_environment = (
-        f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
-    )
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        environment=sentry_environment,
+        environment=SENTRY_ENVIRONMENT,
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
         send_default_pii=True,
     )
+
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ["'self'"]
+
+CSP_REPORT_ONLY = True
+CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
