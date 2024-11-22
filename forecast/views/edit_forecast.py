@@ -1,10 +1,11 @@
+from functools import cached_property
 import json
 import logging
 import re
 
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Exists, OuterRef, Prefetch, Q
+from django.db.models import Exists, OuterRef, Prefetch, Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -98,6 +99,15 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
             ),
             # FIXME: check this isn't needed
             # "forecast_forecastmonthlyfigures__financial_period",
+        )
+        .annotate(
+            yearly_budget_amount=Sum(
+                "forecast_budgetmonthlyfigures__amount",
+                filter=Q(
+                    forecast_budgetmonthlyfigures__financial_year_id=financial_year,
+                    forecast_budgetmonthlyfigures__archived_status=None,
+                ),
+            )
         )
         .order_by(*edit_forecast_order())
     )
@@ -461,8 +471,10 @@ class EditForecastView(
     def class_name(self):
         return "wide-table"
 
+    # FIXME: might be risky
+    @cached_property
     def cost_centre_details(self):
-        cost_centre = CostCentre.objects.get(
+        cost_centre = CostCentre.objects.select_related("directorate__group").get(
             cost_centre_code=self.cost_centre_code,
         )
         return {
@@ -486,7 +498,6 @@ class EditForecastView(
             self.cost_centre_code,
             self.financial_year,
         )
-        # FIXME: holy moly it's slow!
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
         if self.financial_year == get_current_financial_year():

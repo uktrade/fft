@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.db import connection
 
 
@@ -12,6 +14,7 @@ class DatabaseQueriesMiddleware:
 
         post_query_count = len(connection.queries)
         query_count = post_query_count - pre_query_count
+        pprint(connection.queries)
         print(f"Database queries {query_count}")
 
         return response

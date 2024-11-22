@@ -67,6 +67,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
         return obj.natural_account_code.natural_account_code_description
 
     def get_budget(self, obj):
+        return obj.yearly_budget_amount
         # FIXME: 400+ queries! try this as a prefetch similar to forecast or change to a lookup
         financial_year = self.context["financial_year"]
         budget = (
