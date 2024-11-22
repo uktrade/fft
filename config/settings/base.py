@@ -81,7 +81,6 @@ INSTALLED_APPS = [
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
-    "csp",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -147,8 +146,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-gb"  # must be gb for date entry to work
 TIME_ZONE = "UTC"
 USE_I18N = True
-USE_L10N = True
-USE_TZ = True
 
 
 # Remove extra details in the label
