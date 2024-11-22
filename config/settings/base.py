@@ -399,13 +399,9 @@ SENTRY_DSN = env.str("SENTRY_DSN", None)
 
 # Configure sentry if a DSN is set
 if SENTRY_DSN:
-    # TODO: AWS Prefix needs to be removed once migration is complete.
-    sentry_environment = (
-        f"aws-{SENTRY_ENVIRONMENT}" if is_copilot() else SENTRY_ENVIRONMENT
-    )
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        environment=sentry_environment,
+        environment=SENTRY_ENVIRONMENT,
         release=GIT_COMMIT,
         integrations=[DjangoIntegration(), RedisIntegration()],
         enable_tracing=env.bool("SENTRY_ENABLE_TRACING", False),
