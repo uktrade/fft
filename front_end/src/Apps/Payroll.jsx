@@ -1,5 +1,4 @@
 import { useEffect, useReducer, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
 
 import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
@@ -24,8 +23,7 @@ export default function Payroll() {
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const { cost_centre_code, financial_year } = useParams();
-  const addVacancyUrl = `edit/${cost_centre_code}/${financial_year}/vacancies/create`;
+  const addVacancyUrl = "vacancies/create"; // Should not be hardcoded ideally
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
