@@ -1,8 +1,6 @@
 from django.db.models import Sum
 from rest_framework import serializers
 
-from core.utils.generic_helpers import get_current_financial_year
-
 from .models import BudgetMonthlyFigure, FinancialCode, ForecastMonthlyFigure
 
 

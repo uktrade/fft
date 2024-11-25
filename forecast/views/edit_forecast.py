@@ -1,7 +1,7 @@
-from functools import cached_property
 import json
 import logging
 import re
+from functools import cached_property
 
 from django.conf import settings
 from django.db import transaction
