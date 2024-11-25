@@ -215,7 +215,6 @@ def update_vacancies_data(
         ValueError: If any of the pay_periods are not of type bool.
     """
 
-    # Need to add id to Vacancies and pay periods to Vacancy model
     for vacancy in vacancies_data:
         if not vacancy["id"]:
             raise ValueError("id is empty")
