@@ -23,8 +23,6 @@ export default function Payroll() {
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const addVacancyUrl = "vacancies/create"; // script tag route
-
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
     if (savedSuccessFlag === "true") {
@@ -100,15 +98,18 @@ export default function Payroll() {
         RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
-      <a className="govuk-button govuk-button--secondary" href={addVacancyUrl}>
-        Add Vacancy
-      </a>
       <EditPayroll
         payroll={vacancies}
         headers={vacancyHeaders}
         onTogglePayPeriods={handleToggleVacancyPayPeriods}
         RowComponent={VacancyRow}
       />
+      <a
+        className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
+        href={window.addVacancyUrl}
+      >
+        Add Vacancy
+      </a>
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>

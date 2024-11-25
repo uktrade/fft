@@ -5,6 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views import View
 
 from core.models import FinancialYear
@@ -96,10 +97,22 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
+    cost_centre_code = cost_centre_obj.cost_centre_code
+    financial_year = financial_year_obj.financial_year
+
+    add_vacancy_url = (
+        reverse(
+            "payroll:add_vacancy",
+            kwargs={
+                "cost_centre_code": cost_centre_code,
+                "financial_year": financial_year,
+            },
+        ),
+    )
 
     context = {
-        "cost_centre_code": cost_centre_obj.cost_centre_code,
-        "financial_year": financial_year_obj.financial_year,
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
         "payroll_forecast_report": payroll_forecast_report_data,
         "months": [
             "Apr",
@@ -115,6 +128,7 @@ def edit_payroll_page(
             "Feb",
             "Mar",
         ],
+        "add_vacancy_url": add_vacancy_url,
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
