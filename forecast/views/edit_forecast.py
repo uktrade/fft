@@ -471,7 +471,7 @@ class EditForecastView(
     def class_name(self):
         return "wide-table"
 
-    # FIXME: might be risky
+    # FIXME: Triple check this is safe
     @cached_property
     def cost_centre_details(self):
         cost_centre = CostCentre.objects.select_related("directorate__group").get(
@@ -532,7 +532,7 @@ class EditForecastView(
 
         return data
 
-    @property
+    @cached_property
     def future_year_display(self):
         if self._future_year_display is None:
             current_year = get_current_financial_year()

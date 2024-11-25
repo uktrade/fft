@@ -1,4 +1,5 @@
 import datetime
+from contextvars import ContextVar
 
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
@@ -6,7 +7,14 @@ from django.contrib.contenttypes.models import ContentType
 from core.models import FinancialYear
 
 
+_current_financial_year = ContextVar("current_financial_year", default=None)
+
+
 def get_current_financial_year():
+    # FIXME: decide if to include this
+    if var := _current_financial_year.get():
+        return var
+
     y = FinancialYear.objects.filter(current=True)
     if y:
         current_financial_year = y.last().financial_year
@@ -26,6 +34,8 @@ def get_current_financial_year():
             # year it is one year behind the
             # calendar year
             current_financial_year -= 1
+
+    _current_financial_year.set(current_financial_year)
 
     return current_financial_year
 
