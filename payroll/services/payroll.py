@@ -182,6 +182,7 @@ def get_vacancies_data(
     )
     for obj in qs:
         yield Vacancies(
+            id=obj.pk,
             grade=obj.grade.pk,
             programme_code=obj.programme_code.pk,
             budget_type=obj.programme_code.budget_type.budget_type_display,

@@ -13,6 +13,7 @@
 
 /**
  * @typedef {Object} VacancyData
+ * @property {string} id - The vacancy's pk.
  * @property {string} grade - The vacancy's grade.
  * @property {string} programme_code - The vacancy's programme code.
  * @property {string} budget_type - The vacancy's programme code budget type.

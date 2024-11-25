@@ -100,7 +100,7 @@ export default function Payroll() {
         RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
-      <a class="govuk-button" href={addVacancyUrl}>
+      <a className="govuk-button govuk-button--secondary" href={addVacancyUrl}>
         Add Vacancy
       </a>
       <EditPayroll
