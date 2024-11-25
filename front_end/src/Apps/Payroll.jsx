@@ -23,7 +23,7 @@ export default function Payroll() {
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const addVacancyUrl = "vacancies/create"; // Should not be hardcoded ideally
+  const addVacancyUrl = "vacancies/create"; // script tag route
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");

@@ -1,3 +1,5 @@
+import PayPeriods from "../PayPeriods";
+
 const VacancyRow = ({ row, onTogglePayPeriods }) => {
   return (
     <tr className="govuk-table__row">
@@ -9,17 +11,11 @@ const VacancyRow = ({ row, onTogglePayPeriods }) => {
       <td className="govuk-table__cell">{row.hiring_manager}</td>
       <td className="govuk-table__cell">{row.hr_ref}</td>
       <td className="govuk-table__cell">{row.recruitment_stage}</td>
-      {row.pay_periods.map((enabled, index) => {
-        return (
-          <td className="govuk-table__cell" key={index}>
-            <input
-              type="checkbox"
-              checked={enabled}
-              onChange={() => onTogglePayPeriods(row.id, index, enabled)}
-            />
-          </td>
-        );
-      })}
+      <PayPeriods
+        row={row}
+        id={row.id}
+        onTogglePayPeriods={onTogglePayPeriods}
+      />
     </tr>
   );
 };

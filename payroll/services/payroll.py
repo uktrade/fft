@@ -20,11 +20,11 @@ def employee_created(employee: Employee) -> None:
 def vacancy_created(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is created."""
     # Create VacancyPayPeriods records for current and future financial years.
-    create_pay_periods(vacancy)
+    create_pay_periods(vacancy, pay_period_enabled=False)
     return None
 
 
-def create_pay_periods(instance) -> None:
+def create_pay_periods(instance, pay_period_enabled=None) -> None:
     current_financial_year = FinancialYear.objects.current()
     future_financial_years = FinancialYear.objects.future()
     financial_years = [current_financial_year] + list(future_financial_years)
@@ -41,9 +41,13 @@ def create_pay_periods(instance) -> None:
     else:
         raise ValueError("Unsupported instance type for creating pay periods")
 
+    defaults = {}
+    if pay_period_enabled is not None:
+        defaults = {f"period_{i+1}": pay_period_enabled for i in range(12)}
+
     for financial_year in financial_years:
         pay_periods_model.objects.get_or_create(
-            **{field_name: instance, "year": financial_year}
+            defaults=defaults, **{field_name: instance, "year": financial_year}
         )
 
 
