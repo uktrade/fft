@@ -14,75 +14,62 @@ from payroll.forms import VacancyForm
 from .services import payroll as payroll_service
 
 
+class PositionView(UserPassesTestMixin, View):
+    def test_func(self) -> bool | None:
+        return self.request.user.is_superuser
+
+    def setup(self, request, *args, **kwargs) -> None:
+        super().setup(request, *args, **kwargs)
+        self.cost_centre = get_object_or_404(
+            CostCentre,
+            pk=self.kwargs["cost_centre_code"],
+        )
+        self.financial_year = get_object_or_404(
+            FinancialYear,
+            pk=self.kwargs["financial_year"],
+        )
+
+    def get(self, request, *args, **kwargs):
+        get_function_name = self.get_service_get_name()
+        get_function = getattr(payroll_service, get_function_name)
+
+        data = list(
+            get_function(
+                cost_centre=self.cost_centre,
+                financial_year=self.financial_year,
+            )
+        )
+        return JsonResponse({"data": data})
+
+    def post(self, request, *args, **kwargs):
+        post_function_name = self.get_service_post_name()
+        post_function = getattr(payroll_service, post_function_name)
+
+        data = json.loads(request.body)
+
+        post_function(
+            cost_centre=self.cost_centre,
+            financial_year=self.financial_year,
+            data=data,
+        )
+        return JsonResponse({})
+
+
 # TODO: check user has access to cost centre
-class PayrollView(UserPassesTestMixin, View):
-    def test_func(self) -> bool | None:
-        return self.request.user.is_superuser
+class PayrollView(PositionView):
+    def get_service_get_name(self):
+        return "get_payroll_data"
 
-    def setup(self, request, *args, **kwargs) -> None:
-        super().setup(request, *args, **kwargs)
-        self.cost_centre = get_object_or_404(
-            CostCentre,
-            pk=self.kwargs["cost_centre_code"],
-        )
-        self.financial_year = get_object_or_404(
-            FinancialYear,
-            pk=self.kwargs["financial_year"],
-        )
-
-    def get(self, request, *args, **kwargs):
-        data = list(
-            payroll_service.get_payroll_data(
-                cost_centre=self.cost_centre,
-                financial_year=self.financial_year,
-            )
-        )
-        return JsonResponse({"data": data})
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-
-        payroll_service.update_payroll_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
-            payroll_data=data,
-        )
-        return JsonResponse({})
+    def get_service_post_name(self):
+        return "update_payroll_data"
 
 
-class VacancyView(UserPassesTestMixin, View):
-    def test_func(self) -> bool | None:
-        return self.request.user.is_superuser
+class VacancyView(PositionView):
+    def get_service_get_name(self):
+        return "get_vacancies_data"
 
-    def setup(self, request, *args, **kwargs) -> None:
-        super().setup(request, *args, **kwargs)
-        self.cost_centre = get_object_or_404(
-            CostCentre,
-            pk=self.kwargs["cost_centre_code"],
-        )
-        self.financial_year = get_object_or_404(
-            FinancialYear,
-            pk=self.kwargs["financial_year"],
-        )
-
-    def get(self, request, *args, **kwargs):
-        data = list(
-            payroll_service.get_vacancies_data(
-                cost_centre=self.cost_centre,
-                financial_year=self.financial_year,
-            )
-        )
-        return JsonResponse({"data": data})
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-
-        payroll_service.update_vacancies_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
-            vacancies_data=data,
-        )
-        return JsonResponse({})
+    def get_service_post_name(self):
+        return "update_vacancies_data"
 
 
 def edit_payroll_page(

@@ -132,7 +132,7 @@ def get_payroll_data(
 def update_payroll_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
-    payroll_data: list[EmployeePayroll],
+    data: list[EmployeePayroll],
 ) -> None:
     """Update a cost centre payroll for a given year using the provided list.
 
@@ -144,7 +144,7 @@ def update_payroll_data(
         ValueError: If there are not 12 items in the pay_periods list.
         ValueError: If any of the pay_periods are not of type bool.
     """
-    for payroll in payroll_data:
+    for payroll in data:
         if not payroll["employee_no"]:
             raise ValueError("employee_no is empty")
 
@@ -212,7 +212,7 @@ def get_vacancies_data(
 def update_vacancies_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
-    vacancies_data: list[Vacancies],
+    data: list[Vacancies],
 ) -> None:
     """Update a cost centre vacancies for a given year using the provided list.
 
@@ -225,7 +225,7 @@ def update_vacancies_data(
         ValueError: If any of the pay_periods are not of type bool.
     """
 
-    for vacancy in vacancies_data:
+    for vacancy in data:
         if not vacancy["id"]:
             raise ValueError("id is empty")
 
