@@ -29,25 +29,19 @@ class PositionView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
-    def get(self, request, *args, **kwargs):
-        get_function_name = self.get_service_get_name()
-        get_function = getattr(payroll_service, get_function_name)
+    def get_data(self, cost_ce):
+        raise NotImplementedError
 
-        data = list(
-            get_function(
-                cost_centre=self.cost_centre,
-                financial_year=self.financial_year,
-            )
-        )
+    def update_data(self):
+        raise NotImplementedError
+
+    def get(self, request, *args, **kwargs):
+        data = list(self.get_data())
         return JsonResponse({"data": data})
 
     def post(self, request, *args, **kwargs):
-        post_function_name = self.get_service_post_name()
-        post_function = getattr(payroll_service, post_function_name)
-
         data = json.loads(request.body)
-
-        post_function(
+        self.update_data(
             cost_centre=self.cost_centre,
             financial_year=self.financial_year,
             data=data,
@@ -57,19 +51,23 @@ class PositionView(UserPassesTestMixin, View):
 
 # TODO: check user has access to cost centre
 class PayrollView(PositionView):
-    def get_service_get_name(self):
-        return "get_payroll_data"
+    def get_data(self):
+        return payroll_service.get_payroll_data(
+            cost_centre=self.cost_centre,
+            financial_year=self.financial_year,
+        )
 
-    def get_service_post_name(self):
-        return "update_payroll_data"
+    update_data_func = payroll_service.update_payroll_data
 
 
 class VacancyView(PositionView):
-    def get_service_get_name(self):
-        return "get_vacancies_data"
+    def get_data(self):
+        return payroll_service.get_vacancies_data(
+            cost_centre=self.cost_centre,
+            financial_year=self.financial_year,
+        )
 
-    def get_service_post_name(self):
-        return "update_vacancies_data"
+    update_data_func = payroll_service.update_vacancies_data
 
 
 def edit_payroll_page(

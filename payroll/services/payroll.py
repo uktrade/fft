@@ -84,6 +84,7 @@ def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYe
 
 
 class EmployeePayroll(TypedDict):
+    id: int
     name: str
     grade: str
     employee_no: str
@@ -164,7 +165,7 @@ def update_payroll_data(
 
 
 class Vacancies(TypedDict):
-    id: str
+    id: int
     grade: str
     programme_code: str
     recruitment_type: str
