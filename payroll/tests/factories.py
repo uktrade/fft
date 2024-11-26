@@ -4,7 +4,12 @@ from faker import Faker
 from costcentre.test.factories import CostCentreFactory
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import Employee, PayElementTypeGroup, PayElementType
+from payroll.models import (
+    Employee,
+    EmployeePayElement,
+    PayElementTypeGroup,
+    PayElementType,
+)
 
 
 fake = Faker()
@@ -42,3 +47,8 @@ class PayElementTypeFactory(factory.django.DjangoModelFactory):
     # name
     natural_code = factory.SubFactory(NaturalCodeFactory)
     group = factory.SubFactory(PayElementTypeGroupFactory)
+
+
+class EmployeePayElementFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = EmployeePayElement
