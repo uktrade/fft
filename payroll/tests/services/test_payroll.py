@@ -48,7 +48,8 @@ def test_payroll_forecast(db):
         grade__grade="Grade 7",
     )
 
-    list(map(employee_created, payroll_employees))
+    for x in payroll_employees:
+        employee_created(x)
 
     payroll_employees[0].pay_element.create(
         type=salary_1,
