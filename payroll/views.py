@@ -29,45 +29,55 @@ class PositionView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
-    def get_data(self, cost_ce):
+    def get_data(self, cost_centre, financial_year):
         raise NotImplementedError
 
-    def update_data(self):
+    def post_data(self, cost_centre, financial_year, data):
         raise NotImplementedError
 
     def get(self, request, *args, **kwargs):
-        data = list(self.get_data())
+        data = list(self.get_data(self.cost_centre, self.financial_year))
         return JsonResponse({"data": data})
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        self.update_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
-            data=data,
+        self.post_data(
+            self.cost_centre,
+            self.financial_year,
+            data,
         )
         return JsonResponse({})
 
 
 # TODO: check user has access to cost centre
 class PayrollView(PositionView):
-    def get_data(self):
+    def get_data(self, cost_centre, financial_year):
         return payroll_service.get_payroll_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
+            cost_centre,
+            financial_year,
         )
 
-    update_data_func = payroll_service.update_payroll_data
+    def post_data(self, cost_centre, financial_year, data):
+        return payroll_service.update_payroll_data(
+            cost_centre,
+            financial_year,
+            data,
+        )
 
 
 class VacancyView(PositionView):
-    def get_data(self):
+    def get_data(self, cost_centre, financial_year):
         return payroll_service.get_vacancies_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
+            cost_centre,
+            financial_year,
         )
 
-    update_data_func = payroll_service.update_vacancies_data
+    def post_data(self, cost_centre, financial_year, data):
+        return payroll_service.update_vacancies_data(
+            cost_centre,
+            financial_year,
+            data,
+        )
 
 
 def edit_payroll_page(
