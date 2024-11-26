@@ -76,32 +76,32 @@ def test_payroll_forecast(db):
         credit_amount=15,
     )
 
-    report = payroll_forecast_report(
-        payroll_employees[0].cost_centre, FinancialYear.objects.current()
+    financial_year = FinancialYear.objects.current()
+
+    # In April, both employees are paid.
+    # In May, only the first employee is paid.
+    # In June, neither employee is paid.
+    payroll_employees[0].pay_periods.filter(year=financial_year).update(period_3=False)
+    payroll_employees[1].pay_periods.filter(year=financial_year).update(
+        period_2=False, period_3=False
     )
+
+    report = payroll_forecast_report(payroll_employees[0].cost_centre, financial_year)
 
     report_by_name = {x["pay_element__type__group__name"]: x for x in report}
 
-    expected_salary = (
-        # employee 1
-        (2000 - 100)  # salary_1 debit - credit
-        + (100 - 50)  # + salary_2 debit - credit
-        # employee 2
-        + (1500 - 55.6)  # salary_1 debit - credit
-        + (80 - 0)  # + salary_2 debit - credit
-    )
-    expected_pension = (
-        # employee 1
-        (75.5 - 0)  # + pension debit - credit
-        # employee 2
-        + (130.25 - 15)  # + pension debit - credit
-    )
+    # eN = employee (e.g. employee 1) / s = salary / p = pension
+    # debit_amount - credit_amount
+    e1s = (2000 - 100) + (100 - 50)
+    e1p = 75.5 - 0
+    e2s = (1500 - 55.6) + (80 - 0)
+    e2p = 130.25 - 15
 
     # employee 3 and 4 are non-payroll (no basic pay)
 
-    assert float(report_by_name["Salary"]["period_1_sum"]) == pytest.approx(
-        expected_salary
-    )
-    assert float(report_by_name["Pension"]["period_1_sum"]) == pytest.approx(
-        expected_pension
-    )
+    assert float(report_by_name["Salary"]["period_1_sum"]) == pytest.approx(e1s + e2s)
+    assert float(report_by_name["Pension"]["period_1_sum"]) == pytest.approx(e1p + e2p)
+    assert float(report_by_name["Salary"]["period_2_sum"]) == pytest.approx(e1s)
+    assert float(report_by_name["Pension"]["period_2_sum"]) == pytest.approx(e1p)
+    assert float(report_by_name["Salary"]["period_3_sum"]) == pytest.approx(0)
+    assert float(report_by_name["Pension"]["period_3_sum"]) == pytest.approx(0)

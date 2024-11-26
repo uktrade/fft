@@ -12,5 +12,6 @@ ASYNC_FILE_UPLOAD = False
 
 AXES_ENABLED = False
 
-# FIXME: add comment on why we set this
+# I'm not aware of any case where we need the history whilst running tests. This should
+# hopefully speed up the tests a little bit.
 SIMPLE_HISTORY_ENABLED = False
