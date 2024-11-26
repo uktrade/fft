@@ -1,12 +1,15 @@
-import EmployeeRow from "../EmployeeRow";
-
 /**
  *
  * @param {object} props
  * @param {types.PayrollData[]} props.payroll
  * @returns
  */
-export default function PayrollTable({ headers, payroll, onTogglePayPeriods }) {
+export default function PayrollTable({
+  headers,
+  payroll,
+  onTogglePayPeriods,
+  RowComponent,
+}) {
   return (
     <>
       <table className="govuk-table">
@@ -24,11 +27,7 @@ export default function PayrollTable({ headers, payroll, onTogglePayPeriods }) {
         <tbody className="govuk-table__body">
           {payroll.map((row) => {
             return (
-              <EmployeeRow
-                row={row}
-                key={row.employee_no}
-                onTogglePayPeriods={onTogglePayPeriods}
-              />
+              <RowComponent row={row} onTogglePayPeriods={onTogglePayPeriods} />
             );
           })}
         </tbody>

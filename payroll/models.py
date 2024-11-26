@@ -18,23 +18,18 @@ class EmployeeQuerySet(models.QuerySet):
         )
 
 
-class Employee(models.Model):
+class Position(models.Model):
+    class Meta:
+        abstract = True
+
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
         models.PROTECT,
     )
-    # I've been informed that an employee should only be associated to a single
-    # programme code. However, programme codes are actually assigned on a per pay
-    # element basis and in some cases an employee can be associated to multiple. This is
-    # seen as an edge case and we want to model it such that an employee only has a
-    # single programme code. We will have to handle this discrepancy somewhere.
     programme_code = models.ForeignKey(
         "chartofaccountDIT.ProgrammeCode",
         models.PROTECT,
     )
-    employee_no = models.CharField(max_length=8, unique=True)
-    first_name = models.CharField(max_length=32)
-    last_name = models.CharField(max_length=32)
     grade = models.ForeignKey(
         to="gifthospitality.Grade",
         on_delete=models.PROTECT,
@@ -42,31 +37,12 @@ class Employee(models.Model):
         blank=True,
     )
     fte = models.FloatField(default=1.0)
-    assignment_status = models.CharField(max_length=32)
-
-    # TODO: Missing fields from Admin Tool which aren't required yet.
-    # EU/Non-EU (from programme code model)
-
-    objects = EmployeeQuerySet.as_manager()
-
-    def __str__(self) -> str:
-        return f"{self.employee_no} - {self.first_name} {self.last_name}"
-
-    def get_full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
 
 
-class EmployeePayPeriods(models.Model):
+class PositionPayPeriods(models.Model):
     class Meta:
-        verbose_name_plural = "employee pay periods"
-        constraints = [
-            models.UniqueConstraint(
-                fields=("employee", "year"),
-                name="unique_employee_pay_periods",
-            )
-        ]
+        abstract = True
 
-    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
     year = models.ForeignKey("core.FinancialYear", models.PROTECT)
     # period 1 = apr, period 2 = may, etc...
     # period 1 -> 12 = apr -> mar
@@ -96,11 +72,6 @@ class EmployeePayPeriods(models.Model):
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
 
-    # TODO: Missing fields from Admin Tool which aren't required yet.
-    # capital (Real colour of money)
-    # recharge = models.CharField(max_length=50, null=True, blank=True)
-    # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
-
     @property
     def periods(self) -> list[bool]:
         return [getattr(self, f"period_{i + 1}") for i in range(12)]
@@ -109,6 +80,42 @@ class EmployeePayPeriods(models.Model):
     def periods(self, value: list[bool]) -> None:
         for i, enabled in enumerate(value):
             setattr(self, f"period_{i + 1}", enabled)
+
+
+class Employee(Position):
+    employee_no = models.CharField(max_length=8, unique=True)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    assignment_status = models.CharField(max_length=32)
+
+    # TODO: Missing fields from Admin Tool which aren't required yet.
+    # EU/Non-EU (from programme code model)
+
+    objects = EmployeeQuerySet.as_manager()
+
+    def __str__(self) -> str:
+        return f"{self.employee_no} - {self.first_name} {self.last_name}"
+
+    def get_full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+
+class EmployeePayPeriods(PositionPayPeriods):
+    class Meta:
+        verbose_name_plural = "employee pay periods"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("employee", "year"),
+                name="unique_employee_pay_periods",
+            )
+        ]
+
+    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_periods")
+
+    # TODO: Missing fields from Admin Tool which aren't required yet.
+    # capital (Real colour of money)
+    # recharge = models.CharField(max_length=50, null=True, blank=True)
+    # recharge_reason = models.CharField(max_length=100, null=True, blank=True)
 
 
 # aka "ToolTypePayment"
@@ -170,16 +177,10 @@ class RecruitmentStage(models.IntegerChoices):
     NOT_REQUIRED = 8, "Not required"
 
 
-class Vacancy(models.Model):
+class Vacancy(Position):
     class Meta:
         verbose_name_plural = "Vacancies"
 
-    cost_centre = models.ForeignKey("costcentre.CostCentre", models.PROTECT)
-
-    grade = models.ForeignKey("gifthospitality.Grade", models.PROTECT)
-    programme_code = models.ForeignKey(
-        "chartofaccountDIT.ProgrammeCode", models.PROTECT
-    )
     recruitment_type = models.CharField(
         max_length=29,
         choices=RecruitmentType.choices,
@@ -222,3 +223,16 @@ class Vacancy(models.Model):
             )
         ],
     )
+
+
+class VacancyPayPeriods(PositionPayPeriods):
+    class Meta:
+        verbose_name_plural = "vacancy pay periods"
+        constraints = [
+            models.UniqueConstraint(
+                fields=("vacancy", "year"),
+                name="unique_vacancy_pay_periods",
+            )
+        ]
+
+    vacancy = models.ForeignKey(Vacancy, models.PROTECT, related_name="pay_periods")
