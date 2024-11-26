@@ -29,21 +29,19 @@ class PositionView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
-    def get_data(self, cost_centre, financial_year):
+    def get_data(self):
         raise NotImplementedError
 
-    def post_data(self, cost_centre, financial_year, data):
+    def post_data(self, data):
         raise NotImplementedError
 
     def get(self, request, *args, **kwargs):
-        data = list(self.get_data(self.cost_centre, self.financial_year))
+        data = list(self.get_data())
         return JsonResponse({"data": data})
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         self.post_data(
-            self.cost_centre,
-            self.financial_year,
             data,
         )
         return JsonResponse({})
@@ -51,31 +49,31 @@ class PositionView(UserPassesTestMixin, View):
 
 # TODO: check user has access to cost centre
 class PayrollView(PositionView):
-    def get_data(self, cost_centre, financial_year):
+    def get_data(self):
         return payroll_service.get_payroll_data(
-            cost_centre,
-            financial_year,
+            self.cost_centre,
+            self.financial_year,
         )
 
-    def post_data(self, cost_centre, financial_year, data):
+    def post_data(self, data):
         return payroll_service.update_payroll_data(
-            cost_centre,
-            financial_year,
+            self.cost_centre,
+            self.financial_year,
             data,
         )
 
 
 class VacancyView(PositionView):
-    def get_data(self, cost_centre, financial_year):
+    def get_data(self):
         return payroll_service.get_vacancies_data(
-            cost_centre,
-            financial_year,
+            self.cost_centre,
+            self.financial_year,
         )
 
-    def post_data(self, cost_centre, financial_year, data):
+    def post_data(self, data):
         return payroll_service.update_vacancies_data(
-            cost_centre,
-            financial_year,
+            self.cost_centre,
+            self.financial_year,
             data,
         )
 
