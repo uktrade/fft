@@ -47,8 +47,3 @@ class PayElementTypeFactory(factory.django.DjangoModelFactory):
     # name
     natural_code = factory.SubFactory(NaturalCodeFactory)
     group = factory.SubFactory(PayElementTypeGroupFactory)
-
-
-class EmployeePayElementFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = EmployeePayElement

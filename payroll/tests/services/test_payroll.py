@@ -40,6 +40,7 @@ def test_payroll_forecast(db):
         grade__grade="Grade 7",
     )
 
+    # TODO: Consider an ergonomic way of avoiding this pattern all the time.
     for x in payroll_employees:
         employee_created(x)
 
