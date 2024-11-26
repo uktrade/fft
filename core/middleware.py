@@ -16,7 +16,7 @@ class DatabaseQueriesMiddleware:
 
         post_query_count = len(connection.queries)
         query_count = post_query_count - pre_query_count
-        # pprint(connection.queries)
+        pprint(connection.queries)
         print(f"Database queries {query_count}")
 
         # https://docs.sentry.io/platforms/python/performance/instrumentation/custom-instrumentation/#accessing-the-current-transaction
