@@ -207,8 +207,10 @@ def update_vacancies_data(
     vacancies_data: list[Vacancies],
 ) -> None:
     """Update a cost centre vacancies for a given year using the provided list.
+
     This function is wrapped with a transaction, so if any of the vacancy updates fail,
     the whole batch will be rolled back.
+
     Raises:
         ValueError: If a vacancy id is empty.
         ValueError: If there are not 12 items in the pay_periods list.
