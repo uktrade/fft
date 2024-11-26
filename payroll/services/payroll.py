@@ -178,11 +178,18 @@ def get_vacancies_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[Vacancies]:
-    qs = Vacancy.objects.filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
-    ).prefetch_related(
-        "pay_periods",
+    qs = (
+        Vacancy.objects.filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
+        .prefetch_related(
+            "pay_periods",
+        )
+        .filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
     )
     for obj in qs:
         yield Vacancies(
