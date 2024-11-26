@@ -1,15 +1,16 @@
 import PayPeriods from "../PayPeriods";
 
-const EmployeeRow = ({ row, onTogglePayPeriods }) => {
+const VacancyRow = ({ row, onTogglePayPeriods }) => {
   return (
     <tr className="govuk-table__row">
-      <td className="govuk-table__cell">{row.name}</td>
+      <td className="govuk-table__cell">{row.recruitment_type}</td>
       <td className="govuk-table__cell">{row.grade}</td>
-      <td className="govuk-table__cell">{row.employee_no}</td>
-      <td className="govuk-table__cell">{row.fte}</td>
       <td className="govuk-table__cell">{row.programme_code}</td>
       <td className="govuk-table__cell">{row.budget_type}</td>
-      <td className="govuk-table__cell">{row.assignment_status}</td>
+      <td className="govuk-table__cell">{row.appointee_name}</td>
+      <td className="govuk-table__cell">{row.hiring_manager}</td>
+      <td className="govuk-table__cell">{row.hr_ref}</td>
+      <td className="govuk-table__cell">{row.recruitment_stage}</td>
       <PayPeriods
         row={row}
         id={row.id}
@@ -19,4 +20,4 @@ const EmployeeRow = ({ row, onTogglePayPeriods }) => {
   );
 };
 
-export default EmployeeRow;
+export default VacancyRow;

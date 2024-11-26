@@ -10,13 +10,11 @@ from django.views import View
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
-from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
 
 
-# TODO: check user has access to cost centre
-class PayrollView(UserPassesTestMixin, View):
+class PositionView(UserPassesTestMixin, View):
     def test_func(self) -> bool | None:
         return self.request.user.is_superuser
 
@@ -31,24 +29,53 @@ class PayrollView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
+    def get_data(self):
+        raise NotImplementedError
+
+    def post_data(self, data):
+        raise NotImplementedError
+
     def get(self, request, *args, **kwargs):
-        data = list(
-            payroll_service.get_payroll_data(
-                cost_centre=self.cost_centre,
-                financial_year=self.financial_year,
-            )
-        )
+        data = list(self.get_data())
         return JsonResponse({"data": data})
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-
-        payroll_service.update_payroll_data(
-            cost_centre=self.cost_centre,
-            financial_year=self.financial_year,
-            payroll_data=data,
+        self.post_data(
+            data,
         )
         return JsonResponse({})
+
+
+# TODO: check user has access to cost centre
+class PayrollView(PositionView):
+    def get_data(self):
+        return payroll_service.get_payroll_data(
+            self.cost_centre,
+            self.financial_year,
+        )
+
+    def post_data(self, data):
+        return payroll_service.update_payroll_data(
+            self.cost_centre,
+            self.financial_year,
+            data,
+        )
+
+
+class VacancyView(PositionView):
+    def get_data(self):
+        return payroll_service.get_vacancies_data(
+            self.cost_centre,
+            self.financial_year,
+        )
+
+    def post_data(self, data):
+        return payroll_service.update_vacancies_data(
+            self.cost_centre,
+            self.financial_year,
+            data,
+        )
 
 
 def edit_payroll_page(
@@ -62,11 +89,12 @@ def edit_payroll_page(
     payroll_forecast_report_data = payroll_service.payroll_forecast_report(
         cost_centre_obj, financial_year_obj
     )
-    vacancies = Vacancy.objects.filter(cost_centre=cost_centre_code)
+    cost_centre_code = cost_centre_obj.cost_centre_code
+    financial_year = financial_year_obj.financial_year
 
     context = {
-        "cost_centre_code": cost_centre_obj.cost_centre_code,
-        "financial_year": financial_year_obj.financial_year,
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
         "payroll_forecast_report": payroll_forecast_report_data,
         "months": [
             "Apr",
@@ -82,7 +110,6 @@ def edit_payroll_page(
             "Feb",
             "Mar",
         ],
-        "vacancies": vacancies,
     }
 
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
@@ -106,6 +133,8 @@ def add_vacancy_page(
             vacancy = form.save(commit=False)
             vacancy.cost_centre = cost_centre_obj
             vacancy.save()
+
+            payroll_service.vacancy_created(vacancy)
 
             return redirect(
                 "payroll:edit",
