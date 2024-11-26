@@ -4,12 +4,7 @@ from faker import Faker
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from costcentre.test.factories import CostCentreFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import (
-    Employee,
-    EmployeePayElement,
-    PayElementType,
-    PayElementTypeGroup,
-)
+from payroll.models import Employee, PayElementType, PayElementTypeGroup
 
 
 fake = Faker()
