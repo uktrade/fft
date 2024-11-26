@@ -52,11 +52,10 @@
 
 {% block scripts %}
     {{ block.super }}
-    {{ add_vacancy_url|json_script:'add_vacancy_url' }}
     <script>
         window.costCentreCode = "{{ cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year }}");
-        window.addVacancyUrl = JSON.parse(document.getElementById("add_vacancy_url").textContent);
+        window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre_code financial_year %}"
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
