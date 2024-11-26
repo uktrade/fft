@@ -61,8 +61,8 @@ export default function Payroll() {
     }
   }
 
-  function handleTogglePayPeriods(employeeNo, index, enabled) {
-    dispatch({ type: "updatePayPeriods", employeeNo, index, enabled });
+  function handleTogglePayPeriods(id, index, enabled) {
+    dispatch({ type: "updatePayPeriods", id, index, enabled });
   }
 
   function handleToggleVacancyPayPeriods(id, index, enabled) {
@@ -117,54 +117,30 @@ export default function Payroll() {
   );
 }
 
-function payrollReducer(payroll, action) {
+const positionReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
       return action.data;
     }
     case "updatePayPeriods": {
-      return payroll.map((employeeRow) => {
-        if (employeeRow.employee_no == action.employeeNo) {
-          const updatedPayPeriods = employeeRow.pay_periods.map(
-            (period, index) => {
-              if (index + 1 >= action.index + 1) {
-                return !action.enabled;
-              }
-              return period;
-            }
-          );
-          return {
-            ...employeeRow,
-            pay_periods: updatedPayPeriods,
-          };
-        }
-        return employeeRow;
-      });
-    }
-  }
-}
-
-function vacanciesReducer(vacancies, action) {
-  switch (action.type) {
-    case "fetched": {
-      return action.data;
-    }
-    case "updatePayPeriods": {
-      return vacancies.map((vacancy) => {
-        if (vacancy.id == action.id) {
-          const updatedPayPeriods = vacancy.pay_periods.map((period, index) => {
+      return data.map((row) => {
+        if (row.id == action.id) {
+          const updatedPayPeriods = row.pay_periods.map((period, index) => {
             if (index + 1 >= action.index + 1) {
               return !action.enabled;
             }
             return period;
           });
           return {
-            ...vacancy,
+            ...row,
             pay_periods: updatedPayPeriods,
           };
         }
-        return vacancy;
+        return row;
       });
     }
   }
-}
+};
+
+const payrollReducer = (data, action) => positionReducer(data, action);
+const vacanciesReducer = (data, action) => positionReducer(data, action);

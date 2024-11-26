@@ -12,7 +12,7 @@ const EmployeeRow = ({ row, onTogglePayPeriods }) => {
       <td className="govuk-table__cell">{row.assignment_status}</td>
       <PayPeriods
         row={row}
-        id={row.employee_no}
+        id={row.id}
         onTogglePayPeriods={onTogglePayPeriods}
       />
     </tr>

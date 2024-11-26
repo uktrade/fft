@@ -114,6 +114,7 @@ def get_payroll_data(
     )
     for obj in qs:
         yield EmployeePayroll(
+            id=obj.pk,
             name=obj.get_full_name(),
             grade=obj.grade.pk,
             employee_no=obj.employee_no,
