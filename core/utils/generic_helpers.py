@@ -1,13 +1,10 @@
 import datetime
-from contextvars import ContextVar
 
 from django.contrib.admin.models import CHANGE, LogEntry
 from django.contrib.contenttypes.models import ContentType
 
+from core.middleware import _current_financial_year
 from core.models import FinancialYear
-
-
-_current_financial_year = ContextVar("current_financial_year", default=None)
 
 
 def get_current_financial_year():

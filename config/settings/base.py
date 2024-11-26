@@ -284,6 +284,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
     "core.middleware.DatabaseQueriesMiddleware",
+    "core.middleware.CoreRequestDataMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [
