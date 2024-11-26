@@ -3,6 +3,14 @@ import PayPeriods from "../PayPeriods";
 const VacancyRow = ({ row, onTogglePayPeriods }) => {
   return (
     <tr className="govuk-table__row">
+      <td className="govuk-table__header">
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-0"
+          href={`vacancies/edit/${row.id}`}
+        >
+          Edit
+        </a>
+      </td>
       <td className="govuk-table__cell">{row.recruitment_type}</td>
       <td className="govuk-table__cell">{row.grade}</td>
       <td className="govuk-table__cell">{row.programme_code}</td>

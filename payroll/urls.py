@@ -33,4 +33,9 @@ urlpatterns = [
         views.add_vacancy_page,
         name="add_vacancy",
     ),
+    path(
+        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/edit/<int:vacancy_id>",
+        views.edit_vacancy_page,
+        name="edit_vacancy",
+    ),
 ]

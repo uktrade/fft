@@ -24,6 +24,7 @@ export const payrollHeaders = [
 ].concat(monthHeaders);
 
 export const vacancyHeaders = [
+  "Manage",
   "Recruitment Type",
   "Grade",
   "Programme",

@@ -10,6 +10,7 @@ from django.views import View
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
+from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
 
@@ -124,6 +125,7 @@ def add_vacancy_page(
     context = {
         "cost_centre_code": cost_centre_code,
         "financial_year": financial_year,
+        "title": "Create Vacancy",
     }
     cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
 
@@ -143,8 +145,38 @@ def add_vacancy_page(
             )
         else:
             context["form"] = form
-            return render(request, "payroll/page/add_vacancy.html", context)
+            return render(request, "payroll/page/vacancy_form.html", context)
     else:
         form = VacancyForm()
         context["form"] = form
-    return render(request, "payroll/page/add_vacancy.html", context)
+    return render(request, "payroll/page/vacancy_form.html", context)
+
+
+def edit_vacancy_page(
+    request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
+) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+
+    context = {
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
+        "title": "Edit Vacancy",
+    }
+
+    if request.method == "POST":
+        form = VacancyForm(request.POST, instance=vacancy)
+        if form.is_valid():
+            vacancy.save()
+
+            return redirect(
+                "payroll:edit",
+                cost_centre_code=cost_centre_code,
+                financial_year=financial_year,
+            )
+    else:
+        context["form"] = VacancyForm(instance=vacancy)
+
+    return render(request, "payroll/page/vacancy_form.html", context)

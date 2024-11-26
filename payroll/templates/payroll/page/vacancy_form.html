@@ -1,17 +1,17 @@
 {% extends "base_generic.html" %}
 {% load breadcrumbs %}
 
-{% block title %}Create Vacancy{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
     {% breadcrumb "Edit payroll" "payroll:edit" cost_centre_code financial_year %}
-    {% breadcrumb "Create Vacancy" "" %}
+    {% breadcrumb title "" %}
 {% endblock breadcrumbs %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Create Vacancy</h1>
+    <h1 class="govuk-heading-l">{{ title }}</h1>
 
     {% include "payroll/partials/_error_summary.html" with form=form %}
 
@@ -26,7 +26,7 @@
         {% include "payroll/partials/_form_field.html" with field=form.hiring_manager %}
         {% include "payroll/partials/_form_field.html" with field=form.hr_ref %}
       </div>
-      <button class="govuk-button" type="submit">Create Vacancy</button>
+      <button class="govuk-button" type="submit">{{ title }}</button>
       <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Back</a>
     </form>
 
