@@ -1,17 +1,9 @@
-from decimal import Decimal
 import pytest
 
 from core.models import FinancialYear
-from payroll.models import EmployeePayElement
 from payroll.services.payroll import employee_created, payroll_forecast_report
 
-from ..factories import (
-    EmployeeFactory,
-    PayElementTypeGroupFactory,
-    PayElementTypeFactory,
-    PayElementType,
-    PayElementTypeGroup,
-)
+from ..factories import EmployeeFactory, PayElementTypeFactory
 
 
 def test_payroll_forecast(db):
