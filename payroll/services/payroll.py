@@ -1,11 +1,18 @@
-from decimal import Decimal
+from collections import defaultdict
+from statistics import mean
 from typing import Iterator, TypedDict
 
+import numpy as np
+import numpy.typing as npt
+from django.conf import settings
 from django.db import transaction
-from django.db.models import F, Q, Sum
+from django.db.models import Avg, Count, Q
 
+from core.constants import MONTHS
 from core.models import FinancialYear
+from core.types import MonthsDict
 from costcentre.models import CostCentre
+from gifthospitality.models import Grade
 
 from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
@@ -51,36 +58,87 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
-def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):
-    period_sum_annotations = {
-        f"period_{i+1}_sum": Sum(
-            F("pay_element__debit_amount") - F("pay_element__credit_amount"),
-            filter=Q(**{f"pay_periods__period_{i+1}": True}),
-            default=Decimal(0),
-        )
-        for i in range(12)
-    }
+class PayrollForecast(MonthsDict[float]):
+    programme_code: str
+    natural_account_code: str
 
-    qs = (
-        Employee.objects.filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-            pay_element__isnull=False,
-        )
-        .order_by(
-            "programme_code",
-            "pay_element__type__group",
-        )
-        .values(
-            "programme_code",
-            "pay_element__type__group__natural_code",
-            "pay_element__type__group",
-            "pay_element__type__group__name",
-        )
-        .annotate(**period_sum_annotations)
+
+def payroll_forecast_report(
+    cost_centre: CostCentre, financial_year: FinancialYear
+) -> Iterator[PayrollForecast]:
+    # { programme_code: { natural_account_code: np.array[ np.float64 ] } }
+    report: dict[str, dict[str, npt.NDArray[np.float64]]] = defaultdict(
+        lambda: defaultdict(lambda: np.zeros(12))
     )
 
-    return qs
+    employee_qs = Employee.objects.filter(
+        cost_centre=cost_centre,
+        pay_periods__year=financial_year,
+    )
+    for employee in employee_qs.iterator():
+        periods = employee.pay_periods.first().periods
+        periods = np.array(periods)
+
+        prog_report = report[employee.programme_code_id]
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
+        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
+
+    vacancy_qs = Vacancy.objects.filter(
+        cost_centre=cost_centre,
+        pay_periods__year=financial_year,
+    )
+    for vacancy in vacancy_qs.iterator():
+        avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
+        salary = vacancy.fte * avg_salary
+
+        periods = vacancy.pay_periods.first().periods
+        periods = np.array(periods)
+
+        prog_report = report[vacancy.programme_code_id]
+        prog_report[settings.PAYROLL.VACANCY_NAC] += periods * salary
+
+    for programme_code in report:
+        for nac, forecast in report[programme_code].items():
+            forecast_months: MonthsDict[float] = dict(zip(MONTHS, forecast, strict=False))  # type: ignore
+
+            yield PayrollForecast(
+                programme_code=programme_code,
+                natural_account_code=nac,
+                **forecast_months,
+            )
+
+
+# TODO (FFT-131): Apply caching to the average salary calculation
+def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
+    employee_count_threshold = settings.PAYROLL.AVERAGE_SALARY_THRESHOLD
+
+    # Expanding scope filters which start at the cost centre and end at all employees.
+    filters = [
+        Q(cost_centre=cost_centre),
+        Q(cost_centre__directorate=cost_centre.directorate),
+        Q(cost_centre__directorate__group=cost_centre.directorate.group),
+        Q(),
+    ]
+
+    salaries: list[int] = []
+
+    for filter in filters:
+        employee_qs = Employee.objects.payroll().filter(grade=grade).filter(filter)
+
+        basic_pay = employee_qs.aggregate(
+            count=Count("basic_pay"), avg=Avg("basic_pay")
+        )
+
+        if basic_pay["count"] >= employee_count_threshold:
+            return basic_pay["avg"]
+
+        if basic_pay["count"]:
+            salaries.append(basic_pay["avg"])
+
+    # TODO: What do we do if there were no employees at all found at that grade?
+
+    return round(mean(salaries))  # pence
 
 
 class EmployeePayroll(TypedDict):
@@ -111,7 +169,6 @@ def get_payroll_data(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
-        .with_basic_pay()
     )
     for obj in qs:
         yield EmployeePayroll(
@@ -168,6 +225,7 @@ class Vacancies(TypedDict):
     id: int
     grade: str
     programme_code: str
+    budget_type: str
     recruitment_type: str
     recruitment_stage: str
     appointee_name: str

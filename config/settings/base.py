@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 import dj_database_url
@@ -415,3 +416,16 @@ CSP_DEFAULT_SRC = ["'self'"]
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
+
+
+# Payroll
+@dataclass
+class Payroll:
+    BASIC_PAY_NAC: str | None = None
+    PENSION_NAC: str | None = None
+    ERNIC_NAC: str | None = None
+    VACANCY_NAC: str | None = None
+    AVERAGE_SALARY_THRESHOLD: int = 2
+
+
+PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default={}))
