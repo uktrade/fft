@@ -2,12 +2,18 @@ from decimal import Decimal
 from typing import Iterator, TypedDict
 
 from django.db import transaction
-from django.db.models import F, Q, Sum
+from django.db.models import F, Q, Sum, Avg, Count
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
+from gifthospitality.models import Grade
 
-from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
+from ..models import (
+    Employee,
+    EmployeePayPeriods,
+    Vacancy,
+    VacancyPayPeriods,
+)
 
 
 def employee_created(employee: Employee) -> None:
@@ -52,35 +58,101 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
 
 
 def payroll_forecast_report(cost_centre: CostCentre, financial_year: FinancialYear):
-    period_sum_annotations = {
-        f"period_{i+1}_sum": Sum(
-            F("pay_element__debit_amount") - F("pay_element__credit_amount"),
-            filter=Q(**{f"pay_periods__period_{i+1}": True}),
-            default=Decimal(0),
-        )
-        for i in range(12)
+    from collections import defaultdict
+
+    # programme_code: nac: {data}
+    report: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
+    months = [
+        "period_1_sum",
+        "period_2_sum",
+        "period_3_sum",
+        "period_4_sum",
+        "period_5_sum",
+        "period_6_sum",
+        "period_7_sum",
+        "period_8_sum",
+        "period_9_sum",
+        "period_10_sum",
+        "period_11_sum",
+        "period_12_sum",
+    ]
+    pay_type_to_nac = {
+        "basic_pay": "71111001",
+        "ernic": "71111002",
+        "pension": "71111003",
     }
 
-    qs = (
-        Employee.objects.filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-            pay_element__isnull=False,
-        )
-        .order_by(
-            "programme_code",
-            "pay_element__type__group",
-        )
-        .values(
-            "programme_code",
-            "pay_element__type__group__natural_code",
-            "pay_element__type__group",
-            "pay_element__type__group__name",
-        )
-        .annotate(**period_sum_annotations)
+    employee_qs = Employee.objects.filter(
+        cost_centre=cost_centre,
+        pay_periods__year=financial_year,
     )
+    for employee in employee_qs.iterator():
+        periods = employee.pay_periods.first().periods
+        for i, month in enumerate(months):
+            if not periods[i]:
+                continue
 
-    return qs
+            report[employee.programme_code_id]["basic_pay"][month] += employee.basic_pay
+            report[employee.programme_code_id]["pension"][month] += employee.pension
+            report[employee.programme_code_id]["ernic"][month] += employee.ernic
+
+    vacancy_qs = Vacancy.objects.filter(
+        cost_centre=cost_centre,
+        pay_periods__year=financial_year,
+    )
+    for vacancy in vacancy_qs.iterator():
+        salary = get_salary_for_vacancy(vacancy)
+
+        periods = vacancy.pay_periods.first().periods
+        for i, month in enumerate(months):
+            if not periods[i]:
+                continue
+
+            report[vacancy.programme_code_id]["basic_pay"][month] += salary
+
+    for programme_code in report:
+        for pay_type in report[programme_code]:
+            yield {
+                "programme_code": programme_code,
+                "pay_element__type__group__natural_code": pay_type_to_nac[pay_type],
+                "pay_element__type__group__name": pay_type,
+                **report[programme_code][pay_type],
+            }
+
+
+def get_salary_for_vacancy(vacancy: Vacancy) -> int:
+    return get_average_salary_for_grade(vacancy.grade, vacancy.cost_centre)
+
+
+def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre | None) -> int:
+    from statistics import mean
+
+    filters = []
+
+    if cost_centre:
+        filters += [
+            Q(cost_centre=cost_centre),
+            Q(cost_centre__directorate=cost_centre.directorate),
+            Q(cost_centre__directorate__group=cost_centre.directorate.group),
+        ]
+
+    filters += [Q()]
+
+    salaries = []
+
+    for filter in filters:
+        employee_qs = Employee.objects.filter(grade=grade, basic_pay__gt=0).filter(
+            filter
+        )
+
+        basic_pay_stats = employee_qs.aggregate(Count("basic_pay"), Avg("basic_pay"))
+        salaries.append(basic_pay_stats["basic_pay__avg"])
+
+        if basic_pay_stats["basic_pay__count"] >= 2:
+            return basic_pay_stats["basic_pay__avg"]
+
+    return mean(salaries)
 
 
 class EmployeePayroll(TypedDict):
@@ -111,7 +183,7 @@ def get_payroll_data(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
-        .with_basic_pay()
+        # .with_basic_pay()
     )
     for obj in qs:
         yield EmployeePayroll(
@@ -168,6 +240,7 @@ class Vacancies(TypedDict):
     id: int
     grade: str
     programme_code: str
+    budget_type: str
     recruitment_type: str
     recruitment_stage: str
     appointee_name: str

@@ -87,6 +87,9 @@ class Employee(Position):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     assignment_status = models.CharField(max_length=32)
+    basic_pay = models.BigIntegerField(default=0, db_comment="pence")
+    pension = models.BigIntegerField(default=0, db_comment="pence")
+    ernic = models.BigIntegerField(default=0, db_comment="pence")
 
     # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)
@@ -148,44 +151,46 @@ class EmployeePayElement(models.Model):
     credit_amount = models.DecimalField(max_digits=9, decimal_places=2)
 
 
-class RecruitmentType(models.TextChoices):
-    EXPRESSION_OF_INTEREST = "expression_of_interest", "Expression of Interest"
-    EXTERNAL_RECRUITMENT_NON_BULK = (
-        "external_recruitment_non_bulk",
-        "External Recruitment (Non Bulk)",
-    )
-    EXTERNAL_RECRUITMENT_BULK = (
-        "external_recruitment_bulk",
-        "External Recruitment (Bulk campaign)",
-    )
-    INTERNAL_MANAGED_MOVE = "internal_managed_move", "Internal Managed Move"
-    INTERNAL_REDEPLOYMENT = "internal_redeployment", "Internal Redeployment"
-    OTHER = "other", "Other"
-    INACTIVE_POST = "inactive_post", "Inactive Post"
-    EXPECTED_UNKNOWN_LEAVERS = "expected_unknown_leavers", "Expected Unknown Leavers"
-    MISSING_STAFF = "missing_staff", "Missing Staff"
-
-
-class RecruitmentStage(models.IntegerChoices):
-    PREPARING = 1, "Preparing"
-    ADVERT = 2, "Advert (Vac ref to be provided)"
-    SIFT = 3, "Sift"
-    INTERVIEW = 4, "Interview"
-    ONBOARDING = 5, "Onboarding"
-    UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
-    NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
-    NOT_REQUIRED = 8, "Not required"
-
-
 class Vacancy(Position):
     class Meta:
         verbose_name_plural = "Vacancies"
+
+    class RecruitmentType(models.TextChoices):
+        EXPRESSION_OF_INTEREST = "expression_of_interest", "Expression of Interest"
+        EXTERNAL_RECRUITMENT_NON_BULK = (
+            "external_recruitment_non_bulk",
+            "External Recruitment (Non Bulk)",
+        )
+        EXTERNAL_RECRUITMENT_BULK = (
+            "external_recruitment_bulk",
+            "External Recruitment (Bulk campaign)",
+        )
+        INTERNAL_MANAGED_MOVE = "internal_managed_move", "Internal Managed Move"
+        INTERNAL_REDEPLOYMENT = "internal_redeployment", "Internal Redeployment"
+        OTHER = "other", "Other"
+        INACTIVE_POST = "inactive_post", "Inactive Post"
+        EXPECTED_UNKNOWN_LEAVERS = (
+            "expected_unknown_leavers",
+            "Expected Unknown Leavers",
+        )
+        MISSING_STAFF = "missing_staff", "Missing Staff"
 
     recruitment_type = models.CharField(
         max_length=29,
         choices=RecruitmentType.choices,
         default=RecruitmentType.EXPRESSION_OF_INTEREST,
     )
+
+    class RecruitmentStage(models.IntegerChoices):
+        PREPARING = 1, "Preparing"
+        ADVERT = 2, "Advert (Vac ref to be provided)"
+        SIFT = 3, "Sift"
+        INTERVIEW = 4, "Interview"
+        ONBOARDING = 5, "Onboarding"
+        UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
+        NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
+        NOT_REQUIRED = 8, "Not required"
+
     recruitment_stage = models.IntegerField(
         choices=RecruitmentStage.choices, default=RecruitmentStage.PREPARING
     )

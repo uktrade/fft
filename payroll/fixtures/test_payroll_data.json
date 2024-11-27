@@ -9,7 +9,10 @@
       "first_name": "John",
       "last_name": "Smith",
       "grade": "Grade 7",
-      "assignment_status": "Active Assignment"
+      "assignment_status": "Active Assignment",
+      "basic_pay": 230000,
+      "pension": 40000,
+      "ernic": 9000
     }
   },
   {
@@ -22,7 +25,10 @@
       "first_name": "Jane",
       "last_name": "Doe",
       "grade": "Grade 7",
-      "assignment_status": "Active Contingent Assignment"
+      "assignment_status": "Active Contingent Assignment",
+      "basic_pay": 268000,
+      "pension": 60000,
+      "ernic": 50000
     }
   },
   {
@@ -35,7 +41,10 @@
       "first_name": "John",
       "last_name": "Doe",
       "grade": "Grade 7",
-      "assignment_status": "Loan Out - Non Payroll"
+      "assignment_status": "Loan Out - Non Payroll",
+      "basic_pay": 0,
+      "pension": 0,
+      "ernic": 0
     }
   },
   {
@@ -48,7 +57,10 @@
       "first_name": "Jane",
       "last_name": "Smith",
       "grade": "Grade 7",
-      "assignment_status": "Active Assignment"
+      "assignment_status": "Active Assignment",
+      "basic_pay": 0,
+      "pension": 0,
+      "ernic": 0
     }
   },
   {
