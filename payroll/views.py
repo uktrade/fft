@@ -79,6 +79,14 @@ class VacancyView(PositionView):
         )
 
 
+def redirect_edit_payroll(cost_centre_code, financial_year):
+    return redirect(
+        "payroll:edit",
+        cost_centre_code=cost_centre_code,
+        financial_year=financial_year,
+    )
+
+
 def edit_payroll_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int
 ) -> HttpResponse:
@@ -138,11 +146,7 @@ def add_vacancy_page(
 
             payroll_service.vacancy_created(vacancy)
 
-            return redirect(
-                "payroll:edit",
-                cost_centre_code=cost_centre_code,
-                financial_year=financial_year,
-            )
+            return redirect_edit_payroll(cost_centre_code, financial_year)
         else:
             context["form"] = form
             return render(request, "payroll/page/vacancy_form.html", context)
@@ -173,11 +177,7 @@ def edit_vacancy_page(
         if form.is_valid():
             vacancy.save()
 
-            return redirect(
-                "payroll:edit",
-                cost_centre_code=cost_centre_code,
-                financial_year=financial_year,
-            )
+            return redirect_edit_payroll(cost_centre_code, financial_year)
     else:
         context["form"] = VacancyForm(instance=vacancy)
 
@@ -201,10 +201,6 @@ def delete_vacancy_page(
     if request.method == "POST":
         vacancy.delete()
 
-        return redirect(
-            "payroll:edit",
-            cost_centre_code=cost_centre_code,
-            financial_year=financial_year,
-        )
+        return redirect_edit_payroll(cost_centre_code, financial_year)
     else:
         return render(request, "payroll/page/delete_vacancy.html", context)
