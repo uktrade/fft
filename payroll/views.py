@@ -164,6 +164,8 @@ def edit_vacancy_page(
         "cost_centre_code": cost_centre_code,
         "financial_year": financial_year,
         "title": "Edit Vacancy",
+        "vacancy_id": vacancy.id,
+        "is_edit": True,
     }
 
     if request.method == "POST":
@@ -180,3 +182,29 @@ def edit_vacancy_page(
         context["form"] = VacancyForm(instance=vacancy)
 
     return render(request, "payroll/page/vacancy_form.html", context)
+
+
+def delete_vacancy_page(
+    request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
+) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
+
+    context = {
+        "cost_centre_code": cost_centre_code,
+        "financial_year": financial_year,
+        "vacancy_id": vacancy.id,
+    }
+
+    if request.method == "POST":
+        vacancy.delete()
+
+        return redirect(
+            "payroll:edit",
+            cost_centre_code=cost_centre_code,
+            financial_year=financial_year,
+        )
+    else:
+        return render(request, "payroll/page/delete_vacancy.html", context)

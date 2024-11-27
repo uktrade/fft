@@ -38,4 +38,9 @@ urlpatterns = [
         views.edit_vacancy_page,
         name="edit_vacancy",
     ),
+    path(
+        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/delete/<int:vacancy_id>",
+        views.delete_vacancy_page,
+        name="delete_vacancy",
+    ),
 ]
