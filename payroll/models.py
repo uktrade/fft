@@ -235,4 +235,4 @@ class VacancyPayPeriods(PositionPayPeriods):
             )
         ]
 
-    vacancy = models.ForeignKey(Vacancy, models.PROTECT, related_name="pay_periods")
+    vacancy = models.ForeignKey(Vacancy, models.CASCADE, related_name="pay_periods")
