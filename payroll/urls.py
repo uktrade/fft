@@ -34,12 +34,12 @@ urlpatterns = [
         name="add_vacancy",
     ),
     path(
-        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/edit/<int:vacancy_id>",
+        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/edit",
         views.edit_vacancy_page,
         name="edit_vacancy",
     ),
     path(
-        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/delete/<int:vacancy_id>",
+        "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/delete",
         views.delete_vacancy_page,
         name="delete_vacancy",
     ),
