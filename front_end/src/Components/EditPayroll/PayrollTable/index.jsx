@@ -12,7 +12,7 @@ export default function PayrollTable({
 }) {
   return (
     <>
-      <div class="scrollable-div">
+      <div class="scrollable">
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
