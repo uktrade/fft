@@ -147,6 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "en-gb"  # must be gb for date entry to work
 TIME_ZONE = "UTC"
 USE_I18N = True
+USE_TZ = True
 
 
 # Remove extra details in the label
