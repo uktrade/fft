@@ -18,6 +18,9 @@ services:
     depends_on:
       - db
       - redis
+    # Required for debuggers to work.
+    stdin_open: true
+    tty: true
 
   celery:
     image: fft/web:latest

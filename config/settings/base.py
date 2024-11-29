@@ -283,6 +283,7 @@ MIDDLEWARE = [
     "core.no_cache_middleware.NoCacheMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
+    "core.middleware.CoreRequestDataMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [

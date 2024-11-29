@@ -21,6 +21,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "preview": "vite preview",
     "postinstall": "npm run build"
   },
   "eslintConfig": {
