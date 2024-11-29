@@ -112,6 +112,7 @@ def get_financial_code_serialiser(
                     forecast_budgetmonthlyfigures__financial_year_id=financial_year,
                     forecast_budgetmonthlyfigures__archived_status=None,
                 ),
+                default=0,
             )
         )
         .order_by(*edit_forecast_order())
