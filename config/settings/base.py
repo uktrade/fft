@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 from pathlib import Path
+from types import SimpleNamespace
+from typing import NamedTuple
 
 import dj_database_url
 import environ
@@ -410,3 +412,17 @@ if SENTRY_DSN:
         traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", 0.0),
         send_default_pii=True,
     )
+
+
+class Payroll(NamedTuple):
+    BASIC_PAY_NAC: str
+    PENSION_NAC: str
+    ERNIC_NAC: str
+
+
+PAYROLL_DEFAULTS = {
+    "BASIC_PAY_NAC": None,
+    "PENSION_NAC": None,
+    "ERNIC_NAC": None,
+}
+PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default=PAYROLL_DEFAULTS))

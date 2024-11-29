@@ -19,8 +19,7 @@
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">Programme code</th>
-                <th scope="col" class="govuk-table__header">Natural code</th>
-                <th scope="col" class="govuk-table__header">Pay type</th>
+                <th scope="col" class="govuk-table__header">Natural account code</th>
                 {% for month in months %}
                     <th scope="col" class="govuk-table__header">{{ month }}</th>
                 {% endfor %}
@@ -30,20 +29,19 @@
             {% for row in payroll_forecast_report %}
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">{{ row.programme_code }}</th>
-                    <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__natural_code }}</th>
-                    <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__name }}</th>
-                    <td class="govuk-table__cell">{{ row.period_1_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_2_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_3_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_4_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_5_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_6_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_7_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_8_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_9_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_10_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_11_sum }}</td>
-                    <td class="govuk-table__cell">{{ row.period_12_sum }}</td>
+                    <th scope="row" class="govuk-table__header">{{ row.natural_account_code }}</th>
+                    <td class="govuk-table__cell">{{ row.apr }}</td>
+                    <td class="govuk-table__cell">{{ row.may }}</td>
+                    <td class="govuk-table__cell">{{ row.jun }}</td>
+                    <td class="govuk-table__cell">{{ row.jul }}</td>
+                    <td class="govuk-table__cell">{{ row.aug }}</td>
+                    <td class="govuk-table__cell">{{ row.sep }}</td>
+                    <td class="govuk-table__cell">{{ row.oct }}</td>
+                    <td class="govuk-table__cell">{{ row.nov }}</td>
+                    <td class="govuk-table__cell">{{ row.dec }}</td>
+                    <td class="govuk-table__cell">{{ row.jan }}</td>
+                    <td class="govuk-table__cell">{{ row.feb }}</td>
+                    <td class="govuk-table__cell">{{ row.mar }}</td>
                 </tr>
             {% endfor %}
         </tbody>

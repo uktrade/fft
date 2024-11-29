@@ -71,7 +71,7 @@ pyperclip = "^1.8.0"
 freezegun = "^1.0.0"
 isort = "^5.10.1"
 ruff = "^0.3.4"
-mypy = "^1.12.0"
+mypy = "^1.13.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -125,3 +125,6 @@ minversion = "7.0"
 addopts = "--ignore=front_end --ignore=features --ignore=staticfiles --ds=config.settings.ci --reuse-db"
 python_files = ["test_*.py", "*_test.py", "tests.py"]
 filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.mypy]
+enable_incomplete_feature = ["NewGenericSyntax"]

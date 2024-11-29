@@ -17,6 +17,9 @@ class EmployeeQuerySet(models.QuerySet):
             )
         )
 
+    def payroll(self):
+        return self.filter(basic_pay__gt=0)
+
 
 class Position(models.Model):
     class Meta:
