@@ -34,8 +34,7 @@ def non_existing_future_year():
     FILE_UPLOAD_HANDLERS=[
         "django.core.files.uploadhandler.MemoryFileUploadHandler",
         "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-    ],
-    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+    ]
 )
 class ImportFutureBudgetsTest(BaseTestCase):
     def setUp(self):
