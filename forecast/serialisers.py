@@ -1,7 +1,6 @@
-from django.db.models import Sum
 from rest_framework import serializers
 
-from .models import BudgetMonthlyFigure, FinancialCode, ForecastMonthlyFigure
+from .models import FinancialCode, ForecastMonthlyFigure
 
 
 class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
@@ -29,7 +28,7 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
-    budget = serializers.SerializerMethodField("get_budget")
+    budget = serializers.IntegerField(source="yearly_budget_amount")
     monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
@@ -63,25 +62,3 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
 
     def get_nac_description(self, obj):
         return obj.natural_account_code.natural_account_code_description
-
-    def get_budget(self, obj):
-        return obj.yearly_budget_amount
-        # FIXME: 400+ queries! try this as a prefetch similar to forecast or change to a lookup
-        financial_year = self.context["financial_year"]
-        budget = (
-            BudgetMonthlyFigure.objects.values(
-                "financial_code",
-                "financial_year",
-            )
-            .filter(
-                financial_code=obj.id,
-                financial_year_id=financial_year,
-                archived_status=None,
-            )
-            .annotate(yearly_amount=Sum("amount"))
-        )
-
-        if budget and "yearly_amount" in budget[0]:
-            return budget[0]["yearly_amount"]
-        else:
-            return 0

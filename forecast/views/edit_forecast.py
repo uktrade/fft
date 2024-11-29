@@ -81,7 +81,14 @@ def get_financial_codes_for_year(cost_centre_code, financial_year):
     )
 
 
-def get_financial_code_serialiser(cost_centre_code, financial_year):
+def get_financial_code_serialiser(
+    cost_centre_code: str,
+    financial_year: FinancialYear,
+    current_financial_year: FinancialYear | None,
+) -> FinancialCodeSerializer:
+    if current_financial_year is None:
+        current_financial_year = get_current_financial_year()
+
     # Only selects the financial codes relevant to the financial year being edited.
     # Financial codes are used in budgets and forecast/actuals.
     forecasts = ForecastMonthlyFigure.objects.select_related("financial_period").filter(
@@ -97,8 +104,6 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
                 queryset=forecasts,
                 to_attr="monthly_figure_items",
             ),
-            # FIXME: check this isn't needed
-            # "forecast_forecastmonthlyfigures__financial_period",
         )
         .annotate(
             yearly_budget_amount=Sum(
@@ -117,7 +122,7 @@ def get_financial_code_serialiser(cost_centre_code, financial_year):
         many=True,
         context={
             "financial_year": financial_year,
-            "current_financial_year": get_current_financial_year(),
+            "current_financial_year": current_financial_year,
         },
     )
     return financial_code_serialiser
@@ -338,6 +343,7 @@ class PasteForecastRowsView(
             financial_code_serialiser = get_financial_code_serialiser(
                 self.cost_centre_code,
                 self.financial_year,
+                self.request.current_financial_year,
             )
 
             return JsonResponse(
@@ -446,7 +452,9 @@ class EditForecastFigureView(
         monthly_figure.save()
 
         financial_code_serialiser = get_financial_code_serialiser(
-            self.cost_centre_code, self.financial_year
+            self.cost_centre_code,
+            self.financial_year,
+            self.request.current_financial_year,
         )
 
         return JsonResponse(financial_code_serialiser.data, safe=False)
@@ -471,7 +479,6 @@ class EditForecastView(
     def class_name(self):
         return "wide-table"
 
-    # FIXME: Triple check this is safe
     @cached_property
     def cost_centre_details(self):
         cost_centre = CostCentre.objects.select_related("directorate__group").get(
@@ -497,10 +504,12 @@ class EditForecastView(
         financial_code_serialiser = get_financial_code_serialiser(
             self.cost_centre_code,
             self.financial_year,
+            self.request.current_financial_year,
         )
         serialiser_data = financial_code_serialiser.data
         forecast_dump = json.dumps(serialiser_data)
-        if self.financial_year == get_current_financial_year():
+
+        if self.financial_year == self.request.current_financial_year:
             self.title = "Edit forecast"
             actual_data = (
                 FinancialPeriod.financial_period_info.actual_period_code_list()
@@ -535,7 +544,7 @@ class EditForecastView(
     @cached_property
     def future_year_display(self):
         if self._future_year_display is None:
-            current_year = get_current_financial_year()
+            current_year = self.request.current_financial_year
             if self.financial_year > current_year:
                 self._future_year_display = get_year_display(self.financial_year)
             else:
