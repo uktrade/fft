@@ -1,6 +1,7 @@
 {% load util %}
 {% load breadcrumbs %}
 {% load forecast_permissions %}
+{% load payroll_permissions %}
 {% load upload_permissions %}
 {% load download_permissions %}
 {% load upload_percentage_permissions %}
@@ -127,6 +128,16 @@
                         Gifts &amp; hospitality register
                     </a>
                 </li>
+
+                {% can_view_payroll user as can_view_payroll %}
+                {% if can_view_payroll == True %}
+                    <li class="internal-header__navigation__item">
+                        <a class="internal-header__navigation__item__link {% if request.path|startswith:'/payroll/edit/' %}internal-header__navigation__item__link--active{% endif %}"
+                            href="{% url 'payroll:choose_cost_centre' %}">
+                            Edit payroll
+                        </a>
+                    </li>
+                {% endif %}
 
                 {% is_forecast_user user as is_forecast_user %}
                 {% if is_forecast_user == True %}
