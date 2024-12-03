@@ -1,6 +1,5 @@
 import { useEffect, useReducer, useState, useMemo } from "react";
 
-import EditPayroll from "../Components/EditPayroll";
 import * as api from "../Components/EditPayroll/api";
 import {
   payrollHeaders,
@@ -8,6 +7,7 @@ import {
 } from "../Components/EditPayroll/constants";
 import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
+import PayrollTable from "../Components/EditPayroll/PayrollTable";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
@@ -84,21 +84,21 @@ export default function Payroll() {
         </div>
       )}
       <h2 className="govuk-heading-m">Payroll</h2>
-      <EditPayroll
+      <PayrollTable
         payroll={payroll}
         headers={payrollHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
         RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Non-payroll</h2>
-      <EditPayroll
+      <PayrollTable
         payroll={nonPayroll}
         headers={payrollHeaders}
         onTogglePayPeriods={handleTogglePayPeriods}
         RowComponent={EmployeeRow}
       />
       <h2 className="govuk-heading-m">Vacancies</h2>
-      <EditPayroll
+      <PayrollTable
         payroll={vacancies}
         headers={vacancyHeaders}
         onTogglePayPeriods={handleToggleVacancyPayPeriods}

@@ -12,7 +12,7 @@ export default function PayrollTable({
 }) {
   return (
     <>
-      <div class="scrollable">
+      <div className="scrollable">
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
@@ -29,6 +29,7 @@ export default function PayrollTable({
             {payroll.map((row) => {
               return (
                 <RowComponent
+                  key={row.id}
                   row={row}
                   onTogglePayPeriods={onTogglePayPeriods}
                 />
