@@ -1,7 +1,7 @@
-import datetime
 import logging
 
 from django.db import connection
+from django.utils import timezone
 
 from core.import_csv import xslx_header_to_dict
 from core.models import FinancialYear
@@ -114,7 +114,7 @@ def copy_previous_year_figure_from_temp_table(year):
         cursor.execute(sql_insert)
     financial_year_obj = FinancialYear.objects.get(pk=year)
     financial_year_obj.archived = True
-    financial_year_obj.archived_at = datetime.datetime.now()
+    financial_year_obj.archived_at = timezone.now()
     financial_year_obj.save()
 
 
