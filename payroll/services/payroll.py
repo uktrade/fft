@@ -2,6 +2,8 @@ from collections import defaultdict
 from statistics import mean
 from typing import Iterator, TypedDict
 
+import numpy as np
+import numpy.typing as npt
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Avg, Count, Q
@@ -56,7 +58,7 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
-class PayrollForecast(MonthsDict[int]):
+class PayrollForecast(MonthsDict[float]):
     programme_code: str
     natural_account_code: str
 
@@ -64,8 +66,10 @@ class PayrollForecast(MonthsDict[int]):
 def payroll_forecast_report(
     cost_centre: CostCentre, financial_year: FinancialYear
 ) -> Iterator[PayrollForecast]:
-    # { programme_code: { natural_account_code: { month: int } } }
-    report: dict = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    # { programme_code: { natural_account_code: np.array[ int ] } }
+    report: dict[str, dict[str, npt.NDArray[np.float64]]] = defaultdict(
+        lambda: defaultdict(lambda: np.zeros(12))
+    )
 
     employee_qs = Employee.objects.filter(
         cost_centre=cost_centre,
@@ -73,14 +77,12 @@ def payroll_forecast_report(
     )
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
-        for i, month in enumerate(MONTHS):
-            if not periods[i]:
-                continue
+        periods = np.array(periods)
 
-            prog_report = report[employee.programme_code_id]
-            prog_report[settings.PAYROLL.BASIC_PAY_NAC][month] += employee.basic_pay
-            prog_report[settings.PAYROLL.PENSION_NAC][month] += employee.pension
-            prog_report[settings.PAYROLL.ERNIC_NAC][month] += employee.ernic
+        prog_report = report[employee.programme_code_id]
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
+        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
     vacancy_qs = Vacancy.objects.filter(
         cost_centre=cost_centre,
@@ -91,18 +93,15 @@ def payroll_forecast_report(
         salary = vacancy.fte * avg_salary
 
         periods = vacancy.pay_periods.first().periods
-        for i, month in enumerate(MONTHS):
-            if not periods[i]:
-                continue
+        periods = np.array(periods)
 
-            prog_report = report[vacancy.programme_code_id]
-            prog_report[settings.PAYROLL.VACANCY_NAC][month] += salary
+        prog_report = report[vacancy.programme_code_id]
+        prog_report[settings.PAYROLL.VACANCY_NAC] += periods * salary
 
     for programme_code in report:
-        for nac in report[programme_code]:
-            # Variable is here to please mypy.
-            forecast_months: MonthsDict = report[programme_code][nac]
-            print(forecast_months)
+        for nac, forecast in report[programme_code].items():
+            forecast_months: MonthsDict[float] = dict(zip(MONTHS, forecast))  # type: ignore
+
             yield PayrollForecast(
                 programme_code=programme_code,
                 natural_account_code=nac,
