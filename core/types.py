@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Literal, TypedDict
 
 
@@ -44,6 +45,3 @@ class MonthsDict[T](TypedDict):
     jan: T
     feb: T
     mar: T
-
-
-class MonthsIntDict(MonthsDict[int]): ...

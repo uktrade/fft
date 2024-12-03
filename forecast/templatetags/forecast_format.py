@@ -37,6 +37,11 @@ forecast_figure_cols = [
 ]
 
 
+@register.filter
+def format_money(value):
+    return f"{value / 100:,.2f}"
+
+
 @register.filter()
 def is_forecast_figure(_, column):
     if str(column) in forecast_figure_cols:

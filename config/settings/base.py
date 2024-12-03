@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
 from typing import NamedTuple
@@ -414,15 +415,12 @@ if SENTRY_DSN:
     )
 
 
-class Payroll(NamedTuple):
-    BASIC_PAY_NAC: str
-    PENSION_NAC: str
-    ERNIC_NAC: str
+@dataclass
+class Payroll:
+    BASIC_PAY_NAC: str | None = None
+    PENSION_NAC: str | None = None
+    ERNIC_NAC: str | None = None
+    VACANCY_NAC: str | None = None
 
 
-PAYROLL_DEFAULTS = {
-    "BASIC_PAY_NAC": None,
-    "PENSION_NAC": None,
-    "ERNIC_NAC": None,
-}
-PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default=PAYROLL_DEFAULTS))
+PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default={}))
