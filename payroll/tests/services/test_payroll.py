@@ -7,8 +7,9 @@ from ..factories import EmployeeFactory, PayElementTypeFactory
 
 
 def test_payroll_forecast(db):
-    SALARY_NAC = "77770001"
-    PENSION_NAC = "77770002"
+    # NOTE: These must match the PAYROLL.BASIC_PAY_NAC and PAYROLL.PENSION_NAC settings.
+    SALARY_NAC = "71111001"
+    PENSION_NAC = "71111002"
 
     salary_1 = PayElementTypeFactory.create(
         name="Salary 1",
@@ -88,7 +89,7 @@ def test_payroll_forecast(db):
 
     report = payroll_forecast_report(payroll_employees[0].cost_centre, financial_year)
 
-    report_by_name = {x["pay_element__type__group__name"]: x for x in report}
+    report_by_nac = {x["natural_account_code"]: x for x in report}
 
     # eN = employee (e.g. employee 1) / s = salary / p = pension
     # debit_amount - credit_amount
@@ -99,9 +100,9 @@ def test_payroll_forecast(db):
 
     # employee 3 and 4 are non-payroll (no basic pay)
 
-    assert float(report_by_name["Salary"]["period_1_sum"]) == pytest.approx(e1s + e2s)
-    assert float(report_by_name["Pension"]["period_1_sum"]) == pytest.approx(e1p + e2p)
-    assert float(report_by_name["Salary"]["period_2_sum"]) == pytest.approx(e1s)
-    assert float(report_by_name["Pension"]["period_2_sum"]) == pytest.approx(e1p)
-    assert float(report_by_name["Salary"]["period_3_sum"]) == pytest.approx(0)
-    assert float(report_by_name["Pension"]["period_3_sum"]) == pytest.approx(0)
+    assert float(report_by_nac[SALARY_NAC]["apr"]) == pytest.approx(e1s + e2s)
+    assert float(report_by_nac[PENSION_NAC]["apr"]) == pytest.approx(e1p + e2p)
+    assert float(report_by_nac[SALARY_NAC]["may"]) == pytest.approx(e1s)
+    assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(e1p)
+    assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(0)
+    assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
