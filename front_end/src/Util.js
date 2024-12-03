@@ -32,10 +32,11 @@ function getCookie(name) {
     return cookieValue;
 }
 
+const NumberFormat = new Intl.NumberFormat('en-GB'); 
+
 export const formatValue = (value) => {
-    let nfObject = new Intl.NumberFormat('en-GB'); 
     let pounds = Math.round(value)
-    return nfObject.format(pounds); 
+    return NumberFormat.format(pounds); 
 }
 
 /**

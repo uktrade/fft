@@ -1,9 +1,6 @@
-from django.db.models import Sum
 from rest_framework import serializers
 
-from core.utils.generic_helpers import get_current_financial_year
-
-from .models import BudgetMonthlyFigure, FinancialCode, ForecastMonthlyFigure
+from .models import FinancialCode, ForecastMonthlyFigure
 
 
 class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
@@ -25,13 +22,13 @@ class ForecastMonthlyFigureSerializer(serializers.ModelSerializer):
         return obj.financial_period.financial_period_code
 
     def get_actual(self, obj):
-        if obj.financial_year_id > get_current_financial_year():
+        if obj.financial_year_id > self.context["current_financial_year"]:
             return False
         return obj.financial_period.actual_loaded
 
 
 class FinancialCodeSerializer(serializers.ModelSerializer):
-    budget = serializers.SerializerMethodField("get_budget")
+    budget = serializers.IntegerField(source="yearly_budget_amount")
     monthly_figures = ForecastMonthlyFigureSerializer(
         many=True,
         read_only=True,
@@ -65,23 +62,3 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
 
     def get_nac_description(self, obj):
         return obj.natural_account_code.natural_account_code_description
-
-    def get_budget(self, obj):
-        financial_year = self.context["financial_year"]
-        budget = (
-            BudgetMonthlyFigure.objects.values(
-                "financial_code",
-                "financial_year",
-            )
-            .filter(
-                financial_code=obj.id,
-                financial_year_id=financial_year,
-                archived_status=None,
-            )
-            .annotate(yearly_amount=Sum("amount"))
-        )
-
-        if budget and "yearly_amount" in budget[0]:
-            return budget[0]["yearly_amount"]
-        else:
-            return 0
