@@ -340,8 +340,10 @@ function EditForecast() {
                   </div>
                 </div>
             }
-            <EditActionBar />          
-            <Table sheetUpdating={sheetUpdating} payrollData={window.payroll_forecast_data}/>
+            <EditActionBar />
+            <div className='scrollable'>
+              <Table sheetUpdating={sheetUpdating} payrollData={window.payroll_forecast_data}/>
+            </div>    
         </Fragment>
     );
 }
