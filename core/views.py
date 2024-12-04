@@ -1,4 +1,13 @@
+import csv
+import datetime as dt
+from functools import wraps
+
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.db import models
+from django.db.models import Q, Sum
+from django.db.models.functions import Concat
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
@@ -12,6 +21,7 @@ from core.utils.generic_helpers import (
     get_year_display,
     today_string,
 )
+from forecast.models import BudgetMonthlyFigure, FinancialPeriod
 
 
 @login_required()
@@ -99,3 +109,76 @@ def logout(request):
         logout(request)
 
     return redirect(reverse("index"))
+
+
+def report_view(func):
+    @wraps(func)
+    def view(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        if not request.user.is_superuser:
+            raise PermissionDenied
+
+        report_name, header, results = func(request, *args, **kwargs)
+
+        filename = f"{report_name}_{dt.datetime.now():%Y%m%d-%H%M%S}.csv"
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+
+        writer = csv.writer(response)
+        writer.writerow(header)
+        for result in results:
+            writer.writerow(result)
+
+        return response
+
+    return view
+
+
+@report_view
+def budget_report(request: HttpRequest, *args, **kwargs):
+    periods = FinancialPeriod.objects.all()
+
+    key_fields = [
+        "financial_code__cost_centre__cost_centre_code",
+        "financial_code__natural_account_code__natural_account_code",
+        "financial_code__programme__programme_code",
+        "financial_code__analysis1_code__analysis1_code",
+        "financial_code__analysis2_code__analysis2_code",
+        "financial_code__project_code__project_code",
+    ]
+
+    budget_per_month_annotation = {
+        period.period_short_name: Sum(
+            "amount", filter=Q(financial_period_id=period.pk), default=0
+        )
+        / 100
+        for period in periods
+    }
+
+    qs = (
+        BudgetMonthlyFigure.objects.select_related("financial_code")
+        .filter(
+            archived_status__isnull=True,
+            financial_year=request.current_financial_year,
+        )
+        .annotate(key=Concat(*key_fields, output_field=models.CharField()))
+        .values_list("key", *key_fields)
+        .annotate(
+            **budget_per_month_annotation | dict(total=Sum("amount", default=0) / 100),
+        )
+    )
+
+    header = [
+        "Key",
+        "Cost Centre",
+        "Natural Account",
+        "Programme",
+        "Analysis",
+        "Analysis2",
+        "Project",
+        *[period.period_short_name for period in periods],
+        "Total",
+    ]
+
+    return "budget-report", header, qs
