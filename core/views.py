@@ -1,8 +1,12 @@
-from functools import wraps
-import datetime as dt
 import csv
+import datetime as dt
+from functools import wraps
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.db import models
+from django.db.models import Q, Sum
+from django.db.models.functions import Concat
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -10,10 +14,6 @@ from django.views.generic.base import TemplateView
 from django_filters.views import FilterView
 from django_tables2.export.views import ExportMixin, TableExport
 from django_tables2.views import SingleTableMixin
-from django.core.exceptions import PermissionDenied
-from django.db.models.functions import Coalesce, Concat
-from django.db.models import Sum, Value, Q, F
-from django.db import models
 
 from core.utils.export_helpers import EXC_TAB_NAME_LEN
 from core.utils.generic_helpers import (
