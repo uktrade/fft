@@ -5,12 +5,12 @@ from payroll.templatetags.payroll_permissions import can_view_payroll
 
 
 class ViewPayrollTest(TestCase):
-    def test_can_view_payroll_when_superuser(self):
+    def test_can_edit_payroll_when_superuser(self):
         test_user, _ = get_user_model().objects.get_or_create(is_superuser=True)
 
         assert can_view_payroll(test_user)
 
-    def test_cannot_view_payroll_when_not_superuser(self):
+    def test_cannot_edit_payroll_when_not_superuser(self):
         test_user, _ = get_user_model().objects.get_or_create()
 
         assert not can_view_payroll(test_user)
