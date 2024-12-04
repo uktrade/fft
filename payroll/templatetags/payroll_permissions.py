@@ -5,5 +5,5 @@ register = template.Library()
 
 
 @register.simple_tag
-def can_view_payroll(user):
+def can_edit_payroll(user):
     return user.is_superuser
