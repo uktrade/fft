@@ -100,7 +100,7 @@ def payroll_forecast_report(
 
     for programme_code in report:
         for nac, forecast in report[programme_code].items():
-            forecast_months: MonthsDict[float] = dict(zip(MONTHS, forecast))  # type: ignore
+            forecast_months: MonthsDict[float] = dict(zip(MONTHS, forecast, strict=False))  # type: ignore
 
             yield PayrollForecast(
                 programme_code=programme_code,
