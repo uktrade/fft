@@ -6,6 +6,7 @@
     {% if table.tag %}
     <strong class="govuk-tag">{{ table.tag }}</strong>
     {% endif %}
+    <div class="scrollable">
     <table {% render_attrs table.attrs class="govuk-table" %}>
         <caption class="govuk-table__caption govuk-!-font-size-27">{{ table.attrs.caption }}</caption>
         {% block table.thead %}
@@ -70,6 +71,7 @@
         {% endif %}
         {% endblock table.tfoot %}
     </table>
+    </div>
 {% endblock table %}
 
 {% block pagination %}
