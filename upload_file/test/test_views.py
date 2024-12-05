@@ -18,8 +18,7 @@ from upload_file.test.factories import FileUploadFactory
     FILE_UPLOAD_HANDLERS=[
         "django.core.files.uploadhandler.MemoryFileUploadHandler",
         "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-    ],
-    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+    ]
 )
 class UploadedViewTests(BaseTestCase):
     def setUp(self):

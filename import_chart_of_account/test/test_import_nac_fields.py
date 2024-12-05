@@ -16,8 +16,7 @@ from upload_file.models import FileUpload
     FILE_UPLOAD_HANDLERS=[
         "django.core.files.uploadhandler.MemoryFileUploadHandler",
         "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-    ],
-    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+    ]
 )
 class ImportNACFieldsTest(BaseTestCase):
     def setUp(self):

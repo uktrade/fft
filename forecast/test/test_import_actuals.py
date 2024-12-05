@@ -51,8 +51,7 @@ TEST_PROGRAMME_CODE = "310940"
     FILE_UPLOAD_HANDLERS=[
         "django.core.files.uploadhandler.MemoryFileUploadHandler",
         "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-    ],
-    DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage",
+    ]
 )
 class ImportActualsTest(BaseTestCase):
     def setUp(self):

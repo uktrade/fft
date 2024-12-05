@@ -11,3 +11,5 @@ AUTHENTICATION_BACKENDS += [
 ASYNC_FILE_UPLOAD = False
 
 AXES_ENABLED = False
+
+STORAGES["default"]["BACKEND"] = "django.core.files.storage.FileSystemStorage"
