@@ -91,3 +91,22 @@ class FinancialYear(BaseModel):
 register(Permission, app=__package__, inherit=True)
 register(get_user_model(), app=__package__, inherit=True)
 register(Group, app=__package__, inherit=True)
+
+
+class PayUplift(models.Model):
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
+    apr = models.FloatField(default=1.0)
+    may = models.FloatField(default=1.0)
+    jun = models.FloatField(default=1.0)
+    jul = models.FloatField(default=1.0)
+    aug = models.FloatField(default=1.0)
+    sep = models.FloatField(default=1.0)
+    oct = models.FloatField(default=1.0)
+    nov = models.FloatField(default=1.0)
+    dec = models.FloatField(default=1.0)
+    jan = models.FloatField(default=1.0)
+    feb = models.FloatField(default=1.0)
+    mar = models.FloatField(default=1.0)
