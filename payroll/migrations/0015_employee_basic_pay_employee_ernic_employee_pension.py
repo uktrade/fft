@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("payroll", "0013_vacancy_fte_alter_vacancy_grade_vacancypayperiods_and_more"),
+        ("payroll", "0014_alter_vacancypayperiods_vacancy"),
     ]
 
     operations = [
