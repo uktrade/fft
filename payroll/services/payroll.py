@@ -134,11 +134,13 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
             return basic_pay["avg"]
 
         if basic_pay["count"]:
-            salaries.append(basic_pay["avg"])
+            salaries += list(employee_qs.values_list("basic_pay", flat=True))
+
+    if salaries:
+        return round(mean(salaries))  # pence
 
     # TODO: What do we do if there were no employees at all found at that grade?
-
-    return round(mean(salaries))  # pence
+    return 0
 
 
 class EmployeePayroll(TypedDict):
