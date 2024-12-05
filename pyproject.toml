@@ -44,7 +44,7 @@ django-import-export = "^3.3.07"
 dbt-copilot-python = "^0.2.1"
 django-log-formatter-asim = "^0.0.6"
 django-csp = "^3.8"
-psycopg = "^3.2.3"
+psycopg = {extras = ["binary"], version = "^3.2.3"}
 
 [tool.poetry.group.prod]
 optional = true
