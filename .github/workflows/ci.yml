@@ -40,6 +40,9 @@ jobs:
       - name: Install React app
         run: npm ci
 
+      - name: Run prettier
+        run: make prettier-check
+
       - name: Build images
         run: make build
 

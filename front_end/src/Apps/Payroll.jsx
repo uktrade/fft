@@ -61,7 +61,7 @@ function payrollReducer(payroll, action) {
                 return !action.enabled;
               }
               return period;
-            }
+            },
           );
           return {
             ...employeeRow,

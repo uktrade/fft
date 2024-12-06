@@ -1,6 +1,0 @@
-applications:
-  - name: fft
-    stack: cflinuxfs4
-    buildpacks:
-      - https://github.com/cloudfoundry/nodejs-buildpack.git
-      - https://github.com/cloudfoundry/python-buildpack.git
