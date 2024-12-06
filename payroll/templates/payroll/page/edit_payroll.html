@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-{% load breadcrumbs vite %}
+{% load breadcrumbs vite forecast_format %}
 
 {% block title %}Edit payroll{% endblock title %}
 
@@ -15,40 +15,39 @@
     <div id="payroll-app"></div>
 
     <h2 class="govuk-heading-m">Payroll forecast</h2>
+
     <div class="scrollable">
-      <table class="govuk-table">
-          <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                  <th scope="col" class="govuk-table__header">Programme code</th>
-                  <th scope="col" class="govuk-table__header">Natural code</th>
-                  <th scope="col" class="govuk-table__header">Pay type</th>
-                  {% for month in months %}
-                      <th scope="col" class="govuk-table__header">{{ month }}</th>
-                  {% endfor %}
-              </tr>
-          </thead>
-          <tbody class="govuk-table__body">
-              {% for row in payroll_forecast_report %}
-                  <tr class="govuk-table__row">
-                      <th scope="row" class="govuk-table__header">{{ row.programme_code }}</th>
-                      <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__natural_code }}</th>
-                      <th scope="row" class="govuk-table__header">{{ row.pay_element__type__group__name }}</th>
-                      <td class="govuk-table__cell">{{ row.period_1_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_2_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_3_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_4_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_5_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_6_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_7_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_8_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_9_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_10_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_11_sum }}</td>
-                      <td class="govuk-table__cell">{{ row.period_12_sum }}</td>
-                  </tr>
-              {% endfor %}
-          </tbody>
-      </table>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Programme code</th>
+                    <th scope="col" class="govuk-table__header">Natural account code</th>
+                    {% for month in months %}
+                        <th scope="col" class="govuk-table__header">{{ month }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for row in payroll_forecast_report %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ row.programme_code }}</th>
+                        <th scope="row" class="govuk-table__header">{{ row.natural_account_code }}</th>
+                        <td class="govuk-table__cell">£{{ row.apr|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.may|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.jun|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.jul|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.aug|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.sep|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.oct|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.nov|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.dec|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.jan|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.feb|format_money }}</td>
+                        <td class="govuk-table__cell">£{{ row.mar|format_money }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock content %}
 

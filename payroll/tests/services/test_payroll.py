@@ -1,107 +1,138 @@
+from statistics import mean
+
 import pytest
 
 from core.models import FinancialYear
-from payroll.services.payroll import employee_created, payroll_forecast_report
+from costcentre.test.factories import CostCentreFactory
+from payroll.services.payroll import (
+    employee_created,
+    payroll_forecast_report,
+    vacancy_created,
+)
 
-from ..factories import EmployeeFactory, PayElementTypeFactory
+from ..factories import EmployeeFactory, VacancyFactory
 
 
 def test_payroll_forecast(db):
-    SALARY_NAC = "77770001"
-    PENSION_NAC = "77770002"
+    # NOTE: These must match the PAYROLL.BASIC_PAY_NAC and PAYROLL.PENSION_NAC settings.
+    SALARY_NAC = "71111001"
+    PENSION_NAC = "71111002"
 
-    salary_1 = PayElementTypeFactory.create(
-        name="Salary 1",
-        group__name="Salary",
-        group__natural_code__natural_account_code=SALARY_NAC,
-    )
-    salary_2 = PayElementTypeFactory.create(
-        name="Salary 2",
-        group__name="Salary",
-        group__natural_code__natural_account_code=SALARY_NAC,
-    )
-    pension_1 = PayElementTypeFactory.create(
-        name="Pension 1",
-        group__name="Pension",
-        group__natural_code__natural_account_code=PENSION_NAC,
-    )
+    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
 
-    payroll_employees = EmployeeFactory.create_batch(
-        size=2,
-        cost_centre__cost_centre_code="123456",
+    # salary_1 = PayElementTypeFactory.create(
+    #     name="Salary 1",
+    #     group__name="Salary",
+    #     group__natural_code__natural_account_code=SALARY_NAC,
+    # )
+    # salary_2 = PayElementTypeFactory.create(
+    #     name="Salary 2",
+    #     group__name="Salary",
+    #     group__natural_code__natural_account_code=SALARY_NAC,
+    # )
+    # pension_1 = PayElementTypeFactory.create(
+    #     name="Pension 1",
+    #     group__name="Pension",
+    #     group__natural_code__natural_account_code=PENSION_NAC,
+    # )
+
+    payroll_employee_1 = EmployeeFactory.create(
+        cost_centre=cost_centre,
         programme_code__programme_code="123456",
         grade__grade="Grade 7",
+        basic_pay=195000,
+        pension=7550,
+        ernic=0,
+    )
+    payroll_employee_2 = EmployeeFactory.create(
+        cost_centre=cost_centre,
+        programme_code__programme_code="123456",
+        grade__grade="Grade 7",
+        basic_pay=152440,
+        pension=11525,
+        ernic=0,
     )
     # non-payroll employees
     _ = EmployeeFactory.create_batch(
         size=2,
-        cost_centre__cost_centre_code="123456",
+        cost_centre=cost_centre,
         programme_code__programme_code="123456",
         grade__grade="Grade 7",
     )
 
     # TODO: Consider an ergonomic way of avoiding this pattern all the time.
-    for x in payroll_employees:
-        employee_created(x)
+    employee_created(payroll_employee_1)
+    employee_created(payroll_employee_2)
 
-    payroll_employees[0].pay_element.create(
-        type=salary_1,
-        debit_amount=2000,
-        credit_amount=100,
-    )
-    payroll_employees[0].pay_element.create(
-        type=salary_2,
-        debit_amount=100,
-        credit_amount=50,
-    )
-    payroll_employees[0].pay_element.create(
-        type=pension_1,
-        debit_amount=75.5,
-        credit_amount=0,
+    # payroll_employees[0].pay_element.create(
+    #     type=salary_1,
+    #     debit_amount=2000,
+    #     credit_amount=100,
+    # )
+    # payroll_employees[0].pay_element.create(
+    #     type=salary_2,
+    #     debit_amount=100,
+    #     credit_amount=50,
+    # )
+    # payroll_employees[0].pay_element.create(
+    #     type=pension_1,
+    #     debit_amount=75.5,
+    #     credit_amount=0,
+    # )
+
+    # payroll_employees[1].pay_element.create(
+    #     type=salary_1,
+    #     debit_amount=1500,
+    #     credit_amount=55.6,
+    # )
+    # payroll_employees[1].pay_element.create(
+    #     type=salary_2,
+    #     debit_amount=80,
+    #     credit_amount=0,
+    # )
+    # payroll_employees[1].pay_element.create(
+    #     type=pension_1,
+    #     debit_amount=130.25,
+    #     credit_amount=15,
+    # )
+
+    vacancy = VacancyFactory.create(
+        cost_centre=cost_centre,
+        programme_code__programme_code="123456",
+        grade__grade="Grade 7",
+        fte=0.5,
     )
 
-    payroll_employees[1].pay_element.create(
-        type=salary_1,
-        debit_amount=1500,
-        credit_amount=55.6,
-    )
-    payroll_employees[1].pay_element.create(
-        type=salary_2,
-        debit_amount=80,
-        credit_amount=0,
-    )
-    payroll_employees[1].pay_element.create(
-        type=pension_1,
-        debit_amount=130.25,
-        credit_amount=15,
-    )
+    vacancy_created(vacancy)
 
     financial_year = FinancialYear.objects.current()
 
     # In April, both employees are paid.
     # In May, only the first employee is paid.
-    # In June, neither employee is paid.
-    payroll_employees[0].pay_periods.filter(year=financial_year).update(period_3=False)
-    payroll_employees[1].pay_periods.filter(year=financial_year).update(
+    # In June, neither employee is paid, but the vacancy is filled.
+    payroll_employee_1.pay_periods.filter(year=financial_year).update(period_3=False)
+    payroll_employee_2.pay_periods.filter(year=financial_year).update(
         period_2=False, period_3=False
     )
+    vacancy.pay_periods.filter(year=financial_year).update(period_3=True)
 
-    report = payroll_forecast_report(payroll_employees[0].cost_centre, financial_year)
+    report = payroll_forecast_report(cost_centre, financial_year)
 
-    report_by_name = {x["pay_element__type__group__name"]: x for x in report}
+    report_by_nac = {x["natural_account_code"]: x for x in report}
 
     # eN = employee (e.g. employee 1) / s = salary / p = pension
     # debit_amount - credit_amount
-    e1s = (2000 - 100) + (100 - 50)
-    e1p = 75.5 - 0
-    e2s = (1500 - 55.6) + (80 - 0)
-    e2p = 130.25 - 15
+    e1s = ((2000 - 100) + (100 - 50)) * 100
+    e1p = (75.5 - 0) * 100
+    e2s = ((1500 - 55.6) + (80 - 0)) * 100
+    e2p = (130.25 - 15) * 100
+    v1s = mean([e1s, e2s]) * 0.5
 
     # employee 3 and 4 are non-payroll (no basic pay)
 
-    assert float(report_by_name["Salary"]["period_1_sum"]) == pytest.approx(e1s + e2s)
-    assert float(report_by_name["Pension"]["period_1_sum"]) == pytest.approx(e1p + e2p)
-    assert float(report_by_name["Salary"]["period_2_sum"]) == pytest.approx(e1s)
-    assert float(report_by_name["Pension"]["period_2_sum"]) == pytest.approx(e1p)
-    assert float(report_by_name["Salary"]["period_3_sum"]) == pytest.approx(0)
-    assert float(report_by_name["Pension"]["period_3_sum"]) == pytest.approx(0)
+    assert float(report_by_nac[SALARY_NAC]["apr"]) == pytest.approx(e1s + e2s)
+    assert float(report_by_nac[PENSION_NAC]["apr"]) == pytest.approx(e1p + e2p)
+    assert float(report_by_nac[SALARY_NAC]["may"]) == pytest.approx(e1s)
+    assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(e1p)
+    assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(v1s)
+    assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
