@@ -1,7 +1,6 @@
 import datetime
 
 from django.contrib.admin.models import CHANGE, LogEntry
-from django.contrib.contenttypes.models import ContentType
 
 from core.models import FinancialYear
 
@@ -93,18 +92,14 @@ def log_object_change(
     obj=None,
 ):
     if obj:
-        content_type_id = ContentType.objects.get_for_model(obj).pk
-
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=requesting_user_id,
-            content_type_id=content_type_id,
-            object_id=obj.pk,
-            object_repr=str(obj),
             action_flag=CHANGE,
             change_message=f"{str(obj)} {message}",
+            queryset=[obj],
         )
     else:
-        LogEntry.objects.log_action(
+        LogEntry.objects.create(
             user_id=requesting_user_id,
             content_type_id=None,
             object_id=None,
