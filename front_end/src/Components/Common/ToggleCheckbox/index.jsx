@@ -2,8 +2,11 @@ export default function ToggleCheckbox({ toggle, handler, id, value, label }) {
   return (
     <>
       <div className="govuk-form-group">
-        <fieldset className="govuk-fieldset" aria-describedby='toggle-hint'>
-          <div className="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+        <fieldset className="govuk-fieldset" aria-describedby="toggle-hint">
+          <div
+            className="govuk-checkboxes govuk-checkboxes--small"
+            data-module="govuk-checkboxes"
+          >
             <div className="govuk-checkboxes__item">
               <input
                 className="govuk-checkboxes__input"
@@ -14,8 +17,11 @@ export default function ToggleCheckbox({ toggle, handler, id, value, label }) {
                 onChange={handler}
                 value={value}
               />
-              <label className="govuk-label govuk-checkboxes__label" htmlFor={id}>
-                { label }
+              <label
+                className="govuk-label govuk-checkboxes__label"
+                htmlFor={id}
+              >
+                {label}
               </label>
             </div>
           </div>

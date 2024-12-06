@@ -1,32 +1,40 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 const ActualsHeaderRow = () => {
-    const [numActuals, setNumActuals] = useState(0)
+  const [numActuals, setNumActuals] = useState(0);
 
-    useEffect(() => {
-        const timer = () => {
-                setTimeout(() => {
-                if (window.actuals) {
-                    if (window.actuals.length > 0) {
-                        setNumActuals(window.actuals.length)
-                    }
-                } else {
-                    timer()
-                }
-            }, 100);
+  useEffect(() => {
+    const timer = () => {
+      setTimeout(() => {
+        if (window.actuals) {
+          if (window.actuals.length > 0) {
+            setNumActuals(window.actuals.length);
+          }
+        } else {
+          timer();
         }
-        timer()
-    }, [])
+      }, 100);
+    };
+    timer();
+  }, []);
 
-    return (
-        <tr>
-            <th className="govuk-table__head meta-col" colSpan="9"></th>
-            {numActuals > 0 &&
-                <th id="actuals_header" className="govuk-table__head meta-col" colSpan={ numActuals }>Actuals</th>
-            }
-            <th className="govuk-table__head meta-col" colSpan={ 18 - numActuals }>Forecast</th>
-        </tr>
-    );
-}
+  return (
+    <tr>
+      <th className="govuk-table__head meta-col" colSpan="9"></th>
+      {numActuals > 0 && (
+        <th
+          id="actuals_header"
+          className="govuk-table__head meta-col"
+          colSpan={numActuals}
+        >
+          Actuals
+        </th>
+      )}
+      <th className="govuk-table__head meta-col" colSpan={18 - numActuals}>
+        Forecast
+      </th>
+    </tr>
+  );
+};
 
-export default ActualsHeaderRow
+export default ActualsHeaderRow;
