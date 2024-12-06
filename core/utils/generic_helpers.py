@@ -1,7 +1,6 @@
 import datetime
 
 from django.contrib.admin.models import CHANGE, LogEntry
-from django.contrib.contenttypes.models import ContentType
 
 from core.models import FinancialYear
 
@@ -87,28 +86,30 @@ def check_empty(value):
     return None
 
 
+class EmptyLogObject:
+    def __init__(self, app_label="generic", model_name="empty", pk=None):
+        self.pk = str(pk)
+        self._meta = type(
+            "meta", (), {"app_label": app_label, "model_name": model_name}
+        )
+
+
 def log_object_change(
     requesting_user_id,
     message,
     obj=None,
 ):
     if obj:
-        content_type_id = ContentType.objects.get_for_model(obj).pk
-
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=requesting_user_id,
-            content_type_id=content_type_id,
-            object_id=obj.pk,
-            object_repr=str(obj),
             action_flag=CHANGE,
             change_message=f"{str(obj)} {message}",
+            queryset=[obj],
         )
     else:
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=requesting_user_id,
-            content_type_id=None,
-            object_id=None,
-            object_repr="",
             action_flag=CHANGE,
             change_message=message,
+            queryset=[EmptyLogObject()],
         )
