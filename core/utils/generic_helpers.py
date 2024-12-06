@@ -86,14 +86,6 @@ def check_empty(value):
     return None
 
 
-class EmptyLogObject:
-    def __init__(self, app_label="generic", model_name="empty", pk=None):
-        self.pk = str(pk)
-        self._meta = type(
-            "meta", (), {"app_label": app_label, "model_name": model_name}
-        )
-
-
 def log_object_change(
     requesting_user_id,
     message,
@@ -107,9 +99,11 @@ def log_object_change(
             queryset=[obj],
         )
     else:
-        LogEntry.objects.log_actions(
+        LogEntry.objects.create(
             user_id=requesting_user_id,
+            content_type_id=None,
+            object_id=None,
+            object_repr="",
             action_flag=CHANGE,
             change_message=message,
-            queryset=[EmptyLogObject()],
         )
