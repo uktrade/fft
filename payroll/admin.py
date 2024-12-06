@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from payroll.services.payroll import employee_created
+from payroll.services.payroll import employee_created, vacancy_created
 
 from .models import (
     Employee,
@@ -8,6 +8,7 @@ from .models import (
     EmployeePayPeriods,
     PayElementType,
     PayElementTypeGroup,
+    Vacancy,
 )
 
 
@@ -75,3 +76,21 @@ class PayElementTypeGroupAdmin(admin.ModelAdmin):
         "name",
         "natural_code",
     ]
+
+
+@admin.register(Vacancy)
+class VacancyAdmin(admin.ModelAdmin):
+    list_display = [
+        "cost_centre",
+        "grade",
+        "programme_code",
+        "appointee_name",
+        "hiring_manager",
+        "hr_ref",
+    ]
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        if not change:
+            vacancy_created(obj)

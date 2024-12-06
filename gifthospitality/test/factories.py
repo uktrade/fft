@@ -5,6 +5,7 @@ from gifthospitality.models import (
     GiftAndHospitalityCategory,
     GiftAndHospitalityClassification,
     GiftAndHospitalityCompany,
+    Grade,
 )
 
 
@@ -42,3 +43,12 @@ class GiftsAndHospitalityCompanyFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = GiftAndHospitalityCompany
+
+
+class GradeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Grade
+        django_get_or_create = ("grade",)
+
+    grade = factory.Sequence(lambda n: f"Grade {n}")
+    gradedescription = factory.Sequence(lambda n: f"Description of Grade {n}")
