@@ -82,6 +82,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# mypy
+.mypy_cache/
 
 ### Django ###
 *.log
