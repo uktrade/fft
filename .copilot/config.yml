@@ -1,4 +1,4 @@
 repository: fft
 builder:
   name: paketobuildpacks/builder-jammy-full
-  version: 0.3.428
+  version: 0.3.414
