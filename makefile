@@ -102,15 +102,23 @@ ruff-check: # Run ruff in check mode
 ruff: # Run ruff 
 	$(run-host) ruff check --fix .
 
+prettier-check:
+	npx prettier . --check
+
+prettier:
+	npx prettier . --write
+
 check: # Run formatters to see if there are any errors
 	make ruff-check
 	make black-check
 	make isort-check
+	make prettier-check
 
 fix: # Run formatters to fix any issues that can be fixed automatically
 	make ruff
 	make black
 	make isort
+	make prettier
 
 # Front End
 webpack: # Run webpack

@@ -1,4 +1,6 @@
-.forecast-table-1, .forecast-table-2, .forecast-table-4 {
+.forecast-table-1,
+.forecast-table-2,
+.forecast-table-4 {
   .govuk-table tr td:first-child {
     min-width: 160px;
   }
@@ -58,13 +60,13 @@
   }
 }
 
-
 .meta-col {
-  text-align: left!important;
+  text-align: left !important;
 }
 
 .finance-table {
-  .govuk-table__cell, .govuk-table__head {
+  .govuk-table__cell,
+  .govuk-table__head {
     font-size: 16px;
   }
 }

@@ -1,29 +1,33 @@
-import React, {Fragment} from 'react'
-import { useSelector } from 'react-redux'
-import {
-    formatValue
-} from '../../Util'
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
+import { formatValue } from "../../Util";
 
 const AggregateValue = ({ rowIndex, actualsOnly, extraClasses }) => {
-    const cells = useSelector(state => state.allCells.cells[rowIndex]);
-    let className = extraClasses
+  const cells = useSelector((state) => state.allCells.cells[rowIndex]);
+  let className = extraClasses;
 
-    let total = 0
+  let total = 0;
 
-    for (let i = 1; i < 13; i++) {
-        if (!cells[i] || (actualsOnly && cells[i].isEditable))
-            continue
+  for (let i = 1; i < 13; i++) {
+    if (!cells[i] || (actualsOnly && cells[i].isEditable)) continue;
 
-        total += cells[i].amount
-    }
+    total += cells[i].amount;
+  }
 
-    if (total < 0) {
-        className +=' negative'
-    }
+  if (total < 0) {
+    className += " negative";
+  }
 
-    return (
-        <Fragment><span id={(actualsOnly ? 'to_date_total_' : 'year_total_') + rowIndex} className={className}>{formatValue(total / 100)}</span></Fragment>
-    );
-}
+  return (
+    <Fragment>
+      <span
+        id={(actualsOnly ? "to_date_total_" : "year_total_") + rowIndex}
+        className={className}
+      >
+        {formatValue(total / 100)}
+      </span>
+    </Fragment>
+  );
+};
 
-export default AggregateValue
+export default AggregateValue;

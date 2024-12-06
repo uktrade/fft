@@ -1,26 +1,20 @@
-import React, {Fragment} from 'react'
-import { useSelector } from 'react-redux'
+import React, { Fragment } from "react";
+import { useSelector } from "react-redux";
 
-import {
-    formatValue
-} from '../../Util'
+import { formatValue } from "../../Util";
 
-const CellValue = ({rowIndex, cellKey, format}) => {
-    const cell = useSelector(state => state.allCells.cells[rowIndex][cellKey]);
+const CellValue = ({ rowIndex, cellKey, format }) => {
+  const cell = useSelector((state) => state.allCells.cells[rowIndex][cellKey]);
 
-    const getValue = (value) => {
-        if (format) {
-            return formatValue(parseInt(value, 10)/100)
-        }
-
-        return value
+  const getValue = (value) => {
+    if (format) {
+      return formatValue(parseInt(value, 10) / 100);
     }
 
-    return (
-        <Fragment>
-            {getValue(cell.value)}
-        </Fragment>
-    )
-}
+    return value;
+  };
 
-export default CellValue
+  return <Fragment>{getValue(cell.value)}</Fragment>;
+};
+
+export default CellValue;

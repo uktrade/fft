@@ -1,35 +1,40 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import {
-    formatValue
-} from '../../Util'
+import React from "react";
+import { useSelector } from "react-redux";
+import { formatValue } from "../../Util";
 
-const TotalOverspendUnderspend = ({rowIndex, id}) => {
-    const rows = useSelector(state => state.allCells.cells);
+const TotalOverspendUnderspend = ({ rowIndex, id }) => {
+  const rows = useSelector((state) => state.allCells.cells);
 
-    let total = 0
-    let negative = ''
+  let total = 0;
+  let negative = "";
 
-    // eslint-disable-next-line
-    for (const row of rows) {
-        let rowTotal = 0
-        for (let i = 1; i < 13; i++) {
-            if (!row[i])
-                continue
+  // eslint-disable-next-line
+  for (const row of rows) {
+    let rowTotal = 0;
+    for (let i = 1; i < 13; i++) {
+      if (!row[i]) continue;
 
-            rowTotal += row[i].amount
-        }
-        let budget = row["budget"].value
-        total += budget - rowTotal
+      rowTotal += row[i].amount;
     }
-    
-    if (total < 0) {
-        negative ='negative'
-    }
+    let budget = row["budget"].value;
+    total += budget - rowTotal;
+  }
 
-    return (
-        <td id={id} className={"govuk-table__cell total-figure forecast-month-cell not-editable figure-cell " + negative }>{formatValue(total / 100)}</td>
-    );
-}
+  if (total < 0) {
+    negative = "negative";
+  }
 
-export default TotalOverspendUnderspend
+  return (
+    <td
+      id={id}
+      className={
+        "govuk-table__cell total-figure forecast-month-cell not-editable figure-cell " +
+        negative
+      }
+    >
+      {formatValue(total / 100)}
+    </td>
+  );
+};
+
+export default TotalOverspendUnderspend;

@@ -1,4 +1,3 @@
-
 .action-bar-wrapper {
   width: 100vw;
 }
@@ -16,8 +15,8 @@
   .action-bar-by {
     float: right;
     background-color: white;
-    border:16px solid govuk-colour("mid-grey");
-    padding:8px;
+    border: 16px solid govuk-colour("mid-grey");
+    padding: 8px;
     font-weight: bold;
     overflow: hidden;
   }
@@ -27,7 +26,7 @@
   }
 
   .action-bar-content {
-    border:16px solid govuk-colour("mid-grey");
+    border: 16px solid govuk-colour("mid-grey");
     border-top-width: 0;
     background-color: govuk-colour("light-grey");
     padding: 16px;
@@ -52,18 +51,18 @@
 
   .arrow-down {
     &:after {
-      content: '\25bc';
+      content: "\25bc";
       padding-left: 0.2em;
-      text-decoration: none!important;
+      text-decoration: none !important;
       color: #069;
     }
   }
 
   .arrow-up {
     &:after {
-      content: '\25b2';
+      content: "\25b2";
       padding-left: 0.2em;
-      text-decoration: none!important;
+      text-decoration: none !important;
       color: #069;
     }
   }

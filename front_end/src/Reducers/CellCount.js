@@ -1,21 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 // Use of this lib guarentees no state mutatation
 
 const cellCount = createSlice({
-    name: "cellCount",
-    slice: 'cellCount',
-    initialState: {
-        cellCount: 0
+  name: "cellCount",
+  slice: "cellCount",
+  initialState: {
+    cellCount: 0,
+  },
+  reducers: {
+    SET_CELL_COUNT: (state, action) => {
+      state.cellCount = action.payload.cellCount;
     },
-    reducers: {
-        SET_CELL_COUNT: (state, action) => {
-            state.cellCount = action.payload.cellCount
-        }
-    }
+  },
 });
 
-export const {
-    SET_CELL_COUNT,
-} = cellCount.actions;
+export const { SET_CELL_COUNT } = cellCount.actions;
 
 export default cellCount.reducer;

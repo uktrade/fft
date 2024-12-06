@@ -1,59 +1,62 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from "react";
+import { useSelector } from "react-redux";
 
-const ToggleCell = ({rowIndex, colName, children}) => {
+const ToggleCell = ({ rowIndex, colName, children }) => {
+  let changed = false;
 
-    let changed = false
-
-    const checkValue = (hiddenCols) => {
-        if (hiddenCols.indexOf(colName) > -1) {
-            changed = true
-            return false
-        } else if (changed) {
-            changed = false
-            return false
-        }
-
-        return true
+  const checkValue = (hiddenCols) => {
+    if (hiddenCols.indexOf(colName) > -1) {
+      changed = true;
+      return false;
+    } else if (changed) {
+      changed = false;
+      return false;
     }
 
-    let selectChanged = false
+    return true;
+  };
 
-    const checkSelectRow = (selectedRow) => {
-        if (selectedRow === rowIndex) {
-            selectChanged = true
-            return false
-        } else if (selectChanged) {
-            selectChanged = false
-            return false
-        }
+  let selectChanged = false;
 
-        return true
+  const checkSelectRow = (selectedRow) => {
+    if (selectedRow === rowIndex) {
+      selectChanged = true;
+      return false;
+    } else if (selectChanged) {
+      selectChanged = false;
+      return false;
     }
 
-    const selectedRow = useSelector(state => state.selected.selectedRow, checkSelectRow)
-    const allSelected = useSelector(state => state.selected.all)
-    const hiddenCols = useSelector(state => state.hiddenCols.hiddenCols, checkValue)
+    return true;
+  };
 
-    const isSelected = () => {
-        if (allSelected) {
-            return true
-        }
+  const selectedRow = useSelector(
+    (state) => state.selected.selectedRow,
+    checkSelectRow,
+  );
+  const allSelected = useSelector((state) => state.selected.all);
+  const hiddenCols = useSelector(
+    (state) => state.hiddenCols.hiddenCols,
+    checkValue,
+  );
 
-        return selectedRow === rowIndex
+  const isSelected = () => {
+    if (allSelected) {
+      return true;
     }
 
-    const getClasses = () => {
-        return "govuk-table__cell forecast-month-cell not-editable " + (isSelected() ? 'selected ' : '')  + (hiddenCols.indexOf(colName) > -1 ? 'hidden' : '')
-    }
+    return selectedRow === rowIndex;
+  };
 
+  const getClasses = () => {
     return (
-        <td className={getClasses()}>
-            {children}
-        </td>
+      "govuk-table__cell forecast-month-cell not-editable " +
+      (isSelected() ? "selected " : "") +
+      (hiddenCols.indexOf(colName) > -1 ? "hidden" : "")
     );
-}
+  };
 
-export default ToggleCell
+  return <td className={getClasses()}>{children}</td>;
+};
 
-
+export default ToggleCell;
