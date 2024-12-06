@@ -12,7 +12,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
 from core.export_data import export_logentry_iterator
-from core.models import CommandLog, FinancialYear
+from core.models import CommandLog, FinancialYear, PayUplift
 from core.utils.export_helpers import (
     export_csv_from_import,
     export_to_csv,
@@ -368,6 +368,25 @@ class CustomLogModelAdmin(AdminReadOnly, AdminExport):
         return False
 
 
+class PayUpliftAdmin(admin.ModelAdmin):
+    list_display = (
+        "financial_year",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec",
+        "jan",
+        "feb",
+        "mar",
+    )
+
+
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(FinancialYear, FinancialYearAdmin)
 admin.site.register(CommandLog, CustomLogModelAdmin)
+admin.site.register(PayUplift, PayUpliftAdmin)
