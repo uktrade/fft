@@ -19,7 +19,6 @@ def assign_perm(perm, user, cost_centre):
         user_id=user.id,
         action_flag=CHANGE,
         change_message="Cost Centre permission was assigned",
-        single_object=True,
         queryset=[cost_centre],
     )
 
