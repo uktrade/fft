@@ -37,7 +37,7 @@ export function getVacancyData() {
 export function postVacancyData(vacancyData) {
   return postData(
     getPayrollApiUrl() + "vacancies/",
-    JSON.stringify(vacancyData)
+    JSON.stringify(vacancyData),
   );
 }
 
