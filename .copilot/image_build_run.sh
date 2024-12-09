@@ -10,7 +10,7 @@ grep -v '^#' .env.ci > .env
 
 # Set export all variables
 set -o allexport
-# Source the .env file
+# Source .env file
 # shellcheck source=/dev/null
 . ./.env
 # Unset exporting all variables
