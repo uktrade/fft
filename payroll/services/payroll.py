@@ -76,7 +76,14 @@ def payroll_forecast_report(
         pay_periods__year=financial_year,
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
-    pay_uplift = pay_uplift_to_numpy_array(pay_uplift_obj)
+
+    pay_uplift = (
+        np.array(
+            PayUplift.objects.filter(financial_year=financial_year).first().periods
+        )
+        if pay_uplift_obj is not None
+        else np.ones(12)
+    )
 
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
@@ -112,28 +119,6 @@ def payroll_forecast_report(
                 natural_account_code=nac,
                 **forecast_months,
             )
-
-
-def pay_uplift_to_numpy_array(instance):
-    if instance is None:
-        return np.ones(12)
-
-    fields = [
-        "apr",
-        "may",
-        "jun",
-        "jul",
-        "aug",
-        "sep",
-        "oct",
-        "nov",
-        "dec",
-        "jan",
-        "feb",
-        "mar",
-    ]
-
-    return np.array([getattr(instance, field, 1.0) for field in fields])
 
 
 # TODO (FFT-131): Apply caching to the average salary calculation

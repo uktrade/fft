@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group, Permission
 from django.db import models
 from simple_history import register
 
+from core.constants import MONTHS
+
 from .metamodels import BaseModel
 
 
@@ -88,6 +90,10 @@ class FinancialYear(BaseModel):
 
 
 class PayUplift(models.Model):
+    @property
+    def periods(self) -> list[float]:
+        return [getattr(self, month) for month in MONTHS]
+
     financial_year = models.ForeignKey(
         FinancialYear,
         on_delete=models.PROTECT,
