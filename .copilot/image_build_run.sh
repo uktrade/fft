@@ -4,6 +4,6 @@
 set -e
 
 # Add commands below to run inside the container after all the other buildpacks have been applied
-export $(grep -v '^#' .env.ci | xargs)
+export DJANGO_SETTINGS_MODULE=config.settings.prod
 
 python manage.py collectstatic --noinput
