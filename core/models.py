@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group, Permission
 from django.db import models
 from simple_history import register
 
+from core.constants import MONTHS
+
 from .metamodels import BaseModel
 
 
@@ -85,6 +87,29 @@ class FinancialYear(BaseModel):
 
     def __str__(self):
         return str(self.financial_year_display)
+
+
+class PayUplift(models.Model):
+    @property
+    def periods(self) -> list[float]:
+        return [getattr(self, month) for month in MONTHS]
+
+    financial_year = models.ForeignKey(
+        FinancialYear,
+        on_delete=models.PROTECT,
+    )
+    apr = models.FloatField(default=1.0)
+    may = models.FloatField(default=1.0)
+    jun = models.FloatField(default=1.0)
+    jul = models.FloatField(default=1.0)
+    aug = models.FloatField(default=1.0)
+    sep = models.FloatField(default=1.0)
+    oct = models.FloatField(default=1.0)
+    nov = models.FloatField(default=1.0)
+    dec = models.FloatField(default=1.0)
+    jan = models.FloatField(default=1.0)
+    feb = models.FloatField(default=1.0)
+    mar = models.FloatField(default=1.0)
 
 
 # Track changes to permissions
