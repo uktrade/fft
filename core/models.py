@@ -4,7 +4,6 @@ from django.db import models
 from simple_history import register
 
 from core.constants import MONTHS
-from costcentre.models import CostCentre
 
 from .metamodels import BaseModel
 
@@ -125,7 +124,7 @@ class Attrition(PayModifiers):
         verbose_name_plural = "attrition"
 
     cost_centre = models.ForeignKey(
-        CostCentre, on_delete=models.PROTECT, null=True, blank=True
+        "costcentre.CostCentre", on_delete=models.PROTECT, null=True, blank=True
     )
 
 
