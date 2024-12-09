@@ -9,7 +9,7 @@ from django.db import transaction
 from django.db.models import Avg, Count, Q
 
 from core.constants import MONTHS
-from core.models import FinancialYear
+from core.models import FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
@@ -75,9 +75,21 @@ def payroll_forecast_report(
         cost_centre=cost_centre,
         pay_periods__year=financial_year,
     )
+    pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
+
+    pay_uplift = (
+        np.array(
+            PayUplift.objects.filter(financial_year=financial_year).first().periods
+        )
+        if pay_uplift_obj is not None
+        else np.ones(12)
+    )
+
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
         periods = np.array(periods)
+
+        periods = periods * pay_uplift
 
         prog_report = report[employee.programme_code_id]
         prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
