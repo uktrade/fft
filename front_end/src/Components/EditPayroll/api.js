@@ -21,6 +21,27 @@ export function postPayrollData(payrollData) {
 }
 
 /**
+ * Fetch vacancy data and return it as a promise.
+ * @returns {Promise<types.VacancyData[]>} A promise resolving to an array of objects containing vacancy information.
+ */
+export function getVacancyData() {
+  return getData(getPayrollApiUrl() + "vacancies/").then((data) => data.data);
+}
+
+/**
+ * Post modified vacancy data.
+ *
+ * @param {types.VacancyData[]} vacancyData - Vacancy data to be sent.
+ * @returns {import("../../Util").PostDataResponse} Updated vacancy data received.
+ */
+export function postVacancyData(vacancyData) {
+  return postData(
+    getPayrollApiUrl() + "vacancies/",
+    JSON.stringify(vacancyData),
+  );
+}
+
+/**
  * Return the payroll API URL.
  *
  * This function relies on the `costCentreCode` and `financialYear` being available on

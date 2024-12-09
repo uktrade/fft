@@ -171,10 +171,8 @@ export const processForecastData = (
       let overrideAmount = null;
 
       if (isPayrollEnabled && mappedPayrollData[forecastKey]) {
-        const period = `period_${parseInt(key) + 1}_sum`;
-        // TODO (FFT-99): Decide on decimal vs pence
-        // Old code stores monetary values in pence whereas new code has used decimals.
-        overrideAmount = mappedPayrollData[forecastKey][period] * 100;
+        const period = months[parseInt(key)];
+        overrideAmount = mappedPayrollData[forecastKey][period];
       }
 
       cells[monthlyFigure.month] = {
@@ -202,7 +200,7 @@ const processPayrollData = (payrollData) => {
   for (const [key, value] of Object.entries(payrollData)) {
     const generatedKey = makeFinancialCodeKey(
       value.programme_code,
-      value.pay_element__type__group__natural_code,
+      value.natural_account_code,
     );
 
     results[generatedKey] = value;
