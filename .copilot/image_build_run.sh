@@ -3,7 +3,7 @@
 # Exit early if something goes wrong
 set -e
 
-export DJANGO_SETTINGS_MODULE=config.settings.prod
+export DJANGO_SETTINGS_MODULE=config.settings.ci
 
 cp .env.ci .env
 
