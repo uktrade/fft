@@ -89,7 +89,10 @@ class FinancialYear(BaseModel):
         return str(self.financial_year_display)
 
 
-class PayUplift(models.Model):
+class PayModifiers(models.Model):
+    class Meta:
+        abstract = True
+
     @property
     def periods(self) -> list[float]:
         return [getattr(self, month) for month in MONTHS]
@@ -110,6 +113,19 @@ class PayUplift(models.Model):
     jan = models.FloatField(default=1.0)
     feb = models.FloatField(default=1.0)
     mar = models.FloatField(default=1.0)
+
+
+class PayUplift(PayModifiers):
+    pass
+
+
+class Attrition(PayModifiers):
+    class Meta:
+        verbose_name_plural = "attrition"
+
+    cost_centre = models.ForeignKey(
+        "costcentre.CostCentre", on_delete=models.PROTECT, null=True, blank=True
+    )
 
 
 # Track changes to permissions
