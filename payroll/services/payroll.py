@@ -1,4 +1,6 @@
+import operator
 from collections import defaultdict
+from itertools import accumulate
 from statistics import mean
 from typing import Iterator, TypedDict
 
@@ -9,7 +11,7 @@ from django.db import transaction
 from django.db.models import Avg, Count, Q
 
 from core.constants import MONTHS
-from core.models import FinancialYear, PayUplift
+from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
@@ -76,20 +78,21 @@ def payroll_forecast_report(
         pay_periods__year=financial_year,
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
+    attrition_obj = get_attrition_instance(financial_year, cost_centre)
 
     pay_uplift = (
-        np.array(
-            PayUplift.objects.filter(financial_year=financial_year).first().periods
-        )
-        if pay_uplift_obj is not None
-        else np.ones(12)
+        np.array(pay_uplift_obj.periods) if pay_uplift_obj is not None else np.ones(12)
     )
+    attrition = (
+        np.array(attrition_obj.periods) if attrition_obj is not None else np.ones(12)
+    )
+    attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
         periods = np.array(periods)
 
-        periods = periods * pay_uplift
+        periods = periods * pay_uplift * attrition_accumulate
 
         prog_report = report[employee.programme_code_id]
         prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
@@ -119,6 +122,19 @@ def payroll_forecast_report(
                 natural_account_code=nac,
                 **forecast_months,
             )
+
+
+def get_attrition_instance(financial_year, cost_centre):
+    instance = Attrition.objects.filter(
+        financial_year=financial_year, cost_centre=cost_centre
+    ).first()
+
+    if instance is not None:
+        return instance
+
+    return Attrition.objects.filter(
+        financial_year=financial_year, cost_centre=None
+    ).first()
 
 
 # TODO (FFT-131): Apply caching to the average salary calculation

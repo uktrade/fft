@@ -121,6 +121,9 @@ class PayUplift(PayModifiers):
 
 
 class Attrition(PayModifiers):
+    class Meta:
+        verbose_name_plural = "attrition"
+
     cost_centre = models.ForeignKey(
         CostCentre, on_delete=models.PROTECT, null=True, blank=True
     )
