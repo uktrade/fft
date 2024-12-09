@@ -5,15 +5,12 @@ set -ex
 
 # Add commands below to run inside the container after all the other buildpacks have been applied
 
-# Create .env file from .env.ci file with comments stripped out
-grep -v '^#' .env.ci > .env
-
 # Set export all variables
 set -o allexport
-# Source .env file
+# Source .env.ci as the env file for building
 # shellcheck source=/dev/null
-. ./.env
-# Unset exporting all variables
+. ./.env.ci
+# Unset export all variables
 set +o allexport
 
 python manage.py collectstatic --noinput
