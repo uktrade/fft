@@ -134,6 +134,7 @@ class Attrition(PayModifiers):
                     "financial_year",
                     "cost_centre",
                 ],
+                nulls_distinct=False,
                 name="unique_attrition",
             ),
         )
