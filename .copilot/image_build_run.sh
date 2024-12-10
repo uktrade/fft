@@ -10,3 +10,6 @@ cp .env.ci .env
 # Add commands below to run inside the container after all the other buildpacks have been applied
 
 python manage.py collectstatic --noinput
+
+# Cleanup
+rm .env
