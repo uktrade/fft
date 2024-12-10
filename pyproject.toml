@@ -39,19 +39,12 @@ requests = "^2.32.0"
 redis = "^5.0.3"
 granian = "^1.6.3"
 numpy = "^2.1.3"
-
-# Are these packages still needed?
-django-import-export = "^3.3.07"
-dbt-copilot-python = "^0.2.1"
-django-log-formatter-asim = "^0.0.6"
 django-csp = "^3.8"
-psycopg = {extras = ["binary"], version = "^3.2.3"}
-
-[tool.poetry.group.prod]
-optional = true
-
-[tool.poetry.group.prod.dependencies]
+psycopg = { extras = ["binary"], version = "^3.2.3" }
 django-audit-log-middleware = "^0.0.5"
+dbt-copilot-python = "^0.2.1"
+django-import-export = "^3.3.07"
+django-log-formatter-asim = "^0.0.6"
 
 [tool.poetry.group.dev]
 optional = true
