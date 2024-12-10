@@ -80,12 +80,8 @@ def payroll_forecast_report(
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
 
-    pay_uplift = (
-        np.array(pay_uplift_obj.periods) if pay_uplift_obj is not None else np.ones(12)
-    )
-    attrition = (
-        np.array(attrition_obj.periods) if attrition_obj is not None else np.ones(12)
-    )
+    pay_uplift = np.array(pay_uplift_obj.periods) if pay_uplift_obj else np.ones(12)
+    attrition = np.array(attrition_obj.periods) if attrition_obj else np.ones(12)
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
     for employee in employee_qs.iterator():
@@ -124,12 +120,14 @@ def payroll_forecast_report(
             )
 
 
-def get_attrition_instance(financial_year, cost_centre):
+def get_attrition_instance(
+    financial_year: FinancialYear, cost_centre: CostCentre
+) -> Attrition | None:
     instance = Attrition.objects.filter(
         financial_year=financial_year, cost_centre=cost_centre
     ).first()
 
-    if instance is not None:
+    if instance:
         return instance
 
     return Attrition.objects.filter(

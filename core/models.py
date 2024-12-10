@@ -98,8 +98,7 @@ class PayModifiers(models.Model):
         return [getattr(self, month) for month in MONTHS]
 
     financial_year = models.ForeignKey(
-        FinancialYear,
-        on_delete=models.PROTECT,
+        FinancialYear, on_delete=models.PROTECT, unique=True
     )
     apr = models.FloatField(default=1.0)
     may = models.FloatField(default=1.0)
@@ -124,7 +123,11 @@ class Attrition(PayModifiers):
         verbose_name_plural = "attrition"
 
     cost_centre = models.ForeignKey(
-        "costcentre.CostCentre", on_delete=models.PROTECT, null=True, blank=True
+        "costcentre.CostCentre",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        unique=True,
     )
 
 
