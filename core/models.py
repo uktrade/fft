@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from simple_history import register
 
@@ -123,6 +124,14 @@ class PayUplift(PayModifiers):
             ),
         )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self._meta.get_fields():
+            if isinstance(field, models.FloatField):
+                validator = MinValueValidator(1.0)
+                if validator not in field.validators:
+                    field.validators.append(validator)
+
 
 class Attrition(PayModifiers):
     class Meta:
@@ -138,6 +147,14 @@ class Attrition(PayModifiers):
                 name="unique_attrition",
             ),
         )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self._meta.get_fields():
+            if isinstance(field, models.FloatField):
+                validator = MaxValueValidator(1.0)
+                if validator not in field.validators:
+                    field.validators.append(validator)
 
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
