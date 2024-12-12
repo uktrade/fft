@@ -149,7 +149,7 @@ class Attrition(PayModifiers):
     def clean(self):
         if not all(attrition <= 1.0 for attrition in self.periods):
             raise ValidationError(
-                "Monthly pay uplifts must be greater than or equal to 1.0"
+                "Monthly attrition must be less than or equal to 1.0"
             )
 
     cost_centre = models.ForeignKey(
