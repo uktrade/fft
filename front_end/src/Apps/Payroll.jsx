@@ -9,6 +9,7 @@ import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
+import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
@@ -114,7 +115,9 @@ export default function Payroll() {
             Add Vacancy
           </a>
         </Tab>
-        <Tab label="Pay Modifiers" key="2"></Tab>
+        <Tab label="Pay Modifiers" key="2">
+          <EditPayModifier />
+        </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll

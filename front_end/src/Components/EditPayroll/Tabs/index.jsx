@@ -29,7 +29,6 @@ export default function Tabs({ children }) {
             key={index}
             id="dashboard"
           >
-            <h2 className="govuk-heading-m">{tab.props.label}</h2>
             {tab.props.children}
           </div>
         ))}

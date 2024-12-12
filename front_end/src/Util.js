@@ -17,6 +17,10 @@ export const months = [
   "mar",
 ];
 
+export const monthsToTitleCase = months.map(
+  (x) => x[0].toUpperCase() + x.slice(1),
+);
+
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== "") {
