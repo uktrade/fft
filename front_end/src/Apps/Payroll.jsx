@@ -8,6 +8,7 @@ import {
 import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
+import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
@@ -83,33 +84,38 @@ export default function Payroll() {
           </div>
         </div>
       )}
-      <h2 className="govuk-heading-m">Payroll</h2>
-      <PayrollTable
-        payroll={payroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-        RowComponent={EmployeeRow}
-      />
-      <h2 className="govuk-heading-m">Non-payroll</h2>
-      <PayrollTable
-        payroll={nonPayroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-        RowComponent={EmployeeRow}
-      />
-      <h2 className="govuk-heading-m">Vacancies</h2>
-      <PayrollTable
-        payroll={vacancies}
-        headers={vacancyHeaders}
-        onTogglePayPeriods={handleToggleVacancyPayPeriods}
-        RowComponent={VacancyRow}
-      />
-      <a
-        className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
-        href={window.addVacancyUrl}
-      >
-        Add Vacancy
-      </a>
+      <Tabs>
+        <Tab label="Dashboard" key="1">
+          <h2 className="govuk-heading-m">Payroll</h2>
+          <PayrollTable
+            payroll={payroll}
+            headers={payrollHeaders}
+            onTogglePayPeriods={handleTogglePayPeriods}
+            RowComponent={EmployeeRow}
+          />
+          <h2 className="govuk-heading-m">Non-payroll</h2>
+          <PayrollTable
+            payroll={nonPayroll}
+            headers={payrollHeaders}
+            onTogglePayPeriods={handleTogglePayPeriods}
+            RowComponent={EmployeeRow}
+          />
+          <h2 className="govuk-heading-m">Vacancies</h2>
+          <PayrollTable
+            payroll={vacancies}
+            headers={vacancyHeaders}
+            onTogglePayPeriods={handleToggleVacancyPayPeriods}
+            RowComponent={VacancyRow}
+          />
+          <a
+            className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
+            href={window.addVacancyUrl}
+          >
+            Add Vacancy
+          </a>
+        </Tab>
+        <Tab label="Pay Modifiers" key="2"></Tab>
+      </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
