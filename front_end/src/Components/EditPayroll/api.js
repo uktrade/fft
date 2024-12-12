@@ -42,6 +42,16 @@ export function postVacancyData(vacancyData) {
 }
 
 /**
+ * Fetch pay modifier data and return it as a promise.
+ * @returns {Promise<types.PayModifierData[]>} A promise resolving to an array of objects containing pay modifier information.
+ */
+export function getPayModifierData() {
+  return getData(getPayrollApiUrl() + "pay_modifiers/").then(
+    (data) => data.data,
+  );
+}
+
+/**
  * Return the payroll API URL.
  *
  * This function relies on the `costCentreCode` and `financialYear` being available on

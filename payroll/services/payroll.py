@@ -329,3 +329,36 @@ def update_vacancies_data(
         )
         pay_periods.periods = vacancy["pay_periods"]
         pay_periods.save()
+
+
+class PayModifiers(TypedDict):
+    id: int
+    pay_modifiers: list[float]
+
+
+def get_pay_modifiers_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> Iterator[PayModifiers]:
+    qs = Attrition.objects.filter(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+    )
+    for obj in qs:
+        yield PayModifiers(
+            id=obj.pk,
+            pay_modifiers=[
+                obj.apr,
+                obj.may,
+                obj.jun,
+                obj.jul,
+                obj.aug,
+                obj.sep,
+                obj.oct,
+                obj.nov,
+                obj.dec,
+                obj.jan,
+                obj.feb,
+                obj.mar,
+            ],
+        )

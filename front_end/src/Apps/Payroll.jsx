@@ -13,6 +13,7 @@ import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
+const initialPayModifiersState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -22,6 +23,10 @@ export default function Payroll() {
   const [vacancies, dispatchVacancies] = useReducer(
     vacanciesReducer,
     initialVacanciesState,
+  );
+  const [payModifiers, dispatchPayModifiers] = useReducer(
+    payModifiersReducer,
+    initialPayModifiersState,
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -36,6 +41,9 @@ export default function Payroll() {
     api
       .getVacancyData()
       .then((data) => dispatchVacancies({ type: "fetched", data }));
+    api
+      .getPayModifierData()
+      .then((data) => dispatchPayModifiers({ type: "fetched", data }));
   }, []);
 
   // Computed properties
@@ -116,7 +124,7 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay Modifiers" key="2">
-          <EditPayModifier />
+          <EditPayModifier data={payModifiers} />
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
@@ -147,6 +155,14 @@ const positionReducer = (data, action) => {
         }
         return row;
       });
+    }
+  }
+};
+
+const payModifiersReducer = (data, action) => {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
     }
   }
 };

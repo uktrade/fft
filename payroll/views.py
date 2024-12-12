@@ -79,6 +79,14 @@ class VacancyView(PositionView):
         )
 
 
+class PayModifierView(PositionView):
+    def get_data(self):
+        return payroll_service.get_pay_modifiers_data(
+            self.cost_centre,
+            self.financial_year,
+        )
+
+
 def redirect_edit_payroll(cost_centre_code, financial_year):
     return redirect(
         "payroll:edit",
