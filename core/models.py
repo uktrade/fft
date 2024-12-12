@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.forms import ValidationError
 from simple_history import register
 
 from core.constants import MONTHS
@@ -124,13 +124,11 @@ class PayUplift(PayModifiers):
             ),
         )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self._meta.get_fields():
-            if isinstance(field, models.FloatField):
-                validator = MinValueValidator(1.0)
-                if validator not in field.validators:
-                    field.validators.append(validator)
+    def clean(self):
+        if not all(pay_uplift >= 1.0 for pay_uplift in self.periods):
+            raise ValidationError(
+                "Monthly pay uplifts must be greater than or equal to 1.0"
+            )
 
 
 class Attrition(PayModifiers):
@@ -148,13 +146,11 @@ class Attrition(PayModifiers):
             ),
         )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self._meta.get_fields():
-            if isinstance(field, models.FloatField):
-                validator = MaxValueValidator(1.0)
-                if validator not in field.validators:
-                    field.validators.append(validator)
+    def clean(self):
+        if not all(attrition <= 1.0 for attrition in self.periods):
+            raise ValidationError(
+                "Monthly pay uplifts must be greater than or equal to 1.0"
+            )
 
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
