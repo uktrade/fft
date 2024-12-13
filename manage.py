@@ -2,6 +2,7 @@
 import os
 import sys
 
+
 def initialize_debugpy():
     import debugpy
 
@@ -31,4 +32,3 @@ if __name__ == "__main__":
     if ENABLE_DEBUGPY and ENABLE_DEBUGPY.lower() == "true":
         initialize_debugpy()
     main()
-
