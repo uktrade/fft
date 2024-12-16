@@ -86,6 +86,13 @@ class PayModifierView(PositionView):
             self.financial_year,
         )
 
+    def post_data(self, data):
+        return payroll_service.update_pay_modifiers_data(
+            self.cost_centre,
+            self.financial_year,
+            data,
+        )
+
 
 def redirect_edit_payroll(cost_centre_code, financial_year):
     return redirect(

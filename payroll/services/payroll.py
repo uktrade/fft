@@ -362,3 +362,41 @@ def get_pay_modifiers_data(
                 obj.mar,
             ],
         )
+
+
+@transaction.atomic
+def update_pay_modifiers_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+    data: list[PayModifiers],
+) -> None:
+    """Update pay modifiers for a given year and cost centre using the provided list.
+
+    This function is wrapped with a transaction, so if any of the pay modifier updates fail,
+    the whole batch will be rolled back.
+
+    Raises:
+        ValueError: If a pay modifier id is empty.
+        ValueError: If there are not 12 items in the pay_modifiers list.
+        ValueError: If any of the pay_periods are not of type float.
+    """
+
+    for pay_modifier in data:
+        if not pay_modifier["id"]:
+            raise ValueError("id is empty")
+
+        if len(pay_modifier["pay_modifiers"]) != 12:
+            raise ValueError("pay_modifiers list should be of length 12")
+
+        if not all(isinstance(x, float) for x in pay_modifier["pay_modifiers"]):
+            raise ValueError("pay_modifiers items should be of type float")
+
+        attrition = Attrition.objects.get(
+            cost_centre=cost_centre,
+            financial_year=financial_year,
+        )
+
+        for index, month in enumerate(MONTHS):
+            setattr(attrition, month, pay_modifier["pay_modifiers"][index])
+
+        attrition.save()

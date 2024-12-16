@@ -2,6 +2,9 @@ import { getData, postData } from "../../Util";
 
 import * as types from "./types";
 
+const vacanciesSlug = "vacancies/";
+const payModifiersSlug = "pay_modifiers/";
+
 /**
  * Fetch payroll data and return it as a promise.
  * @returns {Promise<types.PayrollData[]>} A promise resolving to an array of objects containing employee information.
@@ -25,7 +28,7 @@ export function postPayrollData(payrollData) {
  * @returns {Promise<types.VacancyData[]>} A promise resolving to an array of objects containing vacancy information.
  */
 export function getVacancyData() {
-  return getData(getPayrollApiUrl() + "vacancies/").then((data) => data.data);
+  return getData(getPayrollApiUrl() + vacanciesSlug).then((data) => data.data);
 }
 
 /**
@@ -36,7 +39,7 @@ export function getVacancyData() {
  */
 export function postVacancyData(vacancyData) {
   return postData(
-    getPayrollApiUrl() + "vacancies/",
+    getPayrollApiUrl() + vacanciesSlug,
     JSON.stringify(vacancyData),
   );
 }
@@ -46,8 +49,21 @@ export function postVacancyData(vacancyData) {
  * @returns {Promise<types.PayModifierData[]>} A promise resolving to an array of objects containing pay modifier information.
  */
 export function getPayModifierData() {
-  return getData(getPayrollApiUrl() + "pay_modifiers/").then(
+  return getData(getPayrollApiUrl() + payModifiersSlug).then(
     (data) => data.data,
+  );
+}
+
+/**
+ * Post modified pay modifiers data.
+ *
+ * @param {types.PayModifierData[]} payModifierData - Vacancy data to be sent.
+ * @returns {import("../../Util").PostDataResponse} Updated vacancy data received.
+ */
+export function postPayModifierData(payModifierData) {
+  return postData(
+    getPayrollApiUrl() + payModifiersSlug,
+    JSON.stringify(payModifierData),
   );
 }
 

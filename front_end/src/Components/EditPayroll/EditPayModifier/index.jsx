@@ -25,9 +25,11 @@ const EditPayModifier = ({ data, onInputChange }) => {
                       className="govuk-input"
                       id={`modifier-${index}`}
                       name={`modifier-${index}`}
-                      type="text"
+                      type="number"
                       defaultValue={value}
-                      onChange={(e) => onInputChange(data[0].id, index, e.target.value)}
+                      onChange={(e) =>
+                        onInputChange(data[0].id, index, e.target.value)
+                      }
                     ></input>
                   </td>
                 );

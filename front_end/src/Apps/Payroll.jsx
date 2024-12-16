@@ -61,6 +61,7 @@ export default function Payroll() {
     try {
       await api.postPayrollData(allPayroll);
       await api.postVacancyData(vacancies);
+      await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
       localStorage.setItem("saveSuccess", "true");
