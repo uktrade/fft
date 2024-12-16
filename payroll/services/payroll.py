@@ -388,7 +388,9 @@ def update_pay_modifiers_data(
         if len(pay_modifier["pay_modifiers"]) != 12:
             raise ValueError("pay_modifiers list should be of length 12")
 
-        if not all(isinstance(x, float) for x in pay_modifier["pay_modifiers"]):
+        convert_to_float = [float(num) for num in pay_modifier["pay_modifiers"]]
+
+        if not all(isinstance(x, float) for x in convert_to_float):
             raise ValueError("pay_modifiers items should be of type float")
 
         attrition = Attrition.objects.get(
@@ -397,6 +399,6 @@ def update_pay_modifiers_data(
         )
 
         for index, month in enumerate(MONTHS):
-            setattr(attrition, month, pay_modifier["pay_modifiers"][index])
+            setattr(attrition, month, convert_to_float[index])
 
         attrition.save()
