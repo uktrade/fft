@@ -79,6 +79,10 @@ export default function Payroll() {
     dispatchVacancies({ type: "updatePayPeriods", id, index, enabled });
   }
 
+  function handleUpdatePayModifiers(id, index, value) {
+    dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
+  }
+
   return (
     <>
       {saveSuccess && (
@@ -124,7 +128,10 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay Modifiers" key="2">
-          <EditPayModifier data={payModifiers} />
+          <EditPayModifier
+            data={payModifiers}
+            onInputChange={handleUpdatePayModifiers}
+          />
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
@@ -163,6 +170,25 @@ const payModifiersReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
       return action.data;
+    }
+    case "updatePayModifiers": {
+      return data.map((row) => {
+        if (row.id === action.id) {
+          const updatedPayModifier = row.pay_modifiers.map(
+            (modifier, index) => {
+              if (index === action.index) {
+                return parseFloat(action.value);
+              }
+              return modifier;
+            },
+          );
+          return {
+            ...row,
+            pay_modifiers: updatedPayModifier,
+          };
+        }
+        return row;
+      });
     }
   }
 };
