@@ -362,7 +362,7 @@ def update_pay_modifiers_data(
     Raises:
         ValueError: If a pay modifier id is empty.
         ValueError: If there are not 12 items in the pay_modifiers list.
-        ValueError: If any of the pay_periods are not of type float.
+        ValueError: If any of the pay_modifiers are not of type int or float.
     """
 
     for pay_modifier in data:
@@ -372,17 +372,14 @@ def update_pay_modifiers_data(
         if len(pay_modifier["pay_modifiers"]) != 12:
             raise ValueError("pay_modifiers list should be of length 12")
 
-        convert_to_float = [float(num) for num in pay_modifier["pay_modifiers"]]
-
-        if not all(isinstance(x, float) for x in convert_to_float):
-            raise ValueError("pay_modifiers items should be of type float")
+        if not all(isinstance(x, (int, float)) for x in pay_modifier["pay_modifiers"]):
+            raise ValueError("pay_modifiers items should be of type int or float")
 
         attrition = Attrition.objects.get(
             cost_centre=cost_centre,
             financial_year=financial_year,
         )
-
         for index, month in enumerate(MONTHS):
-            setattr(attrition, month, convert_to_float[index])
+            setattr(attrition, month, pay_modifier["pay_modifiers"][index])
 
         attrition.save()
