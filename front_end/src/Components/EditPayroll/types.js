@@ -28,7 +28,7 @@
 /**
  * @typedef {Object} PayModifierData
  * @property {number} id - The pay modifier's pk.
- * @property {float[]} pay_modifiers - The pay modifier's monthly percentages
+ * @property {number[]} pay_modifiers - The pay modifier's monthly percentages
  */
 
 export const Types = {};
