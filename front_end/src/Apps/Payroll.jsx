@@ -129,6 +129,7 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay Modifiers" key="2">
+          <h2 className="govuk-heading-m">Attrition</h2>
           <EditPayModifier
             data={payModifiers}
             onInputChange={handleUpdatePayModifiers}
