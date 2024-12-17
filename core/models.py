@@ -98,6 +98,10 @@ class PayModifiers(models.Model):
     def periods(self) -> list[float]:
         return [getattr(self, month) for month in MONTHS]
 
+    @property
+    def periods_as_percentage(self) -> list[float]:
+        return [month * 100 for month in self.periods]
+
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
     apr = models.FloatField(default=1.0)
     may = models.FloatField(default=1.0)

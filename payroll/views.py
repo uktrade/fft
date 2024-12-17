@@ -15,7 +15,7 @@ from payroll.models import Vacancy
 from .services import payroll as payroll_service
 
 
-class PositionView(UserPassesTestMixin, View):
+class EditPayrollView(UserPassesTestMixin, View):
     def test_func(self) -> bool | None:
         return self.request.user.is_superuser
 
@@ -49,7 +49,7 @@ class PositionView(UserPassesTestMixin, View):
 
 
 # TODO: check user has access to cost centre
-class PayrollView(PositionView):
+class PayrollView(EditPayrollView):
     def get_data(self):
         return payroll_service.get_payroll_data(
             self.cost_centre,
@@ -64,7 +64,7 @@ class PayrollView(PositionView):
         )
 
 
-class VacancyView(PositionView):
+class VacancyView(EditPayrollView):
     def get_data(self):
         return payroll_service.get_vacancies_data(
             self.cost_centre,
@@ -79,7 +79,7 @@ class VacancyView(PositionView):
         )
 
 
-class PayModifierView(PositionView):
+class PayModifierView(EditPayrollView):
     def get_data(self):
         return payroll_service.get_pay_modifiers_data(
             self.cost_centre,
