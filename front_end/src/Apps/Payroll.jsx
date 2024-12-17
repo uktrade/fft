@@ -29,6 +29,14 @@ export default function Payroll() {
     initialPayModifiersState,
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => {
+    const savedTab = localStorage.getItem("activeTab");
+    return savedTab ? parseInt(savedTab) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
@@ -98,7 +106,7 @@ export default function Payroll() {
           </div>
         </div>
       )}
-      <Tabs>
+      <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Dashboard" key="1">
           <h2 className="govuk-heading-m">Payroll</h2>
           <PayrollTable

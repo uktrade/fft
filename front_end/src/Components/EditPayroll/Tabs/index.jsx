@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-export default function Tabs({ children }) {
-  const [activeTab, setActiveTab] = useState(0);
+export default function Tabs({ activeTab, setActiveTab, children }) {
   const tabs = Array.isArray(children) ? children : [children];
   return (
     <>
