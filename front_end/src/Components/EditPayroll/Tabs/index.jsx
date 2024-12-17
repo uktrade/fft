@@ -27,7 +27,7 @@ export default function Tabs({ children }) {
           <div
             className={`govuk-tabs__panel ${activeTab === index ? "" : "govuk-tabs__panel--hidden"}`}
             key={index}
-            id="dashboard"
+            id={tab.props.label}
           >
             {tab.props.children}
           </div>
