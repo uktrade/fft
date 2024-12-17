@@ -27,7 +27,7 @@
 
 /**
  * @typedef {Object} PayModifierData
- * @property {string} id - The pay modifier's pk.
+ * @property {number} id - The pay modifier's pk.
  * @property {float[]} pay_modifiers - The pay modifier's monthly percentages
  */
 

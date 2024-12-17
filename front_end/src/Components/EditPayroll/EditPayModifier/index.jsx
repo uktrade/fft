@@ -2,8 +2,10 @@ import { monthsToTitleCase } from "../../../Util";
 
 const EditPayModifier = ({ data, onInputChange }) => {
   return (
-    data.length > 0 && (
-      <div className="govuk-form-group">
+    data.length > 0 &&
+    data.map((row, index) => (
+      <div className="govuk-form-group" key={index}>
+        {console.log(row)}
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
@@ -18,7 +20,7 @@ const EditPayModifier = ({ data, onInputChange }) => {
           </thead>
           <tbody className="govuk-table__body">
             <tr className="govuk-table__row">
-              {data[0].pay_modifiers.map((value, index) => {
+              {row.pay_modifiers.map((value, index) => {
                 return (
                   <td className="govuk-table__cell" key={index}>
                     <input
@@ -28,7 +30,7 @@ const EditPayModifier = ({ data, onInputChange }) => {
                       type="number"
                       defaultValue={value}
                       onChange={(e) =>
-                        onInputChange(data[0].id, index, e.target.value)
+                        onInputChange(row.id, index, e.target.value)
                       }
                     ></input>
                   </td>
@@ -38,7 +40,7 @@ const EditPayModifier = ({ data, onInputChange }) => {
           </tbody>
         </table>
       </div>
-    )
+    ))
   );
 };
 

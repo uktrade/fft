@@ -57,8 +57,8 @@ export function getPayModifierData() {
 /**
  * Post modified pay modifiers data.
  *
- * @param {types.PayModifierData[]} payModifierData - Vacancy data to be sent.
- * @returns {import("../../Util").PostDataResponse} Updated vacancy data received.
+ * @param {types.PayModifierData[]} payModifierData - Pay modifier data to be sent.
+ * @returns {import("../../Util").PostDataResponse} Updated pay modifier data received.
  */
 export function postPayModifierData(payModifierData) {
   return postData(
