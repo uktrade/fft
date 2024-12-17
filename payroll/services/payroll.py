@@ -345,23 +345,7 @@ def get_pay_modifiers_data(
         financial_year=financial_year,
     )
     for obj in qs:
-        yield PayModifiers(
-            id=obj.pk,
-            pay_modifiers=[
-                obj.apr,
-                obj.may,
-                obj.jun,
-                obj.jul,
-                obj.aug,
-                obj.sep,
-                obj.oct,
-                obj.nov,
-                obj.dec,
-                obj.jan,
-                obj.feb,
-                obj.mar,
-            ],
-        )
+        yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
 
 
 @transaction.atomic
