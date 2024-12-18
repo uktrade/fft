@@ -313,7 +313,7 @@ def update_vacancies_data(
     """
 
     for vacancy in data:
-        if not vacancy["id"]:
+        if not vacancy.get("id"):
             raise ValueError("id is empty")
 
         if len(vacancy["pay_periods"]) != 12:
@@ -344,6 +344,10 @@ def get_pay_modifiers_data(
         cost_centre=cost_centre,
         financial_year=financial_year,
     )
+
+    if not qs:
+        yield PayModifiers(pay_modifiers=[1.0] * 12)
+
     for obj in qs:
         yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
 
@@ -366,20 +370,19 @@ def update_pay_modifiers_data(
     """
 
     for pay_modifier in data:
-        if not pay_modifier["id"]:
-            raise ValueError("id is empty")
-
         if len(pay_modifier["pay_modifiers"]) != 12:
             raise ValueError("pay_modifiers list should be of length 12")
 
         if not all(isinstance(x, (int, float)) for x in pay_modifier["pay_modifiers"]):
             raise ValueError("pay_modifiers items should be of type int or float")
 
-        attrition = Attrition.objects.get(
+        attrition, _ = Attrition.objects.get_or_create(
             cost_centre=cost_centre,
             financial_year=financial_year,
         )
+
         for index, month in enumerate(MONTHS):
             setattr(attrition, month, pay_modifier["pay_modifiers"][index])
 
+        attrition.clean()
         attrition.save()

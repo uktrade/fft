@@ -5,7 +5,6 @@ const EditPayModifier = ({ data, onInputChange }) => {
     data.length > 0 &&
     data.map((row, index) => (
       <div className="govuk-form-group" key={index}>
-        {console.log(row)}
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr className="govuk-table__row">
