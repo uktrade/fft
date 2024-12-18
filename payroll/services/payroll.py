@@ -383,5 +383,9 @@ def update_pay_modifiers_data(
         for index, month in enumerate(MONTHS):
             setattr(attrition, month, pay_modifier["pay_modifiers"][index])
 
-        attrition.clean()
+        try:
+            attrition.clean()
+        except Exception as ex:
+            raise ValueError(ex)
+
         attrition.save()
