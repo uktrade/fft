@@ -344,10 +344,6 @@ def get_pay_modifiers_data(
         cost_centre=cost_centre,
         financial_year=financial_year,
     )
-
-    if not qs:
-        yield PayModifiers(pay_modifiers=[1.0] * 12)
-
     for obj in qs:
         yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
 
@@ -370,13 +366,16 @@ def update_pay_modifiers_data(
     """
 
     for pay_modifier in data:
+        if not pay_modifier.get("id"):
+            raise ValueError("id is empty")
+
         if len(pay_modifier["pay_modifiers"]) != 12:
             raise ValueError("pay_modifiers list should be of length 12")
 
         if not all(isinstance(x, (int, float)) for x in pay_modifier["pay_modifiers"]):
             raise ValueError("pay_modifiers items should be of type int or float")
 
-        attrition, _ = Attrition.objects.get_or_create(
+        attrition = Attrition.objects.get(
             cost_centre=cost_centre,
             financial_year=financial_year,
         )
