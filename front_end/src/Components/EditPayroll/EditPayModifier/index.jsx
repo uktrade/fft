@@ -2,7 +2,7 @@ import { monthsToTitleCase } from "../../../Util";
 
 const EditPayModifier = ({ data, onInputChange }) => {
   if (data.length === 0) {
-    return <p class="govuk-body">No modifiers set</p>;
+    return <p className="govuk-body">No modifiers set</p>;
   }
   return data.map((row, index) => (
     <div className="govuk-form-group" key={index}>
