@@ -10,6 +10,9 @@ export default function PayrollTable({
   onTogglePayPeriods,
   RowComponent,
 }) {
+  if (payroll.length === 0) {
+    return <p className="govuk-body">No data found</p>;
+  }
   return (
     <>
       <div className="scrollable">
