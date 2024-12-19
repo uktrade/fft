@@ -30,12 +30,12 @@ export default function Payroll() {
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
-    const savedTab = localStorage.getItem("activeTab");
+    const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
 
   useEffect(() => {
-    localStorage.setItem("activeTab", activeTab);
+    localStorage.setItem("editPayroll.activeTab", activeTab);
   }, [activeTab]);
 
   useEffect(() => {
