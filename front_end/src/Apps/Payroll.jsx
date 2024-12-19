@@ -8,9 +8,12 @@ import {
 import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
+import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
+import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
+const initialPayModifiersState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -21,7 +24,19 @@ export default function Payroll() {
     vacanciesReducer,
     initialVacanciesState,
   );
+  const [payModifiers, dispatchPayModifiers] = useReducer(
+    payModifiersReducer,
+    initialPayModifiersState,
+  );
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => {
+    const savedTab = localStorage.getItem("editPayroll.activeTab");
+    return savedTab ? parseInt(savedTab) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("editPayroll.activeTab", activeTab);
+  }, [activeTab]);
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
@@ -34,6 +49,9 @@ export default function Payroll() {
     api
       .getVacancyData()
       .then((data) => dispatchVacancies({ type: "fetched", data }));
+    api
+      .getPayModifierData()
+      .then((data) => dispatchPayModifiers({ type: "fetched", data }));
   }, []);
 
   // Computed properties
@@ -51,6 +69,7 @@ export default function Payroll() {
     try {
       await api.postPayrollData(allPayroll);
       await api.postVacancyData(vacancies);
+      await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
       localStorage.setItem("saveSuccess", "true");
@@ -69,6 +88,10 @@ export default function Payroll() {
     dispatchVacancies({ type: "updatePayPeriods", id, index, enabled });
   }
 
+  function handleUpdatePayModifiers(id, index, value) {
+    dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
+  }
+
   return (
     <>
       {saveSuccess && (
@@ -83,33 +106,44 @@ export default function Payroll() {
           </div>
         </div>
       )}
-      <h2 className="govuk-heading-m">Payroll</h2>
-      <PayrollTable
-        payroll={payroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-        RowComponent={EmployeeRow}
-      />
-      <h2 className="govuk-heading-m">Non-payroll</h2>
-      <PayrollTable
-        payroll={nonPayroll}
-        headers={payrollHeaders}
-        onTogglePayPeriods={handleTogglePayPeriods}
-        RowComponent={EmployeeRow}
-      />
-      <h2 className="govuk-heading-m">Vacancies</h2>
-      <PayrollTable
-        payroll={vacancies}
-        headers={vacancyHeaders}
-        onTogglePayPeriods={handleToggleVacancyPayPeriods}
-        RowComponent={VacancyRow}
-      />
-      <a
-        className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
-        href={window.addVacancyUrl}
-      >
-        Add Vacancy
-      </a>
+      <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
+        <Tab label="Payroll" key="1">
+          <PayrollTable
+            payroll={payroll}
+            headers={payrollHeaders}
+            onTogglePayPeriods={handleTogglePayPeriods}
+            RowComponent={EmployeeRow}
+          />
+        </Tab>
+        <Tab label="Non-payroll" key="2">
+          <PayrollTable
+            payroll={nonPayroll}
+            headers={payrollHeaders}
+            onTogglePayPeriods={handleTogglePayPeriods}
+            RowComponent={EmployeeRow}
+          />
+        </Tab>
+        <Tab label="Vacancies" key="3">
+          <PayrollTable
+            payroll={vacancies}
+            headers={vacancyHeaders}
+            onTogglePayPeriods={handleToggleVacancyPayPeriods}
+            RowComponent={VacancyRow}
+          />
+          <a
+            className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
+            href={window.addVacancyUrl}
+          >
+            Add Vacancy
+          </a>
+        </Tab>
+        <Tab label="Pay modifiers" key="4">
+          <EditPayModifier
+            data={payModifiers}
+            onInputChange={handleUpdatePayModifiers}
+          />
+        </Tab>
+      </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
@@ -134,6 +168,33 @@ const positionReducer = (data, action) => {
           return {
             ...row,
             pay_periods: updatedPayPeriods,
+          };
+        }
+        return row;
+      });
+    }
+  }
+};
+
+const payModifiersReducer = (data, action) => {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
+    }
+    case "updatePayModifiers": {
+      return data.map((row) => {
+        if (row.id === action.id) {
+          const updatedPayModifier = row.pay_modifiers.map(
+            (modifier, index) => {
+              if (index === action.index) {
+                return parseFloat(action.value);
+              }
+              return modifier;
+            },
+          );
+          return {
+            ...row,
+            pay_modifiers: updatedPayModifier,
           };
         }
         return row;

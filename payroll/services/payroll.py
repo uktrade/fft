@@ -313,7 +313,7 @@ def update_vacancies_data(
     """
 
     for vacancy in data:
-        if not vacancy["id"]:
+        if not vacancy.get("id"):
             raise ValueError("id is empty")
 
         if len(vacancy["pay_periods"]) != 12:
@@ -329,3 +329,63 @@ def update_vacancies_data(
         )
         pay_periods.periods = vacancy["pay_periods"]
         pay_periods.save()
+
+
+class PayModifiers(TypedDict):
+    id: int
+    pay_modifiers: list[float]
+
+
+def get_pay_modifiers_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> Iterator[PayModifiers]:
+    qs = Attrition.objects.filter(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+    )
+    for obj in qs:
+        yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
+
+
+@transaction.atomic
+def update_pay_modifiers_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+    data: list[PayModifiers],
+) -> None:
+    """Update pay modifiers for a given year and cost centre using the provided list.
+
+    This function is wrapped with a transaction, so if any of the pay modifier updates fail,
+    the whole batch will be rolled back.
+
+    Raises:
+        ValueError: If a pay modifier id is empty.
+        ValueError: If there are not 12 items in the pay_modifiers list.
+        ValueError: If any of the pay_modifiers are not of type int or float.
+    """
+
+    for pay_modifier in data:
+        if not pay_modifier.get("id"):
+            raise ValueError("id is empty")
+
+        if len(pay_modifier["pay_modifiers"]) != 12:
+            raise ValueError("pay_modifiers list should be of length 12")
+
+        if not all(isinstance(x, (int, float)) for x in pay_modifier["pay_modifiers"]):
+            raise ValueError("pay_modifiers items should be of type int or float")
+
+        attrition = Attrition.objects.get(
+            cost_centre=cost_centre,
+            financial_year=financial_year,
+        )
+
+        for index, month in enumerate(MONTHS):
+            setattr(attrition, month, pay_modifier["pay_modifiers"][index])
+
+        try:
+            attrition.clean()
+        except Exception as ex:
+            raise ValueError(ex)
+
+        attrition.save()

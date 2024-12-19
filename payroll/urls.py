@@ -43,4 +43,9 @@ urlpatterns = [
         views.delete_vacancy_page,
         name="delete_vacancy",
     ),
+    path(
+        "api/<str:cost_centre_code>/<int:financial_year>/pay_modifiers/",
+        views.PayModifierView.as_view(),
+        name="api_pay_modifiers",
+    ),
 ]

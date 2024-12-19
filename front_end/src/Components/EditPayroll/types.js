@@ -25,4 +25,10 @@
  * @property {boolean[]} pay_periods - Whether the vacancy is being paid in periods.
  */
 
+/**
+ * @typedef {Object} PayModifierData
+ * @property {number} id - The pay modifier's pk.
+ * @property {number[]} pay_modifiers - The pay modifier's monthly percentages
+ */
+
 export const Types = {};
