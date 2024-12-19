@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export default function Tabs({ activeTab, setActiveTab, children }) {
   const tabs = Array.isArray(children) ? children : [children];
   return (
@@ -28,6 +26,7 @@ export default function Tabs({ activeTab, setActiveTab, children }) {
             key={index}
             id={tab.props.label}
           >
+            <h2 className="govuk-heading-m">{tab.props.label}</h2>
             {tab.props.children}
           </div>
         ))}

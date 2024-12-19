@@ -107,22 +107,23 @@ export default function Payroll() {
         </div>
       )}
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
-        <Tab label="Dashboard" key="1">
-          <h2 className="govuk-heading-m">Payroll</h2>
+        <Tab label="Payroll" key="1">
           <PayrollTable
             payroll={payroll}
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
           />
-          <h2 className="govuk-heading-m">Non-payroll</h2>
+        </Tab>
+        <Tab label="Non-payroll" key="2">
           <PayrollTable
             payroll={nonPayroll}
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
           />
-          <h2 className="govuk-heading-m">Vacancies</h2>
+        </Tab>
+        <Tab label="Vacancies" key="3">
           <PayrollTable
             payroll={vacancies}
             headers={vacancyHeaders}
@@ -136,8 +137,7 @@ export default function Payroll() {
             Add Vacancy
           </a>
         </Tab>
-        <Tab label="Pay Modifiers" key="2">
-          <h2 className="govuk-heading-m">Attrition</h2>
+        <Tab label="Pay modifiers" key="4">
           <EditPayModifier
             data={payModifiers}
             onInputChange={handleUpdatePayModifiers}
