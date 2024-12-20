@@ -13,6 +13,7 @@ from core.models import FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
+from user.models import User
 
 from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
@@ -315,3 +316,19 @@ def update_vacancies_data(
         )
         pay_periods.periods = vacancy["pay_periods"]
         pay_periods.save()
+
+
+# Permissions
+# ===========
+
+
+def can_edit_payroll(
+    user: User,
+    # cost_centre: CostCentre,
+    # financial_year: FinancialYear,
+) -> bool:
+    if user.is_superuser:
+        return True
+
+    # FIXME
+    return user.has_perm("payroll.can_edit_payroll")

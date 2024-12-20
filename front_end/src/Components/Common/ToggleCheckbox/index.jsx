@@ -1,7 +1,7 @@
 export default function ToggleCheckbox({ toggle, handler, id, value, label }) {
   return (
     <>
-      <div className="govuk-form-group">
+      <div className="govuk-form-group govuk-!-margin-bottom-0">
         <fieldset className="govuk-fieldset" aria-describedby="toggle-hint">
           <div
             className="govuk-checkboxes govuk-checkboxes--small"
