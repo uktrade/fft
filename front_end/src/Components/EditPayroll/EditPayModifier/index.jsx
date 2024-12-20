@@ -4,8 +4,10 @@ const EditPayModifier = ({ data, onInputChange }) => {
   if (data.length === 0) {
     return <p className="govuk-body">No modifiers set</p>;
   }
+
   return data.map((row, index) => (
     <div className="govuk-form-group" key={index}>
+      <h3 className="govuk-heading-s">Attrition</h3>
       <table className="govuk-table">
         <thead className="govuk-table__head">
           <tr className="govuk-table__row">
