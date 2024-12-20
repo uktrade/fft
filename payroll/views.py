@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -139,12 +140,10 @@ def edit_payroll_page(
     return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
 
 
+@permission_required("payroll.add_vacancy")
 def add_vacancy_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int
 ) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
     context = {
         "cost_centre_code": cost_centre_code,
         "financial_year": financial_year,
@@ -171,12 +170,10 @@ def add_vacancy_page(
     return render(request, "payroll/page/vacancy_form.html", context)
 
 
+@permission_required("payroll.change_vacancy")
 def edit_vacancy_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
 ) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
     vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
 
     context = {
@@ -199,12 +196,10 @@ def edit_vacancy_page(
     return render(request, "payroll/page/vacancy_form.html", context)
 
 
+@permission_required("payroll.delete_vacancy")
 def delete_vacancy_page(
     request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
 ) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
     vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
 
     context = {
