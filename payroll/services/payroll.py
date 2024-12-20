@@ -15,6 +15,7 @@ from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
+from user.models import User
 
 from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
@@ -389,3 +390,19 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+# Permissions
+# ===========
+
+
+def can_edit_payroll(
+    user: User,
+    # cost_centre: CostCentre,
+    # financial_year: FinancialYear,
+) -> bool:
+    if user.is_superuser:
+        return True
+
+    # FIXME
+    return user.has_perm("payroll.can_edit_payroll")
