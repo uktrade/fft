@@ -45,12 +45,12 @@ django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
+debugpy = "1.8.9"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-debugpy = "^1.8.9"
 selenium = "^4.18.1"
 beautifulsoup4 = "^4.9.1"
 soupsieve = "^2.5"
