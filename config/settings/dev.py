@@ -1,8 +1,5 @@
 from .paas import *  # noqa
-import socket
 
-hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1"]
 
 MIDDLEWARE += [
     "authbroker_client.middleware.ProtectAllViewsMiddleware",
