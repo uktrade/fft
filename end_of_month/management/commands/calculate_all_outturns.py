@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        period_list = EndOfMonthStatus.archived_period_objects.archived_list()
+        period_list = EndOfMonthStatus.archived_period_objects.archived_list
         if not period_list:
             self.stdout.write(
                 self.style.ERROR("No archived periods in the current year.")

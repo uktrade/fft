@@ -1,5 +1,6 @@
 import copy
 import hashlib
+from django.utils.functional import cached_property
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -160,6 +161,7 @@ class FinancialPeriodQuerySet(models.QuerySet):
 
 
 class FinancialPeriodManager(models.Manager):
+    @cached_property
     def month_display_list(self):
         return list(
             self.get_queryset()
@@ -598,6 +600,14 @@ class SubTotalForecast:
             else:
                 break
 
+    def get_cached_period(self):
+        cache_key = 'financial_period_list'
+        result = cache.get(cache_key)
+        if result is None:
+            result = list(FinancialPeriod.objects.values_list("period_short_name", flat=True))
+            cache.set(cache_key, result, timeout=3600)  # cache for 1 hour
+        return result
+    
     def calculate_subtotal_data(
         self,
         display_total_column,
@@ -617,11 +627,7 @@ class SubTotalForecast:
         self.result_table = []
         self.output_subtotal = []
         self.previous_values = []
-
-        self.full_list = list(
-            FinancialPeriod.objects.values_list("period_short_name", flat=True)
-        )
-
+        self.full_list =  self.get_cached_period()
         self.full_list.append(budget_field)
         self.full_list.append("Previous_outturn")
         self.full_list.append(outturn_field)

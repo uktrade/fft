@@ -33,6 +33,13 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 DEBUG = env.bool("DEBUG", default=False)
 
+if DEBUG:
+    def show_toolbar(request):
+        return True
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+    }
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
@@ -83,6 +90,7 @@ INSTALLED_APPS = [
     "axes",
     "django_chunk_upload_handlers",
     "csp",
+    "debug_toolbar",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -284,6 +292,7 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
     "core.middleware.CoreRequestDataMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 AUTHENTICATION_BACKENDS = [

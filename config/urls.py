@@ -48,6 +48,9 @@ if settings.DEBUG:
     admin.site.site_header = "Finance Forecast Tool Admin - DEBUG"
     admin.site.site_title = "Finance Forecast Tool Admin - DEBUG"
     admin.site.index_title = "Welcome to the FFT admin site - DEBUG"
+    urlpatterns += [
+        path('__debug__/', include('debug_toolbar.urls')),
+    ]
 else:
     admin.site.site_header = "Finance Forecast Tool Admin"
     admin.site.site_title = "Finance Forecast Tool Admin"
