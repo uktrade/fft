@@ -33,8 +33,6 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 DEBUG = env.bool("DEBUG", default=False)
 
-ENABLE_DEBUGPY = env.bool("ENABLE_DEBUGPY", False)
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env("SECRET_KEY")
 
