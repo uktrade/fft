@@ -50,6 +50,7 @@ export default function Payroll() {
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
+    setSaveSuccess(false);
   }, [activeTab]);
 
   useEffect(() => {
