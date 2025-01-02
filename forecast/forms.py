@@ -300,7 +300,7 @@ class ForecastPeriodForm(forms.Form):
         else:
             display_list = [(0, "Current")]
 
-        archived_list = EndOfMonthStatus.archived_period_objects.archived_list()
+        archived_list = EndOfMonthStatus.archived_period_objects.archived_list
         if archived_list:
             display_list.extend(archived_list)
         year_list = FinancialYear.financial_year_objects.archived_list()

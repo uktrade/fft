@@ -63,7 +63,7 @@ def monthly_variance_exists(period):
     if (
         period > 2000
         or period == 1
-        or not EndOfMonthStatus.archived_period_objects.archived_list()
+        or not EndOfMonthStatus.archived_period_objects.archived_list
     ):
         return False
     else:

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Max
+from django.utils.functional import cached_property
 
 from core.metamodels import BaseModel
 from core.models import FinancialYear
@@ -24,7 +25,8 @@ class ArchivedPeriodManager(models.Manager):
             )
             .order_by("archived_period__financial_period_code")
         )
-
+    
+    @cached_property
     def archived_list(self):
         return list(
             super()

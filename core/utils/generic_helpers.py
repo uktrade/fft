@@ -1,10 +1,12 @@
 import datetime
 
 from django.contrib.admin.models import CHANGE, LogEntry
+from functools import lru_cache
 
 from core.models import FinancialYear
 
 
+@lru_cache(maxsize=None)
 def get_current_financial_year():
     y = FinancialYear.objects.filter(current=True)
     if y:

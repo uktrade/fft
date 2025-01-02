@@ -131,7 +131,7 @@ class ForecastSubTotalTable(tables.Table):
         year_period_list = []
         # Only add the month columns here. If you add the adjustments too,
         # their columns will always be displayed
-        for month in FinancialPeriod.financial_period_info.month_display_list():
+        for month in FinancialPeriod.financial_period_info.month_display_list:
             cols.append(
                 (
                     month,

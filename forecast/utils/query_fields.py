@@ -1,3 +1,4 @@
+from functools import lru_cache
 from chartofaccountDIT.models import (
     ArchivedExpenditureCategory,
     ArchivedProgrammeCode,
@@ -689,6 +690,7 @@ class ForecastQueryFields:
 
     # The next methods return the correct objects (archived or not)
     # using the period to decide which one to use
+    @lru_cache(maxsize=None)
     def group(self, group_code):
         if self.not_archived_year:
             return DepartmentalGroup.objects.get(group_code=group_code)
