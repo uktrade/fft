@@ -50,7 +50,7 @@ class EditPayrollView(UserPassesTestMixin, View):
 
 
 # TODO: check user has access to cost centre
-class PayrollView(EditPayrollView):
+class EmployeeView(EditPayrollView):
     def get_data(self):
         return payroll_service.get_payroll_data(
             self.cost_centre,
