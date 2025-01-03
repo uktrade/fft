@@ -13,8 +13,7 @@ from forecast.forms import ForecastPeriodForm
 from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import (
     can_edit_cost_centre,
-    can_forecast_be_edited,
-    can_future_forecast_be_edited,
+    can_edit_forecast,
     can_view_forecasts,
 )
 from forecast.utils.edit_helpers import formatted_cost_centre_code
@@ -69,26 +68,21 @@ class CostCentrePermissionTest(UserPassesTestMixin):
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
-        current_financial_year = get_current_financial_year()
-        self.cost_centre_code = \
-            formatted_cost_centre_code(self.kwargs["cost_centre_code"])
+        current_financial_year = self.request.current_financial_year
+        self.cost_centre_code = formatted_cost_centre_code(
+            self.kwargs["cost_centre_code"]
+        )
 
         if "financial_year" in self.kwargs:
             self.financial_year = int(self.kwargs["financial_year"])
         else:
-            self.financial_year = get_current_financial_year()
+            self.financial_year = current_financial_year
 
-        # Cannot edit the past!
-        if self.financial_year < current_financial_year:
-            self.edit_not_available = True
-            return False
-
-        if self.financial_year == current_financial_year:
-            user_can_edit = can_forecast_be_edited(self.request.user)
-        else:
-            user_can_edit = can_future_forecast_be_edited(self.request.user)
-
-        if not user_can_edit:
+        if not can_edit_forecast(
+            user=self.request.user,
+            financial_year=self.financial_year,
+            current_financial_year=current_financial_year,
+        ):
             self.edit_not_available = True
             return False
 
@@ -102,7 +96,7 @@ class CostCentrePermissionTest(UserPassesTestMixin):
             return redirect(
                 reverse(
                     "edit_unavailable",
-                    kwargs={"financial_year": self.financial_year, },
+                    kwargs={"financial_year": self.financial_year},
                 )
             )
         else:
@@ -197,8 +191,7 @@ class ForecastViewTableMixin(MultiTableMixin):
                 # have not been loaded yet, so get the list from
                 # the FinancialPeriod
                 self._actual_month_list = (
-                    FinancialPeriod.
-                    financial_period_info.actual_month_previous_year_list()
+                    FinancialPeriod.financial_period_info.actual_month_previous_year_list()
                 )
             elif self.year > current_year:
                 # Future forecast

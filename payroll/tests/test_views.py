@@ -10,3 +10,6 @@ import pytest
 def test_only_superuser_can_access(client, user, url):
     r = client.get(url)
     assert r.status_code == 403
+
+
+# FIXME

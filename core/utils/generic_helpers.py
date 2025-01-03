@@ -5,7 +5,7 @@ from django.contrib.admin.models import CHANGE, LogEntry
 from core.models import FinancialYear
 
 
-def get_current_financial_year():
+def get_current_financial_year() -> int:
     y = FinancialYear.objects.filter(current=True)
     if y:
         current_financial_year = y.last().financial_year
