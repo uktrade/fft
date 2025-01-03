@@ -65,6 +65,12 @@ If you can connect to the dev environment but still have issues such as; `403 - 
 docker-compose run --service-ports
 ```
 
+## Running docker-compose run with pg-admin
+
+```
+docker compose --profile dev up
+```
+
 ## Important notes on design
 
 We use Django Guardian for model instance level permissions https://github.com/django-guardian/django-guardian
