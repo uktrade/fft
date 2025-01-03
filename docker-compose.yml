@@ -9,10 +9,18 @@ services:
     environment:
       - DATABASE_URL=psql://postgres:postgres@db:5432/fido
       - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /bin/sh -c '
+      cmd="python manage.py runserver 0.0.0.0:8000";
+      if [ "$$(echo $$ENABLE_DEBUGPY | tr "[:upper:]" "[:lower:]")" = "true" ]; then
+      cmd="$${cmd} --enable-debugpy";
+      fi;
+      $$cmd
+      '
+
     # command: granian --interface wsgi config.wsgi:application --workers 2 --host 0.0.0.0 --port 8000
     ports:
-      - "0.0.0.0:8000:8000"
+      - "8000:8000"
+      - "5678:5678"
     volumes:
       - ./:/app/
     depends_on:
