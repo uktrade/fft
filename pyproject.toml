@@ -45,7 +45,6 @@ django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
-debugpy = "1.8.9"
 
 [tool.poetry.group.dev]
 optional = true
@@ -69,6 +68,7 @@ isort = "^5.10.1"
 ruff = "^0.3.4"
 mypy = "^1.13.0"
 django-debug-toolbar = "^4.4.6"
+debugpy = "1.8.9"
 
 [build-system]
 requires = ["poetry-core"]
