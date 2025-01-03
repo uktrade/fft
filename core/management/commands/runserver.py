@@ -1,3 +1,4 @@
+import os
 import sys
 
 from django.core.management.commands.runserver import Command as RunserverCommand
@@ -15,17 +16,9 @@ def initialize_debugpy():
 
 class Command(RunserverCommand):
 
-    def add_arguments(self, parser):
-        super().add_arguments(parser)
-
-        parser.add_argument(
-            "--enable-debugpy",
-            action="store_true",
-            help="Enable debugpy for remote debugging",
-        )
-
     def run(self, *args, **options):
-        if options["enable_debugpy"]:
+        ENABLE_DEBUGPY = os.getenv("ENABLE_DEBUGPY")
+        if ENABLE_DEBUGPY and ENABLE_DEBUGPY.lower() == "true":
             initialize_debugpy()
 
         super().run(*args, **options)
