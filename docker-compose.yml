@@ -63,4 +63,3 @@ services:
       - "4444:4444"
     profiles:
       - selenium
-      
