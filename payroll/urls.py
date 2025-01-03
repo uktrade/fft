@@ -10,7 +10,7 @@ app_name = "payroll"
 urlpatterns = [
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/",
-        views.edit_payroll_page,
+        views.EditPayrollPage.as_view(),
         name="edit",
     ),
     path(
@@ -30,17 +30,17 @@ urlpatterns = [
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/create",
-        views.add_vacancy_page,
+        views.AddVacancyView.as_view(),
         name="add_vacancy",
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/edit",
-        views.edit_vacancy_page,
+        views.EditVacancyView.as_view(),
         name="edit_vacancy",
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/delete",
-        views.delete_vacancy_page,
+        views.DeleteVacancyView.as_view(),
         name="delete_vacancy",
     ),
     path(

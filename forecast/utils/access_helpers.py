@@ -8,6 +8,7 @@ from forecast.models import (
     FutureForecastEditState,
     UnlockedForecastEditor,
 )
+from user.models import User
 
 
 def can_view_forecasts(user):
@@ -147,6 +148,26 @@ def can_edit_cost_centre(user, cost_centre_code):
         "costcentre.change_costcentre",
         cost_centre,
     )
+
+
+def can_edit_forecast(
+    user: User,
+    financial_year: int,
+    current_financial_year: int,
+) -> bool:
+    # Cannot edit the past!
+    if financial_year < current_financial_year:
+        return False
+
+    if financial_year == current_financial_year:
+        user_can_edit = can_forecast_be_edited(user)
+    else:
+        user_can_edit = can_future_forecast_be_edited(user)
+
+    if not user_can_edit:
+        return False
+
+    return True
 
 
 def can_download_mi_reports(user):

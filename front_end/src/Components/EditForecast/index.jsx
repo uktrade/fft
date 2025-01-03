@@ -334,7 +334,7 @@ function EditForecast() {
 
   return (
     <Fragment>
-      {window.can_edit_payroll === "True" && (
+      {window.can_access_edit_payroll === "True" && (
         <ToggleCheckbox
           toggle={isPayrollEnabled}
           handler={handleIsPayrollEnabled}

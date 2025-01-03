@@ -7,5 +7,5 @@ register = template.Library()
 
 
 @register.simple_tag
-def can_edit_payroll(user):
-    return payroll_service.can_edit_payroll(user)
+def can_access_edit_payroll(user):
+    return payroll_service.can_access_edit_payroll(user)
