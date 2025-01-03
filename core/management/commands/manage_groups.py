@@ -11,6 +11,9 @@ class Command(BaseCommand):
         parser.add_argument("--dry-run", action="store_true")
 
     def handle(self, *args, **options):
+        self.log(f"verbosity: {options["verbosity"]}")
+        self.log(f"dry-run: {options["dry_run"]}")
+
         for group_name, perms in GROUPS:
             try:
                 group = Group.objects.get(name=group_name)
@@ -30,11 +33,15 @@ class Command(BaseCommand):
                     codename=perm_codename,
                 )
 
-                if not options["dry_run"]:
-                    group.permissions.add(perm)
+                if group.permissions.contains(perm):
+                    if options["verbosity"] > 1:
+                        self.log(f"    {perm_dot_path!r} already exists")
+                else:
+                    if not options["dry_run"]:
+                        group.permissions.add(perm)
 
-                if options["verbosity"] > 1:
-                    self.log(f"    {perm_dot_path!r} added")
+                    if options["verbosity"] > 1:
+                        self.log(f"    {perm_dot_path!r} added")
 
     def log(self, msg):
         self.stdout.write(msg)

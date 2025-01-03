@@ -100,7 +100,6 @@ GROUPS = [
     (
         "Payroll Editor",
         [
-            "payroll.can_access_edit_payroll_page",
             "payroll.view_employee",
             "payroll.change_employeepayperiods",
             "payroll.view_employeepayperiods",
@@ -116,7 +115,6 @@ GROUPS = [
         "Payroll Admin",
         [
             # Same as Payroll Editor
-            "payroll.can_access_edit_payroll_page",
             "payroll.view_employee",
             "payroll.change_employeepayperiods",
             "payroll.view_employeepayperiods",

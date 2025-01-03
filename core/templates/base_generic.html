@@ -129,8 +129,8 @@
                     </a>
                 </li>
 
-                {% can_edit_payroll user as can_edit_payroll %}
-                {% if can_edit_payroll %}
+                {% can_access_edit_payroll user as user_can_access_edit_payroll %}
+                {% if user_can_access_edit_payroll %}
                     <li class="internal-header__navigation__item">
                         <a class="internal-header__navigation__item__link {% if request.path|startswith:'/payroll/edit/' %}internal-header__navigation__item__link--active{% endif %}"
                             href="{% url 'payroll:choose_cost_centre' %}">
