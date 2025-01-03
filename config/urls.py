@@ -52,9 +52,10 @@ else:
     admin.site.site_header = "Finance Forecast Tool Admin"
     admin.site.site_title = "Finance Forecast Tool Admin"
     admin.site.index_title = "Welcome to the FFT admin site"
-    
-if hasattr(settings, 'DEBUG_TOOLBAR_CONFIG'):
+
+if hasattr(settings, "DEBUG_TOOLBAR_CONFIG"):
     import debug_toolbar
+
     urlpatterns.append(
-        path('__debug__/', include(debug_toolbar.urls)),
+        path("__debug__/", include(debug_toolbar.urls)),
     )
