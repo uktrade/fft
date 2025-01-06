@@ -46,6 +46,17 @@ export default function Payroll() {
   }, [activeTab]);
 
   useEffect(() => {
+    const hidePreviousMonths = localStorage.getItem("showPreviousMonths");
+    if (hidePreviousMonths === "true") {
+      api
+        .getPreviousMonthsData()
+        .then((data) => dispatchPreviousMonths({ type: "fetched", data }));
+    } else {
+      dispatchPreviousMonths({ type: "fetched", data: [] });
+    }
+  }, [showPreviousMonths]);
+
+  useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("saveSuccess");
     if (savedSuccessFlag === "true") {
       setSaveSuccess(true);
@@ -59,9 +70,6 @@ export default function Payroll() {
     api
       .getPayModifierData()
       .then((data) => dispatchPayModifiers({ type: "fetched", data }));
-    api
-      .getPreviousMonthsData()
-      .then((data) => dispatchPreviousMonths({ type: "fetched", data }));
   }, []);
 
   // Computed properties
