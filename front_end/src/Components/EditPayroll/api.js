@@ -4,6 +4,7 @@ import * as types from "./types";
 
 const vacanciesSlug = "vacancies/";
 const payModifiersSlug = "pay_modifiers/";
+const previousMonthsSlug = "previous_months/";
 
 /**
  * Fetch payroll data and return it as a promise.
@@ -64,6 +65,16 @@ export function postPayModifierData(payModifierData) {
   return postData(
     getPayrollApiUrl() + payModifiersSlug,
     JSON.stringify(payModifierData),
+  );
+}
+
+/**
+ * Fetch previous months data and return it as a promise.
+ * @returns {Promise<types.PreviousMonthsData[]>} A promise resolving to an array of objects containing previous months information.
+ */
+export function getPreviousMonthsData() {
+  return getData(getPayrollApiUrl() + previousMonthsSlug).then(
+    (data) => data.data,
   );
 }
 

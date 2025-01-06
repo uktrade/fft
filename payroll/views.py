@@ -102,7 +102,7 @@ class PayModifierApiView(EditPayrollApiView):
         )
 
 
-class EditPayrollPage(EditPayrollBaseView):
+class EditPayrollPage(EditPayrollApiView):
     def get(self, *args, **kwargs) -> HttpResponse:
         payroll_forecast_report_data = payroll_service.payroll_forecast_report(
             self.cost_centre, self.financial_year
@@ -116,6 +116,19 @@ class EditPayrollPage(EditPayrollBaseView):
         }
 
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
+
+
+class PreviousMonthsView(EditPayrollBaseView):
+    def get_data(self):
+        return payroll_service.get_previous_months_data()
+
+
+def redirect_edit_payroll(cost_centre_code, financial_year):
+    return redirect(
+        "payroll:edit",
+        cost_centre_code=cost_centre_code,
+        financial_year=financial_year,
+    )
 
 
 class VacancyViewMixin(PermissionRequiredMixin):

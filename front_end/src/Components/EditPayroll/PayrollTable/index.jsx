@@ -4,6 +4,11 @@
  * @param {types.PayrollData[]} props.payroll
  * @returns
  */
+
+const showPreviousMonths = JSON.parse(
+  localStorage.getItem("showPreviousMonths"),
+);
+
 export default function PayrollTable({
   headers,
   payroll,

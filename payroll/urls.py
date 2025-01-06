@@ -48,4 +48,9 @@ urlpatterns = [
         views.PayModifierApiView.as_view(),
         name="api_pay_modifiers",
     ),
+    path(
+        "api/<str:cost_centre_code>/<int:financial_year>/previous_months/",
+        views.PreviousMonthsView.as_view(),
+        name="api_previous_months",
+    ),
 ]

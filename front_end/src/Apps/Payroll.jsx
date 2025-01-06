@@ -10,10 +10,12 @@ import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
 const initialPayModifiersState = [];
+const initialPreviousMonthsState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -28,11 +30,16 @@ export default function Payroll() {
     payModifiersReducer,
     initialPayModifiersState,
   );
+  const [previousMonths, dispatchPreviousMonths] = useReducer(
+    previousMonthsReducer,
+    initialPreviousMonthsState,
+  );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
+  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
@@ -52,6 +59,9 @@ export default function Payroll() {
     api
       .getPayModifierData()
       .then((data) => dispatchPayModifiers({ type: "fetched", data }));
+    api
+      .getPreviousMonthsData()
+      .then((data) => dispatchPreviousMonths({ type: "fetched", data }));
   }, []);
 
   // Computed properties
@@ -91,6 +101,14 @@ export default function Payroll() {
   function handleUpdatePayModifiers(id, index, value) {
     dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
   }
+  function handleShowPreviousMonths() {
+    setShowPreviousMonths(!showPreviousMonths);
+
+    localStorage.setItem(
+      "showPreviousMonths",
+      JSON.stringify(!showPreviousMonths),
+    );
+  }
 
   return (
     <>
@@ -106,6 +124,13 @@ export default function Payroll() {
           </div>
         </div>
       )}
+      <ToggleCheckbox
+        toggle={showPreviousMonths}
+        handler={handleShowPreviousMonths}
+        id="payroll-previous-months"
+        value="payroll"
+        label="Hide previous months"
+      />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <PayrollTable
@@ -199,6 +224,14 @@ const payModifiersReducer = (data, action) => {
         }
         return row;
       });
+    }
+  }
+};
+
+const previousMonthsReducer = (data, action) => {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
     }
   }
 };
