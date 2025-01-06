@@ -11,6 +11,8 @@ build: # Build the docker images for the project
 up: # Start the project
 	docker compose up
 
+up-dev: # Start the project
+	docker compose --profile dev up
 up-detatched: # Start the project in detached mode
 	docker compose up -d
 
