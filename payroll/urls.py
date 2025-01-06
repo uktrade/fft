@@ -15,12 +15,12 @@ urlpatterns = [
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/",
-        views.EmployeeView.as_view(),
+        views.EmployeeApiView.as_view(),
         name="api",
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/vacancies/",
-        views.VacancyView.as_view(),
+        views.VacancyApiView.as_view(),
         name="api_vacancies",
     ),
     path(
@@ -45,7 +45,7 @@ urlpatterns = [
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/pay_modifiers/",
-        views.PayModifierView.as_view(),
+        views.PayModifierApiView.as_view(),
         name="api_pay_modifiers",
     ),
 ]

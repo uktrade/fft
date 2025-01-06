@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 group = Group.objects.get(name=group_name)
             except Group.DoesNotExist:
                 if not options["dry_run"]:
-                    Group.objects.create(name=group_name)
+                    group = Group.objects.create(name=group_name)
 
                 self.log(f"{group_name!r} created")
             else:

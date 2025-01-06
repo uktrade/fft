@@ -57,7 +57,7 @@ class EditPayrollApiView(EditPayrollBaseView):
         return JsonResponse({})
 
 
-class EmployeeView(EditPayrollApiView):
+class EmployeeApiView(EditPayrollApiView):
     def get_data(self):
         return payroll_service.get_payroll_data(
             self.cost_centre,
@@ -72,7 +72,7 @@ class EmployeeView(EditPayrollApiView):
         )
 
 
-class VacancyView(EditPayrollApiView):
+class VacancyApiView(EditPayrollApiView):
     def get_data(self):
         return payroll_service.get_vacancies_data(
             self.cost_centre,
@@ -87,7 +87,7 @@ class VacancyView(EditPayrollApiView):
         )
 
 
-class PayModifierView(EditPayrollApiView):
+class PayModifierApiView(EditPayrollApiView):
     def get_data(self):
         return payroll_service.get_pay_modifiers_data(
             self.cost_centre,
