@@ -46,7 +46,9 @@ export default function Payroll() {
   }, [activeTab]);
 
   useEffect(() => {
-    const hidePreviousMonths = localStorage.getItem("showPreviousMonths");
+    const hidePreviousMonths = localStorage.getItem(
+      "editPayroll.showPreviousMonths",
+    );
     if (hidePreviousMonths === "true") {
       api
         .getPreviousMonthsData()
@@ -57,10 +59,10 @@ export default function Payroll() {
   }, [showPreviousMonths]);
 
   useEffect(() => {
-    const savedSuccessFlag = localStorage.getItem("saveSuccess");
+    const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
     if (savedSuccessFlag === "true") {
       setSaveSuccess(true);
-      localStorage.removeItem("saveSuccess");
+      localStorage.removeItem("editPayroll.saveSuccess");
     }
 
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
@@ -90,7 +92,7 @@ export default function Payroll() {
       await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
-      localStorage.setItem("saveSuccess", "true");
+      localStorage.setItem("editPayroll.saveSuccess", "true");
 
       window.location.reload();
     } catch (error) {
@@ -113,7 +115,7 @@ export default function Payroll() {
     setShowPreviousMonths(!showPreviousMonths);
 
     localStorage.setItem(
-      "showPreviousMonths",
+      "editPayroll.showPreviousMonths",
       JSON.stringify(!showPreviousMonths),
     );
   }
