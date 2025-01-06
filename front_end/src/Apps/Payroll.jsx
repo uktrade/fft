@@ -138,6 +138,7 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -146,6 +147,7 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -154,6 +156,7 @@ export default function Payroll() {
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
+            previousMonths={previousMonths}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"

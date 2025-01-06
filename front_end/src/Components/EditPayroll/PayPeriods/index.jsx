@@ -1,4 +1,4 @@
-const PayPeriods = ({ row, id, onTogglePayPeriods }) => {
+const PayPeriods = ({ row, id, onTogglePayPeriods, offset }) => {
   return (
     <>
       {row.pay_periods.map((enabled, index) => {
@@ -7,7 +7,7 @@ const PayPeriods = ({ row, id, onTogglePayPeriods }) => {
             <input
               type="checkbox"
               checked={enabled}
-              onChange={() => onTogglePayPeriods(id, index, enabled)}
+              onChange={() => onTogglePayPeriods(id, index + offset, enabled)}
             />
           </td>
         );
