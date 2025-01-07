@@ -1,9 +1,9 @@
 import json
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import PermissionDenied
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views import View
@@ -190,8 +190,17 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
     if not request.user.is_superuser:
         raise PermissionDenied
 
-    if request.method == "POST":
-        import_payroll(request.FILES["hr_csv"], request.FILES["payroll_csv"])
+    output = ""
 
-    context = {}
+    if request.method == "POST":
+        output = import_payroll(
+            hr_csv=request.FILES["hr_csv"],
+            payroll_csv=request.FILES.get("payroll_csv"),
+            hr_csv_has_header=request.POST.get("hr_csv_has_header", False),
+            payroll_csv_has_header=request.POST.get("hr_csv_has_header", False),
+        )
+
+    context = {
+        "output": output,
+    }
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)
