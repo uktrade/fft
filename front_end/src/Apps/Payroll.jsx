@@ -17,10 +17,6 @@ const initialVacanciesState = [];
 const initialPayModifiersState = [];
 const initialPreviousMonthsState = [];
 
-// This clears the cookie on reload so that the table state resets to match the toggle state
-// Must be a better way to manage this
-localStorage.removeItem("editPayroll.showPreviousMonths");
-
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
@@ -43,7 +39,12 @@ export default function Payroll() {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
-  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+  const initialPreviousMonths = localStorage.getItem(
+    "editPayroll.showPreviousMonths",
+  );
+  const [showPreviousMonths, setShowPreviousMonths] = useState(
+    initialPreviousMonths === "true",
+  );
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
@@ -142,7 +143,7 @@ export default function Payroll() {
         toggle={showPreviousMonths}
         handler={handleShowPreviousMonths}
         id="payroll-previous-months"
-        value="payroll"
+        value="payroll-previous-months"
         label="Hide previous months"
       />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
