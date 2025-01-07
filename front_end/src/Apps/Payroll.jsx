@@ -17,6 +17,10 @@ const initialVacanciesState = [];
 const initialPayModifiersState = [];
 const initialPreviousMonthsState = [];
 
+// This clears the cookie on reload so that the table state resets to match the toggle state
+// Must be a better way to manage this
+localStorage.removeItem("editPayroll.showPreviousMonths");
+
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
