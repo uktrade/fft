@@ -40,9 +40,9 @@ export default function Payroll() {
     return savedTab ? parseInt(savedTab) : 0;
   });
   const initialPreviousMonths = localStorage.getItem(
-    "editPayroll.showPreviousMonths",
+    "editPayroll.hidePreviousMonths",
   );
-  const [showPreviousMonths, setShowPreviousMonths] = useState(
+  const [hidePreviousMonths, setHidePreviousMonths] = useState(
     initialPreviousMonths === "true",
   );
 
@@ -52,7 +52,7 @@ export default function Payroll() {
 
   useEffect(() => {
     const hidePreviousMonths = localStorage.getItem(
-      "editPayroll.showPreviousMonths",
+      "editPayroll.hidePreviousMonths",
     );
     if (hidePreviousMonths === "true") {
       api
@@ -61,7 +61,7 @@ export default function Payroll() {
     } else {
       dispatchPreviousMonths({ type: "fetched", data: [] });
     }
-  }, [showPreviousMonths]);
+  }, [hidePreviousMonths]);
 
   useEffect(() => {
     const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
@@ -116,12 +116,12 @@ export default function Payroll() {
   function handleUpdatePayModifiers(id, index, value) {
     dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
   }
-  function handleShowPreviousMonths() {
-    setShowPreviousMonths(!showPreviousMonths);
+  function handleHidePreviousMonths() {
+    setHidePreviousMonths(!hidePreviousMonths);
 
     localStorage.setItem(
-      "editPayroll.showPreviousMonths",
-      JSON.stringify(!showPreviousMonths),
+      "editPayroll.hidePreviousMonths",
+      JSON.stringify(!hidePreviousMonths),
     );
   }
 
@@ -140,8 +140,8 @@ export default function Payroll() {
         </div>
       )}
       <ToggleCheckbox
-        toggle={showPreviousMonths}
-        handler={handleShowPreviousMonths}
+        toggle={hidePreviousMonths}
+        handler={handleHidePreviousMonths}
         id="payroll-previous-months"
         value="payroll-previous-months"
         label="Hide previous months"
