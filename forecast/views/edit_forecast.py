@@ -571,7 +571,7 @@ class EditUnavailableView(
 
     def dispatch(self, request, *args, **kwargs):
         # If edit is open, redirect to choose CC page
-        if can_forecast_be_edited(request.user) | can_future_forecast_be_edited(
+        if can_forecast_be_edited(request.user) or can_future_forecast_be_edited(
             request.user
         ):
             return redirect(reverse("choose_cost_centre"))

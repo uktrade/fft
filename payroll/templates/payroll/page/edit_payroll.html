@@ -23,7 +23,7 @@
                     <th scope="col" class="govuk-table__header">Programme code</th>
                     <th scope="col" class="govuk-table__header">Natural account code</th>
                     {% for month in months %}
-                        <th scope="col" class="govuk-table__header">{{ month }}</th>
+                        <th scope="col" class="govuk-table__header">{{ month|capfirst }}</th>
                     {% endfor %}
                 </tr>
             </thead>
