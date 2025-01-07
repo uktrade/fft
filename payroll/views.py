@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views import View
@@ -121,14 +121,6 @@ class EditPayrollPage(EditPayrollApiView):
 class PreviousMonthsView(EditPayrollBaseView):
     def get_data(self):
         return payroll_service.get_previous_months_data()
-
-
-def redirect_edit_payroll(cost_centre_code, financial_year):
-    return redirect(
-        "payroll:edit",
-        cost_centre_code=cost_centre_code,
-        financial_year=financial_year,
-    )
 
 
 class VacancyViewMixin(PermissionRequiredMixin):
