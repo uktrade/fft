@@ -124,7 +124,7 @@ GROUPS = [
             "payroll.view_vacancy",
             "payroll.change_vacancypayperiods",
             "payroll.view_vacancypayperiods",
-            # Specific to Payoll Admin
+            # Specific to Payroll Admin
             "core.add_payuplift",
             "core.change_payuplift",
             "core.delete_payuplift",
