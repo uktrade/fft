@@ -102,7 +102,7 @@ class PayModifierApiView(EditPayrollApiView):
         )
 
 
-class EditPayrollPage(EditPayrollApiView):
+class EditPayrollPage(EditPayrollBaseView):
     def get(self, *args, **kwargs) -> HttpResponse:
         payroll_forecast_report_data = payroll_service.payroll_forecast_report(
             self.cost_centre, self.financial_year
@@ -118,7 +118,7 @@ class EditPayrollPage(EditPayrollApiView):
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
 
 
-class PreviousMonthsView(EditPayrollBaseView):
+class PreviousMonthsView(EditPayrollApiView):
     def get_data(self):
         return payroll_service.get_previous_months_data()
 
