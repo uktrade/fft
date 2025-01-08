@@ -10,17 +10,17 @@ app_name = "payroll"
 urlpatterns = [
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/",
-        views.edit_payroll_page,
+        views.EditPayrollPage.as_view(),
         name="edit",
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/",
-        views.PayrollView.as_view(),
+        views.EmployeeApiView.as_view(),
         name="api",
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/vacancies/",
-        views.VacancyView.as_view(),
+        views.VacancyApiView.as_view(),
         name="api_vacancies",
     ),
     path(
@@ -30,22 +30,22 @@ urlpatterns = [
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/create",
-        views.add_vacancy_page,
+        views.AddVacancyView.as_view(),
         name="add_vacancy",
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/edit",
-        views.edit_vacancy_page,
+        views.EditVacancyView.as_view(),
         name="edit_vacancy",
     ),
     path(
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/delete",
-        views.delete_vacancy_page,
+        views.DeleteVacancyView.as_view(),
         name="delete_vacancy",
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/pay_modifiers/",
-        views.PayModifierView.as_view(),
+        views.PayModifierApiView.as_view(),
         name="api_pay_modifiers",
     ),
 ]

@@ -14,7 +14,9 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
+from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
+from user.models import User
 
 from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
@@ -389,3 +391,31 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+# Permissions
+# ===========
+
+
+def can_access_edit_payroll(user: User) -> bool:
+    return user.has_perms(("payroll.view_employee", "payroll.view_vacancy"))
+
+
+def can_edit_payroll(
+    user: User,
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+    current_financial_year: int,
+) -> bool:
+    return (
+        can_access_edit_payroll(user)
+        and can_edit_forecast(
+            user=user,
+            financial_year=financial_year.financial_year,
+            current_financial_year=current_financial_year,
+        )
+        and can_edit_cost_centre(
+            user=user,
+            cost_centre_code=cost_centre.cost_centre_code,
+        )
+    )
