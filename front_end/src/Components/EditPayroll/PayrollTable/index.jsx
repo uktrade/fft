@@ -10,8 +10,8 @@ export default function PayrollTable({
   onTogglePayPeriods,
   RowComponent,
   previousMonths,
+  offset,
 }) {
-  const previousMonthsOffset = previousMonths.length;
   if (payroll.length === 0) {
     return <p className="govuk-body">No data found</p>;
   }
@@ -43,15 +43,16 @@ export default function PayrollTable({
           </thead>
           <tbody className="govuk-table__body">
             {payroll.map((row) => {
-              const filteredPayPeriods =
-                row.pay_periods.slice(previousMonthsOffset);
+              const filteredPayPeriods = row.pay_periods.slice(
+                previousMonths.length,
+              );
               const updatedRow = { ...row, pay_periods: filteredPayPeriods };
               return (
                 <RowComponent
                   key={row.id}
                   row={updatedRow}
                   onTogglePayPeriods={onTogglePayPeriods}
-                  previousMonthsOffset={previousMonthsOffset}
+                  previousMonthsOffset={offset}
                 />
               );
             })}

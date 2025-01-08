@@ -45,6 +45,7 @@ export default function Payroll() {
   const [hidePreviousMonths, setHidePreviousMonths] = useState(
     initialPreviousMonths === "true",
   );
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
@@ -54,6 +55,8 @@ export default function Payroll() {
     const previousMonthsCookie = localStorage.getItem(
       "editPayroll.hidePreviousMonths",
     );
+    setOffset(window.previous_months.length);
+
     let data = [];
     if (previousMonthsCookie === "true") {
       data = window.previous_months;
@@ -152,6 +155,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
             previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -161,6 +165,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
             previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -170,6 +175,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
             previousMonths={previousMonths}
+            offset={offset}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
