@@ -51,11 +51,11 @@ export default function Payroll() {
   }, [activeTab]);
 
   useEffect(() => {
-    const hidePreviousMonths = localStorage.getItem(
+    const previousMonthsCookie = localStorage.getItem(
       "editPayroll.hidePreviousMonths",
     );
     let data = [];
-    if (hidePreviousMonths === "true") {
+    if (previousMonthsCookie === "true") {
       data = window.previous_months;
     }
     dispatchPreviousMonths({ type: "fetched", data: data });
