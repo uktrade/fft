@@ -107,20 +107,17 @@ class EditPayrollPage(EditPayrollBaseView):
         payroll_forecast_report_data = payroll_service.payroll_forecast_report(
             self.cost_centre, self.financial_year
         )
+        previous_months = list(payroll_service.get_previous_months_data())
 
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
             "payroll_forecast_report": payroll_forecast_report_data,
             "months": MONTHS,
+            "previous_months": previous_months,
         }
 
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
-
-
-class PreviousMonthsView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_previous_months_data()
 
 
 class VacancyViewMixin(PermissionRequiredMixin):

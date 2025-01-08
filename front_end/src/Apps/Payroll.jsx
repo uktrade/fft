@@ -54,13 +54,11 @@ export default function Payroll() {
     const hidePreviousMonths = localStorage.getItem(
       "editPayroll.hidePreviousMonths",
     );
+    let data = [];
     if (hidePreviousMonths === "true") {
-      api
-        .getPreviousMonthsData()
-        .then((data) => dispatchPreviousMonths({ type: "fetched", data }));
-    } else {
-      dispatchPreviousMonths({ type: "fetched", data: [] });
+      data = window.previous_months;
     }
+    dispatchPreviousMonths({ type: "fetched", data: data });
   }, [hidePreviousMonths]);
 
   useEffect(() => {
