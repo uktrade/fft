@@ -108,7 +108,7 @@ prettier-check:
 	npx prettier . --check
 
 prettier:
-	npx prettier . --write | grep -v "unchanged" | xargs
+	npx prettier . --write
 
 check: # Run formatters to see if there are any errors
 	make ruff-check
