@@ -191,16 +191,21 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
         raise PermissionDenied
 
     output = ""
-
+    context={}    
     if request.method == "POST":
-        output = import_payroll(
-            hr_csv=request.FILES["hr_csv"],
-            payroll_csv=request.FILES.get("payroll_csv"),
-            hr_csv_has_header=request.POST.get("hr_csv_has_header", False),
-            payroll_csv_has_header=request.POST.get("hr_csv_has_header", False),
-        )
+        if 'hr_csv' not in request.FILES :
+            context= {"error": "Please select file"}
+        else:
+            hr_csv = request.FILES['hr_csv']
+            hr_csv_has_header = request.POST.get('hr_csv_has_header', False)
+            # payroll_csv = request.FILES['payroll_csv']
+            # payroll_csv_has_header = request.POST.get("hr_csv_has_header", False)
+            output = import_payroll(
+                hr_csv,
+                hr_csv_has_header,
+            )
 
-    context = {
-        "output": output,
-    }
+            context = {
+                "output": output,
+            }
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)
