@@ -31,4 +31,10 @@
  * @property {number[]} pay_modifiers - The pay modifier's monthly percentages
  */
 
+/**
+ * @typedef {Object} PreviousMonthsData
+ * @property {string} month_short_name - The short form name of the month
+ * @property {int} month_financial_code - The financial index of the month (Apr is 1 etc)
+ */
+
 export const Types = {};

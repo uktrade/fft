@@ -10,10 +10,12 @@ import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 
 const initialPayrollState = [];
 const initialVacanciesState = [];
 const initialPayModifiersState = [];
+const initialPreviousMonthsState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -28,21 +30,45 @@ export default function Payroll() {
     payModifiersReducer,
     initialPayModifiersState,
   );
+  const [previousMonths, dispatchPreviousMonths] = useReducer(
+    previousMonthsReducer,
+    initialPreviousMonthsState,
+  );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
+  const initialPreviousMonths = localStorage.getItem(
+    "editPayroll.hidePreviousMonths",
+  );
+  const [hidePreviousMonths, setHidePreviousMonths] = useState(
+    initialPreviousMonths === "true",
+  );
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
   }, [activeTab]);
 
   useEffect(() => {
-    const savedSuccessFlag = localStorage.getItem("saveSuccess");
+    const previousMonthsCookie = localStorage.getItem(
+      "editPayroll.hidePreviousMonths",
+    );
+    setOffset(window.previous_months.length);
+
+    let data = [];
+    if (previousMonthsCookie === "true") {
+      data = window.previous_months;
+    }
+    dispatchPreviousMonths({ type: "fetched", data: data });
+  }, [hidePreviousMonths]);
+
+  useEffect(() => {
+    const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
     if (savedSuccessFlag === "true") {
       setSaveSuccess(true);
-      localStorage.removeItem("saveSuccess");
+      localStorage.removeItem("editPayroll.saveSuccess");
     }
 
     api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
@@ -72,7 +98,7 @@ export default function Payroll() {
       await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
-      localStorage.setItem("saveSuccess", "true");
+      localStorage.setItem("editPayroll.saveSuccess", "true");
 
       window.location.reload();
     } catch (error) {
@@ -91,6 +117,14 @@ export default function Payroll() {
   function handleUpdatePayModifiers(id, index, value) {
     dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
   }
+  function handleHidePreviousMonths() {
+    setHidePreviousMonths(!hidePreviousMonths);
+
+    localStorage.setItem(
+      "editPayroll.hidePreviousMonths",
+      JSON.stringify(!hidePreviousMonths),
+    );
+  }
 
   return (
     <>
@@ -106,6 +140,13 @@ export default function Payroll() {
           </div>
         </div>
       )}
+      <ToggleCheckbox
+        toggle={hidePreviousMonths}
+        handler={handleHidePreviousMonths}
+        id="payroll-previous-months"
+        value="payroll-previous-months"
+        label="Hide previous months"
+      />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <PayrollTable
@@ -113,6 +154,8 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -121,6 +164,8 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -129,6 +174,8 @@ export default function Payroll() {
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
@@ -199,6 +246,14 @@ const payModifiersReducer = (data, action) => {
         }
         return row;
       });
+    }
+  }
+};
+
+const previousMonthsReducer = (data, action) => {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
     }
   }
 };
