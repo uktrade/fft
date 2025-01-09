@@ -35,6 +35,7 @@ export default function Payroll() {
     initialPreviousMonthsState,
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
@@ -49,6 +50,7 @@ export default function Payroll() {
 
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
+    setSaveSuccess(false);
   }, [activeTab]);
 
   useEffect(() => {
@@ -103,6 +105,9 @@ export default function Payroll() {
       window.location.reload();
     } catch (error) {
       console.error("Error saving payroll: ", error);
+      setSaveSuccess(false);
+      setSaveError(true);
+      localStorage.setItem("saveError", "true");
     }
   }
 
@@ -137,6 +142,26 @@ export default function Payroll() {
             >
               Success
             </h2>
+          </div>
+        </div>
+      )}
+      {saveError && (
+        <div
+          className="govuk-error-summary"
+          aria-labelledby="error-summary-title"
+          role="alert"
+          tabIndex="-1"
+          data-module="govuk-error-summary"
+        >
+          <h2 className="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+          </h2>
+          <div className="govuk-error-summary__body">
+            <ul className="govuk-list govuk-error-summary__list">
+              <li>
+                <a href="#">Error saving payroll data</a>
+              </li>
+            </ul>
           </div>
         </div>
       )}
