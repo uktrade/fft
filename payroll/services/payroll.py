@@ -14,7 +14,6 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
-from forecast.models import FinancialPeriod
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -349,22 +348,6 @@ def get_pay_modifiers_data(
     )
     for obj in qs:
         yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
-
-
-class PreviousMonths(TypedDict):
-    month_short_name = str
-    month_financial_code = int
-
-
-def get_previous_months_data() -> Iterator[PreviousMonths]:
-    qs = FinancialPeriod.objects.filter(actual_loaded=True).order_by(
-        "financial_period_code"
-    )
-    for obj in qs:
-        yield PreviousMonths(
-            month_short_name=obj.period_short_name,
-            month_financial_code=obj.financial_period_code,
-        )
 
 
 @transaction.atomic

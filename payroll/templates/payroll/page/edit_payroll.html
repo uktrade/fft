@@ -58,7 +58,6 @@
         window.costCentreCode = "{{ cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year }}");
         window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre_code financial_year %}"
-        // window.previous_months = "{{ previous_months|escapejs }}"
         window.previous_months = JSON.parse(document.getElementById("previous_months").textContent);
     </script>
     {% vite_dev_client %}
