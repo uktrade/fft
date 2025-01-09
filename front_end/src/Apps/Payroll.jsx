@@ -17,6 +17,12 @@ const initialVacanciesState = [];
 const initialPayModifiersState = [];
 const initialPreviousMonthsState = [];
 
+// const initialPayrollState = {
+//   employees: [],
+//   vacancies: [],
+//   pay_modifiers: [],
+// };
+
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
@@ -73,13 +79,11 @@ export default function Payroll() {
       localStorage.removeItem("editPayroll.saveSuccess");
     }
 
-    api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
-    api
-      .getVacancyData()
-      .then((data) => dispatchVacancies({ type: "fetched", data }));
-    api
-      .getPayModifierData()
-      .then((data) => dispatchPayModifiers({ type: "fetched", data }));
+    api.getPayrollData().then((data) => {
+      dispatch({ type: "fetched", data: data.employees });
+      dispatchVacancies({ type: "fetched", data: data.vacancies });
+      dispatchPayModifiers({ type: "fetched", data: data.pay_modifiers });
+    });
   }, []);
 
   // Computed properties
