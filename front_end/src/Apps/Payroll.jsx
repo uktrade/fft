@@ -12,29 +12,17 @@ import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 
-const initialPayrollState = [];
-const initialVacanciesState = [];
-const initialPayModifiersState = [];
+const initialPayrollState = {
+  employees: [],
+  vacancies: [],
+  pay_modifiers: [],
+};
 const initialPreviousMonthsState = [];
-
-// const initialPayrollState = {
-//   employees: [],
-//   vacancies: [],
-//   pay_modifiers: [],
-// };
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
     initialPayrollState,
-  );
-  const [vacancies, dispatchVacancies] = useReducer(
-    vacanciesReducer,
-    initialVacanciesState,
-  );
-  const [payModifiers, dispatchPayModifiers] = useReducer(
-    payModifiersReducer,
-    initialPayModifiersState,
   );
   const [previousMonths, dispatchPreviousMonths] = useReducer(
     previousMonthsReducer,
@@ -80,19 +68,17 @@ export default function Payroll() {
     }
 
     api.getPayrollData().then((data) => {
-      dispatch({ type: "fetched", data: data.employees });
-      dispatchVacancies({ type: "fetched", data: data.vacancies });
-      dispatchPayModifiers({ type: "fetched", data: data.pay_modifiers });
+      dispatch({ type: "fetched", data });
     });
   }, []);
 
   // Computed properties
   const payroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay > 0),
+    () => allPayroll.employees.filter((payroll) => payroll.basic_pay > 0),
     [allPayroll],
   );
   const nonPayroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay <= 0),
+    () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
 
@@ -100,8 +86,8 @@ export default function Payroll() {
   async function handleSavePayroll() {
     try {
       await api.postPayrollData(allPayroll);
-      await api.postVacancyData(vacancies);
-      await api.postPayModifierData(payModifiers);
+      // await api.postVacancyData(vacancies);
+      // await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
       localStorage.setItem("editPayroll.saveSuccess", "true");
@@ -116,15 +102,15 @@ export default function Payroll() {
   }
 
   function handleTogglePayPeriods(id, index, enabled) {
-    dispatch({ type: "updatePayPeriods", id, index, enabled });
+    dispatch({ type: "updatePayPeriodsEmployees", id, index, enabled });
   }
 
   function handleToggleVacancyPayPeriods(id, index, enabled) {
-    dispatchVacancies({ type: "updatePayPeriods", id, index, enabled });
+    dispatch({ type: "updatePayPeriodsVacancies", id, index, enabled });
   }
 
   function handleUpdatePayModifiers(id, index, value) {
-    dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
+    dispatch({ type: "updatePayModifiers", id, index, value });
   }
   function handleHidePreviousMonths() {
     setHidePreviousMonths(!hidePreviousMonths);
@@ -199,7 +185,7 @@ export default function Payroll() {
         </Tab>
         <Tab label="Vacancies" key="3">
           <PayrollTable
-            payroll={vacancies}
+            payroll={allPayroll.vacancies}
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
@@ -215,7 +201,7 @@ export default function Payroll() {
         </Tab>
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
-            data={payModifiers}
+            data={allPayroll.pay_modifiers}
             onInputChange={handleUpdatePayModifiers}
           />
         </Tab>
@@ -227,54 +213,70 @@ export default function Payroll() {
   );
 }
 
-const positionReducer = (data, action) => {
-  switch (action.type) {
-    case "fetched": {
-      return action.data;
-    }
-    case "updatePayPeriods": {
-      return data.map((row) => {
-        if (row.id === action.id) {
-          const updatedPayPeriods = row.pay_periods.map((period, index) => {
-            if (index + 1 >= action.index + 1) {
-              return !action.enabled;
-            }
-            return period;
-          });
-          return {
-            ...row,
-            pay_periods: updatedPayPeriods,
-          };
+function updatePayPeriods(data, action) {
+  return data.map((row) => {
+    if (row.id === action.id) {
+      const updatedPayPeriods = row.pay_periods.map((period, index) => {
+        if (index + 1 >= action.index + 1) {
+          return !action.enabled;
         }
-        return row;
+        return period;
       });
+      return {
+        ...row,
+        pay_periods: updatedPayPeriods,
+      };
     }
-  }
-};
+    return row;
+  });
+}
 
-const payModifiersReducer = (data, action) => {
+function updatePayModifiers(data, action) {
+  return data.map((row) => {
+    if (row.id === action.id) {
+      const updatedPayModifier = row.pay_modifiers.map((modifier, index) => {
+        if (index === action.index) {
+          return parseFloat(action.value);
+        }
+        return modifier;
+      });
+      return {
+        ...row,
+        pay_modifiers: updatedPayModifier,
+      };
+    }
+    return row;
+  });
+}
+
+const payrollData = (data) => ({
+  employees: data.employees,
+  vacancies: data.vacancies,
+  pay_modifiers: data.pay_modifiers,
+});
+
+const payrollReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
       return action.data;
+    }
+    case "updatePayPeriodsEmployees": {
+      return {
+        ...payrollData(data),
+        employees: updatePayPeriods(data.employees, action),
+      };
+    }
+    case "updatePayPeriodsVacancies": {
+      return {
+        ...payrollData(data),
+        vacancies: updatePayPeriods(data.vacancies, action),
+      };
     }
     case "updatePayModifiers": {
-      return data.map((row) => {
-        if (row.id === action.id) {
-          const updatedPayModifier = row.pay_modifiers.map(
-            (modifier, index) => {
-              if (index === action.index) {
-                return parseFloat(action.value);
-              }
-              return modifier;
-            },
-          );
-          return {
-            ...row,
-            pay_modifiers: updatedPayModifier,
-          };
-        }
-        return row;
-      });
+      return {
+        ...payrollData(data),
+        pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
+      };
     }
   }
 };
@@ -286,6 +288,3 @@ const previousMonthsReducer = (data, action) => {
     }
   }
 };
-
-const payrollReducer = (data, action) => positionReducer(data, action);
-const vacanciesReducer = (data, action) => positionReducer(data, action);
