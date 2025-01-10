@@ -76,9 +76,7 @@ def payroll_forecast_report(
     )
 
     employee_qs = Employee.objects.filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
-        has_left=False
+        cost_centre=cost_centre, pay_periods__year=financial_year, has_left=False
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
@@ -153,7 +151,12 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
     salaries: list[int] = []
 
     for filter in filters:
-        employee_qs = Employee.objects.payroll().filter(grade=grade).filter(filter).filter(has_left=False)
+        employee_qs = (
+            Employee.objects.payroll()
+            .filter(grade=grade)
+            .filter(filter)
+            .filter(has_left=False)
+        )
 
         basic_pay = employee_qs.aggregate(
             count=Count("basic_pay"), avg=Avg("basic_pay")
