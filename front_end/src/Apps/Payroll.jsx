@@ -30,12 +30,6 @@ export default function Payroll() {
     previousMonthsReducer,
     initialPreviousMonthsState,
   );
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState(false);
-  const [activeTab, setActiveTab] = useState(() => {
-    const savedTab = localStorage.getItem("editPayroll.activeTab");
-    return savedTab ? parseInt(savedTab) : 0;
-  });
   const initialPreviousMonths = localStorage.getItem(
     "editPayroll.hidePreviousMonths",
   );
@@ -43,7 +37,14 @@ export default function Payroll() {
     initialPreviousMonths === "true",
   );
   const [offset, setOffset] = useState(0);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const [activeTab, setActiveTab] = useState(() => {
+    const savedTab = localStorage.getItem("editPayroll.activeTab");
+    return savedTab ? parseInt(savedTab) : 0;
+  });
 
+  // Use Effects
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
     setSaveSuccess(false);
