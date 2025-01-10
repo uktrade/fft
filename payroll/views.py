@@ -1,7 +1,8 @@
 import json
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -16,6 +17,7 @@ from payroll.forms import VacancyForm
 from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
+from .services.ingest import import_payroll
 
 
 class EditPayrollBaseView(UserPassesTestMixin, View):
@@ -185,3 +187,28 @@ class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
             "vacancy_id": self.object.id,
         }
         return super().get_context_data(**kwargs) | context
+
+
+def import_payroll_page(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    output = ""
+    context = {}
+    if request.method == "POST":
+        if "hr_csv" not in request.FILES:
+            context = {"error": "Please select file"}
+        else:
+            hr_csv = request.FILES["hr_csv"]
+            hr_csv_has_header = request.POST.get("hr_csv_has_header", False)
+            # payroll_csv = request.FILES['payroll_csv']
+            # payroll_csv_has_header = request.POST.get("hr_csv_has_header", False)
+            output = import_payroll(
+                hr_csv,
+                hr_csv_has_header,
+            )
+
+            context = {
+                "output": output,
+            }
+    return TemplateResponse(request, "payroll/page/import_payroll.html", context)

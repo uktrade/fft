@@ -48,4 +48,6 @@ urlpatterns = [
         views.PayModifierApiView.as_view(),
         name="api_pay_modifiers",
     ),
+    # TODO: Remove temporary views when ready.
+    path("import", views.import_payroll_page, name="import"),
 ]

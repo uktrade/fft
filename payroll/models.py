@@ -93,6 +93,7 @@ class Employee(Position):
     basic_pay = models.BigIntegerField(default=0, db_comment="pence")
     pension = models.BigIntegerField(default=0, db_comment="pence")
     ernic = models.BigIntegerField(default=0, db_comment="pence")
+    has_left = models.BooleanField(default=False)
 
     # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)
