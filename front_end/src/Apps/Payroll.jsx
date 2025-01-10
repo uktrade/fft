@@ -11,6 +11,7 @@ import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
+import ErrorSummary from "../Components/Common/ErrorSummary";
 
 const initialPayrollState = {
   employees: [],
@@ -119,6 +120,8 @@ export default function Payroll() {
     );
   }
 
+  const errors = [{ label: "", message: "Error saving payroll data" }];
+
   return (
     <>
       {saveSuccess && (
@@ -133,26 +136,7 @@ export default function Payroll() {
           </div>
         </div>
       )}
-      {saveError && (
-        <div
-          className="govuk-error-summary"
-          aria-labelledby="error-summary-title"
-          role="alert"
-          tabIndex="-1"
-          data-module="govuk-error-summary"
-        >
-          <h2 className="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-          </h2>
-          <div className="govuk-error-summary__body">
-            <ul className="govuk-list govuk-error-summary__list">
-              <li>
-                <a href="#">Error saving payroll data</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      )}
+      {saveError && <ErrorSummary errors={errors} />}
       <ToggleCheckbox
         toggle={hidePreviousMonths}
         handler={handleHidePreviousMonths}
