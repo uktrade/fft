@@ -27,12 +27,18 @@ class EditPayrollApiView(EditPayrollBaseView):
                 self.financial_year,
             )
         )
+        forecast = list(
+            payroll_service.payroll_forecast_report(
+                self.cost_centre, self.financial_year
+            )
+        )
 
         return JsonResponse(
             {
                 "employees": employees,
                 "vacancies": vacancies,
                 "pay_modifiers": pay_modifiers,
+                "forecast": forecast,
             }
         )
 

@@ -13,11 +13,14 @@ import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
+import ForecastTable from "../Components/EditPayroll/ForecastTable";
+import { months, monthsToTitleCase } from "../Util";
 
 const initialPayrollState = {
   employees: [],
   vacancies: [],
   pay_modifiers: [],
+  forecast: [],
 };
 const initialPreviousMonthsState = [];
 
@@ -183,6 +186,10 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
+      <ForecastTable
+        forecast={allPayroll.forecast}
+        months={Object.values(months)}
+      />
     </>
   );
 }
