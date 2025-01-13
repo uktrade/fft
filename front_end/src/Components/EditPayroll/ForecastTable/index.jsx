@@ -16,7 +16,7 @@ export default function ForecastTable({ forecast, months }) {
               {months.map((month) => {
                 return (
                   <th scope="col" className="govuk-table__header" key={month}>
-                    {{ month }}
+                    {month}
                   </th>
                 );
               })}

@@ -188,7 +188,7 @@ export default function Payroll() {
       </button>
       <ForecastTable
         forecast={allPayroll.forecast}
-        months={Object.values(months)}
+        months={monthsToTitleCase}
       />
     </>
   );
