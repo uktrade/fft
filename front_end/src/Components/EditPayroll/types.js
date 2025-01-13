@@ -32,16 +32,34 @@
  */
 
 /**
+ * @typedef {Object} PreviousMonthsData
+ * @property {string} month_short_name - The short form name of the month
+ * @property {int} month_financial_code - The financial index of the month (Apr is 1 etc)
+ */
+/**
+ * @typedef {Object} ForecastData
+ * @property {string} programme_code - The forecast data's programme code
+ * @property {string} natural_account_code - The forecast data's natural account code
+ * @property {int} apr - The forecast data in pence for april
+ * @property {int} may - The forecast data in pence for may
+ * @property {int} jun - The forecast data in pence for june
+ * @property {int} jul - The forecast data in pence for july
+ * @property {int} aug - The forecast data in pence for august
+ * @property {int} sep - The forecast data in pence for september
+ * @property {int} oct - The forecast data in pence for october
+ * @property {int} nov - The forecast data in pence for november
+ * @property {int} dec - The forecast data in pence for december
+ * @property {int} jan - The forecast data in pence for january
+ * @property {int} feb - The forecast data in pence for february
+ * @property {int} mar - The forecast data in pence for march
+ */
+/**
  * @typedef {Object} PayrollData
  * @property {EmployeeData} employees - A list of employees
  * @property {VacancyData} vacancies - A list of vacancies
  * @property {PayModifierData} pay_modifiers - A list of pay modifiers
- */
-
-/**
- * @typedef {Object} PreviousMonthsData
- * @property {string} month_short_name - The short form name of the month
- * @property {int} month_financial_code - The financial index of the month (Apr is 1 etc)
+ * @property {ForecastData} forecast - A list of forecast data
+ * @property {PreviousMonthsData} previous_months - A list of months with actuals loaded
  */
 
 export const Types = {};

@@ -21,17 +21,13 @@ const initialPayrollState = {
   vacancies: [],
   pay_modifiers: [],
   forecast: [],
+  previous_months: [],
 };
-const initialPreviousMonthsState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
     initialPayrollState,
-  );
-  const [previousMonths, dispatchPreviousMonths] = useReducer(
-    previousMonthsReducer,
-    initialPreviousMonthsState,
   );
   const initialPreviousMonths = localStorage.getItem(
     "editPayroll.hidePreviousMonths",
@@ -64,13 +60,13 @@ export default function Payroll() {
     const previousMonthsCookie = localStorage.getItem(
       "editPayroll.hidePreviousMonths",
     );
-    setOffset(window.previous_months.length);
+    setOffset(allPayroll.previous_months.length);
 
-    let data = [];
     if (previousMonthsCookie === "true") {
-      data = window.previous_months;
+      allPayroll.previous_months = [];
+    } else {
+      getAllPayroll();
     }
-    dispatchPreviousMonths({ type: "fetched", data: data });
   }, [hidePreviousMonths]);
 
   useEffect(() => {
@@ -141,7 +137,7 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
-            previousMonths={previousMonths}
+            previousMonths={allPayroll.previous_months}
             offset={offset}
           />
         </Tab>
@@ -151,7 +147,7 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
-            previousMonths={previousMonths}
+            previousMonths={allPayroll.previous_months}
             offset={offset}
           />
         </Tab>
@@ -161,7 +157,7 @@ export default function Payroll() {
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
-            previousMonths={previousMonths}
+            previousMonths={allPayroll.previous_months}
             offset={offset}
           />
           <a
@@ -247,14 +243,6 @@ const payrollReducer = (data, action) => {
         ...data,
         pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
       };
-    }
-  }
-};
-
-const previousMonthsReducer = (data, action) => {
-  switch (action.type) {
-    case "fetched": {
-      return action.data;
     }
   }
 };

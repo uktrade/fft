@@ -17,12 +17,10 @@
 
 {% block scripts %}
     {{ block.super }}
-    {{ previous_months|json_script:'previous_months' }}
     <script>
         window.costCentreCode = "{{ cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year }}");
         window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre_code financial_year %}"
-        window.previous_months = JSON.parse(document.getElementById("previous_months").textContent);
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
