@@ -30,7 +30,7 @@ export default function Payroll() {
     initialPayrollState,
   );
   const initialPreviousMonths = localStorage.getItem(
-    "editPayroll.hidePreviousMonths",
+    "editPayroll.showPreviousMonths",
   );
   const [hidePreviousMonths, setHidePreviousMonths] = useState(
     initialPreviousMonths === "true",
@@ -57,12 +57,12 @@ export default function Payroll() {
   }, [activeTab]);
 
   useEffect(() => {
-    const previousMonthsCookie = localStorage.getItem(
-      "editPayroll.hidePreviousMonths",
+    const showAllMonths = localStorage.getItem(
+      "editPayroll.showPreviousMonths",
     );
     setOffset(allPayroll.previous_months.length);
 
-    if (previousMonthsCookie === "true") {
+    if (showAllMonths === "true") {
       allPayroll.previous_months = [];
     } else {
       getAllPayroll();
@@ -112,7 +112,7 @@ export default function Payroll() {
     setHidePreviousMonths(!hidePreviousMonths);
 
     localStorage.setItem(
-      "editPayroll.hidePreviousMonths",
+      "editPayroll.showPreviousMonths",
       JSON.stringify(!hidePreviousMonths),
     );
   }
