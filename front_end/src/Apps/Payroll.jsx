@@ -47,10 +47,17 @@ export default function Payroll() {
     return savedTab ? parseInt(savedTab) : 0;
   });
 
+  function getAllPayroll() {
+    api.getPayrollData().then((data) => {
+      dispatch({ type: "fetched", data });
+    });
+  }
+
   // Use Effects
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
     setSaveSuccess(false);
+    setSaveError(false);
   }, [activeTab]);
 
   useEffect(() => {
@@ -67,15 +74,7 @@ export default function Payroll() {
   }, [hidePreviousMonths]);
 
   useEffect(() => {
-    const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
-    if (savedSuccessFlag === "true") {
-      setSaveSuccess(true);
-      localStorage.removeItem("editPayroll.saveSuccess");
-    }
-
-    api.getPayrollData().then((data) => {
-      dispatch({ type: "fetched", data });
-    });
+    getAllPayroll();
   }, []);
 
   // Computed properties
@@ -92,16 +91,12 @@ export default function Payroll() {
   async function handleSavePayroll() {
     try {
       await api.postPayrollData(allPayroll);
-
       setSaveSuccess(true);
-      localStorage.setItem("editPayroll.saveSuccess", "true");
-
-      window.location.reload();
+      getAllPayroll();
     } catch (error) {
       console.error("Error saving payroll: ", error);
       setSaveSuccess(false);
       setSaveError(true);
-      localStorage.setItem("saveError", "true");
     }
   }
 
