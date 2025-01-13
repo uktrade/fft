@@ -14,7 +14,7 @@ import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
-import { months, monthsToTitleCase } from "../Util";
+import { monthsToTitleCase } from "../Util";
 
 const initialPayrollState = {
   employees: [],
