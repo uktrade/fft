@@ -113,6 +113,7 @@ export default function Payroll() {
   function handleUpdatePayModifiers(id, index, value) {
     dispatch({ type: "updatePayModifiers", id, index, value });
   }
+
   function handleHidePreviousMonths() {
     setHidePreviousMonths(!hidePreviousMonths);
 
@@ -222,12 +223,6 @@ function updatePayModifiers(data, action) {
   });
 }
 
-const payrollData = (data) => ({
-  employees: data.employees,
-  vacancies: data.vacancies,
-  pay_modifiers: data.pay_modifiers,
-});
-
 const payrollReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
@@ -235,19 +230,19 @@ const payrollReducer = (data, action) => {
     }
     case "updatePayPeriodsEmployees": {
       return {
-        ...payrollData(data),
+        ...data,
         employees: updatePayPeriods(data.employees, action),
       };
     }
     case "updatePayPeriodsVacancies": {
       return {
-        ...payrollData(data),
+        ...data,
         vacancies: updatePayPeriods(data.vacancies, action),
       };
     }
     case "updatePayModifiers": {
       return {
-        ...payrollData(data),
+        ...data,
         pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
       };
     }

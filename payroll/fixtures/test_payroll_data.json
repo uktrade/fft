@@ -65,6 +65,26 @@
   },
   {
     "model": "payroll.employeepayperiods",
+    "pk": 1,
+    "fields": {
+      "employee": 1,
+      "year": 2024,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
     "pk": 2,
     "fields": {
       "employee": 1,
@@ -109,6 +129,26 @@
     "fields": {
       "employee": 1,
       "year": 2027,
+      "period_1": true,
+      "period_2": true,
+      "period_3": true,
+      "period_4": true,
+      "period_5": true,
+      "period_6": true,
+      "period_7": true,
+      "period_8": true,
+      "period_9": true,
+      "period_10": true,
+      "period_11": true,
+      "period_12": true
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 5,
+    "fields": {
+      "employee": 2,
+      "year": 2024,
       "period_1": true,
       "period_2": true,
       "period_3": true,
@@ -185,6 +225,26 @@
   },
   {
     "model": "payroll.employeepayperiods",
+    "pk": 9,
+    "fields": {
+      "employee": 3,
+      "year": 2024,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
     "pk": 10,
     "fields": {
       "employee": 3,
@@ -229,6 +289,26 @@
     "fields": {
       "employee": 3,
       "year": 2027,
+      "period_1": false,
+      "period_2": false,
+      "period_3": false,
+      "period_4": false,
+      "period_5": false,
+      "period_6": false,
+      "period_7": false,
+      "period_8": false,
+      "period_9": false,
+      "period_10": false,
+      "period_11": false,
+      "period_12": false
+    }
+  },
+  {
+    "model": "payroll.employeepayperiods",
+    "pk": 13,
+    "fields": {
+      "employee": 4,
+      "year": 2024,
       "period_1": false,
       "period_2": false,
       "period_3": false,
