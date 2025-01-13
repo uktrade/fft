@@ -1,7 +1,5 @@
-import json
-
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -36,70 +34,6 @@ class EditPayrollBaseView(UserPassesTestMixin, View):
         self.financial_year = get_object_or_404(
             FinancialYear,
             pk=self.kwargs["financial_year"],
-        )
-
-
-class EditPayrollApiView(EditPayrollBaseView):
-    def get_data(self):
-        raise NotImplementedError
-
-    def post_data(self, data):
-        raise NotImplementedError
-
-    def get(self, request, *args, **kwargs):
-        data = list(self.get_data())
-        return JsonResponse({"data": data})
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        self.post_data(
-            data,
-        )
-        return JsonResponse({})
-
-
-class EmployeeApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
-class VacancyApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
-class PayModifierApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
         )
 
 
