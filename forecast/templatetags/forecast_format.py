@@ -37,19 +37,6 @@ forecast_figure_cols = [
 ]
 
 
-@register.filter
-def format_money(value: float) -> str:
-    """Format as a monetary value.
-
-    `value` is expected to be in pence and will be divided by 100.
-
-    Examples:
-        >>> format_money(1024312)
-        '10,243.12'
-    """
-    return f"{value / 100:,.2f}"
-
-
 @register.filter()
 def is_forecast_figure(_, column):
     if str(column) in forecast_figure_cols:

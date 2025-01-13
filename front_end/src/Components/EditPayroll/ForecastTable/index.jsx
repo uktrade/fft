@@ -1,3 +1,5 @@
+import { formatMoney } from "../../../Util";
+
 export default function ForecastTable({ forecast, months }) {
   return (
     <>
@@ -32,18 +34,18 @@ export default function ForecastTable({ forecast, months }) {
                   <th scope="row" className="govuk-table__header">
                     {row.natural_account_code}
                   </th>
-                  <td className="govuk-table__cell">£{row.apr}</td>
-                  <td className="govuk-table__cell">£{row.may}</td>
-                  <td className="govuk-table__cell">£{row.jun}</td>
-                  <td className="govuk-table__cell">£{row.jul}</td>
-                  <td className="govuk-table__cell">£{row.aug}</td>
-                  <td className="govuk-table__cell">£{row.sep}</td>
-                  <td className="govuk-table__cell">£{row.oct}</td>
-                  <td className="govuk-table__cell">£{row.nov}</td>
-                  <td className="govuk-table__cell">£{row.dec}</td>
-                  <td className="govuk-table__cell">£{row.jan}</td>
-                  <td className="govuk-table__cell">£{row.feb}</td>
-                  <td className="govuk-table__cell">£{row.mar}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.apr)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.may)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.jun)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.jul)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.aug)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.sep)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.oct)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.nov)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.dec)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.jan)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.feb)}</td>
+                  <td className="govuk-table__cell">£{formatMoney(row.mar)}</td>
                 </tr>
               );
             })}

@@ -21,6 +21,10 @@ export const monthsToTitleCase = months.map(
   (x) => x[0].toUpperCase() + x.slice(1),
 );
 
+export const formatMoney = (amount) => {
+  return (amount / 100).toFixed(2);
+};
+
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== "") {
