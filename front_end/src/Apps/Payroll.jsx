@@ -22,6 +22,7 @@ const initialPayrollState = {
   pay_modifiers: [],
   forecast: [],
   previous_months: [],
+  actuals: [],
 };
 
 export default function Payroll() {
@@ -177,6 +178,7 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
+      {console.log(allPayroll.actuals)}
       <ForecastTable
         forecast={allPayroll.forecast}
         months={monthsToTitleCase}
