@@ -178,7 +178,6 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
-      {console.log(allPayroll.actuals)}
       <ForecastTable
         forecast={allPayroll.forecast}
         months={monthsToTitleCase}
