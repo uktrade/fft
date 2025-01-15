@@ -98,7 +98,6 @@ def hr_row_to_employee(hr_row) -> Employee:
     return employee
 
 def save_data(csv_data):
-    print(csv_data)
     return csv_data
     # csv_identifiers = {
     #     employee.employee_no
