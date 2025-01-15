@@ -112,7 +112,7 @@ def log_object_change(
 
 class PreviousMonths(TypedDict):
     month_short_name = str
-    month_financial_code = int
+    month_index = int
 
 
 def get_previous_months_data() -> Iterator[PreviousMonths]:
@@ -124,5 +124,5 @@ def get_previous_months_data() -> Iterator[PreviousMonths]:
     for obj in qs:
         yield PreviousMonths(
             month_short_name=obj.period_short_name,
-            month_financial_code=obj.financial_period_code,
+            month_index=obj.financial_period_code,
         )
