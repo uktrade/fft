@@ -25,9 +25,9 @@ export default function ForecastTable({ forecast, months }) {
             </tr>
           </thead>
           <tbody className="govuk-table__body">
-            {forecast.map((row) => {
+            {forecast.map((row, index) => {
               return (
-                <tr className="govuk-table__row" key={row.natural_account_code}>
+                <tr className="govuk-table__row" key={index}>
                   <th scope="row" className="govuk-table__header">
                     {row.programme_code}
                   </th>

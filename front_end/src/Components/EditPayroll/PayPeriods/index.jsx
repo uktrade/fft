@@ -1,16 +1,22 @@
-const PayPeriods = ({ row, id, onTogglePayPeriods, offset }) => {
-  const hasActuals = row.pay_periods.length < 12;
+const PayPeriods = ({
+  row,
+  id,
+  onTogglePayPeriods,
+  previousMonths,
+  showPreviousMonths,
+}) => {
   return (
     <>
       {row.pay_periods.map((enabled, index) => {
-        const row_id = hasActuals ? index + offset : index;
+        const isActual = previousMonths[index].is_actual;
+        const isHidden = showPreviousMonths && isActual ? " hidden" : "";
         return (
-          <td className="govuk-table__cell" key={index}>
+          <td className={`govuk-table__cell ${isHidden}`} key={index}>
             <input
               type="checkbox"
               checked={enabled}
-              disabled={row_id < offset}
-              onChange={() => onTogglePayPeriods(id, row_id, enabled)}
+              disabled={isActual}
+              onChange={() => onTogglePayPeriods(id, index, enabled)}
             />
           </td>
         );

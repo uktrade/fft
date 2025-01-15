@@ -35,6 +35,7 @@
  * @typedef {Object} PreviousMonthsData
  * @property {string} month_short_name - The short form name of the month
  * @property {int} month_index - The financial index of the month (Apr is 1 etc)
+ * @property {bool} is_actual - Is the actual loaded for this month
  */
 
 /**
