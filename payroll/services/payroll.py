@@ -416,12 +416,10 @@ def get_actuals_data(
         financial_year=financial_year,
         financial_code__cost_centre=cost_centre,
         financial_code__natural_account_code__natural_account_code__in=nac_codes,
-        financial_code__programme__programme_code=338887,  # Hard coded for testing
         financial_code__project_code__isnull=True,
         archived_status__isnull=True,
     ).select_related(
         "financial_code__cost_centre",
-        "financial_code__programme",
         "financial_code__natural_account_code",
         "financial_code__project_code",
     )
@@ -437,6 +435,7 @@ def get_actuals_data(
         for obj in qs
     )
 
+    # Need to group by programme code too
     for nac_code, group in groupby(actuals, key=lambda x: x["natural_account_code"]):
         yield {nac_code: list(group)}
 
