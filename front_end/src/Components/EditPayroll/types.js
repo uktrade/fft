@@ -36,6 +36,7 @@
  * @property {string} month_short_name - The short form name of the month
  * @property {int} month_financial_code - The financial index of the month (Apr is 1 etc)
  */
+
 /**
  * @typedef {Object} ForecastData
  * @property {string} programme_code - The forecast data's programme code
@@ -55,11 +56,11 @@
  */
 /**
  * @typedef {Object} PayrollData
- * @property {EmployeeData} employees - A list of employees
- * @property {VacancyData} vacancies - A list of vacancies
- * @property {PayModifierData} pay_modifiers - A list of pay modifiers
- * @property {ForecastData} forecast - A list of forecast data
- * @property {PreviousMonthsData} previous_months - A list of months with actuals loaded
+ * @property {EmployeeData[]} employees - A list of employees
+ * @property {VacancyData[]} vacancies - A list of vacancies
+ * @property {PayModifierData[]} pay_modifiers - A list of pay modifiers
+ * @property {ForecastData[]} forecast - A list of forecast data
+ * @property {PreviousMonthsData[]} previous_months - A list of months with actuals loaded
  */
 
 export const Types = {};

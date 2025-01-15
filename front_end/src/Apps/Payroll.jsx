@@ -29,11 +29,11 @@ export default function Payroll() {
     payrollReducer,
     initialPayrollState,
   );
-  const initialPreviousMonths = localStorage.getItem(
+  const initialShowPreviousMonths = localStorage.getItem(
     "editPayroll.showPreviousMonths",
   );
-  const [hidePreviousMonths, setHidePreviousMonths] = useState(
-    initialPreviousMonths === "true",
+  const [showPreviousMonths, setShowPreviousMonths] = useState(
+    initialShowPreviousMonths === "true",
   );
   const [offset, setOffset] = useState(0);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -67,7 +67,7 @@ export default function Payroll() {
     } else {
       getAllPayroll();
     }
-  }, [hidePreviousMonths]);
+  }, [showPreviousMonths]);
 
   useEffect(() => {
     getAllPayroll();
@@ -109,11 +109,11 @@ export default function Payroll() {
   }
 
   function handleHidePreviousMonths() {
-    setHidePreviousMonths(!hidePreviousMonths);
+    setShowPreviousMonths(!showPreviousMonths);
 
     localStorage.setItem(
       "editPayroll.showPreviousMonths",
-      JSON.stringify(!hidePreviousMonths),
+      JSON.stringify(!showPreviousMonths),
     );
   }
 
@@ -124,7 +124,7 @@ export default function Payroll() {
       {saveSuccess && <SuccessBanner />}
       {saveError && <ErrorSummary errors={errors} />}
       <ToggleCheckbox
-        toggle={hidePreviousMonths}
+        toggle={showPreviousMonths}
         handler={handleHidePreviousMonths}
         id="payroll-previous-months"
         value="payroll-previous-months"

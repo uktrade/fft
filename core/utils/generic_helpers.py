@@ -1,4 +1,5 @@
 import datetime
+from typing import Iterator, TypedDict
 
 from django.contrib.admin.models import CHANGE, LogEntry
 
@@ -106,4 +107,22 @@ def log_object_change(
             object_repr="",
             action_flag=CHANGE,
             change_message=message,
+        )
+
+
+class PreviousMonths(TypedDict):
+    month_short_name = str
+    month_financial_code = int
+
+
+def get_previous_months_data() -> Iterator[PreviousMonths]:
+    from forecast.models import FinancialPeriod
+
+    qs = FinancialPeriod.objects.filter(actual_loaded=True).order_by(
+        "financial_period_code"
+    )
+    for obj in qs:
+        yield PreviousMonths(
+            month_short_name=obj.period_short_name,
+            month_financial_code=obj.financial_period_code,
         )
