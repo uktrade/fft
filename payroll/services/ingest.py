@@ -1,15 +1,14 @@
 import csv
 from collections import namedtuple
-import traceback   
 
-from django.db import transaction
-from django.db.models import Q
 from django.core.files import File
+from django.db import transaction
 
-from payroll.models import Employee
-from costcentre.models import CostCentre
 from chartofaccountDIT.models import ProgrammeCode
+from costcentre.models import CostCentre
 from gifthospitality.models import Grade
+from payroll.models import Employee
+
 
 HrRow = namedtuple(
     "HrRow",
@@ -54,6 +53,7 @@ HrRow = namedtuple(
     ),
 )
 
+
 @transaction.atomic()
 def import_payroll(
     hr_csv: File,
@@ -64,91 +64,115 @@ def import_payroll(
     hr_csv_reader = csv.reader((row.decode("utf-8") for row in hr_csv))
 
     if hr_csv_has_header:
-          next(hr_csv_reader)
-   
+        next(hr_csv_reader)
+
     employees = []
-    cost_centre_code=[]
-    programme_code=[]
-    grade_id=[]
+    cost_centres = []
+    programme_codes = []
+    grades = []
     for hr_row in hr_csv_reader:
-        row=HrRow(*hr_row)
-        cost_centre_code.append(row.cost_centre_id)
-        programme_code.append(row.programme_code_id)
-        grade_id.append(row.grade_id)
-        
-        validatedEmployee=hr_row_to_employee(HrRow(*hr_row))
-        Employee.objects.update_or_create(employee_no=validatedEmployee["employee_no"],defaults={ **validatedEmployee})
-        employees.append(validatedEmployee)
-    print(set(cost_centre_code),set(grade_id),set(programme_code))
-    return save_data(employees)
+        employee = hr_row_to_employee(HrRow(*hr_row))
+        employees.append(employee)
+        cost_centres.append(employee["cost_centre"])
+        programme_codes.append(employee["programme_code"])
+        grades.append(employee["grade"])
+        uniq_cost_centre_codes = set(cost_centres)
+        uniq_grades = set(grades)
+        uniq_programme_codes = set(programme_codes)
+    cost_centers = {
+        centre.cost_centre_code: centre
+        for centre in CostCentre.objects.filter(
+            cost_centre_code__in=uniq_cost_centre_codes
+        )
+    }
+    cost_center_codes = [centre.cost_centre_code for centre in cost_centers.values()]
+
+    programme_codes = {
+        code.programme_code: code
+        for code in ProgrammeCode.objects.filter(
+            programme_code__in=uniq_programme_codes
+        )
+    }
+    existing_programme_codes = [
+        code.programme_code for code in programme_codes.values()
+    ]
+
+    grades = {
+        grade.grade: grade for grade in Grade.objects.filter(grade__in=uniq_grades)
+    }
+    existing_grades = [grade.grade for grade in grades.values()]
+
+    clean_records = []
+    failed_records = []
+    for emp in employees:
+        errors = []
+        if emp["cost_centre"] not in cost_center_codes:
+            errors.append("Cost centre desn't exists")
+        if emp["programme_code"] not in existing_programme_codes:
+            errors.append("Programme code desn't exists")
+        if emp["grade"] not in existing_grades:
+            errors.append("Grade desn't exists")
+        if errors:
+            emp["errors"] = errors
+            failed_records.append(emp)
+        else:
+            emp["cost_centre"] = cost_centers[emp["cost_centre"]]
+            emp["programme_code"] = programme_codes[emp["programme_code"]]
+            emp["grade"] = grades[emp["grade"]]
+            clean_records.append(emp)
+    result = save_data(clean_records)
+
+    return {"failed_records": failed_records, **result}
 
 
 def hr_row_to_employee(hr_row) -> Employee:
-    employee =   {
-        "employee_no":hr_row.employee_no,
-        "first_name":hr_row.first_name,
-        "last_name":hr_row.last_name,
-        "cost_centre":CostCentre.objects.get(cost_centre_code=hr_row.cost_centre_id),
-        "programme_code" : ProgrammeCode.objects.get(programme_code=hr_row.programme_code_id),
-        "grade":Grade.objects.get(grade=hr_row.grade_id),
-        "assignment_status":hr_row.assignment_status,
-        "fte":hr_row.fte,
-        "basic_pay":hr_row.basic_pay,
+    employee = {
+        "employee_no": hr_row.employee_no,
+        "first_name": hr_row.first_name,
+        "last_name": hr_row.last_name,
+        "cost_centre": hr_row.cost_centre_id,
+        "programme_code": hr_row.programme_code_id,
+        "grade": hr_row.grade_id,
+        "assignment_status": hr_row.assignment_status,
+        "fte": hr_row.fte,
+        "basic_pay": hr_row.basic_pay,
+        "has_left": False,
     }
     return employee
 
+
 def save_data(csv_data):
-    return csv_data
-    # csv_identifiers = {
-    #     employee.employee_no
-    #     for employee in csv_data
-    # }
-    # try:
-    #     existing_employees = Employee.objects.all().select_for_update() 
-    #     existing_identifiers = {
-    #         employee.employee_no 
-    #         for employee in existing_employees
-    #     }
+    emp_nos = {employee["employee_no"] for employee in csv_data}
+    Employee.objects.exclude(employee_no__in=emp_nos).filter(has_left=False).update(
+        has_left=True
+    )
+    return bulk_update_or_create(csv_data)
 
-    #     left_identifiers = existing_identifiers - csv_identifiers
-    #     if left_identifiers:
-    #         left_filter = Q()
-    #         for employee_no in left_identifiers:
-    #             left_filter |= Q(
-    #                 employee_no=employee_no
-    #             )
-    #         Employee.objects.filter(left_filter).update(has_left=True)
-    #     to_create = []
-    #     to_update = []
-    #     for employee_from_csv in csv_data:
-    #         identifier = employee_from_csv.employee_no
-    #         if identifier in existing_identifiers:
-    #             existing_employee = next(
-    #                 emp for emp in existing_employees 
-    #                 if emp.employee_no == identifier
-    #             )
-    #             for field in updatable_fields:
-    #                 if hasattr(employee_from_csv, field):
-    #                     setattr(existing_employee, field, getattr(employee_from_csv, field))
-    #             existing_employee.has_left = False  
-    #             to_update.append(existing_employee)
-    #         else:
-    #             to_create.append(employee_from_csv)
-    #     Employee.objects.bulk_create(to_create)
 
-    #     if to_update:
-    #         Employee.objects.update_or_create.bulk_update( to_update,  fields=updatable_fields)
-    #     return {
-    #                 'created': len(to_create),
-    #                 'updated': len(to_update),
-    #                 'marked_left': len(left_identifiers)
-    #             }
-    # except Exception as e:
-    #     print (traceback.format_exc())
-    #     return {
-    #         'status': 'error',
-    #         'message': str(e),
-    #         'created': 0,
-    #         'updated': 0,
-    #         'marked_left': 0
-    #     }
+def bulk_update_or_create(data):
+    if data:
+        keys = list(data[0].keys())
+    existing_ids = Employee.objects.filter(
+        employee_no__in=[emp["employee_no"] for emp in data]
+    ).values_list("employee_no", flat=True)
+
+    to_update = []
+    to_create = []
+
+    for item in data:
+        emp = Employee(**item)
+        for key in keys:
+            setattr(emp, key, item[key])
+
+        if item["employee_no"] in existing_ids:
+            to_update.append(emp)
+        else:
+            to_create.append(emp)
+
+    if to_create:
+        Employee.objects.bulk_create(to_create)
+
+    # if to_update:
+    #     Employee.objects.bulk_update(to_update, keys)
+
+    return {"created": to_create, "updated": to_update}
