@@ -152,10 +152,12 @@ def save_data(csv_data):
 def bulk_update_or_create(data):
     if data:
         keys = list(data[0].keys())
-    existing_ids = Employee.objects.filter(
-        employee_no__in=[emp["employee_no"] for emp in data]
-    ).values_list("employee_no", flat=True)
-
+    existing_ids = {
+        emp.employee_no: emp.id 
+        for emp in Employee.objects.filter(
+            employee_no__in=[emp["employee_no"] for emp in data]
+        )
+    }
     to_update = []
     to_create = []
 
@@ -165,14 +167,15 @@ def bulk_update_or_create(data):
             setattr(emp, key, item[key])
 
         if item["employee_no"] in existing_ids:
+            emp.id=existing_ids[item["employee_no"]]
             to_update.append(emp)
         else:
             to_create.append(emp)
 
     if to_create:
         Employee.objects.bulk_create(to_create)
-
-    # if to_update:
-    #     Employee.objects.bulk_update(to_update, keys)
+    print(to_update)
+    if to_update:
+        Employee.objects.bulk_update(to_update,keys)
 
     return {"created": to_create, "updated": to_update}
