@@ -145,7 +145,7 @@ The names of the management commands denote their function.
 
 Add environment variable in your .env file
 
-```
+```bash
 ENABLE_DEBUGPY=True
 ```
 
