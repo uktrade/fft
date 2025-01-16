@@ -36,7 +36,6 @@ export default function Payroll() {
   const [showPreviousMonths, setShowPreviousMonths] = useState(
     initialShowPreviousMonths === "true",
   );
-  const [offset, setOffset] = useState(0);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
@@ -56,19 +55,6 @@ export default function Payroll() {
     setSaveSuccess(false);
     setSaveError(false);
   }, [activeTab]);
-
-  useEffect(() => {
-    const showAllMonths = localStorage.getItem(
-      "editPayroll.showPreviousMonths",
-    );
-    setOffset(allPayroll.previous_months.length);
-
-    if (showAllMonths === "true") {
-      allPayroll.previous_months = [];
-    } else {
-      getAllPayroll();
-    }
-  }, [showPreviousMonths]);
 
   useEffect(() => {
     getAllPayroll();
@@ -139,7 +125,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
             previousMonths={allPayroll.previous_months}
-            offset={offset}
+            showPreviousMonths={showPreviousMonths}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -149,7 +135,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
             previousMonths={allPayroll.previous_months}
-            offset={offset}
+            showPreviousMonths={showPreviousMonths}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -159,7 +145,7 @@ export default function Payroll() {
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
             previousMonths={allPayroll.previous_months}
-            offset={offset}
+            showPreviousMonths={showPreviousMonths}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"

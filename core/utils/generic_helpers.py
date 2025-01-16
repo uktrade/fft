@@ -112,17 +112,19 @@ def log_object_change(
 
 class PreviousMonths(TypedDict):
     month_short_name = str
-    month_financial_code = int
+    month_index = int
+    is_actual = bool
 
 
 def get_previous_months_data() -> Iterator[PreviousMonths]:
     from forecast.models import FinancialPeriod
 
-    qs = FinancialPeriod.objects.filter(actual_loaded=True).order_by(
+    qs = FinancialPeriod.objects.filter(financial_period_code__lte=12).order_by(
         "financial_period_code"
     )
     for obj in qs:
         yield PreviousMonths(
             month_short_name=obj.period_short_name,
-            month_financial_code=obj.financial_period_code,
+            month_index=obj.financial_period_code,
+            is_actual=obj.actual_loaded,
         )
