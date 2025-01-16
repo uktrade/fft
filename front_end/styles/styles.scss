@@ -371,4 +371,20 @@ th {
 
 .scrollable {
   overflow-x: auto;
+  scrollbar-width: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  height: 5px;
+  background: #e0e0e0;
+  border-radius: 6px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
