@@ -1,6 +1,6 @@
 import PayPeriods from "../PayPeriods";
 
-const VacancyRow = ({ row, onTogglePayPeriods }) => {
+const VacancyRow = ({ row, onTogglePayPeriods, previousMonthsOffset }) => {
   return (
     <tr className="govuk-table__row">
       <td className="govuk-table__header">
@@ -23,6 +23,7 @@ const VacancyRow = ({ row, onTogglePayPeriods }) => {
         row={row}
         id={row.id}
         onTogglePayPeriods={onTogglePayPeriods}
+        offset={previousMonthsOffset}
       />
     </tr>
   );

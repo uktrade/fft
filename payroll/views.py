@@ -1,13 +1,14 @@
-import json
-
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.views import View
+from django.views.generic import CreateView, DeleteView, UpdateView
 
+from core.constants import MONTHS
 from core.models import FinancialYear
+from core.templatetags.util import get_previous_months_data
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
 from payroll.models import Vacancy
@@ -15,9 +16,14 @@ from payroll.models import Vacancy
 from .services import payroll as payroll_service
 
 
-class EditPayrollView(UserPassesTestMixin, View):
+class EditPayrollBaseView(UserPassesTestMixin, View):
     def test_func(self) -> bool | None:
-        return self.request.user.is_superuser
+        return payroll_service.can_edit_payroll(
+            self.request.user,
+            self.cost_centre,
+            self.financial_year,
+            self.request.current_financial_year,
+        )
 
     def setup(self, request, *args, **kwargs) -> None:
         super().setup(request, *args, **kwargs)
@@ -30,192 +36,86 @@ class EditPayrollView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
-    def get_data(self):
-        raise NotImplementedError
 
-    def post_data(self, data):
-        raise NotImplementedError
-
-    def get(self, request, *args, **kwargs):
-        data = list(self.get_data())
-        return JsonResponse({"data": data})
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        self.post_data(
-            data,
+class EditPayrollPage(EditPayrollBaseView):
+    def get(self, *args, **kwargs) -> HttpResponse:
+        payroll_forecast_report_data = payroll_service.payroll_forecast_report(
+            self.cost_centre, self.financial_year
         )
-        return JsonResponse({})
+        previous_months = get_previous_months_data()
+
+        context = {
+            "cost_centre_code": self.cost_centre.cost_centre_code,
+            "financial_year": self.financial_year.financial_year,
+            "payroll_forecast_report": payroll_forecast_report_data,
+            "months": MONTHS,
+            "previous_months": previous_months,
+        }
+
+        return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
 
 
-# TODO: check user has access to cost centre
-class PayrollView(EditPayrollView):
-    def get_data(self):
-        return payroll_service.get_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-        )
+class VacancyViewMixin(PermissionRequiredMixin):
+    model = Vacancy
+    pk_url_kwarg = "vacancy_id"
 
-    def post_data(self, data):
-        return payroll_service.update_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
-class VacancyView(EditPayrollView):
-    def get_data(self):
-        return payroll_service.get_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
+    def get_success_url(self):
+        return reverse(
+            "payroll:edit",
+            kwargs={
+                "cost_centre_code": self.cost_centre.cost_centre_code,
+                "financial_year": self.financial_year.financial_year,
+            },
         )
 
 
-class PayModifierView(EditPayrollView):
-    def get_data(self):
-        return payroll_service.get_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-        )
+class AddVacancyView(VacancyViewMixin, CreateView, EditPayrollBaseView):
+    form_class = VacancyForm
+    permission_required = "payroll.add_vacancy"
+    template_name = "payroll/page/vacancy_form.html"
 
-    def post_data(self, data):
-        return payroll_service.update_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
+    def get_context_data(self, **kwargs):
+        context = {
+            "cost_centre_code": self.cost_centre.cost_centre_code,
+            "financial_year": self.financial_year.financial_year,
+            "title": "Create Vacancy",
+        }
+        return super().get_context_data(**kwargs) | context
 
+    def form_valid(self, form):
+        form.instance.cost_centre = self.cost_centre
 
-def redirect_edit_payroll(cost_centre_code, financial_year):
-    return redirect(
-        "payroll:edit",
-        cost_centre_code=cost_centre_code,
-        financial_year=financial_year,
-    )
+        response = super().form_valid(form)
 
+        payroll_service.vacancy_created(self.object)
 
-def edit_payroll_page(
-    request: HttpRequest, cost_centre_code: str, financial_year: int
-) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
-    cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
-    financial_year_obj = get_object_or_404(FinancialYear, pk=financial_year)
-    payroll_forecast_report_data = payroll_service.payroll_forecast_report(
-        cost_centre_obj, financial_year_obj
-    )
-    cost_centre_code = cost_centre_obj.cost_centre_code
-    financial_year = financial_year_obj.financial_year
-
-    context = {
-        "cost_centre_code": cost_centre_code,
-        "financial_year": financial_year,
-        "payroll_forecast_report": payroll_forecast_report_data,
-        "months": [
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-            "Jan",
-            "Feb",
-            "Mar",
-        ],
-    }
-
-    return TemplateResponse(request, "payroll/page/edit_payroll.html", context)
+        return response
 
 
-def add_vacancy_page(
-    request: HttpRequest, cost_centre_code: str, financial_year: int
-) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
+class EditVacancyView(VacancyViewMixin, UpdateView, EditPayrollBaseView):
+    form_class = VacancyForm
+    template_name = "payroll/page/vacancy_form.html"
+    permission_required = "payroll.change_vacancy"
 
-    context = {
-        "cost_centre_code": cost_centre_code,
-        "financial_year": financial_year,
-        "title": "Create Vacancy",
-    }
-    cost_centre_obj = get_object_or_404(CostCentre, pk=cost_centre_code)
-
-    if request.method == "POST":
-        form = VacancyForm(request.POST)
-        if form.is_valid():
-            vacancy = form.save(commit=False)
-            vacancy.cost_centre = cost_centre_obj
-            vacancy.save()
-
-            payroll_service.vacancy_created(vacancy)
-
-            return redirect_edit_payroll(cost_centre_code, financial_year)
-        else:
-            context["form"] = form
-            return render(request, "payroll/page/vacancy_form.html", context)
-    else:
-        form = VacancyForm()
-        context["form"] = form
-    return render(request, "payroll/page/vacancy_form.html", context)
+    def get_context_data(self, **kwargs):
+        context = {
+            "cost_centre_code": self.cost_centre.cost_centre_code,
+            "financial_year": self.financial_year.financial_year,
+            "title": "Edit Vacancy",
+            "vacancy_id": self.object.id,
+            "is_edit": True,
+        }
+        return super().get_context_data(**kwargs) | context
 
 
-def edit_vacancy_page(
-    request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
-) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
+class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
+    template_name = "payroll/page/delete_vacancy.html"
+    permission_required = "payroll.delete_vacancy"
 
-    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
-
-    context = {
-        "cost_centre_code": cost_centre_code,
-        "financial_year": financial_year,
-        "title": "Edit Vacancy",
-        "vacancy_id": vacancy.id,
-        "is_edit": True,
-    }
-
-    if request.method == "POST":
-        form = VacancyForm(request.POST, instance=vacancy)
-        if form.is_valid():
-            vacancy.save()
-
-            return redirect_edit_payroll(cost_centre_code, financial_year)
-    else:
-        context["form"] = VacancyForm(instance=vacancy)
-
-    return render(request, "payroll/page/vacancy_form.html", context)
-
-
-def delete_vacancy_page(
-    request: HttpRequest, cost_centre_code: str, financial_year: int, vacancy_id: int
-) -> HttpResponse:
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
-    vacancy = get_object_or_404(Vacancy, pk=vacancy_id)
-
-    context = {
-        "cost_centre_code": cost_centre_code,
-        "financial_year": financial_year,
-        "vacancy_id": vacancy.id,
-    }
-
-    if request.method == "POST":
-        vacancy.delete()
-
-        return redirect_edit_payroll(cost_centre_code, financial_year)
-    else:
-        return render(request, "payroll/page/delete_vacancy.html", context)
+    def get_context_data(self, **kwargs):
+        context = {
+            "cost_centre_code": self.cost_centre.cost_centre_code,
+            "financial_year": self.financial_year.financial_year,
+            "vacancy_id": self.object.id,
+        }
+        return super().get_context_data(**kwargs) | context
