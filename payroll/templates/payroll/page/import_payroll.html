@@ -31,7 +31,11 @@
         <button type="submit">Submit</button>
     </form>
     <div>
-        {{ output }}
+        <ul>
+            {% for emp_no, error in output.errors %}
+                <li>{{ emp_no }}: {{ error }}</li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock content %}
 
