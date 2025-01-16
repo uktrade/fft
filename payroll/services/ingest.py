@@ -174,7 +174,6 @@ def bulk_update_or_create(data):
 
     if to_create:
         Employee.objects.bulk_create(to_create)
-    print(to_update)
     if to_update:
         Employee.objects.bulk_update(to_update,keys)
 
