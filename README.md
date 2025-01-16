@@ -145,26 +145,31 @@ The names of the management commands denote their function.
 
 Add environment variable in your .env file
 
-    ENABLE_DEBUGPY=True
+```
+ENABLE_DEBUGPY=True
+```
 
 Create launch.json file inside .vscode directory
 
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
     {
-        "version": "0.2.0",
-        "configurations": [
-            {
-                "name": "Python: Remote Attach (DebugPy)",
-                "type": "python",
-                "request": "attach",
-                "port": 5678,
-                "host": "localhost",
-                "pathMappings": [
-                    {
-                        "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app/"
-                    }
-                ],
-                "justMyCode": true
-            },
-        ]
+      "name": "Python Debugger: Remote Attach",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "0.0.0.0",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/app/"
+        }
+      ]
     }
+  ]
+}
+```
