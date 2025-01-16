@@ -10,57 +10,78 @@ import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
+import ErrorSummary from "../Components/Common/ErrorSummary";
+import SuccessBanner from "../Components/Common/SuccessBanner";
 
-const initialPayrollState = [];
-const initialVacanciesState = [];
-const initialPayModifiersState = [];
+const initialPayrollState = {
+  employees: [],
+  vacancies: [],
+  pay_modifiers: [],
+};
+const initialPreviousMonthsState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
     initialPayrollState,
   );
-  const [vacancies, dispatchVacancies] = useReducer(
-    vacanciesReducer,
-    initialVacanciesState,
+  const [previousMonths, dispatchPreviousMonths] = useReducer(
+    previousMonthsReducer,
+    initialPreviousMonthsState,
   );
-  const [payModifiers, dispatchPayModifiers] = useReducer(
-    payModifiersReducer,
-    initialPayModifiersState,
+  const initialPreviousMonths = localStorage.getItem(
+    "editPayroll.hidePreviousMonths",
   );
+  const [hidePreviousMonths, setHidePreviousMonths] = useState(
+    initialPreviousMonths === "true",
+  );
+  const [offset, setOffset] = useState(0);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
 
+  // Use Effects
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
+    setSaveSuccess(false);
   }, [activeTab]);
 
   useEffect(() => {
-    const savedSuccessFlag = localStorage.getItem("saveSuccess");
+    const previousMonthsCookie = localStorage.getItem(
+      "editPayroll.hidePreviousMonths",
+    );
+    setOffset(window.previous_months.length);
+
+    let data = [];
+    if (previousMonthsCookie === "true") {
+      data = window.previous_months;
+    }
+    dispatchPreviousMonths({ type: "fetched", data: data });
+  }, [hidePreviousMonths]);
+
+  useEffect(() => {
+    const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
     if (savedSuccessFlag === "true") {
       setSaveSuccess(true);
-      localStorage.removeItem("saveSuccess");
+      localStorage.removeItem("editPayroll.saveSuccess");
     }
 
-    api.getPayrollData().then((data) => dispatch({ type: "fetched", data }));
-    api
-      .getVacancyData()
-      .then((data) => dispatchVacancies({ type: "fetched", data }));
-    api
-      .getPayModifierData()
-      .then((data) => dispatchPayModifiers({ type: "fetched", data }));
+    api.getPayrollData().then((data) => {
+      dispatch({ type: "fetched", data });
+    });
   }, []);
 
   // Computed properties
   const payroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay > 0),
+    () => allPayroll.employees.filter((payroll) => payroll.basic_pay > 0),
     [allPayroll],
   );
   const nonPayroll = useMemo(
-    () => allPayroll.filter((payroll) => payroll.basic_pay <= 0),
+    () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
 
@@ -68,44 +89,53 @@ export default function Payroll() {
   async function handleSavePayroll() {
     try {
       await api.postPayrollData(allPayroll);
-      await api.postVacancyData(vacancies);
-      await api.postPayModifierData(payModifiers);
 
       setSaveSuccess(true);
-      localStorage.setItem("saveSuccess", "true");
+      localStorage.setItem("editPayroll.saveSuccess", "true");
 
       window.location.reload();
     } catch (error) {
       console.error("Error saving payroll: ", error);
+      setSaveSuccess(false);
+      setSaveError(true);
+      localStorage.setItem("saveError", "true");
     }
   }
 
   function handleTogglePayPeriods(id, index, enabled) {
-    dispatch({ type: "updatePayPeriods", id, index, enabled });
+    dispatch({ type: "updatePayPeriodsEmployees", id, index, enabled });
   }
 
   function handleToggleVacancyPayPeriods(id, index, enabled) {
-    dispatchVacancies({ type: "updatePayPeriods", id, index, enabled });
+    dispatch({ type: "updatePayPeriodsVacancies", id, index, enabled });
   }
 
   function handleUpdatePayModifiers(id, index, value) {
-    dispatchPayModifiers({ type: "updatePayModifiers", id, index, value });
+    dispatch({ type: "updatePayModifiers", id, index, value });
   }
+
+  function handleHidePreviousMonths() {
+    setHidePreviousMonths(!hidePreviousMonths);
+
+    localStorage.setItem(
+      "editPayroll.hidePreviousMonths",
+      JSON.stringify(!hidePreviousMonths),
+    );
+  }
+
+  const errors = [{ label: "", message: "Error saving payroll data" }];
 
   return (
     <>
-      {saveSuccess && (
-        <div className="govuk-notification-banner govuk-notification-banner--success">
-          <div className="govuk-notification-banner__header">
-            <h2
-              className="govuk-notification-banner__title"
-              id="govuk-notification-banner-title"
-            >
-              Success
-            </h2>
-          </div>
-        </div>
-      )}
+      {saveSuccess && <SuccessBanner />}
+      {saveError && <ErrorSummary errors={errors} />}
+      <ToggleCheckbox
+        toggle={hidePreviousMonths}
+        handler={handleHidePreviousMonths}
+        id="payroll-previous-months"
+        value="payroll-previous-months"
+        label="Hide previous months"
+      />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <PayrollTable
@@ -113,6 +143,8 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -121,14 +153,18 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
           <PayrollTable
-            payroll={vacancies}
+            payroll={allPayroll.vacancies}
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
+            previousMonths={previousMonths}
+            offset={offset}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
@@ -139,7 +175,7 @@ export default function Payroll() {
         </Tab>
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
-            data={payModifiers}
+            data={allPayroll.pay_modifiers}
             onInputChange={handleUpdatePayModifiers}
           />
         </Tab>
@@ -151,57 +187,72 @@ export default function Payroll() {
   );
 }
 
-const positionReducer = (data, action) => {
-  switch (action.type) {
-    case "fetched": {
-      return action.data;
-    }
-    case "updatePayPeriods": {
-      return data.map((row) => {
-        if (row.id === action.id) {
-          const updatedPayPeriods = row.pay_periods.map((period, index) => {
-            if (index + 1 >= action.index + 1) {
-              return !action.enabled;
-            }
-            return period;
-          });
-          return {
-            ...row,
-            pay_periods: updatedPayPeriods,
-          };
+function updatePayPeriods(data, action) {
+  return data.map((row) => {
+    if (row.id === action.id) {
+      const updatedPayPeriods = row.pay_periods.map((period, index) => {
+        if (index + 1 >= action.index + 1) {
+          return !action.enabled;
         }
-        return row;
+        return period;
       });
+      return {
+        ...row,
+        pay_periods: updatedPayPeriods,
+      };
     }
-  }
-};
+    return row;
+  });
+}
 
-const payModifiersReducer = (data, action) => {
+function updatePayModifiers(data, action) {
+  return data.map((row) => {
+    if (row.id === action.id) {
+      const updatedPayModifier = row.pay_modifiers.map((modifier, index) => {
+        if (index === action.index) {
+          return parseFloat(action.value);
+        }
+        return modifier;
+      });
+      return {
+        ...row,
+        pay_modifiers: updatedPayModifier,
+      };
+    }
+    return row;
+  });
+}
+
+const payrollReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
       return action.data;
+    }
+    case "updatePayPeriodsEmployees": {
+      return {
+        ...data,
+        employees: updatePayPeriods(data.employees, action),
+      };
+    }
+    case "updatePayPeriodsVacancies": {
+      return {
+        ...data,
+        vacancies: updatePayPeriods(data.vacancies, action),
+      };
     }
     case "updatePayModifiers": {
-      return data.map((row) => {
-        if (row.id === action.id) {
-          const updatedPayModifier = row.pay_modifiers.map(
-            (modifier, index) => {
-              if (index === action.index) {
-                return parseFloat(action.value);
-              }
-              return modifier;
-            },
-          );
-          return {
-            ...row,
-            pay_modifiers: updatedPayModifier,
-          };
-        }
-        return row;
-      });
+      return {
+        ...data,
+        pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
+      };
     }
   }
 };
 
-const payrollReducer = (data, action) => positionReducer(data, action);
-const vacanciesReducer = (data, action) => positionReducer(data, action);
+const previousMonthsReducer = (data, action) => {
+  switch (action.type) {
+    case "fetched": {
+      return action.data;
+    }
+  }
+};

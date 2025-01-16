@@ -11,7 +11,7 @@ package-mode = false
 python = "^3.12"
 celery = "^5.3.6"
 dj-database-url = "^2.1.0"
-django = "^5.1.4"
+django = "^5.1.5"
 django-admin-list-filter-dropdown = "^1.0.3"
 django-autocomplete-light = "^3.11.0"
 django-axes = "^6.4.0"
@@ -68,6 +68,7 @@ isort = "^5.10.1"
 ruff = "^0.3.4"
 mypy = "^1.13.0"
 django-debug-toolbar = "^4.4.6"
+debugpy = "1.8.9"
 
 [build-system]
 requires = ["poetry-core"]

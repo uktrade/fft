@@ -1,7 +1,5 @@
-import json
-
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -10,6 +8,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView
 
 from core.constants import MONTHS
 from core.models import FinancialYear
+from core.templatetags.util import get_previous_months_data
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
 from payroll.models import Vacancy
@@ -38,81 +37,19 @@ class EditPayrollBaseView(UserPassesTestMixin, View):
         )
 
 
-class EditPayrollApiView(EditPayrollBaseView):
-    def get_data(self):
-        raise NotImplementedError
-
-    def post_data(self, data):
-        raise NotImplementedError
-
-    def get(self, request, *args, **kwargs):
-        data = list(self.get_data())
-        return JsonResponse({"data": data})
-
-    def post(self, request, *args, **kwargs):
-        data = json.loads(request.body)
-        self.post_data(
-            data,
-        )
-        return JsonResponse({})
-
-
-class EmployeeApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_payroll_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
-class VacancyApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_vacancies_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
-class PayModifierApiView(EditPayrollApiView):
-    def get_data(self):
-        return payroll_service.get_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-        )
-
-    def post_data(self, data):
-        return payroll_service.update_pay_modifiers_data(
-            self.cost_centre,
-            self.financial_year,
-            data,
-        )
-
-
 class EditPayrollPage(EditPayrollBaseView):
     def get(self, *args, **kwargs) -> HttpResponse:
         payroll_forecast_report_data = payroll_service.payroll_forecast_report(
             self.cost_centre, self.financial_year
         )
+        previous_months = get_previous_months_data()
 
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
             "payroll_forecast_report": payroll_forecast_report_data,
             "months": MONTHS,
+            "previous_months": previous_months,
         }
 
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)

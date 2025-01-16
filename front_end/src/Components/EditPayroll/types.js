@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} PayrollData
+ * @typedef {Object} EmployeeData
  * @property {string} name - The employee's name.
  * @property {string} grade - The employee's grade.
  * @property {string} employee_no - The employee's number.
@@ -29,6 +29,19 @@
  * @typedef {Object} PayModifierData
  * @property {number} id - The pay modifier's pk.
  * @property {number[]} pay_modifiers - The pay modifier's monthly percentages
+ */
+
+/**
+ * @typedef {Object} PayrollData
+ * @property {EmployeeData} employees - A list of employees
+ * @property {VacancyData} vacancies - A list of vacancies
+ * @property {PayModifierData} pay_modifiers - A list of pay modifiers
+ */
+
+/**
+ * @typedef {Object} PreviousMonthsData
+ * @property {string} month_short_name - The short form name of the month
+ * @property {int} month_financial_code - The financial index of the month (Apr is 1 etc)
  */
 
 export const Types = {};

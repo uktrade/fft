@@ -1,6 +1,7 @@
 from django.urls import path
 
 from forecast.views.edit_select_cost_centre import ChooseCostCentreView
+from payroll.api import EditPayrollApiView
 
 from . import views
 
@@ -15,13 +16,8 @@ urlpatterns = [
     ),
     path(
         "api/<str:cost_centre_code>/<int:financial_year>/",
-        views.EmployeeApiView.as_view(),
+        EditPayrollApiView.as_view(),
         name="api",
-    ),
-    path(
-        "api/<str:cost_centre_code>/<int:financial_year>/vacancies/",
-        views.VacancyApiView.as_view(),
-        name="api_vacancies",
     ),
     path(
         "edit/choose-cost-centre/",
@@ -42,10 +38,5 @@ urlpatterns = [
         "edit/<str:cost_centre_code>/<int:financial_year>/vacancies/<int:vacancy_id>/delete",
         views.DeleteVacancyView.as_view(),
         name="delete_vacancy",
-    ),
-    path(
-        "api/<str:cost_centre_code>/<int:financial_year>/pay_modifiers/",
-        views.PayModifierApiView.as_view(),
-        name="api_pay_modifiers",
     ),
 ]
