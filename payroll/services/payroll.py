@@ -133,6 +133,15 @@ def payroll_forecast_report(
             )
 
 
+def update_forecast(
+    *,
+    financial_year: FinancialYear,
+    cost_centre: CostCentre,
+    payroll_forecast: Iterator[PayrollForecast],
+):
+    pass
+
+
 def get_attrition_instance(
     financial_year: FinancialYear, cost_centre: CostCentre
 ) -> Attrition | None:
