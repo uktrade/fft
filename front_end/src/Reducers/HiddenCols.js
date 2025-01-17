@@ -22,8 +22,10 @@ const hiddenCols = createSlice({
       if (state.showAll) {
         state.showAll = false;
         state.hiddenCols = [
-          "natural_account_code",
-          "programme",
+          "nac_code",
+          "nac_description",
+          "programme_code",
+          "programme_description",
           "analysis1_code",
           "analysis2_code",
           "project_code",

@@ -42,7 +42,7 @@ const EditActionBar = () => {
         </div>
         <div className={getClasses()}>
           <div className="action-bar-content">
-            <h3 className="govuk-heading-m">Show/hide columns</h3>
+            <h3 className="govuk-heading-s">Show/hide columns</h3>
             <div className="govuk-checkboxes">
               <div className="govuk-checkboxes__item">
                 <input
@@ -60,41 +60,76 @@ const EditActionBar = () => {
             </div>
 
             <div className="action-bar-cols">
-              <h4 className="govuk-heading-m">Individual columns</h4>
+              <h4 className="govuk-heading-s">Individual columns</h4>
               <div className="govuk-checkboxes">
                 <div className="govuk-checkboxes__item">
                   <input
                     type="checkbox"
-                    name="natural_account_code"
+                    name="nac_code"
                     id="show_hide_nac"
                     className="govuk-checkboxes__input"
-                    checked={hiddenCols.indexOf("natural_account_code") === -1}
+                    checked={hiddenCols.indexOf("nac_code") === -1}
                     onChange={(e) => {
-                      dispatch(TOGGLE_ITEM("natural_account_code"));
+                      dispatch(TOGGLE_ITEM("nac_code"));
                     }}
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
-                    htmlFor="natural_account_code"
+                    htmlFor="nac_code"
                   >
-                    Natural account code
+                    NAC code
                   </label>
                 </div>
                 <div className="govuk-checkboxes__item">
                   <input
                     type="checkbox"
-                    name="programme"
+                    name="nac_description"
+                    id="show_hide_nac"
                     className="govuk-checkboxes__input"
-                    checked={hiddenCols.indexOf("programme") === -1}
+                    checked={hiddenCols.indexOf("nac_description") === -1}
                     onChange={(e) => {
-                      dispatch(TOGGLE_ITEM("programme"));
+                      dispatch(TOGGLE_ITEM("nac_description"));
                     }}
                   />
                   <label
                     className="govuk-label govuk-checkboxes__label"
-                    htmlFor="programme"
+                    htmlFor="nac_description"
                   >
-                    Programme
+                    NAC description
+                  </label>
+                </div>
+                <div className="govuk-checkboxes__item">
+                  <input
+                    type="checkbox"
+                    name="programme_code"
+                    className="govuk-checkboxes__input"
+                    checked={hiddenCols.indexOf("programme_code") === -1}
+                    onChange={(e) => {
+                      dispatch(TOGGLE_ITEM("programme_code"));
+                    }}
+                  />
+                  <label
+                    className="govuk-label govuk-checkboxes__label"
+                    htmlFor="programme_code"
+                  >
+                    Programme code
+                  </label>
+                </div>
+                <div className="govuk-checkboxes__item">
+                  <input
+                    type="checkbox"
+                    name="programme_description"
+                    className="govuk-checkboxes__input"
+                    checked={hiddenCols.indexOf("programme_description") === -1}
+                    onChange={(e) => {
+                      dispatch(TOGGLE_ITEM("programme_description"));
+                    }}
+                  />
+                  <label
+                    className="govuk-label govuk-checkboxes__label"
+                    htmlFor="programme_description"
+                  >
+                    Programme description
                   </label>
                 </div>
                 <div className="govuk-checkboxes__item">
