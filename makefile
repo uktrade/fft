@@ -38,7 +38,7 @@ manage = python manage.py
 
 create-stub-data: # Create stub data for testing
 	make migrate
-	$(web) $(manage) set_current_year 2024
+	$(web) $(manage) set_current_year
 	$(web) $(manage) create_stub_data All
 	$(web) $(manage) create_stub_forecast_data
 	$(web) $(manage) create_stub_future_forecast_data
