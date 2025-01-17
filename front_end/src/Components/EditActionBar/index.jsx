@@ -43,7 +43,7 @@ const EditActionBar = () => {
         <div className={getClasses()}>
           <div className="action-bar-content">
             <h3 className="govuk-heading-s">Show/hide columns</h3>
-            <div className="govuk-checkboxes">
+            <div className="govuk-checkboxes govuk-checkboxes--small">
               <div className="govuk-checkboxes__item">
                 <input
                   type="checkbox"
@@ -61,7 +61,7 @@ const EditActionBar = () => {
 
             <div className="action-bar-cols">
               <h4 className="govuk-heading-s">Individual columns</h4>
-              <div className="govuk-checkboxes">
+              <div className="govuk-checkboxes govuk-checkboxes--small">
                 <div className="govuk-checkboxes__item">
                   <input
                     type="checkbox"
