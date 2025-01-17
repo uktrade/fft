@@ -413,8 +413,8 @@ if SENTRY_DSN:
 # Content Security Policy
 CSP_DEFAULT_SRC = ["'self'"]
 CSP_SCRIPT_SRC = ["'self'", "'unsafe-inline'"]
-CSP_IMG_SRC = ["'self'", "'www.googletagmanager.com'"]
-CSP_CONNECT_SRC = ["'self'", "'www.googletagmanager.com'"]
+CSP_IMG_SRC = ["'self'", "www.googletagmanager.com"]
+CSP_CONNECT_SRC = ["'self'", "www.googletagmanager.com"]
 
 CSP_REPORT_ONLY = True
 CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
