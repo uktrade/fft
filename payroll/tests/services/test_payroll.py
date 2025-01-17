@@ -2,13 +2,18 @@ from statistics import mean
 
 import pytest
 
+from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.models import FinancialYear
 from costcentre.test.factories import CostCentreFactory
+from forecast.models import ForecastMonthlyFigure
 from payroll.services.payroll import (
     employee_created,
     payroll_forecast_report,
     vacancy_created,
+    PayrollForecast,
+    update_forecast,
 )
+from forecast.test.factories import MonthlyFigureFactory, FinancialCodeFactory
 
 from ..factories import EmployeeFactory, VacancyFactory
 
@@ -136,3 +141,59 @@ def test_payroll_forecast(db):
     assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(e1p)
     assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(v1s)
     assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
+
+
+def test_scenario_update_forecast():
+    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+    programme_code = ProgrammeCodeFactory.create()
+
+    financial_code_salary = FinancialCodeFactory(
+        cost_centre=cost_centre,
+        programme_code=programme_code,
+        natural_account_code__natural_account_code="71111001",
+    )
+    financial_code_pension = FinancialCodeFactory(
+        cost_centre=cost_centre,
+        programme_code=programme_code,
+        natural_account_code__natural_account_code="71111002",
+    )
+    financial_code_ernic = FinancialCodeFactory(
+        cost_centre=cost_centre,
+        programme_code=programme_code,
+        natural_account_code__natural_account_code="71111003",
+    )
+
+    financial_year = FinancialYear.objects.current()
+
+    payroll_forecast = [
+        PayrollForecast(
+            programme_code=programme_code,
+            natural_account_code="71111001",
+            apr=1,
+            may=1,
+            jun=1,
+            jul=1,
+            aug=1,
+            sep=1,
+            oct=1,
+            dec=1,
+            jan=1,
+            feb=1,
+            mar=1,
+        )
+    ]
+
+    update_forecast(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+        payroll_forecast=payroll_forecast,
+    )
+
+    assert (
+        ForecastMonthlyFigure.objects.get(
+            financial_year=financial_year,
+            financial_period__financial_period_code=1,
+            financial_code=financial_code_salary,
+        )
+        == 1
+    )
