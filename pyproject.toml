@@ -1,10 +1,17 @@
-[tool.poetry]
+[project]
 name = "fft"
 version = "0.1.0"
 description = ""
-authors = ["Live Services <live.services@digital.trade.gov.uk>"]
+authors = [
+    { name = "Live Services", email = "live.services@digital.trade.gov.uk" },
+]
 license = "MIT"
 readme = "README.md"
+requires-python = ">=3.12"
+dynamic = ["dependencies"]
+
+[tool.poetry]
+requires-poetry = ">=2.0"
 package-mode = false
 
 [tool.poetry.dependencies]
@@ -40,7 +47,7 @@ redis = "^5.0.3"
 granian = "^1.6.3"
 numpy = "^2.1.3"
 django-csp = "^3.8"
-psycopg = {extras = ["binary", "pool"], version = "^3.2.4"}
+psycopg = { extras = ["binary", "pool"], version = "^3.2.4" }
 django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"

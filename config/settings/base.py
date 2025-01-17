@@ -129,6 +129,9 @@ else:
 
     DATABASES = {"default": env.db()}
 
+# Enable connection pooling
+DATABASES["default"]["OPTIONS"] = {"pool": True}
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Password validation
