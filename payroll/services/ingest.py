@@ -66,7 +66,6 @@ def import_payroll(
     # if payroll_csv_has_header:
     #     next(payrol_csv_reader)
 
-
     hr_csv_reader = csv.reader((row.decode("utf-8") for row in hr_csv))
 
     if hr_csv_has_header:
@@ -141,9 +140,9 @@ def hr_row_to_employee(hr_row) -> Employee:
         "grade": hr_row.grade_id,
         "assignment_status": hr_row.assignment_status,
         "fte": hr_row.fte,
-        "basic_pay": hr_row.salary ,
-        "ernic":random.randint(100000, 999999),
-        "pension":random.randint(100000, 999999),
+        "basic_pay": hr_row.salary,
+        "ernic": random.randint(100000, 999999),
+        "pension": random.randint(100000, 999999),
         "has_left": False,
     }
     return employee
@@ -161,7 +160,7 @@ def bulk_update_or_create(data):
     if data:
         keys = list(data[0].keys())
     existing_ids = {
-        emp.employee_no: emp.id 
+        emp.employee_no: emp.id
         for emp in Employee.objects.filter(
             employee_no__in=[emp["employee_no"] for emp in data]
         )
@@ -175,7 +174,7 @@ def bulk_update_or_create(data):
             setattr(emp, key, item[key])
 
         if item["employee_no"] in existing_ids:
-            emp.id=existing_ids[item["employee_no"]]
+            emp.id = existing_ids[item["employee_no"]]
             to_update.append(emp)
         else:
             to_create.append(emp)
@@ -183,6 +182,6 @@ def bulk_update_or_create(data):
     if to_create:
         Employee.objects.bulk_create(to_create)
     if to_update:
-        Employee.objects.bulk_update(to_update,keys)
+        Employee.objects.bulk_update(to_update, keys)
 
     return {"created": to_create, "updated": to_update}

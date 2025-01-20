@@ -198,13 +198,10 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
         else:
             hr_csv = request.FILES["hr_csv"]
             hr_csv_has_header = request.POST.get("hr_csv_has_header", False)
-            payroll_csv = request.FILES['payroll_csv']
+            payroll_csv = request.FILES["payroll_csv"]
             payroll_csv_has_header = request.POST.get("hr_csv_has_header", False)
             output = import_payroll(
-                hr_csv,
-                payroll_csv,
-                hr_csv_has_header,
-                payroll_csv_has_header
+                hr_csv, payroll_csv, hr_csv_has_header, payroll_csv_has_header
             )
 
             context = {
