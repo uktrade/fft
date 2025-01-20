@@ -140,7 +140,7 @@ def hr_row_to_employee(hr_row) -> Employee:
         "grade": hr_row.grade_id,
         "assignment_status": hr_row.assignment_status,
         "fte": hr_row.fte,
-        "basic_pay": hr_row.salary,
+        "basic_pay": random.randint(100000, 999999),
         "ernic": random.randint(100000, 999999),
         "pension": random.randint(100000, 999999),
         "has_left": False,
