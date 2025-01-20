@@ -6,9 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 
-from core.constants import MONTHS
 from core.models import FinancialYear
-from core.templatetags.util import get_previous_months_data
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
 from payroll.models import Vacancy
@@ -39,17 +37,9 @@ class EditPayrollBaseView(UserPassesTestMixin, View):
 
 class EditPayrollPage(EditPayrollBaseView):
     def get(self, *args, **kwargs) -> HttpResponse:
-        payroll_forecast_report_data = payroll_service.payroll_forecast_report(
-            self.cost_centre, self.financial_year
-        )
-        previous_months = get_previous_months_data()
-
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
-            "payroll_forecast_report": payroll_forecast_report_data,
-            "months": MONTHS,
-            "previous_months": previous_months,
         }
 
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)

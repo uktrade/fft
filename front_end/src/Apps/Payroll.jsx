@@ -13,30 +13,28 @@ import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
+import ForecastTable from "../Components/EditPayroll/ForecastTable";
+import { monthsToTitleCase } from "../Util";
 
 const initialPayrollState = {
   employees: [],
   vacancies: [],
   pay_modifiers: [],
+  forecast: [],
+  previous_months: [],
 };
-const initialPreviousMonthsState = [];
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
     payrollReducer,
     initialPayrollState,
   );
-  const [previousMonths, dispatchPreviousMonths] = useReducer(
-    previousMonthsReducer,
-    initialPreviousMonthsState,
+  const initialShowPreviousMonths = localStorage.getItem(
+    "editPayroll.showPreviousMonths",
   );
-  const initialPreviousMonths = localStorage.getItem(
-    "editPayroll.hidePreviousMonths",
+  const [showPreviousMonths, setShowPreviousMonths] = useState(
+    initialShowPreviousMonths === "true",
   );
-  const [hidePreviousMonths, setHidePreviousMonths] = useState(
-    initialPreviousMonths === "true",
-  );
-  const [offset, setOffset] = useState(0);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [activeTab, setActiveTab] = useState(() => {
@@ -44,35 +42,21 @@ export default function Payroll() {
     return savedTab ? parseInt(savedTab) : 0;
   });
 
+  function getAllPayroll() {
+    api.getPayrollData().then((data) => {
+      dispatch({ type: "fetched", data });
+    });
+  }
+
   // Use Effects
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
     setSaveSuccess(false);
+    setSaveError(false);
   }, [activeTab]);
 
   useEffect(() => {
-    const previousMonthsCookie = localStorage.getItem(
-      "editPayroll.hidePreviousMonths",
-    );
-    setOffset(window.previous_months.length);
-
-    let data = [];
-    if (previousMonthsCookie === "true") {
-      data = window.previous_months;
-    }
-    dispatchPreviousMonths({ type: "fetched", data: data });
-  }, [hidePreviousMonths]);
-
-  useEffect(() => {
-    const savedSuccessFlag = localStorage.getItem("editPayroll.saveSuccess");
-    if (savedSuccessFlag === "true") {
-      setSaveSuccess(true);
-      localStorage.removeItem("editPayroll.saveSuccess");
-    }
-
-    api.getPayrollData().then((data) => {
-      dispatch({ type: "fetched", data });
-    });
+    getAllPayroll();
   }, []);
 
   // Computed properties
@@ -89,16 +73,12 @@ export default function Payroll() {
   async function handleSavePayroll() {
     try {
       await api.postPayrollData(allPayroll);
-
       setSaveSuccess(true);
-      localStorage.setItem("editPayroll.saveSuccess", "true");
-
-      window.location.reload();
+      getAllPayroll();
     } catch (error) {
       console.error("Error saving payroll: ", error);
       setSaveSuccess(false);
       setSaveError(true);
-      localStorage.setItem("saveError", "true");
     }
   }
 
@@ -115,11 +95,11 @@ export default function Payroll() {
   }
 
   function handleHidePreviousMonths() {
-    setHidePreviousMonths(!hidePreviousMonths);
+    setShowPreviousMonths(!showPreviousMonths);
 
     localStorage.setItem(
-      "editPayroll.hidePreviousMonths",
-      JSON.stringify(!hidePreviousMonths),
+      "editPayroll.showPreviousMonths",
+      JSON.stringify(!showPreviousMonths),
     );
   }
 
@@ -130,7 +110,7 @@ export default function Payroll() {
       {saveSuccess && <SuccessBanner />}
       {saveError && <ErrorSummary errors={errors} />}
       <ToggleCheckbox
-        toggle={hidePreviousMonths}
+        toggle={showPreviousMonths}
         handler={handleHidePreviousMonths}
         id="payroll-previous-months"
         value="payroll-previous-months"
@@ -143,8 +123,8 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
-            previousMonths={previousMonths}
-            offset={offset}
+            previousMonths={allPayroll.previous_months}
+            showPreviousMonths={showPreviousMonths}
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -153,8 +133,8 @@ export default function Payroll() {
             headers={payrollHeaders}
             onTogglePayPeriods={handleTogglePayPeriods}
             RowComponent={EmployeeRow}
-            previousMonths={previousMonths}
-            offset={offset}
+            previousMonths={allPayroll.previous_months}
+            showPreviousMonths={showPreviousMonths}
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -163,8 +143,8 @@ export default function Payroll() {
             headers={vacancyHeaders}
             onTogglePayPeriods={handleToggleVacancyPayPeriods}
             RowComponent={VacancyRow}
-            previousMonths={previousMonths}
-            offset={offset}
+            previousMonths={allPayroll.previous_months}
+            showPreviousMonths={showPreviousMonths}
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
@@ -183,6 +163,10 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
+      <ForecastTable
+        forecast={allPayroll.forecast}
+        months={monthsToTitleCase}
+      />
     </>
   );
 }
@@ -245,14 +229,6 @@ const payrollReducer = (data, action) => {
         ...data,
         pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
       };
-    }
-  }
-};
-
-const previousMonthsReducer = (data, action) => {
-  switch (action.type) {
-    case "fetched": {
-      return action.data;
     }
   }
 };

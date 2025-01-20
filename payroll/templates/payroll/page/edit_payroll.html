@@ -13,52 +13,14 @@
     <h1 class="govuk-heading-l">Edit payroll</h1>
 
     <div id="payroll-app"></div>
-
-    <h2 class="govuk-heading-m">Payroll forecast</h2>
-
-    <div class="scrollable">
-        <table class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header">Programme code</th>
-                    <th scope="col" class="govuk-table__header">Natural account code</th>
-                    {% for month in months %}
-                        <th scope="col" class="govuk-table__header">{{ month|capfirst }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                {% for row in payroll_forecast_report %}
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header">{{ row.programme_code }}</th>
-                        <th scope="row" class="govuk-table__header">{{ row.natural_account_code }}</th>
-                        <td class="govuk-table__cell">£{{ row.apr|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.may|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.jun|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.jul|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.aug|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.sep|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.oct|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.nov|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.dec|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.jan|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.feb|format_money }}</td>
-                        <td class="govuk-table__cell">£{{ row.mar|format_money }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
 {% endblock content %}
 
 {% block scripts %}
     {{ block.super }}
-    {{ previous_months|json_script:'previous_months' }}
     <script>
         window.costCentreCode = "{{ cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year }}");
         window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre_code financial_year %}"
-        window.previous_months = JSON.parse(document.getElementById("previous_months").textContent);
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
