@@ -1,4 +1,5 @@
 import csv
+import random
 from collections import namedtuple
 
 from django.core.files import File
@@ -20,7 +21,7 @@ HrRow = namedtuple(
         "last_name",
         "first_name",
         "employee_no",
-        "basic_pay",
+        "salary",
         "grade_id",
         "employee_location_city_name",
         "person_type",
@@ -57,10 +58,15 @@ HrRow = namedtuple(
 @transaction.atomic()
 def import_payroll(
     hr_csv: File,
-    # payroll_csv: File | None,
+    payroll_csv: File | None,
     hr_csv_has_header: bool,
-    # payroll_csv_has_header: bool,
+    payroll_csv_has_header: bool,
 ) -> str:
+    # payrol_csv_reader= csv.reader((row.decode("utf-8") for row in payroll_csv))
+    # if payroll_csv_has_header:
+    #     next(payrol_csv_reader)
+
+
     hr_csv_reader = csv.reader((row.decode("utf-8") for row in hr_csv))
 
     if hr_csv_has_header:
@@ -135,7 +141,9 @@ def hr_row_to_employee(hr_row) -> Employee:
         "grade": hr_row.grade_id,
         "assignment_status": hr_row.assignment_status,
         "fte": hr_row.fte,
-        "basic_pay": hr_row.basic_pay,
+        "basic_pay": hr_row.salary ,
+        "ernic":random.randint(100000, 999999),
+        "pension":random.randint(100000, 999999),
         "has_left": False,
     }
     return employee

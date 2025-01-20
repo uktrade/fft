@@ -31,7 +31,38 @@
         <button type="submit">Submit</button>
     </form>
     <div>
-        {{ output }}
+        <br/><br/>
+        {% if output %}
+        Inserted records : {{output.created|length}} <br/>
+        Updated records: {{output.updated|length}} <br/>
+        Failing records: {{output.failed_records|length}} <br/>
+        {% endif %}
+
+        {{ error }}
+        {% if output.failed_records %}
+        <h3>Failing records </h3>
+        <table  className="govuk-table finance-table">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <td class="govuk-table__cell">Employee No</td>
+                <td class="govuk-table__cell">Name</td>
+                <td class="govuk-table__cell">Error</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in output.failed_records %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ item.employee_no }}</td>
+                  <td class="govuk-table__cell">{{ item.first_name }} {{ item.last_name }}</td>
+                  <td class="govuk-table__cell"> {% for error in  item.errors %}
+                    {{error}}<br/>
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% endif %}
     </div>
 {% endblock content %}
 
