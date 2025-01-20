@@ -458,7 +458,6 @@ def get_actuals_data(
         nac_code = obj.financial_code.natural_account_code.natural_account_code
         grouped[programme_code][nac_code].append(
             {
-                "id": obj.pk,
                 "natural_account_code": nac_code,
                 "programme_code": programme_code,
                 "amount": obj.amount,

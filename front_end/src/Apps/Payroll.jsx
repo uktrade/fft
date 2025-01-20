@@ -174,7 +174,9 @@ export default function Payroll() {
       </button>
       <ForecastTable
         forecast={allPayroll.forecast}
+        actuals={allPayroll.actuals}
         months={monthsToTitleCase}
+        previousMonths={allPayroll.previous_months}
       />
     </>
   );
