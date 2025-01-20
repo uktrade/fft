@@ -14,6 +14,7 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
+from forecast.models import ForecastMonthlyFigure
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -418,6 +419,61 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+class Actuals(TypedDict):
+    id: int
+    natural_account_code: int
+    programme_code: int
+    amount: float
+    month: str
+
+
+def get_actuals_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> Iterator[Actuals]:
+    nac_codes = [
+        settings.PAYROLL.BASIC_PAY_NAC,
+        settings.PAYROLL.PENSION_NAC,
+        settings.PAYROLL.ERNIC_NAC,
+    ]
+
+    qs = ForecastMonthlyFigure.objects.filter(
+        financial_year=financial_year,
+        financial_code__cost_centre=cost_centre,
+        financial_code__natural_account_code__natural_account_code__in=nac_codes,
+        financial_code__project_code__isnull=True,
+        archived_status__isnull=True,
+    ).select_related(
+        "financial_code__cost_centre",
+        "financial_code__natural_account_code",
+        "financial_code__project_code",
+    )
+
+    grouped = defaultdict(lambda: defaultdict(list))
+
+    for obj in qs:
+        programme_code = obj.financial_code.programme.programme_code
+        nac_code = obj.financial_code.natural_account_code.natural_account_code
+        grouped[programme_code][nac_code].append(
+            {
+                "id": obj.pk,
+                "natural_account_code": nac_code,
+                "programme_code": programme_code,
+                "amount": obj.amount,
+                "month": obj.financial_period.period_short_name,
+            }
+        )
+
+    for programme_code, nac_codes in grouped.items():
+        yield {
+            "programme_code": programme_code,
+            "data": [
+                {"natural_account_code": nac_code, "items": items}
+                for nac_code, items in nac_codes.items()
+            ],
+        }
 
 
 # Permissions

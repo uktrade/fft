@@ -22,6 +22,7 @@ const initialPayrollState = {
   pay_modifiers: [],
   forecast: [],
   previous_months: [],
+  actuals: [],
 };
 
 export default function Payroll() {
