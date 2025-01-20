@@ -1,6 +1,6 @@
 import operator
 from collections import defaultdict
-from itertools import accumulate, groupby
+from itertools import accumulate
 from statistics import mean
 from typing import Iterator, TypedDict
 
@@ -424,20 +424,29 @@ def get_actuals_data(
         "financial_code__project_code",
     )
 
-    actuals = (
-        Actuals(
-            id=obj.pk,
-            natural_account_code=obj.financial_code.natural_account_code.natural_account_code,
-            programme_code=obj.financial_code.programme.programme_code,
-            amount=obj.amount,
-            month=obj.financial_period.period_short_name,
-        )
-        for obj in qs
-    )
+    grouped = defaultdict(lambda: defaultdict(list))
 
-    # Need to group by programme code too
-    for nac_code, group in groupby(actuals, key=lambda x: x["natural_account_code"]):
-        yield {nac_code: list(group)}
+    for obj in qs:
+        programme_code = obj.financial_code.programme.programme_code
+        nac_code = obj.financial_code.natural_account_code.natural_account_code
+        grouped[programme_code][nac_code].append(
+            {
+                "id": obj.pk,
+                "natural_account_code": nac_code,
+                "programme_code": programme_code,
+                "amount": obj.amount,
+                "month": obj.financial_period.period_short_name,
+            }
+        )
+
+    for programme_code, nac_codes in grouped.items():
+        yield {
+            "programme_code": programme_code,
+            "natural_account_codes": [
+                {"natural_account_code": nac_code, "items": items}
+                for nac_code, items in nac_codes.items()
+            ],
+        }
 
 
 # Permissions
