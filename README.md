@@ -140,3 +140,36 @@ The names of the management commands denote their function.
 - Amend the custom_usermodel table to be the same as the new User app one
 - Add the user app initial migration to the list of django migrations that have been run
 - Deploy new codebase
+
+# Setup DebugPy
+
+Add environment variable in your .env file
+
+```bash
+ENABLE_DEBUGPY=True
+```
+
+Create launch.json file inside .vscode directory
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Remote Attach",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "0.0.0.0",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/app/"
+        }
+      ]
+    }
+  ]
+}
+```
