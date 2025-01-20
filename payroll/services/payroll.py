@@ -1,3 +1,4 @@
+from functools import cache
 import operator
 from collections import defaultdict
 from itertools import accumulate
@@ -10,6 +11,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Avg, Count, Q
 
+from chartofaccountDIT.models import NaturalCode
 from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
@@ -18,7 +20,13 @@ from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecas
 from gifthospitality.models import Grade
 from user.models import User
 
-from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
+from ..models import (
+    Employee,
+    EmployeePayPeriods,
+    PayElementTypeGroup,
+    Vacancy,
+    VacancyPayPeriods,
+)
 
 
 def employee_created(employee: Employee) -> None:
@@ -391,6 +399,40 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+def update_employee_payroll(
+    employee: Employee,
+    pay_type: str,
+    debit: float,
+    credit: float,
+) -> None:
+    nac = pay_type_to_natural_code(pay_type)
+
+    match nac.pk:
+        case settings.PAYROLL.BASIC_PAY_NAC:
+            field = "basic_pay"
+        case settings.PAYROLL.PENSION_NAC:
+            field = "pension"
+        case settings.PAYROLL.ERNIC_NAC:
+            field = "ernic"
+        case _:
+            raise ValueError("Cannot map NAC to an Employee field")
+
+    amount = getattr(employee, field) + (debit - credit)
+
+    setattr(employee, field, amount)
+
+    employee.save(update_fields=[field])
+
+
+@cache
+def pay_type_to_natural_code(pay_type: str) -> NaturalCode:
+    natural_code = PayElementTypeGroup.objects.get(name=pay_type).natural_code
+
+    assert natural_code in settings.Payroll.nacs
+
+    return natural_code
 
 
 # Permissions

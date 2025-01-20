@@ -429,5 +429,18 @@ class Payroll:
     VACANCY_NAC: str | None = None
     AVERAGE_SALARY_THRESHOLD: int = 2
 
+    @property
+    def nacs(self) -> set[str]:
+        return {
+            nac
+            for nac in (
+                self.BASIC_PAY_NAC,
+                self.PENSION_NAC,
+                self.ERNIC_NAC,
+                self.VACANCY_NAC,
+            )
+            if nac
+        }
+
 
 PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default={}))
