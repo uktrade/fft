@@ -20,6 +20,12 @@ export default function ForecastTable({
     return matchingItems;
   }
 
+  const getClass = (index) => {
+    return previousMonths[index] && previousMonths[index].is_actual
+      ? "not-editable"
+      : "";
+  };
+
   return (
     <>
       <h2 className="govuk-heading-m">Payroll forecast</h2>
@@ -59,15 +65,17 @@ export default function ForecastTable({
                     {row.natural_account_code}
                   </th>
                   {months.map((month, index) => {
-                    let amount = formatMoney(row[month.toLowerCase()]);
+                    let amount = row[month.toLowerCase()];
                     if (actual && previousMonths[index].is_actual) {
-                      // Need to work out how the actuals amount needs to be formatted
-                      amount = actual[index].amount.toFixed(2);
+                      amount = actual[index].amount;
                     }
 
                     return (
-                      <td className="govuk-table__cell" key={month}>
-                        £{amount}
+                      <td
+                        className={`govuk-table__cell ${getClass(index)}`}
+                        key={month}
+                      >
+                        £{formatMoney(amount)}
                       </td>
                     );
                   })}
