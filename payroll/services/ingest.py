@@ -54,6 +54,35 @@ HrRow = namedtuple(
     ),
 )
 
+PayrollRow = namedtuple(
+    "PayrollRow",
+    (
+        (
+            "col_a",
+            "col_b",
+            "col_c",
+            "col_d",
+            "col_e",
+            "employee_no",
+            "col_g",
+            "col_h",
+            "col_i",
+            "col_j",
+            "col_k",
+            "col_l",
+            "col_m",
+            "col_n",
+            "col_o",
+            "col_p",
+            "col_q",
+            "pay_type",
+            "col_s",
+            "debit_amount",
+            "credit_amount",
+        )
+    ),
+)
+
 
 @transaction.atomic()
 def import_payroll(
@@ -62,9 +91,13 @@ def import_payroll(
     hr_csv_has_header: bool,
     payroll_csv_has_header: bool,
 ) -> str:
+    # payroll_data=[]
     # payrol_csv_reader= csv.reader((row.decode("utf-8") for row in payroll_csv))
     # if payroll_csv_has_header:
     #     next(payrol_csv_reader)
+
+    # for payroll_row in payrol_csv_reader:
+    #     payroll_data.append(map_payroll(PayrollRow(**payroll_row)))
 
     hr_csv_reader = csv.reader((row.decode("utf-8") for row in hr_csv))
 
@@ -112,11 +145,11 @@ def import_payroll(
     for emp in employees:
         errors = []
         if emp["cost_centre"] not in cost_center_codes:
-            errors.append("Cost centre desn't exists")
+            errors.append(f"Cost centre '{emp["cost_centre"]}' doesn't exists")
         if emp["programme_code"] not in existing_programme_codes:
-            errors.append("Programme code desn't exists")
+            errors.append(f"Programme code '{emp["programme_code"]}' doesn't exists")
         if emp["grade"] not in existing_grades:
-            errors.append("Grade desn't exists")
+            errors.append(f"Grade '{emp["grade"]}' doesn't exists")
         if errors:
             emp["errors"] = errors
             failed_records.append(emp)
@@ -185,3 +218,12 @@ def bulk_update_or_create(data):
         Employee.objects.bulk_update(to_update, keys)
 
     return {"created": to_create, "updated": to_update}
+
+
+# def map_payroll(row):
+#     return {
+#         "employee_no":row.employee_no,
+#         "pay_type":row.pay_type,
+#         "debit_amount":row.debit_amount,
+#         "credit_amount":row.credit_amount
+#     }
