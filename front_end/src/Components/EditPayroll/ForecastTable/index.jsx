@@ -7,17 +7,17 @@ export default function ForecastTable({
   previousMonths,
 }) {
   function getMatchingActual(programme_code, natural_account_code) {
-    const matchingGroup = actuals.find(
+    const matchingProgrammeCode = actuals.find(
       (group) => group.programme_code === programme_code,
     );
-    let matchingItems = [];
-    if (matchingGroup) {
-      const matchingCode = matchingGroup.data.find(
+    let matchingActual = [];
+    if (matchingProgrammeCode) {
+      const matchingCode = matchingProgrammeCode.data.find(
         (n) => n.natural_account_code == natural_account_code,
       );
-      matchingItems = matchingCode ? matchingCode.items : [];
+      matchingActual = matchingCode ? matchingCode.items : [];
     }
-    return matchingItems;
+    return matchingActual;
   }
 
   const getClass = (index) => {
@@ -65,10 +65,10 @@ export default function ForecastTable({
                     {row.natural_account_code}
                   </th>
                   {months.map((month, index) => {
-                    let amount = row[month.toLowerCase()];
-                    if (actual && previousMonths[index].is_actual) {
-                      amount = actual[index].amount;
-                    }
+                    const amount =
+                      actual && previousMonths[index].is_actual
+                        ? actual[index].amount
+                        : row[month.toLowerCase()];
 
                     return (
                       <td
