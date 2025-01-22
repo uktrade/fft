@@ -45,6 +45,7 @@ django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
+pydantic = "^2.10.5"
 
 [tool.poetry.group.dev]
 optional = true
@@ -124,4 +125,34 @@ python_files = ["test_*.py", "*_test.py", "tests.py"]
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.mypy]
-enable_incomplete_feature = ["NewGenericSyntax"]
+exclude = [
+    # TOML literal strings (single-quotes, no escaping necessary)
+    '/migrations/',
+    '^features/',
+]
+check_untyped_defs = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = [
+    "boto3.*",
+    "botocore.*",
+    "bs4.*",
+    "celery.*",
+    "dbt_copilot_python.*",
+    "debug_toolbar.*",
+    "django.*",
+    "django_admin_listfilter_dropdown.*",
+    "django_filters.*",
+    "django_log_formatter_asim.*",
+    "django_log_formatter_ecs.*",
+    "django_tables2.*",
+    "environ.*",
+    "factory.*",
+    "guardian.*",
+    "mohawk.*",
+    "openpyxl.*",
+    "rest_framework.*",
+    "simple_history.*",
+]
+ignore_missing_imports = true
