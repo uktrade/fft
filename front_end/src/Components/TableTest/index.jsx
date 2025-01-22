@@ -10,7 +10,10 @@ import {
   Cell,
 } from "@table-library/react-table-library/table";
 import { useTheme } from "@table-library/react-table-library/theme";
-import { getTheme } from "@table-library/react-table-library/baseline";
+import {
+  DEFAULT_OPTIONS,
+  getTheme,
+} from "@table-library/react-table-library/mantine";
 import { months, monthsToTitleCase } from "../../Util";
 import { useState } from "react";
 
@@ -38,13 +41,36 @@ export const TableTest = () => {
       feb: false,
       mar: false,
     },
+    {
+      id: "1",
+      name: "Jane Doe",
+      grade: "Grade 7",
+      employee_no: "00000002",
+      fte: 1.0,
+      programme_code: 338887,
+      budget_type: "DEL",
+      assignment_status: "Active Contingent Assignment",
+      apr: true,
+      may: true,
+      jun: true,
+      jul: true,
+      aug: false,
+      sep: false,
+      oct: false,
+      nov: false,
+      dec: false,
+      jan: false,
+      feb: false,
+      mar: false,
+    },
   ];
   const initialData = { nodes };
   const [data, setData] = useState(initialData);
 
-  const theme = useTheme(getTheme());
+  const theme = useTheme(getTheme(DEFAULT_OPTIONS));
 
   const [hiddenColumns, setHiddenColumns] = useState([]);
+  const resize = { resizerHighlight: "#dde2eb", resizerWidth: 25 };
 
   const toggleColumn = (column) => {
     if (hiddenColumns.includes(column)) {
@@ -58,12 +84,10 @@ export const TableTest = () => {
     setData((prevData) => ({
       nodes: prevData.nodes.map((node) => {
         if (node.id === rowId) {
-          console.log("here");
           const startIndex = months.indexOf(month);
-          const toggleValue = !node[month];
           const newNode = { ...node };
           months.slice(startIndex).forEach((m) => {
-            newNode[m] = toggleValue;
+            newNode[m] = !node[month];
           });
           return newNode;
         }
@@ -99,22 +123,44 @@ export const TableTest = () => {
           Assignment status
         </label>
       </div>
+      <div>
+        <label htmlFor="budget_type">
+          <input
+            id="budget_type"
+            type="checkbox"
+            value="BUDGET_TYPE"
+            checked={!hiddenColumns.includes("BUDGET_TYPE")}
+            onChange={() => toggleColumn("BUDGET_TYPE")}
+          />
+          budget type
+        </label>
+      </div>
       <Table data={data} theme={theme}>
         {(rows) => (
           <>
             <Header>
               <HeaderRow>
-                <HeaderCell>Name</HeaderCell>
-                <HeaderCell>Grade</HeaderCell>
-                <HeaderCell>Employee No</HeaderCell>
-                <HeaderCell>FTE</HeaderCell>
-                <HeaderCell>Programme code</HeaderCell>
-                <HeaderCell>Budget type</HeaderCell>
-                <HeaderCell hide={hiddenColumns.includes("ASSIGNMENT_STATUS")}>
+                <HeaderCell resize={resize}>Name</HeaderCell>
+                <HeaderCell resize={resize}>Grade</HeaderCell>
+                <HeaderCell resize={resize}>Employee No</HeaderCell>
+                <HeaderCell resize={resize}>FTE</HeaderCell>
+                <HeaderCell resize={resize}>Programme code</HeaderCell>
+                <HeaderCell
+                  resize={resize}
+                  hide={hiddenColumns.includes("BUDGET_TYPE")}
+                >
+                  Budget type
+                </HeaderCell>
+                <HeaderCell
+                  resize={resize}
+                  hide={hiddenColumns.includes("ASSIGNMENT_STATUS")}
+                >
                   Assignment status
                 </HeaderCell>
                 {monthsToTitleCase.map((month) => (
-                  <HeaderCell key={month}>{month}</HeaderCell>
+                  <HeaderCell key={month} resize={resize}>
+                    {month}
+                  </HeaderCell>
                 ))}
               </HeaderRow>
             </Header>
@@ -142,7 +188,9 @@ export const TableTest = () => {
                   <Cell>{item.employee_no}</Cell>
                   <Cell>{item.fte}</Cell>
                   <Cell>{item.programme_code}</Cell>
-                  <Cell>{item.budget_type}</Cell>
+                  <Cell hide={hiddenColumns.includes("BUDGET_TYPE")}>
+                    {item.budget_type}
+                  </Cell>
                   <Cell hide={hiddenColumns.includes("ASSIGNMENT_STATUS")}>
                     {item.assignment_status}
                   </Cell>
