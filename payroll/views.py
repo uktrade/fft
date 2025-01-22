@@ -192,19 +192,16 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
 
     output = ""
     context = {}
-    if request.method == "POST":
-        if "hr_csv" not in request.FILES or "payroll_csv" not in request.FILES:
-            context = {"error": "Both HR and Payroll files are required"}
-        else:
-            hr_csv = request.FILES["hr_csv"]
-            hr_csv_has_header = request.POST.get("hr_csv_has_header", False)
-            payroll_csv = request.FILES["payroll_csv"]
-            payroll_csv_has_header = request.POST.get("hr_csv_has_header", False)
-            output = import_payroll(
-                hr_csv, payroll_csv, hr_csv_has_header, payroll_csv_has_header
-            )
 
-            context = {
-                "output": output,
-            }
+    if request.method == "POST":
+        if "payroll_csv" not in request.FILES:
+            context = {"error": "Payroll file is required"}
+        else:
+            payroll_csv = request.FILES["payroll_csv"]
+            output = import_payroll(payroll_csv)
+
+    context = {
+        "output": output,
+    }
+
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)

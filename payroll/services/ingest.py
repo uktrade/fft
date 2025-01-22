@@ -1,5 +1,4 @@
 import csv
-import random
 from collections import namedtuple
 
 from django.core.files import File
@@ -57,66 +56,42 @@ HrRow = namedtuple(
 PayrollRow = namedtuple(
     "PayrollRow",
     (
-        (
-            "col_a",
-            "col_b",
-            "col_c",
-            "col_d",
-            "col_e",
-            "employee_no",
-            "col_g",
-            "col_h",
-            "col_i",
-            "col_j",
-            "col_k",
-            "col_l",
-            "col_m",
-            "col_n",
-            "col_o",
-            "col_p",
-            "col_q",
-            "pay_type",
-            "col_s",
-            "debit_amount",
-            "credit_amount",
-        )
+        "employee_no",
+        "first_name",
+        "last_name",
+        "cost_centre",
+        "programme_code",
+        "grade",
+        "assignment_status",
+        "fte",
+        "basic_pay",
+        "ernic",
+        "pension",
     ),
 )
 
 
 @transaction.atomic()
-def import_payroll(
-    hr_csv: File,
-    payroll_csv: File | None,
-    hr_csv_has_header: bool,
-    payroll_csv_has_header: bool,
-) -> str:
-    # payroll_data=[]
-    # payrol_csv_reader= csv.reader((row.decode("utf-8") for row in payroll_csv))
-    # if payroll_csv_has_header:
-    #     next(payrol_csv_reader)
+def import_payroll(payroll_csv: File) -> str:
+    csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
-    # for payroll_row in payrol_csv_reader:
-    #     payroll_data.append(map_payroll(PayrollRow(**payroll_row)))
-
-    hr_csv_reader = csv.reader((row.decode("utf-8") for row in hr_csv))
-
-    if hr_csv_has_header:
-        next(hr_csv_reader)
+    # Skip header row.
+    next(csv_reader)
 
     employees = []
     cost_centres = []
     programme_codes = []
     grades = []
-    for hr_row in hr_csv_reader:
-        employee = hr_row_to_employee(HrRow(*hr_row))
+    for hr_row in csv_reader:
+        employee = hr_row_to_employee(PayrollRow(*hr_row))
         employees.append(employee)
         cost_centres.append(employee["cost_centre"])
         programme_codes.append(employee["programme_code"])
         grades.append(employee["grade"])
-        uniq_cost_centre_codes = set(cost_centres)
-        uniq_grades = set(grades)
-        uniq_programme_codes = set(programme_codes)
+
+    uniq_cost_centre_codes = set(cost_centres)
+    uniq_grades = set(grades)
+    uniq_programme_codes = set(programme_codes)
     cost_centers = {
         centre.cost_centre_code: centre
         for centre in CostCentre.objects.filter(
@@ -163,19 +138,19 @@ def import_payroll(
     return {"failed_records": failed_records, **result}
 
 
-def hr_row_to_employee(hr_row) -> Employee:
+def hr_row_to_employee(hr_row) -> dict[str, object]:
     employee = {
         "employee_no": hr_row.employee_no,
         "first_name": hr_row.first_name,
         "last_name": hr_row.last_name,
-        "cost_centre": hr_row.cost_centre_id,
-        "programme_code": hr_row.programme_code_id,
-        "grade": hr_row.grade_id,
+        "cost_centre": hr_row.cost_centre,
+        "programme_code": hr_row.programme_code,
+        "grade": hr_row.grade,
         "assignment_status": hr_row.assignment_status,
         "fte": hr_row.fte,
-        "basic_pay": random.randint(100000, 999999),
-        "ernic": random.randint(100000, 999999),
-        "pension": random.randint(100000, 999999),
+        "basic_pay": hr_row.basic_pay,
+        "ernic": hr_row.ernic,
+        "pension": hr_row.pension,
         "has_left": False,
     }
     return employee
@@ -218,12 +193,3 @@ def bulk_update_or_create(data):
         Employee.objects.bulk_update(to_update, keys)
 
     return {"created": to_create, "updated": to_update}
-
-
-# def map_payroll(row):
-#     return {
-#         "employee_no":row.employee_no,
-#         "pay_type":row.pay_type,
-#         "debit_amount":row.debit_amount,
-#         "credit_amount":row.credit_amount
-#     }
