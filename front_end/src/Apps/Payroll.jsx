@@ -15,6 +15,7 @@ import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { monthsToTitleCase } from "../Util";
+import { TableTest } from "../Components/TableTest";
 
 const initialPayrollState = {
   employees: [],
@@ -163,6 +164,8 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
+      <TableTest />
+      <br />
       <ForecastTable
         forecast={allPayroll.forecast}
         months={monthsToTitleCase}
