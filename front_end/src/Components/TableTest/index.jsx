@@ -70,7 +70,7 @@ export const TableTest = () => {
   const theme = useTheme(getTheme(DEFAULT_OPTIONS));
 
   const [hiddenColumns, setHiddenColumns] = useState([]);
-  const resize = { resizerHighlight: "#dde2eb", resizerWidth: 25 };
+  const resize = { resizerHighlight: "#dde2eb", resizerWidth: 15 };
 
   const toggleColumn = (column) => {
     if (hiddenColumns.includes(column)) {
@@ -132,7 +132,7 @@ export const TableTest = () => {
             checked={!hiddenColumns.includes("BUDGET_TYPE")}
             onChange={() => toggleColumn("BUDGET_TYPE")}
           />
-          budget type
+          Budget type
         </label>
       </div>
       <Table data={data} theme={theme}>
