@@ -74,6 +74,7 @@ export default function Payroll() {
     try {
       await api.postPayrollData(allPayroll);
       setSaveSuccess(true);
+      setSaveError(false);
       getAllPayroll();
     } catch (error) {
       console.error("Error saving payroll: ", error);
@@ -92,6 +93,12 @@ export default function Payroll() {
 
   function handleUpdatePayModifiers(id, index, value) {
     dispatch({ type: "updatePayModifiers", id, index, value });
+  }
+
+  function handleCreatePayModifiers() {
+    api.createPayModifiers().then((r) => {
+      getAllPayroll();
+    });
   }
 
   function handleHidePreviousMonths() {
@@ -157,6 +164,7 @@ export default function Payroll() {
           <EditPayModifier
             data={allPayroll.pay_modifiers}
             onInputChange={handleUpdatePayModifiers}
+            onCreate={handleCreatePayModifiers}
           />
         </Tab>
       </Tabs>
