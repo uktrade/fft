@@ -24,7 +24,7 @@ export function postPayrollData(payrollData) {
  * Create default pay modifier object
  */
 export function createPayModifiers() {
-  return getData(getPayrollApiUrl() + "pay_modifiers/");
+  return postData(getPayrollApiUrl() + "pay_modifiers/", {});
 }
 
 /**

@@ -360,10 +360,7 @@ def create_default_pay_modifiers(
     )
 
     if not qs.exists():
-        default_modifier = Attrition.objects.create(
-            cost_centre=cost_centre, financial_year=financial_year
-        )
-        Attrition.objects.filter(pk=default_modifier.pk)
+        Attrition.objects.create(cost_centre=cost_centre, financial_year=financial_year)
 
 
 @transaction.atomic

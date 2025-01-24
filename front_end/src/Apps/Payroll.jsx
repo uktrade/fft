@@ -74,6 +74,7 @@ export default function Payroll() {
     try {
       await api.postPayrollData(allPayroll);
       setSaveSuccess(true);
+      setSaveError(false);
       getAllPayroll();
     } catch (error) {
       console.error("Error saving payroll: ", error);
@@ -95,8 +96,9 @@ export default function Payroll() {
   }
 
   function handleCreatePayModifiers() {
-    api.createPayModifiers().then((r) => {
-      getAllPayroll();
+    api.createPayModifiers().then((response) => {
+      console.log(response.data);
+      console.log(allPayroll);
     });
   }
 
