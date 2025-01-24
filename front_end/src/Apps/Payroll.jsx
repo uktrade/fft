@@ -94,6 +94,12 @@ export default function Payroll() {
     dispatch({ type: "updatePayModifiers", id, index, value });
   }
 
+  function handleCreatePayModifiers() {
+    api.createPayModifiers().then((r) => {
+      getAllPayroll();
+    });
+  }
+
   function handleHidePreviousMonths() {
     setShowPreviousMonths(!showPreviousMonths);
 
@@ -157,6 +163,7 @@ export default function Payroll() {
           <EditPayModifier
             data={allPayroll.pay_modifiers}
             onInputChange={handleUpdatePayModifiers}
+            onCreate={handleCreatePayModifiers}
           />
         </Tab>
       </Tabs>

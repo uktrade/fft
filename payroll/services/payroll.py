@@ -350,6 +350,22 @@ def get_pay_modifiers_data(
         yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
 
 
+def create_default_pay_modifiers(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> None:
+    qs = Attrition.objects.filter(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+    )
+
+    if not qs.exists():
+        default_modifier = Attrition.objects.create(
+            cost_centre=cost_centre, financial_year=financial_year
+        )
+        Attrition.objects.filter(pk=default_modifier.pk)
+
+
 @transaction.atomic
 def update_pay_modifiers_data(
     cost_centre: CostCentre,
