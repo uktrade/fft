@@ -93,6 +93,7 @@ class Employee(Position):
     basic_pay = models.BigIntegerField(default=0, db_comment="pence")
     pension = models.BigIntegerField(default=0, db_comment="pence")
     ernic = models.BigIntegerField(default=0, db_comment="pence")
+    has_left = models.BooleanField(default=False)
 
     # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)
@@ -100,7 +101,7 @@ class Employee(Position):
     objects = EmployeeQuerySet.as_manager()
 
     def __str__(self) -> str:
-        return f"{self.employee_no} - {self.first_name} {self.last_name}"
+        return f"{self.id} {self.employee_no} - {self.first_name} {self.last_name}"
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
