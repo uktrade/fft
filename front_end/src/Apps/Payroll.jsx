@@ -96,9 +96,8 @@ export default function Payroll() {
   }
 
   function handleCreatePayModifiers() {
-    api.createPayModifiers().then((response) => {
-      console.log(response.data);
-      console.log(allPayroll);
+    api.createPayModifiers().then((r) => {
+      getAllPayroll();
     });
   }
 

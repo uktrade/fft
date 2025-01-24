@@ -74,11 +74,4 @@ class PayModifiersApiView(EditPayrollBaseView):
             self.financial_year,
         )
 
-        pay_modifiers = list(
-            payroll_service.get_pay_modifiers_data(
-                self.cost_centre,
-                self.financial_year,
-            )
-        )
-
-        return JsonResponse({"pay_modifiers": pay_modifiers})
+        return JsonResponse({})
