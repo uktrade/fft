@@ -19,7 +19,9 @@ class EmployeeAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "cost_centre",
+        "has_left",
     ]
+    list_filter = ["has_left"]
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

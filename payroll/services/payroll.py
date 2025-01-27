@@ -62,6 +62,16 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
+def update_all_employee_pay_periods() -> None:
+    current_financial_year = FinancialYear.objects.current()
+
+    for employee in Employee.objects.iterator():
+        EmployeePayPeriods.objects.get_or_create(
+            employee=employee,
+            year=current_financial_year,
+        )
+
+
 class PayrollForecast(MonthsDict[float]):
     programme_code: str
     natural_account_code: str
@@ -76,8 +86,7 @@ def payroll_forecast_report(
     )
 
     employee_qs = Employee.objects.filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
+        cost_centre=cost_centre, pay_periods__year=financial_year, has_left=False
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
@@ -152,7 +161,11 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
     salaries: list[int] = []
 
     for filter in filters:
-        employee_qs = Employee.objects.payroll().filter(grade=grade).filter(filter)
+        employee_qs = (
+            Employee.objects.payroll()
+            .filter(grade=grade, has_left=False)
+            .filter(filter)
+        )
 
         basic_pay = employee_qs.aggregate(
             count=Count("basic_pay"), avg=Avg("basic_pay")
@@ -198,6 +211,7 @@ def get_payroll_data(
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+            has_left=False,
         )
     )
     for obj in qs:

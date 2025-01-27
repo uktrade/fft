@@ -1,0 +1,56 @@
+{% extends "base_generic.html" %}
+{% load breadcrumbs vite %}
+
+{% block title %}Import payroll{% endblock title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Import payroll" "payroll:import" %}
+{% endblock breadcrumbs %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">Import payroll</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label for="payroll_csv">Payroll CSV file:</label>
+            <input type="file" name="payroll_csv" id="payroll_csv">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <div>
+        <br/><br/>
+        {% if output %}
+            Failing records: {{output.failed|length}} <br/>
+            Inserted records : {{output.created}} <br/>
+            Updated records: {{output.updated}} <br/>
+            Have left records: {{output.have_left}} <br/>
+        {% endif %}
+
+        {% if output.failed %}
+        <h3>Failing records </h3>
+        <table  className="govuk-table finance-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Employee No</td>
+                    <td class="govuk-table__cell">Error</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee_no, errors in output.failed.items %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">{{ employee_no }}</td>
+                        <td class="govuk-table__cell">
+                            <ul style="margin: 0;">{{ errors|unordered_list }}</ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+{% endblock scripts %}
