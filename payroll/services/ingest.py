@@ -10,6 +10,7 @@ from chartofaccountDIT.models import ProgrammeCode
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Employee
+from payroll.services.payroll import update_all_employee_pay_periods
 
 
 PayrollRow = namedtuple(
@@ -50,9 +51,10 @@ row_to_employee_dict: dict[str, Callable[[PayrollRow], object]] = {
 
 
 class ImportPayrollReport(TypedDict):
-    failed_records: list[EmployeeDict]
-    created: list[EmployeeDict]
-    updated: list[EmployeeDict]
+    failed: dict[str, list[str]]
+    created: int
+    updated: int
+    have_left: int
 
 
 @transaction.atomic()
@@ -62,13 +64,12 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     # Skip header row.
     next(csv_reader)
 
-    create: list[Employee] = []
-    update: list[Employee] = []
+    employees: list[Employee] = []
     failed: dict[str, list[str]] = defaultdict(list)
     seen_employee_no_set = set()
 
     # Fetch current data for reference.
-    current_employees = Employee.objects.in_bulk(field_name="employee_no")
+    previous_employees = set(Employee.objects.values_list("employee_no", flat=True))
     cost_centre_codes = set(CostCentre.objects.values_list("pk", flat=True))
     programme_codes = set(ProgrammeCode.objects.values_list("pk", flat=True))
     grades = set(Grade.objects.values_list("pk", flat=True))
@@ -94,27 +95,40 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
             failed[emp_no] += errors
             continue
 
-        employee = Employee(**emp_dict)
-        create.append(employee)
+        employees.append(Employee(**emp_dict))
 
         seen_employee_no_set.add(emp_dict["employee_no"])
 
     # Upsert
     Employee.objects.bulk_create(
-        create,
+        employees,
         unique_fields=["employee_no"],
         update_conflicts=True,
         update_fields=row_to_employee_dict.keys(),
     )
+
+    # Ensure we have pay periods ready.
+    update_all_employee_pay_periods()
+
     # Mark unseen employees as has left.
-    Employee.objects.exclude(employee_no__in=seen_employee_no_set).filter(
-        has_left=False
-    ).update(has_left=True)
+    have_left = (
+        Employee.objects.exclude(employee_no__in=seen_employee_no_set)
+        .filter(has_left=False)
+        .update(has_left=True)
+    )
+
+    created = seen_employee_no_set - previous_employees
+    updated = seen_employee_no_set & previous_employees
 
     # Stop template attr lookup of .items creating an empty list.
     failed.default_factory = None
 
-    return {"failed": failed, "created": create, "updated": update}
+    return {
+        "failed": failed,
+        "created": len(created),
+        "updated": len(updated),
+        "have_left": have_left,
+    }
 
 
 def _csv_row_employee_dict(hr_row) -> EmployeeDict:

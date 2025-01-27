@@ -62,6 +62,16 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
+def update_all_employee_pay_periods() -> None:
+    current_financial_year = FinancialYear.objects.current()
+
+    for employee in Employee.objects.iterator():
+        EmployeePayPeriods.objects.get_or_create(
+            employee=employee,
+            year=current_financial_year,
+        )
+
+
 class PayrollForecast(MonthsDict[float]):
     programme_code: str
     natural_account_code: str
@@ -202,6 +212,7 @@ def get_payroll_data(
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+            has_left=False,
         )
     )
     for obj in qs:

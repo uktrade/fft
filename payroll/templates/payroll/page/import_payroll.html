@@ -21,30 +21,33 @@
     <div>
         <br/><br/>
         {% if output %}
-            Inserted records : {{output.created|length}} <br/>
-            Updated records: {{output.updated|length}} <br/>
             Failing records: {{output.failed|length}} <br/>
+            Inserted records : {{output.created}} <br/>
+            Updated records: {{output.updated}} <br/>
+            Have left records: {{output.have_left}} <br/>
         {% endif %}
 
         {% if output.failed %}
         <h3>Failing records </h3>
         <table  className="govuk-table finance-table">
             <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <td class="govuk-table__cell">Employee No</td>
-                <td class="govuk-table__cell">Error</td>
-              </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">Employee No</td>
+                    <td class="govuk-table__cell">Error</td>
+                </tr>
             </thead>
             <tbody>
-              {% for employee_no, errors in output.failed.items %}
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{ employee_no }}</td>
-                  <td class="govuk-table__cell"><ul style="margin: 0;">{{ errors|unordered_list }}</ul></td>
-                </tr>
-              {% endfor %}
+                {% for employee_no, errors in output.failed.items %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">{{ employee_no }}</td>
+                        <td class="govuk-table__cell">
+                            <ul style="margin: 0;">{{ errors|unordered_list }}</ul>
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
-          </table>
-          {% endif %}
+        </table>
+        {% endif %}
     </div>
 {% endblock content %}
 
