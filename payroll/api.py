@@ -34,8 +34,8 @@ class EditPayrollApiView(EditPayrollBaseView):
             )
         )
         previous_months = list(get_previous_months_data())
-        actuals = list(
-            payroll_service.get_actuals_data(self.cost_centre, self.financial_year)
+        actuals = payroll_service.get_actuals_data(
+            self.cost_centre, self.financial_year
         )
 
         return JsonResponse(

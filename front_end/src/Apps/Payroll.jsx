@@ -69,6 +69,30 @@ export default function Payroll() {
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
+  const forecastAndActuals = useMemo(() => {
+    const total_results = [];
+    for (const item of allPayroll.forecast) {
+      let results = {
+        programme_code: item.programme_code,
+        natural_account_code: item.natural_account_code,
+        actuals_count: 0,
+      };
+      monthsToTitleCase.map((month, index) => {
+        if (allPayroll.previous_months[index].is_actual) {
+          results.actuals_count += 1;
+          // TODO: need to get cost centre somehow
+          results[month] =
+            allPayroll.actuals[
+              `888812-${item.natural_account_code}-${item.programme_code}-${month}`
+            ];
+        } else {
+          results[month] = item[month.toLowerCase()];
+        }
+      });
+      total_results.push(results);
+    }
+    return total_results;
+  }, [allPayroll]);
 
   // Handlers
   async function handleSavePayroll() {
@@ -172,12 +196,7 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
-      <ForecastTable
-        forecast={allPayroll.forecast}
-        actuals={allPayroll.actuals}
-        months={monthsToTitleCase}
-        previousMonths={allPayroll.previous_months}
-      />
+      <ForecastTable forecast={forecastAndActuals} months={monthsToTitleCase} />
     </>
   );
 }

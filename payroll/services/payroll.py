@@ -427,6 +427,8 @@ class Actuals(TypedDict):
     programme_code: int
     amount: float
     month: str
+    # TODO: No idea how to represent dynamic keys as a typedDict
+    # {cost_centre_code}-{nac_code}-{programme_code}-{period}: amount
 
 
 def get_actuals_data(
@@ -451,28 +453,16 @@ def get_actuals_data(
         "financial_code__project_code",
     )
 
-    grouped = defaultdict(lambda: defaultdict(list))
-
+    actuals = {}
     for obj in qs:
-        programme_code = obj.financial_code.programme.programme_code
         nac_code = obj.financial_code.natural_account_code.natural_account_code
-        grouped[programme_code][nac_code].append(
-            {
-                "natural_account_code": nac_code,
-                "programme_code": programme_code,
-                "amount": obj.amount,
-                "month": obj.financial_period.period_short_name,
-            }
-        )
+        programme_code = obj.financial_code.programme.programme_code
+        period = obj.financial_period.period_short_name
 
-    for programme_code, nac_codes in grouped.items():
-        yield {
-            "programme_code": programme_code,
-            "data": [
-                {"natural_account_code": nac_code, "items": items}
-                for nac_code, items in nac_codes.items()
-            ],
-        }
+        key = f"{cost_centre.cost_centre_code}-{nac_code}-{programme_code}-{period}"
+        actuals[key] = obj.amount
+
+    return actuals
 
 
 # Permissions
