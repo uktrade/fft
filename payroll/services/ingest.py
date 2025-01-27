@@ -1,6 +1,7 @@
 import csv
-from collections import namedtuple
-from typing import TypedDict
+from collections import defaultdict, namedtuple
+from typing import Callable, TypedDict
+from operator import attrgetter
 
 from django.core.files import File
 from django.db import transaction
@@ -32,6 +33,22 @@ PayrollRow = namedtuple(
 EmployeeDict = dict[str, object]
 
 
+row_to_employee_dict: dict[str, Callable[[PayrollRow], object]] = {
+    "employee_no": attrgetter("employee_no"),
+    "first_name": attrgetter("first_name"),
+    "last_name": attrgetter("last_name"),
+    "cost_centre_id": attrgetter("cost_centre"),
+    "programme_code_id": attrgetter("programme_code"),
+    "grade_id": attrgetter("grade"),
+    "assignment_status": attrgetter("assignment_status"),
+    "fte": attrgetter("fte"),
+    "basic_pay": attrgetter("basic_pay"),
+    "ernic": attrgetter("ernic"),
+    "pension": attrgetter("pension"),
+    "has_left": lambda _: False,
+}
+
+
 class ImportPayrollReport(TypedDict):
     failed_records: list[EmployeeDict]
     created: list[EmployeeDict]
@@ -45,122 +62,60 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     # Skip header row.
     next(csv_reader)
 
-    employees = []
-    cost_centres = []
-    programme_codes = []
-    grades = []
+    create: list[Employee] = []
+    update: list[Employee] = []
+    failed: dict[str, list[str]] = defaultdict(list)
+    seen_employee_no_set = set()
+
+    # Fetch current data for reference.
+    current_employees = Employee.objects.in_bulk(field_name="employee_no")
+    cost_centre_codes = set(CostCentre.objects.values_list("pk", flat=True))
+    programme_codes = set(ProgrammeCode.objects.values_list("pk", flat=True))
+    grades = set(Grade.objects.values_list("pk", flat=True))
 
     for row in csv_reader:
-        employee = csv_row_employee_dict(PayrollRow(*row))
+        emp_dict = _csv_row_employee_dict(PayrollRow(*row))
+        emp_no = emp_dict["employee_no"]
 
-        employees.append(employee)
-        cost_centres.append(employee["cost_centre"])
-        programme_codes.append(employee["programme_code"])
-        grades.append(employee["grade"])
-
-    uniq_cost_centre_codes = set(cost_centres)
-    uniq_grades = set(grades)
-    uniq_programme_codes = set(programme_codes)
-
-    cost_centers = {
-        centre.cost_centre_code: centre
-        for centre in CostCentre.objects.filter(
-            cost_centre_code__in=uniq_cost_centre_codes
-        )
-    }
-    cost_center_codes = [centre.cost_centre_code for centre in cost_centers.values()]
-
-    programme_codes = {
-        code.programme_code: code
-        for code in ProgrammeCode.objects.filter(
-            programme_code__in=uniq_programme_codes
-        )
-    }
-    existing_programme_codes = [
-        code.programme_code for code in programme_codes.values()
-    ]
-
-    grades = {
-        grade.grade: grade for grade in Grade.objects.filter(grade__in=uniq_grades)
-    }
-    existing_grades = [grade.grade for grade in grades.values()]
-
-    clean_records = []
-    failed_records = []
-
-    for emp in employees:
         errors = []
-        if emp["cost_centre"] not in cost_center_codes:
-            errors.append(f"Cost centre '{emp["cost_centre"]}' doesn't exists")
-        if emp["programme_code"] not in existing_programme_codes:
-            errors.append(f"Programme code '{emp["programme_code"]}' doesn't exists")
-        if emp["grade"] not in existing_grades:
-            errors.append(f"Grade '{emp["grade"]}' doesn't exists")
+
+        if emp_dict["cost_centre_id"] not in cost_centre_codes:
+            errors.append(f"Cost centre '{emp_dict["cost_centre_id"]}' doesn't exists")
+
+        if emp_dict["programme_code_id"] not in programme_codes:
+            errors.append(
+                f"Programme code '{emp_dict["programme_code_id"]}' doesn't exists"
+            )
+
+        if emp_dict["grade_id"] not in grades:
+            errors.append(f"Grade '{emp_dict["grade_id"]}' doesn't exists")
+
         if errors:
-            emp["errors"] = errors
-            failed_records.append(emp)
-        else:
-            emp["cost_centre"] = cost_centers[emp["cost_centre"]]
-            emp["programme_code"] = programme_codes[emp["programme_code"]]
-            emp["grade"] = grades[emp["grade"]]
-            clean_records.append(emp)
-    result = save_data(clean_records)
+            failed[emp_no] += errors
+            continue
 
-    return {"failed_records": failed_records, **result}
+        employee = Employee(**emp_dict)
+        create.append(employee)
 
+        seen_employee_no_set.add(emp_dict["employee_no"])
 
-def csv_row_employee_dict(hr_row) -> EmployeeDict:
-    employee = {
-        "employee_no": hr_row.employee_no,
-        "first_name": hr_row.first_name,
-        "last_name": hr_row.last_name,
-        "cost_centre": hr_row.cost_centre,
-        "programme_code": hr_row.programme_code,
-        "grade": hr_row.grade,
-        "assignment_status": hr_row.assignment_status,
-        "fte": hr_row.fte,
-        "basic_pay": hr_row.basic_pay,
-        "ernic": hr_row.ernic,
-        "pension": hr_row.pension,
-        "has_left": False,
-    }
-    return employee
-
-
-def save_data(csv_data):
-    emp_nos = {employee["employee_no"] for employee in csv_data}
-    Employee.objects.exclude(employee_no__in=emp_nos).filter(has_left=False).update(
-        has_left=True
+    # Upsert
+    Employee.objects.bulk_create(
+        create,
+        unique_fields=["employee_no"],
+        update_conflicts=True,
+        update_fields=row_to_employee_dict.keys(),
     )
-    return bulk_update_or_create(csv_data)
+    # Mark unseen employees as has left.
+    Employee.objects.exclude(employee_no__in=seen_employee_no_set).filter(
+        has_left=False
+    ).update(has_left=True)
+
+    # Stop template attr lookup of .items creating an empty list.
+    failed.default_factory = None
+
+    return {"failed": failed, "created": create, "updated": update}
 
 
-def bulk_update_or_create(data):
-    if data:
-        keys = list(data[0].keys())
-    existing_ids = {
-        emp.employee_no: emp.id
-        for emp in Employee.objects.filter(
-            employee_no__in=[emp["employee_no"] for emp in data]
-        )
-    }
-    to_update = []
-    to_create = []
-
-    for item in data:
-        emp = Employee(**item)
-        for key in keys:
-            setattr(emp, key, item[key])
-
-        if item["employee_no"] in existing_ids:
-            emp.id = existing_ids[item["employee_no"]]
-            to_update.append(emp)
-        else:
-            to_create.append(emp)
-
-    if to_create:
-        Employee.objects.bulk_create(to_create)
-    if to_update:
-        Employee.objects.bulk_update(to_update, keys)
-
-    return {"created": to_create, "updated": to_update}
+def _csv_row_employee_dict(hr_row) -> EmployeeDict:
+    return {x: y(hr_row) for x, y in row_to_employee_dict.items()}
