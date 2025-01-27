@@ -1,8 +1,18 @@
 import { monthsToTitleCase } from "../../../Util";
 
-const EditPayModifier = ({ data, onInputChange }) => {
+const EditPayModifier = ({ data, onInputChange, onCreate }) => {
   if (data.length === 0) {
-    return <p className="govuk-body">No modifiers set</p>;
+    return (
+      <>
+        <p className="govuk-body">No modifiers set</p>
+        <button
+          className="govuk-button govuk-button--secondary"
+          onClick={onCreate}
+        >
+          Add Attrition
+        </button>
+      </>
+    );
   }
 
   return data.map((row, index) => (

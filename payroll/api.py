@@ -65,3 +65,13 @@ class EditPayrollApiView(EditPayrollBaseView):
         )
 
         return JsonResponse({})
+
+
+class PayModifiersApiView(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        payroll_service.create_default_pay_modifiers(
+            self.cost_centre,
+            self.financial_year,
+        )
+
+        return JsonResponse({})
