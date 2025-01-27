@@ -1,7 +1,7 @@
 import csv
 from collections import defaultdict, namedtuple
-from typing import Callable, TypedDict
 from operator import attrgetter
+from typing import Callable, TypedDict
 
 from django.core.files import File
 from django.db import transaction

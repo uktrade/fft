@@ -101,7 +101,7 @@ class Employee(Position):
     objects = EmployeeQuerySet.as_manager()
 
     def __str__(self) -> str:
-        return f"{self.id} {self.employee_no} - {self.first_name} {self.last_name}"
+        return f"{self.employee_no} - {self.first_name} {self.last_name}"
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"

@@ -163,9 +163,8 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
     for filter in filters:
         employee_qs = (
             Employee.objects.payroll()
-            .filter(grade=grade)
+            .filter(grade=grade, has_left=False)
             .filter(filter)
-            .filter(has_left=False)
         )
 
         basic_pay = employee_qs.aggregate(
