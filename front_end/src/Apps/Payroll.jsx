@@ -14,7 +14,7 @@ import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
-import { monthsToTitleCase } from "../Util";
+import { makeFinancialCodeKey, monthsToTitleCase } from "../Util";
 
 const initialPayrollState = {
   employees: [],
@@ -24,6 +24,8 @@ const initialPayrollState = {
   previous_months: [],
   actuals: [],
 };
+const costCentreCode = window.costCentreCode;
+const financialYear = window.financialYear;
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -80,11 +82,13 @@ export default function Payroll() {
       monthsToTitleCase.map((month, index) => {
         if (allPayroll.previous_months[index].is_actual) {
           results.actuals_count += 1;
-          // TODO: need to get cost centre somehow
-          results[month] =
-            allPayroll.actuals[
-              `888812-${item.natural_account_code}-${item.programme_code}-${month}`
-            ];
+          const financialCodeKey = makeFinancialCodeKey(
+            costCentreCode,
+            item.natural_account_code,
+            item.programme_code,
+            { year: financialYear, period: index + 1 },
+          );
+          results[month] = allPayroll.actuals[financialCodeKey];
         } else {
           results[month] = item[month.toLowerCase()];
         }

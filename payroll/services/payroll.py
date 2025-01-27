@@ -421,20 +421,10 @@ def update_pay_modifiers_data(
         attrition.save()
 
 
-class Actuals(TypedDict):
-    id: int
-    natural_account_code: int
-    programme_code: int
-    amount: float
-    month: str
-    # TODO: No idea how to represent dynamic keys as a typedDict
-    # {cost_centre_code}-{nac_code}-{programme_code}-{period}: amount
-
-
 def get_actuals_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
-) -> Iterator[Actuals]:
+) -> dict[str, int]:
     nac_codes = [
         settings.PAYROLL.BASIC_PAY_NAC,
         settings.PAYROLL.PENSION_NAC,
@@ -454,12 +444,12 @@ def get_actuals_data(
     )
 
     actuals = {}
-    for obj in qs:
-        nac_code = obj.financial_code.natural_account_code.natural_account_code
-        programme_code = obj.financial_code.programme.programme_code
-        period = obj.financial_period.period_short_name
 
-        key = f"{cost_centre.cost_centre_code}-{nac_code}-{programme_code}-{period}"
+    for obj in qs:
+        key = obj.financial_code.as_key(
+            year=obj.financial_year_id,
+            period=obj.financial_period_id,
+        )
         actuals[key] = obj.amount
 
     return actuals

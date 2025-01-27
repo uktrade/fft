@@ -465,6 +465,43 @@ class FinancialCode(FinancialCodeAbstract, BaseModel):
         null=True,
     )
 
+    def as_key(self, **kwargs) -> str:
+        return self.build_str_key(
+            self.cost_centre_id,
+            self.natural_account_code_id,
+            self.programme_id,
+            self.analysis1_code_id,
+            self.analysis2_code_id,
+            self.project_code_id,
+            **kwargs,
+        )
+
+    @staticmethod
+    def build_str_key(
+        cost_centre_code: str,
+        nac: str,
+        programme: str,
+        analysis1: str | None = None,
+        analysis2: str | None = None,
+        project: str | None = None,
+        year: str | int | None = None,
+        period: str | int | None = None,
+        separator="/",
+    ) -> str:
+        return separator.join(
+            str(x) if x is not None else ""
+            for x in [
+                cost_centre_code,
+                nac,
+                programme,
+                analysis1,
+                analysis2,
+                project,
+                year,
+                period,
+            ]
+        )
+
     def human_readable_format(self):
         cost_centre = (
             f"(Cost Centre: {self.cost_centre.cost_centre_code}"
