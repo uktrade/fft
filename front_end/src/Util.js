@@ -168,9 +168,11 @@ export const processForecastData = (
       "",
       rowData.programme,
       rowData.natural_account_code,
-      rowData.analysis1_code,
-      rowData.analysis2_code,
-      rowData.project_code,
+      {
+        analysis1: rowData.analysis1_code,
+        analysis2: rowData.analysis2_code,
+        project: rowData.project_code,
+      },
     );
 
     // eslint-disable-next-line
@@ -230,7 +232,7 @@ export const makeFinancialCodeKey = (
     year = null,
     period = null,
     separator = "/",
-  },
+  } = {},
 ) => {
   return [
     costCentre,

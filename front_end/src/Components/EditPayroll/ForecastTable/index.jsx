@@ -17,8 +17,12 @@ export default function ForecastTable({ forecast, months }) {
               </th>
               {months.map((month) => {
                 return (
-                  <th scope="col" className="govuk-table__header" key={month}>
-                    {month}
+                  <th
+                    scope="col"
+                    className="govuk-table__header"
+                    key={month.key}
+                  >
+                    {month.short_name}
                   </th>
                 );
               })}
@@ -34,15 +38,14 @@ export default function ForecastTable({ forecast, months }) {
                   <th scope="row" className="govuk-table__header">
                     {row.natural_account_code}
                   </th>
-                  {months.map((month, index) => {
-                    const isActualClass =
-                      index < row.actuals_count ? "not-editable" : "";
+                  {months.map((month) => {
+                    const isActualClass = month.is_actual ? "not-editable" : "";
                     return (
                       <td
                         className={`govuk-table__cell ${isActualClass}`}
-                        key={month}
+                        key={month.key}
                       >
-                        £{formatMoney(row[month])}
+                        £{formatMoney(row[month.key])}
                       </td>
                     );
                   })}

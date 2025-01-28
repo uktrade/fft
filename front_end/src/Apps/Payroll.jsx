@@ -14,13 +14,14 @@ import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
-import { makeFinancialCodeKey, monthsToTitleCase } from "../Util";
+import { makeFinancialCodeKey } from "../Util";
 
 const initialPayrollState = {
   employees: [],
   vacancies: [],
   pay_modifiers: [],
   forecast: [],
+  // TODO: Rename as this covers all months not only previous.
   previous_months: [],
   actuals: [],
 };
@@ -71,30 +72,33 @@ export default function Payroll() {
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
+
   const forecastAndActuals = useMemo(() => {
     const total_results = [];
+
     for (const item of allPayroll.forecast) {
       let results = {
         programme_code: item.programme_code,
         natural_account_code: item.natural_account_code,
-        actuals_count: 0,
       };
-      monthsToTitleCase.map((month, index) => {
-        if (allPayroll.previous_months[index].is_actual) {
-          results.actuals_count += 1;
+
+      allPayroll.previous_months.map((month) => {
+        if (month.is_actual) {
           const financialCodeKey = makeFinancialCodeKey(
             costCentreCode,
             item.natural_account_code,
             item.programme_code,
-            { year: financialYear, period: index + 1 },
+            { year: financialYear, period: month.index },
           );
-          results[month] = allPayroll.actuals[financialCodeKey];
+          results[month.key] = allPayroll.actuals[financialCodeKey];
         } else {
-          results[month] = item[month.toLowerCase()];
+          results[month.key] = item[month.key];
         }
       });
+
       total_results.push(results);
     }
+
     return total_results;
   }, [allPayroll]);
 
@@ -200,7 +204,10 @@ export default function Payroll() {
       <button className="govuk-button" onClick={handleSavePayroll}>
         Save payroll
       </button>
-      <ForecastTable forecast={forecastAndActuals} months={monthsToTitleCase} />
+      <ForecastTable
+        forecast={forecastAndActuals}
+        months={allPayroll.previous_months}
+      />
     </>
   );
 }

@@ -466,6 +466,10 @@ class FinancialCode(FinancialCodeAbstract, BaseModel):
     )
 
     def as_key(self, **kwargs) -> str:
+        """Return as a key suitable for frontend use.
+
+        See `build_str_key` static method for examples.
+        """
         return self.build_str_key(
             self.cost_centre_id,
             self.natural_account_code_id,
@@ -488,6 +492,17 @@ class FinancialCode(FinancialCodeAbstract, BaseModel):
         period: str | int | None = None,
         separator="/",
     ) -> str:
+        """Return a key suitable for frontend use.
+
+        Mirrored by the javascript function `makeFinancialCodeKey`.
+
+        Examples:
+            With all arguments:
+            "888812/71111001/338887/1234/5678/0001/2024/02"
+
+            With minimal arguments:
+            "888812/71111001/338887/////"
+        """
         return separator.join(
             str(x) if x is not None else ""
             for x in [
