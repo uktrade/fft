@@ -17,7 +17,7 @@ from user.models import User
         (["Finance Administrator", "Payroll Admin"], 200),
     ],
 )
-def test_access_to_edit_payroll(client, user, group_names, status_code):
+def test_access_to_edit_payroll(db, client, user, group_names, status_code):
     call_command("manage_groups")
 
     FinancialYearFactory.create(financial_year=2024)
