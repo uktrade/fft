@@ -19,25 +19,24 @@ from ..factories import (
 )
 
 
-def assert_report_results_with_modifiers(report, nacs, es, ep, modifiers=None):
+# NOTE: These must match the PAYROLL.BASIC_PAY_NAC and PAYROLL.PENSION_NAC settings.
+SALARY_NAC = "71111001"
+PENSION_NAC = "71111002"
+NACS = [SALARY_NAC, PENSION_NAC]
+
+
+def assert_report_results_with_modifiers(report, es, ep, modifiers=None):
     if modifiers is None:
         modifiers = {}
 
-    for nac in nacs:
+    for nac in NACS:
         for month in MONTHS:
             modifier = modifiers.get(month, 1)
-            print(month, modifier)
-            expected_result = es if nac == nacs[0] else ep
-            if modifier != 1:
-                expected_result *= modifier
+            expected_result = (es if nac == NACS[0] else ep) * modifier
             assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
 def test_payroll_forecast(db):
-    # NOTE: These must match the PAYROLL.BASIC_PAY_NAC and PAYROLL.PENSION_NAC settings.
-    SALARY_NAC = "71111001"
-    PENSION_NAC = "71111002"
-
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -111,9 +110,6 @@ def test_payroll_forecast(db):
 
 
 def test_one_employee_with_no_modifiers(db):
-    SALARY_NAC = "71111001"
-    PENSION_NAC = "71111002"
-
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -134,15 +130,10 @@ def test_one_employee_with_no_modifiers(db):
     e1s = ((2000 - 100) + (100 - 50)) * 100
     e1p = (75.5 - 0) * 100
 
-    assert_report_results_with_modifiers(
-        report_by_nac, [SALARY_NAC, PENSION_NAC], e1s, e1p
-    )
+    assert_report_results_with_modifiers(report_by_nac, e1s, e1p)
 
 
 def test_one_employee_with_pay_uplift(db):
-    SALARY_NAC = "71111001"
-    PENSION_NAC = "71111002"
-
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -170,7 +161,6 @@ def test_one_employee_with_pay_uplift(db):
 
     assert_report_results_with_modifiers(
         report_by_nac,
-        [SALARY_NAC, PENSION_NAC],
         e1s,
         e1p,
         modifiers={"aug": pay_uplift.aug},
@@ -178,9 +168,6 @@ def test_one_employee_with_pay_uplift(db):
 
 
 def test_one_employee_with_attrition(db):
-    SALARY_NAC = "71111001"
-    PENSION_NAC = "71111002"
-
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -210,7 +197,6 @@ def test_one_employee_with_attrition(db):
 
     assert_report_results_with_modifiers(
         report_by_nac,
-        [SALARY_NAC, PENSION_NAC],
         e1s,
         e1p,
         modifiers={
