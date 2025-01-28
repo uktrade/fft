@@ -111,9 +111,10 @@ def log_object_change(
 
 
 class PreviousMonths(TypedDict):
-    month_short_name = str
-    month_index = int
-    is_actual = bool
+    key: str
+    index: int
+    short_name: str
+    is_actual: bool
 
 
 def get_previous_months_data() -> Iterator[PreviousMonths]:
@@ -124,7 +125,8 @@ def get_previous_months_data() -> Iterator[PreviousMonths]:
     )
     for obj in qs:
         yield PreviousMonths(
-            month_short_name=obj.period_short_name,
-            month_index=obj.financial_period_code,
+            key=obj.period_short_name.lower(),
+            index=obj.financial_period_code,
+            short_name=obj.period_short_name,
             is_actual=obj.actual_loaded,
         )

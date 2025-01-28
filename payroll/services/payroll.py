@@ -14,6 +14,7 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
+from forecast.models import ForecastMonthlyFigure
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -418,6 +419,40 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+def get_actuals_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> dict[str, int]:
+    nac_codes = [
+        settings.PAYROLL.BASIC_PAY_NAC,
+        settings.PAYROLL.PENSION_NAC,
+        settings.PAYROLL.ERNIC_NAC,
+    ]
+
+    qs = ForecastMonthlyFigure.objects.filter(
+        financial_year=financial_year,
+        financial_code__cost_centre=cost_centre,
+        financial_code__natural_account_code__natural_account_code__in=nac_codes,
+        financial_code__project_code__isnull=True,
+        archived_status__isnull=True,
+    ).select_related(
+        "financial_code__cost_centre",
+        "financial_code__natural_account_code",
+        "financial_code__project_code",
+    )
+
+    actuals = {}
+
+    for obj in qs:
+        key = obj.financial_code.as_key(
+            year=obj.financial_year_id,
+            period=obj.financial_period_id,
+        )
+        actuals[key] = obj.amount
+
+    return actuals
 
 
 # Permissions
