@@ -2,6 +2,7 @@ from statistics import mean
 
 import pytest
 
+from core.constants import MONTHS
 from core.models import FinancialYear
 from costcentre.test.factories import CostCentreFactory
 from payroll.services.payroll import (
@@ -10,7 +11,26 @@ from payroll.services.payroll import (
     vacancy_created,
 )
 
-from ..factories import EmployeeFactory, VacancyFactory
+from ..factories import (
+    AttritionFactory,
+    EmployeeFactory,
+    PayUpliftFactory,
+    VacancyFactory,
+)
+
+
+def assert_report_results_with_modifiers(report, nacs, es, ep, modifiers=None):
+    if modifiers is None:
+        modifiers = {}
+
+    for nac in nacs:
+        for month in MONTHS:
+            modifier = modifiers.get(month, 1)
+            print(month, modifier)
+            expected_result = es if nac == nacs[0] else ep
+            if modifier != 1:
+                expected_result *= modifier
+            assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
 def test_payroll_forecast(db):
@@ -19,22 +39,6 @@ def test_payroll_forecast(db):
     PENSION_NAC = "71111002"
 
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
-
-    # salary_1 = PayElementTypeFactory.create(
-    #     name="Salary 1",
-    #     group__name="Salary",
-    #     group__natural_code__natural_account_code=SALARY_NAC,
-    # )
-    # salary_2 = PayElementTypeFactory.create(
-    #     name="Salary 2",
-    #     group__name="Salary",
-    #     group__natural_code__natural_account_code=SALARY_NAC,
-    # )
-    # pension_1 = PayElementTypeFactory.create(
-    #     name="Pension 1",
-    #     group__name="Pension",
-    #     group__natural_code__natural_account_code=PENSION_NAC,
-    # )
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -63,38 +67,6 @@ def test_payroll_forecast(db):
     # TODO: Consider an ergonomic way of avoiding this pattern all the time.
     employee_created(payroll_employee_1)
     employee_created(payroll_employee_2)
-
-    # payroll_employees[0].pay_element.create(
-    #     type=salary_1,
-    #     debit_amount=2000,
-    #     credit_amount=100,
-    # )
-    # payroll_employees[0].pay_element.create(
-    #     type=salary_2,
-    #     debit_amount=100,
-    #     credit_amount=50,
-    # )
-    # payroll_employees[0].pay_element.create(
-    #     type=pension_1,
-    #     debit_amount=75.5,
-    #     credit_amount=0,
-    # )
-
-    # payroll_employees[1].pay_element.create(
-    #     type=salary_1,
-    #     debit_amount=1500,
-    #     credit_amount=55.6,
-    # )
-    # payroll_employees[1].pay_element.create(
-    #     type=salary_2,
-    #     debit_amount=80,
-    #     credit_amount=0,
-    # )
-    # payroll_employees[1].pay_element.create(
-    #     type=pension_1,
-    #     debit_amount=130.25,
-    #     credit_amount=15,
-    # )
 
     vacancy = VacancyFactory.create(
         cost_centre=cost_centre,
@@ -136,3 +108,119 @@ def test_payroll_forecast(db):
     assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(e1p)
     assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(v1s)
     assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
+
+
+def test_one_employee_with_no_modifiers(db):
+    SALARY_NAC = "71111001"
+    PENSION_NAC = "71111002"
+
+    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+
+    payroll_employee_1 = EmployeeFactory.create(
+        cost_centre=cost_centre,
+        basic_pay=195000,
+        pension=7550,
+        ernic=0,
+    )
+
+    employee_created(payroll_employee_1)
+
+    financial_year = FinancialYear.objects.current()
+
+    report = payroll_forecast_report(cost_centre, financial_year)
+
+    report_by_nac = {x["natural_account_code"]: x for x in report}
+
+    e1s = ((2000 - 100) + (100 - 50)) * 100
+    e1p = (75.5 - 0) * 100
+
+    assert_report_results_with_modifiers(
+        report_by_nac, [SALARY_NAC, PENSION_NAC], e1s, e1p
+    )
+
+
+def test_one_employee_with_pay_uplift(db):
+    SALARY_NAC = "71111001"
+    PENSION_NAC = "71111002"
+
+    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+
+    payroll_employee_1 = EmployeeFactory.create(
+        cost_centre=cost_centre,
+        basic_pay=195000,
+        pension=7550,
+        ernic=0,
+    )
+
+    employee_created(payroll_employee_1)
+
+    financial_year = FinancialYear.objects.current()
+
+    pay_uplift = PayUpliftFactory.create(
+        financial_year=financial_year,
+        aug=1.02,
+    )
+
+    report = payroll_forecast_report(cost_centre, financial_year)
+
+    report_by_nac = {x["natural_account_code"]: x for x in report}
+
+    e1s = ((2000 - 100) + (100 - 50)) * 100
+    e1p = (75.5 - 0) * 100
+
+    assert_report_results_with_modifiers(
+        report_by_nac,
+        [SALARY_NAC, PENSION_NAC],
+        e1s,
+        e1p,
+        modifiers={"aug": pay_uplift.aug},
+    )
+
+
+def test_one_employee_with_attrition(db):
+    SALARY_NAC = "71111001"
+    PENSION_NAC = "71111002"
+
+    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+
+    payroll_employee_1 = EmployeeFactory.create(
+        cost_centre=cost_centre,
+        basic_pay=195000,
+        pension=7550,
+        ernic=0,
+    )
+
+    employee_created(payroll_employee_1)
+
+    financial_year = FinancialYear.objects.current()
+
+    attrition = AttritionFactory.create(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+        aug=0.95,
+    )
+    modifier = attrition.aug
+
+    report = payroll_forecast_report(cost_centre, financial_year)
+
+    report_by_nac = {x["natural_account_code"]: x for x in report}
+
+    e1s = ((2000 - 100) + (100 - 50)) * 100
+    e1p = (75.5 - 0) * 100
+
+    assert_report_results_with_modifiers(
+        report_by_nac,
+        [SALARY_NAC, PENSION_NAC],
+        e1s,
+        e1p,
+        modifiers={
+            "aug": modifier,
+            "sep": modifier,
+            "oct": modifier,
+            "nov": modifier,
+            "dec": modifier,
+            "jan": modifier,
+            "feb": modifier,
+            "mar": modifier,
+        },
+    )
