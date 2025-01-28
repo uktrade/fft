@@ -25,14 +25,14 @@ PENSION_NAC = "71111002"
 NACS = [SALARY_NAC, PENSION_NAC]
 
 
-def assert_report_results_with_modifiers(report, es, ep, modifiers=None):
+def assert_report_results_with_modifiers(report, salary, pension, modifiers=None):
     if modifiers is None:
         modifiers = {}
 
     for nac in NACS:
         for month in MONTHS:
             modifier = modifiers.get(month, 1)
-            expected_result = (es if nac == NACS[0] else ep) * modifier
+            expected_result = (salary if nac == SALARY_NAC else pension) * modifier
             assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
