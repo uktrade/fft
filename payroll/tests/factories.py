@@ -3,6 +3,8 @@ import factory.fuzzy
 from faker import Faker
 
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
+from core.models import Attrition, PayUplift
+from core.test.factories import FinancialYearFactory
 from costcentre.test.factories import CostCentreFactory
 from gifthospitality.test.factories import GradeFactory
 from payroll.models import Employee, PayElementType, PayElementTypeGroup, Vacancy
@@ -63,3 +65,31 @@ class VacancyFactory(factory.django.DjangoModelFactory):
     appointee_name = factory.Faker("name")
     hiring_manager = factory.Faker("name")
     hr_ref = factory.Faker("name")
+
+
+class PayModifierFactory(factory.django.DjangoModelFactory):
+    financial_year = factory.SubFactory(FinancialYearFactory)
+    apr = 1.0
+    may = 1.0
+    jun = 1.0
+    jul = 1.0
+    aug = 1.0
+    sep = 1.0
+    oct = 1.0
+    nov = 1.0
+    dec = 1.0
+    jan = 1.0
+    feb = 1.0
+    mar = 1.0
+
+
+class PayUpliftFactory(PayModifierFactory):
+    class Meta:
+        model = PayUplift
+
+
+class AttritionFactory(PayModifierFactory):
+    class Meta:
+        model = Attrition
+
+    cost_centre = factory.SubFactory(CostCentreFactory)
