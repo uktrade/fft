@@ -99,10 +99,10 @@ def payroll_forecast_report(
         periods = employee.pay_periods.first().periods
         periods = np.array(periods)
 
-        periods = periods * pay_uplift * attrition_accumulate
-
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += (
+            periods * employee.basic_pay * pay_uplift * attrition_accumulate
+        )
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 

@@ -19,20 +19,27 @@ from ..factories import (
 )
 
 
-# NOTE: These must match the PAYROLL.BASIC_PAY_NAC and PAYROLL.PENSION_NAC settings.
+# NOTE: These must match the PAYROLL.BASIC_PAY_NAC, PAYROLL.PENSION_NAC and PAYROLL.ERNIC_NAC settings.
 SALARY_NAC = "71111001"
 PENSION_NAC = "71111002"
-NACS = [SALARY_NAC, PENSION_NAC]
+ERNIC_NAC = "71111003"
+NACS = [SALARY_NAC, PENSION_NAC, ERNIC_NAC]
 
 
-def assert_report_results_with_modifiers(report, salary, pension, modifiers=None):
+def assert_report_results_with_modifiers(
+    report, salary, pension, ernic, modifiers=None
+):
     if modifiers is None:
         modifiers = {}
 
     for nac in NACS:
         for month in MONTHS:
             modifier = modifiers.get(month, 1)
-            expected_result = (salary if nac == SALARY_NAC else pension) * modifier
+            expected_result = (
+                salary * modifier
+                if nac == SALARY_NAC
+                else (pension if nac == PENSION_NAC else ernic)
+            )
             assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
@@ -116,7 +123,7 @@ def test_one_employee_with_no_modifiers(db):
         cost_centre=cost_centre,
         basic_pay=195000,
         pension=7550,
-        ernic=0,
+        ernic=2000,
     )
 
     employee_created(payroll_employee_1)
@@ -129,8 +136,9 @@ def test_one_employee_with_no_modifiers(db):
 
     e1s = ((2000 - 100) + (100 - 50)) * 100
     e1p = (75.5 - 0) * 100
+    e1e = payroll_employee_1.ernic
 
-    assert_report_results_with_modifiers(report_by_nac, e1s, e1p)
+    assert_report_results_with_modifiers(report_by_nac, e1s, e1p, e1e)
 
 
 def test_one_employee_with_pay_uplift(db):
@@ -140,7 +148,7 @@ def test_one_employee_with_pay_uplift(db):
         cost_centre=cost_centre,
         basic_pay=195000,
         pension=7550,
-        ernic=0,
+        ernic=2000,
     )
 
     employee_created(payroll_employee_1)
@@ -158,11 +166,13 @@ def test_one_employee_with_pay_uplift(db):
 
     e1s = ((2000 - 100) + (100 - 50)) * 100
     e1p = (75.5 - 0) * 100
+    e1e = payroll_employee_1.ernic
 
     assert_report_results_with_modifiers(
         report_by_nac,
         e1s,
         e1p,
+        e1e,
         modifiers={"aug": pay_uplift.aug},
     )
 
@@ -174,7 +184,7 @@ def test_one_employee_with_attrition(db):
         cost_centre=cost_centre,
         basic_pay=195000,
         pension=7550,
-        ernic=0,
+        ernic=2000,
     )
 
     employee_created(payroll_employee_1)
@@ -194,11 +204,13 @@ def test_one_employee_with_attrition(db):
 
     e1s = ((2000 - 100) + (100 - 50)) * 100
     e1p = (75.5 - 0) * 100
+    e1e = payroll_employee_1.ernic
 
     assert_report_results_with_modifiers(
         report_by_nac,
         e1s,
         e1p,
+        e1e,
         modifiers={
             "aug": modifier,
             "sep": modifier,
