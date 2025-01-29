@@ -165,11 +165,14 @@ export const processForecastData = (
     }
 
     const forecastKey = makeFinancialCodeKey(
+      "",
       rowData.programme,
       rowData.natural_account_code,
-      rowData.analysis1_code,
-      rowData.analysis2_code,
-      rowData.project_code,
+      {
+        analysis1: rowData.analysis1_code,
+        analysis2: rowData.analysis2_code,
+        project: rowData.project_code,
+      },
     );
 
     // eslint-disable-next-line
@@ -207,6 +210,7 @@ const processPayrollData = (payrollData) => {
 
   for (const [key, value] of Object.entries(payrollData)) {
     const generatedKey = makeFinancialCodeKey(
+      "",
       value.programme_code,
       value.natural_account_code,
     );
@@ -217,14 +221,29 @@ const processPayrollData = (payrollData) => {
   return results;
 };
 
-const makeFinancialCodeKey = (
+export const makeFinancialCodeKey = (
+  costCentre,
   programme,
   nac,
-  analysis1 = null,
-  analysis2 = null,
-  project = null,
+  {
+    analysis1 = null,
+    analysis2 = null,
+    project = null,
+    year = null,
+    period = null,
+    separator = "/",
+  } = {},
 ) => {
-  return `${programme}/${nac}/${analysis1}/${analysis2}/${project}`;
+  return [
+    costCentre,
+    programme,
+    nac,
+    analysis1,
+    analysis2,
+    project,
+    year,
+    period,
+  ].join(separator);
 };
 
 /**

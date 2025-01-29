@@ -14,15 +14,19 @@ import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
-import { monthsToTitleCase } from "../Util";
+import { makeFinancialCodeKey } from "../Util";
 
 const initialPayrollState = {
   employees: [],
   vacancies: [],
   pay_modifiers: [],
   forecast: [],
+  // TODO: Rename as this covers all months not only previous.
   previous_months: [],
+  actuals: [],
 };
+const costCentreCode = window.costCentreCode;
+const financialYear = window.financialYear;
 
 export default function Payroll() {
   const [allPayroll, dispatch] = useReducer(
@@ -68,6 +72,35 @@ export default function Payroll() {
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
+
+  const forecastAndActuals = useMemo(() => {
+    const total_results = [];
+
+    for (const item of allPayroll.forecast) {
+      let results = {
+        programme_code: item.programme_code,
+        natural_account_code: item.natural_account_code,
+      };
+
+      allPayroll.previous_months.map((month) => {
+        if (month.is_actual) {
+          const financialCodeKey = makeFinancialCodeKey(
+            costCentreCode,
+            item.natural_account_code,
+            item.programme_code,
+            { year: financialYear, period: month.index },
+          );
+          results[month.key] = allPayroll.actuals[financialCodeKey];
+        } else {
+          results[month.key] = item[month.key];
+        }
+      });
+
+      total_results.push(results);
+    }
+
+    return total_results;
+  }, [allPayroll]);
 
   // Handlers
   async function handleSavePayroll() {
@@ -172,8 +205,8 @@ export default function Payroll() {
         Save payroll
       </button>
       <ForecastTable
-        forecast={allPayroll.forecast}
-        months={monthsToTitleCase}
+        forecast={forecastAndActuals}
+        months={allPayroll.previous_months}
       />
     </>
   );
