@@ -1,5 +1,6 @@
 import operator
 from collections import defaultdict
+from functools import partial
 from itertools import accumulate
 from statistics import mean
 from typing import Iterator, TypedDict
@@ -133,13 +134,15 @@ def payroll_forecast_report(
             )
 
 
-def update_forecast(
+# FIXME: make generic and move to forecast app - move test as well
+def update_payroll_forecast_figure(
     *,
     financial_year: FinancialYear,
     cost_centre: CostCentre,
     payroll_forecast: PayrollForecast,
 ):
-    financial_code = FinancialCode.objects.get(
+    # FIXME: what happens if there isn't a fin code?
+    financial_code, _ = FinancialCode.objects.get_or_create(
         cost_centre=cost_centre,
         natural_account_code_id=payroll_forecast["natural_account_code"],
         programme_id=payroll_forecast["programme_code"],
@@ -149,7 +152,7 @@ def update_forecast(
     )
 
     for i, month in enumerate(MONTHS):
-        forecast = ForecastMonthlyFigure.objects.get(
+        forecast, _ = ForecastMonthlyFigure.objects.get_or_create(
             financial_year=financial_year,
             financial_period_id=i + 1,
             financial_code=financial_code,
@@ -160,8 +163,32 @@ def update_forecast(
         if forecast.financial_period.actual_loaded:
             continue
 
-        forecast.amount = payroll_forecast[month]  # type: ignore
-        forecast.save()
+        amount = payroll_forecast[month]  # type: ignore
+
+        if amount == 0:
+            forecast.delete()
+        else:
+            forecast.amount = amount
+            forecast.save()
+
+
+def update_payroll_forecast(*, financial_year: FinancialYear, cost_centre: CostCentre):
+    update_figure = partial(
+        update_payroll_forecast_figure,
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+    )
+    report = payroll_forecast_report(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+    )
+    for payroll_forecast in report:
+        update_figure(payroll_forecast=payroll_forecast)
+
+
+def update_all_payroll_forecast(*, financial_year: FinancialYear):
+    for cost_centre in CostCentre.objects.all():
+        update_payroll_forecast(financial_year=financial_year, cost_centre=cost_centre)
 
 
 def get_attrition_instance(
@@ -264,12 +291,12 @@ def get_payroll_data(
 
 
 @transaction.atomic
-def update_payroll_data(
+def update_employee_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
     data: list[EmployeePayroll],
 ) -> None:
-    """Update a cost centre payroll for a given year using the provided list.
+    """Update a cost centre's employee pay periods for a given year.
 
     This function is wrapped with a transaction, so if any of the payroll updates fail,
     the whole batch will be rolled back.

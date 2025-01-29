@@ -1,6 +1,7 @@
 import copy
 import hashlib
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import models
@@ -441,6 +442,15 @@ class FinancialCodeAbstract(models.Model):
             self.forecast_expenditure_type = forecast_type.first()
 
         super(FinancialCodeAbstract, self).save(*args, **kwargs)
+
+    @property
+    def is_locked(self) -> bool:
+        return (
+            self.natural_account_code_id in settings.PAYROLL.nacs
+            and self.analysis1_code is None
+            and self.analysis2_code is None
+            and self.project_code is None
+        )
 
 
 class FinancialCode(FinancialCodeAbstract, BaseModel):

@@ -51,6 +51,7 @@
         window.financial_year = {{ view.financial_year|safe }};
         window.payroll_forecast_data = JSON.parse(document.getElementById("payroll_forecast_data").textContent);
         window.can_access_edit_payroll = "{{ user_can_access_edit_payroll }}";
+        window.PAYROLL_ENABLE_FORECAST = {% if settings.PAYROLL.ENABLE_FORECAST %}true{% else %}false{% endif %};
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

@@ -1,20 +1,23 @@
+from random import randrange
 from statistics import mean
 
 import pytest
+from pytest_django.asserts import assertNumQueries
 
-from core.constants import MONTHS
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
+from core.constants import MONTHS
 from core.models import FinancialYear
+from core.types import MonthsDict
 from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
+from forecast.test.factories import FinancialCodeFactory
 from payroll.services.payroll import (
+    PayrollForecast,
     employee_created,
     payroll_forecast_report,
+    update_payroll_forecast_figure,
     vacancy_created,
-    PayrollForecast,
-    update_forecast,
 )
-from forecast.test.factories import FinancialCodeFactory
 
 from ..factories import (
     AttritionFactory,
@@ -241,57 +244,56 @@ def test_one_employee_with_attrition(db):
     )
 
 
-def test_scenario_update_forecast():
+def test_scenario_update_forecast(db):
     cost_centre = CostCentreFactory.create(cost_centre_code="123456")
     programme_code = ProgrammeCodeFactory.create()
 
     financial_code_salary = FinancialCodeFactory(
         cost_centre=cost_centre,
-        programme_code=programme_code,
+        programme=programme_code,
         natural_account_code__natural_account_code="71111001",
-    )
-    financial_code_pension = FinancialCodeFactory(
-        cost_centre=cost_centre,
-        programme_code=programme_code,
-        natural_account_code__natural_account_code="71111002",
-    )
-    financial_code_ernic = FinancialCodeFactory(
-        cost_centre=cost_centre,
-        programme_code=programme_code,
-        natural_account_code__natural_account_code="71111003",
     )
 
     financial_year = FinancialYear.objects.current()
 
-    payroll_forecast = [
-        PayrollForecast(
-            programme_code=programme_code,
-            natural_account_code="71111001",
-            apr=1,
-            may=1,
-            jun=1,
-            jul=1,
-            aug=1,
-            sep=1,
-            oct=1,
-            dec=1,
-            jan=1,
-            feb=1,
-            mar=1,
-        )
-    ]
-
-    update_forecast(
-        financial_year=financial_year,
-        cost_centre=cost_centre,
-        payroll_forecast=payroll_forecast,
+    expected_forecast: MonthsDict[float] = dict(
+        # pence
+        apr=randrange(0, 1_000_000),
+        may=randrange(0, 1_000_000),
+        jun=randrange(0, 1_000_000),
+        jul=randrange(0, 1_000_000),
+        aug=randrange(0, 1_000_000),
+        sep=randrange(0, 1_000_000),
+        oct=randrange(0, 1_000_000),
+        nov=randrange(0, 1_000_000),
+        dec=randrange(0, 1_000_000),
+        jan=randrange(0, 1_000_000),
+        feb=randrange(0, 1_000_000),
+        mar=randrange(0, 1_000_000),
     )
 
-    assert (
-        ForecastMonthlyFigure.objects.get(
+    payroll_forecast = PayrollForecast(
+        programme_code=programme_code,
+        natural_account_code="71111001",
+        **expected_forecast,
+    )
+
+    # TODO: Reduce number of queries.
+    with assertNumQueries(1 + (12 * 6)):
+        update_payroll_forecast_figure(
             financial_year=financial_year,
-            financial_period__financial_period_code=1,
-            financial_code=financial_code_salary,
+            cost_centre=cost_centre,
+            payroll_forecast=payroll_forecast,
         )
-        == 1
+
+    forecast_figures = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_year=financial_year,
+            financial_code=financial_code_salary,
+            archived_status=None,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
     )
+
+    assert list(forecast_figures) == list(expected_forecast.values())

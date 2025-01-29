@@ -186,13 +186,20 @@ export const processForecastData = (
         overrideAmount = mappedPayrollData[forecastKey][period];
       }
 
+      // FIXME: mark post mvp cleanup
+      // FIXME: missing cells because 0 are not locked too because no row context
+      const isEditable = window.PAYROLL_ENABLE_FORECAST
+        ? !monthlyFigure.actual && !rowData.is_locked
+        : !monthlyFigure.actual;
+
       cells[monthlyFigure.month] = {
         rowIndex: rowIndex,
         colIndex: colIndex,
         key: monthlyFigure.month,
         amount: monthlyFigure.amount,
         startingAmount: monthlyFigure.starting_amount,
-        isEditable: !monthlyFigure.actual,
+        isEditable: isEditable,
+        isLocked: rowData.is_locked,
         overrideAmount: overrideAmount,
       };
 

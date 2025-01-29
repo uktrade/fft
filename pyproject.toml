@@ -45,6 +45,7 @@ django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
+mypy = "^1.14.1"
 
 [tool.poetry.group.dev]
 optional = true
@@ -131,6 +132,7 @@ exclude = [
 ]
 check_untyped_defs = true
 ignore_missing_imports = false
+enable_incomplete_feature = ["NewGenericSyntax"]
 
 [[tool.mypy.overrides]]
 module = [

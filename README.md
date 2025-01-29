@@ -141,7 +141,7 @@ The names of the management commands denote their function.
 - Add the user app initial migration to the list of django migrations that have been run
 - Deploy new codebase
 
-# Setup DebugPy
+## Setup DebugPy
 
 Add environment variable in your .env file
 
@@ -173,3 +173,7 @@ Create launch.json file inside .vscode directory
   ]
 }
 ```
+
+## Code notes
+
+All the reducers in `front_end/src/Reducers/` are for the `Forecast` React "app".

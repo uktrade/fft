@@ -269,6 +269,7 @@ GTM_CODE = env("GTM_CODE", default=None)
 SETTINGS_EXPORT = [
     "DEBUG",
     "GTM_CODE",
+    "PAYROLL",
 ]
 
 MIDDLEWARE = [
@@ -423,11 +424,24 @@ CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
 # Payroll
 @dataclass
 class Payroll:
-    BASIC_PAY_NAC: str | None = None
-    PENSION_NAC: str | None = None
-    ERNIC_NAC: str | None = None
-    VACANCY_NAC: str | None = None
+    BASIC_PAY_NAC: int | None = None
+    PENSION_NAC: int | None = None
+    ERNIC_NAC: int | None = None
+    VACANCY_NAC: int | None = None
     AVERAGE_SALARY_THRESHOLD: int = 2
+    # FIXME: switch to false
+    ENABLE_FORECAST: bool = True
+
+    @property
+    def nacs(self):
+        return set(
+            (
+                self.BASIC_PAY_NAC,
+                self.PENSION_NAC,
+                self.ERNIC_NAC,
+                self.VACANCY_NAC,
+            )
+        )
 
 
 PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default={}))

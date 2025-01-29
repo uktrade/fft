@@ -65,13 +65,6 @@ const TableCell = ({
   );
   const allSelected = useSelector((state) => state.selected.all);
 
-  let isEditable = true;
-
-  // Check for actual
-  if (window.actuals.indexOf(cellKey) > -1) {
-    isEditable = false;
-  }
-
   const getValue = () => {
     if (cell && cell.amount) {
       return (cell.amount / 100).toFixed(2);
@@ -97,7 +90,7 @@ const TableCell = ({
   };
 
   const wasEdited = () => {
-    if (!isEditable) return false;
+    if (!cell.isEditable) return false;
 
     return cell.amount !== cell.startingAmount;
   };
@@ -105,13 +98,17 @@ const TableCell = ({
   const getClasses = () => {
     const classes = ["govuk-table__cell", "forecast-month-cell", "figure-cell"];
 
-    if (!isEditable) classes.push("not-editable");
+    if (!cell?.isEditable) classes.push("not-editable");
     if (isSelected()) classes.push("selected");
     if (!cell) return classes.join(" ");
 
     if (cell && cell.amount < 0) classes.push("negative");
     if (isOverride()) classes.push("override");
     if (wasEdited()) classes.push("edited");
+    if (cell?.isLocked) {
+      // FIXME class
+      classes.push("override");
+    }
 
     return classes.join(" ");
   };
@@ -223,7 +220,7 @@ const TableCell = ({
   };
 
   const isCellUpdating = () => {
-    if (cell && !isEditable) return false;
+    if (cell && !cell.isEditable) return false;
 
     if (isUpdating) return true;
 
@@ -268,7 +265,7 @@ const TableCell = ({
         className={getClasses()}
         id={getId()}
         onDoubleClick={() => {
-          if (isEditable && !isOverride()) {
+          if (cell.isEditable && !isOverride()) {
             dispatch(
               SET_EDITING_CELL({
                 cellId: cellId,
