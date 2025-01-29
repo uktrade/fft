@@ -159,6 +159,7 @@ def test_one_employee_with_pay_uplift(db):
         financial_year=financial_year,
         aug=1.02,
     )
+    modifier = pay_uplift.aug
 
     report = payroll_forecast_report(cost_centre, financial_year)
 
@@ -173,7 +174,16 @@ def test_one_employee_with_pay_uplift(db):
         e1s,
         e1p,
         e1e,
-        modifiers={"aug": pay_uplift.aug},
+        modifiers={
+            "aug": modifier,
+            "sep": modifier,
+            "oct": modifier,
+            "nov": modifier,
+            "dec": modifier,
+            "jan": modifier,
+            "feb": modifier,
+            "mar": modifier,
+        },
     )
 
 
