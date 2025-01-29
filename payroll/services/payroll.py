@@ -94,16 +94,17 @@ def payroll_forecast_report(
 
     pay_uplift = np.array(pay_uplift_obj.periods) if pay_uplift_obj else np.ones(12)
     attrition = np.array(attrition_obj.periods) if attrition_obj else np.ones(12)
+    pay_uplift_accumulate = np.array(list(accumulate(pay_uplift, operator.mul)))
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
         periods = np.array(periods)
 
-        periods = periods * pay_uplift * attrition_accumulate
-
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += (
+            periods * employee.basic_pay * pay_uplift_accumulate * attrition_accumulate
+        )
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
