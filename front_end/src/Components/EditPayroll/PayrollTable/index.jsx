@@ -23,7 +23,7 @@ export default function PayrollTable({
             <tr className="govuk-table__row">
               {headers.map((header) => {
                 const isActual = previousMonths.some(
-                  (obj) => obj.month_short_name === header && obj.is_actual,
+                  (obj) => obj.short_name === header && obj.is_actual,
                 );
                 const isHidden =
                   showPreviousMonths && isActual ? " hidden" : "";
