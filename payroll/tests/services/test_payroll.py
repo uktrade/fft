@@ -35,11 +35,13 @@ def assert_report_results_with_modifiers(
     for nac in NACS:
         for month in MONTHS:
             modifier = modifiers.get(month, 1)
-            expected_result = (
-                salary * modifier
-                if nac == SALARY_NAC
-                else (pension if nac == PENSION_NAC else ernic)
-            )
+            if nac == SALARY_NAC:
+                expected_result = salary * modifier
+            elif nac == PENSION_NAC:
+                expected_result = pension
+            else:
+                expected_result = ernic
+
             assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
