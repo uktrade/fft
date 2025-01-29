@@ -7,7 +7,7 @@ from core.models import Attrition, PayUplift
 from core.test.factories import FinancialYearFactory
 from costcentre.test.factories import CostCentreFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import Employee, PayElementType, PayElementTypeGroup, Vacancy
+from payroll.models import Employee, PayElementTypeGroup, Vacancy
 
 
 fake = Faker()
@@ -35,16 +35,6 @@ class PayElementTypeGroupFactory(factory.django.DjangoModelFactory):
 
     # name
     natural_code = factory.SubFactory(NaturalCodeFactory)
-
-
-class PayElementTypeFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = PayElementType
-        django_get_or_create = ("name",)
-
-    # name
-    natural_code = factory.SubFactory(NaturalCodeFactory)
-    group = factory.SubFactory(PayElementTypeGroupFactory)
 
 
 class VacancyFactory(factory.django.DjangoModelFactory):

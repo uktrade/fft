@@ -134,27 +134,6 @@ class PayElementTypeGroup(models.Model):
         return self.name
 
 
-class PayElementType(models.Model):
-    name = models.CharField(max_length=128, unique=True)
-    # aka "account code"
-    natural_code = models.ForeignKey("chartofaccountDIT.NaturalCode", models.PROTECT)
-    group = models.ForeignKey(PayElementTypeGroup, models.PROTECT)
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class EmployeePayElement(models.Model):
-    """A many-to-many through model that represents an employee's pay make-up."""
-
-    employee = models.ForeignKey(Employee, models.PROTECT, related_name="pay_element")
-    type = models.ForeignKey(PayElementType, models.PROTECT)
-    # Support up to 9,999,999.99.
-    debit_amount = models.DecimalField(max_digits=9, decimal_places=2)
-    # Support up to 9,999,999.99.
-    credit_amount = models.DecimalField(max_digits=9, decimal_places=2)
-
-
 class Vacancy(Position):
     class Meta:
         verbose_name_plural = "Vacancies"
