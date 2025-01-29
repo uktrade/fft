@@ -14,7 +14,7 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
-from forecast.models import ForecastMonthlyFigure
+from forecast.models import FinancialCode, ForecastMonthlyFigure
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -137,9 +137,31 @@ def update_forecast(
     *,
     financial_year: FinancialYear,
     cost_centre: CostCentre,
-    payroll_forecast: Iterator[PayrollForecast],
+    payroll_forecast: PayrollForecast,
 ):
-    pass
+    financial_code = FinancialCode.objects.get(
+        cost_centre=cost_centre,
+        natural_account_code_id=payroll_forecast["natural_account_code"],
+        programme_id=payroll_forecast["programme_code"],
+        analysis1_code=None,
+        analysis2_code=None,
+        project_code=None,
+    )
+
+    for i, month in enumerate(MONTHS):
+        forecast = ForecastMonthlyFigure.objects.get(
+            financial_year=financial_year,
+            financial_period_id=i + 1,
+            financial_code=financial_code,
+            archived_status=None,
+        )
+
+        # TODO: n+1 query
+        if forecast.financial_period.actual_loaded:
+            continue
+
+        forecast.amount = payroll_forecast[month]  # type: ignore
+        forecast.save()
 
 
 def get_attrition_instance(
