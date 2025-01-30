@@ -1,6 +1,6 @@
-import os
+from pathlib import Path
+
 import pytest
-from pathlib import Path  
 from django.core.files import File
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
@@ -11,7 +11,8 @@ from payroll.models import Employee
 from ...services.ingest import import_payroll
 
 
-TEST_DATA_DIR = Path(__file__).parent.parent / "test_assets" 
+TEST_DATA_DIR = Path(__file__).parent.parent / "test_assets"
+
 
 @pytest.fixture(autouse=True)
 def setup(db):
@@ -37,10 +38,10 @@ def setup(db):
 
 def test_ingest_payroll_success(db):
     """Testing valid records"""
-    csv_file = TEST_DATA_DIR / "payroll_valid_records.csv"  
+    csv_file = TEST_DATA_DIR / "payroll_valid_records.csv"
     with open(csv_file, "rb") as f:
         result = import_payroll(File(f))
-        assert len(list(Employee.objects.all()))==20
+        assert len(list(Employee.objects.all())) == 20
         assert len(result.get("failed")) == 0
         assert result.get("error") is None
         assert result.get("created") == 20
@@ -51,9 +52,8 @@ def test_ingest_payroll_failed_record(db):
     csv_file = TEST_DATA_DIR / "payroll_mixed_records.csv"
     with open(csv_file, "rb") as f:
         result = import_payroll(File(f))
-        assert result.get("failed") is  not None
-        assert len(list(Employee.objects.all()))==15
-
+        assert result.get("failed") is not None
+        assert len(list(Employee.objects.all())) == 15
 
 
 def test_ingest_payroll_error(db):
@@ -61,8 +61,7 @@ def test_ingest_payroll_error(db):
     csv_file = TEST_DATA_DIR / "payroll_empty_rows.csv"
     with open(csv_file, "rb") as f:
         import_payroll(File(f))
-        assert len(list(Employee.objects.all()))==15
-
+        assert len(list(Employee.objects.all())) == 15
 
 
 def test_ingest_payroll_update(db):
@@ -73,7 +72,6 @@ def test_ingest_payroll_update(db):
         result = import_payroll(File(f))
         assert len(result.get("failed")) == 0
         assert result.get("error") is None
-        assert result.get("updated") ==20
+        assert result.get("updated") == 20
         assert result.get("created") == 0
-        assert len(list(Employee.objects.all()))==20
-
+        assert len(list(Employee.objects.all())) == 20

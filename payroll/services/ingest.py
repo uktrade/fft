@@ -55,20 +55,20 @@ class ImportPayrollReport(TypedDict):
     created: int
     updated: int
     have_left: int
-    error:str
+    error: str
 
 
 @transaction.atomic()
 def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     created_count = 0
     updated_count = 0
-    have_left=0
-    error = None 
+    have_left = 0
+    error = None
     csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
     # Skip header row.
     next(csv_reader)
-    
+
     employees: list[Employee] = []
     failed: dict[str, list[str]] = defaultdict(list)
     seen_employee_no_set = set()
@@ -123,7 +123,7 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         .filter(has_left=False)
         .update(has_left=True)
     )
-    
+
     print(have_left)
 
     created = seen_employee_no_set - previous_employees
@@ -139,12 +139,13 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         "created": created_count,
         "updated": updated_count,
         "have_left": have_left,
-        "error":error
+        "error": error,
     }
 
 
 def _csv_row_employee_dict(hr_row) -> EmployeeDict:
     return {x: y(hr_row) for x, y in row_to_employee_dict.items()}
+
 
 def is_row_empty(row):
     return not any(str(cell).strip() for cell in row)
