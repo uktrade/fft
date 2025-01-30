@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loadState = () => {
   try {
-    const serializedState = localStorage.getItem("hiddenCols");
+    const serializedState = localStorage.getItem("editForecast.hiddenCols");
     return serializedState ? JSON.parse(serializedState) : undefined;
   } catch (error) {
     console.log("Could not load state");
@@ -16,7 +16,7 @@ const saveState = (state) => {
     const serializedState = JSON.stringify(state);
     localStorage.setItem("hiddenCols", serializedState);
   } catch (error) {
-    console.log("Could not save state");
+    console.log("Could not save edit forecast table column state");
   }
 };
 
