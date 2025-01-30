@@ -2,6 +2,7 @@ import json
 
 from django.http import JsonResponse
 
+from core.utils.generic_helpers import get_previous_months_data
 from payroll.views import EditPayrollBaseView
 
 from .services import payroll as payroll_service
@@ -27,12 +28,24 @@ class EditPayrollApiView(EditPayrollBaseView):
                 self.financial_year,
             )
         )
+        forecast = list(
+            payroll_service.payroll_forecast_report(
+                self.cost_centre, self.financial_year
+            )
+        )
+        previous_months = list(get_previous_months_data())
+        actuals = payroll_service.get_actuals_data(
+            self.cost_centre, self.financial_year
+        )
 
         return JsonResponse(
             {
                 "employees": employees,
                 "vacancies": vacancies,
                 "pay_modifiers": pay_modifiers,
+                "forecast": forecast,
+                "previous_months": previous_months,
+                "actuals": actuals,
             }
         )
 
@@ -53,6 +66,16 @@ class EditPayrollApiView(EditPayrollBaseView):
             self.cost_centre,
             self.financial_year,
             data["pay_modifiers"],
+        )
+
+        return JsonResponse({})
+
+
+class PayModifiersApiView(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        payroll_service.create_default_pay_modifiers(
+            self.cost_centre,
+            self.financial_year,
         )
 
         return JsonResponse({})

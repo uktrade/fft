@@ -1,19 +1,19 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 
-from core.constants import MONTHS
 from core.models import FinancialYear
-from core.templatetags.util import get_previous_months_data
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
 from payroll.models import Vacancy
 
 from .services import payroll as payroll_service
+from .services.ingest import import_payroll
 
 
 class EditPayrollBaseView(UserPassesTestMixin, View):
@@ -39,17 +39,9 @@ class EditPayrollBaseView(UserPassesTestMixin, View):
 
 class EditPayrollPage(EditPayrollBaseView):
     def get(self, *args, **kwargs) -> HttpResponse:
-        payroll_forecast_report_data = payroll_service.payroll_forecast_report(
-            self.cost_centre, self.financial_year
-        )
-        previous_months = get_previous_months_data()
-
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
-            "payroll_forecast_report": payroll_forecast_report_data,
-            "months": MONTHS,
-            "previous_months": previous_months,
         }
 
         return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
@@ -119,3 +111,24 @@ class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
             "vacancy_id": self.object.id,
         }
         return super().get_context_data(**kwargs) | context
+
+
+def import_payroll_page(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    output = ""
+    context = {}
+
+    if request.method == "POST":
+        if "payroll_csv" not in request.FILES:
+            context = {"error": "Payroll file is required"}
+        else:
+            payroll_csv = request.FILES["payroll_csv"]
+            output = import_payroll(payroll_csv)
+
+    context = {
+        "output": output,
+    }
+
+    return TemplateResponse(request, "payroll/page/import_payroll.html", context)

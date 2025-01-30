@@ -2,14 +2,7 @@ from django.contrib import admin
 
 from payroll.services.payroll import employee_created, vacancy_created
 
-from .models import (
-    Employee,
-    EmployeePayElement,
-    EmployeePayPeriods,
-    PayElementType,
-    PayElementTypeGroup,
-    Vacancy,
-)
+from .models import Employee, EmployeePayPeriods, PayElementTypeGroup, Vacancy
 
 
 @admin.register(Employee)
@@ -19,7 +12,9 @@ class EmployeeAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "cost_centre",
+        "has_left",
     ]
+    list_filter = ["has_left"]
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -48,25 +43,6 @@ class EmployeePayPeriodsAdmin(admin.ModelAdmin):
     ]
     list_filter = [
         "year",
-    ]
-
-
-@admin.register(EmployeePayElement)
-class EmployeePayElementAdmin(admin.ModelAdmin):
-    list_display = [
-        "employee",
-        "type",
-        "debit_amount",
-        "credit_amount",
-    ]
-
-
-@admin.register(PayElementType)
-class PayElementTypeAdmin(admin.ModelAdmin):
-    list_display = [
-        "name",
-        "natural_code",
-        "group",
     ]
 
 

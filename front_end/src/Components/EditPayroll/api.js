@@ -21,6 +21,13 @@ export function postPayrollData(payrollData) {
 }
 
 /**
+ * Create default pay modifier object
+ */
+export function createPayModifiers() {
+  return postData(getPayrollApiUrl() + "pay_modifiers/", {});
+}
+
+/**
  * Return the payroll API URL.
  *
  * This function relies on the `costCentreCode` and `financialYear` being available on

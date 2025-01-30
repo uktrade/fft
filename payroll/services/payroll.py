@@ -14,6 +14,7 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
+from forecast.models import ForecastMonthlyFigure
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -62,6 +63,16 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
+def update_all_employee_pay_periods() -> None:
+    current_financial_year = FinancialYear.objects.current()
+
+    for employee in Employee.objects.iterator():
+        EmployeePayPeriods.objects.get_or_create(
+            employee=employee,
+            year=current_financial_year,
+        )
+
+
 class PayrollForecast(MonthsDict[float]):
     programme_code: str
     natural_account_code: str
@@ -76,24 +87,24 @@ def payroll_forecast_report(
     )
 
     employee_qs = Employee.objects.filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
+        cost_centre=cost_centre, pay_periods__year=financial_year, has_left=False
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
 
     pay_uplift = np.array(pay_uplift_obj.periods) if pay_uplift_obj else np.ones(12)
     attrition = np.array(attrition_obj.periods) if attrition_obj else np.ones(12)
+    pay_uplift_accumulate = np.array(list(accumulate(pay_uplift, operator.mul)))
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
     for employee in employee_qs.iterator():
         periods = employee.pay_periods.first().periods
         periods = np.array(periods)
 
-        periods = periods * pay_uplift * attrition_accumulate
-
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += (
+            periods * employee.basic_pay * pay_uplift_accumulate * attrition_accumulate
+        )
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
@@ -152,7 +163,11 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
     salaries: list[int] = []
 
     for filter in filters:
-        employee_qs = Employee.objects.payroll().filter(grade=grade).filter(filter)
+        employee_qs = (
+            Employee.objects.payroll()
+            .filter(grade=grade, has_left=False)
+            .filter(filter)
+        )
 
         basic_pay = employee_qs.aggregate(
             count=Count("basic_pay"), avg=Avg("basic_pay")
@@ -198,6 +213,7 @@ def get_payroll_data(
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+            has_left=False,
         )
     )
     for obj in qs:
@@ -350,6 +366,19 @@ def get_pay_modifiers_data(
         yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
 
 
+def create_default_pay_modifiers(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> None:
+    qs = Attrition.objects.filter(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+    )
+
+    if not qs.exists():
+        Attrition.objects.create(cost_centre=cost_centre, financial_year=financial_year)
+
+
 @transaction.atomic
 def update_pay_modifiers_data(
     cost_centre: CostCentre,
@@ -391,6 +420,40 @@ def update_pay_modifiers_data(
             raise ValueError(ex)
 
         attrition.save()
+
+
+def get_actuals_data(
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> dict[str, int]:
+    nac_codes = [
+        settings.PAYROLL.BASIC_PAY_NAC,
+        settings.PAYROLL.PENSION_NAC,
+        settings.PAYROLL.ERNIC_NAC,
+    ]
+
+    qs = ForecastMonthlyFigure.objects.filter(
+        financial_year=financial_year,
+        financial_code__cost_centre=cost_centre,
+        financial_code__natural_account_code__natural_account_code__in=nac_codes,
+        financial_code__project_code__isnull=True,
+        archived_status__isnull=True,
+    ).select_related(
+        "financial_code__cost_centre",
+        "financial_code__natural_account_code",
+        "financial_code__project_code",
+    )
+
+    actuals = {}
+
+    for obj in qs:
+        key = obj.financial_code.as_key(
+            year=obj.financial_year_id,
+            period=obj.financial_period_id,
+        )
+        actuals[key] = obj.amount
+
+    return actuals
 
 
 # Permissions
