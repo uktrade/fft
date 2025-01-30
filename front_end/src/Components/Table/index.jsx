@@ -15,7 +15,7 @@ import OverspendUnderspend from "../../Components/OverspendUnderspend/index";
 import TotalOverspendUnderspend from "../../Components/TotalOverspendUnderspend/index";
 import TotalVariancePercentage from "../../Components/TotalVariancePercentage/index";
 import ActualsHeaderRow from "../../Components/ActualsHeaderRow/index";
-import { getCellId } from "../../Util";
+import { getCellId, monthsToTitleCase } from "../../Util";
 
 import { SET_EDITING_CELL } from "../../Reducers/Edit";
 import {
@@ -78,18 +78,13 @@ function Table({ rowData, sheetUpdating, payrollData }) {
             <TableHeader colName="analysis2_code">Markets</TableHeader>
             <TableHeader colName="project_code">Project Code</TableHeader>
             <TableHeader colName="budget">Budget</TableHeader>
-            <th className="govuk-table__header">Apr</th>
-            <th className="govuk-table__header">May</th>
-            <th className="govuk-table__header">Jun</th>
-            <th className="govuk-table__header">Jul</th>
-            <th className="govuk-table__header">Aug</th>
-            <th className="govuk-table__header">Sep</th>
-            <th className="govuk-table__header">Oct</th>
-            <th className="govuk-table__header">Nov</th>
-            <th className="govuk-table__header">Dec</th>
-            <th className="govuk-table__header">Jan</th>
-            <th className="govuk-table__header">Feb</th>
-            <th className="govuk-table__header">Mar</th>
+            {monthsToTitleCase.map((month) => {
+              return (
+                <th className="govuk-table__header" key={month}>
+                  {month}
+                </th>
+              );
+            })}
             {window.period_display && window.period_display.includes(13) && (
               <th className="govuk-table__header">Adj 1</th>
             )}
