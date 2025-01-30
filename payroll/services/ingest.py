@@ -75,6 +75,8 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     grades = set(Grade.objects.values_list("pk", flat=True))
 
     for row in csv_reader:
+        if is_row_empty(row):
+            continue
         emp_dict = _csv_row_employee_dict(PayrollRow(*row))
         emp_no = emp_dict["employee_no"]
 
@@ -133,3 +135,7 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
 
 def _csv_row_employee_dict(hr_row) -> EmployeeDict:
     return {x: y(hr_row) for x, y in row_to_employee_dict.items()}
+
+
+def is_row_empty(row):
+    return not any(str(cell).strip() for cell in row)
