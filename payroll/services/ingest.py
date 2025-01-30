@@ -55,12 +55,10 @@ class ImportPayrollReport(TypedDict):
     created: int
     updated: int
     have_left: int
-    error: str
 
 
 @transaction.atomic()
 def import_payroll(payroll_csv: File) -> ImportPayrollReport:
-    error = None
     csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
     # Skip header row.
@@ -132,7 +130,6 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         "created": len(created),
         "updated": len(updated),
         "have_left": have_left,
-        "error": error,
     }
 
 
