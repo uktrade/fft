@@ -14,7 +14,7 @@ const loadState = () => {
 const saveState = (state) => {
   try {
     const serializedState = JSON.stringify(state);
-    localStorage.setItem("hiddenCols", serializedState);
+    localStorage.setItem("editForecast.hiddenCols", serializedState);
   } catch (error) {
     console.log("Could not save edit forecast table column state");
   }
