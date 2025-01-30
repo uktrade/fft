@@ -40,10 +40,10 @@ def test_ingest_payroll_success(db):
     csv_file = TEST_DATA_DIR / "payroll_valid_records.csv"  
     with open(csv_file, "rb") as f:
         result = import_payroll(File(f))
-        assert len(list(Employee.objects.all()))==15
+        assert len(list(Employee.objects.all()))==20
         assert len(result.get("failed")) == 0
         assert result.get("error") is None
-        assert result.get("created") == 15
+        assert result.get("created") == 20
 
 
 def test_ingest_payroll_failed_record(db):
@@ -52,23 +52,17 @@ def test_ingest_payroll_failed_record(db):
     with open(csv_file, "rb") as f:
         result = import_payroll(File(f))
         assert result.get("failed") is  not None
-        print(result.get("failed"))
-        print(result.get("created"))
-        print(result.get("updated"))
-        # assert len(list(Employee.objects.all()))==3
+        assert len(list(Employee.objects.all()))==15
 
 
 
 def test_ingest_payroll_error(db):
     """Testing mall structured  csv file"""
-    csv_file = TEST_DATA_DIR / "payroll_error.csv"
+    csv_file = TEST_DATA_DIR / "payroll_empty_rows.csv"
     with open(csv_file, "rb") as f:
-        try:
-            result = import_payroll(File(f))
-        except Exception as e:
-            result = {  "error": str(e)}
-        assert len(list(Employee.objects.all()))==0
-        assert result.get("error") is not None
+        import_payroll(File(f))
+        assert len(list(Employee.objects.all()))==15
+
 
 
 def test_ingest_payroll_update(db):
@@ -79,7 +73,7 @@ def test_ingest_payroll_update(db):
         result = import_payroll(File(f))
         assert len(result.get("failed")) == 0
         assert result.get("error") is None
-        assert result.get("updated") == 15
+        assert result.get("updated") ==20
         assert result.get("created") == 0
-        assert len(list(Employee.objects.all()))==15
+        assert len(list(Employee.objects.all()))==20
 

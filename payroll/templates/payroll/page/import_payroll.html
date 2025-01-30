@@ -20,7 +20,11 @@
     </form>
     <div>
         <br/><br/>
+        
         {% if output %}
+        {% if output.error %}
+        <div>{{output.error}}</div>
+        {% endif %}
             Failing records: {{output.failed|length}} <br/>
             Inserted records : {{output.created}} <br/>
             Updated records: {{output.updated}} <br/>

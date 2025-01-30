@@ -18,4 +18,4 @@ employee_no,first_name,last_name,cost_centre_code,programme_code,grade,assignmen
 150907,Lucy,Jones,888813,338888,EO,Loan Out - Non Payroll,0,0,0,0
 150908,Oliver,Evans,888814,338889,Contractor,Secondment Out - Paid,1,314034,274579,327408
 150909,Jack,Smithhhh,888814,338887,AO,Loan Out - Non Payroll,0,0,0,0
-150910,George,Davies,888812,338888,Some GRADE,Secondment Out - Paid,1,360808,296336,883975
+150910,George,Davies,888812,1338888,Some GRADE,Secondment Out - Paid,1,360808,296336,883975
