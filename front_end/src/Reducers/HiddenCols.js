@@ -6,7 +6,7 @@ const loadState = () => {
     const serializedState = localStorage.getItem("editForecast.hiddenCols");
     return serializedState ? JSON.parse(serializedState) : undefined;
   } catch (error) {
-    console.log("Could not load state");
+    console.log("Could not load edit forecast table column state");
     return undefined;
   }
 };
