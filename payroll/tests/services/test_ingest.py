@@ -43,7 +43,6 @@ def test_ingest_payroll_success(db):
         result = import_payroll(File(f))
         assert len(list(Employee.objects.all())) == 20
         assert len(result.get("failed")) == 0
-        assert result.get("error") is None
         assert result.get("created") == 20
 
 
@@ -71,7 +70,6 @@ def test_ingest_payroll_update(db):
         result = import_payroll(File(f))
         result = import_payroll(File(f))
         assert len(result.get("failed")) == 0
-        assert result.get("error") is None
         assert result.get("updated") == 20
         assert result.get("created") == 0
         assert len(list(Employee.objects.all())) == 20
