@@ -45,6 +45,7 @@ def test_ingest_payroll_success(db):
         assert len(result.get("failed")) == 0
         assert result.get("error") is None
         assert result.get("created") == 20
+        assert len(list(Employee.objects.all())) == 20
 
 
 def test_ingest_payroll_failed_record(db):
