@@ -188,7 +188,7 @@ export const processForecastData = (
 
       // FIXME: mark post mvp cleanup
       // FIXME: missing cells because 0 are not locked too because no row context
-      const isEditable = window.PAYROLL_ENABLE_FORECAST
+      const isEditable = window.FEATURES.payroll_enable_forecast
         ? !monthlyFigure.actual && !rowData.is_locked
         : !monthlyFigure.actual;
 
@@ -198,6 +198,7 @@ export const processForecastData = (
         key: monthlyFigure.month,
         amount: monthlyFigure.amount,
         startingAmount: monthlyFigure.starting_amount,
+        isActual: monthlyFigure.actual,
         isEditable: isEditable,
         isLocked: rowData.is_locked,
         overrideAmount: overrideAmount,

@@ -163,13 +163,8 @@ def update_payroll_forecast_figure(
         if forecast.financial_period.actual_loaded:
             continue
 
-        amount = payroll_forecast[month]  # type: ignore
-
-        if amount == 0:
-            forecast.delete()
-        else:
-            forecast.amount = amount
-            forecast.save()
+        forecast.amount = payroll_forecast[month]  # type: ignore
+        forecast.save()
 
 
 def update_payroll_forecast(*, financial_year: FinancialYear, cost_centre: CostCentre):

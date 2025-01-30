@@ -105,10 +105,7 @@ const TableCell = ({
     if (cell && cell.amount < 0) classes.push("negative");
     if (isOverride()) classes.push("override");
     if (wasEdited()) classes.push("edited");
-    if (cell?.isLocked) {
-      // FIXME class
-      classes.push("override");
-    }
+    cell?.isActual ? classes.push("is-actual") : classes.push("is-forecast");
 
     return classes.join(" ");
   };

@@ -37,6 +37,9 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
+    <!-- Feature flags -->
+    <meta name="fft:features:payroll_enable_forecast" content="true">
+
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
     <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-180x180.png' %}">
@@ -252,15 +255,19 @@
   </div>
 </footer>
 
-{% block scripts %}
-    <script src="/static/govuk/all.js"></script>
-    <script>
-        window.GOVUKFrontend.initAll();
+<script src="/static/govuk/all.js"></script>
+<script type="module">
+    import FeatureFlags from "{% static 'core/js/feature-flags.js' %}";
 
-        function getCsrfToken() {
-            return "{{ csrf_token }}";
-        }
-    </script>
+    window.GOVUKFrontend.initAll();
+
+    function getCsrfToken() {
+        return "{{ csrf_token }}";
+    }
+
+    window.FEATURES = FeatureFlags("fft:features");
+</script>
+{% block scripts %}
 {% endblock %}
 {% vite_dev_client react=False %}
 </body>
