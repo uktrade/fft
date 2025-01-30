@@ -60,9 +60,6 @@ class ImportPayrollReport(TypedDict):
 
 @transaction.atomic()
 def import_payroll(payroll_csv: File) -> ImportPayrollReport:
-    created_count = 0
-    updated_count = 0
-    have_left = 0
     error = None
     csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
@@ -124,20 +121,16 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         .update(has_left=True)
     )
 
-    print(have_left)
-
     created = seen_employee_no_set - previous_employees
     updated = seen_employee_no_set & previous_employees
-    if len(created or []) > 0:
-        created_count = len(created) - len(failed or [])
-    if len(updated or []) > 0:
-        updated_count = len(updated) - len(failed or [])
+
     # Stop template attr lookup of .items creating an empty list.
     failed.default_factory = None
+
     return {
         "failed": failed,
-        "created": created_count,
-        "updated": updated_count,
+        "created": len(created),
+        "updated": len(updated),
         "have_left": have_left,
         "error": error,
     }
