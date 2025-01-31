@@ -186,8 +186,8 @@ export const processForecastData = (
         overrideAmount = mappedPayrollData[forecastKey][period];
       }
 
-      // FIXME: mark post mvp cleanup
       // FIXME: missing cells because 0 are not locked too because no row context
+      // TODO (FFT-176): Payroll post-release cleanup
       const isEditable = window.FEATURES.payroll_enable_forecast
         ? !monthlyFigure.actual && !rowData.is_locked
         : !monthlyFigure.actual;
