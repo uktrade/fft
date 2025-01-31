@@ -1,3 +1,15 @@
+/**
+ * Returns a feature flag checker.
+ *
+ * @example
+ * // <meta name="app:features:foo" content="true">
+ * const FEATURES = new FeatureFlags("app:features");
+ * FEATURES.foo === true;
+ * FEATURES.bar === false;
+ *
+ * @param {string} namespace - Prefix for the meta tag names.
+ * @returns {object} Proxy object to check feature flags.
+ */
 export default function FeatureFlags(namespace) {
   const cache = new Map();
 
