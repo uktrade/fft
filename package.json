@@ -8,18 +8,18 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "govuk-frontend": "^5.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-redux": "^9.2.0",
     "redux": "^5.0.1",
-    "redux-persist": "^6.0.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "prettier": "^3.4.2",
+    "redux-persist": "^6.0.0",
     "sass": "^1.83.4",
     "vite": "^6.0.11"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
   },
   "scripts": {
     "build": "vite build",

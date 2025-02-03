@@ -37,19 +37,18 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'dist/govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
-    <link rel="mask-icon" href="{% static 'dist/govuk/assets/images/govuk-icon-mask.svg' %}" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'dist/govuk/assets/images/govuk-icon-180.png' %}">
-    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'dist/govuk/assets/images/govuk-icon-192.png' %}">
-    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'dist/govuk/assets/images/govuk-icon-512.png' %}">
+    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-icon-mask.svg' %}" color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-icon-180.png' %}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'govuk/assets/images/govuk-icon-192.png' %}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'govuk/assets/images/govuk-icon-512.png' %}">
 
     {% vite_css "styles/styles.scss" %}
 
-    <meta property="og:image" content="{% static 'dist/govuk/assets/images/govuk-opengraph-image.png' %}">
+    <meta property="og:image" content="{% static 'govuk/assets/images/govuk-opengraph-image.png' %}">
 </head>
-
 <body onresize="checkMenuState();"
-      class="govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
+      class="govuk-frontend-supported govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
 {% if not settings.DEBUG %}
     <!-- Google Tag Manager (noscript) -->
     <noscript>
@@ -252,7 +251,7 @@
 </footer>
 
 {% block scripts %}
-    <script src="/static/dist/govuk/all.bundle.js"></script>
+    <script src="/static/govuk/all.bundle.js"></script>
     <script>
         window.GOVUKFrontend.initAll();
 
