@@ -7,7 +7,11 @@ const ActualsHeaderRow = () => {
   const hiddenColsCount = useSelector(
     (state) => state.hiddenCols.hiddenCols.length,
   );
+
+  // Number of columns from Select All to Budget
   const colsBeforeMonths = 9;
+  // Number of columns from Apr to Variance %
+  const forecastColCount = 18;
 
   useEffect(() => {
     const timer = () => {
@@ -41,7 +45,7 @@ const ActualsHeaderRow = () => {
       )}
       <th
         className="govuk-table__head meta-col"
-        colSpan={colsBeforeMonths - hiddenColsCount - actualsCount}
+        colSpan={forecastColCount - actualsCount}
       >
         Forecast
       </th>
