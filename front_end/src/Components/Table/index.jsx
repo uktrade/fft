@@ -15,7 +15,7 @@ import OverspendUnderspend from "../../Components/OverspendUnderspend/index";
 import TotalOverspendUnderspend from "../../Components/TotalOverspendUnderspend/index";
 import TotalVariancePercentage from "../../Components/TotalVariancePercentage/index";
 import ActualsHeaderRow from "../../Components/ActualsHeaderRow/index";
-import { getCellId } from "../../Util";
+import { getCellId, monthsToTitleCase } from "../../Util";
 
 import { SET_EDITING_CELL } from "../../Reducers/Edit";
 import {
@@ -64,35 +64,27 @@ function Table({ rowData, sheetUpdating, payrollData }) {
                 )}
               </button>
             </th>
-            <TableHeader colName="programme">Programme code</TableHeader>
-            <TableHeader colName="programme">Programme description</TableHeader>
-            <TableHeader
-              id="natural_account_code_header"
-              colName="natural_account_code"
-            >
+            <TableHeader colName="programme_code">Programme code</TableHeader>
+            <TableHeader colName="programme_description">
+              Programme description
+            </TableHeader>
+            <TableHeader id="natural_account_code_header" colName="nac_code">
               NAC code
             </TableHeader>
-            <TableHeader colName="natural_account_code">
-              NAC description
-            </TableHeader>
+            <TableHeader colName="nac_description">NAC description</TableHeader>
             <TableHeader colName="analysis1_code">
               Contract Reconciliation
             </TableHeader>
             <TableHeader colName="analysis2_code">Markets</TableHeader>
             <TableHeader colName="project_code">Project Code</TableHeader>
             <TableHeader colName="budget">Budget</TableHeader>
-            <th className="govuk-table__header">Apr</th>
-            <th className="govuk-table__header">May</th>
-            <th className="govuk-table__header">Jun</th>
-            <th className="govuk-table__header">Jul</th>
-            <th className="govuk-table__header">Aug</th>
-            <th className="govuk-table__header">Sep</th>
-            <th className="govuk-table__header">Oct</th>
-            <th className="govuk-table__header">Nov</th>
-            <th className="govuk-table__header">Dec</th>
-            <th className="govuk-table__header">Jan</th>
-            <th className="govuk-table__header">Feb</th>
-            <th className="govuk-table__header">Mar</th>
+            {monthsToTitleCase.map((month) => {
+              return (
+                <th className="govuk-table__header" key={month}>
+                  {month}
+                </th>
+              );
+            })}
             {window.period_display && window.period_display.includes(13) && (
               <th className="govuk-table__header">Adj 1</th>
             )}
@@ -149,31 +141,28 @@ function Table({ rowData, sheetUpdating, payrollData }) {
                     )}
                   </button>
                 </td>
-                <ToggleCell colName={"programme"} rowIndex={rowIndex}>
+                <ToggleCell colName={"programme_code"} rowIndex={rowIndex}>
                   <CellValue rowIndex={rowIndex} cellKey={"programme"} />
                 </ToggleCell>
 
-                <ToggleCell colName={"programme"} rowIndex={rowIndex}>
+                <ToggleCell
+                  colName={"programme_description"}
+                  rowIndex={rowIndex}
+                >
                   <CellValue
                     rowIndex={rowIndex}
                     cellKey={"programme_description"}
                   />
                 </ToggleCell>
 
-                <ToggleCell
-                  colName={"natural_account_code"}
-                  rowIndex={rowIndex}
-                >
+                <ToggleCell colName={"nac_code"} rowIndex={rowIndex}>
                   <CellValue
                     rowIndex={rowIndex}
                     cellKey={"natural_account_code"}
                   />
                 </ToggleCell>
 
-                <ToggleCell
-                  colName={"natural_account_code"}
-                  rowIndex={rowIndex}
-                >
+                <ToggleCell colName={"nac_description"} rowIndex={rowIndex}>
                   <CellValue rowIndex={rowIndex} cellKey={"nac_description"} />
                 </ToggleCell>
 
@@ -237,10 +226,13 @@ function Table({ rowData, sheetUpdating, payrollData }) {
           })}
           <tr>
             <td className="govuk-table__cell total">Totals</td>
-            <InfoCell cellKey={"programme"} ignoreSelection={true} />
-            <InfoCell cellKey={"programme"} ignoreSelection={true} />
-            <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
-            <InfoCell cellKey={"natural_account_code"} ignoreSelection={true} />
+            <InfoCell cellKey={"programme_code"} ignoreSelection={true} />
+            <InfoCell
+              cellKey={"programme_description"}
+              ignoreSelection={true}
+            />
+            <InfoCell cellKey={"nac_code"} ignoreSelection={true} />
+            <InfoCell cellKey={"nac_description"} ignoreSelection={true} />
             <InfoCell cellKey={"analysis1_code"} ignoreSelection={true} />
             <InfoCell cellKey={"analysis2_code"} ignoreSelection={true} />
             <InfoCell cellKey={"project_code"} ignoreSelection={true} />

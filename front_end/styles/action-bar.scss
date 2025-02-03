@@ -26,6 +26,7 @@
   }
 
   .action-bar-content {
+    display: grid;
     border: 16px solid govuk-colour("mid-grey");
     border-top-width: 0;
     background-color: govuk-colour("light-grey");
