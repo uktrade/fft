@@ -40,7 +40,7 @@ urlpatterns = [
     # TODO - split below out into develop only?
     path(
         "assets/<path:asset_path>",
-        RedirectView.as_view(url="/static/govuk/assets/%(asset_path)s"),
+        RedirectView.as_view(url="/static/dist/govuk/assets/%(asset_path)s"),
     ),
 ]
 
