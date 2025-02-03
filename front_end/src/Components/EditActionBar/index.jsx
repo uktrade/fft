@@ -64,43 +64,45 @@ const EditActionBar = () => {
               <h4 className="govuk-heading-s">Individual columns</h4>
               <div className="govuk-checkboxes govuk-checkboxes--small">
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("programme_code"))}
                   checked={hiddenCols.indexOf("programme_code") === -1}
                   name={"programme_code"}
                   label={"Programme code"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() =>
+                    dispatch(TOGGLE_ITEM("programme_description"))
+                  }
                   checked={hiddenCols.indexOf("programme_description") === -1}
                   name={"programme_description"}
                   label={"Programme description"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("nac_code"))}
                   checked={hiddenCols.indexOf("nac_code") === -1}
                   name={"nac_code"}
                   label={"NAC code"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("nac_description"))}
                   checked={hiddenCols.indexOf("nac_description") === -1}
                   name={"nac_description"}
                   label={"NAC description"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("analysis1_code"))}
                   checked={hiddenCols.indexOf("analysis1_code") === -1}
                   name={"analysis1_code"}
                   label={"Analysis 1"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("analysis2_code"))}
                   checked={hiddenCols.indexOf("analysis2_code") === -1}
                   name={"analysis2_code"}
                   label={"Analysis 2"}
                 />
                 <CheckboxItem
-                  dispatcher={TOGGLE_ITEM}
+                  onChange={() => dispatch(TOGGLE_ITEM("project_code"))}
                   checked={hiddenCols.indexOf("project_code") === -1}
                   name={"project_code"}
                   label={"Project code"}

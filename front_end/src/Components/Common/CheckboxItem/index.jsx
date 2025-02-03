@@ -1,7 +1,4 @@
-import { useDispatch } from "react-redux";
-
-export default function CheckboxItem({ dispatcher, checked, name, label }) {
-  const dispatch = useDispatch();
+export default function CheckboxItem({ onChange, checked, name, label }) {
   return (
     <div className="govuk-checkboxes__item">
       <input
@@ -10,9 +7,7 @@ export default function CheckboxItem({ dispatcher, checked, name, label }) {
         id={`show_hide_${name}`}
         className="govuk-checkboxes__input"
         checked={checked}
-        onChange={(e) => {
-          dispatch(dispatcher(name));
-        }}
+        onChange={onChange}
       />
       <label className="govuk-label govuk-checkboxes__label" htmlFor={name}>
         {label}
