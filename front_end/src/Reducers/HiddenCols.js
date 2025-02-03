@@ -1,36 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 // Use of this lib guarantees no state mutation
 
-const loadState = () => {
-  try {
-    const serializedState = localStorage.getItem("editForecast.hiddenCols");
-    return serializedState ? JSON.parse(serializedState) : undefined;
-  } catch (error) {
-    console.log("Could not load edit forecast table column state");
-    return undefined;
-  }
-};
-
-const saveState = (state) => {
-  try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem("editForecast.hiddenCols", serializedState);
-  } catch (error) {
-    console.log("Could not save edit forecast table column state");
-  }
-};
-
 const defaultState = {
   hiddenCols: [],
   showAll: true,
 };
 
-const initialState = loadState() || defaultState;
+const loadState = () => {
+  const serializedState = localStorage.getItem("editForecast.hiddenCols");
+  return serializedState ? JSON.parse(serializedState) : defaultState;
+};
+
+const saveState = (state) => {
+  const serializedState = JSON.stringify(state);
+  localStorage.setItem("editForecast.hiddenCols", serializedState);
+};
 
 const hiddenCols = createSlice({
   name: "hiddenCols",
   slice: "hidden",
-  initialState,
+  initialState: loadState(),
   reducers: {
     TOGGLE_ITEM: (state, action) => {
       let index = state.hiddenCols.indexOf(action.payload);
