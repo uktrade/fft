@@ -9,7 +9,7 @@ const AggregateValue = ({ rowIndex, actualsOnly, extraClasses }) => {
   let total = 0;
 
   for (let i = 1; i < 13; i++) {
-    if (!cells[i] || (actualsOnly && cells[i].isActual)) {
+    if (!cells[i] || (actualsOnly && !cells[i].isActual)) {
       continue;
     }
 

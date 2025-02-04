@@ -11,7 +11,7 @@ const TotalAggregate = ({ actualsOnly, id, extraClasses }) => {
   // eslint-disable-next-line
   for (const cell of cells) {
     for (let i = 1; i < 13; i++) {
-      if (!cell[i] || (actualsOnly && cell[i].isActual)) {
+      if (!cell[i] || (actualsOnly && !cell[i].isActual)) {
         continue;
       }
 
