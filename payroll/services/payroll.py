@@ -169,7 +169,7 @@ def update_payroll_forecast_figure(
     FinancialCodeForecastService(
         financial_code=financial_code,
         year=financial_year,
-        override_locked=False,
+        override_locked=True,
     ).update(forecast)
 
 

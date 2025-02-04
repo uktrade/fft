@@ -9,7 +9,7 @@ class FinancialCodeForecastService:
         *,
         financial_code: FinancialCode,
         year: FinancialYear,
-        override_locked: bool = True,
+        override_locked: bool = False,
     ):
         self.financial_code = financial_code
         self.year = year

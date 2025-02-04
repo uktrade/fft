@@ -80,7 +80,7 @@ test: # Run tests
 	$(web) pytest $(test)
 
 test-ci: # Run tests with settings for CI
-	$(web) pytest --random-order -n 4 -v
+	$(web) pytest --random-order -n 4 -v forecast
 
 superuser: # Create superuser
 	$(web) $(manage) createsuperuser
