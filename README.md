@@ -42,7 +42,7 @@ npm run dev
 
 You should now be able to access the application at http://localhost:8000/.
 
-If you want full admin access, you can elevate your by running:
+If you want full admin access, you can elevate your user by running:
 
 ```bash
 make elevate
@@ -53,9 +53,9 @@ make elevate
 
 ## Local Development
 
-If you can connect to the dev environment but still have issues such as; `403 - Forbidden Error` on your local, there are few steps you can follow to resolve this:
+If you can connect to the dev environment but still have issues such as `403 - Forbidden Error` on your local, there are a few steps you can follow to resolve this:
 
-- Using dev tools on your browser, go to Application tab and clear data for Local Storage, Session Storage and Cookies.
+- Using dev tools on your browser, go to the Application tab and clear data for Local Storage, Session Storage and Cookies.
 
 - If the problem persists you may need to temporarily pause your VPN while you work on FFT on your local.
 
@@ -63,28 +63,6 @@ If you can connect to the dev environment but still have issues such as; `403 - 
 
 ```
 docker-compose run --service-ports
-```
-
-## Important notes on design
-
-We use Django Guardian for model instance level permissions https://github.com/django-guardian/django-guardian
-
-Django Guardian **should not be used directly**. There is a set of wrapper functions in _forecast.permission_shortcuts_
-
-These add an additional permission check for the user being able to view forecasts at all.
-
-## Creating data/non-auto migrations
-
-When adding data or non-auto generated migrations, please use the convention:
-
-```
-[number]_data_[date]_[time]
-```
-
-for example:
-
-```
-0004_data_20200501_1345
 ```
 
 ## Running the BDD tests
@@ -98,7 +76,7 @@ docker compose up -d chrome
 Build the frontend assets:
 
 ```bash
-npm run bdd
+npm run build
 ```
 
 Run the tests:
@@ -107,7 +85,43 @@ Run the tests:
 make bdd
 ```
 
+## Running the Python tests
+
+Run all tests:
+
+```bash
+make test
+```
+
+Run a single test or file:
+
+```bash
+make test test=path/to/test.py::test_name_here
+```
+
 ## Notes
+
+### Important notes on design
+
+We use Django Guardian for model instance level permissions https://github.com/django-guardian/django-guardian
+
+Django Guardian **should not be used directly**. There is a set of wrapper functions in _forecast.permission_shortcuts_
+
+These add an additional permission check for the user being able to view forecasts at all.
+
+### Creating data/non-auto migrations
+
+When adding data or non-auto generated migrations, please use the convention:
+
+```
+[number]_data_[date]_[time]
+```
+
+for example:
+
+```
+0004_data_20200501_1345
+```
 
 ### Managing user permissions
 
