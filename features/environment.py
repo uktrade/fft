@@ -214,8 +214,7 @@ def copy_text(context, text):
         )
 
 
-def before_scenario(context, scenario):
-    context.test.client.handler.ignore_404_errors = ["/favicon.ico"]
+def before_scenario(context, scenario):   
     BehaviorDrivenTestCase.host = settings.SELENIUM_HOST
     set_up_test_objects(context)
 

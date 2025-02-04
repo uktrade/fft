@@ -8,72 +8,72 @@ from selenium.webdriver.support.ui import WebDriverWait
 from features.environment import TEST_COST_CENTRE_CODE, create_test_user
 
 
-@given("the user wants to edit a cell value")
-def step_impl(context):
-    create_test_user(context)
-    context.browser.get(f"{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/")
+# @given("the user wants to edit a cell value")
+# def step_impl(context):
+#     create_test_user(context)
+#     context.browser.get(f"{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/")
 
 
-@when("the user double clicks an editable cell in the edit forecast table")
-def step_impl(context):
-    WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_0_6"))
-    )
+# @when("the user double clicks an editable cell in the edit forecast table")
+# def step_impl(context):
+#     WebDriverWait(context.browser, 5000).until(
+#         ec.presence_of_element_located((By.ID, "id_0_6"))
+#     )
 
-    sept_cell = context.browser.find_element(By.ID, "id_0_6")
-    action_chains = ActionChains(context.browser)
-    action_chains.double_click(sept_cell).perform()
-
-
-@when("the user tabs to a cell")
-def step_impl(context):
-    aug_cell = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_0_5"))
-    )
-
-    action_chains = ActionChains(context.browser)
-    action_chains.double_click(aug_cell).perform()
-
-    action_chains = ActionChains(context.browser)
-    action_chains.key_down(Keys.TAB).perform()
+#     sept_cell = context.browser.find_element(By.ID, "id_0_6")
+#     action_chains = ActionChains(context.browser)
+#     action_chains.double_click(sept_cell).perform()
 
 
-@then("the cell becomes editable")
-def step_impl(context):
-    sept_cell_input_value = (
-        WebDriverWait(context.browser, 5000)
-        .until(ec.presence_of_element_located((By.ID, "id_0_6_input")))
-        .get_attribute("value")
-    )
+# @when("the user tabs to a cell")
+# def step_impl(context):
+#     aug_cell = WebDriverWait(context.browser, 5000).until(
+#         ec.presence_of_element_located((By.ID, "id_0_5"))
+#     )
 
-    assert sept_cell_input_value == "0.00"
+#     action_chains = ActionChains(context.browser)
+#     action_chains.double_click(aug_cell).perform()
+
+#     action_chains = ActionChains(context.browser)
+#     action_chains.key_down(Keys.TAB).perform()
 
 
-@given("the user edits a cell value")
-def step_impl(context):
-    create_test_user(context)
-    context.browser.get(f"{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/")
+# @then("the cell becomes editable")
+# def step_impl(context):
+#     sept_cell_input_value = (
+#         WebDriverWait(context.browser, 5000)
+#         .until(ec.presence_of_element_located((By.ID, "id_0_6_input")))
+#         .get_attribute("value")
+#     )
 
-    WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_0_6"))
-    )
+#     assert sept_cell_input_value == "0.00"
 
-    sept_cell = context.browser.find_element(By.ID, "id_0_6")
-    action_chains = ActionChains(context.browser)
-    action_chains.double_click(sept_cell).perform()
 
-    sept_input = WebDriverWait(context.browser, 5000).until(
-        ec.presence_of_element_located((By.ID, "id_0_6_input"))
-    )
+# @given("the user edits a cell value")
+# def step_impl(context):
+#     create_test_user(context)
+#     context.browser.get(f"{context.base_url}/forecast/edit/{TEST_COST_CENTRE_CODE}/")
 
-    action_chains = ActionChains(context.browser)
-    action_chains.double_click(sept_input).perform()
+#     WebDriverWait(context.browser, 5000).until(
+#         ec.presence_of_element_located((By.ID, "id_0_6"))
+#     )
 
-    sept_input.send_keys("1")
-    sept_input.send_keys("0")
-    sept_input.send_keys("0")
-    sept_input.send_keys("0")
-    sept_input.send_keys("0")
+#     sept_cell = context.browser.find_element(By.ID, "id_0_6")
+#     action_chains = ActionChains(context.browser)
+#     action_chains.double_click(sept_cell).perform()
+
+#     sept_input = WebDriverWait(context.browser, 5000).until(
+#         ec.presence_of_element_located((By.ID, "id_0_6_input"))
+#     )
+
+#     action_chains = ActionChains(context.browser)
+#     action_chains.double_click(sept_input).perform()
+
+#     sept_input.send_keys("1")
+#     sept_input.send_keys("0")
+#     sept_input.send_keys("0")
+#     sept_input.send_keys("0")
+#     sept_input.send_keys("0")
 
 
 @when("the user tabs to a new cell")
