@@ -18,9 +18,7 @@ def step_impl(context):
         .until(ec.presence_of_element_located((By.ID, "year_total_0")))
         .get_attribute("innerHTML")
     )
-    from forecast.models import ForecastMonthlyFigure
 
-    print(ForecastMonthlyFigure.objects.all())
     assert year_to_date_value == "0"
     assert year_total_row_0_value == "10,000"
 
