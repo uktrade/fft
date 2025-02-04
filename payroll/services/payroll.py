@@ -76,14 +76,14 @@ def update_all_employee_pay_periods() -> None:
 
 class PayrollForecast(MonthsDict[int]):
     programme_code: str
-    natural_account_code: str
+    natural_account_code: int
 
 
 def payroll_forecast_report(
     cost_centre: CostCentre, financial_year: FinancialYear
 ) -> Iterator[PayrollForecast]:
     # { programme_code: { natural_account_code: np.array[ np.float64 ] } }
-    report: dict[str, dict[str, npt.NDArray[np.float64]]] = defaultdict(
+    report: dict[str, dict[int, npt.NDArray[np.float64]]] = defaultdict(
         lambda: defaultdict(lambda: np.zeros(12))
     )
 

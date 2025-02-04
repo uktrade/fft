@@ -251,7 +251,7 @@ def test_scenario_update_forecast(db):
     financial_code_salary = FinancialCodeFactory(
         cost_centre=cost_centre,
         programme=programme_code,
-        natural_account_code__natural_account_code="71111001",
+        natural_account_code__natural_account_code=SALARY_NAC,
     )
 
     financial_year = FinancialYear.objects.current()
@@ -274,7 +274,7 @@ def test_scenario_update_forecast(db):
 
     payroll_forecast = PayrollForecast(
         programme_code=programme_code,
-        natural_account_code="71111001",
+        natural_account_code=SALARY_NAC,
         **expected_forecast,
     )
 
