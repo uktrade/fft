@@ -1,6 +1,5 @@
 import operator
 from collections import defaultdict
-from functools import partial
 from itertools import accumulate
 from statistics import mean
 from typing import Iterator, TypedDict
@@ -170,7 +169,7 @@ def update_payroll_forecast_figure(
     FinancialCodeForecastService(
         financial_code=financial_code,
         year=financial_year,
-        skip_locked=False,
+        override_locked=False,
     ).update(forecast)
 
 

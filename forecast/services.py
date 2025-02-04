@@ -9,11 +9,11 @@ class FinancialCodeForecastService:
         *,
         financial_code: FinancialCode,
         year: FinancialYear,
-        skip_locked: bool = True,
+        override_locked: bool = True,
     ):
         self.financial_code = financial_code
         self.year = year
-        self.skip_locked = skip_locked
+        self.override_locked = override_locked
 
     def update_period(self, *, period: int | FinancialPeriod, amount: int):
         if isinstance(period, int):
@@ -24,7 +24,7 @@ class FinancialCodeForecastService:
         if period.actual_loaded:
             return
 
-        if self.financial_code.is_locked and self.skip_locked:
+        if self.financial_code.is_locked and not self.override_locked:
             return
 
         figure, _ = ForecastMonthlyFigure.objects.get_or_create(

@@ -1,5 +1,4 @@
 import pytest
-
 from pytest_django.asserts import assertNumQueries
 
 from core.test.factories import FinancialYearFactory
