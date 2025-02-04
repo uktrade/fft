@@ -20,18 +20,10 @@ from forecast.models import (
 )
 from forecast.permission_shortcuts import assign_perm
 from forecast.test.factories import FinancialCodeFactory
-from forecast.test.test_edit_forecast_views import AddForecastRowTest
 from forecast.views.edit_forecast import (
     UNAVAILABLE_FORECAST_EDIT_TITLE,
     UNAVAILABLE_FUTURE_FORECAST_EDIT_TITLE,
 )
-
-
-class AddFutureForecastRowTest(AddForecastRowTest):
-    def SetUp(self):
-        super().setUp()
-        future_year_obj = get_financial_year_obj(self.financial_year + 1)
-        self.financial_year = future_year_obj.financial_year
 
 
 class EditForecastTest(BaseTestCase):

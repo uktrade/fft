@@ -221,7 +221,7 @@ const TableCell = ({
   };
 
   const isCellUpdating = () => {
-    if (cell && isEditable) return false;
+    if (cell && !isEditable) return false;
 
     if (isUpdating) return true;
 
