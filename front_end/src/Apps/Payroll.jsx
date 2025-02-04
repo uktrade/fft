@@ -10,6 +10,7 @@ import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
@@ -70,6 +71,20 @@ export default function Payroll() {
   );
   const nonPayroll = useMemo(
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
+    [allPayroll],
+  );
+  const attrition = useMemo(
+    () =>
+      allPayroll.pay_modifiers.filter(
+        (modifier) => modifier.name == "Attrition",
+      ),
+    [allPayroll],
+  );
+  const pay_uplift = useMemo(
+    () =>
+      allPayroll.pay_modifiers.filter(
+        (modifier) => modifier.name == "Pay Uplift",
+      ),
     [allPayroll],
   );
 
@@ -195,10 +210,11 @@ export default function Payroll() {
         </Tab>
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
-            data={allPayroll.pay_modifiers}
+            data={attrition}
             onInputChange={handleUpdatePayModifiers}
             onCreate={handleCreatePayModifiers}
           />
+          <DisplayPayModifier data={pay_uplift} />
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>

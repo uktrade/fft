@@ -1,10 +1,11 @@
-import { monthsToTitleCase } from "../../../Util";
+import PayModifierHeaders from "../PayModifierHeaders";
 
 const EditPayModifier = ({ data, onInputChange, onCreate }) => {
   if (data.length === 0) {
     return (
       <>
-        <p className="govuk-body">No modifiers set</p>
+        <h3 className="govuk-heading-s">Attrition</h3>
+        <p className="govuk-body">No attrition set</p>
         <button
           className="govuk-button govuk-button--secondary"
           onClick={onCreate}
@@ -19,17 +20,7 @@ const EditPayModifier = ({ data, onInputChange, onCreate }) => {
     <div className="govuk-form-group" key={index}>
       <h3 className="govuk-heading-s">Attrition</h3>
       <table className="govuk-table">
-        <thead className="govuk-table__head">
-          <tr className="govuk-table__row">
-            {monthsToTitleCase.map((header) => {
-              return (
-                <th scope="col" className="govuk-table__header" key={header}>
-                  {header}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
+        <PayModifierHeaders />
         <tbody className="govuk-table__body">
           <tr className="govuk-table__row">
             {row.pay_modifiers.map((value, index) => {

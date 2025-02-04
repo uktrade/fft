@@ -1,6 +1,6 @@
 import operator
 from collections import defaultdict
-from itertools import accumulate
+from itertools import accumulate, chain
 from statistics import mean
 from typing import Iterator, TypedDict
 
@@ -351,6 +351,7 @@ def update_vacancies_data(
 
 class PayModifiers(TypedDict):
     id: int
+    name: str
     pay_modifiers: list[float]
 
 
@@ -358,12 +359,22 @@ def get_pay_modifiers_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[PayModifiers]:
-    qs = Attrition.objects.filter(
+    attrition = Attrition.objects.filter(
         cost_centre=cost_centre,
         financial_year=financial_year,
     )
-    for obj in qs:
-        yield PayModifiers(id=obj.pk, pay_modifiers=obj.periods)
+    pay_uplift = PayUplift.objects.filter(
+        financial_year=financial_year,
+    )
+    pay_modifiers = chain(attrition, pay_uplift)
+
+    for obj in pay_modifiers:
+        print(type(obj) is Attrition)
+        name = "Attrition" if type(obj) is Attrition else "Pay Uplift"
+
+        print(name)
+
+        yield PayModifiers(id=obj.pk, name=name, pay_modifiers=obj.periods)
 
 
 def create_default_pay_modifiers(
@@ -385,7 +396,8 @@ def update_pay_modifiers_data(
     financial_year: FinancialYear,
     data: list[PayModifiers],
 ) -> None:
-    """Update pay modifiers for a given year and cost centre using the provided list.
+    """Update attrition pay modifiers for a given year and cost centre using the provided list.
+    Pay uplift is for display only.
 
     This function is wrapped with a transaction, so if any of the pay modifier updates fail,
     the whole batch will be rolled back.
@@ -397,6 +409,9 @@ def update_pay_modifiers_data(
     """
 
     for pay_modifier in data:
+        if pay_modifier.get("name") == "Pay Uplift":
+            break
+
         if not pay_modifier.get("id"):
             raise ValueError("id is empty")
 
