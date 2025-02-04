@@ -28,9 +28,9 @@ from ..factories import (
 
 
 # NOTE: These must match the PAYROLL.BASIC_PAY_NAC, PAYROLL.PENSION_NAC and PAYROLL.ERNIC_NAC settings.
-SALARY_NAC = "71111001"
-PENSION_NAC = "71111002"
-ERNIC_NAC = "71111003"
+SALARY_NAC = 71111001
+PENSION_NAC = 71111002
+ERNIC_NAC = 71111003
 NACS = [SALARY_NAC, PENSION_NAC, ERNIC_NAC]
 
 
@@ -245,8 +245,8 @@ def test_one_employee_with_attrition(db):
 
 
 def test_scenario_update_forecast(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
-    programme_code = ProgrammeCodeFactory.create()
+    cost_centre = CostCentreFactory(cost_centre_code="123456")
+    programme_code = ProgrammeCodeFactory()
 
     financial_code_salary = FinancialCodeFactory(
         cost_centre=cost_centre,
@@ -256,7 +256,7 @@ def test_scenario_update_forecast(db):
 
     financial_year = FinancialYear.objects.current()
 
-    expected_forecast: MonthsDict[float] = dict(
+    expected_forecast: MonthsDict[int] = dict(
         # pence
         apr=randrange(0, 1_000_000),
         may=randrange(0, 1_000_000),

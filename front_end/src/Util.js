@@ -148,12 +148,15 @@ export const processForecastData = (
   ];
 
   forecastData.forEach(function (rowData, rowIndex) {
-    let cells = {};
+    let row = {};
     let colIndex = 0;
+
+    row._meta = {};
+    row._meta.isLocked = rowData.is_locked;
 
     // eslint-disable-next-line
     for (const financialCodeCol of financialCodeCols) {
-      cells[financialCodeCol] = {
+      row[financialCodeCol] = {
         rowIndex: rowIndex,
         colIndex: colIndex,
         key: financialCodeCol,
@@ -186,28 +189,19 @@ export const processForecastData = (
         overrideAmount = mappedPayrollData[forecastKey][period];
       }
 
-      // FIXME: missing cells because 0 are not locked too because no row context
-      // TODO (FFT-176): Payroll post-release cleanup
-      const isEditable = window.FEATURES.payroll_enable_forecast
-        ? !monthlyFigure.actual && !rowData.is_locked
-        : !monthlyFigure.actual;
-
-      cells[monthlyFigure.month] = {
+      row[monthlyFigure.month] = {
         rowIndex: rowIndex,
         colIndex: colIndex,
         key: monthlyFigure.month,
         amount: monthlyFigure.amount,
         startingAmount: monthlyFigure.starting_amount,
-        isActual: monthlyFigure.actual,
-        isEditable: isEditable,
-        isLocked: rowData.is_locked,
         overrideAmount: overrideAmount,
       };
 
       colIndex++;
     }
 
-    rows.push(cells);
+    rows.push(row);
   });
 
   return rows;

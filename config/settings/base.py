@@ -429,8 +429,8 @@ class Payroll:
     ERNIC_NAC: int | None = None
     VACANCY_NAC: int | None = None
     AVERAGE_SALARY_THRESHOLD: int = 2
-    # FIXME: switch to false
-    ENABLE_FORECAST: bool = True
+    # TODO (FFT-176): Payroll post-release cleanup
+    ENABLE_FORECAST: bool = False
 
     @property
     def nacs(self):

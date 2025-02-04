@@ -44,8 +44,8 @@ const TableCell = ({
 
   const dispatch = useDispatch();
 
-  const cells = useSelector((state) => state.allCells.cells);
-  const cell = useSelector((state) => state.allCells.cells[rowIndex][cellKey]);
+  const row = useSelector((state) => state.allCells.cells[rowIndex]);
+  const cell = row[cellKey];
   const editCellId = useSelector((state) => state.edit.cellId, checkValue);
 
   const isOverride = () => {
@@ -64,6 +64,13 @@ const TableCell = ({
     checkSelectRow,
   );
   const allSelected = useSelector((state) => state.selected.all);
+
+  let isLocked = row._meta.isLocked;
+  // window.actuals = [1, 2];
+  // cellKey = 2;
+  let isActual = window.actuals.indexOf(cellKey) > -1;
+
+  const isEditable = !(isActual || isLocked);
 
   const getValue = () => {
     if (cell && cell.amount) {
@@ -90,7 +97,7 @@ const TableCell = ({
   };
 
   const wasEdited = () => {
-    if (!cell.isEditable) return false;
+    if (!isEditable) return false;
 
     return cell.amount !== cell.startingAmount;
   };
@@ -98,14 +105,14 @@ const TableCell = ({
   const getClasses = () => {
     const classes = ["govuk-table__cell", "forecast-month-cell", "figure-cell"];
 
-    if (!cell?.isEditable) classes.push("not-editable");
+    if (!isEditable) classes.push("not-editable");
     if (isSelected()) classes.push("selected");
     if (!cell) return classes.join(" ");
 
     if (cell && cell.amount < 0) classes.push("negative");
     if (isOverride()) classes.push("override");
     if (wasEdited()) classes.push("edited");
-    cell?.isActual ? classes.push("is-actual") : classes.push("is-forecast");
+    isActual ? classes.push("is-actual") : classes.push("is-forecast");
 
     return classes.join(" ");
   };
@@ -146,14 +153,11 @@ const TableCell = ({
     let crsfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
 
     let payload = new FormData();
-    payload.append(
-      "natural_account_code",
-      cells[rowIndex]["natural_account_code"].value,
-    );
-    payload.append("programme_code", cells[rowIndex]["programme"].value);
-    payload.append("project_code", cells[rowIndex]["project_code"].value);
-    payload.append("analysis1_code", cells[rowIndex]["analysis1_code"].value);
-    payload.append("analysis2_code", cells[rowIndex]["analysis2_code"].value);
+    payload.append("natural_account_code", row["natural_account_code"].value);
+    payload.append("programme_code", row["programme"].value);
+    payload.append("project_code", row["project_code"].value);
+    payload.append("analysis1_code", row["analysis1_code"].value);
+    payload.append("analysis2_code", row["analysis2_code"].value);
     payload.append("csrfmiddlewaretoken", crsfToken);
     payload.append("month", cellKey);
     payload.append("amount", intAmount);
@@ -217,7 +221,7 @@ const TableCell = ({
   };
 
   const isCellUpdating = () => {
-    if (cell && !cell.isEditable) return false;
+    if (cell && isEditable) return false;
 
     if (isUpdating) return true;
 
@@ -262,7 +266,7 @@ const TableCell = ({
         className={getClasses()}
         id={getId()}
         onDoubleClick={() => {
-          if (cell.isEditable && !isOverride()) {
+          if (isEditable && !isOverride()) {
             dispatch(
               SET_EDITING_CELL({
                 cellId: cellId,

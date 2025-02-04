@@ -174,6 +174,54 @@ Create launch.json file inside .vscode directory
 }
 ```
 
-## Code notes
+## Implementation notes
+
+### Reducers
 
 All the reducers in `front_end/src/Reducers/` are for the `Forecast` React "app".
+
+### ForecastMonthlyFigure
+
+`ForecastMonthlyFigure` is treated as a sparse matrix of actual/forecast data. What do I
+mean by this? Well if the `amount` is `0`, then the object is not always created and
+therefore does not exist. The code then relies on a default behaviour when the object
+related to that figure does not exist.
+
+I guess that this was done to reduce the number of rows that would be needed in that
+table.
+
+**Examples**
+
+- Paste to excel - not created if amount is 0
+- Edit forecast table cell - created regardless
+
+### Rounding
+
+> For context, FFT stores monetary values as integer pence.
+
+I have found that FFT is using a couple of different rounding methods. The differences
+could introduce unexpected behaviour so I wanted to document the differences here.
+
+Python's `round` uses a round to nearest even number approach.
+
+```python
+round(0.5) == 0
+round(1.5) == 2
+```
+
+JavaScript's `Math.round` uses a round half up to nearest number approach.
+
+```javascript
+Math.round(0.5) === 1;
+Math.round(1.5) === 2;
+```
+
+NumPy's `numpy.round` uses a round to nearest even number approach as well.
+
+Python's `Decimal` is also used to parse decimal numbers which are then multiplied by
+100 and stored in Django's `IntegerField`. This will truncate the decimal point numbers,
+effectively flooring them.
+
+It might be that these inconsistencies don't come up in practice, or that they are there
+on purpose and expected/useful to users. However, I still think it's worth noting that
+all these approaches are used and that there could be issues.

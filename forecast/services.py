@@ -1,0 +1,46 @@
+from core.constants import MONTHS
+from core.models import FinancialYear
+from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
+
+
+class FinancialCodeForecastService:
+    def __init__(
+        self,
+        *,
+        financial_code: FinancialCode,
+        year: FinancialYear,
+        skip_locked: bool = True,
+    ):
+        self.financial_code = financial_code
+        self.year = year
+        self.skip_locked = skip_locked
+
+    def update_period(self, *, period: int | FinancialPeriod, amount: int):
+        if isinstance(period, int):
+            period = FinancialPeriod.objects.get(pk=period)
+
+        assert isinstance(period, FinancialPeriod)
+
+        if period.actual_loaded:
+            return
+
+        if self.financial_code.is_locked and self.skip_locked:
+            return
+
+        figure, _ = ForecastMonthlyFigure.objects.get_or_create(
+            financial_code=self.financial_code,
+            financial_year=self.year,
+            financial_period=period,
+            archived_status=None,
+        )
+
+        # NOTE: Not deleting the figure if the amount is 0 like in other places.
+
+        figure.amount = amount
+        figure.save()
+
+    def update(self, forecast: list[int]):
+        assert len(forecast) == len(MONTHS)
+
+        for i, _ in enumerate(MONTHS):
+            self.update_period(period=i + 1, amount=forecast[i])

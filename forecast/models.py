@@ -445,6 +445,9 @@ class FinancialCodeAbstract(models.Model):
 
     @property
     def is_locked(self) -> bool:
+        if settings.PAYROLL.ENABLE_FORECAST is False:
+            return False
+
         return (
             self.natural_account_code_id in settings.PAYROLL.nacs
             and self.analysis1_code is None

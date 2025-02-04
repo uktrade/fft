@@ -3,7 +3,7 @@
  *
  * @example
  * // <meta name="app:features:foo" content="true">
- * const FEATURES = new FeatureFlags("app:features");
+ * const FEATURES = FeatureFlags("app:features");
  * FEATURES.foo === true;
  * FEATURES.bar === false;
  *
