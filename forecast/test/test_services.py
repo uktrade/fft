@@ -9,7 +9,7 @@ from forecast.services import FinancialCodeForecastService
 from forecast.test.factories import FinancialCodeFactory, FinancialPeriodFactory
 
 
-class TestForecastTableService:
+class TestFinancialCodeForecastService:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
         self.code = FinancialCodeFactory()
@@ -22,7 +22,7 @@ class TestForecastTableService:
     def period(self, db):
         return FinancialPeriodFactory()
 
-    def test_update_cell_creates(self, period):
+    def test_update_period_creates(self, period):
         with assertNumQueries(5):
             self.service.update_period(period=period, amount=99)
 

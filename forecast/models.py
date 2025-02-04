@@ -445,6 +445,7 @@ class FinancialCodeAbstract(models.Model):
 
     @property
     def is_locked(self) -> bool:
+        # TODO: Should `FinancialCode` have knowledge of payroll?
         if settings.PAYROLL.ENABLE_FORECAST is False:
             return False
 

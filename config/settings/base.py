@@ -422,6 +422,7 @@ CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
 
 
 # Payroll
+# TODO: Should we flatten this?
 @dataclass
 class Payroll:
     BASIC_PAY_NAC: int | None = None
