@@ -369,10 +369,7 @@ def get_pay_modifiers_data(
     pay_modifiers = chain(attrition, pay_uplift)
 
     for obj in pay_modifiers:
-        print(type(obj) is Attrition)
         name = "Attrition" if type(obj) is Attrition else "Pay Uplift"
-
-        print(name)
 
         yield PayModifiers(id=obj.pk, name=name, pay_modifiers=obj.periods)
 
