@@ -14,7 +14,10 @@ from chartofaccountDIT.test.factories import (
     ProjectCodeFactory,
 )
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
-from core.utils.generic_helpers import get_current_financial_year
+from core.utils.generic_helpers import (
+    get_current_financial_year,
+    get_financial_year_obj,
+)
 from costcentre.test.factories import (
     CostCentreFactory,
     DepartmentalGroupFactory,
@@ -234,6 +237,13 @@ class AddForecastRowTest(BaseTestCase):
 
         self.assertEqual(response_2.status_code, 302)
         self.assertEqual(FinancialCode.objects.count(), 2)
+
+
+class AddFutureForecastRowTest(AddForecastRowTest):
+    def setUp(self):
+        super().setUp()
+        future_year_obj = get_financial_year_obj(self.financial_year + 1)
+        self.financial_year = future_year_obj.financial_year
 
 
 class ChooseCostCentreTest(BaseTestCase):

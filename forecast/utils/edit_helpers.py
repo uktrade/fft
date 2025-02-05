@@ -125,7 +125,11 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
                     financial_code=financial_code,
                 )
 
-            if new_value != monthly_figure.amount:
+            # TODO: Consider using the new `FinancialCodeForecastService`.
+            if (
+                not monthly_figure.financial_code.is_locked
+                and new_value != monthly_figure.amount
+            ):
                 monthly_figure.amount = new_value
                 monthly_figure.save()
 

@@ -20,7 +20,6 @@
 {% endblock content %}
 
 {% block scripts %}
-    {{ block.super }}
     <script>
         window.costCentreCode = "{{ cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year }}");

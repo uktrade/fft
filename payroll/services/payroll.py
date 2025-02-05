@@ -14,7 +14,8 @@ from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
-from forecast.models import ForecastMonthlyFigure
+from forecast.models import FinancialCode, ForecastMonthlyFigure
+from forecast.services import FinancialCodeForecastService
 from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecast
 from gifthospitality.models import Grade
 from user.models import User
@@ -73,16 +74,16 @@ def update_all_employee_pay_periods() -> None:
         )
 
 
-class PayrollForecast(MonthsDict[float]):
+class PayrollForecast(MonthsDict[int]):
     programme_code: str
-    natural_account_code: str
+    natural_account_code: int
 
 
 def payroll_forecast_report(
     cost_centre: CostCentre, financial_year: FinancialYear
 ) -> Iterator[PayrollForecast]:
     # { programme_code: { natural_account_code: np.array[ np.float64 ] } }
-    report: dict[str, dict[str, npt.NDArray[np.float64]]] = defaultdict(
+    report: dict[str, dict[int, npt.NDArray[np.float64]]] = defaultdict(
         lambda: defaultdict(lambda: np.zeros(12))
     )
 
@@ -124,13 +125,57 @@ def payroll_forecast_report(
 
     for programme_code in report:
         for nac, forecast in report[programme_code].items():
-            forecast_months: MonthsDict[float] = dict(zip(MONTHS, forecast, strict=False))  # type: ignore
+            forecast_floored: list[int] = np.floor(forecast).astype(int).tolist()
+            forecast_months: MonthsDict[int] = dict(zip(MONTHS, forecast_floored, strict=False))  # type: ignore
 
             yield PayrollForecast(
                 programme_code=programme_code,
                 natural_account_code=nac,
                 **forecast_months,
             )
+
+
+def update_payroll_forecast(*, financial_year: FinancialYear, cost_centre: CostCentre):
+    report = payroll_forecast_report(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+    )
+    for payroll_forecast in report:
+        update_payroll_forecast_figure(
+            financial_year=financial_year,
+            cost_centre=cost_centre,
+            payroll_forecast=payroll_forecast,
+        )
+
+
+def update_payroll_forecast_figure(
+    *,
+    financial_year: FinancialYear,
+    cost_centre: CostCentre,
+    payroll_forecast: PayrollForecast,
+):
+    # Create a financial code if there isn't one.
+    financial_code, _ = FinancialCode.objects.get_or_create(
+        cost_centre=cost_centre,
+        natural_account_code_id=payroll_forecast["natural_account_code"],
+        programme_id=payroll_forecast["programme_code"],
+        analysis1_code=None,
+        analysis2_code=None,
+        project_code=None,
+    )
+
+    forecast = [payroll_forecast[month] for month in MONTHS]
+
+    FinancialCodeForecastService(
+        financial_code=financial_code,
+        year=financial_year,
+        override_locked=True,
+    ).update(forecast)
+
+
+def update_all_payroll_forecast(*, financial_year: FinancialYear):
+    for cost_centre in CostCentre.objects.all():
+        update_payroll_forecast(financial_year=financial_year, cost_centre=cost_centre)
 
 
 def get_attrition_instance(
@@ -233,12 +278,12 @@ def get_payroll_data(
 
 
 @transaction.atomic
-def update_payroll_data(
+def update_employee_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
     data: list[EmployeePayroll],
 ) -> None:
-    """Update a cost centre payroll for a given year using the provided list.
+    """Update a cost centre's employee pay periods for a given year.
 
     This function is wrapped with a transaction, so if any of the payroll updates fail,
     the whole batch will be rolled back.
