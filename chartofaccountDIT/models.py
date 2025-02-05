@@ -313,6 +313,12 @@ class ArchivedCommercialCategory(
 
 # define level1 values: Capital, staff, etc is Level 1 in UKTI nac hierarchy
 class NaturalCodeAbstract(models.Model):
+    class Meta:
+        abstract = True
+        verbose_name = "Natural Account Code (NAC)"
+        verbose_name_plural = "Natural Account Codes (NAC)"
+        ordering = ["natural_account_code"]
+
     natural_account_code = models.IntegerField(primary_key=True, verbose_name="NAC",)
     natural_account_code_description = models.CharField(
         max_length=200, verbose_name="NAC Description"
@@ -353,12 +359,6 @@ class NaturalCodeAbstract(models.Model):
         return "{} - {}".format(
             self.natural_account_code, self.natural_account_code_description
         )
-
-    class Meta:
-        abstract = True
-        verbose_name = "Natural Account Code (NAC)"
-        verbose_name_plural = "Natural Account Codes (NAC)"
-        ordering = ["natural_account_code"]
 
 
 class NaturalCode(NaturalCodeAbstract, IsActiveModel):

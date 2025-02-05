@@ -17,6 +17,7 @@ from forecast.models import (
 class FinancialPeriodFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FinancialPeriod
+        django_get_or_create = ("financial_period_code",)
 
     financial_period_code = 1
     period_long_name = "April"
