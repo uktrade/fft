@@ -40,6 +40,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
     nac_description = serializers.SerializerMethodField(
         "get_nac_description",
     )
+    is_locked = serializers.SerializerMethodField()
 
     class Meta:
         model = FinancialCode
@@ -47,6 +48,7 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
             "programme_description",
             "nac_description",
             "natural_account_code",
+            "is_locked",
             "programme",
             "cost_centre",
             "analysis1_code",
@@ -62,3 +64,6 @@ class FinancialCodeSerializer(serializers.ModelSerializer):
 
     def get_nac_description(self, obj):
         return obj.natural_account_code.natural_account_code_description
+
+    def get_is_locked(self, obj):
+        return obj.is_locked

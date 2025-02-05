@@ -11,6 +11,7 @@ fake = Faker()
 class FinancialYearFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = FinancialYear
+        django_get_or_create = ("financial_year",)
 
     current = True
     financial_year = 2019

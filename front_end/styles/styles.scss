@@ -223,8 +223,13 @@ th {
   background-color: rgba(86, 148, 202, 0.25);
 }
 
-.override {
+.override,
+.not-editable.is-forecast {
   background-color: rgba(201, 155, 75, 0.25);
+
+  &.selected {
+    background-color: hsla(38, 90%, 20%, 0.25);
+  }
 }
 
 .link-button {

@@ -1,16 +1,18 @@
-export const SET_CELLS = "SET_CELLS";
+import { createSlice } from "@reduxjs/toolkit";
 
-const cellsInitial = {
-  cells: [],
-};
+const allCells = createSlice({
+  name: "allCells",
+  slice: "allCells",
+  initialState: {
+    cells: [],
+  },
+  reducers: {
+    SET_CELLS: (state, action) => {
+      state.cells = action.cells;
+    },
+  },
+});
 
-export const allCells = (state = cellsInitial, action) => {
-  switch (action.type) {
-    case SET_CELLS:
-      return Object.assign({}, state, {
-        cells: action.cells,
-      });
-    default:
-      return state;
-  }
-};
+export const { SET_CELLS } = allCells.actions;
+
+export default allCells.reducer;

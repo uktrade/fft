@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.http import JsonResponse
 
 from core.utils.generic_helpers import get_previous_months_data
@@ -52,7 +53,7 @@ class EditPayrollApiView(EditPayrollBaseView):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
 
-        payroll_service.update_payroll_data(
+        payroll_service.update_employee_data(
             self.cost_centre,
             self.financial_year,
             data["employees"],
@@ -67,6 +68,12 @@ class EditPayrollApiView(EditPayrollBaseView):
             self.financial_year,
             data["pay_modifiers"],
         )
+
+        if settings.PAYROLL.ENABLE_FORECAST is True:
+            payroll_service.update_payroll_forecast(
+                financial_year=self.financial_year,
+                cost_centre=self.cost_centre,
+            )
 
         return JsonResponse({})
 
