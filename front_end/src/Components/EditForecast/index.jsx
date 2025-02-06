@@ -14,7 +14,6 @@ import {
   UNSELECT_ALL,
 } from "../../Reducers/Selected";
 import { getCellId, postData, processForecastData } from "../../Util";
-import ToggleCheckbox from "../Common/ToggleCheckbox";
 
 function EditForecast() {
   const dispatch = useDispatch();
@@ -27,24 +26,16 @@ function EditForecast() {
   const editCellId = useSelector((state) => state.edit.cellId);
 
   const [sheetUpdating, setSheetUpdating] = useState(false);
-  const [isPayrollEnabled, setIsPayrollEnabled] = useState(false);
-
-  const handleIsPayrollEnabled = () => {
-    setIsPayrollEnabled(!isPayrollEnabled);
-
-    localStorage.setItem("isPayrollEnabled", JSON.stringify(!isPayrollEnabled));
-  };
 
   useEffect(() => {
     const timer = () => {
       setTimeout(() => {
         if (window.table_data) {
-          let rows = processForecastData(
-            window.table_data,
-            window.payroll_forecast_data,
-            isPayrollEnabled,
-          );
-          dispatch(SET_CELLS({ cells: rows }));
+          let rows = processForecastData(window.table_data);
+          dispatch({
+            type: SET_CELLS,
+            cells: rows,
+          });
         } else {
           timer();
         }
@@ -52,7 +43,7 @@ function EditForecast() {
     };
 
     timer();
-  }, [dispatch, isPayrollEnabled]);
+  }, [dispatch]);
 
   useEffect(() => {
     const capturePaste = (event) => {
@@ -328,15 +319,6 @@ function EditForecast() {
 
   return (
     <Fragment>
-      {window.can_access_edit_payroll === "True" && (
-        <ToggleCheckbox
-          toggle={isPayrollEnabled}
-          handler={handleIsPayrollEnabled}
-          id="payroll-forecast"
-          value="payroll"
-          label="Toggle payroll forecast rows"
-        />
-      )}
       {errorMessage != null && (
         <div
           className="govuk-error-summary"
@@ -356,10 +338,7 @@ function EditForecast() {
         </div>
       )}
       <EditActionBar />
-      <Table
-        sheetUpdating={sheetUpdating}
-        payrollData={window.payroll_forecast_data}
-      />
+      <Table sheetUpdating={sheetUpdating} />
     </Fragment>
   );
 }

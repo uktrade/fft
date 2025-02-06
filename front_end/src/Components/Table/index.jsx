@@ -24,7 +24,7 @@ import {
   UNSELECT_ALL,
 } from "../../Reducers/Selected";
 
-function Table({ rowData, sheetUpdating, payrollData }) {
+function Table({ sheetUpdating }) {
   const dispatch = useDispatch();
   const rows = useSelector((state) => state.allCells.cells);
 
@@ -194,7 +194,6 @@ function Table({ rowData, sheetUpdating, payrollData }) {
                     <TableCell
                       key={nanoid()}
                       sheetUpdating={sheetUpdating}
-                      payrollData={payrollData}
                       cellId={getCellId(rowIndex, value)}
                       rowIndex={rowIndex}
                       cellKey={value}
