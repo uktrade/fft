@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const allCells = createSlice({
   name: "allCells",
-  slice: "allCells",
   initialState: {
     cells: [],
   },
