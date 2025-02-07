@@ -22,7 +22,7 @@ export const monthsToTitleCase = months.map(
 );
 
 export const formatMoney = (amount) => {
-  return (amount / 100).toFixed(2) | 0;
+  return (amount / 100).toFixed(2);
 };
 
 function getCookie(name) {

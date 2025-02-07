@@ -45,7 +45,7 @@ export default function ForecastTable({ forecast, months }) {
                         className={`govuk-table__cell ${isActualClass}`}
                         key={month.key}
                       >
-                        £{formatMoney(row[month.key])}
+                        £{formatMoney(row[month.key] ?? 0)}
                       </td>
                     );
                   })}
