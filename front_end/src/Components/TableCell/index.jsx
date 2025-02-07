@@ -15,17 +15,15 @@ const TableCell = ({
   let editing = false;
   const isPayrollEnabled = JSON.parse(localStorage.getItem("isPayrollEnabled"));
 
-  const checkValue = (val) => {
-    if (cellId === val) {
+  const checkValue = (oldValue, newValue) => {
+    if (cellId === newValue) {
       editing = true;
-      return false;
     } else if (editing) {
       // Turn off editing
       editing = false;
-      return false;
     }
 
-    return true;
+    return oldValue === newValue;
   };
 
   let selectChanged = false;
@@ -264,11 +262,7 @@ const TableCell = ({
         id={getId()}
         onDoubleClick={() => {
           if (isEditable && !isOverride()) {
-            dispatch(
-              SET_EDITING_CELL({
-                cellId: cellId,
-              }),
-            );
+            dispatch(SET_EDITING_CELL({ cellId: cellId }));
           }
         }}
       >
