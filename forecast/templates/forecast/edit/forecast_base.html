@@ -16,7 +16,9 @@
           </div>
         </div>
     {% endif %}
-    <h1 class="govuk-heading-l">{{ view.title }}</h1>
+    {% block page_heading %}
+      <h1 class="govuk-heading-l">{{ view.title }}</h1>
+    {% endblock page_heading %}
     <a href="{% url 'forecast_cost_centre' view.cost_centre_details.cost_centre_code view.financial_year %}" target="_blank" class="govuk-heading-m cost-centre-heading-link">{{ view.cost_centre_details.cost_centre_name }} ({{ view.cost_centre_details.cost_centre_code }}) </a>
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
