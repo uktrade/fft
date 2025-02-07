@@ -1,4 +1,14 @@
 $govuk-assets-path: "/static/govuk/assets/";
+$govuk-image-url-function: "custom-image-url";
+$govuk-font-url-function: "custom-font-url";
+
+@function custom-image-url($filename) {
+  @return url("#{$govuk-images-path}#{$filename}");
+}
+
+@function custom-font-url($filename) {
+  @return url("#{$govuk-fonts-path}#{$filename}");
+}
 $govuk-page-width: 1800px;
 @import "govuk-frontend/govuk/all";
 @import "./header.scss";
