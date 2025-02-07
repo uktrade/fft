@@ -8,7 +8,7 @@ const allCells = createSlice({
   },
   reducers: {
     SET_CELLS: (state, action) => {
-      state.cells = action.cells;
+      state.cells = action.payload.cells;
     },
   },
 });

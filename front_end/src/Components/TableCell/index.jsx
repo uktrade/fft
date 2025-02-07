@@ -174,10 +174,7 @@ const TableCell = ({
           payrollData,
           isPayrollEnabled,
         );
-        dispatch({
-          type: SET_CELLS,
-          cells: rows,
-        });
+        dispatch(SET_CELLS({ cells: rows }));
       } else {
         dispatch(
           SET_ERROR({
