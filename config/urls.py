@@ -16,13 +16,14 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
-from django.views.generic.base import RedirectView
 from django.http import HttpResponse
-from django.urls import re_path
+from django.urls import include, path, re_path
+from django.views.generic.base import RedirectView
+
 
 def empty_favicon(request):
     return HttpResponse(status=204)
+
 
 urlpatterns = [
     path("auth/", include("authbroker_client.urls", namespace="authbroker")),
