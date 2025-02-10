@@ -163,14 +163,6 @@ export default function Payroll() {
             data={payroll}
             onTogglePayPeriods={handleTogglePayPeriods}
           />
-          <PayrollTable
-            payroll={payroll}
-            headers={payrollHeaders}
-            onTogglePayPeriods={handleTogglePayPeriods}
-            RowComponent={EmployeeRow}
-            previousMonths={allPayroll.previous_months}
-            showPreviousMonths={showPreviousMonths}
-          />
         </Tab>
         <Tab label="Non-payroll" key="2">
           <PayrollTable

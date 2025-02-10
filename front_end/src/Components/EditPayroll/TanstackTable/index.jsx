@@ -2,13 +2,24 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
+  getFilteredRowModel,
+  getSortedRowModel,
 } from "@tanstack/react-table";
+import { rankItem } from "@tanstack/match-sorter-utils";
 import { monthsToTitleCase } from "../../../Util";
+import { useState } from "react";
+
+const fuzzyFilter = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value);
+  addMeta({ itemRank });
+  return itemRank.passed;
+};
 
 function TanstackTable({ data, onTogglePayPeriods }) {
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
     id: header.toLowerCase(),
+    enableSorting: false,
     accessorFn: (row) => row.pay_periods[index],
     cell: ({ getValue, row }) => (
       <input
@@ -22,6 +33,7 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     {
       accessorKey: "name",
       header: "Name",
+      filterFn: "includesString",
     },
     {
       accessorKey: "grade",
@@ -30,6 +42,7 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     {
       accessorKey: "employee_no",
       header: "Employee No",
+      filterFn: "includesString",
     },
     {
       accessorKey: "fte",
@@ -49,26 +62,59 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     },
     ...monthColumns,
   ];
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState([]);
+
   const table = useReactTable({
     data,
     columns,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      globalFilter,
+      sorting,
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "fuzzy",
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
     <div className="tanstack scrollable">
+      <input
+        type="text"
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        placeholder="Search by name, employee no.."
+        style={{ marginBottom: "10px", padding: "5px", width: "20%" }}
+      />
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th colSpan={header.colSpan} key={header.id}>
+                <th
+                  colSpan={header.colSpan}
+                  key={header.id}
+                  onClick={header.column.getToggleSortingHandler()}
+                  style={{
+                    cursor: header.column.getCanSort() ? "pointer" : "default",
+                  }}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+                  {{
+                    asc: " ↑",
+                    desc: " ↓",
+                  }[header.column.getIsSorted()] ?? null}
                 </th>
               ))}
             </tr>

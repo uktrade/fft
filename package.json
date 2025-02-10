@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.1",
+    "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.20.6",
     "@vitejs/plugin-react": "^4.2.1",
     "govuk-frontend": "^4.0.0",
