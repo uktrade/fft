@@ -15,6 +15,7 @@ import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
+import TanstackTable from "../Components/EditPayroll/TanstackTable";
 
 const initialPayrollState = {
   employees: [],
@@ -158,6 +159,10 @@ export default function Payroll() {
       />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
+          <TanstackTable
+            data={payroll}
+            onTogglePayPeriods={handleTogglePayPeriods}
+          />
           <PayrollTable
             payroll={payroll}
             headers={payrollHeaders}
