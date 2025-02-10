@@ -90,9 +90,15 @@ function TanstackTable({ data, onTogglePayPeriods }) {
         value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
         placeholder="Search by name, employee no.."
-        style={{ marginBottom: "10px", padding: "5px", width: "20%" }}
+        className="govuk-input"
+        style={{
+          marginBottom: "10px",
+          padding: "5px",
+          width: "20%",
+          fontSize: "16px",
+        }}
       />
-      <table>
+      <table className="govuk-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

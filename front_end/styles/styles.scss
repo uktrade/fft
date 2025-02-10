@@ -380,20 +380,18 @@ th {
 
 .tanstack {
   table {
-    width: 100%;
-    border-collapse: collapse;
     margin: 1rem 0;
+    font-size: 18px;
   }
 
   th,
   td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 5px;
     text-align: left;
   }
 
   th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+    background-color: #f3f3f3;
   }
 }
