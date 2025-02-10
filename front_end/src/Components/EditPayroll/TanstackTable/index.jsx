@@ -96,32 +96,34 @@ function TanstackTable({ data, onTogglePayPeriods }) {
 
   return (
     <div className="tanstack scrollable">
-      <label>
-        <input
-          {...{
-            type: "checkbox",
-            checked: table.getIsAllColumnsVisible(),
-            onChange: table.getToggleAllColumnsVisibilityHandler(),
-          }}
-        />{" "}
-        Toggle all
-      </label>
-      {table.getAllColumns().map((column) => {
-        return column.columnDef.enableHiding ? (
-          <div key={column.id}>
-            <label>
-              <input
-                {...{
-                  type: "checkbox",
-                  checked: column.getIsVisible(),
-                  onChange: column.getToggleVisibilityHandler(),
-                }}
-              />{" "}
-              {column.id}
-            </label>
-          </div>
-        ) : null;
-      })}
+      <div className="checkboxes">
+        <label>
+          <input
+            {...{
+              type: "checkbox",
+              checked: table.getIsAllColumnsVisible(),
+              onChange: table.getToggleAllColumnsVisibilityHandler(),
+            }}
+          />{" "}
+          Toggle all
+        </label>
+        {table.getAllColumns().map((column) => {
+          return column.columnDef.enableHiding ? (
+            <div key={column.id}>
+              <label>
+                <input
+                  {...{
+                    type: "checkbox",
+                    checked: column.getIsVisible(),
+                    onChange: column.getToggleVisibilityHandler(),
+                  }}
+                />{" "}
+                {column.columnDef.header}
+              </label>
+            </div>
+          ) : null;
+        })}
+      </div>
       <input
         type="text"
         value={globalFilter}
