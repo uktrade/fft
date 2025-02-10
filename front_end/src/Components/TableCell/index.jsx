@@ -184,7 +184,7 @@ const TableCell = ({
 
     if (isUpdating) return true;
 
-    if (sheetUpdating && isSelected()) {
+    if (sheetUpdating && isRowSelected) {
       return true;
     }
 
