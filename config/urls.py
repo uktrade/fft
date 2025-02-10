@@ -43,7 +43,7 @@ urlpatterns = [
     path("payroll/", include("payroll.urls")),
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
-    re_path(r"^favicon.ico$", empty_favicon),
+    path("favicon.ico", empty_favicon),
     path(
         "assets/<path:asset_path>",
         RedirectView.as_view(url="/static/govuk/assets/%(asset_path)s"),
