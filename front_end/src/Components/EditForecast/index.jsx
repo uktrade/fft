@@ -44,10 +44,7 @@ function EditForecast() {
             window.payroll_forecast_data,
             isPayrollEnabled,
           );
-          dispatch({
-            type: SET_CELLS,
-            cells: rows,
-          });
+          dispatch(SET_CELLS({ cells: rows }));
         } else {
           timer();
         }
@@ -96,10 +93,7 @@ function EditForecast() {
         if (response.status === 200) {
           setSheetUpdating(false);
           let rows = processForecastData(response.data);
-          dispatch({
-            type: SET_CELLS,
-            cells: rows,
-          });
+          dispatch(SET_CELLS({ cells: rows }));
         } else {
           setSheetUpdating(false);
           dispatch(

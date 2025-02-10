@@ -170,3 +170,9 @@ ner_output_file.txt
 
 # DB
 .dumps/
+
+# hide all .env.* file
+.env.*
+# except for the ones we explicit allow and need to checkin
+!.env.example
+!.env.ci

@@ -18,7 +18,6 @@ const saveState = (state) => {
 
 const hiddenCols = createSlice({
   name: "hiddenCols",
-  slice: "hidden",
   initialState: loadState(),
   reducers: {
     TOGGLE_ITEM: (state, action) => {

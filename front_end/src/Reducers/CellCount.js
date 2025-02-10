@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const cellCount = createSlice({
   name: "cellCount",
-  slice: "cellCount",
   initialState: {
     cellCount: 0,
   },
