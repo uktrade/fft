@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const edit = createSlice({
   name: "edit",
-  slice: "edit",
   initialState: {
     cellId: null,
   },
