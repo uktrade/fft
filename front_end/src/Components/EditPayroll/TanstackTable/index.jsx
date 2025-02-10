@@ -20,6 +20,7 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     header: header,
     id: header.toLowerCase(),
     enableSorting: false,
+    enableHiding: false,
     accessorFn: (row) => row.pay_periods[index],
     cell: ({ getValue, row }) => (
       <input
@@ -34,36 +35,44 @@ function TanstackTable({ data, onTogglePayPeriods }) {
       accessorKey: "name",
       header: "Name",
       filterFn: "includesString",
+      enableHiding: true,
     },
     {
       accessorKey: "grade",
       header: "Grade",
+      enableHiding: true,
     },
     {
       accessorKey: "employee_no",
       header: "Employee No",
       filterFn: "includesString",
+      enableHiding: true,
     },
     {
       accessorKey: "fte",
       header: "FTE",
+      enableHiding: true,
     },
     {
       accessorKey: "programme_code",
       header: "Programme Code",
+      enableHiding: true,
     },
     {
       accessorKey: "budget_type",
       header: "Budget Type",
+      enableHiding: true,
     },
     {
       accessorKey: "assignment_status",
       header: "Assignment Status",
+      enableHiding: true,
     },
     ...monthColumns,
   ];
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
 
   const table = useReactTable({
     data,
@@ -74,10 +83,12 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     state: {
       globalFilter,
       sorting,
+      columnVisibility,
     },
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "fuzzy",
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -85,6 +96,32 @@ function TanstackTable({ data, onTogglePayPeriods }) {
 
   return (
     <div className="tanstack scrollable">
+      <label>
+        <input
+          {...{
+            type: "checkbox",
+            checked: table.getIsAllColumnsVisible(),
+            onChange: table.getToggleAllColumnsVisibilityHandler(),
+          }}
+        />{" "}
+        Toggle all
+      </label>
+      {table.getAllColumns().map((column) => {
+        return column.columnDef.enableHiding ? (
+          <div key={column.id}>
+            <label>
+              <input
+                {...{
+                  type: "checkbox",
+                  checked: column.getIsVisible(),
+                  onChange: column.getToggleVisibilityHandler(),
+                }}
+              />{" "}
+              {column.id}
+            </label>
+          </div>
+        ) : null;
+      })}
       <input
         type="text"
         value={globalFilter}
