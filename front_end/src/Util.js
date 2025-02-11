@@ -123,17 +123,8 @@ export async function postData(url = "", data = {}) {
   };
 }
 
-export const processForecastData = (
-  forecastData,
-  payrollData = null,
-  isPayrollEnabled = false,
-) => {
+export const processForecastData = (forecastData) => {
   let rows = [];
-  let mappedPayrollData = null;
-
-  if (isPayrollEnabled) {
-    mappedPayrollData = processPayrollData(payrollData);
-  }
 
   let financialCodeCols = [
     "analysis1_code",
@@ -167,35 +158,16 @@ export const processForecastData = (
       colIndex++;
     }
 
-    const forecastKey = makeFinancialCodeKey(
-      "",
-      rowData.programme,
-      rowData.natural_account_code,
-      {
-        analysis1: rowData.analysis1_code,
-        analysis2: rowData.analysis2_code,
-        project: rowData.project_code,
-      },
-    );
-
     // eslint-disable-next-line
     for (const [key, monthlyFigure] of Object.entries(
       rowData["monthly_figures"],
     )) {
-      let overrideAmount = null;
-
-      if (isPayrollEnabled && mappedPayrollData[forecastKey]) {
-        const period = months[parseInt(key)];
-        overrideAmount = mappedPayrollData[forecastKey][period];
-      }
-
       row[monthlyFigure.month] = {
         rowIndex: rowIndex,
         colIndex: colIndex,
         key: monthlyFigure.month,
         amount: monthlyFigure.amount,
         startingAmount: monthlyFigure.starting_amount,
-        overrideAmount: overrideAmount,
       };
 
       colIndex++;
@@ -205,22 +177,6 @@ export const processForecastData = (
   });
 
   return rows;
-};
-
-const processPayrollData = (payrollData) => {
-  const results = {};
-
-  for (const [key, value] of Object.entries(payrollData)) {
-    const generatedKey = makeFinancialCodeKey(
-      "",
-      value.programme_code,
-      value.natural_account_code,
-    );
-
-    results[generatedKey] = value;
-  }
-
-  return results;
 };
 
 export const makeFinancialCodeKey = (

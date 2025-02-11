@@ -41,16 +41,12 @@
     </form>
     {% endblock %}
     {% block scripts %}
-    {{ view.get_payroll_forecast_report|json_script:'payroll_forecast_data' }}
-    {% can_access_edit_payroll user as user_can_access_edit_payroll %}
     <script>
         window.actuals = {{ actuals|safe }};
         window.period_display = {{ period_display|safe }};
         window.table_data = {{ forecast_dump|safe }};
         window.cost_centre = {{ view.cost_centre_details.cost_centre_code|safe }};
         window.financial_year = {{ view.financial_year|safe }};
-        window.payroll_forecast_data = JSON.parse(document.getElementById("payroll_forecast_data").textContent);
-        window.can_access_edit_payroll = "{{ user_can_access_edit_payroll }}";
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

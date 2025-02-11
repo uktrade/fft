@@ -5,29 +5,12 @@ import { postData, processForecastData, formatValue } from "../../Util";
 import { SET_ERROR } from "../../Reducers/Error";
 import { SET_CELLS } from "../../Reducers/Cells";
 
-const TableCell = ({
-  rowIndex,
-  cellId,
-  cellKey,
-  sheetUpdating,
-  payrollData,
-}) => {
-  const isPayrollEnabled = JSON.parse(localStorage.getItem("isPayrollEnabled"));
-
+const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
   const dispatch = useDispatch();
 
   const row = useSelector((state) => state.allCells.cells[rowIndex]);
   const cell = row[cellKey];
   const isEditing = useSelector((state) => state.edit.cellId === cellId);
-
-  const isOverride = () => {
-    // Is override if cell exists, has an override amount and is not an actual
-    return cell && cell.overrideAmount !== null && cell.isEditable;
-  };
-
-  if (isOverride()) {
-    cell.amount = cell.overrideAmount;
-  }
 
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -72,7 +55,6 @@ const TableCell = ({
     if (!cell) return classes.join(" ");
 
     if (cell && cell.amount < 0) classes.push("negative");
-    if (isOverride()) classes.push("override");
     if (wasEdited()) classes.push("edited");
     isActual ? classes.push("is-actual") : classes.push("is-forecast");
 
@@ -131,11 +113,7 @@ const TableCell = ({
       setIsUpdating(false);
       if (response.status === 200) {
         // TODO (FFT-100): Test paste to excel with locked payroll forecast rows
-        let rows = processForecastData(
-          response.data,
-          payrollData,
-          isPayrollEnabled,
-        );
+        let rows = processForecastData(response.data);
         dispatch(SET_CELLS({ cells: rows }));
       } else {
         dispatch(
@@ -225,8 +203,12 @@ const TableCell = ({
         className={getClasses()}
         id={getId()}
         onDoubleClick={() => {
-          if (isEditable && !isOverride()) {
-            dispatch(SET_EDITING_CELL({ cellId: cellId }));
+          if (isEditable) {
+            dispatch(
+              SET_EDITING_CELL({
+                cellId: cellId,
+              }),
+            );
           }
         }}
       >
