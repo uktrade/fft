@@ -16,8 +16,19 @@ const fuzzyFilter = (row, columnId, value, addMeta) => {
 };
 
 function TanstackTable({ data, onTogglePayPeriods }) {
+  const totalSumOfMonth = (index) => {
+    let totalSum = 0;
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        console.log(data[i]);
+        totalSum += data[i].pay_periods[index] == true ? 1 : 0;
+      }
+    }
+    return totalSum;
+  };
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
+    footer: totalSumOfMonth(index),
     id: header.toLowerCase(),
     enableSorting: false,
     enableHiding: false,
@@ -176,6 +187,15 @@ function TanstackTable({ data, onTogglePayPeriods }) {
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((footer) => (
+                <td key={footer.id}>{footer.column.columnDef.footer}</td>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
       </table>
     </div>
   );
