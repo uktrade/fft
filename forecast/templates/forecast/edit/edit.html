@@ -16,7 +16,7 @@
     {{ block.super }}
     {% can_access_edit_payroll user as user_can_access_edit_payroll %}
     {% if user_can_access_edit_payroll and settings.PAYROLL.ENABLE_FORECAST %}
-        <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Go to Payroll</a>
+        <a class="govuk-link" href="{% url 'payroll:edit' view.cost_centre_details.cost_centre_code view.financial_year %}">Go to Payroll</a>
     {% endif %}
 </div>
 {% endblock %}
