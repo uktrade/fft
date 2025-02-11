@@ -6,7 +6,6 @@ import { SET_ERROR } from "../../Reducers/Error";
 import { SET_CELLS } from "../../Reducers/Cells";
 
 const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
-
   const dispatch = useDispatch();
 
   const row = useSelector((state) => state.allCells.cells[rowIndex]);
