@@ -6,7 +6,6 @@ import { SET_ERROR } from "../../Reducers/Error";
 import { SET_CELLS } from "../../Reducers/Cells";
 
 const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
-  let editing = false;
 
   const dispatch = useDispatch();
 
