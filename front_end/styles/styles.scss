@@ -380,8 +380,7 @@ th {
 
 .tanstack {
   table {
-    margin: 1rem 0;
-    font-size: 18px;
+    @extend .govuk-table;
   }
 
   th,

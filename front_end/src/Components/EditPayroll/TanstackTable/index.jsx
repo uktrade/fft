@@ -137,7 +137,7 @@ function TanstackTable({ data, onTogglePayPeriods }) {
           fontSize: "16px",
         }}
       />
-      <table className="govuk-table">
+      <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
