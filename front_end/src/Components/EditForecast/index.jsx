@@ -32,10 +32,7 @@ function EditForecast() {
       setTimeout(() => {
         if (window.table_data) {
           let rows = processForecastData(window.table_data);
-          dispatch({
-            type: SET_CELLS,
-            cells: rows,
-          });
+          dispatch(SET_CELLS({ cells: rows }));
         } else {
           timer();
         }

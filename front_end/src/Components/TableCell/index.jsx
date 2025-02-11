@@ -116,10 +116,7 @@ const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
       if (response.status === 200) {
         // TODO (FFT-100): Test paste to excel with locked payroll forecast rows
         let rows = processForecastData(response.data);
-        dispatch({
-          type: SET_CELLS,
-          cells: rows,
-        });
+        dispatch(SET_CELLS({ cells: rows }));
       } else {
         dispatch(
           SET_ERROR({
