@@ -1,6 +1,6 @@
 import operator
 from collections import defaultdict
-from itertools import accumulate, chain
+from itertools import accumulate
 from statistics import mean
 from typing import Iterator, TypedDict
 
@@ -395,9 +395,8 @@ def update_vacancies_data(
 
 
 class PayModifiers(TypedDict):
-    id: int
-    name: str
-    pay_modifiers: list[float]
+    attrition: list[float]
+    pay_uplift: list[float]
 
 
 def get_pay_modifiers_data(
@@ -411,12 +410,10 @@ def get_pay_modifiers_data(
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
     )
-    pay_modifiers = chain(attrition, pay_uplift)
+    attrition_periods = attrition.periods if attrition else []
+    pay_uplift_periods = pay_uplift.periods if pay_uplift else []
 
-    for obj in pay_modifiers:
-        name = "Attrition" if type(obj) is Attrition else "Pay Uplift"
-
-        yield PayModifiers(id=obj.pk, name=name, pay_modifiers=obj.periods)
+    return {"attrition": attrition_periods, "pay_uplift": pay_uplift_periods}
 
 
 def create_default_pay_modifiers(
