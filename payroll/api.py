@@ -61,11 +61,12 @@ class EditPayrollApiView(EditPayrollBaseView):
             self.financial_year,
             data["vacancies"],
         )
-        payroll_service.update_pay_modifier_data(
-            self.cost_centre,
-            self.financial_year,
-            data["pay_modifiers"]["attrition"],
-        )
+        if data["pay_modifiers"]["attrition"]:
+            payroll_service.update_pay_modifier_data(
+                self.cost_centre,
+                self.financial_year,
+                data["pay_modifiers"]["attrition"],
+            )
 
         if settings.PAYROLL.ENABLE_FORECAST is True:
             payroll_service.update_payroll_forecast(

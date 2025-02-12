@@ -199,7 +199,7 @@ export default function Payroll() {
             onInputChange={handleUpdatePayModifier}
             onCreate={handleCreatePayModifiers}
           />
-          {/* <DisplayPayModifier data={allPayroll.pay_modifiers.pay_uplift} /> */}
+          <DisplayPayModifier data={allPayroll.pay_modifiers.pay_uplift} />
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>

@@ -1,7 +1,7 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 
 const DisplayPayModifier = ({ data }) => {
-  if (!data) {
+  if (!data || data <= 0) {
     return (
       <>
         <h3 className="govuk-heading-s">Pay uplift</h3>
@@ -10,14 +10,14 @@ const DisplayPayModifier = ({ data }) => {
     );
   }
 
-  return data.map((row, index) => (
-    <div className="govuk-form-group" key={index}>
-      <h3 className="govuk-heading-s">{row.name}</h3>
+  return (
+    <div className="govuk-form-group">
+      <h3 className="govuk-heading-s">Pay Uplift</h3>
       <table className="govuk-table">
         <PayModifierHeaders />
         <tbody className="govuk-table__body">
           <tr className="govuk-table__row">
-            {row.pay_modifiers.map((value, index) => {
+            {data.map((value, index) => {
               return (
                 <td className="govuk-table__cell" key={index}>
                   {value}
@@ -28,7 +28,7 @@ const DisplayPayModifier = ({ data }) => {
         </tbody>
       </table>
     </div>
-  ));
+  );
 };
 
 export default DisplayPayModifier;
