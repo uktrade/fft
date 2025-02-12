@@ -62,7 +62,7 @@ class EditPayrollApiView(EditPayrollBaseView):
             data["vacancies"],
         )
         if data["pay_modifiers"]["attrition"]:
-            payroll_service.update_pay_modifier_data(
+            payroll_service.update_attrition_data(
                 self.cost_centre,
                 self.financial_year,
                 data["pay_modifiers"]["attrition"],

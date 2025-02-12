@@ -436,7 +436,7 @@ def create_default_pay_modifiers(
 
 
 @transaction.atomic
-def update_pay_modifier_data(
+def update_attrition_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
     data: list[float],
