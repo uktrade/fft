@@ -16,8 +16,13 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
+from django.http import HttpResponse
+from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
+
+
+def empty_favicon(request):
+    return HttpResponse(status=204)
 
 
 urlpatterns = [
@@ -38,6 +43,7 @@ urlpatterns = [
     path("payroll/", include("payroll.urls")),
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
+    path("favicon.ico", empty_favicon),
     path(
         "assets/<path:asset_path>",
         RedirectView.as_view(url="/static/govuk/assets/%(asset_path)s"),

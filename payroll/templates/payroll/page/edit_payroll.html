@@ -10,7 +10,13 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Edit payroll</h1>
+    <div class="flex-spread">
+        <h1 class="govuk-heading-l">Edit payroll</h1>
+        {# This assumes that a user with access to payroll also has access to forecast #}
+        {% if settings.PAYROLL.ENABLE_FORECAST %}
+            <a class="govuk-link" href="{% url 'edit_forecast' cost_centre_code financial_year %}">Go to Forecast</a>
+        {% endif %}
+    </div>
 
     <div id="payroll-app"></div>
 

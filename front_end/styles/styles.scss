@@ -223,7 +223,6 @@ th {
   background-color: rgba(86, 148, 202, 0.25);
 }
 
-.override,
 .not-editable.is-forecast {
   background-color: rgba(201, 155, 75, 0.25);
 
@@ -374,6 +373,14 @@ th {
   font-size: 16px;
 }
 
+// Utility classes
+
 .scrollable {
   overflow-x: auto;
+}
+
+.flex-spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }

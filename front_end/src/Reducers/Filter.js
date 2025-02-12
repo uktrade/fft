@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const filter = createSlice({
   name: "filter",
-  slice: "edit",
   initialState: {
     open: false,
   },

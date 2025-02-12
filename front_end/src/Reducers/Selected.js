@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const selected = createSlice({
   name: "selected",
-  slice: "select",
   initialState: {
     selectedRow: -1,
     all: false,

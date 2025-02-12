@@ -5,65 +5,18 @@ import { postData, processForecastData, formatValue } from "../../Util";
 import { SET_ERROR } from "../../Reducers/Error";
 import { SET_CELLS } from "../../Reducers/Cells";
 
-const TableCell = ({
-  rowIndex,
-  cellId,
-  cellKey,
-  sheetUpdating,
-  payrollData,
-}) => {
-  let editing = false;
-  const isPayrollEnabled = JSON.parse(localStorage.getItem("isPayrollEnabled"));
-
-  const checkValue = (val) => {
-    if (cellId === val) {
-      editing = true;
-      return false;
-    } else if (editing) {
-      // Turn off editing
-      editing = false;
-      return false;
-    }
-
-    return true;
-  };
-
-  let selectChanged = false;
-
-  const checkSelectRow = (selectedRow) => {
-    if (selectedRow === rowIndex) {
-      selectChanged = true;
-      return false;
-    } else if (selectChanged) {
-      selectChanged = false;
-      return false;
-    }
-
-    return true;
-  };
-
+const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
   const dispatch = useDispatch();
 
   const row = useSelector((state) => state.allCells.cells[rowIndex]);
   const cell = row[cellKey];
-  const editCellId = useSelector((state) => state.edit.cellId, checkValue);
-
-  const isOverride = () => {
-    // Is override if cell exists, has an override amount and is not an actual
-    return cell && cell.overrideAmount !== null && cell.isEditable;
-  };
-
-  if (isOverride()) {
-    cell.amount = cell.overrideAmount;
-  }
+  const isEditing = useSelector((state) => state.edit.cellId === cellId);
 
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const selectedRow = useSelector(
-    (state) => state.selected.selectedRow,
-    checkSelectRow,
+  const isRowSelected = useSelector(
+    (state) => state.selected.all || state.selected.selectedRow === rowIndex,
   );
-  const allSelected = useSelector((state) => state.selected.all);
 
   let isLocked = row._meta.isLocked;
   // window.actuals = [1, 2];
@@ -88,14 +41,6 @@ const TableCell = ({
     }
   }, [cell]);
 
-  const isSelected = () => {
-    if (allSelected) {
-      return true;
-    }
-
-    return selectedRow === rowIndex;
-  };
-
   const wasEdited = () => {
     if (!isEditable) return false;
 
@@ -106,11 +51,10 @@ const TableCell = ({
     const classes = ["govuk-table__cell", "forecast-month-cell", "figure-cell"];
 
     if (!isEditable) classes.push("not-editable");
-    if (isSelected()) classes.push("selected");
+    if (isRowSelected) classes.push("selected");
     if (!cell) return classes.join(" ");
 
     if (cell && cell.amount < 0) classes.push("negative");
-    if (isOverride()) classes.push("override");
     if (wasEdited()) classes.push("edited");
     isActual ? classes.push("is-actual") : classes.push("is-forecast");
 
@@ -169,15 +113,8 @@ const TableCell = ({
       setIsUpdating(false);
       if (response.status === 200) {
         // TODO (FFT-100): Test paste to excel with locked payroll forecast rows
-        let rows = processForecastData(
-          response.data,
-          payrollData,
-          isPayrollEnabled,
-        );
-        dispatch({
-          type: SET_CELLS,
-          cells: rows,
-        });
+        let rows = processForecastData(response.data);
+        dispatch(SET_CELLS({ cells: rows }));
       } else {
         dispatch(
           SET_ERROR({
@@ -225,7 +162,7 @@ const TableCell = ({
 
     if (isUpdating) return true;
 
-    if (sheetUpdating && isSelected()) {
+    if (sheetUpdating && isRowSelected) {
       return true;
     }
 
@@ -240,7 +177,7 @@ const TableCell = ({
         </Fragment>
       );
     } else {
-      if (editCellId === cellId) {
+      if (isEditing) {
         return (
           <input
             ref={(input) => input && input.focus()}
@@ -266,7 +203,7 @@ const TableCell = ({
         className={getClasses()}
         id={getId()}
         onDoubleClick={() => {
-          if (isEditable && !isOverride()) {
+          if (isEditable) {
             dispatch(
               SET_EDITING_CELL({
                 cellId: cellId,

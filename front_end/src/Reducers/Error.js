@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const error = createSlice({
   name: "error",
-  slice: "error",
   initialState: {
     errorMessage: null,
   },
