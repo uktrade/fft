@@ -16,14 +16,14 @@ const EditPayModifier = ({ data, onInputChange, onCreate }) => {
     );
   }
 
-  return data.map((row, index) => (
-    <div className="govuk-form-group" key={index}>
+  return (
+    <div className="govuk-form-group">
       <h3 className="govuk-heading-s">Attrition</h3>
       <table className="govuk-table">
         <PayModifierHeaders />
         <tbody className="govuk-table__body">
           <tr className="govuk-table__row">
-            {row.pay_modifiers.map((value, index) => {
+            {data.map((value, index) => {
               return (
                 <td className="govuk-table__cell" key={index}>
                   <input
@@ -32,9 +32,7 @@ const EditPayModifier = ({ data, onInputChange, onCreate }) => {
                     name={`modifier-${index}`}
                     type="number"
                     defaultValue={value}
-                    onChange={(e) =>
-                      onInputChange(row.id, index, e.target.value)
-                    }
+                    onChange={(e) => onInputChange(index, e.target.value)}
                   ></input>
                 </td>
               );
@@ -43,7 +41,7 @@ const EditPayModifier = ({ data, onInputChange, onCreate }) => {
         </tbody>
       </table>
     </div>
-  ));
+  );
 };
 
 export default EditPayModifier;

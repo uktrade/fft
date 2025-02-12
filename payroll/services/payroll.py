@@ -406,13 +406,18 @@ def get_pay_modifiers_data(
     attrition = Attrition.objects.filter(
         cost_centre=cost_centre,
         financial_year=financial_year,
-    )
+    ).first()
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
-    )
+    ).first()
 
-    attrition_periods = attrition.periods if hasattr(attrition, "periods") else []
-    pay_uplift_periods = pay_uplift.periods if hasattr(pay_uplift, "periods") else []
+    attrition_periods = []
+    pay_uplift_periods = []
+
+    if attrition:
+        attrition_periods = attrition.periods
+    if pay_uplift:
+        pay_uplift_periods = pay_uplift.periods
 
     return {"attrition": attrition_periods, "pay_uplift": pay_uplift_periods}
 
@@ -431,50 +436,38 @@ def create_default_pay_modifiers(
 
 
 @transaction.atomic
-def update_pay_modifiers_data(
+def update_pay_modifier_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
-    data: list[PayModifiers],
+    data: list[float],
 ) -> None:
-    """Update attrition pay modifiers for a given year and cost centre using the provided list.
-    Pay uplift is for display only.
-
-    This function is wrapped with a transaction, so if any of the pay modifier updates fail,
-    the whole batch will be rolled back.
+    """Update attrition pay modifier for a given year and cost centre.
 
     Raises:
-        ValueError: If a pay modifier id is empty.
-        ValueError: If there are not 12 items in the pay_modifiers list.
-        ValueError: If any of the pay_modifiers are not of type int or float.
+        ValueError: If there are not 12 items in the list.
+        ValueError: If any of the values are not of type int or float.
     """
 
-    for pay_modifier in data:
-        if pay_modifier.get("name") == "Pay Uplift":
-            break
+    if len(data) != 12:
+        raise ValueError("Attrition object should be of length 12")
 
-        if not pay_modifier.get("id"):
-            raise ValueError("id is empty")
+    if not all(isinstance(x, (int, float)) for x in data):
+        raise ValueError("Attrition object should be of type int or float")
 
-        if len(pay_modifier["pay_modifiers"]) != 12:
-            raise ValueError("pay_modifiers list should be of length 12")
+    attrition = Attrition.objects.get(
+        cost_centre=cost_centre,
+        financial_year=financial_year,
+    )
 
-        if not all(isinstance(x, (int, float)) for x in pay_modifier["pay_modifiers"]):
-            raise ValueError("pay_modifiers items should be of type int or float")
+    for index, month in enumerate(MONTHS):
+        setattr(attrition, month, data[index])
 
-        attrition = Attrition.objects.get(
-            cost_centre=cost_centre,
-            financial_year=financial_year,
-        )
+    try:
+        attrition.clean()
+    except Exception as ex:
+        raise ValueError(ex)
 
-        for index, month in enumerate(MONTHS):
-            setattr(attrition, month, pay_modifier["pay_modifiers"][index])
-
-        try:
-            attrition.clean()
-        except Exception as ex:
-            raise ValueError(ex)
-
-        attrition.save()
+    attrition.save()
 
 
 def get_actuals_data(

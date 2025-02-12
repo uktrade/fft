@@ -51,7 +51,6 @@ class EditPayrollApiView(EditPayrollBaseView):
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-
         payroll_service.update_employee_data(
             self.cost_centre,
             self.financial_year,
@@ -62,10 +61,10 @@ class EditPayrollApiView(EditPayrollBaseView):
             self.financial_year,
             data["vacancies"],
         )
-        payroll_service.update_pay_modifiers_data(
+        payroll_service.update_pay_modifier_data(
             self.cost_centre,
             self.financial_year,
-            data["pay_modifiers"],
+            data["pay_modifiers"]["attrition"],
         )
 
         if settings.PAYROLL.ENABLE_FORECAST is True:

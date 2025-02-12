@@ -1,7 +1,7 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 
 const DisplayPayModifier = ({ data }) => {
-  if (data.length === 0) {
+  if (!data) {
     return (
       <>
         <h3 className="govuk-heading-s">Pay uplift</h3>

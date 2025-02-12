@@ -124,8 +124,8 @@ export default function Payroll() {
     dispatch({ type: "updatePayPeriodsVacancies", id, index, enabled });
   }
 
-  function handleUpdatePayModifiers(id, index, value) {
-    dispatch({ type: "updatePayModifiers", id, index, value });
+  function handleUpdatePayModifier(index, value) {
+    dispatch({ type: "updatePayModifier", index, value });
   }
 
   function handleCreatePayModifiers() {
@@ -195,8 +195,8 @@ export default function Payroll() {
         </Tab>
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
-            data={allPayroll.pay_modifiers}
-            onInputChange={handleUpdatePayModifiers}
+            data={allPayroll.pay_modifiers.attrition}
+            onInputChange={handleUpdatePayModifier}
             onCreate={handleCreatePayModifiers}
           />
           {/* <DisplayPayModifier data={allPayroll.pay_modifiers.pay_uplift} /> */}
@@ -231,22 +231,15 @@ function updatePayPeriods(data, action) {
   });
 }
 
-function updatePayModifiers(data, action) {
-  return data.map((row) => {
-    if (row.id === action.id) {
-      const updatedPayModifier = row.pay_modifiers.map((modifier, index) => {
-        if (index === action.index) {
-          return parseFloat(action.value);
-        }
-        return modifier;
-      });
-      return {
-        ...row,
-        pay_modifiers: updatedPayModifier,
-      };
+function updatePayModifier(data, action) {
+  const updatedPayModifier = data.map((value, index) => {
+    if (index === action.index) {
+      return parseFloat(action.value);
     }
-    return row;
+    return value;
   });
+
+  return updatedPayModifier;
 }
 
 const payrollReducer = (data, action) => {
@@ -266,10 +259,13 @@ const payrollReducer = (data, action) => {
         vacancies: updatePayPeriods(data.vacancies, action),
       };
     }
-    case "updatePayModifiers": {
+    case "updatePayModifier": {
       return {
         ...data,
-        pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
+        pay_modifiers: {
+          attrition: updatePayModifier(data.pay_modifiers.attrition, action),
+          pay_uplift: data.pay_modifiers.pay_uplift,
+        },
       };
     }
   }
