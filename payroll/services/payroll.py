@@ -403,10 +403,7 @@ def get_pay_modifiers_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[PayModifiers]:
-    attrition = Attrition.objects.filter(
-        cost_centre=cost_centre,
-        financial_year=financial_year,
-    ).first()
+    attrition = get_attrition_instance(financial_year, cost_centre)
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
     ).first()
