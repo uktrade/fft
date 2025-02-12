@@ -73,21 +73,6 @@ export default function Payroll() {
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
-  const attrition = useMemo(
-    () =>
-      allPayroll.pay_modifiers.filter(
-        (modifier) => modifier.name == "Attrition",
-      ),
-    [allPayroll],
-  );
-  const pay_uplift = useMemo(
-    () =>
-      allPayroll.pay_modifiers.filter(
-        (modifier) => modifier.name == "Pay Uplift",
-      ),
-    [allPayroll],
-  );
-
   const forecastAndActuals = useMemo(() => {
     const total_results = [];
 
@@ -210,11 +195,11 @@ export default function Payroll() {
         </Tab>
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
-            data={attrition}
+            data={allPayroll.pay_modifiers}
             onInputChange={handleUpdatePayModifiers}
             onCreate={handleCreatePayModifiers}
           />
-          <DisplayPayModifier data={pay_uplift} />
+          {/* <DisplayPayModifier data={allPayroll.pay_modifiers.pay_uplift} /> */}
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>

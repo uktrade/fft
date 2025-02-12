@@ -1,7 +1,7 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 
 const EditPayModifier = ({ data, onInputChange, onCreate }) => {
-  if (data.length === 0) {
+  if (!data) {
     return (
       <>
         <h3 className="govuk-heading-s">Attrition</h3>

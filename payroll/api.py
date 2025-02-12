@@ -23,12 +23,11 @@ class EditPayrollApiView(EditPayrollBaseView):
                 self.financial_year,
             )
         )
-        pay_modifiers = list(
-            payroll_service.get_pay_modifiers_data(
-                self.cost_centre,
-                self.financial_year,
-            )
+        pay_modifiers = payroll_service.get_pay_modifiers_data(
+            self.cost_centre,
+            self.financial_year,
         )
+
         forecast = list(
             payroll_service.payroll_forecast_report(
                 self.cost_centre, self.financial_year

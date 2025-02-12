@@ -410,8 +410,9 @@ def get_pay_modifiers_data(
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
     )
-    attrition_periods = attrition.periods if attrition else []
-    pay_uplift_periods = pay_uplift.periods if pay_uplift else []
+
+    attrition_periods = attrition.periods if hasattr(attrition, "periods") else []
+    pay_uplift_periods = pay_uplift.periods if hasattr(pay_uplift, "periods") else []
 
     return {"attrition": attrition_periods, "pay_uplift": pay_uplift_periods}
 
