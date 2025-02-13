@@ -1,4 +1,4 @@
-from core.constants import MONTHS
+from core.constants import PERIODS
 from core.models import FinancialYear
 from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
 
@@ -40,7 +40,7 @@ class FinancialCodeForecastService:
         figure.save()
 
     def update(self, forecast: list[int]):
-        assert len(forecast) == len(MONTHS)
+        assert len(forecast) == len(PERIODS)
 
-        for i, _ in enumerate(MONTHS):
-            self.update_period(period=i + 1, amount=forecast[i])
+        for period in PERIODS:
+            self.update_period(period=period, amount=forecast[period - 1])

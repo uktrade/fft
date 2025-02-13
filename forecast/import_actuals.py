@@ -1,8 +1,12 @@
 import datetime
 import logging
 
+import waffle
 from django.db import connection
+from django.db.models import F
 
+from config import flags
+from core.constants import PERIODS
 from core.import_csv import get_fk, get_fk_from_field
 from core.models import FinancialYear
 from forecast.models import (
@@ -292,8 +296,16 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
     if check_financial_code.error_found:
         final_status = FileUpload.PROCESSEDWITHERROR
     else:
+        uploaded_actuals = ActualUploadMonthlyFigure.objects.filter(
+            financial_year=financial_year, financial_period=period_obj
+        )
+
         # Now copy the newly uploaded actuals to the correct table
         if year_obj.current:
+            if waffle.switch_is_active(flags.ACTUALISATION):
+                for uploaded_actual in uploaded_actuals:
+                    actualisation(period=period_obj, actual=uploaded_actual)
+
             copy_current_year_actuals_to_monthly_figure(period_obj, financial_year)
             FinancialPeriod.objects.filter(
                 financial_period_code__lte=period_obj.financial_period_code
@@ -307,11 +319,42 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         if check_financial_code.warning_found:
             final_status = FileUpload.PROCESSEDWITHWARNING
 
-        ActualUploadMonthlyFigure.objects.filter(
-            financial_year=financial_year, financial_period=period_obj
-        ).delete()
+        uploaded_actuals.delete()
 
     set_file_upload_feedback(
         file_upload, f"Processed {rows_to_process} rows.", final_status
     )
     return True
+
+
+def actualisation(period: FinancialPeriod, actual: ActualUploadMonthlyFigure) -> None:
+    # get the current forecast that is being turned into an actual
+    forecast = ForecastMonthlyFigure.objects.filter(
+        financial_code_id=actual.financial_code_id,
+        financial_year_id=actual.financial_year_id,
+        financial_period_id=actual.financial_period_id,
+        archived_status__isnull=True,
+    ).first()
+
+    # work out how many period we have left in the financial year
+    periods_left = len(PERIODS) - period.financial_period_code
+    # handle a missing forecast object and assume a forecast amount of 0
+    forecast_amount = forecast.amount if forecast else 0
+    # work out the difference the actual will leave us with
+    difference = forecast_amount - actual.amount
+
+    if periods_left:
+        # floor divide the difference by how many periods are left in the financial year
+        # TODO: How should monetary values be treated with regards to rounding?
+        difference //= periods_left
+
+    # adjust the remaining forecast periods by the difference
+    for i in range(periods_left):
+        ForecastMonthlyFigure.objects.update_or_create(
+            financial_code_id=actual.financial_code_id,
+            financial_year_id=actual.financial_year_id,
+            financial_period_id=period.pk + i + 1,
+            archived_status=None,
+            defaults={"amount": F("amount") + difference},
+            create_defaults={"amount": difference},
+        )
