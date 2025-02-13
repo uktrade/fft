@@ -27,8 +27,9 @@
 
 /**
  * @typedef {Object} PayModifierData
- * @property {number} id - The pay modifier's pk.
- * @property {number[]} pay_modifiers - The pay modifier's monthly percentages
+ * @property {float[]} global_attrition - The monthly percentages for attrition for that financial year
+ * @property {float[]} attrition - The monthly percentages for attrition scoped to the cost centre
+ * @property {float[]} pay_uplift - The monthly percentages for pay uplift
  */
 
 /**
@@ -60,7 +61,7 @@
  * @typedef {Object} PayrollData
  * @property {EmployeeData[]} employees - A list of employees
  * @property {VacancyData[]} vacancies - A list of vacancies
- * @property {PayModifierData[]} pay_modifiers - A list of pay modifiers
+ * @property {PayModifierData[]} pay_modifiers - An object with attrition, global attrition and pay uplift
  * @property {ForecastData[]} forecast - A list of forecast data
  * @property {PreviousMonthsData[]} previous_months - A list of months with actuals loaded
  */
