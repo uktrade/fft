@@ -403,20 +403,25 @@ def get_pay_modifiers_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[PayModifiers]:
-    attrition = get_attrition_instance(financial_year, cost_centre)
+    global_attrition = Attrition.objects.filter(
+        financial_year=financial_year, cost_centre=None
+    ).first()
+    attrition = Attrition.objects.filter(
+        financial_year=financial_year, cost_centre=cost_centre
+    ).first()
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
     ).first()
 
-    attrition_periods = []
-    pay_uplift_periods = []
+    global_attrition_periods = [] if not global_attrition else global_attrition.periods
+    attrition_periods = [] if not attrition else attrition.periods
+    pay_uplift_periods = [] if not pay_uplift else pay_uplift.periods
 
-    if attrition:
-        attrition_periods = attrition.periods
-    if pay_uplift:
-        pay_uplift_periods = pay_uplift.periods
-
-    return {"attrition": attrition_periods, "pay_uplift": pay_uplift_periods}
+    return {
+        "global_attrition": global_attrition_periods,
+        "attrition": attrition_periods,
+        "pay_uplift": pay_uplift_periods,
+    }
 
 
 def create_default_pay_modifiers(
