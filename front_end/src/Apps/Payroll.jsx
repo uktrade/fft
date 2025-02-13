@@ -124,11 +124,11 @@ export default function Payroll() {
     dispatch({ type: "updatePayPeriodsVacancies", id, index, enabled });
   }
 
-  function handleUpdatePayModifier(index, value) {
-    dispatch({ type: "updatePayModifier", index, value });
+  function handleUpdateAttrition(index, value) {
+    dispatch({ type: "updateAttrition", index, value });
   }
 
-  function handleCreatePayModifiers() {
+  function handleCreateAttrition() {
     api.createPayModifiers().then((r) => {
       getAllPayroll();
     });
@@ -196,8 +196,8 @@ export default function Payroll() {
         <Tab label="Pay modifiers" key="4">
           <EditPayModifier
             data={allPayroll.pay_modifiers.attrition}
-            onInputChange={handleUpdatePayModifier}
-            onCreate={handleCreatePayModifiers}
+            onInputChange={handleUpdateAttrition}
+            onCreate={handleCreateAttrition}
           />
           <DisplayPayModifier data={allPayroll.pay_modifiers.pay_uplift} />
         </Tab>
@@ -231,15 +231,15 @@ function updatePayPeriods(data, action) {
   });
 }
 
-function updatePayModifier(data, action) {
-  const updatedPayModifier = data.map((value, index) => {
+function updateAttrition(data, action) {
+  const updatedAttrition = data.map((value, index) => {
     if (index === action.index) {
       return parseFloat(action.value);
     }
     return value;
   });
 
-  return updatedPayModifier;
+  return updatedAttrition;
 }
 
 const payrollReducer = (data, action) => {
@@ -259,11 +259,11 @@ const payrollReducer = (data, action) => {
         vacancies: updatePayPeriods(data.vacancies, action),
       };
     }
-    case "updatePayModifier": {
+    case "updateAttrition": {
       return {
         ...data,
         pay_modifiers: {
-          attrition: updatePayModifier(data.pay_modifiers.attrition, action),
+          attrition: updateAttrition(data.pay_modifiers.attrition, action),
           pay_uplift: data.pay_modifiers.pay_uplift,
         },
       };
