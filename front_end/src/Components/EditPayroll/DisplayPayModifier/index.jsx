@@ -1,18 +1,31 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 
-const DisplayPayModifier = ({ data }) => {
+const DisplayPayModifier = ({
+  data,
+  title,
+  isAttrition = false,
+  onCreate = [],
+}) => {
   if (!data || data <= 0) {
     return (
       <>
-        <h3 className="govuk-heading-s">Pay uplift</h3>
-        <p className="govuk-body">No pay uplift set</p>
+        <h3 className="govuk-heading-s">{title}</h3>
+        <p className="govuk-body">No {title.toLowerCase()} set</p>
+        {isAttrition && (
+          <button
+            className="govuk-button govuk-button--secondary"
+            onClick={onCreate}
+          >
+            Add Attrition
+          </button>
+        )}
       </>
     );
   }
 
   return (
-    <div className="govuk-form-group">
-      <h3 className="govuk-heading-s">Pay Uplift</h3>
+    <>
+      <h3 className="govuk-heading-s">{title}</h3>
       <table className="govuk-table">
         <PayModifierHeaders />
         <tbody className="govuk-table__body">
@@ -27,7 +40,21 @@ const DisplayPayModifier = ({ data }) => {
           </tr>
         </tbody>
       </table>
-    </div>
+      {isAttrition && (
+        <>
+          <p className="govuk-body">
+            This attrition is for the current financial year. You can add one
+            for this specific cost centre instead.
+          </p>
+          <button
+            className="govuk-button govuk-button--secondary"
+            onClick={onCreate}
+          >
+            Add Attrition
+          </button>
+        </>
+      )}
+    </>
   );
 };
 
