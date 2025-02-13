@@ -45,7 +45,7 @@ django-audit-log-middleware = "^0.0.5"
 dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
-mypy = "^1.14.1"
+django-waffle = "^4.2.0"
 
 [tool.poetry.group.dev]
 optional = true
@@ -67,7 +67,7 @@ pyperclip = "^1.8.0"
 freezegun = "^1.0.0"
 isort = "^5.10.1"
 ruff = "^0.3.4"
-mypy = "^1.13.0"
+mypy = "^1.14.1"
 django-debug-toolbar = "^4.4.6"
 debugpy = "1.8.9"
 

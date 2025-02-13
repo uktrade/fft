@@ -46,6 +46,7 @@ create-stub-data: # Create stub data for testing
 	$(web) $(manage) populate_gift_hospitality_table
 	$(web) $(manage) loaddata test_payroll_data
 	$(web) $(manage) create_test_user --password=password
+	make feature-flags
 
 setup: # Set up the project from scratch
 	make down
@@ -85,6 +86,8 @@ test-ci: # Run tests with settings for CI
 superuser: # Create superuser
 	$(web) $(manage) createsuperuser
 
+feature-flags: # Manage feature flags for local development
+	echo 'Add feature flags here'
 # Formatting
 black-check: # Run black-check
 	$(run-host) black --check .
