@@ -414,9 +414,9 @@ def get_pay_modifiers_data(
         financial_year=financial_year,
     ).first()
 
-    global_attrition_periods = [] if not global_attrition else global_attrition.periods
-    attrition_periods = [] if not attrition else attrition.periods
-    pay_uplift_periods = [] if not pay_uplift else pay_uplift.periods
+    global_attrition_periods = global_attrition.periods if global_attrition else []
+    attrition_periods = attrition.periods if attrition else []
+    pay_uplift_periods = pay_uplift.periods if pay_uplift else []
 
     return {
         "global_attrition": global_attrition_periods,
