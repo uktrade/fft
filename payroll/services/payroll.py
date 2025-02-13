@@ -395,6 +395,7 @@ def update_vacancies_data(
 
 
 class PayModifiers(TypedDict):
+    global_attrition: list[float]
     attrition: list[float]
     pay_uplift: list[float]
 
