@@ -287,9 +287,12 @@ class FinancialPeriodManager(models.Manager):
 
 
 class FinancialPeriod(BaseModel):
-    """Financial periods: correspond
-    to month, but there are 3 extra
-    periods at the end"""
+    """Financial periods: correspond to month, but there are 3 extra periods at the end.
+
+    There are 15 objects in total.
+
+    The objects are managed in migrations and therefore always available in tests.
+    """
 
     financial_period_code = models.IntegerField(primary_key=True)  # April = 1
     period_long_name = models.CharField(max_length=20)
@@ -1027,8 +1030,9 @@ class MonthlyFigureAbstract(BaseModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
 
-    amount = models.BigIntegerField(default=0)  # stored in pence
     id = models.AutoField(primary_key=True)
+
+    amount = models.BigIntegerField(default=0)  # stored in pence
     financial_year = models.ForeignKey(
         FinancialYear,
         on_delete=models.PROTECT,
