@@ -88,6 +88,8 @@ superuser: # Create superuser
 
 feature-flags: # Manage feature flags for local development
 	echo 'Add feature flags here'
+	$(web) $(manage) waffle_switch actualisation on --create
+
 # Formatting
 black-check: # Run black-check
 	$(run-host) black --check .

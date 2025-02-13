@@ -3,6 +3,8 @@ from datetime import datetime
 from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
+import pytest
+import waffle.testutils
 from django.contrib.auth.models import Group, Permission
 from django.core.files import File
 from django.db.models import Sum
@@ -11,7 +13,9 @@ from django.urls import reverse
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
+from config import flags
 from core.models import FinancialYear
+from core.test.factories import FinancialYearFactory
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.excel_test_helpers import FakeCell, FakeWorkSheet
 from core.utils.generic_helpers import make_financial_year_current
@@ -25,6 +29,7 @@ from forecast.import_actuals import (
     NAC_NOT_VALID_WITH_GENERIC_PROGRAMME,
     TITLE_CELL,
     UploadFileFormatError,
+    actualisation,
     check_trial_balance_format,
     copy_current_year_actuals_to_monthly_figure,
     save_trial_balance_row,
@@ -36,6 +41,7 @@ from forecast.models import (
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
+from forecast.test.factories import FinancialCodeFactory
 from forecast.utils.import_helpers import VALID_ECONOMIC_CODE_LIST, CheckFinancialCode
 from upload_file.models import FileUpload
 
@@ -306,6 +312,7 @@ class ImportActualsTest(BaseTestCase):
             True,
         )
 
+    @waffle.testutils.override_switch(flags.ACTUALISATION, active=True)
     def test_upload_trial_balance_report(self):
         # Check that BadZipFile is raised on
         # supply of incorrect file format
@@ -443,25 +450,43 @@ class ImportActualsTest(BaseTestCase):
         # Check that existing figures for the same period have been deleted
         self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
-                financial_code__cost_centre=cost_centre_code_1
+                financial_code__cost_centre=cost_centre_code_1,
+                financial_year=self.test_year,
+                financial_period__period_calendar_code=self.test_period,
             ).count(),
             0,
         )
         # Check for existence of monthly figures
         self.assertEqual(
             ForecastMonthlyFigure.objects.filter(
-                financial_code__cost_centre=self.cost_centre_code
+                financial_code__cost_centre=self.cost_centre_code,
+                financial_year=self.test_year,
+                financial_period__period_calendar_code=self.test_period,
             ).count(),
             4,
         )
         result = ForecastMonthlyFigure.objects.filter(
-            financial_code__cost_centre=self.cost_centre_code
+            financial_code__cost_centre=self.cost_centre_code,
+            financial_year=self.test_year,
+            financial_period__period_calendar_code=self.test_period,
         ).aggregate(total=Sum("amount"))
 
         # Check that figures have correct values
         self.assertEqual(
             result["total"],
-            1000000,
+            1_000_000,
+        )
+
+        result_inc_actualisation = ForecastMonthlyFigure.objects.filter(
+            financial_code__cost_centre=self.cost_centre_code,
+        ).aggregate(total=Sum("amount"))
+
+        # Check that actualisation has been applied and that the total forecast remains
+        # the same. In this case it will be "zero" (or close to depending on rounding)
+        # because there was a total forecast of 0 before uploading the actual.
+        self.assertEqual(
+            result_inc_actualisation["total"],
+            -8,  # due to floor division
         )
 
         self.assertTrue(
@@ -793,3 +818,159 @@ class UploadActualsTest(BaseTestCase):
         file_path = "uploaded/actuals/{}".format(self.file_mock.name)
         if os.path.exists(file_path):
             os.remove(file_path)
+
+
+@waffle.testutils.override_switch(flags.ACTUALISATION, active=True)
+def test_actualisation_as_part_of_upload(db, test_user):
+    # This test is based off an example given to me.
+
+    # figures are in pence
+    figures = [
+        # actuals apr - aug
+        10_500_00,
+        5_000_00,
+        2_500_00,
+        3_000_00,
+        6_000_00,
+        # forecast sep - mar
+        10_000_00,
+        10_000_00,
+        10_000_00,
+        10_000_00,
+        10_000_00,
+        10_000_00,
+        10_000_00,
+    ]
+    expected_figures = [
+        # actuals apr - sep
+        10_500_00,
+        5_000_00,
+        2_500_00,
+        3_000_00,
+        6_000_00,
+        7_000_00,
+        # forecast oct - mar
+        10_500_00,
+        10_500_00,
+        10_500_00,
+        10_500_00,
+        10_500_00,
+        10_500_00,
+    ]
+
+    actual_period = FinancialPeriod.objects.get(pk=6)  # sep
+    # actual_amount = 7_000  # stored in actualisation_test.xslx
+
+    fin_code: FinancialCode = FinancialCodeFactory(
+        natural_account_code__economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+    )
+    fin_year: FinancialYear = FinancialYearFactory()
+
+    make_financial_year_current(fin_year.pk)
+
+    for i, amount in enumerate(figures):
+        FinancialPeriod.objects.filter(pk=i + 1).update(actual_loaded=True)
+        ForecastMonthlyFigure.objects.create(
+            financial_code=fin_code,
+            financial_year=fin_year,
+            financial_period_id=i + 1,
+            amount=amount,
+        )
+
+    excel_file = FileUpload(
+        s3_document_file=os.path.join(
+            os.path.dirname(__file__),
+            "test_assets/actualisation_test.xlsx",
+        ),
+        uploading_user=test_user,
+        document_type=FileUpload.ACTUALS,
+    )
+    excel_file.save()
+    upload_trial_balance_report(
+        excel_file,
+        actual_period.period_calendar_code,
+        fin_year.pk,
+    )
+
+    new_figures = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_code=fin_code,
+            financial_year=fin_year,
+            archived_status__isnull=True,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
+    )
+
+    assert list(new_figures) == expected_figures
+
+
+@pytest.mark.parametrize(
+    ["figures", "period", "actual", "expected_figures"],
+    [
+        # fmt: off
+        (
+            [10_500, 5_000, 2_500, 3_000, 6_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000],
+            6,  # september
+            7_000,
+            [10_500, 5_000, 2_500, 3_000, 6_000, 7_000, 10_500, 10_500, 10_500, 10_500, 10_500, 10_500],
+        ),
+        (
+            [10_500, 5_000, 2_500, 3_000, 6_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000],
+            6,  # september
+            7050,
+            [10_500, 5_000, 2_500, 3_000, 6_000, 7_000, 10_491.66, 10_491.66, 10_491.66, 10_491.66, 10_491.66, 10_491.66],
+        ),
+        (
+            [0, 0, 0, 50_000, 0, 0, 0, 0, 0, 50_000, 0, 0],
+            6,  # september
+            12_000,
+            [0, 0, 0, 50_000, 0, 12_000, -2000, -2000, -2000, 48_000, -2000, -2000],
+        ),
+        (
+            [10_500, 5_000, 2_500, 3_000, 6_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000],
+            12,  # march
+            7_000,
+            [10_500, 5_000, 2_500, 3_000, 6_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 7_000],
+        ),
+        # fmt: on\
+    ],
+)
+def test_actualisation(
+    db, figures: list[float], period: int, actual: float, expected_figures: list[float]
+):
+    period_obj = FinancialPeriod.objects.get(pk=period)
+
+    fin_code: FinancialCode = FinancialCodeFactory(
+        natural_account_code__economic_budget_code=VALID_ECONOMIC_CODE_LIST[0],
+    )
+    fin_year: FinancialYear = FinancialYearFactory()
+
+    for i, amount in enumerate(figures):
+        ForecastMonthlyFigure.objects.create(
+            financial_code=fin_code,
+            financial_year=fin_year,
+            financial_period_id=i + 1,
+            amount=amount * 100,
+        )
+
+    actual_obj = ActualUploadMonthlyFigure.objects.create(
+        financial_code=fin_code,
+        financial_year=fin_year,
+        financial_period=period_obj,
+        amount=actual * 100,
+    )
+
+    actualisation(period=period_obj, actual=actual_obj)
+
+    new_figures = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_code=fin_code,
+            financial_year=fin_year,
+            archived_status__isnull=True,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
+    )
+
+    assert list(new_figures[period:]) == [x * 100 for x in expected_figures][period:]
