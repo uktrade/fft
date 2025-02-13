@@ -9,7 +9,7 @@ import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
-import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import DisplayAttrition from "../Components/EditPayroll/DisplayAttrition";
 import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
@@ -194,21 +194,12 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay modifiers" key="4">
-          {allPayroll.pay_modifiers.attrition &&
-          allPayroll.pay_modifiers.attrition.length ? (
-            <EditPayModifier
-              data={allPayroll.pay_modifiers.attrition}
-              onInputChange={handleUpdateAttrition}
-              onCreate={handleCreateAttrition}
-            />
-          ) : (
-            <DisplayPayModifier
-              data={allPayroll.pay_modifiers.global_attrition}
-              title="Global attrition"
-              isAttrition={true}
-              onCreate={handleCreateAttrition}
-            />
-          )}
+          <DisplayAttrition
+            attrition={allPayroll.pay_modifiers.attrition}
+            global_attrition={allPayroll.pay_modifiers.global_attrition}
+            onInputChange={handleUpdateAttrition}
+            onCreate={handleCreateAttrition}
+          />
           <DisplayPayModifier
             data={allPayroll.pay_modifiers.pay_uplift}
             title="Pay uplift"
