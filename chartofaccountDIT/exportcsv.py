@@ -210,7 +210,7 @@ def _export_programme_iterator(queryset):
         yield [
             obj.programme_code,
             obj.programme_description,
-            obj.budget_type.budget_type,
+            obj.budget_type.budget_type if obj.budget_type else "",
             obj.active,
         ]
 
