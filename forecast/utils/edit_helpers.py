@@ -64,28 +64,33 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
         ).count()
         + 1
     )
-
-    for financial_period_month in range(start_period, period_max):
-        try:
-            monthly_figure = ForecastMonthlyFigure.objects.filter(
-                financial_code__cost_centre__cost_centre_code=cost_centre_code,
-                financial_year__financial_year=financial_year,
-                financial_period__financial_period_code=financial_period_month,
-                financial_code__programme__programme_code=check_empty(cell_data[0]),
-                financial_code__natural_account_code__natural_account_code=cell_data[2],
-                financial_code__analysis1_code=check_empty(cell_data[4]),
-                financial_code__analysis2_code=check_empty(cell_data[5]),
-                financial_code__project_code=check_empty(cell_data[6]),
-                archived_status=None,
-            ).first()
-        except (IndexError, ValueError):
+    try:
+        annual_figures = monthly_figure = ForecastMonthlyFigure.objects.filter(
+            financial_code__cost_centre__cost_centre_code=cost_centre_code,
+            financial_year__financial_year=financial_year,
+            financial_period__financial_period_code__in=range(start_period, period_max),
+            financial_code__programme__programme_code=check_empty(cell_data[0]),
+            financial_code__natural_account_code__natural_account_code=cell_data[2],
+            financial_code__analysis1_code=check_empty(cell_data[4]),
+            financial_code__analysis2_code=check_empty(cell_data[5]),
+            financial_code__project_code=check_empty(cell_data[6]),
+            archived_status=None,
+        ).order_by("financial_period__financial_period_code")
+        if annual_figures.count() != 12 - (start_period - 1):
             raise CannotFindForecastMonthlyFigureException(
                 "Could not find forecast row, please check that you "
                 "have pasted ALL columns from the spreadsheet. "
                 "Some values may have been updated."
             )
 
-        col = (settings.NUM_META_COLS + financial_period_month) - 1
+    except (IndexError, ValueError):
+        raise CannotFindForecastMonthlyFigureException(
+            "Could not find forecast row, please check that you "
+            "have pasted ALL columns from the spreadsheet. "
+            "Some values may have been updated."
+        )
+    for monthly_figure in annual_figures:
+        col = settings.NUM_META_COLS + monthly_figure.financial_period_id
 
         try:
             new_value = convert_forecast_amount(cell_data[col])
@@ -117,7 +122,7 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
                     project_code=check_empty(cell_data[6]),
                 )
                 financial_period = FinancialPeriod.objects.get(
-                    financial_period_code=financial_period_month,
+                    financial_period_code=monthly_figure.financial_period_id,
                 )
                 monthly_figure = ForecastMonthlyFigure.objects.create(
                     financial_year_id=financial_year,
