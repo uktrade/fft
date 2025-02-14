@@ -2,12 +2,12 @@ import PayModifierHeaders from "../PayModifierHeaders";
 import DisplayPayModifier from "../DisplayPayModifier";
 
 const DisplayAttrition = ({
-  attrition,
-  global_attrition,
+  attrition = [],
+  global_attrition = [],
   onInputChange,
   onCreate,
 }) => {
-  if (attrition && attrition.length > 0) {
+  if (attrition.length > 0) {
     return (
       <div className="govuk-form-group">
         <h3 className="govuk-heading-s">Attrition</h3>
@@ -36,10 +36,13 @@ const DisplayAttrition = ({
     );
   }
 
-  if (global_attrition && global_attrition.length > 0) {
+  if (global_attrition.length > 0) {
     return (
       <>
-        <DisplayPayModifier data={global_attrition} title="Global attrition" />
+        <DisplayPayModifier
+          modifier={global_attrition}
+          title="Global attrition"
+        />
         <p className="govuk-body">
           This attrition is for the current financial year. You can add one for
           this specific cost centre instead.

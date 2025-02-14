@@ -1,7 +1,7 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 
-const DisplayPayModifier = ({ data, title }) => {
-  if (!data || data <= 0) {
+const DisplayPayModifier = ({ modifier = [], title }) => {
+  if (modifier.length === 0) {
     return (
       <>
         <h3 className="govuk-heading-s">{title}</h3>
@@ -17,7 +17,7 @@ const DisplayPayModifier = ({ data, title }) => {
         <PayModifierHeaders />
         <tbody className="govuk-table__body">
           <tr className="govuk-table__row">
-            {data.map((value, index) => {
+            {modifier.map((value, index) => {
               return (
                 <td className="govuk-table__cell" key={index}>
                   {value}

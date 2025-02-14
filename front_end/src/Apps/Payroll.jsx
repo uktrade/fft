@@ -201,7 +201,7 @@ export default function Payroll() {
             onCreate={handleCreateAttrition}
           />
           <DisplayPayModifier
-            data={allPayroll.pay_modifiers.pay_uplift}
+            modifier={allPayroll.pay_modifiers.pay_uplift}
             title="Pay uplift"
           />
         </Tab>
