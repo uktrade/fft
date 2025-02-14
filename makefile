@@ -171,7 +171,7 @@ codebase-build codebase-deploy copilot-ssh: profile = "fft"
 codebase-build codebase-deploy copilot-ssh: app = "fft"
 codebase-build codebase-deploy copilot-ssh: codebase = "fft"
 codebase-build codebase-deploy: commit := $(shell git rev-parse --short HEAD)
-codebase-deploy: env = "dev"
+codebase-deploy copilot-ssh: env = "dev"
 copilot-ssh: name = "web"
 
 codebase-build:
