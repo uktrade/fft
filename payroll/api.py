@@ -12,7 +12,7 @@ from .services import payroll as payroll_service
 class EditPayrollApiView(EditPayrollBaseView):
     def get(self, request, *args, **kwargs):
         employees = list(
-            payroll_service.get_payroll_data(
+            payroll_service.get_employee_data(
                 self.cost_centre,
                 self.financial_year,
             )

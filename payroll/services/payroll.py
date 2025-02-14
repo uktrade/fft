@@ -244,7 +244,7 @@ class EmployeePayroll(TypedDict):
     pay_periods: list[bool]
 
 
-def get_payroll_data(
+def get_employee_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> Iterator[EmployeePayroll]:
@@ -262,6 +262,8 @@ def get_payroll_data(
         )
     )
     for obj in qs:
+        budget_type = obj.programme_code.budget_type
+
         yield EmployeePayroll(
             id=obj.pk,
             name=obj.get_full_name(),
@@ -269,7 +271,7 @@ def get_payroll_data(
             employee_no=obj.employee_no,
             fte=obj.fte,
             programme_code=obj.programme_code.pk,
-            budget_type=obj.programme_code.budget_type.budget_type_display,
+            budget_type=budget_type.budget_type_display if budget_type else "",
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
             # `first` is OK as there should only be one `pay_periods` with the filters.
@@ -343,11 +345,13 @@ def get_vacancies_data(
         )
     )
     for obj in qs:
+        budget_type = obj.programme_code.budget_type
+
         yield Vacancies(
             id=obj.pk,
             grade=obj.grade.pk,
             programme_code=obj.programme_code.pk,
-            budget_type=obj.programme_code.budget_type.budget_type_display,
+            budget_type=budget_type.budget_type_display if budget_type else "",
             recruitment_type=obj.get_recruitment_type_display(),
             recruitment_stage=obj.get_recruitment_stage_display(),
             appointee_name=obj.appointee_name,
