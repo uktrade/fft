@@ -9,7 +9,8 @@ import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
 import VacancyRow from "../Components/EditPayroll/VacancyRow";
 import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
-import EditPayModifier from "../Components/EditPayroll/EditPayModifier";
+import DisplayAttrition from "../Components/EditPayroll/DisplayAttrition";
+import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
 import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
@@ -72,7 +73,6 @@ export default function Payroll() {
     () => allPayroll.employees.filter((payroll) => payroll.basic_pay <= 0),
     [allPayroll],
   );
-
   const forecastAndActuals = useMemo(() => {
     const total_results = [];
 
@@ -124,11 +124,11 @@ export default function Payroll() {
     dispatch({ type: "updatePayPeriodsVacancies", id, index, enabled });
   }
 
-  function handleUpdatePayModifiers(id, index, value) {
-    dispatch({ type: "updatePayModifiers", id, index, value });
+  function handleUpdateAttrition(index, value) {
+    dispatch({ type: "updateAttrition", index, value });
   }
 
-  function handleCreatePayModifiers() {
+  function handleCreateAttrition() {
     api.createPayModifiers().then((r) => {
       getAllPayroll();
     });
@@ -194,10 +194,15 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay modifiers" key="4">
-          <EditPayModifier
-            data={allPayroll.pay_modifiers}
-            onInputChange={handleUpdatePayModifiers}
-            onCreate={handleCreatePayModifiers}
+          <DisplayAttrition
+            attrition={allPayroll.pay_modifiers.attrition}
+            global_attrition={allPayroll.pay_modifiers.global_attrition}
+            onInputChange={handleUpdateAttrition}
+            onCreate={handleCreateAttrition}
+          />
+          <DisplayPayModifier
+            modifier={allPayroll.pay_modifiers.pay_uplift}
+            title="Pay uplift"
           />
         </Tab>
       </Tabs>
@@ -230,22 +235,15 @@ function updatePayPeriods(data, action) {
   });
 }
 
-function updatePayModifiers(data, action) {
-  return data.map((row) => {
-    if (row.id === action.id) {
-      const updatedPayModifier = row.pay_modifiers.map((modifier, index) => {
-        if (index === action.index) {
-          return parseFloat(action.value);
-        }
-        return modifier;
-      });
-      return {
-        ...row,
-        pay_modifiers: updatedPayModifier,
-      };
+function updateAttrition(data, action) {
+  const updatedAttrition = data.map((value, index) => {
+    if (index === action.index) {
+      return parseFloat(action.value);
     }
-    return row;
+    return value;
   });
+
+  return updatedAttrition;
 }
 
 const payrollReducer = (data, action) => {
@@ -265,10 +263,13 @@ const payrollReducer = (data, action) => {
         vacancies: updatePayPeriods(data.vacancies, action),
       };
     }
-    case "updatePayModifiers": {
+    case "updateAttrition": {
       return {
         ...data,
-        pay_modifiers: updatePayModifiers(data.pay_modifiers, action),
+        pay_modifiers: {
+          attrition: updateAttrition(data.pay_modifiers.attrition, action),
+          pay_uplift: data.pay_modifiers.pay_uplift,
+        },
       };
     }
   }
