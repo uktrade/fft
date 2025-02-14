@@ -20,7 +20,6 @@ function TanstackTable({ data, onTogglePayPeriods }) {
     let totalSum = 0;
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        console.log(data[i]);
         totalSum += data[i].pay_periods[index] == true ? 1 : 0;
       }
     }
