@@ -1,6 +1,7 @@
 import copy
 import hashlib
 
+import waffle
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -19,6 +20,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+from config import flags
 from core.metamodels import BaseModel
 from core.models import FinancialYear
 from core.utils.generic_helpers import (
@@ -449,7 +451,7 @@ class FinancialCodeAbstract(models.Model):
     @property
     def is_locked(self) -> bool:
         # TODO: Should `FinancialCode` have knowledge of payroll?
-        if settings.PAYROLL.ENABLE_FORECAST is False:
+        if not waffle.switch_is_active(flags.PAYROLL):
             return False
 
         return (

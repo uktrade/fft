@@ -41,23 +41,31 @@ export default function Payroll() {
     initialShowPreviousMonths === "true",
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [errors, setErrors] = useState(null);
   const [activeTab, setActiveTab] = useState(() => {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
 
-  function getAllPayroll() {
-    api.getPayrollData().then((data) => {
+  async function getAllPayroll() {
+    try {
+      const data = await api.getPayrollData();
       dispatch({ type: "fetched", data });
-    });
+    } catch (error) {
+      setErrors([
+        {
+          label: "",
+          message: "Error occured whilst fetching payroll data",
+        },
+      ]);
+    }
   }
 
   // Use Effects
   useEffect(() => {
     localStorage.setItem("editPayroll.activeTab", activeTab);
     setSaveSuccess(false);
-    setSaveError(false);
+    setErrors(null);
   }, [activeTab]);
 
   useEffect(() => {
@@ -107,12 +115,11 @@ export default function Payroll() {
     try {
       await api.postPayrollData(allPayroll);
       setSaveSuccess(true);
-      setSaveError(false);
+      setErrors(null);
       getAllPayroll();
     } catch (error) {
-      console.error("Error saving payroll: ", error);
       setSaveSuccess(false);
-      setSaveError(true);
+      setErrors([{ label: "", message: "Error saving payroll data" }]);
     }
   }
 
@@ -143,12 +150,10 @@ export default function Payroll() {
     );
   }
 
-  const errors = [{ label: "", message: "Error saving payroll data" }];
-
   return (
     <>
       {saveSuccess && <SuccessBanner />}
-      {saveError && <ErrorSummary errors={errors} />}
+      {errors && <ErrorSummary errors={errors} />}
       <ToggleCheckbox
         toggle={showPreviousMonths}
         handler={handleHidePreviousMonths}

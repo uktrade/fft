@@ -78,37 +78,27 @@ export async function getData(url) {
  *
  * @param {string} url - URL to POST data to.
  * @param {object} data - Payload to send.
+ * @param {?string} content_type - Content-Type header for the body.
  * @returns {PostDataResponse}
  */
-export async function postData(url = "", data = {}) {
-  // NOTE: This doesn't work! We set `CSRF_COOKIE_HTTPONLY = True` so the code which
-  // uses this function include the CSRF token as part of the submitted form data by
-  // pulling it from DOM.
-  var csrftoken = getCookie("csrftoken");
+export async function postData(url = "", data = {}, content_type = null) {
+  const csrftoken = window.CSRF_TOKEN;
 
-  /*
-    const defaults = {
-      'method': 'POST',
-      'credentials': 'include',
-      'headers': new Headers({
-        'X-CSRFToken': csrftoken,
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'X-Requested-With': 'XMLHttpRequest'
-      })
-    */
+  if (!content_type) {
+    content_type = "application/x-www-form-urlencoded"
+      ? data instanceof FormData
+      : "application/json";
+  }
 
   // Default options are marked with *
   const response = await fetch(url, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
-    mode: "cors", // no-cors, *cors, same-origin
+    mode: "same-origin", // no-cors, *cors, same-origin
     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
     credentials: "same-origin", // include, *same-origin, omit
     headers: {
-      //'Content-Type': 'application/json',
-      //'Content-Type': 'multipart/formdata',
       "X-CSRFToken": csrftoken,
-      //'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      "X-Requested-With": "XMLHttpRequest",
+      "Content-Type": content_type,
     },
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer", // no-referrer, *client

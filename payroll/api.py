@@ -1,8 +1,9 @@
 import json
 
-from django.conf import settings
+import waffle
 from django.http import JsonResponse
 
+from config import flags
 from core.utils.generic_helpers import get_previous_months_data
 from payroll.views import EditPayrollBaseView
 
@@ -12,7 +13,7 @@ from .services import payroll as payroll_service
 class EditPayrollApiView(EditPayrollBaseView):
     def get(self, request, *args, **kwargs):
         employees = list(
-            payroll_service.get_payroll_data(
+            payroll_service.get_employee_data(
                 self.cost_centre,
                 self.financial_year,
             )
@@ -68,7 +69,7 @@ class EditPayrollApiView(EditPayrollBaseView):
                 data["pay_modifiers"]["attrition"],
             )
 
-        if settings.PAYROLL.ENABLE_FORECAST is True:
+        if waffle.switch_is_active(flags.PAYROLL):
             payroll_service.update_payroll_forecast(
                 financial_year=self.financial_year,
                 cost_centre=self.cost_centre,
