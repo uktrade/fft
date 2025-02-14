@@ -274,14 +274,12 @@ class PasteForecastRowsView(
                     status=400,
                 )
 
-            # Check for header row
-            has_start_row = False
+            # Check for header row and reduces row count
             if rows[0].lower().startswith("programme"):
                 has_start_row = True
-
-            # Account for header row in paste
-            if has_start_row:
                 pasted_row_count -= 1
+            else:
+                has_start_row = False
 
             if all_selected and row_count < pasted_row_count:
                 return JsonResponse(
@@ -306,12 +304,12 @@ class PasteForecastRowsView(
                 )
 
             try:
+                # print(rows)
                 for index, row in enumerate(rows):
                     if index == 0 and has_start_row:
                         continue
 
                     cell_data = re.split(r"\t", row.rstrip("\t"))
-
                     # Check that pasted at content and desired first row match
                     check_row_match(
                         index,
@@ -321,7 +319,6 @@ class PasteForecastRowsView(
 
                     # Check cell data length against expected number of cols
                     check_cols_match(cell_data)
-
                     set_monthly_figure_amount(
                         cost_centre_code, cell_data, self.financial_year
                     )
