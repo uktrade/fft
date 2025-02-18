@@ -1,5 +1,6 @@
 from random import randrange
 from statistics import mean
+import json
 
 import pytest
 from pytest_django.asserts import assertNumQueries
@@ -315,3 +316,32 @@ def test_update_all_employee_pay_periods(db):
 
     # then there are 2 pay periods
     assert EmployeePayPeriods.objects.count() == 2
+    
+def update_notes_success(self, db, client):
+    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+    response = client.post(
+        url,
+        data=json.dumps(
+            {
+                "notes": "some notes",
+                "employee_no": "150892",
+            }
+        ),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+
+def update_notes_fail(self, db, client):
+    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+    response = client.post(
+        url,
+        data=json.dumps(
+            {
+                "notes": "some notes"
+            }
+        ),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
