@@ -1,6 +1,7 @@
 import json
 
 import waffle
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 
 from config import flags
@@ -12,12 +13,14 @@ from .services import payroll as payroll_service
 
 class EditPayrollApiView(EditPayrollBaseView):
     def get(self, request, *args, **kwargs):
+
         employees = list(
             payroll_service.get_employee_data(
                 self.cost_centre,
                 self.financial_year,
             )
         )
+
         vacancies = list(
             payroll_service.get_vacancies_data(
                 self.cost_centre,
@@ -86,3 +89,46 @@ class PayModifiersApiView(EditPayrollBaseView):
         )
 
         return JsonResponse({})
+
+
+class EmployeeNotesApi(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            if not data:
+                return JsonResponse({"error": "Missing request body"}, status=400)
+            notes = data.get("notes")
+            employee_no = data.get("employee_no")
+
+            if not notes or not employee_no:
+                return JsonResponse(
+                    {"error": "Both 'notes' and 'employee_no' are required"}, status=400
+                )
+            employee_data = payroll_service.get_employee_data(
+                self.cost_centre,
+                self.financial_year,
+            )
+            employee = next(
+                (
+                    item
+                    for item in employee_data
+                    if str(item["employee_no"]) == employee_no
+                ),
+                None,
+            )
+            if employee:
+                payroll_service.update_employee_notes(
+                    notes,
+                    employee_no,
+                    self.cost_centre,
+                    self.financial_year,
+                )
+            return JsonResponse({}, status=204)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except ValidationError:
+            return JsonResponse({"error": "Invalid data provided"}, status=400)
+        except Exception:
+            return JsonResponse(
+                {"error": "An error occurred while processing the request"}, status=500
+            )
