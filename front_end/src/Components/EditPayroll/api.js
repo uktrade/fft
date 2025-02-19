@@ -1,4 +1,4 @@
-import { getData, postData } from "../../Util";
+import { getData, postJsonData } from "../../Util";
 
 import * as types from "./types";
 
@@ -17,14 +17,14 @@ export function getPayrollData() {
  * @returns {import("../../Util").PostDataResponse} Updated payroll data received.
  */
 export function postPayrollData(payrollData) {
-  return postData(getPayrollApiUrl(), JSON.stringify(payrollData));
+  return postJsonData(getPayrollApiUrl(), JSON.stringify(payrollData));
 }
 
 /**
  * Create default pay modifier object
  */
 export function createPayModifiers() {
-  return postData(getPayrollApiUrl() + "pay_modifiers/", {});
+  return postJsonData(getPayrollApiUrl() + "pay_modifiers/", {});
 }
 
 /**

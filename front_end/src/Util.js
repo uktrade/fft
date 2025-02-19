@@ -81,15 +81,8 @@ export async function getData(url) {
  * @param {?string} content_type - Content-Type header for the body.
  * @returns {PostDataResponse}
  */
-export async function postData(url = "", data = {}, content_type = null) {
+export async function postData(url = "", data = {}, headers = {}) {
   const csrftoken = window.CSRF_TOKEN;
-
-  if (!content_type) {
-    content_type =
-      data instanceof FormData
-        ? "application/x-www-form-urlencoded"
-        : "application/json";
-  }
 
   // Default options are marked with *
   const response = await fetch(url, {
@@ -99,7 +92,7 @@ export async function postData(url = "", data = {}, content_type = null) {
     credentials: "same-origin", // include, *same-origin, omit
     headers: {
       "X-CSRFToken": csrftoken,
-      "Content-Type": content_type,
+      ...headers,
     },
     redirect: "follow", // manual, *follow, error
     referrer: "no-referrer", // no-referrer, *client
@@ -112,6 +105,10 @@ export async function postData(url = "", data = {}, content_type = null) {
     status: response.status,
     data: jsonData, // parses JSON response into native JavaScript objects
   };
+}
+
+export async function postJsonData(url = "", data = {}) {
+  return postData(url, data, { "Content-Type": "application/json" });
 }
 
 export const processForecastData = (forecastData) => {
