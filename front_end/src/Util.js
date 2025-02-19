@@ -85,9 +85,10 @@ export async function postData(url = "", data = {}, content_type = null) {
   const csrftoken = window.CSRF_TOKEN;
 
   if (!content_type) {
-    content_type = "application/x-www-form-urlencoded"
-      ? data instanceof FormData
-      : "application/json";
+    content_type =
+      data instanceof FormData
+        ? "application/x-www-form-urlencoded"
+        : "application/json";
   }
 
   // Default options are marked with *
