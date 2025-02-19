@@ -1,10 +1,9 @@
 import datetime
-from functools import partial
 import logging
+from functools import partial
 
 import waffle
 from django.db import connection
-from django.db.models import F
 
 from config import flags
 from core.constants import PERIODS
