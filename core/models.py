@@ -137,11 +137,9 @@ class PayUplift(PayModifiers):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # TODO: Update payroll forecast when pay uplift is updated.
-        # Avoid circular import
-        # from payroll.services.payroll import update_all_payroll_forecast
+        from payroll.tasks import update_all_payroll_forecast
 
-        # update_all_payroll_forecast(financial_year=self.financial_year)
+        update_all_payroll_forecast.delay(financial_year=self.financial_year.pk)
 
 
 class Attrition(PayModifiers):

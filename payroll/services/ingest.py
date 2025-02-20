@@ -7,10 +7,12 @@ from django.core.files import File
 from django.db import transaction
 
 from chartofaccountDIT.models import ProgrammeCode
+from core.models import FinancialYear
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Employee
 from payroll.services.payroll import update_all_employee_pay_periods
+from payroll.tasks import update_all_payroll_forecast
 
 
 PayrollRow = namedtuple(
@@ -73,6 +75,7 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     cost_centre_codes = set(CostCentre.objects.values_list("pk", flat=True))
     programme_codes = set(ProgrammeCode.objects.values_list("pk", flat=True))
     grades = set(Grade.objects.values_list("pk", flat=True))
+    current_financial_year = FinancialYear.objects.current()
 
     for row in csv_reader:
         if is_row_empty(row):
@@ -124,6 +127,13 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
 
     # Stop template attr lookup of .items creating an empty list.
     failed.default_factory = None
+
+    # Queue up a refresh of the whole payroll forecast.
+    transaction.on_commit(
+        lambda: update_all_payroll_forecast.delay(
+            financial_year=current_financial_year.pk
+        )
+    )
 
     return {
         "failed": failed,

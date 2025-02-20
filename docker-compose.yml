@@ -6,9 +6,6 @@ services:
     image: fft/web:latest
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=psql://postgres:postgres@db:5432/fido
-      - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
     command: python manage.py runserver 0.0.0.0:8000
     # command: granian --interface wsgi config.wsgi:application --workers 2 --host 0.0.0.0 --port 8000
     ports:
@@ -27,9 +24,6 @@ services:
     image: fft/web:latest
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=psql://postgres:postgres@db:5432/fido
-      - CELERY_BROKER_URL=rediss://redis:redis@redis:6379/0
     command: celery -A config worker -l info
     volumes:
       - ./:/app/
