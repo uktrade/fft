@@ -320,17 +320,24 @@ def test_update_all_employee_pay_periods(db):
 
 def update_notes_success(self, db, client):
     url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
-    response = client.post(
-        url,
-        data=json.dumps(
+    data=json.dumps(
             {
                 "notes": "some notes",
                 "employee_no": "150892",
             }
-        ),
+        )
+    response = client.post(
+        url,
+        data=data,
         content_type="application/json",
     )
+    pay_period = EmployeePayPeriods.objects.get(
+        employee__employee_no=data.get('employee_no'),
+        employee__cost_centre=888813,
+        year=2024,
+    )
     assert response.status_code == 200
+    assert pay_period.notes == data.get('notes')
 
 
 def update_notes_fail(self, db, client):
@@ -341,3 +348,12 @@ def update_notes_fail(self, db, client):
         content_type="application/json",
     )
     assert response.status_code == 400
+
+def update_notes_fail(self, db, client):
+    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+    response = client.post(
+        url,
+        data='some string',
+        content_type="application/json",
+    )
+    assert response.status_code == 500
