@@ -87,8 +87,9 @@ superuser: # Create superuser
 	$(web) $(manage) createsuperuser
 
 feature-flags: # Manage feature flags for local development
-	echo 'Add feature flags here'
+	@echo 'Manage feature flags here'
 	$(web) $(manage) waffle_switch actualisation on --create
+	$(web) $(manage) waffle_switch payroll on --create
 
 # Formatting
 black-check: # Run black-check
@@ -170,7 +171,7 @@ codebase-build codebase-deploy copilot-ssh: profile = "fft"
 codebase-build codebase-deploy copilot-ssh: app = "fft"
 codebase-build codebase-deploy copilot-ssh: codebase = "fft"
 codebase-build codebase-deploy: commit := $(shell git rev-parse --short HEAD)
-codebase-deploy: env = "dev"
+codebase-deploy copilot-ssh: env = "dev"
 copilot-ssh: name = "web"
 
 codebase-build:

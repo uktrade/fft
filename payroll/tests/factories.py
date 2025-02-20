@@ -7,7 +7,7 @@ from core.models import Attrition, PayUplift
 from core.test.factories import FinancialYearFactory
 from costcentre.test.factories import CostCentreFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import Employee, PayElementTypeGroup, Vacancy
+from payroll.models import Employee, EmployeePayPeriods, PayElementTypeGroup, Vacancy
 
 
 fake = Faker()
@@ -26,6 +26,27 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     grade = factory.SubFactory(GradeFactory)
     fte = 1.0
     assignment_status = "Active Assignment"
+
+
+class EmployeePayPeriodsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = EmployeePayPeriods
+        django_get_or_create = ("employee", "year")
+
+    employee = factory.SubFactory(EmployeeFactory)
+    year = factory.SubFactory(FinancialYearFactory)
+    period_1 = True
+    period_2 = True
+    period_3 = True
+    period_4 = True
+    period_5 = True
+    period_6 = True
+    period_7 = True
+    period_8 = True
+    period_9 = True
+    period_10 = True
+    period_11 = True
+    period_12 = True
 
 
 class PayElementTypeGroupFactory(factory.django.DjangoModelFactory):

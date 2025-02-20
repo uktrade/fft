@@ -11,10 +11,12 @@ from core.types import MonthsDict
 from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
+from payroll.models import EmployeePayPeriods
 from payroll.services.payroll import (
     PayrollForecast,
     employee_created,
     payroll_forecast_report,
+    update_all_employee_pay_periods,
     update_payroll_forecast_figure,
     vacancy_created,
 )
@@ -22,6 +24,7 @@ from payroll.services.payroll import (
 from ..factories import (
     AttritionFactory,
     EmployeeFactory,
+    EmployeePayPeriodsFactory,
     PayUpliftFactory,
     VacancyFactory,
 )
@@ -297,3 +300,18 @@ def test_scenario_update_forecast(db):
     )
 
     assert list(forecast_figures) == list(expected_forecast.values())
+
+
+def test_update_all_employee_pay_periods(db):
+    # given an employee with pay periods
+    EmployeePayPeriodsFactory(year_id=2020)
+    # and an employee without pay periods
+    EmployeeFactory()
+
+    assert EmployeePayPeriods.objects.count() == 1
+
+    # when `update_all_employee_pay_periods` is called
+    update_all_employee_pay_periods()
+
+    # then there are 2 pay periods
+    assert EmployeePayPeriods.objects.count() == 2

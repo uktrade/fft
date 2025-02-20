@@ -7,6 +7,7 @@
 {% load upload_percentage_permissions %}
 {% load vite %}
 {% load static %}
+{% load waffle_tags %}
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template ">
@@ -37,8 +38,10 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-    <!-- Feature flags -->
-    <meta name="fft:features:payroll_enable_forecast" content="{{ settings.PAYROLL.ENABLE_FORECAST }}">
+    {# Feature flags #}
+    {% switch 'payroll' %}
+        <meta name="fft:features:payroll" content="true">
+    {% endswitch %}
 
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
     <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
@@ -260,11 +263,7 @@
     import FeatureFlags from "{% static 'core/js/feature-flags.js' %}";
 
     window.GOVUKFrontend.initAll();
-
-    function getCsrfToken() {
-        return "{{ csrf_token }}";
-    }
-
+    window.CSRF_TOKEN = "{{ csrf_token }}";
     window.FEATURES = FeatureFlags("fft:features");
 </script>
 {% block scripts %}

@@ -52,11 +52,11 @@ const TableCell = ({ rowIndex, cellId, cellKey, sheetUpdating }) => {
 
     if (!isEditable) classes.push("not-editable");
     if (isRowSelected) classes.push("selected");
+    isActual ? classes.push("is-actual") : classes.push("is-forecast");
     if (!cell) return classes.join(" ");
 
     if (cell && cell.amount < 0) classes.push("negative");
     if (wasEdited()) classes.push("edited");
-    isActual ? classes.push("is-actual") : classes.push("is-forecast");
 
     return classes.join(" ");
   };

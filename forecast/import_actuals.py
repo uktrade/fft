@@ -1,9 +1,9 @@
 import datetime
 import logging
+from functools import partial
 
 import waffle
 from django.db import connection
-from django.db.models import F
 
 from config import flags
 from core.constants import PERIODS
@@ -238,6 +238,8 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         file_upload, month_number, financial_year
     )
 
+    update_feedback = partial(set_file_upload_feedback, file_upload)
+
     year_obj, _ = get_fk(FinancialYear, financial_year)
     period_obj, _ = get_fk_from_field(
         FinancialPeriod, "period_calendar_code", month_number
@@ -257,6 +259,7 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         financial_year=financial_year,
         financial_period=period_obj,
     ).delete()
+
     rows_to_process = worksheet.max_row + 1
     row = 0
 
@@ -267,11 +270,10 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
             # so keep reading until the first row with data
             continue
 
-        if not row % 100:
+        if row % 100 == 0:
             # Display the number of rows processed every 100 rows
-            set_file_upload_feedback(
-                file_upload, f"Processing row {row} of {rows_to_process}."
-            )
+            update_feedback(f"Processing row {row} of {rows_to_process}.")
+
         chart_of_account = actual_row[CHART_OF_ACCOUNT_COL].value
         if chart_of_account:
             actual = actual_row[ACTUAL_FIGURE_COL].value
@@ -303,7 +305,12 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         # Now copy the newly uploaded actuals to the correct table
         if year_obj.current:
             if waffle.switch_is_active(flags.ACTUALISATION):
-                for uploaded_actual in uploaded_actuals:
+                rows_to_actualise = len(uploaded_actuals)
+
+                for i, uploaded_actual in enumerate(uploaded_actuals):
+                    if i % 100 == 0:
+                        update_feedback(f"Actualised {i} of {rows_to_actualise} rows.")
+
                     actualisation(period=period_obj, actual=uploaded_actual)
 
             copy_current_year_actuals_to_monthly_figure(period_obj, financial_year)
@@ -350,11 +357,14 @@ def actualisation(period: FinancialPeriod, actual: ActualUploadMonthlyFigure) ->
 
     # adjust the remaining forecast periods by the difference
     for i in range(periods_left):
-        ForecastMonthlyFigure.objects.update_or_create(
+        obj, created = ForecastMonthlyFigure.objects.get_or_create(
             financial_code_id=actual.financial_code_id,
             financial_year_id=actual.financial_year_id,
             financial_period_id=period.pk + i + 1,
             archived_status=None,
-            defaults={"amount": F("amount") + difference},
-            create_defaults={"amount": difference},
+            defaults={"amount": difference},
         )
+
+        if not created:
+            obj.amount = obj.amount + difference
+            obj.save()

@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-{% load breadcrumbs vite forecast_format %}
+{% load breadcrumbs vite forecast_format waffle_tags %}
 
 {% block title %}Edit payroll{% endblock title %}
 
@@ -12,17 +12,14 @@
 {% block content %}
     <div class="flex-spread">
         <h1 class="govuk-heading-l">Edit payroll</h1>
-        {# This assumes that a user with access to payroll also has access to forecast #}
-        {% if settings.PAYROLL.ENABLE_FORECAST %}
+
+        {# Here we assume that a user with access to payroll also has access to forecast #}
+        {% switch 'payroll' %}
             <a class="govuk-link" href="{% url 'edit_forecast' cost_centre_code financial_year %}">Go to Forecast</a>
-        {% endif %}
+        {% endswitch %}
     </div>
 
     <div id="payroll-app"></div>
-
-    {% if perms.payroll.add_employee %}
-        <a class="govuk-link" href="{% url 'payroll:import' %}">Import payroll</a>
-    {% endif %}
 {% endblock content %}
 
 {% block scripts %}
