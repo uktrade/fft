@@ -90,32 +90,64 @@ export async function getData(url) {
  */
 export async function postData(url = "", data = {}, headers = {}) {
   const csrftoken = window.CSRF_TOKEN;
+  try {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "same-origin", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "X-CSRFToken": csrftoken,
+        ...headers,
+      },
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // no-referrer, *client
+      body: data, // body data type must match "Content-Type" header
+    });
 
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
-    mode: "same-origin", // no-cors, *cors, same-origin
-    cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: "same-origin", // include, *same-origin, omit
-    headers: {
-      "X-CSRFToken": csrftoken,
-      ...headers,
-    },
-    redirect: "follow", // manual, *follow, error
-    referrer: "no-referrer", // no-referrer, *client
-    body: data, // body data type must match "Content-Type" header
-  });
+    // Status codes that typically don't have response bodies
+    const noContentCodes = [204, 205, 304];
 
-  let jsonData = await response.json();
+    // Check if the response status indicates no content
+    if (noContentCodes.includes(response.status)) {
+      return {
+        status: response.status,
+        data: null, // No content to parse
+      };
+    }
 
-  return {
-    status: response.status,
-    data: jsonData, // parses JSON response into native JavaScript objects
-  };
+    // For responses that might have content, try to parse JSON
+    try {
+      const data = await response.json();
+      return {
+        status: response.status,
+        data,
+      };
+    } catch (jsonError) {
+      // Handle case where response exists but isn't valid JSON
+      return {
+        status: response.status,
+        data: null,
+        parseError: true,
+      };
+    }
+  } catch (e) {
+    return {
+      status: e.status || 500,
+      data: {
+        error: true,
+        message: e.message || "Unknown error occurred",
+        name: e.name || "Error",
+      },
+    };
+  }
 }
 
 export async function postJsonData(url = "", data = {}) {
-  return postData(url, data, { "Content-Type": "application/json" });
+  return postData(url, JSON.stringify(data), {
+    "Content-Type": "application/json",
+  });
 }
 
 export const processForecastData = (forecastData) => {
@@ -212,3 +244,6 @@ export function getScriptJsonData(id) {
     resolve(json);
   });
 }
+
+export const getURLSegment = (index = 0) =>
+  window.location.pathname.split("/").filter(Boolean).reverse()[index];

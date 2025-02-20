@@ -1,3 +1,4 @@
+import NotesCell from "../../Notes/NotesCell";
 import PayPeriods from "../PayPeriods";
 
 const VacancyRow = ({
@@ -31,6 +32,9 @@ const VacancyRow = ({
         previousMonths={previousMonths}
         showPreviousMonths={showPreviousMonths}
       />
+      <td className="govuk-table__cell">
+        <NotesCell notes={row.notes} employee_no={row.employee_no} />
+      </td>
     </tr>
   );
 };

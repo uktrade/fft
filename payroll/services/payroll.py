@@ -374,7 +374,7 @@ def get_vacancies_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-        pay_periods = (obj.pay_periods.first(),)
+        pay_periods = obj.pay_periods.first()
         yield Vacancies(
             id=obj.pk,
             grade=obj.grade.pk,
