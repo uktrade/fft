@@ -349,11 +349,11 @@ def update_notes_fail(self, db, client):
     )
     assert response.status_code == 400
 
-def update_notes_fail(self, db, client):
+def update_notes_faluty_json(self, db, client):
     url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
     response = client.post(
         url,
         data='some string',
         content_type="application/json",
     )
-    assert response.status_code == 500
+    assert response.status_code == 400
