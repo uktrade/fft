@@ -1,7 +1,9 @@
+import json
 from random import randrange
 from statistics import mean
 
 import pytest
+from django.urls import reverse
 from pytest_django.asserts import assertNumQueries
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
@@ -315,3 +317,57 @@ def test_update_all_employee_pay_periods(db):
 
     # then there are 2 pay periods
     assert EmployeePayPeriods.objects.count() == 2
+
+
+def test_update_notes_success(db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
+    data = json.dumps(
+        {
+            "notes": "some notes",
+            "employee_no": "150892",
+        }
+    )
+    response = client.post(
+        url,
+        data=data,
+        content_type="application/json",
+    )
+    pay_period = EmployeePayPeriods.objects.get(
+        employee__employee_no=data.get("employee_no"),
+        employee__cost_centre=888813,
+        year=2024,
+    )
+    assert response.status_code == 200
+    assert pay_period.notes == data.get("notes")
+
+
+def test_update_notes_fail(db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
+    response = client.post(
+        url,
+        data=json.dumps({"notes": "some notes"}),
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+
+
+def test_update_notes_faluty_json(db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
+    response = client.post(
+        url,
+        data="some string",
+        content_type="application/json",
+    )
+    assert response.status_code == 400
