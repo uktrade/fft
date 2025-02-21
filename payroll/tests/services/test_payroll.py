@@ -3,6 +3,7 @@ from random import randrange
 from statistics import mean
 
 import pytest
+from django.urls import reverse
 from pytest_django.asserts import assertNumQueries
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
@@ -318,8 +319,12 @@ def test_update_all_employee_pay_periods(db):
     assert EmployeePayPeriods.objects.count() == 2
 
 
-def update_notes_success(self, db, client):
-    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+def test_update_notes_success(self, db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
     data = json.dumps(
         {
             "notes": "some notes",
@@ -340,8 +345,12 @@ def update_notes_success(self, db, client):
     assert pay_period.notes == data.get("notes")
 
 
-def update_notes_fail(self, db, client):
-    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+def test_update_notes_fail(self, db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
     response = client.post(
         url,
         data=json.dumps({"notes": "some notes"}),
@@ -350,8 +359,12 @@ def update_notes_fail(self, db, client):
     assert response.status_code == 400
 
 
-def update_notes_faluty_json(self, db, client):
-    url = "http://localhost:8000/payroll/api/888813/2024/employees/notes"
+def test_update_notes_faluty_json(self, db, client):
+    url = reverse(
+        "payroll:employee_notes",
+        kwargs={"cost_centre_code": "888813", "financial_year": 2024},
+    )
+
     response = client.post(
         url,
         data="some string",

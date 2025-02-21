@@ -100,7 +100,7 @@ class EmployeeNotesApi(EditPayrollBaseView):
             notes = data.get("notes")
             employee_no = data.get("employee_no")
 
-            if not notes or not employee_no:
+            if notes is None or not employee_no:
                 return JsonResponse(
                     {"error": "Both 'notes' and 'employee_no' are required"}, status=400
                 )
