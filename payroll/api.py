@@ -13,7 +13,6 @@ from .services import payroll as payroll_service
 
 class EditPayrollApiView(EditPayrollBaseView):
     def get(self, request, *args, **kwargs):
-
         employees = list(
             payroll_service.get_employee_data(
                 self.cost_centre,
@@ -128,7 +127,3 @@ class EmployeeNotesApi(EditPayrollBaseView):
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except ValidationError:
             return JsonResponse({"error": "Invalid data provided"}, status=400)
-        except Exception:
-            return JsonResponse(
-                {"error": "An error occurred while processing the request"}, status=500
-            )

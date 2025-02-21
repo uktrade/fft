@@ -319,7 +319,7 @@ def test_update_all_employee_pay_periods(db):
     assert EmployeePayPeriods.objects.count() == 2
 
 
-def test_update_notes_success(self, db, client):
+def test_update_notes_success(db, client):
     url = reverse(
         "payroll:employee_notes",
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
@@ -345,7 +345,7 @@ def test_update_notes_success(self, db, client):
     assert pay_period.notes == data.get("notes")
 
 
-def test_update_notes_fail(self, db, client):
+def test_update_notes_fail(db, client):
     url = reverse(
         "payroll:employee_notes",
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
@@ -359,7 +359,7 @@ def test_update_notes_fail(self, db, client):
     assert response.status_code == 400
 
 
-def test_update_notes_faluty_json(self, db, client):
+def test_update_notes_faluty_json(db, client):
     url = reverse(
         "payroll:employee_notes",
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
