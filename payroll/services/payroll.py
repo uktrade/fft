@@ -179,11 +179,6 @@ def update_payroll_forecast_figure(
     ).update(forecast)
 
 
-def update_all_payroll_forecast(*, financial_year: FinancialYear):
-    for cost_centre in CostCentre.objects.all():
-        update_payroll_forecast(financial_year=financial_year, cost_centre=cost_centre)
-
-
 def get_attrition_instance(
     financial_year: FinancialYear, cost_centre: CostCentre
 ) -> Attrition | None:
