@@ -74,6 +74,7 @@ class PositionPayPeriods(models.Model):
     period_10 = models.BooleanField(default=True)
     period_11 = models.BooleanField(default=True)
     period_12 = models.BooleanField(default=True)
+    notes = models.TextField(default="")
 
     @property
     def periods(self) -> list[bool]:
