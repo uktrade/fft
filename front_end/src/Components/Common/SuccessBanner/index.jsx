@@ -1,4 +1,4 @@
-export default function SuccessBanner() {
+export default function SuccessBanner({ children }) {
   return (
     <div className="govuk-notification-banner govuk-notification-banner--success">
       <div className="govuk-notification-banner__header">
@@ -6,7 +6,7 @@ export default function SuccessBanner() {
           className="govuk-notification-banner__title"
           id="govuk-notification-banner-title"
         >
-          Success
+          {children}
         </h2>
       </div>
     </div>

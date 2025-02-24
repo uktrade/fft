@@ -16,6 +16,7 @@ import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
+import Loading from "../Components/Common/Loading";
 
 const initialPayrollState = {
   employees: [],
@@ -37,6 +38,10 @@ export default function Payroll() {
   const initialShowPreviousMonths = localStorage.getItem(
     "editPayroll.showPreviousMonths",
   );
+
+  // State
+
+  const [isLoading, setIsLoading] = useState(true);
   const [showPreviousMonths, setShowPreviousMonths] = useState(
     initialShowPreviousMonths === "true",
   );
@@ -46,6 +51,8 @@ export default function Payroll() {
     const savedTab = localStorage.getItem("editPayroll.activeTab");
     return savedTab ? parseInt(savedTab) : 0;
   });
+
+  // Fetches
 
   async function getAllPayroll() {
     try {
@@ -59,6 +66,7 @@ export default function Payroll() {
         },
       ]);
     }
+    setIsLoading(false);
   }
 
   // Use Effects
@@ -150,9 +158,13 @@ export default function Payroll() {
     );
   }
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
-      {saveSuccess && <SuccessBanner />}
+      {saveSuccess && <SuccessBanner>Success - forecast updated</SuccessBanner>}
       {errors && <ErrorSummary errors={errors} />}
       <ToggleCheckbox
         toggle={showPreviousMonths}
@@ -212,7 +224,7 @@ export default function Payroll() {
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>
-        Save payroll
+        Save payroll and update forecast
       </button>
       <ForecastTable
         forecast={forecastAndActuals}
