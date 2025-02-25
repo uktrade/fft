@@ -15,12 +15,12 @@
 
         {# Here we assume that a user with access to payroll also has access to forecast #}
         {% switch 'payroll' %}
-            <a class="govuk-link" href="{% url 'edit_forecast' cost_centre.cost_centre_code financial_year.financial_year %}">Go to Forecast</a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'edit_forecast' cost_centre.cost_centre_code financial_year.financial_year %}">Go to Forecast</a>
         {% endswitch %}
     </div>
 
     <h2 class="govuk-heading-m">
-        <a class="govuk-link" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
     </h2>
 
     <div id="payroll-app"></div>
