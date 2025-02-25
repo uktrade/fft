@@ -4,8 +4,12 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { monthsToTitleCase } from "../../../Util";
+import { useState } from "react";
 
-function PayrollNewTable({ data, onTogglePayPeriods }) {
+function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
+  const monthsWithActuals = previousMonths
+    .filter((month) => month.is_actual)
+    .map((month) => month.short_name.toLowerCase());
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
     id: header.toLowerCase(),
@@ -14,6 +18,7 @@ function PayrollNewTable({ data, onTogglePayPeriods }) {
       <input
         type="checkbox"
         checked={getValue()}
+        disabled={previousMonths[index].is_actual}
         onChange={() => onTogglePayPeriods(row.original.id, index, getValue())}
       />
     ),
@@ -54,9 +59,32 @@ function PayrollNewTable({ data, onTogglePayPeriods }) {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+  const togglePreviousMonthsVisibility = () => {
+    setShowPreviousMonths((prev) => !prev);
+    const monthColumnIds = monthsWithActuals;
+    monthColumnIds.forEach((columnId) => {
+      const column = table.getColumn(columnId);
+      if (column) {
+        column.getIsVisible()
+          ? column.toggleVisibility(false)
+          : column.toggleVisibility(true);
+      }
+    });
+  };
 
   return (
     <div className="new-table scrollable">
+      <label>
+        <input
+          {...{
+            type: "checkbox",
+            checked: showPreviousMonths,
+            onChange: togglePreviousMonthsVisibility,
+          }}
+        />{" "}
+        Hide previous months
+      </label>
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

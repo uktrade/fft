@@ -181,6 +181,7 @@ export default function Payroll() {
             <PayrollNewTable
               data={payroll}
               onTogglePayPeriods={handleTogglePayPeriods}
+              previousMonths={allPayroll.previous_months}
             />
           ) : (
             <PayrollTable
