@@ -66,6 +66,7 @@ export default function Payroll() {
         },
       ]);
     }
+    // finally
     setIsLoading(false);
   }
 

@@ -1,7 +1,7 @@
-export default function Loading() {
+export default function Loading({ children = "Loading..." }) {
   return (
-    <div>
-      <p>Loading...</p>
-    </div>
+    <p className="govuk-body" style={{ textAlign: "center", fontSize: "2rem" }}>
+      {children}
+    </p>
   );
 }
