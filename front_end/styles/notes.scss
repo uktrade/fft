@@ -32,3 +32,6 @@
   display: inline-block;
   transform: translateY(6px);
 }
+.truncate:empty {
+  display: none;
+}
