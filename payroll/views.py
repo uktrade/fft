@@ -6,6 +6,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic.base import ContextMixin, TemplateView
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
@@ -16,7 +17,7 @@ from .services import payroll as payroll_service
 from .services.ingest import import_payroll
 
 
-class EditPayrollBaseView(UserPassesTestMixin, View):
+class EditPayrollBaseView(UserPassesTestMixin, ContextMixin, View):
     def test_func(self) -> bool | None:
         return payroll_service.can_edit_payroll(
             self.request.user,
@@ -36,15 +37,16 @@ class EditPayrollBaseView(UserPassesTestMixin, View):
             pk=self.kwargs["financial_year"],
         )
 
-
-class EditPayrollPage(EditPayrollBaseView):
-    def get(self, *args, **kwargs) -> HttpResponse:
+    def get_context_data(self, **kwargs):
         context = {
-            "cost_centre_code": self.cost_centre.cost_centre_code,
-            "financial_year": self.financial_year.financial_year,
+            "cost_centre": self.cost_centre,
+            "financial_year": self.financial_year,
         }
+        return super().get_context_data(**kwargs) | context
 
-        return TemplateResponse(self.request, "payroll/page/edit_payroll.html", context)
+
+class EditPayrollPage(TemplateView, EditPayrollBaseView):
+    template_name = "payroll/page/edit_payroll.html"
 
 
 class VacancyViewMixin(PermissionRequiredMixin):

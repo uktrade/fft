@@ -15,18 +15,22 @@
 
         {# Here we assume that a user with access to payroll also has access to forecast #}
         {% switch 'payroll' %}
-            <a class="govuk-link" href="{% url 'edit_forecast' cost_centre_code financial_year %}">Go to Forecast</a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'edit_forecast' cost_centre.cost_centre_code financial_year.financial_year %}">Go to Forecast</a>
         {% endswitch %}
     </div>
+
+    <h2 class="govuk-heading-m">
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
+    </h2>
 
     <div id="payroll-app"></div>
 {% endblock content %}
 
 {% block scripts %}
     <script>
-        window.costCentreCode = "{{ cost_centre_code|escapejs }}";
-        window.financialYear = new Number("{{ financial_year }}");
-        window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre_code financial_year %}"
+        window.costCentreCode = "{{ cost_centre.cost_centre_code|escapejs }}";
+        window.financialYear = new Number("{{ financial_year.financial_year }}");
+        window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre.cost_centre_code financial_year.financial_year %}"
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

@@ -5,6 +5,8 @@ export default function ForecastTable({ forecast, months }) {
     <>
       <h2 className="govuk-heading-m">Payroll forecast</h2>
 
+      <p className="govuk-body">Save payroll changes to update this table.</p>
+
       <div className="scrollable">
         <table className="govuk-table">
           <thead className="govuk-table__head">
