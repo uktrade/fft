@@ -387,7 +387,7 @@ def test_update_notes_fail(db, client, user):
     assert response.status_code == 400
 
 
-def test_update_notes_faluty_json(db, client, user):
+def test_update_notes_faulty_json(db, client, user):
     call_command("manage_groups")
 
     admin_group = Group.objects.get(name="Finance Administrator")

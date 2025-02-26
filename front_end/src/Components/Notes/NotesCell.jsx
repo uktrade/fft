@@ -10,6 +10,8 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   const [charLeft, setCharLeft] = useState(currentLimit);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const financialYear = getURLSegment(0);
+  const costCentre = getURLSegment(1);
 
   if (!isOpen) return null;
 
@@ -19,8 +21,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
     setErrorMessage("");
 
     try {
-      const financialYear = getURLSegment(0);
-      const costCentre = getURLSegment(1);
+
       const response = await postJsonData(
         `/payroll/api/${costCentre}/${financialYear}/employees/notes`,
         {
@@ -60,7 +61,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
               {notes ? "Edit note" : "Add note"}
             </h2>
             <span className="govuk-hint">
-              Notes will be reset at the end of the {getURLSegment(0)} financial
+              Notes will be reset at the end of the {financialYear} financial
               year
             </span>
           </div>
