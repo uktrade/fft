@@ -2,9 +2,9 @@ import csv
 
 from django.http import HttpResponse
 from django.utils.decorators import decorator_from_middleware
-from rest_framework.viewsets import ViewSet
-from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema
+from rest_framework.viewsets import ViewSet
 
 from data_lake.hawk import HawkAuthentication, HawkResponseMiddleware
 

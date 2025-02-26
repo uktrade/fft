@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import include, path
 from django.views.generic.base import RedirectView
-from drf_spectacular.views import SpectacularSwaggerView, SpectacularAPIView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 def empty_favicon(request):
