@@ -21,7 +21,6 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
     setErrorMessage("");
 
     try {
-
       const response = await postJsonData(
         `/payroll/api/${costCentre}/${financialYear}/employees/notes`,
         {
