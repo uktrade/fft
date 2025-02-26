@@ -387,9 +387,8 @@ th {
 
 .new-table {
   table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1rem 0;
+    @extend .govuk-table;
+    font-size: 16px;
   }
 
   th,
@@ -402,5 +401,9 @@ th {
   th {
     background-color: #f4f4f4;
     font-weight: bold;
+  }
+
+  .payroll-checkbox {
+    text-align: center;
   }
 }

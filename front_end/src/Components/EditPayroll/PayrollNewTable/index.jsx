@@ -5,11 +5,9 @@ import {
 } from "@tanstack/react-table";
 import { monthsToTitleCase } from "../../../Util";
 import { useState } from "react";
+import { monthsWithActuals } from "./helpers";
 
 function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
-  const monthsWithActuals = previousMonths
-    .filter((month) => month.is_actual)
-    .map((month) => month.short_name.toLowerCase());
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
     id: header.toLowerCase(),
@@ -22,6 +20,9 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
         onChange={() => onTogglePayPeriods(row.original.id, index, getValue())}
       />
     ),
+    meta: {
+      className: "payroll-checkbox",
+    },
   }));
   const employeeColumns = [
     {
@@ -62,7 +63,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
   const [showPreviousMonths, setShowPreviousMonths] = useState(false);
   const togglePreviousMonthsVisibility = () => {
     setShowPreviousMonths((prev) => !prev);
-    const monthColumnIds = monthsWithActuals;
+    const monthColumnIds = monthsWithActuals(previousMonths);
     monthColumnIds.forEach((columnId) => {
       const column = table.getColumn(columnId);
       if (column) {
@@ -106,7 +107,10 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  className={cell.column.columnDef.meta?.className ?? ""}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
