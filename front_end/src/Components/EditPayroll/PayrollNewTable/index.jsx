@@ -78,12 +78,10 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     <div className="new-table scrollable">
       <label>
         <input
-          {...{
-            type: "checkbox",
-            checked: showPreviousMonths,
-            onChange: togglePreviousMonthsVisibility,
-          }}
-        />{" "}
+          type="checkbox"
+          checked={showPreviousMonths}
+          onChange={togglePreviousMonthsVisibility}
+        />
         Hide previous months
       </label>
       <table>
