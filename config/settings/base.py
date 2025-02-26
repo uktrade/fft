@@ -361,7 +361,7 @@ SPECTACULAR_DESC = """The Financial Forecasting Tool (FFT) API.
 
 All endpoints implement the Hawk authentication scheme.
 
-[Specification](https://github.com/mozilla/hawk/blob/main/API.md)
+[Hawk spec](https://github.com/mozilla/hawk/blob/main/API.md)
 
 An access key and secret key will be required to make a successful request.
 
