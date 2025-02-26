@@ -92,7 +92,7 @@ class PayModifiersApiView(EditPayrollBaseView):
         return JsonResponse({})
 
 
-class EmployeeNotesApi(EditPayrollBaseView):
+class EmployeeNotesApiView(EditPayrollBaseView):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
