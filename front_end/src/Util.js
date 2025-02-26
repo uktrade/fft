@@ -88,7 +88,10 @@ export async function getData(url) {
  * @param {?string} content_type - Content-Type header for the body.
  * @returns {PostDataResponse}
  */
-export async function postData(url = "", data = {}, headers = {}) {
+export async function postData(url, data = {}, headers = {}) {
+  if (!url) {
+    throw new Error("URL is required");
+  }
   const csrftoken = window.CSRF_TOKEN;
   try {
     // Default options are marked with *
@@ -144,7 +147,7 @@ export async function postData(url = "", data = {}, headers = {}) {
   }
 }
 
-export async function postJsonData(url = "", data = {}) {
+export async function postJsonData(url, data = {}) {
   return postData(url, JSON.stringify(data), {
     "Content-Type": "application/json",
   });
