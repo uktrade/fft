@@ -11,7 +11,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const financialYear = window.financialYear;
-  const costCentre =  window.costCentreCode;
+  const costCentre = window.costCentreCode;
 
   if (!isOpen) return null;
 
@@ -66,7 +66,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-                {errors && <ErrorSummary errors={[{message:errorMessage}]} />}
+            {errors && <ErrorSummary errors={[{ message: errorMessage }]} />}
             <div className={formGroupClasses}>
               <div
                 className="govuk-character-count"
