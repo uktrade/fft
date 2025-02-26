@@ -1,7 +1,6 @@
 import json
 
 import waffle
-from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
@@ -21,7 +20,6 @@ class EditPayrollApiView(EditPayrollBaseView):
                 self.financial_year,
             )
         )
-
         vacancies = list(
             payroll_service.get_vacancies_data(
                 self.cost_centre,
@@ -117,3 +115,5 @@ class EmployeeNotesApiView(EditPayrollBaseView):
             return JsonResponse({}, status=204)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except ValueError as e:
+            return JsonResponse({"error": str(e)}, status=400)
