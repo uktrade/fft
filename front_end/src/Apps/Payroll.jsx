@@ -17,6 +17,7 @@ import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
 import Loading from "../Components/Common/Loading";
+import PayrollNewTable from "../Components/EditPayroll/PayrollNewTable";
 
 const initialPayrollState = {
   employees: [],
@@ -176,14 +177,22 @@ export default function Payroll() {
       />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
-          <PayrollTable
-            payroll={payroll}
-            headers={payrollHeaders}
-            onTogglePayPeriods={handleTogglePayPeriods}
-            RowComponent={EmployeeRow}
-            previousMonths={allPayroll.previous_months}
-            showPreviousMonths={showPreviousMonths}
-          />
+          {window.FEATURES.payroll_new_table ? (
+            <PayrollNewTable
+              data={payroll}
+              onTogglePayPeriods={handleTogglePayPeriods}
+              previousMonths={allPayroll.previous_months}
+            />
+          ) : (
+            <PayrollTable
+              payroll={payroll}
+              headers={payrollHeaders}
+              onTogglePayPeriods={handleTogglePayPeriods}
+              RowComponent={EmployeeRow}
+              previousMonths={allPayroll.previous_months}
+              showPreviousMonths={showPreviousMonths}
+            />
+          )}
         </Tab>
         <Tab label="Non-payroll" key="2">
           <PayrollTable
