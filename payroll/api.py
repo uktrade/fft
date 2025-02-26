@@ -107,7 +107,6 @@ class EmployeeNotesApiView(EditPayrollBaseView):
                 return JsonResponse(
                     {"error": "Both 'notes' and 'employee_no' are required"}, status=400
                 )
-
             get_object_or_404(Employee, employee_no=employee_no)
             payroll_service.update_employee_notes(
                 notes,
@@ -118,5 +117,3 @@ class EmployeeNotesApiView(EditPayrollBaseView):
             return JsonResponse({}, status=204)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
-        except ValidationError:
-            return JsonResponse({"error": "Invalid data provided"}, status=400)

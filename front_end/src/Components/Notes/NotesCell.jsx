@@ -10,8 +10,8 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   const [charLeft, setCharLeft] = useState(currentLimit);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const financialYear = getURLSegment(0);
-  const costCentre = getURLSegment(1);
+  const financialYear = window.financialYear;
+  const costCentre =  window.costCentreCode;
 
   if (!isOpen) return null;
 
@@ -66,27 +66,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-            {errorMessage && (
-              <div
-                className="govuk-error-summary"
-                aria-labelledby="error-summary-title"
-                role="alert"
-                tabIndex="-1"
-                data-module="govuk-error-summary"
-              >
-                <h2
-                  className="govuk-error-summary__title"
-                  id="error-summary-title"
-                >
-                  There is a problem
-                </h2>
-                <div className="govuk-error-summary__body">
-                  <ul className="govuk-list govuk-error-summary__list">
-                    <li>{errorMessage}</li>
-                  </ul>
-                </div>
-              </div>
-            )}
+                {errors && <ErrorSummary errors={[{message:errorMessage}]} />}
             <div className={formGroupClasses}>
               <div
                 className="govuk-character-count"

@@ -268,7 +268,8 @@ def get_employee_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-
+        # `first` is OK as there should only be one `pay_periods` with the filters.
+        pay_period = obj.pay_periods.first()
         yield EmployeePayroll(
             id=obj.pk,
             name=obj.get_full_name(),
@@ -279,9 +280,8 @@ def get_employee_data(
             budget_type=budget_type.budget_type_display if budget_type else "",
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
-            # `first` is OK as there should only be one `pay_periods` with the filters.
-            pay_periods=obj.pay_periods.first().periods,
-            notes=obj.pay_periods.first().notes,
+            pay_periods=pay_period.periods,
+            notes=pay_period.notes,
         )
 
 
