@@ -384,3 +384,26 @@ th {
   justify-content: space-between;
   align-items: baseline;
 }
+
+.new-table {
+  table {
+    @extend .govuk-table;
+    font-size: 16px;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+
+  .payroll-checkbox {
+    text-align: center;
+  }
+}

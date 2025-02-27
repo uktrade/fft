@@ -17,8 +17,9 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.http import HttpResponse
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.views.generic.base import RedirectView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 def empty_favicon(request):
@@ -41,6 +42,14 @@ urlpatterns = [
     path("oscar_return/", include("oscar_return.urls")),
     path("upload_split_file/", include("upload_split_file.urls")),
     path("payroll/", include("payroll.urls")),
+    # API
+    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path(
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        name="api-schema-swagger",
+    ),
+    # Admin
     path("admin/", admin.site.urls),
     # TODO - split below out into develop only?
     path("favicon.ico", empty_favicon),

@@ -42,6 +42,9 @@
     {% switch 'payroll' %}
         <meta name="fft:features:payroll" content="true">
     {% endswitch %}
+    {% switch 'payroll_new_table' %}
+        <meta name="fft:features:payroll_new_table" content="true">
+    {% endswitch %}
 
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
     <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
@@ -259,9 +262,8 @@
 </footer>
 
 <script src="/static/govuk/all.js"></script>
-<script type="module">
-    import FeatureFlags from "{% static 'core/js/feature-flags.js' %}";
-
+<script src="{% static 'core/js/feature-flags.js' %}"></script>
+<script>
     window.GOVUKFrontend.initAll();
     window.CSRF_TOKEN = "{{ csrf_token }}";
     window.FEATURES = FeatureFlags("fft:features");
