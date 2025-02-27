@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { getURLSegment, postJsonData } from "../../Util";
+import ErrorSummary from "../Common/ErrorSummary";
 
 const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   const charLimit = 200;
@@ -10,8 +11,8 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   const [charLeft, setCharLeft] = useState(currentLimit);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const financialYear = window.financialYear;
-  const costCentre = window.costCentreCode;
+  const financialYear = String(window.financialYear);
+  const costCentre = String(window.costCentreCode);
 
   if (!isOpen) return null;
 
@@ -66,7 +67,10 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
           </div>
 
           <form onSubmit={handleSubmit} noValidate>
-            {errors && <ErrorSummary errors={[{ message: errorMessage }]} />}
+            {errorMessage && (
+              <ErrorSummary errors={[{ message: errorMessage, label: "" }]} />
+            )}
+
             <div className={formGroupClasses}>
               <div
                 className="govuk-character-count"

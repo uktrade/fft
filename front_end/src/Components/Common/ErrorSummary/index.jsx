@@ -12,13 +12,15 @@ export default function ErrorSummary({ errors }) {
       </h2>
       <div className="govuk-error-summary__body">
         <ul className="govuk-list govuk-error-summary__list">
-          {errors.map((error) => {
-            return (
-              <li key={error.label}>
-                <a href={`#${error.label}`}>{error.message}</a>
-              </li>
-            );
-          })}
+          {errors &&
+            Array.isArray(errors) &&
+            errors.map((error) => {
+              return (
+                <li key={error.label}>
+                  <a href={`#${error.label}`}>{error.message}</a>
+                </li>
+              );
+            })}
         </ul>
       </div>
     </div>
