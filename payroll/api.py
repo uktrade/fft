@@ -115,5 +115,8 @@ class EmployeeNotesApiView(EditPayrollBaseView):
             return JsonResponse({}, status=204)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
-        except ValueError as e:
-            return JsonResponse({"error": 'Please check that cost centre and employee no are correct'}, status=400)
+        except ValueError:
+            return JsonResponse(
+                {"error": "Please check that cost centre and employee no are correct"},
+                status=400,
+            )
