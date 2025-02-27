@@ -134,6 +134,10 @@ for example:
 
 The names of the management commands denote their function.
 
+### Data lake API
+
+Swagger UI docs can be found at `/api/schema/swagger-ui/`.
+
 ## Permissions within the system
 
 ### Any logged in SSO user

@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     "guardian",
     "reversion",
     "rest_framework",
+    "drf_spectacular",
     "simple_history",
     "axes",
     "django_chunk_upload_handlers",
@@ -348,6 +349,31 @@ CACHES = {
         "LOCATION": REDIS_URL,
         "KEY_PREFIX": "cache_",
     }
+}
+
+# Django Rest Framework
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# DRF Spectacular
+SPECTACULAR_DESC = """The Financial Forecasting Tool (FFT) API.
+
+All endpoints implement the Hawk authentication scheme.
+
+[Hawk spec](https://github.com/mozilla/hawk/blob/main/API.md)
+
+An access key and secret key will be required to make a successful request.
+
+All endpoints currently respond with a CSV file.
+
+There is an example of how to make a request in `scripts/test-hawk-api.py`.
+"""
+SPECTACULAR_SETTINGS = {
+    "TITLE": "FFT API",
+    "DESCRIPTION": SPECTACULAR_DESC,
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # Vite

@@ -46,6 +46,7 @@ dbt-copilot-python = "^0.2.1"
 django-import-export = "^3.3.07"
 django-log-formatter-asim = "^0.0.6"
 django-waffle = "^4.2.0"
+drf-spectacular = "0.28.0"
 
 [tool.poetry.group.dev]
 optional = true
