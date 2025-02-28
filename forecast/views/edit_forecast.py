@@ -335,8 +335,9 @@ class PasteForecastRowsView(
                 CannotFindForecastMonthlyFigureException,
                 IncorrectDecimalFormatException,
             ) as ex:
+                logger.error(f"Exception occurred: {ex}", exc_info=True)
                 return JsonResponse(
-                    {"error": str(ex)},
+                    {"error": "An error occurred while pasting your data"},
                     status=400,
                 )
 
