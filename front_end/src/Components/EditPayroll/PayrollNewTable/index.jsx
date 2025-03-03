@@ -42,6 +42,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     {
       accessorKey: "fte",
       header: "FTE",
+      sortDescFirst: false,
     },
     {
       accessorKey: "programme_code",
