@@ -2,13 +2,20 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
+  getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { monthsToTitleCase } from "../../../Util";
 import { useState } from "react";
 import { monthsWithActuals } from "./helpers";
+import { rankItem } from "@tanstack/match-sorter-utils";
 
 function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
+  const fuzzyFilter = (row, columnId, value, addMeta) => {
+    const itemRank = rankItem(row.getValue(columnId), value);
+    addMeta({ itemRank });
+    return itemRank.passed;
+  };
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
     id: header.toLowerCase(),
@@ -30,14 +37,17 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     {
       accessorKey: "name",
       header: "Name",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "grade",
       header: "Grade",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "employee_no",
       header: "Employee No",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "fte",
@@ -59,6 +69,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
   ];
   // State
   const columns = [...employeeColumns, ...monthColumns];
+  const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [showPreviousMonths, setShowPreviousMonths] = useState(false);
 
@@ -67,11 +78,18 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     data,
     columns,
     state: {
+      globalFilter,
       sorting,
     },
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
   });
 
   // Handlers
@@ -90,6 +108,18 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
 
   return (
     <div className="new-table scrollable">
+      <input
+        type="text"
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+        placeholder="Search by name, grade, employee no..."
+        style={{
+          marginBottom: "10px",
+          marginRight: "10px",
+          padding: "5px",
+          width: "350px",
+        }}
+      />
       <label>
         <input
           type="checkbox"
