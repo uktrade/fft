@@ -11,13 +11,27 @@ import { monthsWithActuals } from "./helpers";
 import { rankItem } from "@tanstack/match-sorter-utils";
 
 function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
+  // Column helpers
   const fuzzyFilter = (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
     addMeta({ itemRank });
     return itemRank.passed;
   };
+
+  const totalOfColumn = (callback) => {
+    let totalSum = 0;
+    if (data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        totalSum += callback(data[i]);
+      }
+    }
+    return totalSum;
+  };
+
+  // Columns
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
+    footer: totalOfColumn((data) => (data.pay_periods[index] == true ? 1 : 0)),
     id: header.toLowerCase(),
     enableSorting: false,
     accessorFn: (row) => row.pay_periods[index],
@@ -37,6 +51,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     {
       accessorKey: "name",
       header: "Name",
+      footer: `${data.length} rows`,
       filterFn: "fuzzy",
     },
     {
@@ -52,6 +67,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     {
       accessorKey: "fte",
       header: "FTE",
+      footer: totalOfColumn((data) => data.fte),
       sortDescFirst: false,
     },
     {
@@ -171,6 +187,15 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          {table.getFooterGroups().map((footerGroup) => (
+            <tr key={footerGroup.id}>
+              {footerGroup.headers.map((footer) => (
+                <td key={footer.id}>{footer.column.columnDef.footer}</td>
+              ))}
+            </tr>
+          ))}
+        </tfoot>
       </table>
     </div>
   );
