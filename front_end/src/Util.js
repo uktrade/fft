@@ -21,13 +21,6 @@ export const monthsToTitleCase = months.map(
   (x) => x[0].toUpperCase() + x.slice(1),
 );
 
-export const formatMoney = (amount) => {
-  return (amount / 100).toLocaleString("en-GB", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-};
-
 function getCookie(name) {
   var cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -43,11 +36,22 @@ function getCookie(name) {
   return cookieValue;
 }
 
-const NumberFormat = new Intl.NumberFormat("en-GB");
+var currencyFormat = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export const formatMoney = (value) => {
+  return currencyFormat.format(value / 100);
+};
+
+const numberFormat = new Intl.NumberFormat("en-GB");
 
 export const formatValue = (value) => {
   let pounds = Math.round(value);
-  return NumberFormat.format(pounds);
+  return numberFormat.format(pounds);
 };
 
 /**
