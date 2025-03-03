@@ -2,6 +2,7 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 import { monthsToTitleCase } from "../../../Util";
 import { useState } from "react";
@@ -11,6 +12,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
     id: header.toLowerCase(),
+    enableSorting: false,
     accessorFn: (row) => row.pay_periods[index],
     cell: ({ getValue, row }) => (
       <input
@@ -54,13 +56,24 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
       header: "Assignment Status",
     },
   ];
+  // State
   const columns = [...employeeColumns, ...monthColumns];
+  const [sorting, setSorting] = useState([]);
+  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+
+  // Table state
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+    },
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
   });
-  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+
+  // Handlers
   const togglePreviousMonthsVisibility = () => {
     setShowPreviousMonths((prev) => !prev);
     const monthColumnIds = monthsWithActuals(previousMonths);
@@ -89,13 +102,25 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th colSpan={header.colSpan} key={header.id}>
+                <th
+                  colSpan={header.colSpan}
+                  key={header.id}
+                  onClick={header.column.getToggleSortingHandler()}
+                  style={{
+                    cursor: header.column.getCanSort() ? "pointer" : "default",
+                  }}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+                  {{
+                    asc: " ▲",
+                    desc: " ▼",
+                    false: header.column.getCanSort() ? " ⬍" : null,
+                  }[header.column.getIsSorted()] ?? null}
                 </th>
               ))}
             </tr>
