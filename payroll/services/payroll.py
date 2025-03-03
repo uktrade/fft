@@ -261,6 +261,10 @@ def get_employee_data(
             pay_periods__year=financial_year,
             has_left=False,
         )
+        .order_by(
+            "grade",
+            "id",
+        )
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
@@ -343,6 +347,10 @@ def get_vacancies_data(
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
+        )
+        .order_by(
+            "grade",
+            "id",
         )
     )
     for obj in qs:
