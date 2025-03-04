@@ -1,4 +1,4 @@
-# FFT (Financial Forecast Tool)
+# FFT (Financial Forecasting Tool)
 
 ## Requirements
 

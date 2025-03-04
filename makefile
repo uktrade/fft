@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-APPLICATION_NAME="Financial Forecast Tool"
+APPLICATION_NAME="Financial Forecasting Tool"
 
 .PHONY: help test setup
 help: # List commands and their descriptions
