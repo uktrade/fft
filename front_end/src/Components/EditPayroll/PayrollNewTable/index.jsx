@@ -12,13 +12,15 @@ import { rankItem } from "@tanstack/match-sorter-utils";
 
 function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
   // Column helpers
+  // Documentation: https://tanstack.com/table/v8/docs/guide/fuzzy-filtering
   const fuzzyFilter = (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
     addMeta({ itemRank });
     return itemRank.passed;
   };
 
-  const totalOfColumn = (callback) => data.reduce((acc, cur) => acc + callback(cur), 0);
+  const totalOfColumn = (callback) =>
+    data.reduce((acc, cur) => acc + callback(cur), 0);
 
   // Columns
   const monthColumns = monthsToTitleCase.map((header, index) => ({
