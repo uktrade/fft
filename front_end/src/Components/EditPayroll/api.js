@@ -17,14 +17,14 @@ export function getPayrollData() {
  * @returns {import("../../Util").PostDataResponse} Updated payroll data received.
  */
 export function postPayrollData(payrollData) {
-  return postJsonData(getPayrollApiUrl(), JSON.stringify(payrollData));
+  return postJsonData(getPayrollApiUrl(), payrollData);
 }
 
 /**
  * Create default pay modifier object
  */
 export function createPayModifiers() {
-  return postJsonData(getPayrollApiUrl() + "pay_modifiers/", {});
+  return postJsonData(getPayrollApiUrl() + "pay_modifiers/");
 }
 
 /**
