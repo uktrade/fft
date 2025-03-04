@@ -31,7 +31,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
   // Columns
   const monthColumns = monthsToTitleCase.map((header, index) => ({
     header: header,
-    footer: totalOfColumn((data) => (data.pay_periods[index] == true ? 1 : 0)),
+    footer: totalOfColumn((data) => (data.pay_periods[index] === true ? 1 : 0)),
     id: header.toLowerCase(),
     enableSorting: false,
     accessorFn: (row) => row.pay_periods[index],
