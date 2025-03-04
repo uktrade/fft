@@ -18,15 +18,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     return itemRank.passed;
   };
 
-  const totalOfColumn = (callback) => {
-    let totalSum = 0;
-    if (data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
-        totalSum += callback(data[i]);
-      }
-    }
-    return totalSum;
-  };
+  const totalOfColumn = (callback) => data.reduce((acc, cur) => acc + callback(cur), 0);
 
   // Columns
   const monthColumns = monthsToTitleCase.map((header, index) => ({
