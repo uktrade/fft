@@ -1,8 +1,8 @@
 import { monthsToTitleCase } from "../../../Util";
 import { totalOfColumn } from "./helpers";
 
-export default function getPayrollColumns(data, previousMonths) {
-  const monthColumns = monthsToTitleCase.map((header, index) => ({
+function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
+  return monthsToTitleCase.map((header, index) => ({
     header: header,
     footer: totalOfColumn(data, (data) =>
       data.pay_periods[index] === true ? 1 : 0,
@@ -22,6 +22,18 @@ export default function getPayrollColumns(data, previousMonths) {
       className: "payroll-checkbox",
     },
   }));
+}
+
+export default function getPayrollColumns(
+  data,
+  onTogglePayPeriods,
+  previousMonths,
+) {
+  const monthColumns = getMonthsColumns(
+    data,
+    onTogglePayPeriods,
+    previousMonths,
+  );
   const employeeColumns = [
     {
       accessorKey: "name",
