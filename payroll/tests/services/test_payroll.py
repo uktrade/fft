@@ -326,7 +326,7 @@ def test_update_notes_success(db, client, user):
     call_command("manage_groups")
     data = {
         "notes": "some notes",
-        "employee_no": "150892",
+        "id": "150892",
     }
     admin_group = Group.objects.get(name="Finance Administrator")
     editor_group = Group.objects.get(name="Payroll Editor")
@@ -340,7 +340,7 @@ def test_update_notes_success(db, client, user):
         basic_pay=195000,
         pension=7550,
         ernic=0,
-        employee_no=data.get("employee_no"),
+        id=data.get("id"),
     )
     EmployeePayPeriodsFactory(year_id=2024, employee=employee)
     FinancialYearFactory.create(financial_year=2024)
@@ -360,7 +360,7 @@ def test_update_notes_success(db, client, user):
         year=2024,
     ).first()
 
-    assert response.status_code == 204
+    assert response.status_code == 200
     assert pay_period.notes == data.get("notes")
 
 
