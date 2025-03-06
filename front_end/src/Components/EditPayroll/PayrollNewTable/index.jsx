@@ -6,18 +6,9 @@ import {
   getSortedRowModel,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import { monthsWithActuals } from "./helpers";
-import { rankItem } from "@tanstack/match-sorter-utils";
+import { fuzzyFilter, monthsWithActuals } from "./helpers";
 
 function PayrollNewTable({ data, columns, previousMonths }) {
-  // Column helpers
-  // Documentation: https://tanstack.com/table/v8/docs/guide/fuzzy-filtering
-  const fuzzyFilter = (row, columnId, value, addMeta) => {
-    const itemRank = rankItem(row.getValue(columnId), value);
-    addMeta({ itemRank });
-    return itemRank.passed;
-  };
-
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
