@@ -64,7 +64,7 @@ export default function Payroll() {
       setErrors([
         {
           label: "",
-          message: "Error occured whilst fetching payroll data",
+          message: "Error occurred whilst fetching payroll data",
         },
       ]);
     }
