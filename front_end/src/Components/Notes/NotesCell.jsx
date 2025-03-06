@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { getURLSegment, postJsonData } from "../../Util";
 import ErrorSummary from "../Common/ErrorSummary";
 
-const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
+const Modal = ({ section, isOpen, notes, id, onClose, onSave }) => {
   const charLimit = 200;
   const errorMsg =
     "There’s a problem with the system it can’t save this note, try again later.";
@@ -23,9 +23,9 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
 
     try {
       const response = await postJsonData(
-        `/payroll/api/${costCentre}/${financialYear}/employees/notes`,
+        `/payroll/api/${costCentre}/${financialYear}/${section}/notes`,
         {
-          employee_no,
+          id,
           notes: currentNotes,
         },
       );
@@ -133,7 +133,7 @@ const Modal = ({ isOpen, notes, employee_no, onClose, onSave }) => {
   );
 };
 
-const NotesCell = ({ notes = "", employee_no }) => {
+const NotesCell = ({ notes = "", id, section }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentNotes, setCurrentNotes] = useState(notes);
 
@@ -146,7 +146,7 @@ const NotesCell = ({ notes = "", employee_no }) => {
       <a
         href="#"
         title={currentNotes}
-        className="govuk-link"
+        className="govuk-link govuk-link--no-visited-state "
         onClick={(e) => {
           e.preventDefault();
           setIsModalOpen(true);
@@ -158,7 +158,8 @@ const NotesCell = ({ notes = "", employee_no }) => {
       <Modal
         isOpen={isModalOpen}
         notes={currentNotes}
-        employee_no={employee_no}
+        id={id}
+        section={section}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSave}
       />

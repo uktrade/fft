@@ -33,7 +33,7 @@ const VacancyRow = ({
         showPreviousMonths={showPreviousMonths}
       />
       <td className="govuk-table__cell">
-        <NotesCell notes={row.notes} employee_no={row.employee_no} />
+        <NotesCell section="vacancies" notes={row.notes} id={row.id} />
       </td>
     </tr>
   );

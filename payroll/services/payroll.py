@@ -322,19 +322,36 @@ def update_employee_data(
 
 def update_employee_notes(
     notes: str,
-    employee_no: str,
+    id: str,
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> None:
-    if not employee_no:
-        raise ValueError("employee_no is empty")
-    pay_period = EmployeePayPeriods.objects.get(
-        employee__employee_no=employee_no,
+    if not id:
+        raise ValueError("id is empty")
+    period = EmployeePayPeriods.objects.get(
+        employee__id=id,
         employee__cost_centre=cost_centre,
         year=financial_year,
     )
-    pay_period.notes = notes
-    pay_period.save()
+    period.notes = notes
+    period.save()
+
+
+def update_vacancy_notes(
+    notes: str,
+    id: str,
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> None:
+    if not id:
+        raise ValueError("id is empty")
+    period = VacancyPayPeriods.objects.get(
+        vacancy__id=id,
+        vacancy__cost_centre=cost_centre,
+        year=financial_year,
+    )
+    period.notes = notes
+    period.save()
 
 
 class Vacancies(TypedDict):

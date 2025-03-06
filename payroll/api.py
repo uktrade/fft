@@ -8,7 +8,7 @@ from config import flags
 from core.utils.generic_helpers import get_previous_months_data
 from payroll.views import EditPayrollBaseView
 
-from .models import Employee
+from .models import Employee, Vacancy
 from .services import payroll as payroll_service
 
 
@@ -90,7 +90,7 @@ class PayModifiersApiView(EditPayrollBaseView):
         return JsonResponse({})
 
 
-class EmployeeNotesApiView(EditPayrollBaseView):
+class EmployeesNotesApiView(EditPayrollBaseView):
     def post(self, request, *args, **kwargs):
         try:
             data = json.loads(request.body)
@@ -98,21 +98,55 @@ class EmployeeNotesApiView(EditPayrollBaseView):
                 return JsonResponse(
                     {"error": "Missing or malformed request body"}, status=400
                 )
-            notes = data.get("notes")
-            employee_no = data.get("employee_no")
 
-            if notes is None or not employee_no:
+            notes = data.get("notes")
+            id = data.get("id")
+
+            if notes is None or not id:
                 return JsonResponse(
-                    {"error": "Both 'notes' and 'employee_no' are required"}, status=400
+                    {"error": "Both 'notes' and 'id' are required"}, status=400
                 )
-            get_object_or_404(Employee, employee_no=employee_no)
+            get_object_or_404(Employee, id=id)
             payroll_service.update_employee_notes(
                 notes,
-                employee_no,
+                id,
                 self.cost_centre,
                 self.financial_year,
             )
-            return JsonResponse({}, status=204)
+            return JsonResponse({})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except ValueError:
+            return JsonResponse(
+                {"error": "Please check that cost centre and employee no are correct"},
+                status=400,
+            )
+
+
+class VacanciesNotesApiView(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            if not data:
+                return JsonResponse(
+                    {"error": "Missing or malformed request body"}, status=400
+                )
+
+            notes = data.get("notes")
+            id = data.get("id")
+
+            if notes is None or not id:
+                return JsonResponse(
+                    {"error": "Both 'notes' and 'id' are required"}, status=400
+                )
+            get_object_or_404(Vacancy, id=id)
+            payroll_service.update_vacancy_notes(
+                notes,
+                id,
+                self.cost_centre,
+                self.financial_year,
+            )
+            return JsonResponse({})
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format"}, status=400)
         except ValueError:
