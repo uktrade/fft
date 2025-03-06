@@ -18,6 +18,7 @@ import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
 import Loading from "../Components/Common/Loading";
 import PayrollNewTable from "../Components/EditPayroll/PayrollNewTable";
+import getPayrollColumns from "../Components/EditPayroll/PayrollNewTable/columns";
 
 const initialPayrollState = {
   employees: [],
@@ -180,7 +181,7 @@ export default function Payroll() {
           {window.FEATURES.payroll_new_table ? (
             <PayrollNewTable
               data={payroll}
-              onTogglePayPeriods={handleTogglePayPeriods}
+              columns={getPayrollColumns(payroll, allPayroll.previous_months)}
               previousMonths={allPayroll.previous_months}
             />
           ) : (

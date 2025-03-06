@@ -5,12 +5,11 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { monthsToTitleCase } from "../../../Util";
 import { useState } from "react";
 import { monthsWithActuals } from "./helpers";
 import { rankItem } from "@tanstack/match-sorter-utils";
 
-function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
+function PayrollNewTable({ data, columns, previousMonths }) {
   // Column helpers
   // Documentation: https://tanstack.com/table/v8/docs/guide/fuzzy-filtering
   const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -19,66 +18,7 @@ function PayrollNewTable({ data, onTogglePayPeriods, previousMonths }) {
     return itemRank.passed;
   };
 
-  const totalOfColumn = (callback) =>
-    data.reduce((acc, cur) => acc + callback(cur), 0);
-
-  // Columns
-  const monthColumns = monthsToTitleCase.map((header, index) => ({
-    header: header,
-    footer: totalOfColumn((data) => (data.pay_periods[index] === true ? 1 : 0)),
-    id: header.toLowerCase(),
-    enableSorting: false,
-    accessorFn: (row) => row.pay_periods[index],
-    cell: ({ getValue, row }) => (
-      <input
-        type="checkbox"
-        checked={getValue()}
-        disabled={previousMonths[index].is_actual}
-        onChange={() => onTogglePayPeriods(row.original.id, index, getValue())}
-      />
-    ),
-    meta: {
-      className: "payroll-checkbox",
-    },
-  }));
-  const employeeColumns = [
-    {
-      accessorKey: "name",
-      header: "Name",
-      footer: `${data.length} rows`,
-      filterFn: "fuzzy",
-    },
-    {
-      accessorKey: "grade",
-      header: "Grade",
-      filterFn: "fuzzy",
-    },
-    {
-      accessorKey: "employee_no",
-      header: "Employee No",
-      filterFn: "fuzzy",
-    },
-    {
-      accessorKey: "fte",
-      header: "FTE",
-      footer: totalOfColumn((data) => data.fte),
-      sortDescFirst: false,
-    },
-    {
-      accessorKey: "programme_code",
-      header: "Programme Code",
-    },
-    {
-      accessorKey: "budget_type",
-      header: "Budget Type",
-    },
-    {
-      accessorKey: "assignment_status",
-      header: "Assignment Status",
-    },
-  ];
   // State
-  const columns = [...employeeColumns, ...monthColumns];
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [showPreviousMonths, setShowPreviousMonths] = useState(false);
