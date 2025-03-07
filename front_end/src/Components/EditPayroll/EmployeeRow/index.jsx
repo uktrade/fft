@@ -1,3 +1,4 @@
+import NotesCell from "../../Notes/NotesCell";
 import PayPeriods from "../PayPeriods";
 
 const EmployeeRow = ({
@@ -22,6 +23,9 @@ const EmployeeRow = ({
         previousMonths={previousMonths}
         showPreviousMonths={showPreviousMonths}
       />
+      <td className="govuk-table__cell">
+        <NotesCell section="employees" notes={row.notes} id={row.id} />
+      </td>
     </tr>
   );
 };

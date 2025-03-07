@@ -90,7 +90,6 @@ export async function getData(url) {
  */
 export async function postData(url = "", data = {}, headers = {}) {
   const csrftoken = window.CSRF_TOKEN;
-
   // Default options are marked with *
   const response = await fetch(url, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -115,7 +114,9 @@ export async function postData(url = "", data = {}, headers = {}) {
 }
 
 export async function postJsonData(url = "", data = {}) {
-  return postData(url, data, { "Content-Type": "application/json" });
+  return postData(url, JSON.stringify(data), {
+    "Content-Type": "application/json",
+  });
 }
 
 export const processForecastData = (forecastData) => {
@@ -212,3 +213,6 @@ export function getScriptJsonData(id) {
     resolve(json);
   });
 }
+
+export const getURLSegment = (index = 0) =>
+  window.location.pathname.split("/").filter(Boolean).reverse()[index];

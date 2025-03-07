@@ -268,7 +268,8 @@ def get_employee_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-
+        # `first` is OK as there should only be one `pay_periods` with the filters.
+        pay_period = obj.pay_periods.first()
         yield EmployeePayroll(
             id=obj.pk,
             name=obj.get_full_name(),
@@ -279,8 +280,8 @@ def get_employee_data(
             budget_type=budget_type.budget_type_display if budget_type else "",
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
-            # `first` is OK as there should only be one `pay_periods` with the filters.
-            pay_periods=obj.pay_periods.first().periods,
+            pay_periods=pay_period.periods,
+            notes=pay_period.notes,
         )
 
 
@@ -319,6 +320,40 @@ def update_employee_data(
         pay_periods.save()
 
 
+def update_employee_notes(
+    notes: str,
+    id: str,
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> None:
+    if not id:
+        raise ValueError("id is empty")
+    period = EmployeePayPeriods.objects.get(
+        employee__id=id,
+        employee__cost_centre=cost_centre,
+        year=financial_year,
+    )
+    period.notes = notes
+    period.save()
+
+
+def update_vacancy_notes(
+    notes: str,
+    id: str,
+    cost_centre: CostCentre,
+    financial_year: FinancialYear,
+) -> None:
+    if not id:
+        raise ValueError("id is empty")
+    period = VacancyPayPeriods.objects.get(
+        vacancy__id=id,
+        vacancy__cost_centre=cost_centre,
+        year=financial_year,
+    )
+    period.notes = notes
+    period.save()
+
+
 class Vacancies(TypedDict):
     id: int
     grade: str
@@ -330,6 +365,7 @@ class Vacancies(TypedDict):
     hiring_manager: str
     hr_ref: str
     pay_periods: list[bool]
+    notes: str
 
 
 def get_vacancies_data(
@@ -355,7 +391,7 @@ def get_vacancies_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-
+        pay_periods = obj.pay_periods.first()
         yield Vacancies(
             id=obj.pk,
             grade=obj.grade.pk,
@@ -367,7 +403,8 @@ def get_vacancies_data(
             hiring_manager=obj.hiring_manager,
             hr_ref=obj.hr_ref,
             # `first` is OK as there should only be one `pay_periods` with the filters.
-            pay_periods=obj.pay_periods.first().periods,
+            pay_periods=pay_periods.periods,
+            notes=pay_periods.notes,
         )
 
 
