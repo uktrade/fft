@@ -49,7 +49,6 @@ export default function getPayrollColumns(
     {
       accessorKey: "employee_no",
       header: "Employee No",
-      filterFn: "fuzzy",
     },
     {
       accessorKey: "fte",
@@ -99,6 +98,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
     {
       accessorKey: "grade",
       header: "Grade",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "programme_code",
@@ -111,10 +111,12 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
     {
       accessorKey: "appointee_name",
       header: "Appointee Name",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "hiring_manager",
       header: "Hiring Manager",
+      filterFn: "fuzzy",
     },
     {
       accessorKey: "hr_ref",
@@ -127,5 +129,3 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
   ];
   return [...vacancyColumns, ...monthColumns];
 }
-
-// Manage, Recruitment Type, Grade, Programme Code, Budget Type, Appointee Name, Hiring Manager, HR Ref, Recruitment Stage, Periods
