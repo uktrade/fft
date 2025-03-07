@@ -2,11 +2,13 @@ import json
 
 import waffle
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 from config import flags
 from core.utils.generic_helpers import get_previous_months_data
 from payroll.views import EditPayrollBaseView
 
+from .models import Employee, Vacancy
 from .services import payroll as payroll_service
 
 
@@ -86,3 +88,69 @@ class PayModifiersApiView(EditPayrollBaseView):
         )
 
         return JsonResponse({})
+
+
+class EmployeesNotesApiView(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            if not data:
+                return JsonResponse(
+                    {"error": "Missing or malformed request body"}, status=400
+                )
+
+            notes = data.get("notes")
+            id = data.get("id")
+
+            if notes is None or not id:
+                return JsonResponse(
+                    {"error": "Both 'notes' and 'id' are required"}, status=400
+                )
+            get_object_or_404(Employee, id=id)
+            payroll_service.update_employee_notes(
+                notes,
+                id,
+                self.cost_centre,
+                self.financial_year,
+            )
+            return JsonResponse({})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except ValueError:
+            return JsonResponse(
+                {"error": "Please check that cost centre and employee no are correct"},
+                status=400,
+            )
+
+
+class VacanciesNotesApiView(EditPayrollBaseView):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            if not data:
+                return JsonResponse(
+                    {"error": "Missing or malformed request body"}, status=400
+                )
+
+            notes = data.get("notes")
+            id = data.get("id")
+
+            if notes is None or not id:
+                return JsonResponse(
+                    {"error": "Both 'notes' and 'id' are required"}, status=400
+                )
+            get_object_or_404(Vacancy, id=id)
+            payroll_service.update_vacancy_notes(
+                notes,
+                id,
+                self.cost_centre,
+                self.financial_year,
+            )
+            return JsonResponse({})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+        except ValueError:
+            return JsonResponse(
+                {"error": "Please check that cost centre and employee no are correct"},
+                status=400,
+            )
