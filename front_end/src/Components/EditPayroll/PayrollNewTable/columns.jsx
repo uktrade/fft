@@ -82,6 +82,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
   const vacancyColumns = [
     {
       header: "Manage",
+      footer: `${data.length} rows`,
       cell: ({ row }) => (
         <a
           className="govuk-button govuk-button--secondary govuk-!-margin-0"
