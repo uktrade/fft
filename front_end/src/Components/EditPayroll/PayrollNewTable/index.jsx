@@ -53,12 +53,12 @@ function PayrollNewTable({ data, columns, previousMonths }) {
         type="text"
         value={globalFilter}
         onChange={(e) => setGlobalFilter(e.target.value)}
-        placeholder="Search by name, grade, employee no..."
+        placeholder="Search rows..."
         style={{
           marginBottom: "10px",
           marginRight: "10px",
           padding: "5px",
-          width: "350px",
+          width: "250px",
         }}
       />
       <label>

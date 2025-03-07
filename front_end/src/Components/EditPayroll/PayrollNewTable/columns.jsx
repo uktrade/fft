@@ -49,7 +49,6 @@ export default function getPayrollColumns(
     {
       accessorKey: "employee_no",
       header: "Employee No",
-      filterFn: "fuzzy",
     },
     {
       accessorKey: "fte",
@@ -72,4 +71,62 @@ export default function getPayrollColumns(
   ];
 
   return [...employeeColumns, ...monthColumns];
+}
+
+export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
+  const monthColumns = getMonthsColumns(
+    data,
+    onTogglePayPeriods,
+    previousMonths,
+  );
+  const vacancyColumns = [
+    {
+      header: "Manage",
+      footer: `${data.length} rows`,
+      cell: ({ row }) => (
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-0"
+          href={`vacancies/${row.original.id}/edit`}
+        >
+          Edit
+        </a>
+      ),
+    },
+    {
+      accessorKey: "recruitment_type",
+      header: "Recruitment Type",
+    },
+    {
+      accessorKey: "grade",
+      header: "Grade",
+      filterFn: "fuzzy",
+    },
+    {
+      accessorKey: "programme_code",
+      header: "Programme Code",
+    },
+    {
+      accessorKey: "budget_type",
+      header: "Budget Type",
+    },
+    {
+      accessorKey: "appointee_name",
+      header: "Appointee Name",
+      filterFn: "fuzzy",
+    },
+    {
+      accessorKey: "hiring_manager",
+      header: "Hiring Manager",
+      filterFn: "fuzzy",
+    },
+    {
+      accessorKey: "hr_ref",
+      header: "HR Ref",
+    },
+    {
+      accessorKey: "recruitment_stage",
+      header: "Recruitment Stage",
+    },
+  ];
+  return [...vacancyColumns, ...monthColumns];
 }

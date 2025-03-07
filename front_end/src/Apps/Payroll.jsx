@@ -18,7 +18,9 @@ import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
 import Loading from "../Components/Common/Loading";
 import PayrollNewTable from "../Components/EditPayroll/PayrollNewTable";
-import getPayrollColumns from "../Components/EditPayroll/PayrollNewTable/columns";
+import getPayrollColumns, {
+  getVacanciesColumns,
+} from "../Components/EditPayroll/PayrollNewTable/columns";
 
 const initialPayrollState = {
   employees: [],
@@ -222,14 +224,26 @@ export default function Payroll() {
           )}
         </Tab>
         <Tab label="Vacancies" key="3">
-          <PayrollTable
-            payroll={allPayroll.vacancies}
-            headers={vacancyHeaders}
-            onTogglePayPeriods={handleToggleVacancyPayPeriods}
-            RowComponent={VacancyRow}
-            previousMonths={allPayroll.previous_months}
-            showPreviousMonths={showPreviousMonths}
-          />
+          {window.FEATURES.payroll_new_table ? (
+            <PayrollNewTable
+              data={allPayroll.vacancies}
+              columns={getVacanciesColumns(
+                allPayroll.vacancies,
+                handleToggleVacancyPayPeriods,
+                allPayroll.previous_months,
+              )}
+              previousMonths={allPayroll.previous_months}
+            />
+          ) : (
+            <PayrollTable
+              payroll={allPayroll.vacancies}
+              headers={vacancyHeaders}
+              onTogglePayPeriods={handleToggleVacancyPayPeriods}
+              RowComponent={VacancyRow}
+              previousMonths={allPayroll.previous_months}
+              showPreviousMonths={showPreviousMonths}
+            />
+          )}
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
             href={window.addVacancyUrl}
