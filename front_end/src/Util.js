@@ -49,7 +49,7 @@ export const decimalToPercentage = (decimal) => {
 export const valueAboveOneToPercentage = (value) => {
   // Converts a value greater than 1.0 to percentage: 1.2 = 20%
   // Rounded to prevent decimal precision issues
-  return Math.round((value - 1.0) * 100);
+  return Math.round((value - 1.0) * 100 * 1e10) / 1e10;
 };
 
 var currencyFormat = new Intl.NumberFormat("en-GB", {

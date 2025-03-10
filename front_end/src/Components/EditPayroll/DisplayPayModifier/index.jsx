@@ -1,4 +1,4 @@
-import { decimalToPercentage } from "../../../Util";
+import { valueAboveOneToPercentage } from "../../../Util";
 import PayModifierHeaders from "../PayModifierHeaders";
 
 const DisplayPayModifier = ({ modifier = [], title }) => {
@@ -21,7 +21,7 @@ const DisplayPayModifier = ({ modifier = [], title }) => {
             {modifier.map((value, index) => {
               return (
                 <td className="govuk-table__cell" key={index}>
-                  {decimalToPercentage(value)}%
+                  {valueAboveOneToPercentage(value)}%
                 </td>
               );
             })}
