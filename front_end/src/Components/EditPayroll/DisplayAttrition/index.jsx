@@ -29,7 +29,7 @@ const DisplayAttrition = ({
                   <td className="govuk-table__cell" key={index}>
                     <div class="govuk-input__wrapper">
                       <input
-                        className="govuk-input"
+                        className="govuk-input govuk-input--width-5"
                         id={`modifier-${index}`}
                         name={`modifier-${index}`}
                         type="number"
