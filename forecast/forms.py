@@ -79,7 +79,11 @@ class AddForecastRowForm(forms.Form):
         label="Programme Description",
     )
     programme.widget.attrs.update(
-        {"class": "govuk-select", "aria-describedby": "programme-hint programme-error"}
+        {
+            "class": "govuk-select",
+            "aria-describedby": "programme-hint programme-error",
+            "data-enhance-autocomplete": "true",
+        }
     )
 
     natural_account_code = forms.ModelChoiceField(
@@ -93,6 +97,7 @@ class AddForecastRowForm(forms.Form):
         {
             "class": "govuk-select",
             "aria-describedby": "natural_account_code-hint natural_account_code-error",
+            "data-enhance-autocomplete": "true",
         }
     )
 
@@ -108,6 +113,7 @@ class AddForecastRowForm(forms.Form):
         {
             "class": "govuk-select",
             "aria-describedby": "analysis1_code-hint analysis1_code-error",
+            "data-enhance-autocomplete": "true",
         }
     )
 
@@ -123,6 +129,7 @@ class AddForecastRowForm(forms.Form):
         {
             "class": "govuk-select",
             "aria-describedby": "analysis2_code-hint analysis2_code-error",
+            "data-enhance-autocomplete": "true",
         }
     )
 
@@ -135,6 +142,7 @@ class AddForecastRowForm(forms.Form):
         {
             "class": "govuk-select",
             "aria-describedby": "project_code-hint project_code-error",
+            "data-enhance-autocomplete": "true",
         }
     )
 

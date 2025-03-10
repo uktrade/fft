@@ -52,7 +52,7 @@
     <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-167x167.png' %}">
     <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-152x152.png' %}">
     <link rel="apple-touch-icon" href="{% static 'govuk/assets/images/govuk-apple-touch-icon.png' %}">
-
+    <link rel="stylesheet" href="/static/aac/accessible-autocomplete.min.css">
     {% vite_css "styles/styles.scss" %}
 
     <meta property="og:image" content="{% static 'govuk/assets/images/govuk-opengraph-image.png' %}">
@@ -99,7 +99,6 @@
         }
     }
 </script>
-
 <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
 <header class="internal-header js-internal-header internal-header--max-width js-internal-header-enabled" role="banner"
@@ -262,6 +261,8 @@
 </footer>
 
 <script src="/static/govuk/all.js"></script>
+<script type="text/javascript" src="/static/aac/accessible-autocomplete.min.js"></script>
+
 <script src="{% static 'core/js/feature-flags.js' %}"></script>
 <script>
     window.GOVUKFrontend.initAll();

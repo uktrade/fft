@@ -183,6 +183,7 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     ("vite", BASE_DIR / "front_end" / "build"),
     BASE_DIR / "node_modules" / "govuk-frontend",
+    ("aac", BASE_DIR / "node_modules" / "accessible-autocomplete" / "dist"),
 ]
 
 STORAGES = {

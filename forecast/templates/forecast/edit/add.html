@@ -4,10 +4,75 @@
 {% block title %}Edit Forecast - Add Row{% endblock %}
 
 {% block page_content %}
-    <form method="post" action="">
-        {% csrf_token %}
-        {% include "core/govt_uk_form.html" %}
-        <div id="cost-centre-type-ahead-root"></div>
-        <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button"/>
-    </form>
+<form method="post" action="">
+    {% csrf_token %}
+    {% include "core/govt_uk_form.html" %}
+    <div id="cost-centre-type-ahead-root"></div>
+    <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button" />
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const selectElements = document.querySelectorAll('select[data-enhance-autocomplete="true"]');
+        selectElements.forEach((selectElement) => {
+            const container = document.createElement('div');
+            container.id = `${selectElement.id}-autocomplete-container`;
+            const selectStyle = window.getComputedStyle(selectElement);
+            container.style.width = selectStyle.width;
+            selectElement.parentNode.insertBefore(container, selectElement);
+            const labelElement = document.querySelector(`label[for="${selectElement.name}"]`);
+            const placeholderText = labelElement ? labelElement.textContent.replace('(optional)', '').trim() : 'Search for option';
+            function normalizeText(text) {
+                return text.toLowerCase()
+                    .replace(/[()[\]{}]/g, '')
+                    .replace(/-/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            function source(query, populateResults) {
+                const options = Array.from(selectElement.options)
+                    .filter(option => option.value)
+                    .map(option => ({
+                        text: option.text,
+                        value: option.value,
+                        normalizedText: normalizeText(option.text)
+                    }));
+
+                const normalizedQuery = normalizeText(query);
+                const filteredOptions = query
+                    ? options.filter(option =>
+                        option.normalizedText.includes(normalizedQuery))
+                    : options;
+
+                populateResults(filteredOptions.map(option => option.text));
+            }
+            const defaultOptionText = selectElement.options[selectElement.selectedIndex]?.text || '';
+            accessibleAutocomplete({
+                element: container,
+                id: selectElement.id,
+                source,
+                defaultValue: defaultOptionText,
+                name: selectElement.name,
+                displayMenu: 'overlay',
+                showAllValues: true,
+                confirmOnBlur: true,
+                placeholder: placeholderText,
+                cssNamespace: 'autocomplete',
+                onConfirm: (confirmed) => {
+                    if (confirmed) {
+                        for (let i = 0; i < selectElement.options.length; i++) {
+                            if (selectElement.options[i].text === confirmed) {
+                                selectElement.selectedIndex = i;
+                                const event = new Event('change', { bubbles: true });
+                                selectElement.dispatchEvent(event);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+            selectElement.style.display = 'none';
+        });
+    });
+</script>
 {% endblock %}
