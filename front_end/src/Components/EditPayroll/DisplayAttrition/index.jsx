@@ -1,14 +1,6 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 import DisplayPayModifier from "../DisplayPayModifier";
-
-const percentageToDecimal = (percentage) => {
-  return 1.0 - percentage / 100;
-};
-
-const decimalToPercentage = (decimal) => {
-  // Rounded to prevent decimal precision issues
-  return Math.round((1.0 - decimal) * 100 * 1e10) / 1e10;
-};
+import { decimalToPercentage, percentageToDecimal } from "../../../Util";
 
 const DisplayAttrition = ({
   attrition = [],
@@ -29,7 +21,7 @@ const DisplayAttrition = ({
                   <td className="govuk-table__cell" key={index}>
                     <div class="govuk-input__wrapper">
                       <input
-                        className="govuk-input govuk-input--width-5"
+                        className="govuk-input govuk-input--width-3"
                         id={`modifier-${index}`}
                         name={`modifier-${index}`}
                         type="number"
