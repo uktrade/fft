@@ -4,10 +4,102 @@
 {% block title %}Edit Forecast - Add Row{% endblock %}
 
 {% block page_content %}
-    <form method="post" action="">
-        {% csrf_token %}
-        {% include "core/govt_uk_form.html" %}
-        <div id="cost-centre-type-ahead-root"></div>
-        <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button"/>
-    </form>
+<form method="post" action="">
+    {% csrf_token %}
+    {% include "core/govt_uk_form.html" %}
+    <div id="cost-centre-type-ahead-root"></div>
+    <input type="submit" value="Add entry" class="govuk-button" data-module="govuk-button" />
+</form>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+  // Find all select elements with the data attribute
+  const selectElements = document.querySelectorAll('select[data-enhance-autocomplete="true"]');
+  
+  // Process each marked select element
+  selectElements.forEach(function(selectElement) {
+    // Create a container for the autocomplete
+    const container = document.createElement('div');
+    container.id = `${selectElement.id}-autocomplete-container`;
+    
+    // Get the computed style of the original select to match its width
+    const selectStyle = window.getComputedStyle(selectElement);
+    container.style.width = selectStyle.width;
+    
+    // Insert the container before the select
+    selectElement.parentNode.insertBefore(container, selectElement);
+    
+    // Try to find the label text for this select
+    let placeholderText = 'Search for option';
+    
+    // Method 1: Check for a label with a matching 'for' attribute
+    const labelElement = document.querySelector(`label[for="${selectElement.id}"]`);
+    if (labelElement) {
+      placeholderText = labelElement.textContent.trim();
+    }
+    
+    // Helper function to normalize text for searching
+    function normalizeText(text) {
+      return text.toLowerCase()
+        .replace(/[()[\]{}]/g, '') // Remove all types of parentheses
+        .replace(/-/g, '') // Remove hyphens
+        .replace(/\s+/g, ' ') // Normalize spaces
+        .trim();
+    }
+    
+    function enhancedSource(query, populateResults) {
+      const options = Array.from(selectElement.options)
+        .filter(option => option.value) // Skip empty options
+        .map(option => ({
+          text: option.text,
+          value: option.value,
+          normalizedText: normalizeText(option.text) // Pre-normalize the text
+        }));
+      
+      // Filtering options based on normalized query
+      const normalizedQuery = normalizeText(query);
+      const filteredOptions = query
+        ? options.filter(option => 
+            option.normalizedText.includes(normalizedQuery))
+        : options;
+      
+      populateResults(filteredOptions.map(option => option.text));
+    }
+    
+    // Getting default value (currently selected option)
+    const defaultOptionText = selectElement.options[selectElement.selectedIndex]?.text || '';
+    
+    // Initializing the autocomplete
+    accessibleAutocomplete({
+      element: container,
+      id: selectElement.id,
+      source: enhancedSource,
+      defaultValue: defaultOptionText,
+      name: selectElement.name,
+      displayMenu: 'overlay',
+      showAllValues: true,
+      confirmOnBlur: true,
+      placeholder: placeholderText,
+      cssNamespace: 'autocomplete',  
+      onConfirm: (confirmed) => {
+        if (confirmed) {
+          // Find the matching option in the original select and set it
+          for (let i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].text === confirmed) {
+              selectElement.selectedIndex = i;
+              
+              // Trigger change event
+              const event = new Event('change', { bubbles: true });
+              selectElement.dispatchEvent(event);
+              break;
+            }
+          }
+        }
+      }
+    });
+    
+    // Hide the original select
+    selectElement.style.display = 'none';
+  });
+});
+</script>
 {% endblock %}
