@@ -5,6 +5,7 @@ $govuk-page-width: 1800px;
 @import "./action-bar.scss";
 @import "./table.scss";
 @import "./cost-centre-filter.scss";
+
 body {
   font-size: 16px;
 }
@@ -412,13 +413,16 @@ th {
   width: 100%;
 }
 
+.autocomplete__option,
+.autocomplete__input {
+  font-family: "GDS Transport", arial, sans-serif;
+}
+
 .autocomplete__input {
   width: 100%;
   height: 40px;
   padding: 5px;
   border: 2px solid #0b0c0c;
-  font-size: 16px;
-  font-family: "GDS Transport", arial, sans-serif;
 }
 
 .form-group-autocomplete {
