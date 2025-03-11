@@ -46,6 +46,7 @@
 
                 populateResults(filteredOptions.map(option => option.text));
             }
+            console.log(source)
             const defaultOptionText = selectElement.options[selectElement.selectedIndex]?.text || '';
             accessibleAutocomplete({
                 element: container,
