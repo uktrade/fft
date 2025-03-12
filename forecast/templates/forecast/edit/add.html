@@ -4,7 +4,7 @@
 {% block title %}Edit Forecast - Add Row{% endblock %}
 
 {% block page_content %}
-<form method="post" action="">
+<form method="post" action="" onchange="">
     {% csrf_token %}
     {% include "core/govt_uk_form.html" %}
     <div id="cost-centre-type-ahead-root"></div>
@@ -14,14 +14,15 @@
     document.addEventListener('DOMContentLoaded', () => {
         const selectElements = document.querySelectorAll('select[data-enhance-autocomplete="true"]');
         selectElements.forEach((selectElement) => {
+            selectElement.required = false
             const container = document.createElement('div');
             container.id = `${selectElement.id}-autocomplete-container`;
             const selectStyle = window.getComputedStyle(selectElement);
             container.style.width = selectStyle.width;
             selectElement.parentNode.insertBefore(container, selectElement);
             const labelElement = document.querySelector(`label[for="${selectElement.name}"]`);
-            const placeholderText = labelElement ? labelElement.textContent.replace('(optional)', '').trim() : 'Search for option';
-            function normalizeText(text) {
+
+            const  normalizeText=(text)=> {
                 return text.toLowerCase()
                     .replace(/[()[\]{}]/g, '')
                     .replace(/-/g, '')
@@ -29,7 +30,7 @@
                     .trim();
             }
 
-            function source(query, populateResults) {
+            const source=(query, populateResults) =>{
                 const options = Array.from(selectElement.options)
                     .filter(option => option.value)
                     .map(option => ({
@@ -46,7 +47,6 @@
 
                 populateResults(filteredOptions.map(option => option.text));
             }
-            console.log(source)
             const defaultOptionText = selectElement.options[selectElement.selectedIndex]?.text || '';
             accessibleAutocomplete({
                 element: container,
@@ -54,10 +54,11 @@
                 source,
                 defaultValue: defaultOptionText,
                 name: selectElement.name,
+                autoselect: true,
+                default: '',
                 displayMenu: 'overlay',
                 showAllValues: true,
                 confirmOnBlur: true,
-                placeholder: placeholderText,
                 cssNamespace: 'autocomplete',
                 onConfirm: (confirmed) => {
                     if (confirmed) {
