@@ -1,4 +1,5 @@
 import { monthsToTitleCase } from "../../../Util";
+import NotesCell from "../../Notes/NotesCell";
 import { totalOfColumn } from "./helpers";
 
 function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
@@ -22,6 +23,20 @@ function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
       className: "payroll-checkbox",
     },
   }));
+}
+
+function getNotesColumn(section) {
+  return {
+    header: "Notes",
+    enableSorting: false,
+    cell: ({ row }) => (
+      <NotesCell
+        section={section}
+        notes={row.original.notes}
+        id={row.original.id}
+      />
+    ),
+  };
 }
 
 export default function getPayrollColumns(
@@ -69,8 +84,9 @@ export default function getPayrollColumns(
       header: "Assignment Status",
     },
   ];
+  const notesColumn = getNotesColumn("employees");
 
-  return [...employeeColumns, ...monthColumns];
+  return [...employeeColumns, ...monthColumns, notesColumn];
 }
 
 export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
@@ -128,5 +144,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
       header: "Recruitment Stage",
     },
   ];
-  return [...vacancyColumns, ...monthColumns];
+  const notesColumn = getNotesColumn("vacancies");
+
+  return [...vacancyColumns, ...monthColumns, notesColumn];
 }
