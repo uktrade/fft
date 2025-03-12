@@ -1,6 +1,5 @@
 import PayModifierHeaders from "../PayModifierHeaders";
 import DisplayPayModifier from "../DisplayPayModifier";
-import { decimalToPercentage, percentageToDecimal } from "../../../Util";
 
 const DisplayAttrition = ({
   attrition = [],
@@ -25,13 +24,8 @@ const DisplayAttrition = ({
                         id={`modifier-${index}`}
                         name={`modifier-${index}`}
                         type="number"
-                        defaultValue={decimalToPercentage(value)}
-                        onChange={(e) =>
-                          onInputChange(
-                            index,
-                            percentageToDecimal(e.target.value),
-                          )
-                        }
+                        defaultValue={value}
+                        onChange={(e) => onInputChange(index, e.target.value)}
                       ></input>
                       <div class="govuk-input__suffix" aria-hidden="true">
                         %

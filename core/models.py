@@ -98,23 +98,24 @@ class PayModifiers(models.Model):
     def periods(self) -> list[float]:
         return [getattr(self, month) for month in MONTHS]
 
-    @property
-    def periods_as_percentage(self) -> list[float]:
-        return [month * 100 for month in self.periods]
+    @periods.setter
+    def periods(self, value: list[float]) -> None:
+        for i, month in enumerate(MONTHS):
+            setattr(self, month, value[i])
 
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    apr = models.FloatField(default=1.0)
-    may = models.FloatField(default=1.0)
-    jun = models.FloatField(default=1.0)
-    jul = models.FloatField(default=1.0)
-    aug = models.FloatField(default=1.0)
-    sep = models.FloatField(default=1.0)
-    oct = models.FloatField(default=1.0)
-    nov = models.FloatField(default=1.0)
-    dec = models.FloatField(default=1.0)
-    jan = models.FloatField(default=1.0)
-    feb = models.FloatField(default=1.0)
-    mar = models.FloatField(default=1.0)
+    apr = models.FloatField(default=0.0)
+    may = models.FloatField(default=0.0)
+    jun = models.FloatField(default=0.0)
+    jul = models.FloatField(default=0.0)
+    aug = models.FloatField(default=0.0)
+    sep = models.FloatField(default=0.0)
+    oct = models.FloatField(default=0.0)
+    nov = models.FloatField(default=0.0)
+    dec = models.FloatField(default=0.0)
+    jan = models.FloatField(default=0.0)
+    feb = models.FloatField(default=0.0)
+    mar = models.FloatField(default=0.0)
 
 
 class PayUplift(PayModifiers):

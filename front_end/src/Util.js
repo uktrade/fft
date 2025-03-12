@@ -36,22 +36,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-export const percentageToDecimal = (percentage) => {
-  return 1.0 - percentage / 100;
-};
-
-export const decimalToPercentage = (decimal) => {
-  // Converts a decimal between 0.0 and 1.0 to percentage: 0.2 = 20%
-  // Rounded to prevent decimal precision issues
-  return Math.round((1.0 - decimal) * 100 * 1e10) / 1e10;
-};
-
-export const valueAboveOneToPercentage = (value) => {
-  // Converts a value greater than 1.0 to percentage: 1.2 = 20%
-  // Rounded to prevent decimal precision issues
-  return Math.round((value - 1.0) * 100 * 1e10) / 1e10;
-};
-
 var currencyFormat = new Intl.NumberFormat("en-GB", {
   style: "currency",
   currency: "GBP",
