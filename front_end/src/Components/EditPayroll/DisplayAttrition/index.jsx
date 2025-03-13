@@ -18,14 +18,19 @@ const DisplayAttrition = ({
               {attrition.map((value, index) => {
                 return (
                   <td className="govuk-table__cell" key={index}>
-                    <input
-                      className="govuk-input"
-                      id={`modifier-${index}`}
-                      name={`modifier-${index}`}
-                      type="number"
-                      defaultValue={value}
-                      onChange={(e) => onInputChange(index, e.target.value)}
-                    ></input>
+                    <div class="govuk-input__wrapper">
+                      <input
+                        className="govuk-input govuk-input--width-3"
+                        id={`modifier-${index}`}
+                        name={`modifier-${index}`}
+                        type="number"
+                        defaultValue={value}
+                        onChange={(e) => onInputChange(index, e.target.value)}
+                      ></input>
+                      <div class="govuk-input__suffix" aria-hidden="true">
+                        %
+                      </div>
+                    </div>
                   </td>
                 );
               })}

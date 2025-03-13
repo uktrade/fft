@@ -98,23 +98,24 @@ class PayModifiers(models.Model):
     def periods(self) -> list[float]:
         return [getattr(self, month) for month in MONTHS]
 
-    @property
-    def periods_as_percentage(self) -> list[float]:
-        return [month * 100 for month in self.periods]
+    @periods.setter
+    def periods(self, value: list[float]) -> None:
+        for i, month in enumerate(MONTHS):
+            setattr(self, month, value[i])
 
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.PROTECT)
-    apr = models.FloatField(default=1.0)
-    may = models.FloatField(default=1.0)
-    jun = models.FloatField(default=1.0)
-    jul = models.FloatField(default=1.0)
-    aug = models.FloatField(default=1.0)
-    sep = models.FloatField(default=1.0)
-    oct = models.FloatField(default=1.0)
-    nov = models.FloatField(default=1.0)
-    dec = models.FloatField(default=1.0)
-    jan = models.FloatField(default=1.0)
-    feb = models.FloatField(default=1.0)
-    mar = models.FloatField(default=1.0)
+    apr = models.FloatField(default=0.0)
+    may = models.FloatField(default=0.0)
+    jun = models.FloatField(default=0.0)
+    jul = models.FloatField(default=0.0)
+    aug = models.FloatField(default=0.0)
+    sep = models.FloatField(default=0.0)
+    oct = models.FloatField(default=0.0)
+    nov = models.FloatField(default=0.0)
+    dec = models.FloatField(default=0.0)
+    jan = models.FloatField(default=0.0)
+    feb = models.FloatField(default=0.0)
+    mar = models.FloatField(default=0.0)
 
 
 class PayUplift(PayModifiers):
@@ -129,9 +130,9 @@ class PayUplift(PayModifiers):
         )
 
     def clean(self):
-        if not all(pay_uplift >= 1.0 for pay_uplift in self.periods):
+        if not all(pay_uplift <= 0.2 for pay_uplift in self.periods):
             raise ValidationError(
-                "Monthly pay uplifts must be greater than or equal to 1.0"
+                "Monthly pay uplifts must be less than or equal to 20%"
             )
 
     def save(self, *args, **kwargs):
@@ -158,8 +159,10 @@ class Attrition(PayModifiers):
         )
 
     def clean(self):
-        if not all(attrition <= 1.0 for attrition in self.periods):
-            raise ValidationError("Monthly attrition must be less than or equal to 1.0")
+        if not all(attrition <= 0.2 for attrition in self.periods):
+            raise ValidationError(
+                "Monthly FTE attrition must be less than or equal to 20%"
+            )
 
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",

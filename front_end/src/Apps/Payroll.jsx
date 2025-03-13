@@ -252,16 +252,18 @@ export default function Payroll() {
           </a>
         </Tab>
         <Tab label="Pay modifiers" key="4">
-          <DisplayAttrition
-            attrition={allPayroll.pay_modifiers.attrition}
-            global_attrition={allPayroll.pay_modifiers.global_attrition}
-            onInputChange={handleUpdateAttrition}
-            onCreate={handleCreateAttrition}
-          />
-          <DisplayPayModifier
-            modifier={allPayroll.pay_modifiers.pay_uplift}
-            title="Pay uplift"
-          />
+          <div className="scrollable">
+            <DisplayAttrition
+              attrition={allPayroll.pay_modifiers.attrition}
+              global_attrition={allPayroll.pay_modifiers.global_attrition}
+              onInputChange={handleUpdateAttrition}
+              onCreate={handleCreateAttrition}
+            />
+            <DisplayPayModifier
+              modifier={allPayroll.pay_modifiers.pay_uplift}
+              title="Pay uplift"
+            />
+          </div>
         </Tab>
       </Tabs>
       <button className="govuk-button" onClick={handleSavePayroll}>

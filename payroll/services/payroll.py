@@ -99,8 +99,8 @@ def payroll_forecast_report(
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
 
-    pay_uplift = np.array(pay_uplift_obj.periods) if pay_uplift_obj else np.ones(12)
-    attrition = np.array(attrition_obj.periods) if attrition_obj else np.ones(12)
+    pay_uplift = 1 + np.array(pay_uplift_obj.periods) if pay_uplift_obj else np.ones(12)
+    attrition = 1 - np.array(attrition_obj.periods) if attrition_obj else np.ones(12)
     pay_uplift_accumulate = np.array(list(accumulate(pay_uplift, operator.mul)))
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
@@ -243,6 +243,7 @@ class EmployeePayroll(TypedDict):
     assignment_status: str
     basic_pay: float
     pay_periods: list[bool]
+    notes: str
 
 
 def get_employee_data(
@@ -453,7 +454,7 @@ class PayModifiers(TypedDict):
 def get_pay_modifiers_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
-) -> Iterator[PayModifiers]:
+) -> PayModifiers:
     global_attrition = Attrition.objects.filter(
         financial_year=financial_year, cost_centre=None
     ).first()
@@ -469,9 +470,9 @@ def get_pay_modifiers_data(
     pay_uplift_periods = pay_uplift.periods if pay_uplift else []
 
     return {
-        "global_attrition": global_attrition_periods,
-        "attrition": attrition_periods,
-        "pay_uplift": pay_uplift_periods,
+        "global_attrition": [x * 100 for x in global_attrition_periods],
+        "attrition": [x * 100 for x in attrition_periods],
+        "pay_uplift": [x * 100 for x in pay_uplift_periods],
     }
 
 
@@ -512,14 +513,8 @@ def update_attrition_data(
         financial_year=financial_year,
     )
 
-    for index, month in enumerate(MONTHS):
-        setattr(attrition, month, data[index])
-
-    try:
-        attrition.clean()
-    except Exception as ex:
-        raise ValueError(ex)
-
+    attrition.periods = [x / 100 for x in data]
+    attrition.clean()
     attrition.save()
 
 

@@ -20,7 +20,7 @@ const DisplayPayModifier = ({ modifier = [], title }) => {
             {modifier.map((value, index) => {
               return (
                 <td className="govuk-table__cell" key={index}>
-                  {value}
+                  {value}%
                 </td>
               );
             })}

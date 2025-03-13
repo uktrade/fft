@@ -175,9 +175,9 @@ def test_one_employee_with_pay_uplift(db):
 
     pay_uplift = PayUpliftFactory.create(
         financial_year=financial_year,
-        aug=1.02,
+        aug=0.02,
     )
-    modifier = pay_uplift.aug
+    modifier = 1 + pay_uplift.aug
 
     report = payroll_forecast_report(cost_centre, financial_year)
 
@@ -222,9 +222,9 @@ def test_one_employee_with_attrition(db):
     attrition = AttritionFactory.create(
         cost_centre=cost_centre,
         financial_year=financial_year,
-        aug=0.95,
+        aug=0.05,
     )
-    modifier = attrition.aug
+    modifier = 1 - attrition.aug
 
     report = payroll_forecast_report(cost_centre, financial_year)
 
