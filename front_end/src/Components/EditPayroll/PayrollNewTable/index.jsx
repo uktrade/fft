@@ -7,9 +7,9 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { fuzzyFilter, monthsWithActuals } from "./helpers";
-import SortUp from "../../../../icons/sort-up.svg?react";
-import SortDown from "../../../../icons/sort-down.svg?react";
-import Unsorted from "../../../../icons/unsorted.svg?react";
+import SortUpIcon from "../../../../icons/sort-up.svg?react";
+import SortDownIcon from "../../../../icons/sort-down.svg?react";
+import UnsortedIcon from "../../../../icons/unsorted.svg?react";
 
 function PayrollNewTable({ data, columns, previousMonths }) {
   // State
@@ -92,10 +92,10 @@ function PayrollNewTable({ data, columns, previousMonths }) {
                         header.getContext(),
                       )}
                   {{
-                    asc: <SortUp className="table-svg" />,
-                    desc: <SortDown className="table-svg" />,
+                    asc: <SortUpIcon className="table-svg" />,
+                    desc: <SortDownIcon className="table-svg" />,
                     false: header.column.getCanSort() ? (
-                      <Unsorted className="table-svg" />
+                      <UnsortedIcon className="table-svg" />
                     ) : null,
                   }[header.column.getIsSorted()] ?? null}
                 </th>
