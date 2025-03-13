@@ -1,6 +1,8 @@
 import { monthsToTitleCase } from "../../../Util";
+import NotesCell from "../../Notes/NotesCell";
 import { totalOfColumn } from "./helpers";
 
+// Specific column getters
 function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
   return monthsToTitleCase.map((header, index) => ({
     header: header,
@@ -24,6 +26,38 @@ function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
   }));
 }
 
+function getNotesColumn(section) {
+  return {
+    header: "Notes",
+    enableSorting: false,
+    cell: ({ row }) => (
+      <NotesCell
+        section={section}
+        notes={row.original.notes}
+        id={row.original.id}
+      />
+    ),
+  };
+}
+
+const GRADE_COLUMN = {
+  accessorKey: "grade",
+  header: "Grade",
+  filterFn: "fuzzy",
+};
+
+const PROGRAMME_CODE_COLUMN = {
+  accessorKey: "programme_code",
+  header: "Programme Code",
+};
+
+const BUDGET_TYPE_COLUMN = {
+  accessorKey: "budget_type",
+  header: "Budget Type",
+};
+
+// Table column getters
+
 export default function getPayrollColumns(
   data,
   onTogglePayPeriods,
@@ -41,11 +75,7 @@ export default function getPayrollColumns(
       footer: `${data.length} rows`,
       filterFn: "fuzzy",
     },
-    {
-      accessorKey: "grade",
-      header: "Grade",
-      filterFn: "fuzzy",
-    },
+    GRADE_COLUMN,
     {
       accessorKey: "employee_no",
       header: "Employee No",
@@ -56,21 +86,16 @@ export default function getPayrollColumns(
       footer: totalOfColumn(data, (data) => data.fte),
       sortDescFirst: false,
     },
-    {
-      accessorKey: "programme_code",
-      header: "Programme Code",
-    },
-    {
-      accessorKey: "budget_type",
-      header: "Budget Type",
-    },
+    PROGRAMME_CODE_COLUMN,
+    BUDGET_TYPE_COLUMN,
     {
       accessorKey: "assignment_status",
       header: "Assignment Status",
     },
   ];
+  const notesColumn = getNotesColumn("employees");
 
-  return [...employeeColumns, ...monthColumns];
+  return [...employeeColumns, ...monthColumns, notesColumn];
 }
 
 export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
@@ -96,19 +121,9 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
       accessorKey: "recruitment_type",
       header: "Recruitment Type",
     },
-    {
-      accessorKey: "grade",
-      header: "Grade",
-      filterFn: "fuzzy",
-    },
-    {
-      accessorKey: "programme_code",
-      header: "Programme Code",
-    },
-    {
-      accessorKey: "budget_type",
-      header: "Budget Type",
-    },
+    GRADE_COLUMN,
+    PROGRAMME_CODE_COLUMN,
+    BUDGET_TYPE_COLUMN,
     {
       accessorKey: "appointee_name",
       header: "Appointee Name",
@@ -128,5 +143,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
       header: "Recruitment Stage",
     },
   ];
-  return [...vacancyColumns, ...monthColumns];
+  const notesColumn = getNotesColumn("vacancies");
+
+  return [...vacancyColumns, ...monthColumns, notesColumn];
 }
