@@ -77,20 +77,28 @@ function EditForecast() {
       postData(
         `/forecast/paste-forecast/${window.cost_centre}/${window.financial_year}`,
         payload,
-      ).then((response) => {
-        if (response.status === 200) {
-          setSheetUpdating(false);
-          let rows = processForecastData(response.data);
-          dispatch(SET_CELLS({ cells: rows }));
-        } else {
-          setSheetUpdating(false);
+      )
+        .then((response) => {
+          if (response.status === 200) {
+            setSheetUpdating(false);
+            let rows = processForecastData(response.data);
+            dispatch(SET_CELLS({ cells: rows }));
+          } else {
+            setSheetUpdating(false);
+            dispatch(
+              SET_ERROR({
+                errorMessage: response.data.error,
+              }),
+            );
+          }
+        })
+        .catch((e) =>
           dispatch(
             SET_ERROR({
               errorMessage: response.data.error,
             }),
-          );
-        }
-      });
+          ),
+        );
     };
 
     capturePaste();
