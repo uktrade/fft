@@ -514,12 +514,7 @@ def update_attrition_data(
     )
 
     attrition.periods = [x / 100 for x in data]
-
-    try:
-        attrition.clean()
-    except Exception as ex:
-        raise ValueError(ex)
-
+    attrition.clean()
     attrition.save()
 
 

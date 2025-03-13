@@ -130,9 +130,9 @@ class PayUplift(PayModifiers):
         )
 
     def clean(self):
-        if not all(pay_uplift >= 1.0 for pay_uplift in self.periods):
+        if not all(pay_uplift <= 0.2 for pay_uplift in self.periods):
             raise ValidationError(
-                "Monthly pay uplifts must be greater than or equal to 1.0"
+                "Monthly pay uplifts must be less than or equal to 20%"
             )
 
     def save(self, *args, **kwargs):
@@ -159,8 +159,10 @@ class Attrition(PayModifiers):
         )
 
     def clean(self):
-        if not all(attrition <= 1.0 for attrition in self.periods):
-            raise ValidationError("Monthly attrition must be less than or equal to 1.0")
+        if not all(attrition <= 0.2 for attrition in self.periods):
+            raise ValidationError(
+                "Monthly FTE attrition must be less than or equal to 20%"
+            )
 
     cost_centre = models.ForeignKey(
         "costcentre.CostCentre",
