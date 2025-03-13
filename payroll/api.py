@@ -77,6 +77,8 @@ class EditPayrollApiView(EditPayrollBaseView):
                 cost_centre=self.cost_centre,
             )
 
+        return JsonResponse({})
+
 
 class PayModifiersApiView(EditPayrollBaseView):
     def post(self, request, *args, **kwargs):
