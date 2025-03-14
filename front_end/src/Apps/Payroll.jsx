@@ -4,7 +4,6 @@ import * as api from "../Components/EditPayroll/api";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import DisplayAttrition from "../Components/EditPayroll/DisplayAttrition";
 import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
-import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
