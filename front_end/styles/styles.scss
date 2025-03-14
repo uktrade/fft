@@ -1,7 +1,5 @@
 $govuk-assets-path: "/static/govuk/assets/";
 $govuk-page-width: 1800px;
-$govuk-images-path: "/static/govuk/assets/images/";
-$govuk-fonts-path: "/static/govuk/assets/fonts/";
 $govuk-image-url-function: "custom-image-url";
 $govuk-font-url-function: "custom-font-url";
 
@@ -12,8 +10,7 @@ $govuk-font-url-function: "custom-font-url";
 @function custom-font-url($filename) {
   @return url("#{$govuk-fonts-path}#{$filename}");
 }
-
-@import "govuk-frontend/dist/govuk/index";
+@import "govuk-frontend/dist/govuk/all";
 @import "./header.scss";
 @import "./action-bar.scss";
 @import "./table.scss";
