@@ -10,6 +10,7 @@ import { fuzzyFilter, monthsWithActuals } from "./helpers";
 import SortUpIcon from "../../../../icons/sort-up.svg?react";
 import SortDownIcon from "../../../../icons/sort-down.svg?react";
 import UnsortedIcon from "../../../../icons/unsorted.svg?react";
+import ToggleCheckbox from "../../Common/ToggleCheckbox";
 
 function PayrollNewTable({ data, columns, previousMonths }) {
   // State
@@ -64,14 +65,13 @@ function PayrollNewTable({ data, columns, previousMonths }) {
           width: "250px",
         }}
       />
-      <label>
-        <input
-          type="checkbox"
-          checked={showPreviousMonths}
-          onChange={togglePreviousMonthsVisibility}
-        />
-        Hide previous months
-      </label>
+      <ToggleCheckbox
+        toggle={showPreviousMonths}
+        handler={togglePreviousMonthsVisibility}
+        id="payroll-previous-months"
+        value="payroll-previous-months"
+        label="Hide previous months"
+      />
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

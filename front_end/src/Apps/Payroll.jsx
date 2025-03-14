@@ -1,13 +1,6 @@
 import { useEffect, useReducer, useState, useMemo } from "react";
 
 import * as api from "../Components/EditPayroll/api";
-import {
-  payrollHeaders,
-  vacancyHeaders,
-} from "../Components/EditPayroll/constants";
-import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
-import VacancyRow from "../Components/EditPayroll/VacancyRow";
-import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import DisplayAttrition from "../Components/EditPayroll/DisplayAttrition";
 import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
@@ -171,13 +164,6 @@ export default function Payroll() {
     <>
       {saveSuccess && <SuccessBanner>Success - forecast updated</SuccessBanner>}
       {errors && <ErrorSummary errors={errors} />}
-      <ToggleCheckbox
-        toggle={showPreviousMonths}
-        handler={handleHidePreviousMonths}
-        id="payroll-previous-months"
-        value="payroll-previous-months"
-        label="Hide previous months"
-      />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <PayrollNewTable
