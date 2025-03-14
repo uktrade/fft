@@ -47,19 +47,16 @@
     {% endswitch %}
 
     <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
-    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-180x180.png' %}">
-    <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-167x167.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'govuk/assets/images/govuk-apple-touch-icon.png' %}">
-
+    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-icon-mask.svg' %}" color="#0b0c0c">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-icon-180.png' %}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{% static 'govuk/assets/images/govuk-icon-192.png' %}">
+    <link rel="apple-touch-icon" sizes="512x512" href="{% static 'govuk/assets/images/govuk-icon-512.png' %}">
     {% vite_css "styles/styles.scss" %}
-
     <meta property="og:image" content="{% static 'govuk/assets/images/govuk-opengraph-image.png' %}">
 </head>
 
 <body onresize="checkMenuState();"
-      class="govuk-template__body {{ request.resolver_match.url_name }} {{ view.class_name }}">
+      class="govuk-template__body  govuk-frontend-supported  {{ request.resolver_match.url_name }} {{ view.class_name }}">
 {% if not settings.DEBUG %}
     <!-- Google Tag Manager (noscript) -->
     <noscript>
@@ -261,7 +258,7 @@
   </div>
 </footer>
 
-<script src="/static/govuk/all.js"></script>
+<script src="{% static 'govuk/all.bundle.js' %}"></script>
 <script src="{% static 'core/js/feature-flags.js' %}"></script>
 <script>
     window.GOVUKFrontend.initAll();
