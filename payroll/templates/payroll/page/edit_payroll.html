@@ -31,7 +31,6 @@
         window.costCentreCode = "{{ cost_centre.cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year.financial_year }}");
         window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre.cost_centre_code financial_year.financial_year %}"
-        window.FEATURES.payroll_new_table
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}

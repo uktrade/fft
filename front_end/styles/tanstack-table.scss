@@ -1,0 +1,38 @@
+.tanstack-table {
+  table {
+    @extend .govuk-table;
+    font-size: 16px;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th,
+  tfoot {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+
+  .payroll-checkbox {
+    text-align: center;
+  }
+
+  .table-svg {
+    margin-left: 5px;
+  }
+
+  .table-options {
+    display: flex;
+    align-items: anchor-center;
+  }
+
+  .search-input {
+    margin-right: 15px;
+    padding: 5px;
+    width: 250px;
+  }
+}

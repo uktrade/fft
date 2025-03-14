@@ -1,26 +1,18 @@
 import { useEffect, useReducer, useState, useMemo } from "react";
 
 import * as api from "../Components/EditPayroll/api";
-import {
-  payrollHeaders,
-  vacancyHeaders,
-} from "../Components/EditPayroll/constants";
-import EmployeeRow from "../Components/EditPayroll/EmployeeRow";
-import VacancyRow from "../Components/EditPayroll/VacancyRow";
-import PayrollTable from "../Components/EditPayroll/PayrollTable";
 import Tabs, { Tab } from "../Components/EditPayroll/Tabs";
 import DisplayAttrition from "../Components/EditPayroll/DisplayAttrition";
 import DisplayPayModifier from "../Components/EditPayroll/DisplayPayModifier";
-import ToggleCheckbox from "../Components/Common/ToggleCheckbox";
 import ErrorSummary from "../Components/Common/ErrorSummary";
 import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
 import Loading from "../Components/Common/Loading";
-import PayrollNewTable from "../Components/EditPayroll/PayrollNewTable";
+import TanstackTable from "../Components/EditPayroll/TanstackTable";
 import getPayrollColumns, {
   getVacanciesColumns,
-} from "../Components/EditPayroll/PayrollNewTable/columns";
+} from "../Components/EditPayroll/TanstackTable/columns";
 
 const initialPayrollState = {
   employees: [],
@@ -171,79 +163,39 @@ export default function Payroll() {
     <>
       {saveSuccess && <SuccessBanner>Success - forecast updated</SuccessBanner>}
       {errors && <ErrorSummary errors={errors} />}
-      <ToggleCheckbox
-        toggle={showPreviousMonths}
-        handler={handleHidePreviousMonths}
-        id="payroll-previous-months"
-        value="payroll-previous-months"
-        label="Hide previous months"
-      />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={payroll}
-              columns={getPayrollColumns(
-                payroll,
-                handleTogglePayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={payroll}
-              headers={payrollHeaders}
-              onTogglePayPeriods={handleTogglePayPeriods}
-              RowComponent={EmployeeRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <TanstackTable
+            data={payroll}
+            columns={getPayrollColumns(
+              payroll,
+              handleTogglePayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
         </Tab>
         <Tab label="Non-payroll" key="2">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={nonPayroll}
-              columns={getPayrollColumns(
-                nonPayroll,
-                handleTogglePayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={nonPayroll}
-              headers={payrollHeaders}
-              onTogglePayPeriods={handleTogglePayPeriods}
-              RowComponent={EmployeeRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <TanstackTable
+            data={nonPayroll}
+            columns={getPayrollColumns(
+              nonPayroll,
+              handleTogglePayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
         </Tab>
         <Tab label="Vacancies" key="3">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={allPayroll.vacancies}
-              columns={getVacanciesColumns(
-                allPayroll.vacancies,
-                handleToggleVacancyPayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={allPayroll.vacancies}
-              headers={vacancyHeaders}
-              onTogglePayPeriods={handleToggleVacancyPayPeriods}
-              RowComponent={VacancyRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <TanstackTable
+            data={allPayroll.vacancies}
+            columns={getVacanciesColumns(
+              allPayroll.vacancies,
+              handleToggleVacancyPayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
             href={window.addVacancyUrl}
