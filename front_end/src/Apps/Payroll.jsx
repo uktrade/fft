@@ -10,10 +10,10 @@ import SuccessBanner from "../Components/Common/SuccessBanner";
 import ForecastTable from "../Components/EditPayroll/ForecastTable";
 import { makeFinancialCodeKey } from "../Util";
 import Loading from "../Components/Common/Loading";
-import PayrollNewTable from "../Components/EditPayroll/PayrollNewTable";
+import TanstackTable from "../Components/EditPayroll/TanstackTable";
 import getPayrollColumns, {
   getVacanciesColumns,
-} from "../Components/EditPayroll/PayrollNewTable/columns";
+} from "../Components/EditPayroll/TanstackTable/columns";
 
 const initialPayrollState = {
   employees: [],
@@ -166,7 +166,7 @@ export default function Payroll() {
       {errors && <ErrorSummary errors={errors} />}
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
-          <PayrollNewTable
+          <TanstackTable
             data={payroll}
             columns={getPayrollColumns(
               payroll,
@@ -177,7 +177,7 @@ export default function Payroll() {
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
-          <PayrollNewTable
+          <TanstackTable
             data={nonPayroll}
             columns={getPayrollColumns(
               nonPayroll,
@@ -188,7 +188,7 @@ export default function Payroll() {
           />
         </Tab>
         <Tab label="Vacancies" key="3">
-          <PayrollNewTable
+          <TanstackTable
             data={allPayroll.vacancies}
             columns={getVacanciesColumns(
               allPayroll.vacancies,

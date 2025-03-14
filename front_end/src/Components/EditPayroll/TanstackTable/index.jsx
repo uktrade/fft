@@ -12,7 +12,7 @@ import SortDownIcon from "../../../../icons/sort-down.svg?react";
 import UnsortedIcon from "../../../../icons/unsorted.svg?react";
 import ToggleCheckbox from "../../Common/ToggleCheckbox";
 
-function PayrollNewTable({ data, columns, previousMonths }) {
+function TanstackTable({ data, columns, previousMonths }) {
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
@@ -131,4 +131,4 @@ function PayrollNewTable({ data, columns, previousMonths }) {
   );
 }
 
-export default PayrollNewTable;
+export default TanstackTable;
