@@ -52,26 +52,29 @@ function TanstackTable({ data, columns, previousMonths }) {
   };
 
   return (
-    <div className="new-table scrollable">
-      <input
-        type="text"
-        value={globalFilter}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-        placeholder="Search rows..."
-        style={{
-          marginBottom: "10px",
-          marginRight: "10px",
-          padding: "5px",
-          width: "250px",
-        }}
-      />
-      <ToggleCheckbox
-        toggle={showPreviousMonths}
-        handler={togglePreviousMonthsVisibility}
-        id="payroll-previous-months"
-        value="payroll-previous-months"
-        label="Hide previous months"
-      />
+    <div className="tanstack-table scrollable">
+      <div className="table-options">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="search">
+            Search
+          </label>
+          <input
+            type="text"
+            id="search"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Search rows..."
+            className="search-input"
+          />
+        </div>
+        <ToggleCheckbox
+          toggle={showPreviousMonths}
+          handler={togglePreviousMonthsVisibility}
+          id="payroll-previous-months"
+          value="payroll-previous-months"
+          label="Hide previous months"
+        />
+      </div>
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
