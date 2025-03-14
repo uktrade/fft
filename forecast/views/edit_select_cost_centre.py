@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
+from django.utils.html import escape
 from django.views.generic.edit import FormView
 
 from core.models import FinancialYear
@@ -74,8 +75,8 @@ class ChooseCostCentreView(
         for cost_centre in user_cost_centres:
             cost_centres.append(
                 {
-                    "name": cost_centre.cost_centre_name,
-                    "code": cost_centre.cost_centre_code,
+                    "name": escape(cost_centre.cost_centre_name),
+                    "code": escape(cost_centre.cost_centre_code),
                 }
             )
 
