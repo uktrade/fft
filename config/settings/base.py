@@ -181,8 +181,8 @@ GIT_COMMIT = env("GIT_COMMIT", default=None)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
-    ("vite", BASE_DIR / "front_end" / "build"),
     BASE_DIR / "node_modules" / "govuk-frontend" / "dist",
+    ("vite", BASE_DIR / "front_end" / "build"),
 ]
 
 STORAGES = {
