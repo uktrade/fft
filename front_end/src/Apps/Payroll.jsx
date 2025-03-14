@@ -180,70 +180,37 @@ export default function Payroll() {
       />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={payroll}
-              columns={getPayrollColumns(
-                payroll,
-                handleTogglePayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={payroll}
-              headers={payrollHeaders}
-              onTogglePayPeriods={handleTogglePayPeriods}
-              RowComponent={EmployeeRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <PayrollNewTable
+            data={payroll}
+            columns={getPayrollColumns(
+              payroll,
+              handleTogglePayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
         </Tab>
         <Tab label="Non-payroll" key="2">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={nonPayroll}
-              columns={getPayrollColumns(
-                nonPayroll,
-                handleTogglePayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={nonPayroll}
-              headers={payrollHeaders}
-              onTogglePayPeriods={handleTogglePayPeriods}
-              RowComponent={EmployeeRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <PayrollNewTable
+            data={nonPayroll}
+            columns={getPayrollColumns(
+              nonPayroll,
+              handleTogglePayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
         </Tab>
         <Tab label="Vacancies" key="3">
-          {window.FEATURES.payroll_new_table ? (
-            <PayrollNewTable
-              data={allPayroll.vacancies}
-              columns={getVacanciesColumns(
-                allPayroll.vacancies,
-                handleToggleVacancyPayPeriods,
-                allPayroll.previous_months,
-              )}
-              previousMonths={allPayroll.previous_months}
-            />
-          ) : (
-            <PayrollTable
-              payroll={allPayroll.vacancies}
-              headers={vacancyHeaders}
-              onTogglePayPeriods={handleToggleVacancyPayPeriods}
-              RowComponent={VacancyRow}
-              previousMonths={allPayroll.previous_months}
-              showPreviousMonths={showPreviousMonths}
-            />
-          )}
+          <PayrollNewTable
+            data={allPayroll.vacancies}
+            columns={getVacanciesColumns(
+              allPayroll.vacancies,
+              handleToggleVacancyPayPeriods,
+              allPayroll.previous_months,
+            )}
+            previousMonths={allPayroll.previous_months}
+          />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
             href={window.addVacancyUrl}
