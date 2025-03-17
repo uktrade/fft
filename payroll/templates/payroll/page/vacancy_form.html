@@ -27,11 +27,11 @@
         {% include "payroll/partials/_form_field.html" with field=form.hr_ref help_text="A six digit number given by HR" %}
       </div>
       <div class="govuk-button-group">
-        <button class="govuk-button" type="submit">{{ title }}</button>
+        <button class="govuk-button" type="submit">Save</button>
         {% if is_edit %}
-          <a class="govuk-button govuk-button--warning" href="{% url 'payroll:delete_vacancy' cost_centre_code financial_year vacancy_id %}">Delete Vacancy</a>
+          <a class="govuk-button govuk-button--warning" href="{% url 'payroll:delete_vacancy' cost_centre_code financial_year vacancy_id %}">Delete</a>
         {% endif %}
-        <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Cancel</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Cancel</a>
       </div>
     </form>
 
