@@ -207,8 +207,8 @@ class Vacancy(Position):
         blank=True,
         validators=[
             RegexValidator(
-                regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed.",
+                regex=r"^[a-zA-Z0-9 '-]*$",
+                message="Only letters, numbers, spaces, - and ' are allowed.",
             )
         ],
     )
