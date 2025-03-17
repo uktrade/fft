@@ -33,10 +33,7 @@ class Position(models.Model):
         "chartofaccountDIT.ProgrammeCode",
         models.PROTECT,
     )
-    grade = models.ForeignKey(
-        to="gifthospitality.Grade",
-        on_delete=models.PROTECT,
-    )
+    grade = models.ForeignKey(to="gifthospitality.Grade", on_delete=models.PROTECT)
     fte = models.FloatField(default=1.0)
 
 
