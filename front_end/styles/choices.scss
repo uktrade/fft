@@ -1,0 +1,47 @@
+.choices {
+  position: relative;
+  overflow: visible !important;
+  font-family: "GDS Transport", arial, sans-serif;
+
+  &:focus {
+    outline: 3px solid #ffdd00;
+  }
+
+  .choices__inner,
+  .choices__input,
+  .choices__item {
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+  }
+
+  .choices__inner {
+    background-color: white !important;
+    border: 2px solid black !important;
+    border-radius: 0px !important;
+    min-height: unset !important;
+  }
+
+  &.is-focused .choices__inner {
+    outline: 3px solid #ffdd00;
+    outline-offset: 0 !important;
+    box-shadow: inset 0 0 0 2px !important;
+  }
+
+  .choices__input {
+    background-color: white !important;
+    border-bottom: 2px solid black !important;
+    border-radius: 0px !important;
+  }
+
+  .choices__list.choices__list--dropdown {
+    border: 2px solid black !important;
+    margin-top: -2px !important;
+  }
+
+  .is-highlighted {
+    background-color: #ffdd00 !important;
+  }
+  &[data-type*="select-one"]::after {
+    right: -5px !important;
+  }
+}

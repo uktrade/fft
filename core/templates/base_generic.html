@@ -262,11 +262,72 @@
 </footer>
 
 <script src="/static/govuk/all.js"></script>
+<script src="{% static 'choices/assets/scripts/choices.min.js' %}"></script>
 <script src="{% static 'core/js/feature-flags.js' %}"></script>
 <script>
     window.GOVUKFrontend.initAll();
     window.CSRF_TOKEN = "{{ csrf_token }}";
     window.FEATURES = FeatureFlags("fft:features");
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectElements = document.querySelectorAll('select');
+        selectElements.forEach(select => {
+            const originalClass = select.className || '';
+            const ariaDescribedBy = select.getAttribute('aria-describedby') || '';
+            const required = select.hasAttribute('required');
+            const name = select.getAttribute('name') || '';
+            select.removeAttribute('required');
+            const optimalWidth = getWidestOptionWidth(select);
+            const choices = new Choices(select, {
+                searchEnabled: true,
+                addChoices: false,
+                placeholder: false,
+                itemSelectText:'',
+                classNames: {
+                    containerOuter: ['choices'],
+
+                },
+
+
+            });
+            const choicesContainer = select.closest('.choices');
+            if (choicesContainer) {
+                choicesContainer.style.width = optimalWidth + 'px';
+                if (ariaDescribedBy) {
+                    choicesContainer.setAttribute('aria-describedby', ariaDescribedBy);
+                }
+                if (required) {
+                    choicesContainer.setAttribute('data-required', 'true');
+                }
+
+                if (name) {
+                    choicesContainer.setAttribute('data-name', name);
+                }
+            }
+
+        });
+
+    });
+    function getWidestOptionWidth(select) {
+        let maxWidth = 0;
+        const tempSpan = document.createElement('span');
+        tempSpan.style.visibility = 'hidden';
+        tempSpan.style.position = 'absolute';
+        tempSpan.style.whiteSpace = 'nowrap';
+        document.body.appendChild(tempSpan);
+
+        Array.from(select.options).forEach(option => {
+            tempSpan.textContent = option.textContent;
+            const width = tempSpan.offsetWidth;
+            if (width > maxWidth) {
+                maxWidth = width;
+            }
+        });
+
+        document.body.removeChild(tempSpan);
+        return maxWidth + 60;  
+    }
 </script>
 {% block scripts %}
 {% endblock %}
