@@ -16,7 +16,7 @@ function TanstackTable({ data, columns, previousMonths }) {
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
-  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+  const [showPreviousMonths, setShowPreviousMonths] = useState(true);
 
   // Table state
   const table = useReactTable({
@@ -72,7 +72,7 @@ function TanstackTable({ data, columns, previousMonths }) {
           handler={togglePreviousMonthsVisibility}
           id="payroll-previous-months"
           value="payroll-previous-months"
-          label="Hide previous months"
+          label="Show previous months"
         />
       </div>
       <table>
