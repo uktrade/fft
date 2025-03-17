@@ -10,12 +10,13 @@ import { fuzzyFilter, monthsWithActuals } from "./helpers";
 import SortUpIcon from "../../../../icons/sort-up.svg?react";
 import SortDownIcon from "../../../../icons/sort-down.svg?react";
 import UnsortedIcon from "../../../../icons/unsorted.svg?react";
+import ToggleCheckbox from "../../Common/ToggleCheckbox";
 
-function PayrollNewTable({ data, columns, previousMonths }) {
+function TanstackTable({ data, columns, previousMonths }) {
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
-  const [showPreviousMonths, setShowPreviousMonths] = useState(false);
+  const [showPreviousMonths, setShowPreviousMonths] = useState(true);
 
   // Table state
   const table = useReactTable({
@@ -51,27 +52,29 @@ function PayrollNewTable({ data, columns, previousMonths }) {
   };
 
   return (
-    <div className="new-table scrollable">
-      <input
-        type="text"
-        value={globalFilter}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-        placeholder="Search rows..."
-        style={{
-          marginBottom: "10px",
-          marginRight: "10px",
-          padding: "5px",
-          width: "250px",
-        }}
-      />
-      <label>
-        <input
-          type="checkbox"
-          checked={showPreviousMonths}
-          onChange={togglePreviousMonthsVisibility}
+    <div className="tanstack-table scrollable">
+      <div className="table-options">
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="search">
+            Search
+          </label>
+          <input
+            type="text"
+            id="search"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Search rows..."
+            className="search-input"
+          />
+        </div>
+        <ToggleCheckbox
+          toggle={showPreviousMonths}
+          handler={togglePreviousMonthsVisibility}
+          id="payroll-previous-months"
+          value="payroll-previous-months"
+          label="Show previous months"
         />
-        Hide previous months
-      </label>
+      </div>
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -131,4 +134,4 @@ function PayrollNewTable({ data, columns, previousMonths }) {
   );
 }
 
-export default PayrollNewTable;
+export default TanstackTable;

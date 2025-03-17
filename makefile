@@ -90,7 +90,6 @@ feature-flags: # Manage feature flags for local development
 	@echo 'Manage feature flags here'
 	$(web) $(manage) waffle_switch actualisation on --create
 	$(web) $(manage) waffle_switch payroll on --create
-	$(web) $(manage) waffle_switch payroll_new_table on --create
 
 # Formatting
 black-check: # Run black-check
