@@ -22,9 +22,9 @@
         {% include "payroll/partials/_form_field.html" with field=form.grade %}
         {% include "payroll/partials/_form_field.html" with field=form.recruitment_stage %}
         {% include "payroll/partials/_form_field.html" with field=form.programme_code %}
-        {% include "payroll/partials/_form_field.html" with field=form.appointee_name %}
+        {% include "payroll/partials/_form_field.html" with field=form.appointee_name help_text="Only if you have their name" %}
         {% include "payroll/partials/_form_field.html" with field=form.hiring_manager %}
-        {% include "payroll/partials/_form_field.html" with field=form.hr_ref %}
+        {% include "payroll/partials/_form_field.html" with field=form.hr_ref help_text="A six digit number given by HR" %}
       </div>
       <div class="govuk-button-group">
         <button class="govuk-button" type="submit">{{ title }}</button>

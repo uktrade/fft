@@ -54,8 +54,8 @@ function TanstackTable({ data, columns, previousMonths }) {
   return (
     <div className="tanstack-table scrollable">
       <div className="table-options">
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="search">
+        <div className="govuk-form-group">
+          <label className="govuk-label" htmlFor="search">
             Search
           </label>
           <input
