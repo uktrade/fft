@@ -294,11 +294,6 @@
             const choicesContainer = select.closest('.choices');
             if (choicesContainer) {
                 choicesContainer.style.width = optimalWidth + 'px';
-                if (originalClass) {
-                    originalClass.split(' ').forEach(className => {
-                        if (className) choicesContainer.classList.add(className);
-                    });
-                }
                 if (ariaDescribedBy) {
                     choicesContainer.setAttribute('aria-describedby', ariaDescribedBy);
                 }
@@ -331,7 +326,7 @@
         });
 
         document.body.removeChild(tempSpan);
-        return maxWidth + 40;  
+        return maxWidth + 60;  
     }
 </script>
 {% block scripts %}

@@ -6,6 +6,7 @@ $govuk-page-width: 1800px;
 @import "./table.scss";
 @import "./cost-centre-filter.scss";
 @import "./notes.scss";
+@import "./choices.scss";
 @import "choices.js/src/styles/choices";
 body {
   font-size: 16px;
@@ -412,12 +413,4 @@ th {
   .table-svg {
     margin-left: 5px;
   }
-}
-
-.choices__inner {
-  width: auto !important;
-  min-width: max-content !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
 }
