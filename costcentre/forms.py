@@ -7,38 +7,6 @@ from core.utils.generic_helpers import get_current_financial_year
 from costcentre.models import ArchivedCostCentre, CostCentre
 
 
-class CostCentreViewModeForm(forms.Form):
-    COST_CENTRE_MODES = [
-        ("all", "All cost centres"),
-        ("my", "My cost centres"),
-    ]
-
-    mode = forms.ChoiceField(
-        choices=COST_CENTRE_MODES,
-        widget=forms.RadioSelect,
-    )
-
-    mode.widget.attrs.update(
-        {
-            "onclick": "swapCostCentreChoice(this)",
-        }
-    )
-
-
-class AllCostCentresForm(forms.Form):
-    cost_centre = forms.ModelChoiceField(
-        queryset=CostCentre.objects.filter(
-            active=True,
-        ),
-        widget=Select(),
-    )
-    cost_centre.widget.attrs.update(
-        {
-            "class": "govuk-select",
-        }
-    )
-
-
 class DirectorateCostCentresForm(forms.Form):
     def __init__(self, *args, **kwargs):
         year = kwargs.pop("year")

@@ -48,12 +48,12 @@ const GRADE_COLUMN = {
 
 const PROGRAMME_CODE_COLUMN = {
   accessorKey: "programme_code",
-  header: "Programme Code",
+  header: "Programme code",
 };
 
 const BUDGET_TYPE_COLUMN = {
   accessorKey: "budget_type",
-  header: "Budget Type",
+  header: "Budget type",
 };
 
 // Table column getters
@@ -78,19 +78,19 @@ export default function getPayrollColumns(
     GRADE_COLUMN,
     {
       accessorKey: "employee_no",
-      header: "Employee No",
+      header: "Employee no",
     },
     {
       accessorKey: "fte",
       header: "FTE",
-      footer: totalOfColumn(data, (data) => data.fte),
+      footer: totalOfColumn(data, (data) => data.fte).toFixed(2),
       sortDescFirst: false,
     },
     PROGRAMME_CODE_COLUMN,
     BUDGET_TYPE_COLUMN,
     {
       accessorKey: "assignment_status",
-      header: "Assignment Status",
+      header: "Assignment status",
     },
   ];
   const notesColumn = getNotesColumn("employees");
@@ -119,28 +119,28 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
     },
     {
       accessorKey: "recruitment_type",
-      header: "Recruitment Type",
+      header: "Recruitment type",
     },
     GRADE_COLUMN,
     PROGRAMME_CODE_COLUMN,
     BUDGET_TYPE_COLUMN,
     {
       accessorKey: "appointee_name",
-      header: "Appointee Name",
+      header: "Appointee name",
       filterFn: "fuzzy",
     },
     {
       accessorKey: "hiring_manager",
-      header: "Hiring Manager",
+      header: "Hiring manager",
       filterFn: "fuzzy",
     },
     {
       accessorKey: "hr_ref",
-      header: "HR Ref",
+      header: "HR ref",
     },
     {
       accessorKey: "recruitment_stage",
-      header: "Recruitment Stage",
+      header: "Recruitment stage",
     },
   ];
   const notesColumn = getNotesColumn("vacancies");

@@ -200,7 +200,7 @@ export default function Payroll() {
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
             href={window.addVacancyUrl}
           >
-            Add Vacancy
+            Add vacancy
           </a>
         </Tab>
         <Tab label="Pay modifiers" key="4">

@@ -1,6 +1,12 @@
 <div class="govuk-!-static-padding-1">
   <label for="{{ field.id_for_label }}" class="govuk-label">
     {{ field.label }}
+    {% if not field.field.required %}
+      <span>(optional)</span>
+    {% endif %}
   </label>
+  {% if help_text %}
+    <div class="govuk-hint">{{ help_text }}</div>
+  {% endif %}
   {{ field }}
 </div>

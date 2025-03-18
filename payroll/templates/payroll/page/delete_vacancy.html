@@ -1,26 +1,26 @@
 {% extends "base_generic.html" %}
 {% load breadcrumbs %}
 
-{% block title %}Delete Vacancy{% endblock title %}
+{% block title %}Delete vacancy{% endblock title %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Choose cost centre" "payroll:choose_cost_centre" %}
     {% breadcrumb "Edit payroll" "payroll:edit" cost_centre_code financial_year %}
-    {% breadcrumb "Edit Vacancy" "payroll:edit_vacancy" cost_centre_code financial_year vacancy_id %}
-    {% breadcrumb "Delete Vacancy" "" %}
+    {% breadcrumb "Edit vacancy" "payroll:edit_vacancy" cost_centre_code financial_year vacancy_id %}
+    {% breadcrumb "Delete vacancy" "" %}
 {% endblock breadcrumbs %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Delete Vacancy</h1>
+    <h1 class="govuk-heading-l">Delete vacancy</h1>
 
     <form method="post">
       {% csrf_token %}
       <p class="govuk-body">Are you sure you want to delete this vacancy?</p>
       
       <div class="govuk-button-group">
-        <button class="govuk-button govuk-button--warning" type="submit">Delete Vacancy</button>
-        <a class="govuk-link" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Cancel</a>
+        <button class="govuk-button govuk-button--warning" type="submit">Delete</button>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'payroll:edit' cost_centre_code financial_year %}">Cancel</a>
       </div>
     </form>
 
