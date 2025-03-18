@@ -83,7 +83,7 @@ export default function getPayrollColumns(
     {
       accessorKey: "fte",
       header: "FTE",
-      footer: totalOfColumn(data, (data) => data.fte),
+      footer: totalOfColumn(data, (data) => data.fte).toFixed(2),
       sortDescFirst: false,
     },
     PROGRAMME_CODE_COLUMN,
