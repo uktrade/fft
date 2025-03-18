@@ -72,7 +72,7 @@ class AddVacancyView(VacancyViewMixin, CreateView, EditPayrollBaseView):
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
-            "title": "Create Vacancy",
+            "title": "Add vacancy",
         }
         return super().get_context_data(**kwargs) | context
 
@@ -95,7 +95,7 @@ class EditVacancyView(VacancyViewMixin, UpdateView, EditPayrollBaseView):
         context = {
             "cost_centre_code": self.cost_centre.cost_centre_code,
             "financial_year": self.financial_year.financial_year,
-            "title": "Edit Vacancy",
+            "title": "Edit vacancy",
             "vacancy_id": self.object.id,
             "is_edit": True,
         }

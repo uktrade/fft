@@ -33,12 +33,7 @@ class Position(models.Model):
         "chartofaccountDIT.ProgrammeCode",
         models.PROTECT,
     )
-    grade = models.ForeignKey(
-        to="gifthospitality.Grade",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
+    grade = models.ForeignKey(to="gifthospitality.Grade", on_delete=models.PROTECT)
     fte = models.FloatField(default=1.0)
 
 
@@ -167,12 +162,12 @@ class Vacancy(Position):
 
     class RecruitmentStage(models.IntegerChoices):
         PREPARING = 1, "Preparing"
-        ADVERT = 2, "Advert (Vac ref to be provided)"
+        ADVERT = 2, "Advert - vacancy reference to be provided"
         SIFT = 3, "Sift"
         INTERVIEW = 4, "Interview"
         ONBOARDING = 5, "Onboarding"
         UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
-        NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
+        NOT_YET_ADVERTISED = 7, "Not yet advertised"
         NOT_REQUIRED = 8, "Not required"
 
     recruitment_stage = models.IntegerField(
