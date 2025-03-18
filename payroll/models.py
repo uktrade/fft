@@ -162,7 +162,7 @@ class Vacancy(Position):
 
     class RecruitmentStage(models.IntegerChoices):
         PREPARING = 1, "Preparing"
-        ADVERT = 2, "Advert - Vacancy reference to be provided"
+        ADVERT = 2, "Advert - vacancy reference to be provided"
         SIFT = 3, "Sift"
         INTERVIEW = 4, "Interview"
         ONBOARDING = 5, "Onboarding"
