@@ -13,6 +13,16 @@ GROUPS = [
             "forecast.can_view_forecasts",
             "forecast.can_edit_whilst_closed",
             "forecast.can_edit_future_whilst_closed",
+            # Edit payroll
+            "payroll.view_employee",
+            "payroll.change_employeepayperiods",
+            "payroll.view_employeepayperiods",
+            "payroll.add_vacancy",
+            "payroll.change_vacancy",
+            "payroll.delete_vacancy",
+            "payroll.view_vacancy",
+            "payroll.change_vacancypayperiods",
+            "payroll.view_vacancypayperiods",
         ],
     ),
     (
@@ -80,7 +90,24 @@ GROUPS = [
             "forecast.add_unlockedforecasteditor",
             "forecast.delete_unlockedforecasteditor",
             "forecast.view_unlockedforecasteditor",
+            # Manage users
+            "user.view_user",
             "user.change_user",
+            # Edit payroll
+            "payroll.view_employee",
+            "payroll.change_employeepayperiods",
+            "payroll.view_employeepayperiods",
+            "payroll.add_vacancy",
+            "payroll.change_vacancy",
+            "payroll.delete_vacancy",
+            "payroll.view_vacancy",
+            "payroll.change_vacancypayperiods",
+            "payroll.view_vacancypayperiods",
+            # Administrate payroll
+            "core.add_payuplift",
+            "core.change_payuplift",
+            "core.delete_payuplift",
+            "core.view_payuplift",
         ],
     ),
     (
@@ -95,40 +122,6 @@ GROUPS = [
             "chartofaccountDIT.add_archivedprogrammecode",
             "chartofaccountDIT.change_archivedprogrammecode",
             "chartofaccountDIT.view_archivedprogrammecode",
-        ],
-    ),
-    (
-        "Payroll Editor",
-        [
-            "payroll.view_employee",
-            "payroll.change_employeepayperiods",
-            "payroll.view_employeepayperiods",
-            "payroll.add_vacancy",
-            "payroll.change_vacancy",
-            "payroll.delete_vacancy",
-            "payroll.view_vacancy",
-            "payroll.change_vacancypayperiods",
-            "payroll.view_vacancypayperiods",
-        ],
-    ),
-    (
-        "Payroll Admin",
-        [
-            # Same as Payroll Editor
-            "payroll.view_employee",
-            "payroll.change_employeepayperiods",
-            "payroll.view_employeepayperiods",
-            "payroll.add_vacancy",
-            "payroll.change_vacancy",
-            "payroll.delete_vacancy",
-            "payroll.view_vacancy",
-            "payroll.change_vacancypayperiods",
-            "payroll.view_vacancypayperiods",
-            # Specific to Payroll Admin
-            "core.add_payuplift",
-            "core.change_payuplift",
-            "core.delete_payuplift",
-            "core.view_payuplift",
         ],
     ),
 ]

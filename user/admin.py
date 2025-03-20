@@ -11,41 +11,9 @@ from user.download_users import download_users_to_excel
 User = get_user_model()
 
 
-class UserListFilter(admin.SimpleListFilter):
-    title = "users"
-    parameter_name = "users"
-    default_value = None
-
-    def lookups(self, request, model_admin):
-        list_of_users = []
-        users = User.objects.all()
-
-        for user in self.queryset(
-            request,
-            users,
-        ):
-            list_of_users.append((str(user.id), user.get_short_name()))
-
-        return sorted(list_of_users, key=lambda tp: tp[1])
-
-    def queryset(self, request, queryset):
-        if request.user.groups.filter(name="Finance Administrator").exists():
-            # Remove super users and fellow finance admins
-            super_users = User.objects.filter(is_superuser=True)
-            id_list = [user.id for user in super_users]
-
-            # Remove administering user
-            id_list.append(request.user.id)
-
-            return queryset.exclude(pk__in=id_list).order_by("-last_name")
-
-        return queryset
-
-
 class UserAdmin(UserAdmin):
     change_list_template = "admin/export_user_changelist.html"
 
-    list_filter = (UserListFilter,)
     list_display = (
         "email",
         "first_name",
