@@ -2,7 +2,11 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from payroll.models import Vacancy
+from chartofaccountDIT.models import ProgrammeCode
+from core.models import FinancialYear
+from costcentre.models import CostCentre
+from gifthospitality.models import Grade
+from payroll.models import Vacancy, VacancyPayPeriods
 
 
 RECRUITMENT_STAGE_MAPPING = {
@@ -36,6 +40,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--file", type=str, help="CSV file containing Vacancy data")
+        # Either file or s3_file, use boto3
+        # fft-main-dev
 
     def handle(self, *args, **options):
         file_path = options.get("file")
@@ -45,60 +51,68 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
 
             for row in reader:
-                # print("Year:", row["Year"])
-                # print("January:", row["January"])
-                # print("HRReason:", row["HRReason"])
-                # print("Narrative:", row["Narrative"])
-                # print("VacancyGrade:", row["VacancyGrade"])
-                # print("CCCode:", row["CCCode"])
-                # print("Programme:", row["Programme"])
-                # print("Name:", row["Name"])
-                # print("Hiring:", row["Hiring"])
-                # print("HRStage:", row["HRStage"])
-                # print("HRRef:", row["HRRef"])
+                cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
+                programme_code = ProgrammeCode.objects.get(
+                    programme_code=row["Programme"]
+                )
+                grade = Grade.objects.get(grade=row["VacancyGrade"])
 
-                vacancy = Vacancy.objects.get_or_create(
-                    cost_centre=row["CCCode"],  # Need to get cost centre object
-                    programme_code=row["Programme"],
-                    grade=row["VacancyGrade"],
+                vacancy, created = Vacancy.objects.get_or_create(
+                    cost_centre=cost_centre,
+                    programme_code=programme_code,
+                    grade=grade,
                     recruitment_type=get_recruitment_type(row["HRReason"]),
                     recruitment_stage=get_recruitment_stage(row["HRStage"]),
-                    appointee_name=row["Name"],
-                    hiring_manager=row["Hiring"],
-                    hr_ref=row["HRRef"],
+                    appointee_name=handle_empty_value(row["Name"]),
+                    hiring_manager=handle_empty_value(row["Hiring"]),
+                    hr_ref=handle_empty_value(row["HRRef"]),
                 )
 
-                # pay_periods = VacancyPayPeriods.objects.get_or_create(
-                #     vacancy=vacancy,
-                #     year=get_boolean_period(row["Year"]),
-                #     period_1=get_boolean_period(row["April"]),
-                #     period_2=get_boolean_period(row["May"]),
-                #     period_3=get_boolean_period(row["June"]),
-                #     period_4=get_boolean_period(row["July"]),
-                #     period_5=get_boolean_period(row["August"]),
-                #     period_6=get_boolean_period(row["September"]),
-                #     period_7=get_boolean_period(row["October"]),
-                #     period_8=get_boolean_period(row["November"]),
-                #     period_9=get_boolean_period(row["December"]),
-                #     period_10=get_boolean_period(row["January"]),
-                #     period_11=get_boolean_period(row["February"]),
-                #     period_12=get_boolean_period(row["March"]),
-                # )
+                if not created:
+                    self.stdout.write(self.style.WARNING("Vacancy already exists"))
+                else:
+                    financial_year = FinancialYear.objects.get(
+                        financial_year=row["Year"]
+                    )
+
+                    VacancyPayPeriods.objects.get_or_create(
+                        vacancy=vacancy,
+                        year=financial_year,
+                        period_1=get_boolean_period(row["April"]),
+                        period_2=get_boolean_period(row["May"]),
+                        period_3=get_boolean_period(row["June"]),
+                        period_4=get_boolean_period(row["July"]),
+                        period_5=get_boolean_period(row["August"]),
+                        period_6=get_boolean_period(row["September"]),
+                        period_7=get_boolean_period(row["October"]),
+                        period_8=get_boolean_period(row["November"]),
+                        period_9=get_boolean_period(row["December"]),
+                        period_10=get_boolean_period(row["January"]),
+                        period_11=get_boolean_period(row["February"]),
+                        period_12=get_boolean_period(row["March"]),
+                        notes=row["Narrative"],
+                    )
+
+                    self.stdout.write(self.style.SUCCESS("Vacancy created"))
 
 
 def get_boolean_period(period):
     return period == "1"
 
 
+def handle_empty_value(value):
+    return value if value else None
+
+
 def get_recruitment_type(hr_reason):
-    # No known instances where value is null
     if hr_reason:
-        print(RECRUITMENT_TYPE_MAPPING[hr_reason])
+        return RECRUITMENT_TYPE_MAPPING[hr_reason]
+    else:
+        return Vacancy.RecruitmentType.EXPRESSION_OF_INTEREST
 
 
 def get_recruitment_stage(hr_stage):
-    # 2 known instances where value is null
     if hr_stage:
-        print(RECRUITMENT_STAGE_MAPPING[hr_stage])
+        return RECRUITMENT_STAGE_MAPPING[hr_stage]
     else:
-        print("undefined")
+        return Vacancy.RecruitmentStage.PREPARING

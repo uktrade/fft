@@ -36,9 +36,6 @@ run-host = poetry run
 
 manage = python manage.py
 
-import_vacancies:
-	$(web) $(manage) import_vacancy_data --file="core/management/commands/vacancies.csv"
-
 create-stub-data: # Create stub data for testing
 	make migrate
 	$(web) $(manage) set_current_year 2024
