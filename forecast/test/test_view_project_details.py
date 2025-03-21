@@ -52,7 +52,7 @@ class ViewForecastProjectDetailsTest(BaseTestCase):
         self.amount_apr = -9876543
 
         programme_obj = ProgrammeCodeFactory()
-        self.budget_type = programme_obj.budget_type.budget_type
+        self.budget_type = programme_obj.budget_type.budget_type_display
         expenditure_obj = ExpenditureCategoryFactory()
         self.expenditure_id = expenditure_obj.id
         self.nac_obj = NaturalCodeFactory(
