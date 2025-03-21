@@ -33,8 +33,6 @@ RECRUITMENT_TYPE_MAPPING = {
 }
 
 
-# file_path = "core/management/commands/vacancies.csv"
-# file_path = "core/management/commands/vacancy.csv"
 class Command(BaseCommand):
     help = "Import Vacancy data"
 
@@ -51,10 +49,8 @@ class Command(BaseCommand):
             reader = csv.DictReader(file)
 
             for row in reader:
-                cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
-                programme_code = ProgrammeCode.objects.get(
-                    programme_code=row["Programme"]
-                )
+                cost_centre = CostCentre.objects.get(cost_centre_code="888812")
+                programme_code = ProgrammeCode.objects.get(programme_code="338887")
                 grade = Grade.objects.get(grade=row["VacancyGrade"])
 
                 vacancy, created = Vacancy.objects.get_or_create(
@@ -69,7 +65,11 @@ class Command(BaseCommand):
                 )
 
                 if not created:
-                    self.stdout.write(self.style.WARNING("Vacancy already exists"))
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f'Vacancy already exists: {row["VacanciesHeadCount_PK"]}'
+                        )
+                    )
                 else:
                     financial_year = FinancialYear.objects.get(
                         financial_year=row["Year"]
@@ -94,6 +94,8 @@ class Command(BaseCommand):
                     )
 
                     self.stdout.write(self.style.SUCCESS("Vacancy created"))
+
+        self.stdout.write(self.style.SUCCESS("Vacancies successfully imported"))
 
 
 def get_boolean_period(period):
