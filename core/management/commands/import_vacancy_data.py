@@ -3,6 +3,7 @@ from io import StringIO
 from urllib.parse import urlparse
 
 import boto3
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import ProgrammeCode
@@ -47,7 +48,6 @@ class Command(BaseCommand):
         group.add_argument(
             "--s3_file", type=str, help="S3 path to CSV file containing Vacancy data"
         )
-        # fft-main-dev
 
     def handle(self, *args, **options):
         file_content = "None"
@@ -115,7 +115,11 @@ def get_s3_file_contents(file_path):
     parsed_url = urlparse(file_path)
     bucket_name = parsed_url.netloc
     key = parsed_url.path.lstrip("/")
-    s3 = boto3.resource("s3")
+    session = boto3.Session(
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+    )
+    s3 = session.resource("s3")
     obj = s3.Object(bucket_name, key)
     response = obj.get()
     return response["Body"].read().decode("utf-8")
