@@ -1,5 +1,8 @@
 import csv
+from io import StringIO
+from urllib.parse import urlparse
 
+import boto3
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import ProgrammeCode
@@ -37,65 +40,90 @@ class Command(BaseCommand):
     help = "Import Vacancy data"
 
     def add_arguments(self, parser):
-        parser.add_argument("--file", type=str, help="CSV file containing Vacancy data")
-        # Either file or s3_file, use boto3
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument(
+            "--file", type=str, help="Local path to CSV file containing Vacancy data"
+        )
+        group.add_argument(
+            "--s3_file", type=str, help="S3 path to CSV file containing Vacancy data"
+        )
         # fft-main-dev
 
     def handle(self, *args, **options):
-        file_path = options.get("file")
-        self.stdout.write(self.style.SUCCESS("File received"))
+        file_content = "None"
 
-        with open(file_path, "r") as file:
-            reader = csv.DictReader(file)
+        if options["file"]:
+            file_path = options["file"]
+            file_content = get_local_file_contents(file_path)
+            self.stdout.write(self.style.SUCCESS(f"Local file found: {file_path}"))
+        elif options["s3_file"]:
+            file_path = options["s3_file"]
+            file_content = get_s3_file_contents(file_path)
+            self.stdout.write(self.style.SUCCESS(f"S3 file found: {file_path}"))
 
-            for row in reader:
-                cost_centre = CostCentre.objects.get(cost_centre_code="888812")
-                programme_code = ProgrammeCode.objects.get(programme_code="338887")
-                grade = Grade.objects.get(grade=row["VacancyGrade"])
+        csv_reader = csv.DictReader(StringIO((file_content)))
 
-                vacancy, created = Vacancy.objects.get_or_create(
-                    cost_centre=cost_centre,
-                    programme_code=programme_code,
-                    grade=grade,
-                    recruitment_type=get_recruitment_type(row["HRReason"]),
-                    recruitment_stage=get_recruitment_stage(row["HRStage"]),
-                    appointee_name=handle_empty_value(row["Name"]),
-                    hiring_manager=handle_empty_value(row["Hiring"]),
-                    hr_ref=handle_empty_value(row["HRRef"]),
+        for row in csv_reader:
+            cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
+            programme_code = ProgrammeCode.objects.get(programme_code=row["Programme"])
+            grade = Grade.objects.get(grade=row["VacancyGrade"])
+
+            vacancy, created = Vacancy.objects.get_or_create(
+                cost_centre=cost_centre,
+                programme_code=programme_code,
+                grade=grade,
+                recruitment_type=get_recruitment_type(row["HRReason"]),
+                recruitment_stage=get_recruitment_stage(row["HRStage"]),
+                appointee_name=handle_empty_value(row["Name"]),
+                hiring_manager=handle_empty_value(row["Hiring"]),
+                hr_ref=handle_empty_value(row["HRRef"]),
+            )
+
+            if not created:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'Vacancy already exists: {row["VacanciesHeadCount_PK"]}'
+                    )
+                )
+            else:
+                financial_year = FinancialYear.objects.get(financial_year=row["Year"])
+
+                VacancyPayPeriods.objects.get_or_create(
+                    vacancy=vacancy,
+                    year=financial_year,
+                    period_1=get_boolean_period(row["April"]),
+                    period_2=get_boolean_period(row["May"]),
+                    period_3=get_boolean_period(row["June"]),
+                    period_4=get_boolean_period(row["July"]),
+                    period_5=get_boolean_period(row["August"]),
+                    period_6=get_boolean_period(row["September"]),
+                    period_7=get_boolean_period(row["October"]),
+                    period_8=get_boolean_period(row["November"]),
+                    period_9=get_boolean_period(row["December"]),
+                    period_10=get_boolean_period(row["January"]),
+                    period_11=get_boolean_period(row["February"]),
+                    period_12=get_boolean_period(row["March"]),
+                    notes=row["Narrative"],
                 )
 
-                if not created:
-                    self.stdout.write(
-                        self.style.WARNING(
-                            f'Vacancy already exists: {row["VacanciesHeadCount_PK"]}'
-                        )
-                    )
-                else:
-                    financial_year = FinancialYear.objects.get(
-                        financial_year=row["Year"]
-                    )
-
-                    VacancyPayPeriods.objects.get_or_create(
-                        vacancy=vacancy,
-                        year=financial_year,
-                        period_1=get_boolean_period(row["April"]),
-                        period_2=get_boolean_period(row["May"]),
-                        period_3=get_boolean_period(row["June"]),
-                        period_4=get_boolean_period(row["July"]),
-                        period_5=get_boolean_period(row["August"]),
-                        period_6=get_boolean_period(row["September"]),
-                        period_7=get_boolean_period(row["October"]),
-                        period_8=get_boolean_period(row["November"]),
-                        period_9=get_boolean_period(row["December"]),
-                        period_10=get_boolean_period(row["January"]),
-                        period_11=get_boolean_period(row["February"]),
-                        period_12=get_boolean_period(row["March"]),
-                        notes=row["Narrative"],
-                    )
-
-                    self.stdout.write(self.style.SUCCESS("Vacancy created"))
+                self.stdout.write(self.style.SUCCESS("Vacancy created"))
 
         self.stdout.write(self.style.SUCCESS("Vacancies successfully imported"))
+
+
+def get_s3_file_contents(file_path):
+    parsed_url = urlparse(file_path)
+    bucket_name = parsed_url.netloc
+    key = parsed_url.path.lstrip("/")
+    s3 = boto3.resource("s3")
+    obj = s3.Object(bucket_name, key)
+    response = obj.get()
+    return response["Body"].read().decode("utf-8")
+
+
+def get_local_file_contents(file_path):
+    with open(file_path, "r") as file:
+        return file.read()
 
 
 def get_boolean_period(period):
