@@ -113,16 +113,11 @@ class Command(BaseCommand):
 
 def get_s3_file_contents(file_path):
     parsed_url = urlparse(file_path)
-    bucket_name = parsed_url.netloc
+    s3 = boto3.client("s3")
+    # Pass in the file name?
     key = parsed_url.path.lstrip("/")
-    session = boto3.Session(
-        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-    )
-    s3 = session.resource("s3")
-    obj = s3.Object(bucket_name, key)
-    response = obj.get()
-    return response["Body"].read().decode("utf-8")
+    object = s3.get_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=key)
+    return object["Body"].read().decode("utf-8")
 
 
 def get_local_file_contents(file_path):
