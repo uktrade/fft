@@ -83,6 +83,13 @@ def test_ingest_payroll_update(db):
         assert len(list(Employee.objects.all())) == 20
 
 
+def test_payroll_pay_periods(db):
+    rows = ["150892,Jack,Wright,888813,338888,SCS,Loan Out - Non Payroll,1,1500,0,0"]
+    import_payroll(build_payroll_csv_file(rows))
+    emp = Employee.objects.get(employee_no="150892")
+    assert emp.pay_periods.first().periods == [True] * 12
+
+
 def test_non_payroll_pay_periods(db):
     rows = ["150892,Jack,Wright,888813,338888,SCS,Loan Out - Non Payroll,0,0,0,0"]
     import_payroll(build_payroll_csv_file(rows))
