@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 from django.core.files import File
+from django.core.files.base import ContentFile
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from costcentre.test.factories import CostCentreFactory
@@ -12,6 +13,13 @@ from ...services.ingest import import_payroll
 
 
 TEST_DATA_DIR = Path(__file__).parent.parent / "test_assets"
+
+CSV_FILE_HEADER = "employee_no,first_name,last_name,cost_centre_code,programme_code,grade,assignment_status,fte,basic_pay,ernic,pension"
+
+
+def build_payroll_csv_file(rows):
+    all_rows = "\n".join([CSV_FILE_HEADER, *rows])
+    return ContentFile(all_rows.encode("utf-8"))
 
 
 @pytest.fixture(autouse=True)
@@ -56,7 +64,7 @@ def test_ingest_payroll_failed_record(db):
 
 
 def test_ingest_payroll_error(db):
-    """Testing mall structured  csv file"""
+    """Testing mall structured csv file"""
     csv_file = TEST_DATA_DIR / "payroll_empty_rows.csv"
     with open(csv_file, "rb") as f:
         import_payroll(File(f))
@@ -73,3 +81,17 @@ def test_ingest_payroll_update(db):
         assert result.get("updated") == 20
         assert result.get("created") == 0
         assert len(list(Employee.objects.all())) == 20
+
+
+def test_payroll_pay_periods(db):
+    rows = ["150892,Jack,Wright,888813,338888,SCS,Loan Out - Non Payroll,1,1500,0,0"]
+    import_payroll(build_payroll_csv_file(rows))
+    emp = Employee.objects.get(employee_no="150892")
+    assert emp.pay_periods.first().periods == [True] * 12
+
+
+def test_non_payroll_pay_periods(db):
+    rows = ["150892,Jack,Wright,888813,338888,SCS,Loan Out - Non Payroll,0,0,0,0"]
+    import_payroll(build_payroll_csv_file(rows))
+    emp = Employee.objects.get(employee_no="150892")
+    assert emp.pay_periods.first().periods == [False] * 12

@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Avg, Count, Q
 
-from core.constants import MONTHS
+from core.constants import MONTHS, PERIODS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
@@ -26,7 +26,7 @@ from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 def employee_created(employee: Employee) -> None:
     """Hook to be called after an employee instance is created."""
     # Create EmployeePayPeriods records for current and future financial years.
-    create_pay_periods(employee)
+    create_pay_periods(employee, pay_period_enabled=employee.is_payroll)
     return None
 
 
@@ -73,6 +73,7 @@ def update_all_employee_pay_periods() -> None:
         EmployeePayPeriods(
             employee=employee,
             year=current_financial_year,
+            **{f"period_{i}": employee.is_payroll for i in PERIODS},
         )
         for employee in employee_qs.iterator()
     )
