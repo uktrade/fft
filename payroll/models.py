@@ -1,6 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Q, Sum
+from django.db.models import Case, F, Q, Sum, When
 
 
 class EmployeeQuerySet(models.QuerySet):
@@ -90,6 +90,11 @@ class Employee(Position):
     pension = models.BigIntegerField(default=0, db_comment="pence")
     ernic = models.BigIntegerField(default=0, db_comment="pence")
     has_left = models.BooleanField(default=False)
+    is_payroll = models.GeneratedField(
+        expression=Case(When(basic_pay__gt=0, then=True), default=False),
+        output_field=models.BooleanField(),
+        db_persist=True,
+    )
 
     # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)

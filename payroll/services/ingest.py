@@ -83,6 +83,8 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         emp_dict = _csv_row_employee_dict(PayrollRow(*row))
         emp_no = emp_dict["employee_no"]
 
+        assert isinstance(emp_no, str)
+
         errors = []
 
         if emp_dict["cost_centre_id"] not in cost_centre_codes:
