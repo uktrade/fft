@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Avg, Count, Q
 
-from core.constants import MONTHS
+from core.constants import MONTHS, PERIODS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
@@ -26,7 +26,7 @@ from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 def employee_created(employee: Employee) -> None:
     """Hook to be called after an employee instance is created."""
     # Create EmployeePayPeriods records for current and future financial years.
-    create_pay_periods(employee)
+    create_pay_periods(employee, pay_period_enabled=employee.is_payroll)
     return None
 
 
@@ -73,6 +73,7 @@ def update_all_employee_pay_periods() -> None:
         EmployeePayPeriods(
             employee=employee,
             year=current_financial_year,
+            **{f"period_{i}": employee.is_payroll for i in PERIODS},
         )
         for employee in employee_qs.iterator()
     )
@@ -278,7 +279,7 @@ def get_employee_data(
             employee_no=obj.employee_no,
             fte=obj.fte,
             programme_code=obj.programme_code.pk,
-            budget_type=budget_type.budget_type_display if budget_type else "",
+            budget_type=budget_type.budget_type if budget_type else "",
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
             pay_periods=pay_period.periods,
@@ -397,7 +398,7 @@ def get_vacancies_data(
             id=obj.pk,
             grade=obj.grade.pk,
             programme_code=obj.programme_code.pk,
-            budget_type=budget_type.budget_type_display if budget_type else "",
+            budget_type=budget_type.budget_type if budget_type else "",
             recruitment_type=obj.get_recruitment_type_display(),
             recruitment_stage=obj.get_recruitment_stage_display(),
             appointee_name=obj.appointee_name,

@@ -8,6 +8,8 @@ $govuk-page-width: 1800px;
 @import "./notes.scss";
 @import "./choices.scss";
 @import "choices.js/src/styles/choices";
+@import "./tanstack-table.scss";
+
 body {
   font-size: 16px;
 }
@@ -385,32 +387,4 @@ th {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-}
-
-.new-table {
-  table {
-    @extend .govuk-table;
-    font-size: 16px;
-  }
-
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-
-  th,
-  tfoot {
-    background-color: #f4f4f4;
-    font-weight: bold;
-  }
-
-  .payroll-checkbox {
-    text-align: center;
-  }
-
-  .table-svg {
-    margin-left: 5px;
-  }
 }

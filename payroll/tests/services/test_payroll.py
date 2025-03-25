@@ -329,8 +329,7 @@ def test_update_notes_success(db, client, user):
         "id": "150892",
     }
     admin_group = Group.objects.get(name="Finance Administrator")
-    editor_group = Group.objects.get(name="Payroll Editor")
-    user.groups.add(admin_group, editor_group)
+    user.groups.add(admin_group)
     client.force_login(user)
     cost_centre = CostCentreFactory.create(cost_centre_code="888813")
     employee = EmployeeFactory.create(
@@ -368,8 +367,7 @@ def test_update_notes_fail(db, client, user):
     call_command("manage_groups")
 
     admin_group = Group.objects.get(name="Finance Administrator")
-    editor_group = Group.objects.get(name="Payroll Editor")
-    user.groups.add(admin_group, editor_group)
+    user.groups.add(admin_group)
     client.force_login(user)
 
     FinancialYearFactory.create(financial_year=2024)
@@ -391,8 +389,7 @@ def test_update_notes_faulty_json(db, client, user):
     call_command("manage_groups")
 
     admin_group = Group.objects.get(name="Finance Administrator")
-    editor_group = Group.objects.get(name="Payroll Editor")
-    user.groups.add(admin_group, editor_group)
+    user.groups.add(admin_group)
     client.force_login(user)
 
     FinancialYearFactory.create(financial_year=2024)

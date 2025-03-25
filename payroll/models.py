@@ -1,6 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import F, Q, Sum
+from django.db.models import Case, F, Q, Sum, When
 
 
 class EmployeeQuerySet(models.QuerySet):
@@ -33,12 +33,7 @@ class Position(models.Model):
         "chartofaccountDIT.ProgrammeCode",
         models.PROTECT,
     )
-    grade = models.ForeignKey(
-        to="gifthospitality.Grade",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
-    )
+    grade = models.ForeignKey(to="gifthospitality.Grade", on_delete=models.PROTECT)
     fte = models.FloatField(default=1.0)
 
 
@@ -95,6 +90,11 @@ class Employee(Position):
     pension = models.BigIntegerField(default=0, db_comment="pence")
     ernic = models.BigIntegerField(default=0, db_comment="pence")
     has_left = models.BooleanField(default=False)
+    is_payroll = models.GeneratedField(
+        expression=Case(When(basic_pay__gt=0, then=True), default=False),
+        output_field=models.BooleanField(),
+        db_persist=True,
+    )
 
     # TODO: Missing fields from Admin Tool which aren't required yet.
     # EU/Non-EU (from programme code model)
@@ -167,12 +167,12 @@ class Vacancy(Position):
 
     class RecruitmentStage(models.IntegerChoices):
         PREPARING = 1, "Preparing"
-        ADVERT = 2, "Advert (Vac ref to be provided)"
+        ADVERT = 2, "Advert - vacancy reference to be provided"
         SIFT = 3, "Sift"
         INTERVIEW = 4, "Interview"
         ONBOARDING = 5, "Onboarding"
         UNSUCCESSFUL_RECRUITMENT = 6, "Unsuccessful recruitment"
-        NOT_YET_ADVERTISED = 7, "Not (yet) advertised"
+        NOT_YET_ADVERTISED = 7, "Not yet advertised"
         NOT_REQUIRED = 8, "Not required"
 
     recruitment_stage = models.IntegerField(
@@ -207,8 +207,8 @@ class Vacancy(Position):
         blank=True,
         validators=[
             RegexValidator(
-                regex=r"^[a-zA-Z '-]*$",
-                message="Only letters, spaces, - and ' are allowed.",
+                regex=r"^[a-zA-Z0-9 '-]*$",
+                message="Only letters, numbers, spaces, - and ' are allowed.",
             )
         ],
     )

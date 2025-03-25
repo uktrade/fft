@@ -6,8 +6,8 @@ from payroll.models import Vacancy
 class VacancyForm(forms.ModelForm):
     class Meta:
         model = Vacancy
-        fields = "__all__"
         exclude = ["cost_centre", "fte"]
+        labels = {"hr_ref": "HR reference"}
         widgets = {
             "recruitment_type": forms.Select(attrs={"class": "govuk-select"}),
             "grade": forms.Select(attrs={"class": "govuk-select"}),
