@@ -81,10 +81,33 @@ class Command(BaseCommand):
                     )
                 continue
 
-            cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
-            programme_code = ProgrammeCode.objects.get(programme_code=row["Programme"])
+            try:
+                cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
+            except CostCentre.DoesNotExist:
+                self.log(
+                    self.style.WARNING(f'Cost centre does not exist: {row["CCCode"]}')
+                )
+                continue
 
-            grade = Grade.objects.get(grade=row["VacancyGrade"])
+            try:
+                programme_code = ProgrammeCode.objects.get(
+                    programme_code=row["Programme"]
+                )
+            except ProgrammeCode.DoesNotExist:
+                self.log(
+                    self.style.WARNING(
+                        f'Programme code does not exist: {row["Programme"]}'
+                    )
+                )
+                continue
+
+            try:
+                grade = Grade.objects.get(grade=row["VacancyGrade"])
+            except Grade.DoesNotExist:
+                self.log(
+                    self.style.WARNING(f'Grade does not exist: {row["VacancyGrade"]}')
+                )
+                continue
 
             vacancy, created = Vacancy.objects.get_or_create(
                 cost_centre=cost_centre,
