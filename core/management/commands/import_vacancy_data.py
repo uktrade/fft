@@ -81,8 +81,13 @@ class Command(BaseCommand):
                     )
                 continue
 
-            cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
-            programme_code = ProgrammeCode.objects.get(programme_code=row["Programme"])
+            # cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
+            # programme_code = ProgrammeCode.objects.get(programme_code=row["Programme"])
+
+            # Active for testing in dev
+            cost_centre = CostCentre.objects.get(cost_centre_code="888812")
+            programme_code = ProgrammeCode.objects.get(programme_code="338887")
+
             grade = Grade.objects.get(grade=row["VacancyGrade"])
 
             vacancy, created = Vacancy.objects.get_or_create(
