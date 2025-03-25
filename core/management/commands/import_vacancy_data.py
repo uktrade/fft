@@ -72,61 +72,58 @@ class Command(BaseCommand):
         csv_reader = csv.DictReader(StringIO((file_content)))
 
         for row in csv_reader:
-            if row["Year"] == options["year"]:
-                cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
-                programme_code = ProgrammeCode.objects.get(
-                    programme_code=row["Programme"]
-                )
-                grade = Grade.objects.get(grade=row["VacancyGrade"])
-
-                vacancy, created = Vacancy.objects.get_or_create(
-                    cost_centre=cost_centre,
-                    programme_code=programme_code,
-                    grade=grade,
-                    recruitment_type=get_recruitment_type(row["HRReason"]),
-                    recruitment_stage=get_recruitment_stage(row["HRStage"]),
-                    appointee_name=handle_empty_value(row["Name"]),
-                    hiring_manager=handle_empty_value(row["Hiring"]),
-                    hr_ref=handle_empty_value(row["HRRef"]),
-                )
-
-                if not created:
-                    self.log(
-                        self.style.WARNING(
-                            f'Vacancy already exists: {row["VacanciesHeadCount_PK"]}'
-                        )
-                    )
-                else:
-                    financial_year = FinancialYear.objects.get(
-                        financial_year=row["Year"]
-                    )
-
-                    VacancyPayPeriods.objects.get_or_create(
-                        vacancy=vacancy,
-                        year=financial_year,
-                        period_1=get_boolean_period(row["April"]),
-                        period_2=get_boolean_period(row["May"]),
-                        period_3=get_boolean_period(row["June"]),
-                        period_4=get_boolean_period(row["July"]),
-                        period_5=get_boolean_period(row["August"]),
-                        period_6=get_boolean_period(row["September"]),
-                        period_7=get_boolean_period(row["October"]),
-                        period_8=get_boolean_period(row["November"]),
-                        period_9=get_boolean_period(row["December"]),
-                        period_10=get_boolean_period(row["January"]),
-                        period_11=get_boolean_period(row["February"]),
-                        period_12=get_boolean_period(row["March"]),
-                        notes=row["Narrative"],
-                    )
-
-                    self.log("Vacancy created")
-            else:
+            if row["Year"] != options["year"]:
                 if options["verbosity"] > 1:
                     self.log(
                         self.style.WARNING(
                             f'Vacancy not in the given year: {row["VacanciesHeadCount_PK"]}'
                         )
                     )
+                continue
+
+            cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
+            programme_code = ProgrammeCode.objects.get(programme_code=row["Programme"])
+            grade = Grade.objects.get(grade=row["VacancyGrade"])
+
+            vacancy, created = Vacancy.objects.get_or_create(
+                cost_centre=cost_centre,
+                programme_code=programme_code,
+                grade=grade,
+                recruitment_type=get_recruitment_type(row["HRReason"]),
+                recruitment_stage=get_recruitment_stage(row["HRStage"]),
+                appointee_name=handle_empty_value(row["Name"]),
+                hiring_manager=handle_empty_value(row["Hiring"]),
+                hr_ref=handle_empty_value(row["HRRef"]),
+            )
+
+            if not created:
+                self.log(
+                    self.style.WARNING(
+                        f'Vacancy already exists: {row["VacanciesHeadCount_PK"]}'
+                    )
+                )
+            else:
+                financial_year = FinancialYear.objects.get(financial_year=row["Year"])
+
+                VacancyPayPeriods.objects.get_or_create(
+                    vacancy=vacancy,
+                    year=financial_year,
+                    period_1=get_boolean_period(row["April"]),
+                    period_2=get_boolean_period(row["May"]),
+                    period_3=get_boolean_period(row["June"]),
+                    period_4=get_boolean_period(row["July"]),
+                    period_5=get_boolean_period(row["August"]),
+                    period_6=get_boolean_period(row["September"]),
+                    period_7=get_boolean_period(row["October"]),
+                    period_8=get_boolean_period(row["November"]),
+                    period_9=get_boolean_period(row["December"]),
+                    period_10=get_boolean_period(row["January"]),
+                    period_11=get_boolean_period(row["February"]),
+                    period_12=get_boolean_period(row["March"]),
+                    notes=row["Narrative"],
+                )
+
+                self.log("Vacancy created")
 
         self.log(self.style.SUCCESS("Vacancies successfully imported"))
 
