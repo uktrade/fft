@@ -247,46 +247,6 @@ class EmployeePayroll(TypedDict):
     notes: str
 
 
-def get_employee_data(
-    cost_centre: CostCentre,
-    financial_year: FinancialYear,
-) -> Iterator[EmployeePayroll]:
-    qs = (
-        Employee.objects.select_related(
-            "programme_code__budget_type",
-        )
-        .prefetch_related(
-            "pay_periods",
-        )
-        .filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-            has_left=False,
-        )
-        .order_by(
-            "grade",
-            "id",
-        )
-    )
-    for obj in qs:
-        budget_type = obj.programme_code.budget_type
-        # `first` is OK as there should only be one `pay_periods` with the filters.
-        pay_period = obj.pay_periods.first()
-        yield EmployeePayroll(
-            id=obj.pk,
-            name=obj.get_full_name(),
-            grade=obj.grade.pk,
-            employee_no=obj.employee_no,
-            fte=obj.fte,
-            programme_code=obj.programme_code.pk,
-            budget_type=budget_type.budget_type if budget_type else "",
-            assignment_status=obj.assignment_status,
-            basic_pay=obj.basic_pay,
-            pay_periods=pay_period.periods,
-            notes=pay_period.notes,
-        )
-
-
 @transaction.atomic
 def update_employee_data(
     cost_centre: CostCentre,
