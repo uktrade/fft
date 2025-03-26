@@ -116,9 +116,13 @@ def payroll_forecast_report(
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
-    vacancy_qs = Vacancy.objects.prefetch_related("pay_periods").filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
+    vacancy_qs = (
+        Vacancy.objects.select_related("grade")
+        .prefetch_related("pay_periods")
+        .filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
     )
     for vacancy in vacancy_qs.iterator(chunk_size=100):
         avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
