@@ -133,6 +133,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
                 "bsce_email",
                 "used_for_travel",
                 "disabled_with_actual",
+                "is_overseas",
                 "active",
                 "created",
                 "updated",
@@ -147,6 +148,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
                 "deputy_director",
                 "business_partner",
                 "disabled_with_actual",
+                "is_overseas",
                 "active",
             ]
 
@@ -178,6 +180,7 @@ class CostCentreAdmin(GuardedModelAdminMixin, AdminActiveField, AdminImportExtra
         "active",
         "disabled_with_actual",
         "used_for_travel",
+        "is_overseas",
         ("directorate", RelatedDropdownFilter),
         ("directorate__group", RelatedDropdownFilter),
     )
