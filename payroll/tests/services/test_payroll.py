@@ -6,7 +6,6 @@ import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 from django.urls import reverse
-from pytest_django.asserts import assertNumQueries
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.constants import MONTHS
