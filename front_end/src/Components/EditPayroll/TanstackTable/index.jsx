@@ -12,7 +12,7 @@ import SortDownIcon from "../../../../icons/sort-down.svg?react";
 import UnsortedIcon from "../../../../icons/unsorted.svg?react";
 import ToggleCheckbox from "../../Common/ToggleCheckbox";
 
-function TanstackTable({ data, columns, previousMonths }) {
+function TanstackTable({ data, columns, previousMonths, tableId }) {
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
@@ -55,12 +55,12 @@ function TanstackTable({ data, columns, previousMonths }) {
     <div className="tanstack-table scrollable">
       <div className="table-options">
         <div className="govuk-form-group">
-          <label className="govuk-label" htmlFor="search">
+          <label className="govuk-label" htmlFor={`${tableId}-search`}>
             Search
           </label>
           <input
             type="text"
-            id="search"
+            id={`${tableId}-search`}
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search rows..."
@@ -70,8 +70,8 @@ function TanstackTable({ data, columns, previousMonths }) {
         <ToggleCheckbox
           toggle={showPreviousMonths}
           handler={togglePreviousMonthsVisibility}
-          id="payroll-previous-months"
-          value="payroll-previous-months"
+          id={`${tableId}-previous-months`}
+          value={`${tableId}-previous-months`}
           label="Show previous months"
         />
       </div>

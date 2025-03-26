@@ -31,16 +31,10 @@ export default function Payroll() {
     payrollReducer,
     initialPayrollState,
   );
-  const initialShowPreviousMonths = localStorage.getItem(
-    "editPayroll.showPreviousMonths",
-  );
 
   // State
 
   const [isLoading, setIsLoading] = useState(true);
-  const [showPreviousMonths, setShowPreviousMonths] = useState(
-    initialShowPreviousMonths === "true",
-  );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errors, setErrors] = useState(null);
   const [activeTab, setActiveTab] = useState(() => {
@@ -146,15 +140,6 @@ export default function Payroll() {
     });
   }
 
-  function handleHidePreviousMonths() {
-    setShowPreviousMonths(!showPreviousMonths);
-
-    localStorage.setItem(
-      "editPayroll.showPreviousMonths",
-      JSON.stringify(!showPreviousMonths),
-    );
-  }
-
   if (isLoading) {
     return <Loading />;
   }
@@ -173,6 +158,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="payroll"
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -184,6 +170,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="non-payroll"
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -195,6 +182,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="vacancies"
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
