@@ -94,7 +94,7 @@ def payroll_forecast_report(
         lambda: defaultdict(lambda: np.zeros(12))
     )
 
-    employee_qs = Employee.objects.filter(
+    employee_qs = Employee.objects.prefetch_related("pay_periods").filter(
         cost_centre=cost_centre, pay_periods__year=financial_year, has_left=False
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
@@ -105,8 +105,8 @@ def payroll_forecast_report(
     pay_uplift_accumulate = np.array(list(accumulate(pay_uplift, operator.mul)))
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
-    for employee in employee_qs.iterator():
-        periods = employee.pay_periods.first().periods
+    for employee in employee_qs.iterator(chunk_size=100):
+        periods = employee.pay_periods.all()[0].periods
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
@@ -116,15 +116,19 @@ def payroll_forecast_report(
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
-    vacancy_qs = Vacancy.objects.filter(
-        cost_centre=cost_centre,
-        pay_periods__year=financial_year,
+    vacancy_qs = (
+        Vacancy.objects.select_related("grade")
+        .prefetch_related("pay_periods")
+        .filter(
+            cost_centre=cost_centre,
+            pay_periods__year=financial_year,
+        )
     )
-    for vacancy in vacancy_qs.iterator():
+    for vacancy in vacancy_qs.iterator(chunk_size=100):
         avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
         salary = vacancy.fte * avg_salary
 
-        periods = vacancy.pay_periods.first().periods
+        periods = vacancy.pay_periods.all()[0].periods
         periods = np.array(periods)
 
         prog_report = report[vacancy.programme_code_id]
@@ -254,6 +258,7 @@ def get_employee_data(
     qs = (
         Employee.objects.select_related(
             "programme_code__budget_type",
+            "grade",
         )
         .prefetch_related(
             "pay_periods",
@@ -270,8 +275,8 @@ def get_employee_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-        # `first` is OK as there should only be one `pay_periods` with the filters.
-        pay_period = obj.pay_periods.first()
+        # this is OK as there should only be one `pay_periods` with the filters.
+        pay_periods = obj.pay_periods.all()[0]
         yield EmployeePayroll(
             id=obj.pk,
             name=obj.get_full_name(),
@@ -282,8 +287,8 @@ def get_employee_data(
             budget_type=budget_type.budget_type if budget_type else "",
             assignment_status=obj.assignment_status,
             basic_pay=obj.basic_pay,
-            pay_periods=pay_period.periods,
-            notes=pay_period.notes,
+            pay_periods=pay_periods.periods,
+            notes=pay_periods.notes,
         )
 
 
@@ -375,7 +380,11 @@ def get_vacancies_data(
     financial_year: FinancialYear,
 ) -> Iterator[Vacancies]:
     qs = (
-        Vacancy.objects.filter(
+        Vacancy.objects.select_related(
+            "programme_code__budget_type",
+            "grade",
+        )
+        .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
@@ -393,7 +402,8 @@ def get_vacancies_data(
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-        pay_periods = obj.pay_periods.first()
+        # this is OK as there should only be one `pay_periods` with the filters.
+        pay_periods = obj.pay_periods.all()[0]
         yield Vacancies(
             id=obj.pk,
             grade=obj.grade.pk,
@@ -404,7 +414,6 @@ def get_vacancies_data(
             appointee_name=obj.appointee_name,
             hiring_manager=obj.hiring_manager,
             hr_ref=obj.hr_ref,
-            # `first` is OK as there should only be one `pay_periods` with the filters.
             pay_periods=pay_periods.periods,
             notes=pay_periods.notes,
         )
