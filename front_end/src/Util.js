@@ -60,7 +60,12 @@ export const formatValue = (value) => {
  * @param {string} url The HTTP request URL for the API.
  * @returns JSON response data.
  */
-export async function getData(url) {
+export async function getData(url, searchParams = null) {
+  if (searchParams) {
+    const params = new URLSearchParams(searchParams).toString();
+    url = `${url}?${params}`;
+  }
+
   const request = new Request(url, {
     method: "GET",
   });

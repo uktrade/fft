@@ -1,25 +1,103 @@
 import json
+from functools import wraps
 
 import waffle
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from ninja import Field, ModelSchema, Router
 
 from config import flags
+from core.models import FinancialYear
 from core.utils.generic_helpers import get_previous_months_data
+from costcentre.models import CostCentre
+from payroll.models import Employee, EmployeePayPeriods, Vacancy
 from payroll.views import EditPayrollBaseView
 
-from .models import Employee, Vacancy
 from .services import payroll as payroll_service
+
+
+router = Router()
+
+
+def payroll_api(view):
+    @wraps(view)
+    def wrapper(request, cost_centre_code: str, financial_year: int, *args, **kwargs):
+        cost_centre_obj = get_object_or_404(
+            CostCentre,
+            pk=cost_centre_code,
+        )
+        financial_year_obj = get_object_or_404(
+            FinancialYear,
+            pk=financial_year,
+        )
+        allowed = payroll_service.can_edit_payroll(
+            request.user,
+            cost_centre_obj,
+            financial_year_obj,
+            request.current_financial_year,
+        )
+
+        if not allowed:
+            raise PermissionDenied
+
+        return view(request, cost_centre_code, financial_year, *args, **kwargs)
+
+    return wrapper
+
+
+class EmployeeSchema(ModelSchema):
+    class Meta:
+        model = Employee
+        fields = [
+            "id",
+            "grade",
+            "employee_no",
+            "fte",
+            "programme_code",
+            "assignment_status",
+            "basic_pay",
+        ]
+
+    name: str = Field(..., alias="get_full_name")
+    budget_type: str = Field(
+        ...,
+        alias="programme_code.budget_type.budget_type_display",
+    )
+    pay_periods: list[int] = Field(
+        ...,
+        alias="pay_periods.first.periods",
+        min_length=12,
+        max_length=12,
+    )
+
+
+@router.get("/employees/", response=list[EmployeeSchema])
+@payroll_api
+def get_employees(request, cost_centre_code: str, financial_year: int):
+    return (
+        Employee.objects.select_related(
+            "programme_code__budget_type",
+        )
+        .prefetch_related(
+            "pay_periods",
+        )
+        .filter(
+            has_left=False,
+            cost_centre_id=cost_centre_code,
+            pay_periods__year=financial_year,
+        )
+    )
+
+
+class EmployeePayPeriodsSchema(ModelSchema):
+    class Meta:
+        model = EmployeePayPeriods
+        fields = [""]
 
 
 class EditPayrollApiView(EditPayrollBaseView):
     def get(self, request, *args, **kwargs):
-        employees = list(
-            payroll_service.get_employee_data(
-                self.cost_centre,
-                self.financial_year,
-            )
-        )
         vacancies = list(
             payroll_service.get_vacancies_data(
                 self.cost_centre,
@@ -43,7 +121,6 @@ class EditPayrollApiView(EditPayrollBaseView):
 
         return JsonResponse(
             {
-                "employees": employees,
                 "vacancies": vacancies,
                 "pay_modifiers": pay_modifiers,
                 "forecast": forecast,

@@ -6,8 +6,16 @@ import * as types from "./types";
  * Fetch payroll data and return it as a promise.
  * @returns {Promise<types.PayrollData[]>} A promise resolving to an array of objects containing payroll information.
  */
-export function getPayrollData() {
-  return getData(getPayrollApiUrl());
+export async function getPayrollData() {
+  const [employees, data] = await Promise.all([
+    _get("employees"),
+    getData(getPayrollApiUrl()),
+  ]);
+
+  return {
+    employees,
+    ...data,
+  };
 }
 
 /**
@@ -25,6 +33,13 @@ export function postPayrollData(payrollData) {
  */
 export function createPayModifiers() {
   return postJsonData(getPayrollApiUrl() + "pay_modifiers/");
+}
+
+function _get(resource) {
+  return getData(`/api/payroll/${resource}/`, {
+    cost_centre_code: window.costCentreCode,
+    financial_year: window.financialYear,
+  });
 }
 
 /**

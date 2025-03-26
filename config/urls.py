@@ -26,6 +26,9 @@ def empty_favicon(request):
     return HttpResponse(status=204)
 
 
+from .api import api
+
+
 urlpatterns = [
     path("auth/", include("authbroker_client.urls", namespace="authbroker")),
     path("", include("core.urls")),  # default to core with no path
@@ -51,6 +54,7 @@ urlpatterns = [
     ),
     # Admin
     path("admin/", admin.site.urls),
+    path("api/", api.urls),
     # TODO - split below out into develop only?
     path("favicon.ico", empty_favicon),
     path(
