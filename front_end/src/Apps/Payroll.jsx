@@ -173,6 +173,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="payroll"
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
@@ -184,6 +185,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="non-payroll"
           />
         </Tab>
         <Tab label="Vacancies" key="3">
@@ -195,6 +197,7 @@ export default function Payroll() {
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
+            tableId="vacancies"
           />
           <a
             className="govuk-button govuk-!-margin-right-2 govuk-button--secondary"
