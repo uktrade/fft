@@ -18,8 +18,6 @@ function TanstackTable({ data, columns, previousMonths, tableId }) {
   const [sorting, setSorting] = useState([]);
   const [showPreviousMonths, setShowPreviousMonths] = useState(true);
 
-  console.log(data);
-
   // Table state
   const table = useReactTable({
     data,

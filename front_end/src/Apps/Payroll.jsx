@@ -31,16 +31,10 @@ export default function Payroll() {
     payrollReducer,
     initialPayrollState,
   );
-  const initialShowPreviousMonths = localStorage.getItem(
-    "editPayroll.showPreviousMonths",
-  );
 
   // State
 
   const [isLoading, setIsLoading] = useState(true);
-  const [showPreviousMonths, setShowPreviousMonths] = useState(
-    initialShowPreviousMonths === "true",
-  );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errors, setErrors] = useState(null);
   const [activeTab, setActiveTab] = useState(() => {
@@ -144,15 +138,6 @@ export default function Payroll() {
     api.createPayModifiers().then((r) => {
       getAllPayroll();
     });
-  }
-
-  function handleHidePreviousMonths() {
-    setShowPreviousMonths(!showPreviousMonths);
-
-    localStorage.setItem(
-      "editPayroll.showPreviousMonths",
-      JSON.stringify(!showPreviousMonths),
-    );
   }
 
   if (isLoading) {
