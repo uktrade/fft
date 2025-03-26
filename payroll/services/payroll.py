@@ -106,7 +106,7 @@ def payroll_forecast_report(
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
     for employee in employee_qs.iterator(chunk_size=100):
-        periods = employee.pay_periods.first().periods
+        periods = employee.pay_periods.all()[0].periods
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
@@ -124,7 +124,7 @@ def payroll_forecast_report(
         avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
         salary = vacancy.fte * avg_salary
 
-        periods = vacancy.pay_periods.first().periods
+        periods = vacancy.pay_periods.all()[0].periods
         periods = np.array(periods)
 
         prog_report = report[vacancy.programme_code_id]
@@ -376,7 +376,11 @@ def get_vacancies_data(
     financial_year: FinancialYear,
 ) -> Iterator[Vacancies]:
     qs = (
-        Vacancy.objects.filter(
+        Vacancy.objects.select_related(
+            "programme_code__budget_type",
+            "grade",
+        )
+        .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
@@ -459,13 +463,13 @@ def get_pay_modifiers_data(
 ) -> PayModifiers:
     global_attrition = Attrition.objects.filter(
         financial_year=financial_year, cost_centre=None
-    ).all()[0]
+    ).first()
     attrition = Attrition.objects.filter(
         financial_year=financial_year, cost_centre=cost_centre
-    ).all()[0]
+    ).first()
     pay_uplift = PayUplift.objects.filter(
         financial_year=financial_year,
-    ).all()[0]
+    ).first()
 
     global_attrition_periods = global_attrition.periods if global_attrition else []
     attrition_periods = attrition.periods if attrition else []
