@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
 from dataclasses import dataclass
 from pathlib import Path
 
+import dj_database_url
 import environ
 import sentry_sdk
+from dbt_copilot_python.database import database_url_from_env
 from django.urls import reverse_lazy
 from django_log_formatter_asim import ASIMFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -109,8 +110,11 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
         "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
     }
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-DATABASES = {"default": env.db()}
+DATABASES = {
+    "default": dj_database_url.config(
+        default=database_url_from_env("DATABASE_CREDENTIALS")
+    )
+}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
