@@ -96,7 +96,7 @@ def get_financial_code_serialiser(
     )
     financial_codes = (
         get_financial_codes_for_year(cost_centre_code, financial_year)
-        .select_related("programme", "natural_account_code")
+        .select_related("programme", "natural_account_code", "cost_centre")
         .prefetch_related(
             Prefetch(
                 "forecast_forecastmonthlyfigures",
