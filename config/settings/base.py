@@ -109,8 +109,8 @@ if env("ELASTIC_APM_ENVIRONMENT", default=None):
         "ENVIRONMENT": env("ELASTIC_APM_ENVIRONMENT", default=None),
     }
 
-    DATABASE_URL = os.getenv("DATABASE_URL")
-    DATABASES = {"default": env.db()}
+DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASES = {"default": env.db()}
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
