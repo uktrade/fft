@@ -1,5 +1,8 @@
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
+
+from chartofaccountDIT.test.factories import NaturalCodeFactory
 
 
 User = get_user_model()
@@ -15,3 +18,12 @@ def user(db, client):
     user.save()
     client.force_login(user)
     return user
+
+
+@pytest.fixture
+def payroll_nacs(db):
+    return [
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL.BASIC_PAY_NAC),
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL.PENSION_NAC),
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL.ERNIC_NAC),
+    ]

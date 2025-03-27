@@ -146,7 +146,12 @@ def payroll_forecast_report(
             )
 
 
-def update_payroll_forecast(*, financial_year: FinancialYear, cost_centre: CostCentre):
+def update_payroll_forecast(
+    *, financial_year: FinancialYear, cost_centre: CostCentre
+) -> None:
+    if cost_centre.is_overseas:
+        return
+
     report = payroll_forecast_report(
         financial_year=financial_year,
         cost_centre=cost_centre,
@@ -164,7 +169,7 @@ def update_payroll_forecast_figure(
     financial_year: FinancialYear,
     cost_centre: CostCentre,
     payroll_forecast: PayrollForecast,
-):
+) -> None:
     # Create a financial code if there isn't one.
     financial_code, _ = FinancialCode.objects.get_or_create(
         cost_centre=cost_centre,
