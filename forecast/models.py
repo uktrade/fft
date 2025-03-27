@@ -450,6 +450,9 @@ class FinancialCodeAbstract(models.Model):
 
     @property
     def is_locked(self) -> bool:
+        if self.cost_centre.is_overseas:
+            return False
+
         # TODO: Should `FinancialCode` have knowledge of payroll?
         if not waffle.switch_is_active(flags.PAYROLL):
             return False

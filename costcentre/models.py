@@ -143,6 +143,7 @@ class CostCentre(IsActiveModel):
         "Disabled (Actuals to be cleared)", default="False"
     )
     used_for_travel = models.BooleanField("Used for Travel", default="True")
+    is_overseas = models.BooleanField(default=False)
 
     @property
     def full_name(self):
@@ -204,6 +205,7 @@ class ArchivedCostCentre(ArchivedModel):
     disabled_with_actual = models.BooleanField(
         "Disabled (Actuals to be cleared)", default="False"
     )
+    is_overseas = models.BooleanField(default=False)
     chart_of_account_code_name = "cost_centre_code"
 
     @classmethod
@@ -228,6 +230,7 @@ class ArchivedCostCentre(ArchivedModel):
             treasury_segment_code=segment_code,
             active=cc_obj.active,
             disabled_with_actual=cc_obj.disabled_with_actual,
+            is_overseas=cc_obj.is_overseas,
         )
         cc_hist.save()
         return cc_hist

@@ -1,6 +1,8 @@
 import pytest
 from django.contrib.auth import get_user_model
 
+from core.models import FinancialYear
+
 
 @pytest.fixture
 def test_user(db):
@@ -15,3 +17,8 @@ def test_user(db):
     test_user.save()
 
     return test_user
+
+
+@pytest.fixture
+def current_financial_year(db) -> FinancialYear:
+    return FinancialYear.objects.current()

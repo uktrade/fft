@@ -6,7 +6,6 @@ import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 from django.urls import reverse
-from pytest_django.asserts import assertNumQueries
 
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.constants import MONTHS
@@ -21,6 +20,7 @@ from payroll.services.payroll import (
     employee_created,
     payroll_forecast_report,
     update_all_employee_pay_periods,
+    update_payroll_forecast,
     update_payroll_forecast_figure,
     vacancy_created,
 )
@@ -252,7 +252,7 @@ def test_one_employee_with_attrition(db):
     )
 
 
-def test_scenario_update_forecast(db):
+def test_update_payroll_forecast_figure(db):
     cost_centre = CostCentreFactory(cost_centre_code="123456")
     programme_code = ProgrammeCodeFactory()
 
@@ -286,13 +286,11 @@ def test_scenario_update_forecast(db):
         **expected_forecast,
     )
 
-    # TODO: Reduce number of queries.
-    with assertNumQueries(1 + (12 * 6)):
-        update_payroll_forecast_figure(
-            financial_year=financial_year,
-            cost_centre=cost_centre,
-            payroll_forecast=payroll_forecast,
-        )
+    update_payroll_forecast_figure(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+        payroll_forecast=payroll_forecast,
+    )
 
     forecast_figures = (
         ForecastMonthlyFigure.objects.filter(
@@ -305,6 +303,46 @@ def test_scenario_update_forecast(db):
     )
 
     assert list(forecast_figures) == list(expected_forecast.values())
+
+
+def test_update_payroll_forecast_skips_overseas_cost_centre(
+    db, current_financial_year, payroll_nacs
+):
+    # given an overseas cost centre
+    cost_centre = CostCentreFactory(is_overseas=True)
+    # and an employee on payroll
+    employee = EmployeeFactory(
+        cost_centre=cost_centre,
+        basic_pay=2000,
+        pension=160,
+        ernic=120,
+    )
+    employee_created(employee)
+
+    financial_code_salary = FinancialCodeFactory(
+        cost_centre=employee.cost_centre,
+        programme=employee.programme_code,
+        natural_account_code__natural_account_code=SALARY_NAC,
+    )
+
+    # when the payroll forecast is updated
+    update_payroll_forecast(
+        financial_year=current_financial_year,
+        cost_centre=employee.cost_centre,
+    )
+
+    forecast_figures = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_year=current_financial_year,
+            financial_code=financial_code_salary,
+            archived_status=None,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
+    )
+
+    # then the forecast is not updated
+    assert not forecast_figures
 
 
 def test_update_all_employee_pay_periods(db):
