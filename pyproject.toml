@@ -19,7 +19,6 @@ django-environ = "^0.11.2"
 django-extensions = "^3.2.3"
 django-filter = "^24.1"
 django-guardian = "^2.4.0"
-django-log-formatter-ecs = "^0.0.5"
 django-pivot = "^1.10"
 django-reversion = "^5.0.12"
 django-settings-export = "^1.2.1"
@@ -147,7 +146,6 @@ module = [
     "django_admin_listfilter_dropdown.*",
     "django_filters.*",
     "django_log_formatter_asim.*",
-    "django_log_formatter_ecs.*",
     "django_tables2.*",
     "environ.*",
     "factory.*",

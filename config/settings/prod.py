@@ -16,7 +16,6 @@ INSTALLED_APPS += [
     "django_audit_log_middleware",
 ]
 
-# TODO: Remove once we have migrated to the DBT Platform.
 if not is_copilot():
     INSTALLED_APPS += ["elasticapm.contrib.django"]
 

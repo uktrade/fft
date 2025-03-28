@@ -1040,22 +1040,6 @@ django = {version = ">=3,<6", markers = "python_version >= \"3.10\" and python_v
 pre-commit = ">=3.5.0,<4.0.0"
 
 [[package]]
-name = "django-log-formatter-ecs"
-version = "0.0.5"
-description = "ECS log formatter for Django"
-optional = false
-python-versions = ">=3.6"
-groups = ["main"]
-files = [
-    {file = "django_log_formatter_ecs-0.0.5-py3-none-any.whl", hash = "sha256:1e8731dd25a11ac64e789f19931e12fe7ef8ad1a172b7bceb2ea5cab185a583e"},
-    {file = "django_log_formatter_ecs-0.0.5.tar.gz", hash = "sha256:6b9784fe31eb1bd6598dc7db0f7f647e03ea6c3926c73cd1c9221adefee289ad"},
-]
-
-[package.dependencies]
-django-ipware = ">=3.0,<4.0"
-kubi-ecs-logger = ">=0.1.0,<0.2.0"
-
-[[package]]
 name = "django-pivot"
 version = "1.10.0"
 description = "Create pivot tables and histograms from ORM querysets"
@@ -1706,21 +1690,6 @@ yaml = ["PyYAML (>=3.10)"]
 zookeeper = ["kazoo (>=2.8.0)"]
 
 [[package]]
-name = "kubi-ecs-logger"
-version = "0.1.2"
-description = "Logger based on Elasticsearch Common Schema."
-optional = false
-python-versions = ">=3.6, <4"
-groups = ["main"]
-files = [
-    {file = "kubi_ecs_logger-0.1.2-py3-none-any.whl", hash = "sha256:f35bd3ae9ac4c23977ac5307779c8e98cd7cef0025c11f7368e443d482dc30f6"},
-    {file = "kubi_ecs_logger-0.1.2.tar.gz", hash = "sha256:48e9a9a4b1e77b73631efd70d253386f34ca742da1b268b8e72624d903fff99b"},
-]
-
-[package.dependencies]
-marshmallow = "3.19.0"
-
-[[package]]
 name = "markuppy"
 version = "1.18"
 description = "An HTML/XML generator"
@@ -1731,27 +1700,6 @@ files = [
     {file = "markuppy-1.18-py3-none-any.whl", hash = "sha256:788115ef3d529c2f8a298da4799f0838f57805a5e47068bcb9903092391466b3"},
     {file = "markuppy-1.18.tar.gz", hash = "sha256:540f31b835076260339368890ac4f44eb3971d75fdbd97b49fa1f8b6685513d3"},
 ]
-
-[[package]]
-name = "marshmallow"
-version = "3.19.0"
-description = "A lightweight library for converting complex datatypes to and from native Python datatypes."
-optional = false
-python-versions = ">=3.7"
-groups = ["main"]
-files = [
-    {file = "marshmallow-3.19.0-py3-none-any.whl", hash = "sha256:93f0958568da045b0021ec6aeb7ac37c81bfcccbb9a0e7ed8559885070b3a19b"},
-    {file = "marshmallow-3.19.0.tar.gz", hash = "sha256:90032c0fd650ce94b6ec6dc8dfeb0e3ff50c144586462c389b81a07205bedb78"},
-]
-
-[package.dependencies]
-packaging = ">=17.0"
-
-[package.extras]
-dev = ["flake8 (==5.0.4)", "flake8-bugbear (==22.10.25)", "mypy (==0.990)", "pre-commit (>=2.4,<3.0)", "pytest", "pytz", "simplejson", "tox"]
-docs = ["alabaster (==0.7.12)", "autodocsumm (==0.2.9)", "sphinx (==5.3.0)", "sphinx-issues (==3.0.1)", "sphinx-version-warning (==1.1.2)"]
-lint = ["flake8 (==5.0.4)", "flake8-bugbear (==22.10.25)", "mypy (==0.990)", "pre-commit (>=2.4,<3.0)"]
-tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
 name = "mohawk"
@@ -3446,4 +3394,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "bd1034520b7c6c66f63806fb35d2eb8bf7332140985c79395351eb1b9aca2b58"
+content-hash = "fa0311608ff18aacd92a3cdacd5e8c68a53f19ae0a6535a8eaac45d63b1f2245"
