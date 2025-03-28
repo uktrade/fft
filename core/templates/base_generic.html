@@ -43,12 +43,11 @@
         <meta name="fft:features:payroll" content="true">
     {% endswitch %}
 
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/assets/images/favicon.ico' %}" type="image/x-icon"/>
-    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-mask-icon.svg' %}" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-180x180.png' %}">
-    <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-167x167.png' %}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/assets/images/govuk-apple-touch-icon-152x152.png' %}">
-    <link rel="apple-touch-icon" href="{% static 'govuk/assets/images/govuk-apple-touch-icon.png' %}">
+    <link rel="icon" sizes="48x48" href="{% static 'govuk/assets/images/favicon.ico' %}">
+    <link rel="icon" sizes="any" href="{% static 'govuk/assets/images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="mask-icon" href="{% static 'govuk/assets/images/govuk-icon-mask.svg' %}" color="#0b0c0c">
+    <link rel="apple-touch-icon" href="{% static 'govuk/assets/images/govuk-icon-180.png' %}">
+    <link rel="manifest" href="{% static 'govuk/assets/manifest.json' %}">
 
     {% vite_css "styles/styles.scss" %}
 
@@ -66,7 +65,7 @@
     <!-- End Google Tag Manager (noscript) -->
 {% endif %}
 <script>
-    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+    document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
 
     function toggleMenu() {
         var topLinks = document.getElementById("logo-navigation");
@@ -258,10 +257,13 @@
   </div>
 </footer>
 
-<script src="/static/govuk/all.js"></script>
+<script type="module" src="{% static 'govuk/govuk-frontend.min.js' %}"></script>
+<script type="module">
+    import { initAll } from "{% static 'govuk/govuk-frontend.min.js' %}";
+    initAll();
+</script>
 <script src="{% static 'core/js/feature-flags.js' %}"></script>
 <script>
-    window.GOVUKFrontend.initAll();
     window.CSRF_TOKEN = "{{ csrf_token }}";
     window.FEATURES = FeatureFlags("fft:features");
 </script>
