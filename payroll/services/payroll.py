@@ -94,8 +94,10 @@ def payroll_forecast_report(
         lambda: defaultdict(lambda: np.zeros(12))
     )
 
-    employee_qs = Employee.objects.prefetch_related("pay_periods").filter(
-        cost_centre=cost_centre, pay_periods__year=financial_year, has_left=False
+    employee_qs = Employee.objects.prefetch_pay_periods(year=financial_year).filter(
+        cost_centre=cost_centre,
+        pay_periods__year=financial_year,
+        has_left=False,
     )
     pay_uplift_obj = PayUplift.objects.filter(financial_year=financial_year).first()
     attrition_obj = get_attrition_instance(financial_year, cost_centre)
@@ -105,8 +107,8 @@ def payroll_forecast_report(
     pay_uplift_accumulate = np.array(list(accumulate(pay_uplift, operator.mul)))
     attrition_accumulate = np.array(list(accumulate(attrition, operator.mul)))
 
-    for employee in employee_qs.iterator(chunk_size=100):
-        periods = employee.pay_periods.all()[0].periods
+    for employee in employee_qs.iterator(chunk_size=2000):
+        periods = employee.pay_periods.first().periods
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
@@ -118,17 +120,17 @@ def payroll_forecast_report(
 
     vacancy_qs = (
         Vacancy.objects.select_related("grade")
-        .prefetch_related("pay_periods")
+        .prefetch_pay_periods(year=financial_year)
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
     )
-    for vacancy in vacancy_qs.iterator(chunk_size=100):
+    for vacancy in vacancy_qs.iterator(chunk_size=2000):
         avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
         salary = vacancy.fte * avg_salary
 
-        periods = vacancy.pay_periods.all()[0].periods
+        periods = vacancy.pay_periods.first().periods
         periods = np.array(periods)
 
         prog_report = report[vacancy.programme_code_id]
@@ -265,23 +267,17 @@ def get_employee_data(
             "programme_code__budget_type",
             "grade",
         )
-        .prefetch_related(
-            "pay_periods",
-        )
+        .prefetch_pay_periods(year=financial_year)
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
             has_left=False,
         )
-        .order_by(
-            "grade",
-            "id",
-        )
+        .order_by("grade", "id")
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-        # this is OK as there should only be one `pay_periods` with the filters.
-        pay_periods = obj.pay_periods.all()[0]
+        pay_periods = obj.pay_periods.first()
         yield EmployeePayroll(
             id=obj.pk,
             name=obj.get_full_name(),
@@ -389,26 +385,16 @@ def get_vacancies_data(
             "programme_code__budget_type",
             "grade",
         )
+        .prefetch_pay_periods(year=financial_year)
         .filter(
             cost_centre=cost_centre,
             pay_periods__year=financial_year,
         )
-        .prefetch_related(
-            "pay_periods",
-        )
-        .filter(
-            cost_centre=cost_centre,
-            pay_periods__year=financial_year,
-        )
-        .order_by(
-            "grade",
-            "id",
-        )
+        .order_by("grade", "id")
     )
     for obj in qs:
         budget_type = obj.programme_code.budget_type
-        # this is OK as there should only be one `pay_periods` with the filters.
-        pay_periods = obj.pay_periods.all()[0]
+        pay_periods = obj.pay_periods.first()
         yield Vacancies(
             id=obj.pk,
             grade=obj.grade.pk,

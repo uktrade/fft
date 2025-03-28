@@ -1,24 +1,29 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import Case, F, Q, Sum, When
+from django.db.models import Case, Prefetch, When
 
 
 class EmployeeQuerySet(models.QuerySet):
-    def with_basic_pay(self):
-        return self.annotate(
-            basic_pay=Sum(
-                F("pay_element__debit_amount") - F("pay_element__credit_amount"),
-                # TODO (FFT-107): Resolve hard-coded references to "Basic Pay"
-                # This might change when we get round to ingesting the data, so I'm OK
-                # with it staying like this for now.
-                filter=Q(pay_element__type__group__name="Basic Pay"),
-                default=0,
-                output_field=models.FloatField(),
+    def prefetch_pay_periods(self, **filters):
+        return self.prefetch_related(
+            Prefetch(
+                "pay_periods",
+                EmployeePayPeriods.objects.filter(**filters).order_by("pk"),
             )
         )
 
     def payroll(self):
         return self.filter(basic_pay__gt=0)
+
+
+class VacancyQuerySet(models.QuerySet):
+    def prefetch_pay_periods(self, **filters):
+        return self.prefetch_related(
+            Prefetch(
+                "pay_periods",
+                VacancyPayPeriods.objects.filter(**filters).order_by("pk"),
+            )
+        )
 
 
 class Position(models.Model):
@@ -212,6 +217,8 @@ class Vacancy(Position):
             )
         ],
     )
+
+    objects = VacancyQuerySet.as_manager()
 
 
 class VacancyPayPeriods(PositionPayPeriods):
