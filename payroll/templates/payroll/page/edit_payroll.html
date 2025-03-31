@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-{% load breadcrumbs vite forecast_format waffle_tags %}
+{% load breadcrumbs vite forecast_format %}
 
 {% block title %}Edit payroll{% endblock title %}
 
@@ -12,11 +12,6 @@
 {% block content %}
     <div class="flex-spread">
         <h1 class="govuk-heading-l">Edit payroll</h1>
-
-        {# Here we assume that a user with access to payroll also has access to forecast #}
-        {% switch 'payroll' %}
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'edit_forecast' cost_centre.cost_centre_code financial_year.financial_year %}">Go to Forecast</a>
-        {% endswitch %}
     </div>
 
     <h2 class="govuk-heading-m">
@@ -31,6 +26,7 @@
         window.costCentreCode = "{{ cost_centre.cost_centre_code|escapejs }}";
         window.financialYear = new Number("{{ financial_year.financial_year }}");
         window.addVacancyUrl = "{% url 'payroll:add_vacancy' cost_centre.cost_centre_code financial_year.financial_year %}"
+        window.forecastUrl = "{% url 'edit_forecast' cost_centre.cost_centre_code financial_year.financial_year %}"
     </script>
     {% vite_dev_client %}
     {% vite_js 'src/index.jsx' %}
