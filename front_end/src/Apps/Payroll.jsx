@@ -162,6 +162,11 @@ export default function Payroll() {
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
+          <div className="govuk-body">
+            Non-payroll includes staff on maternity leave, Fast Streamers,
+            contingent workers (contractors), staff loaned in from other
+            departments and secondments.
+          </div>
           <TanstackTable
             data={nonPayroll}
             columns={getPayrollColumns(
