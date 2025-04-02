@@ -44,6 +44,7 @@ const DisplayAttrition = ({
   if (global_attrition.length > 0) {
     return (
       <>
+        <Description />
         <DisplayPayModifier
           modifier={global_attrition}
           title="Global attrition"
