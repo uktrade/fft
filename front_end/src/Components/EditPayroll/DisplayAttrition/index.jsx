@@ -10,7 +10,7 @@ const DisplayAttrition = ({
   if (attrition.length > 0) {
     return (
       <div className="govuk-form-group">
-        <h3 className="govuk-heading-s">Attrition</h3>
+        <Description />
         <table className="govuk-table">
           <PayModifierHeaders />
           <tbody className="govuk-table__body">
@@ -27,7 +27,7 @@ const DisplayAttrition = ({
                         defaultValue={value}
                         onChange={(e) => onInputChange(index, e.target.value)}
                       ></input>
-                      <div class="govuk-input__suffix" aria-hidden="true">
+                      <div className="govuk-input__suffix" aria-hidden="true">
                         %
                       </div>
                     </div>
@@ -64,7 +64,7 @@ const DisplayAttrition = ({
 
   return (
     <>
-      <h3 className="govuk-heading-s">Attrition</h3>
+      <Description />
       <p className="govuk-body">No attrition set</p>
       <button
         className="govuk-button govuk-button--secondary"
@@ -72,6 +72,34 @@ const DisplayAttrition = ({
       >
         Add Attrition
       </button>
+    </>
+  );
+};
+
+const Description = () => {
+  return (
+    <>
+      <h3 className="govuk-heading-s">Attrition rate</h3>
+      <p className="govuk-body">
+        Attrition rate is the rate in which staff leave an organisation over a
+        year. DBT sets a default rate of X% but you can override it for your
+        cost centre.
+      </p>
+      <p className="govuk-body">
+        The next three months attrition rate should be set to zero.
+      </p>
+      <details className="govuk-details">
+        <summary className="govuk-details__summary">
+          <span className="govuk-details__summary-text">
+            Why are they set to zero?
+          </span>
+        </summary>
+        <div className="govuk-details__text">
+          Information updated in FFT this month will have accurate numbers for
+          new joiners, vacancies and staff leaving. This means an attrition
+          rate, which is an estimate, is not needed.
+        </div>
+      </details>
     </>
   );
 };
