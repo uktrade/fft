@@ -1,6 +1,9 @@
 import { formatMoney } from "../../../Util";
 
 export default function ForecastTable({ forecast, months }) {
+  const actualMonths = months.filter((month) => month.is_actual);
+  const forecastMonths = months.filter((month) => !month.is_actual);
+
   return (
     <>
       <h2 className="govuk-heading-m">Payroll forecast</h2>
@@ -10,6 +13,18 @@ export default function ForecastTable({ forecast, months }) {
       <div className="scrollable">
         <table className="govuk-table">
           <thead className="govuk-table__head">
+            <tr>
+              <th className="govuk-table__header" colSpan="2"></th>
+              <th className="govuk-table__header" colSpan={actualMonths.length}>
+                Actuals
+              </th>
+              <th
+                className="govuk-table__header"
+                colSpan={forecastMonths.length}
+              >
+                Forecast
+              </th>
+            </tr>
             <tr className="govuk-table__row">
               <th scope="col" className="govuk-table__header">
                 Programme code

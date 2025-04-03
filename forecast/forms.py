@@ -10,6 +10,7 @@ from chartofaccountDIT.models import (
     ProgrammeCode,
     ProjectCode,
 )
+from core.forms import ChoicesWidget
 from core.models import FinancialYear
 from core.utils.generic_helpers import get_current_financial_year
 from end_of_month.models import EndOfMonthStatus
@@ -75,18 +76,18 @@ class AddForecastRowForm(forms.Form):
         queryset=ProgrammeCode.objects.filter(
             active=True,
         ),
-        empty_label="",
+        widget=ChoicesWidget,
         label="Programme Description",
     )
     programme.widget.attrs.update(
-        {"class": "govuk-select", "aria-describedby": "programme-hint programme-error"}
+        {"aria-describedby": "programme-hint programme-error"}
     )
 
     natural_account_code = forms.ModelChoiceField(
         queryset=NaturalCode.objects.filter(
             active=True,
         ),
-        empty_label="",
+        widget=ChoicesWidget,
         label="NAC Description",
     )
     natural_account_code.widget.attrs.update(
@@ -101,7 +102,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         required=False,
-        empty_label="",
+        widget=ChoicesWidget,
         label="Contract Reconciliation",
     )
     analysis1_code.widget.attrs.update(
@@ -116,7 +117,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         required=False,
-        empty_label="",
+        widget=ChoicesWidget,
         label="Markets",
     )
     analysis2_code.widget.attrs.update(
@@ -129,7 +130,7 @@ class AddForecastRowForm(forms.Form):
     project_code = forms.ModelChoiceField(
         queryset=ProjectCode.objects.all(),
         required=False,
-        empty_label="",
+        widget=ChoicesWidget,
     )
     project_code.widget.attrs.update(
         {

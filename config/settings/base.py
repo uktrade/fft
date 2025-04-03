@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.forms",
     "dal",
     "dal_select2",
     "storages",
@@ -174,7 +175,12 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     ("vite", BASE_DIR / "front_end" / "build"),
     BASE_DIR / "node_modules" / "govuk-frontend" / "dist",
+    ("choices.js", BASE_DIR / "node_modules" / "choices.js"),
 ]
+
+# Forms
+# https://docs.djangoproject.com/en/5.1/ref/settings/#form-renderer
+FORM_RENDERER = "core.forms.FormRenderer"
 
 STORAGES = {
     "default": {
