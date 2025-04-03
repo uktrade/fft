@@ -10,7 +10,7 @@ const DisplayAttrition = ({
   if (attrition.length > 0) {
     return (
       <div className="govuk-form-group">
-        <h3 className="govuk-heading-s">Attrition</h3>
+        <Description />
         <table className="govuk-table">
           <PayModifierHeaders />
           <tbody className="govuk-table__body">
@@ -27,7 +27,7 @@ const DisplayAttrition = ({
                         defaultValue={value}
                         onChange={(e) => onInputChange(index, e.target.value)}
                       ></input>
-                      <div class="govuk-input__suffix" aria-hidden="true">
+                      <div className="govuk-input__suffix" aria-hidden="true">
                         %
                       </div>
                     </div>
@@ -44,6 +44,7 @@ const DisplayAttrition = ({
   if (global_attrition.length > 0) {
     return (
       <>
+        <Description />
         <DisplayPayModifier
           modifier={global_attrition}
           title="Global attrition"
@@ -64,7 +65,7 @@ const DisplayAttrition = ({
 
   return (
     <>
-      <h3 className="govuk-heading-s">Attrition</h3>
+      <Description />
       <p className="govuk-body">No attrition set</p>
       <button
         className="govuk-button govuk-button--secondary"
@@ -72,6 +73,23 @@ const DisplayAttrition = ({
       >
         Add Attrition
       </button>
+    </>
+  );
+};
+
+const Description = () => {
+  return (
+    <>
+      <h3 className="govuk-heading-s">Attrition rate</h3>
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <p className="govuk-body">
+            Attrition rate is the rate in which staff leave an organisation over
+            a year. DBT sets a default rate of X% but you can override it for
+            your cost centre.
+          </p>
+        </div>
+      </div>
     </>
   );
 };
