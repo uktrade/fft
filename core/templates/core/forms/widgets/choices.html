@@ -1,4 +1,9 @@
 {% include 'django/forms/widgets/select.html' %}
 <script>
-    new Choices("#{{ widget.attrs.id }}");
+    new Choices(
+        "#{{ widget.attrs.id }}",
+        {
+            searchPlaceholderValue: "Start typing to search...",
+        }
+    );
 </script>
