@@ -86,21 +86,6 @@ const Description = () => {
         year. DBT sets a default rate of X% but you can override it for your
         cost centre.
       </p>
-      <p className="govuk-body">
-        The next three months attrition rate should be set to zero.
-      </p>
-      <details className="govuk-details">
-        <summary className="govuk-details__summary">
-          <span className="govuk-details__summary-text">
-            Why are they set to zero?
-          </span>
-        </summary>
-        <div className="govuk-details__text">
-          Information updated in FFT this month will have accurate numbers for
-          new joiners, vacancies and staff leaving. This means an attrition
-          rate, which is an estimate, is not needed.
-        </div>
-      </details>
     </>
   );
 };
