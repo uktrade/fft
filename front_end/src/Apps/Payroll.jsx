@@ -152,14 +152,12 @@ export default function Payroll() {
         <button className="govuk-button" onClick={handleSavePayroll}>
           Save changes
         </button>
-        {window.FEATURES.payroll && (
-          <a
-            className="govuk-button govuk-button--secondary govuk-!-margin-left-4"
-            href={window.forecastUrl}
-          >
-            Go to forecast
-          </a>
-        )}
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-left-4"
+          href={window.forecastUrl}
+        >
+          Go to forecast
+        </a>
       </div>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
