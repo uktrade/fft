@@ -148,6 +148,17 @@ export default function Payroll() {
     <>
       {saveSuccess && <SuccessBanner>Success - forecast updated</SuccessBanner>}
       {errors && <ErrorSummary errors={errors} />}
+      <div className="govuk-form-group">
+        <button className="govuk-button" onClick={handleSavePayroll}>
+          Save changes
+        </button>
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-left-4"
+          href={window.forecastUrl}
+        >
+          Go to forecast
+        </a>
+      </div>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <TanstackTable
@@ -222,9 +233,6 @@ export default function Payroll() {
           </div>
         </Tab>
       </Tabs>
-      <button className="govuk-button" onClick={handleSavePayroll}>
-        Save payroll and update forecast
-      </button>
       <ForecastTable
         forecast={forecastAndActuals}
         months={allPayroll.previous_months}
