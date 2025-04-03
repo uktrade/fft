@@ -12,18 +12,6 @@
 
 {% block title %}Edit Forecast{% endblock %}
 
-{% block page_heading %}
-<div style="display: flex; align-items: baseline; gap: 2rem;">
-    {{ block.super }}
-    {% can_access_edit_payroll user as user_can_access_edit_payroll %}
-    {% switch 'payroll' %}
-        {% if user_can_access_edit_payroll %}
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'payroll:edit' view.cost_centre_details.cost_centre_code view.financial_year %}">Go to Payroll</a>
-        {% endif %}
-    {% endswitch %}
-</div>
-{% endblock %}
-
 {% block page_content %}
     <div class="govuk-grid-row date-selection-download">
 
@@ -37,6 +25,12 @@
             <a id="download_forecast" class="govuk-button govuk-button--secondary" data-module="govuk-button" href="{% url 'export_edit_forecast_data_cost_centre' view.cost_centre_details.cost_centre_code  view.financial_year %}">
                 Download
             </a>
+            {% can_access_edit_payroll user as user_can_access_edit_payroll %}
+            {% switch 'payroll' %}
+                {% if user_can_access_edit_payroll %}
+                    <a class="govuk-button govuk-button--secondary" href="{% url 'payroll:edit' view.cost_centre_details.cost_centre_code view.financial_year %}">Go to payroll</a>
+                {% endif %}
+            {% endswitch %}
         </div>
     </div>
 
