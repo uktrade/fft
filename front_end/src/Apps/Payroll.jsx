@@ -148,6 +148,17 @@ export default function Payroll() {
     <>
       {saveSuccess && <SuccessBanner>Success - forecast updated</SuccessBanner>}
       {errors && <ErrorSummary errors={errors} />}
+      <div className="govuk-form-group">
+        <button className="govuk-button" onClick={handleSavePayroll}>
+          Save changes
+        </button>
+        <a
+          className="govuk-button govuk-button--secondary govuk-!-margin-left-4"
+          href={window.forecastUrl}
+        >
+          Go to forecast
+        </a>
+      </div>
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <Tab label="Payroll" key="1">
           <TanstackTable
@@ -162,17 +173,21 @@ export default function Payroll() {
           />
         </Tab>
         <Tab label="Non-payroll" key="2">
-          <div className="govuk-body">
-            Non-payroll includes staff on maternity leave,{" "}
-            <a
-              class="govuk-link"
-              target="_blank"
-              href="https://www.civil-service-careers.gov.uk/fast-stream/"
-            >
-              Fast Streamers
-            </a>
-            , contingent workers (contractors), staff loaned in from other
-            departments and secondments.
+          <div className="govuk-grid-row">
+            <div className="govuk-grid-column-two-thirds">
+              <p className="govuk-body">
+                Non-payroll includes staff on maternity leave,{" "}
+                <a
+                  class="govuk-link"
+                  target="_blank"
+                  href="https://www.civil-service-careers.gov.uk/fast-stream/"
+                >
+                  Fast Streamers
+                </a>
+                , contingent workers (contractors), staff loaned in from other
+                departments and secondments.
+              </p>
+            </div>
           </div>
           <TanstackTable
             data={nonPayroll}
@@ -218,9 +233,6 @@ export default function Payroll() {
           </div>
         </Tab>
       </Tabs>
-      <button className="govuk-button" onClick={handleSavePayroll}>
-        Save payroll and update forecast
-      </button>
       <ForecastTable
         forecast={forecastAndActuals}
         months={allPayroll.previous_months}
