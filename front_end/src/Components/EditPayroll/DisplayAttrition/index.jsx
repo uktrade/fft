@@ -81,11 +81,15 @@ const Description = () => {
   return (
     <>
       <h3 className="govuk-heading-s">Attrition rate</h3>
-      <p className="govuk-body">
-        Attrition rate is the rate in which staff leave an organisation over a
-        year. DBT sets a default rate of X% but you can override it for your
-        cost centre.
-      </p>
+      <div className="govuk-grid-row">
+        <div className="govuk-grid-column-two-thirds">
+          <p className="govuk-body">
+            Attrition rate is the rate in which staff leave an organisation over
+            a year. DBT sets a default rate of X% but you can override it for
+            your cost centre.
+          </p>
+        </div>
+      </div>
     </>
   );
 };
