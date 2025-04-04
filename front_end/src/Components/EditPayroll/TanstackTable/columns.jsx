@@ -109,10 +109,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
       header: "Manage",
       footer: `${data.length} rows`,
       cell: ({ row }) => (
-        <a
-          className="govuk-button govuk-button--secondary govuk-!-margin-0"
-          href={`vacancies/${row.original.id}/edit`}
-        >
+        <a className="govuk-link" href={`vacancies/${row.original.id}/edit`}>
           Edit
         </a>
       ),

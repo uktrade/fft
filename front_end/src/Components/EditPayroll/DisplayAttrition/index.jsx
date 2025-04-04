@@ -18,7 +18,7 @@ const DisplayAttrition = ({
               {attrition.map((value, index) => {
                 return (
                   <td className="govuk-table__cell" key={index}>
-                    <div class="govuk-input__wrapper">
+                    <div className="govuk-input__wrapper">
                       <input
                         className="govuk-input govuk-input--width-3"
                         id={`modifier-${index}`}
