@@ -15,7 +15,13 @@ export default function ForecastTable({ forecast, months }) {
                 Programme code
               </th>
               <th scope="col" className="govuk-table__header">
-                Natural account code
+                Programme description
+              </th>
+              <th scope="col" className="govuk-table__header">
+                <abbr title="Natural account code">NAC</abbr>
+              </th>
+              <th scope="col" className="govuk-table__header">
+                <abbr title="Natural account code">NAC</abbr> description
               </th>
               {months.map((month) => {
                 return (
@@ -34,12 +40,10 @@ export default function ForecastTable({ forecast, months }) {
             {forecast.map((row, index) => {
               return (
                 <tr className="govuk-table__row" key={index}>
-                  <th scope="row" className="govuk-table__header">
-                    {row.programme_code}
-                  </th>
-                  <th scope="row" className="govuk-table__header">
-                    {row.natural_account_code}
-                  </th>
+                  <td>{row.programme_code}</td>
+                  <td>{row.programme_description}</td>
+                  <td>{row.natural_account_code}</td>
+                  <td>{row.nac_description}</td>
                   {months.map((month) => {
                     const isActualClass = month.is_actual ? "not-editable" : "";
                     return (
