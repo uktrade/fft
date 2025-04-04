@@ -86,7 +86,9 @@ export default function Payroll() {
     for (const item of allPayroll.forecast) {
       let results = {
         programme_code: item.programme_code,
+        programme_description: item.programme_description,
         natural_account_code: item.natural_account_code,
+        nac_description: item.nac_description,
       };
 
       allPayroll.previous_months.map((month) => {
