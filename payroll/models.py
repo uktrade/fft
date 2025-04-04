@@ -194,6 +194,7 @@ class Vacancy(Position):
                 message="Only letters, spaces, - and ' are allowed.",
             )
         ],
+        help_text="Only if you have their name",
     )
     hiring_manager = models.CharField(
         max_length=255,
@@ -207,6 +208,7 @@ class Vacancy(Position):
         ],
     )
     hr_ref = models.CharField(
+        verbose_name="HR reference",
         max_length=255,
         null=True,
         blank=True,
@@ -216,6 +218,7 @@ class Vacancy(Position):
                 message="Only letters, numbers, spaces, - and ' are allowed.",
             )
         ],
+        help_text="A six digit number given by HR",
     )
 
     objects = VacancyQuerySet.as_manager()

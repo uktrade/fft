@@ -1,16 +1,26 @@
 $govuk-assets-path: "/static/govuk/assets/";
 $govuk-page-width: 1800px;
+
 // Due to a change in Vite we need to import govuk-frontend using a full relative path.
 // https://github.com/vitejs/vite/issues/19196
 // https://github.com/alphagov/forms-runner/pull/1136
 @import "../../node_modules/govuk-frontend/dist/govuk/all";
-@import "./header.scss";
 @import "./action-bar.scss";
-@import "./table.scss";
 @import "./cost-centre-filter.scss";
+@import "./form.scss";
+@import "./header.scss";
 @import "./notes.scss";
+@import "./table.scss";
 @import "./tanstack-table.scss";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
+  font-family: $govuk-font-family;
   font-size: 16px;
 }
 
@@ -37,10 +47,6 @@ body {
 .govuk-error-summary__list li {
   color: #d4351c;
   font-weight: 700;
-}
-
-input {
-  @include govuk-font($size: 19);
 }
 
 .highlight {
