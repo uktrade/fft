@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 from django.core.management import call_command
 from django.urls import reverse
 
-from chartofaccountDIT.test.factories import ProgrammeCodeFactory
+from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
 from core.constants import MONTHS
 from core.models import FinancialYear
 from core.types import MonthsDict
@@ -42,6 +42,12 @@ ERNIC_NAC = 71111003
 NACS = [SALARY_NAC, PENSION_NAC, ERNIC_NAC]
 
 
+def set_up_cost_centre():
+    for nac in NACS:
+        NaturalCodeFactory(natural_account_code=nac)
+    return CostCentreFactory(cost_centre_code="123456")
+
+
 def assert_report_results_with_modifiers(
     report, salary, pension, ernic, modifiers=None
 ):
@@ -62,7 +68,7 @@ def assert_report_results_with_modifiers(
 
 
 def test_payroll_forecast(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+    cost_centre = set_up_cost_centre()
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -135,9 +141,9 @@ def test_payroll_forecast(db):
 
 
 def test_one_employee_with_no_modifiers(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+    cost_centre = set_up_cost_centre()
 
-    payroll_employee_1 = EmployeeFactory.create(
+    payroll_employee_1 = EmployeeFactory(
         cost_centre=cost_centre,
         basic_pay=195000,
         pension=7550,
@@ -160,7 +166,7 @@ def test_one_employee_with_no_modifiers(db):
 
 
 def test_one_employee_with_pay_uplift(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+    cost_centre = set_up_cost_centre()
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -206,7 +212,7 @@ def test_one_employee_with_pay_uplift(db):
 
 
 def test_one_employee_with_attrition(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+    cost_centre = set_up_cost_centre()
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,

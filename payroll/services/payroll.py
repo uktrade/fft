@@ -140,6 +140,7 @@ def payroll_forecast_report(
     for programme_code in report:
         prog_code_obj = ProgrammeCode.objects.get(programme_code=programme_code)
         for nac, forecast in report[programme_code].items():
+            print("-------------", nac)
             nac_obj = NaturalCode.objects.get(natural_account_code=nac)
             forecast_floored: list[int] = np.floor(forecast).astype(int).tolist()
             forecast_months: MonthsDict[int] = dict(zip(MONTHS, forecast_floored, strict=False))  # type: ignore
