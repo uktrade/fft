@@ -14,7 +14,12 @@ export default function ForecastTable({ forecast, months }) {
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr>
-              <th className="govuk-table__header" colSpan="2"></th>
+              <th className="govuk-table__header" colSpan="2">
+                Programme
+              </th>
+              <th className="govuk-table__header" colSpan="2">
+                <abbr title="Natural Account Code">NAC</abbr>
+              </th>
               <th className="govuk-table__header" colSpan={actualMonths.length}>
                 Actuals
               </th>
@@ -26,24 +31,23 @@ export default function ForecastTable({ forecast, months }) {
               </th>
             </tr>
             <tr className="govuk-table__row">
-              <th scope="col" className="govuk-table__header align-end">
-                Programme code
+              <th scope="col" className="govuk-table__header">
+                Code
               </th>
-              <th scope="col" className="govuk-table__header align-end">
-                Programme <br />
-                description
+              <th scope="col" className="govuk-table__header">
+                Description
               </th>
-              <th scope="col" className="govuk-table__header align-end">
-                <abbr title="Natural Account Code">NAC</abbr>
+              <th scope="col" className="govuk-table__header">
+                Code
               </th>
-              <th scope="col" className="govuk-table__header align-end">
-                <abbr title="Natural Account Code">NAC</abbr> description
+              <th scope="col" className="govuk-table__header">
+                Description
               </th>
               {months.map((month) => {
                 return (
                   <th
                     scope="col"
-                    className="govuk-table__header align-end"
+                    className="govuk-table__header"
                     key={month.key}
                   >
                     {month.short_name}
