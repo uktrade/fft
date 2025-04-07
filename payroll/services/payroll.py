@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Avg, Count, Q
 
+from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from core.constants import MONTHS, PERIODS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
@@ -137,13 +138,17 @@ def payroll_forecast_report(
         prog_report[settings.PAYROLL.VACANCY_NAC] += periods * salary
 
     for programme_code in report:
+        prog_code_obj = ProgrammeCode.objects.get(programme_code=programme_code)
         for nac, forecast in report[programme_code].items():
+            nac_obj = NaturalCode.objects.get(natural_account_code=nac)
             forecast_floored: list[int] = np.floor(forecast).astype(int).tolist()
             forecast_months: MonthsDict[int] = dict(zip(MONTHS, forecast_floored, strict=False))  # type: ignore
 
             yield PayrollForecast(
                 programme_code=programme_code,
+                programme_description=prog_code_obj.programme_description,
                 natural_account_code=nac,
+                nac_description=nac_obj.natural_account_code_description,
                 **forecast_months,
             )
 

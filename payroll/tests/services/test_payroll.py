@@ -61,8 +61,8 @@ def assert_report_results_with_modifiers(
             assert float(report[nac][month]) == pytest.approx(expected_result)
 
 
-def test_payroll_forecast(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+def test_payroll_forecast(db, payroll_nacs):
+    cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -134,10 +134,10 @@ def test_payroll_forecast(db):
     assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
 
 
-def test_one_employee_with_no_modifiers(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+def test_one_employee_with_no_modifiers(db, payroll_nacs):
+    cost_centre = CostCentreFactory(cost_centre_code="123456")
 
-    payroll_employee_1 = EmployeeFactory.create(
+    payroll_employee_1 = EmployeeFactory(
         cost_centre=cost_centre,
         basic_pay=195000,
         pension=7550,
@@ -159,8 +159,8 @@ def test_one_employee_with_no_modifiers(db):
     assert_report_results_with_modifiers(report_by_nac, e1s, e1p, e1e)
 
 
-def test_one_employee_with_pay_uplift(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+def test_one_employee_with_pay_uplift(db, payroll_nacs):
+    cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -205,8 +205,8 @@ def test_one_employee_with_pay_uplift(db):
     )
 
 
-def test_one_employee_with_attrition(db):
-    cost_centre = CostCentreFactory.create(cost_centre_code="123456")
+def test_one_employee_with_attrition(db, payroll_nacs):
+    cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
         cost_centre=cost_centre,

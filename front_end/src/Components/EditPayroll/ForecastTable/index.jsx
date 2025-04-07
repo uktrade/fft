@@ -14,7 +14,12 @@ export default function ForecastTable({ forecast, months }) {
         <table className="govuk-table">
           <thead className="govuk-table__head">
             <tr>
-              <th className="govuk-table__header" colSpan="2"></th>
+              <th className="govuk-table__header" colSpan="2">
+                Programme
+              </th>
+              <th className="govuk-table__header" colSpan="2">
+                <abbr title="Natural Account Code">NAC</abbr>
+              </th>
               <th className="govuk-table__header" colSpan={actualMonths.length}>
                 Actuals
               </th>
@@ -27,10 +32,16 @@ export default function ForecastTable({ forecast, months }) {
             </tr>
             <tr className="govuk-table__row">
               <th scope="col" className="govuk-table__header">
-                Programme code
+                Code
               </th>
               <th scope="col" className="govuk-table__header">
-                Natural account code
+                Description
+              </th>
+              <th scope="col" className="govuk-table__header">
+                Code
+              </th>
+              <th scope="col" className="govuk-table__header">
+                Description
               </th>
               {months.map((month) => {
                 return (
@@ -49,12 +60,14 @@ export default function ForecastTable({ forecast, months }) {
             {forecast.map((row, index) => {
               return (
                 <tr className="govuk-table__row" key={index}>
-                  <th scope="row" className="govuk-table__header">
-                    {row.programme_code}
-                  </th>
-                  <th scope="row" className="govuk-table__header">
+                  <td className="govuk-table__cell">{row.programme_code}</td>
+                  <td className="govuk-table__cell">
+                    {row.programme_description}
+                  </td>
+                  <td className="govuk-table__cell">
                     {row.natural_account_code}
-                  </th>
+                  </td>
+                  <td className="govuk-table__cell">{row.nac_description}</td>
                   {months.map((month) => {
                     const isActualClass = month.is_actual ? "not-editable" : "";
                     return (
