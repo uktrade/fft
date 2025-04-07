@@ -1,21 +1,33 @@
-from django.contrib.admin.widgets import AutocompleteSelect
+from django import forms
+from django.forms.renderers import TemplatesSetting
 
 
-class FormAutocompleteSelect(AutocompleteSelect):
-    """Use the admin autocomplete class in a form,
-    by passing the name of the model to use in
-    the auto complete dropdown.
-    Unfortunately, it only works for people with Admin access"""
+class FormRenderer(TemplatesSetting):
+    field_template_name = "core/forms/field.html"
+    form_template_name = "core/forms/form.html"
 
-    class admin_site:
-        pass
 
-    class rel:
-        pass
+class ModelForm(forms.ModelForm):
+    error_css_class = "govuk-input--error"
 
-    def __init__(self, model, **kwargs):
-        self.admin_site.name = "admin"
-        self.rel.model = model
-        super(FormAutocompleteSelect, self).__init__(
-            self.rel, self.admin_site, **kwargs
-        )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.fields.values():
+            match field.widget:
+                case forms.Select():
+                    field.widget.attrs.update({"class": "govuk-select"})
+                case forms.TextInput():
+                    field.widget.attrs.update({"class": "govuk-input"})
+
+
+class ChoicesWidget(forms.Select):
+    template_name = "core/forms/widgets/choices.html"
+
+    class Media:
+        css = {
+            "all": [
+                "choices.js/public/assets/styles/choices.min.css",
+            ],
+        }
+        js = ["choices.js/public/assets/scripts/choices.min.js"]

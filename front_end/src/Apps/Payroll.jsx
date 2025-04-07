@@ -178,7 +178,7 @@ export default function Payroll() {
               <p className="govuk-body">
                 Non-payroll includes staff on maternity leave,{" "}
                 <a
-                  class="govuk-link"
+                  className="govuk-link"
                   target="_blank"
                   href="https://www.civil-service-careers.gov.uk/fast-stream/"
                 >

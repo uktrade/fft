@@ -7,7 +7,7 @@
   th,
   td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 0.25rem;
     text-align: left;
   }
 
@@ -27,7 +27,7 @@
 
   .table-options {
     display: flex;
-    align-items: anchor-center;
+    align-items: flex-end;
   }
 
   .search-input {
