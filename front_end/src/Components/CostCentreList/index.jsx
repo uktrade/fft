@@ -80,7 +80,7 @@ const CostCentreList = ({ rowIndex, cellKey, format }) => {
         {forecastFinYearDisplay} financial year
       </h3>
       <input
-        placeholder="Filter your cost centres"
+        placeholder="Search your cost centres"
         type="text"
         className="govuk-input"
         onChange={(e) => {
