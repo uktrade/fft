@@ -53,8 +53,8 @@ function TanstackTable({ data, columns, previousMonths, tableId }) {
 
   return (
     <div className="tanstack-table scrollable">
-      <div className="table-options">
-        <div className="govuk-form-group">
+      <div className="table-options" style={{ marginBlockEnd: "1rem" }}>
+        <div>
           <label className="govuk-label" htmlFor={`${tableId}-search`}>
             Search
           </label>
@@ -64,16 +64,18 @@ function TanstackTable({ data, columns, previousMonths, tableId }) {
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
             placeholder="Search rows..."
-            className="search-input"
+            className="search-input govuk-input"
           />
         </div>
-        <ToggleCheckbox
-          toggle={showPreviousMonths}
-          handler={togglePreviousMonthsVisibility}
-          id={`${tableId}-previous-months`}
-          value={`${tableId}-previous-months`}
-          label="Show previous months"
-        />
+        <div style={{ flex: 1 }}>
+          <ToggleCheckbox
+            toggle={showPreviousMonths}
+            handler={togglePreviousMonthsVisibility}
+            id={`${tableId}-previous-months`}
+            value={`${tableId}-previous-months`}
+            label="Show previous months"
+          />
+        </div>
       </div>
       <table>
         <thead>
