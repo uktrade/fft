@@ -1,25 +1,19 @@
-from django import forms
-
+from core.forms import ChoicesWidget, ModelForm
 from payroll.models import Vacancy
 
 
-class VacancyForm(forms.ModelForm):
+class VacancyForm(ModelForm):
     class Meta:
         model = Vacancy
-        exclude = ["cost_centre", "fte"]
-        labels = {"hr_ref": "HR reference"}
+        fields = [
+            "recruitment_type",
+            "grade",
+            "recruitment_stage",
+            "programme_code",
+            "appointee_name",
+            "hiring_manager",
+            "hr_ref",
+        ]
         widgets = {
-            "recruitment_type": forms.Select(attrs={"class": "govuk-select"}),
-            "grade": forms.Select(attrs={"class": "govuk-select"}),
-            "recruitment_stage": forms.Select(attrs={"class": "govuk-select"}),
-            "programme_code": forms.Select(attrs={"class": "govuk-select"}),
-            "appointee_name": forms.TextInput(
-                attrs={"class": "govuk-input govuk-input--width-20"}
-            ),
-            "hiring_manager": forms.TextInput(
-                attrs={"class": "govuk-input govuk-input--width-20"}
-            ),
-            "hr_ref": forms.TextInput(
-                attrs={"class": "govuk-input govuk-input--width-20"}
-            ),
+            "programme_code": ChoicesWidget,
         }

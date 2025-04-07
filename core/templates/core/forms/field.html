@@ -1,0 +1,15 @@
+{% if field.use_fieldset %}
+    <fieldset class="govuk-fieldset"{% if field.help_text and field.auto_id and 'aria-describedby' not in field.field.widget.attrs %} aria-describedby="{{ field.auto_id }}_helptext"{% endif %}>{% if field.label %}{{ field.legend_tag }}{% endif %}
+{% else %}
+    {% if field.label %}<label class="govuk-label" for="{{ field.id_for_label }}">{{ field.label }}{% if not field.field.required %} <span>(optional)</span>{% endif %}</label>{% endif %}
+{% endif %}
+{% if field.help_text %}<div class="govuk-hint"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+{% if field.errors %}
+    <p id="{{ field.id_for_label }}-error" class="govuk-error-message">
+        {% for error in field.errors %}
+            <span class="govuk-visually-hidden">Error:</span> {{ error }}<br>
+        {% endfor %}
+    </p>
+{% endif %}
+{{ field }}
+{% if field.use_fieldset %}</fieldset>{% endif %}
