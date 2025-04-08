@@ -10,7 +10,8 @@ from core.types import MonthsDict
 from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
-from payroll.models import EmployeePayPeriods
+from gifthospitality.test.factories import GradeFactory
+from payroll.models import Employee, EmployeePayPeriods
 from payroll.services.payroll import (
     PayrollForecast,
     employee_created,
@@ -19,6 +20,7 @@ from payroll.services.payroll import (
     update_payroll_forecast,
     update_payroll_forecast_figure,
     vacancy_created,
+    get_average_salary_for_grade,
 )
 
 from ..factories import (
@@ -353,3 +355,42 @@ def test_update_all_employee_pay_periods(db):
 
     # then there are 2 pay periods
     assert EmployeePayPeriods.objects.count() == 2
+
+
+def test_average_vacancy_cost(db):
+    cost_centre_1 = CostCentreFactory(
+        cost_centre_code="000001", directorate__directorate_code="000001"
+    )
+    cost_centre_2 = CostCentreFactory(
+        cost_centre_code="000002", directorate__directorate_code="000002"
+    )
+    grade = GradeFactory()
+
+    EmployeeFactory(
+        cost_centre=cost_centre_1,
+        grade=grade,
+        basic_pay=1,
+        ernic=1,
+        pension=1,
+    )
+    EmployeeFactory(
+        cost_centre=cost_centre_1,
+        grade=grade,
+        basic_pay=2,
+        ernic=2,
+        pension=2,
+    )
+    EmployeeFactory(
+        cost_centre=cost_centre_2,
+        grade=grade,
+        basic_pay=3,
+        ernic=3,
+        pension=3,
+    )
+    avg_costs = get_average_salary_for_grade(grade=grade, cost_centre=cost_centre_1)
+    expected_avg_costs = {
+        "basic_pay": 1.5,
+        "ernic": 1.5,
+        "pension": 1.5,
+    }
+    assert avg_costs == expected_avg_costs
