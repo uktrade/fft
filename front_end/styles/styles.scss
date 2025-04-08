@@ -49,6 +49,10 @@ body {
   font-weight: 700;
 }
 
+input {
+  @include govuk-font($size: 19);
+}
+
 .highlight {
   background-color: $govuk-focus-colour;
   border: 2px solid $govuk-text-colour;
