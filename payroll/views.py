@@ -1,3 +1,4 @@
+import waffle
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
@@ -8,6 +9,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.base import ContextMixin, TemplateView
 
+from config import flags
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
@@ -19,6 +21,9 @@ from .services.ingest import import_payroll
 
 class EditPayrollBaseView(UserPassesTestMixin, ContextMixin, View):
     def test_func(self) -> bool | None:
+        if not waffle.flag_is_active(self.request, flags.EDIT_PAYROLL):
+            return False
+
         return payroll_service.can_edit_payroll(
             self.request.user,
             self.cost_centre,

@@ -1,7 +1,9 @@
 import pytest
+import waffle.testutils
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 
+from config import flags
 from costcentre.test.factories import CostCentreFactory, FinancialYearFactory
 from forecast.permission_shortcuts import assign_perm
 from user.models import User
@@ -36,5 +38,7 @@ def test_access_to_edit_payroll(client, user, group_names, cost_centres, status_
     user = User.objects.get(pk=user.pk)
     client.force_login(user)
 
-    r = client.get(url)
+    with waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True):
+        r = client.get(url)
+
     assert r.status_code == status_code

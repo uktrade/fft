@@ -26,11 +26,11 @@
                 Download
             </a>
             {% can_access_edit_payroll user as user_can_access_edit_payroll %}
-            {% switch 'payroll' %}
+            {% flag 'edit-payroll' %}
                 {% if user_can_access_edit_payroll %}
                     <a class="govuk-button govuk-button--secondary" href="{% url 'payroll:edit' view.cost_centre_details.cost_centre_code view.financial_year %}">Go to payroll</a>
                 {% endif %}
-            {% endswitch %}
+            {% endflag %}
         </div>
     </div>
 

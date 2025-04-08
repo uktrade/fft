@@ -17,3 +17,8 @@ STORAGES["default"]["BACKEND"] = "django.core.files.storage.FileSystemStorage"
 # I'm not aware of any case where we need the history whilst running tests. This should
 # hopefully speed up the tests a little bit.
 SIMPLE_HISTORY_ENABLED = False
+
+# Dummy cache required to get around waffle race condition when running under xdist.
+# https://github.com/jazzband/django-waffle/issues/350
+CACHES["dummy_cache"] = {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}
+WAFFLE_CACHE_NAME = "dummy_cache"
