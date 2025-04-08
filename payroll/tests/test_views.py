@@ -20,7 +20,6 @@ from user.models import User
         (["Finance Business Partner/BSCE"], ["888812"], 200),
     ],
 )
-@waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True)
 def test_access_to_edit_payroll(client, user, group_names, cost_centres, status_code):
     call_command("manage_groups")
 
@@ -39,5 +38,7 @@ def test_access_to_edit_payroll(client, user, group_names, cost_centres, status_
     user = User.objects.get(pk=user.pk)
     client.force_login(user)
 
-    r = client.get(url)
+    with waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True):
+        r = client.get(url)
+
     assert r.status_code == status_code

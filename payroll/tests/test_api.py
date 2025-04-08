@@ -15,7 +15,6 @@ from payroll.tests.factories import (
 )
 
 
-@waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True)
 def test_update_notes_faulty_json(db, client, user):
     call_command("manage_groups")
 
@@ -30,16 +29,16 @@ def test_update_notes_faulty_json(db, client, user):
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
     )
 
-    response = client.post(
-        url,
-        data="some string",
-        content_type="application/json",
-    )
+    with waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True):
+        response = client.post(
+            url,
+            data="some string",
+            content_type="application/json",
+        )
     assert url == "/payroll/api/888813/2024/employees/notes"
     assert response.status_code == 400
 
 
-@waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True)
 def test_update_notes_fail(db, client, user):
     call_command("manage_groups")
 
@@ -54,15 +53,15 @@ def test_update_notes_fail(db, client, user):
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
     )
 
-    response = client.post(
-        url,
-        data=json.dumps({"notes": "some notes"}),
-        content_type="application/json",
-    )
+    with waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True):
+        response = client.post(
+            url,
+            data=json.dumps({"notes": "some notes"}),
+            content_type="application/json",
+        )
     assert response.status_code == 400
 
 
-@waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True)
 def test_update_notes_success(db, client, user):
     call_command("manage_groups")
     data = {
@@ -90,11 +89,12 @@ def test_update_notes_success(db, client, user):
         kwargs={"cost_centre_code": "888813", "financial_year": 2024},
     )
 
-    response = client.post(
-        url,
-        data=json.dumps(data),
-        content_type="application/json",
-    )
+    with waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True):
+        response = client.post(
+            url,
+            data=json.dumps(data),
+            content_type="application/json",
+        )
     pay_period = EmployeePayPeriods.objects.filter(
         employee=employee,
         year=2024,
