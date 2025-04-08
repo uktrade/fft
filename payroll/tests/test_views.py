@@ -1,7 +1,9 @@
 import pytest
+import waffle.testutils
 from django.contrib.auth.models import Group
 from django.core.management import call_command
 
+from config import flags
 from costcentre.test.factories import CostCentreFactory, FinancialYearFactory
 from forecast.permission_shortcuts import assign_perm
 from user.models import User
@@ -18,6 +20,7 @@ from user.models import User
         (["Finance Business Partner/BSCE"], ["888812"], 200),
     ],
 )
+@waffle.testutils.override_flag(flags.EDIT_PAYROLL, active=True)
 def test_access_to_edit_payroll(client, user, group_names, cost_centres, status_code):
     call_command("manage_groups")
 
