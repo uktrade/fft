@@ -6,7 +6,6 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from chartofaccountDIT.models import ProgrammeCode
-from core.models import FinancialYear
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Vacancy, VacancyPayPeriods
@@ -49,12 +48,6 @@ class Command(BaseCommand):
         group.add_argument(
             "--s3_file_name", type=str, help="File name in S3 containing Vacancy data"
         )
-        parser.add_argument(
-            "--year",
-            type=str,
-            help="The year you want to import vacancies from",
-            required=True,
-        )
 
     def handle(self, *args, **options):
         self.log(f"verbosity: {options["verbosity"]}")
@@ -72,15 +65,6 @@ class Command(BaseCommand):
         csv_reader = csv.DictReader(StringIO((file_content)))
 
         for row in csv_reader:
-            if row["Year"] != options["year"]:
-                if options["verbosity"] > 1:
-                    self.log(
-                        self.style.WARNING(
-                            f'Vacancy {row["VacanciesHeadCount_PK"]} not in the given year'
-                        )
-                    )
-                continue
-
             try:
                 cost_centre = CostCentre.objects.get(cost_centre_code=row["CCCode"])
             except CostCentre.DoesNotExist:
@@ -110,6 +94,7 @@ class Command(BaseCommand):
                 continue
 
             vacancy = Vacancy.objects.create(
+                pk=row["FFT_PK"],
                 cost_centre=cost_centre,
                 programme_code=programme_code,
                 grade=grade,
@@ -120,11 +105,9 @@ class Command(BaseCommand):
                 hr_ref=handle_empty_value(row["HRRef"]),
             )
 
-            financial_year = FinancialYear.objects.get(financial_year=row["Year"])
-
             VacancyPayPeriods.objects.create(
                 vacancy=vacancy,
-                year=financial_year,
+                year_id=2025,
                 period_1=get_boolean_period(row["April"]),
                 period_2=get_boolean_period(row["May"]),
                 period_3=get_boolean_period(row["June"]),
