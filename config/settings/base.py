@@ -418,8 +418,6 @@ class Payroll:
     BASIC_PAY_NAC: int | None = None
     PENSION_NAC: int | None = None
     ERNIC_NAC: int | None = None
-    VACANCY_NAC: int | None = None
-    AVERAGE_SALARY_THRESHOLD: int = 2
 
     @property
     def nacs(self):
@@ -428,7 +426,6 @@ class Payroll:
                 self.BASIC_PAY_NAC,
                 self.PENSION_NAC,
                 self.ERNIC_NAC,
-                self.VACANCY_NAC,
             )
         )
 

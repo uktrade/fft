@@ -1,3 +1,4 @@
+from math import floor
 from random import randrange
 from statistics import mean
 
@@ -11,16 +12,17 @@ from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import Employee, EmployeePayPeriods
+from payroll.models import EmployeePayPeriods
 from payroll.services.payroll import (
+    EmployeeCost,
     PayrollForecast,
     employee_created,
+    get_average_cost_for_grade,
     payroll_forecast_report,
     update_all_employee_pay_periods,
     update_payroll_forecast,
     update_payroll_forecast_figure,
     vacancy_created,
-    get_average_salary_for_grade,
 )
 
 from ..factories import (
@@ -51,11 +53,11 @@ def assert_report_results_with_modifiers(
             if nac == SALARY_NAC:
                 expected_result = salary * modifier
             elif nac == PENSION_NAC:
-                expected_result = pension
+                expected_result = pension * modifier
             else:
-                expected_result = ernic
+                expected_result = ernic * modifier
 
-            assert float(report[nac][month]) == pytest.approx(expected_result)
+            assert float(report[nac][month]) == pytest.approx(floor(expected_result))
 
 
 def test_payroll_forecast(db, payroll_nacs):
@@ -120,15 +122,16 @@ def test_payroll_forecast(db, payroll_nacs):
     e2s = ((1500 - 55.6) + (80 - 0)) * 100
     e2p = (130.25 - 15) * 100
     v1s = mean([e1s, e2s]) * 0.5
+    v1p = mean([e1p, e2p]) * 0.5
 
     # employee 3 and 4 are non-payroll (no basic pay)
 
-    assert float(report_by_nac[SALARY_NAC]["apr"]) == pytest.approx(e1s + e2s)
-    assert float(report_by_nac[PENSION_NAC]["apr"]) == pytest.approx(e1p + e2p)
-    assert float(report_by_nac[SALARY_NAC]["may"]) == pytest.approx(e1s)
-    assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(e1p)
-    assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(v1s)
-    assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(0)
+    assert float(report_by_nac[SALARY_NAC]["apr"]) == pytest.approx(floor(e1s + e2s))
+    assert float(report_by_nac[PENSION_NAC]["apr"]) == pytest.approx(floor(e1p + e2p))
+    assert float(report_by_nac[SALARY_NAC]["may"]) == pytest.approx(floor(e1s))
+    assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(floor(e1p))
+    assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(floor(v1s))
+    assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(floor(v1p))
 
 
 def test_one_employee_with_no_modifiers(db, payroll_nacs):
@@ -358,6 +361,7 @@ def test_update_all_employee_pay_periods(db):
 
 
 def test_average_vacancy_cost(db):
+    # 2 cost centres in different directorates
     cost_centre_1 = CostCentreFactory(
         cost_centre_code="000001", directorate__directorate_code="000001"
     )
@@ -387,10 +391,10 @@ def test_average_vacancy_cost(db):
         ernic=3,
         pension=3,
     )
-    avg_costs = get_average_salary_for_grade(grade=grade, cost_centre=cost_centre_1)
-    expected_avg_costs = {
-        "basic_pay": 1.5,
-        "ernic": 1.5,
-        "pension": 1.5,
-    }
-    assert avg_costs == expected_avg_costs
+    employee_cost = get_average_cost_for_grade(grade=grade, cost_centre=cost_centre_1)
+    expected = EmployeeCost(
+        basic_pay=1.5,
+        ernic=1.5,
+        pension=1.5,
+    )
+    assert employee_cost == expected

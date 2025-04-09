@@ -1,14 +1,14 @@
 import operator
 from collections import defaultdict
+from dataclasses import dataclass
 from itertools import accumulate
-from statistics import mean
 from typing import Iterator, TypedDict
 
 import numpy as np
 import numpy.typing as npt
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Q
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from core.constants import MONTHS, PERIODS
@@ -113,9 +113,7 @@ def payroll_forecast_report(
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += (
-            periods * employee.basic_pay * pay_uplift_accumulate * attrition_accumulate
-        )
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
         prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
         prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
 
@@ -128,20 +126,22 @@ def payroll_forecast_report(
         )
     )
     for vacancy in vacancy_qs.iterator(chunk_size=2000):
-        avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
-        salary = vacancy.fte * avg_salary
+        avg_costs = get_average_cost_for_grade(vacancy.grade, cost_centre)
 
         periods = vacancy.pay_periods.first().periods
-        periods = np.array(periods)
+        periods = np.array(periods) * vacancy.fte
 
         prog_report = report[vacancy.programme_code_id]
-        prog_report[settings.PAYROLL.VACANCY_NAC] += periods * salary
+        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * avg_costs.basic_pay
+        prog_report[settings.PAYROLL.PENSION_NAC] += periods * avg_costs.pension
+        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * avg_costs.ernic
 
     for programme_code in report:
         prog_code_obj = ProgrammeCode.objects.get(programme_code=programme_code)
         for nac, forecast in report[programme_code].items():
             nac_obj = NaturalCode.objects.get(natural_account_code=nac)
-            forecast_floored: list[int] = np.floor(forecast).astype(int).tolist()
+            adj_forecast = forecast * pay_uplift_accumulate * attrition_accumulate
+            forecast_floored: list[int] = np.floor(adj_forecast).astype(int).tolist()
             forecast_months: MonthsDict[int] = dict(zip(MONTHS, forecast_floored, strict=False))  # type: ignore
 
             yield PayrollForecast(
@@ -211,19 +211,20 @@ def get_attrition_instance(
     ).first()
 
 
-# TODO (FFT-131): Apply caching to the average salary calculation
-def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
-    employee_count_threshold = settings.PAYROLL.AVERAGE_SALARY_THRESHOLD
+@dataclass
+class EmployeeCost:
+    basic_pay: float
+    ernic: float
+    pension: float
 
-    # Expanding scope filters which start at the cost centre and end at all employees.
+
+def get_average_cost_for_grade(grade: Grade, cost_centre: CostCentre) -> EmployeeCost:
+    # Expanding scope filters which start at the directorate and end at all employees.
     filters = [
-        Q(cost_centre=cost_centre),
         Q(cost_centre__directorate=cost_centre.directorate),
         Q(cost_centre__directorate__group=cost_centre.directorate.group),
         Q(),
     ]
-
-    salaries: list[int] = []
 
     for filter in filters:
         employee_qs = (
@@ -232,21 +233,18 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
             .filter(filter)
         )
 
-        basic_pay = employee_qs.aggregate(
-            count=Count("basic_pay"), avg=Avg("basic_pay")
+        agg_qs = employee_qs.aggregate(Avg("basic_pay"), Avg("ernic"), Avg("pension"))
+
+        average_costs = EmployeeCost(
+            basic_pay=agg_qs["basic_pay__avg"],
+            ernic=agg_qs["ernic__avg"],
+            pension=agg_qs["pension__avg"],
         )
 
-        if basic_pay["count"] >= employee_count_threshold:
-            return basic_pay["avg"]
+        if any((average_costs.basic_pay, average_costs.ernic, average_costs.pension)):
+            return average_costs
 
-        if basic_pay["count"]:
-            salaries += list(employee_qs.values_list("basic_pay", flat=True))
-
-    if salaries:
-        return round(mean(salaries))  # pence
-
-    # TODO: What do we do if there were no employees at all found at that grade?
-    return 0
+    return EmployeeCost(basic_pay=0, ernic=0, pension=0)
 
 
 class EmployeePayroll(TypedDict):
