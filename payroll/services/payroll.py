@@ -113,9 +113,9 @@ def payroll_forecast_report(
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * employee.basic_pay
-        prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
-        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
+        prog_report[settings.PAYROLL_BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL_PENSION_NAC] += periods * employee.pension
+        prog_report[settings.PAYROLL_ERNIC_NAC] += periods * employee.ernic
 
     vacancy_qs = (
         Vacancy.objects.select_related("grade")
@@ -132,9 +132,9 @@ def payroll_forecast_report(
         periods = np.array(periods) * vacancy.fte
 
         prog_report = report[vacancy.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += periods * avg_costs.basic_pay
-        prog_report[settings.PAYROLL.PENSION_NAC] += periods * avg_costs.pension
-        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * avg_costs.ernic
+        prog_report[settings.PAYROLL_BASIC_PAY_NAC] += periods * avg_costs.basic_pay
+        prog_report[settings.PAYROLL_PENSION_NAC] += periods * avg_costs.pension
+        prog_report[settings.PAYROLL_ERNIC_NAC] += periods * avg_costs.ernic
 
     for programme_code in report:
         prog_code_obj = ProgrammeCode.objects.get(programme_code=programme_code)
@@ -526,11 +526,7 @@ def get_actuals_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> dict[str, int]:
-    nac_codes = [
-        settings.PAYROLL.BASIC_PAY_NAC,
-        settings.PAYROLL.PENSION_NAC,
-        settings.PAYROLL.ERNIC_NAC,
-    ]
+    nac_codes = settings.PAYROLL_NACS
 
     qs = ForecastMonthlyFigure.objects.filter(
         financial_year=financial_year,
