@@ -117,8 +117,10 @@ class PreviousMonths(TypedDict):
     is_actual: bool
 
 
-def get_previous_months_data() -> Iterator[PreviousMonths]:
+def get_previous_months_data(financial_year: FinancialYear) -> Iterator[PreviousMonths]:
     from forecast.models import FinancialPeriod
+
+    is_future = FinancialYear.objects.future().contains(financial_year)
 
     qs = FinancialPeriod.objects.filter(financial_period_code__lte=12).order_by(
         "financial_period_code"
@@ -128,5 +130,5 @@ def get_previous_months_data() -> Iterator[PreviousMonths]:
             key=obj.period_short_name.lower(),
             index=obj.financial_period_code,
             short_name=obj.period_short_name,
-            is_actual=obj.actual_loaded,
+            is_actual=obj.actual_loaded if not is_future else False,
         )
