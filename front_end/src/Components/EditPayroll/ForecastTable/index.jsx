@@ -20,15 +20,22 @@ export default function ForecastTable({ forecast, months }) {
               <th className="govuk-table__header" colSpan="2">
                 <abbr title="Natural Account Code">NAC</abbr>
               </th>
-              <th className="govuk-table__header" colSpan={actualMonths.length}>
-                Actuals
-              </th>
-              <th
-                className="govuk-table__header"
-                colSpan={forecastMonths.length}
-              >
-                Forecast
-              </th>
+              {actualMonths.length > 0 && (
+                <th
+                  className="govuk-table__header"
+                  colSpan={actualMonths.length}
+                >
+                  Actuals
+                </th>
+              )}
+              {forecastMonths.length > 0 && (
+                <th
+                  className="govuk-table__header"
+                  colSpan={forecastMonths.length}
+                >
+                  Forecast
+                </th>
+              )}
             </tr>
             <tr className="govuk-table__row">
               <th scope="col" className="govuk-table__header">

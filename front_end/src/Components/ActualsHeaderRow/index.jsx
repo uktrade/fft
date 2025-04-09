@@ -43,12 +43,14 @@ const ActualsHeaderRow = () => {
           Actuals
         </th>
       )}
-      <th
-        className="govuk-table__head meta-col"
-        colSpan={forecastColCount - actualsCount}
-      >
-        Forecast
-      </th>
+      {actualsCount !== 12 && (
+        <th
+          className="govuk-table__head meta-col"
+          colSpan={forecastColCount - actualsCount}
+        >
+          Forecast
+        </th>
+      )}
     </tr>
   );
 };
