@@ -237,7 +237,6 @@ GTM_CODE = env("GTM_CODE", default=None)
 SETTINGS_EXPORT = [
     "DEBUG",
     "GTM_CODE",
-    "PAYROLL",
 ]
 
 MIDDLEWARE = [
@@ -412,25 +411,7 @@ CSP_REPORT_URI = env.str("CSP_REPORT_URI", default=None)
 
 
 # Payroll
-# TODO: Should we flatten this?
-@dataclass
-class Payroll:
-    BASIC_PAY_NAC: int | None = None
-    PENSION_NAC: int | None = None
-    ERNIC_NAC: int | None = None
-    VACANCY_NAC: int | None = None
-    AVERAGE_SALARY_THRESHOLD: int = 2
-
-    @property
-    def nacs(self):
-        return set(
-            (
-                self.BASIC_PAY_NAC,
-                self.PENSION_NAC,
-                self.ERNIC_NAC,
-                self.VACANCY_NAC,
-            )
-        )
-
-
-PAYROLL: Payroll = Payroll(**env.json("PAYROLL", default={}))
+PAYROLL_BASIC_PAY_NAC = env.int("PAYROLL_BASIC_PAY_NAC")
+PAYROLL_ERNIC_NAC = env.int("PAYROLL_ERNIC_NAC")
+PAYROLL_PENSION_NAC = env.int("PAYROLL_PENSION_NAC")
+PAYROLL_NACS = [PAYROLL_BASIC_PAY_NAC, PAYROLL_ERNIC_NAC, PAYROLL_PENSION_NAC]

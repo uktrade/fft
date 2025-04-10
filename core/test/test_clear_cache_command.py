@@ -1,9 +1,12 @@
 from django.core.cache import cache
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 
 class ClearCacheCommand(TestCase):
+    @override_settings(
+        CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+    )
     def test_cache(self):
         original_value = "12345678901234567890"
         cache_key = "long_cache_key"

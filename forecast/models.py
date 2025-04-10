@@ -458,7 +458,7 @@ class FinancialCodeAbstract(models.Model):
             return False
 
         return (
-            self.natural_account_code_id in settings.PAYROLL.nacs
+            self.natural_account_code_id in settings.PAYROLL_NACS
             and self.analysis1_code is None
             and self.analysis2_code is None
             and self.project_code is None

@@ -1,14 +1,16 @@
 import operator
 from collections import defaultdict
+from dataclasses import dataclass
 from itertools import accumulate
-from statistics import mean
 from typing import Iterator, TypedDict
 
 import numpy as np
 import numpy.typing as npt
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Q
+from django.utils.text import slugify
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from core.constants import MONTHS, PERIODS
@@ -84,7 +86,9 @@ def update_all_employee_pay_periods() -> None:
 
 class PayrollForecast(MonthsDict[int]):
     programme_code: str
+    programme_description: str
     natural_account_code: int
+    nac_description: str
 
 
 def payroll_forecast_report(
@@ -113,11 +117,9 @@ def payroll_forecast_report(
         periods = np.array(periods)
 
         prog_report = report[employee.programme_code_id]
-        prog_report[settings.PAYROLL.BASIC_PAY_NAC] += (
-            periods * employee.basic_pay * pay_uplift_accumulate * attrition_accumulate
-        )
-        prog_report[settings.PAYROLL.PENSION_NAC] += periods * employee.pension
-        prog_report[settings.PAYROLL.ERNIC_NAC] += periods * employee.ernic
+        prog_report[settings.PAYROLL_BASIC_PAY_NAC] += periods * employee.basic_pay
+        prog_report[settings.PAYROLL_PENSION_NAC] += periods * employee.pension
+        prog_report[settings.PAYROLL_ERNIC_NAC] += periods * employee.ernic
 
     vacancy_qs = (
         Vacancy.objects.select_related("grade")
@@ -128,20 +130,22 @@ def payroll_forecast_report(
         )
     )
     for vacancy in vacancy_qs.iterator(chunk_size=2000):
-        avg_salary = get_average_salary_for_grade(vacancy.grade, cost_centre)
-        salary = vacancy.fte * avg_salary
+        avg_costs = get_average_cost_for_grade(vacancy.grade, cost_centre)
 
         periods = vacancy.pay_periods.first().periods
-        periods = np.array(periods)
+        periods = np.array(periods) * vacancy.fte
 
         prog_report = report[vacancy.programme_code_id]
-        prog_report[settings.PAYROLL.VACANCY_NAC] += periods * salary
+        prog_report[settings.PAYROLL_BASIC_PAY_NAC] += periods * avg_costs.basic_pay
+        prog_report[settings.PAYROLL_PENSION_NAC] += periods * avg_costs.pension
+        prog_report[settings.PAYROLL_ERNIC_NAC] += periods * avg_costs.ernic
 
     for programme_code in report:
         prog_code_obj = ProgrammeCode.objects.get(programme_code=programme_code)
         for nac, forecast in report[programme_code].items():
             nac_obj = NaturalCode.objects.get(natural_account_code=nac)
-            forecast_floored: list[int] = np.floor(forecast).astype(int).tolist()
+            adj_forecast = forecast * pay_uplift_accumulate * attrition_accumulate
+            forecast_floored: list[int] = np.floor(adj_forecast).astype(int).tolist()
             forecast_months: MonthsDict[int] = dict(zip(MONTHS, forecast_floored, strict=False))  # type: ignore
 
             yield PayrollForecast(
@@ -211,19 +215,27 @@ def get_attrition_instance(
     ).first()
 
 
-# TODO (FFT-131): Apply caching to the average salary calculation
-def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
-    employee_count_threshold = settings.PAYROLL.AVERAGE_SALARY_THRESHOLD
+@dataclass
+class EmployeeCost:
+    basic_pay: float
+    ernic: float
+    pension: float
 
-    # Expanding scope filters which start at the cost centre and end at all employees.
+
+def get_average_cost_for_grade(grade: Grade, cost_centre: CostCentre) -> EmployeeCost:
+    """Return the average employee cost for a given grade in a cost centre."""
+
+    cache_key = f"average-employee-cost:{slugify(grade.pk)}:{cost_centre.pk}"
+
+    if cached_cost := cache.get(cache_key):
+        return cached_cost
+
+    # Expanding scope filters which start at the directorate and end at all employees.
     filters = [
-        Q(cost_centre=cost_centre),
         Q(cost_centre__directorate=cost_centre.directorate),
         Q(cost_centre__directorate__group=cost_centre.directorate.group),
         Q(),
     ]
-
-    salaries: list[int] = []
 
     for filter in filters:
         employee_qs = (
@@ -232,21 +244,21 @@ def get_average_salary_for_grade(grade: Grade, cost_centre: CostCentre) -> int:
             .filter(filter)
         )
 
-        basic_pay = employee_qs.aggregate(
-            count=Count("basic_pay"), avg=Avg("basic_pay")
+        agg_qs = employee_qs.aggregate(Avg("basic_pay"), Avg("ernic"), Avg("pension"))
+
+        average_cost = EmployeeCost(
+            basic_pay=agg_qs["basic_pay__avg"],
+            ernic=agg_qs["ernic__avg"],
+            pension=agg_qs["pension__avg"],
         )
 
-        if basic_pay["count"] >= employee_count_threshold:
-            return basic_pay["avg"]
+        if any((average_cost.basic_pay, average_cost.ernic, average_cost.pension)):
+            cache.add(cache_key, average_cost, timeout=60 * 60 * 24)  # 1 day
+            return average_cost
 
-        if basic_pay["count"]:
-            salaries += list(employee_qs.values_list("basic_pay", flat=True))
-
-    if salaries:
-        return round(mean(salaries))  # pence
-
-    # TODO: What do we do if there were no employees at all found at that grade?
-    return 0
+    # I'm choosing not to cache this code path as it should never really happen, and if
+    # it does, I don't want if to be stuck in the cache.
+    return EmployeeCost(basic_pay=0, ernic=0, pension=0)
 
 
 class EmployeePayroll(TypedDict):
@@ -528,11 +540,7 @@ def get_actuals_data(
     cost_centre: CostCentre,
     financial_year: FinancialYear,
 ) -> dict[str, int]:
-    nac_codes = [
-        settings.PAYROLL.BASIC_PAY_NAC,
-        settings.PAYROLL.PENSION_NAC,
-        settings.PAYROLL.ERNIC_NAC,
-    ]
+    nac_codes = settings.PAYROLL_NACS
 
     qs = ForecastMonthlyFigure.objects.filter(
         financial_year=financial_year,

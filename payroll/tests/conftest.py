@@ -23,7 +23,7 @@ def user(db, client):
 @pytest.fixture
 def payroll_nacs(db):
     return [
-        NaturalCodeFactory(natural_account_code=settings.PAYROLL.BASIC_PAY_NAC),
-        NaturalCodeFactory(natural_account_code=settings.PAYROLL.PENSION_NAC),
-        NaturalCodeFactory(natural_account_code=settings.PAYROLL.ERNIC_NAC),
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL_BASIC_PAY_NAC),
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL_PENSION_NAC),
+        NaturalCodeFactory(natural_account_code=settings.PAYROLL_ERNIC_NAC),
     ]
