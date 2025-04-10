@@ -7,8 +7,10 @@ from typing import Iterator, TypedDict
 import numpy as np
 import numpy.typing as npt
 from django.conf import settings
+from django.core.cache import cache
 from django.db import transaction
 from django.db.models import Avg, Q
+from django.utils.text import slugify
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from core.constants import MONTHS, PERIODS
@@ -84,7 +86,9 @@ def update_all_employee_pay_periods() -> None:
 
 class PayrollForecast(MonthsDict[int]):
     programme_code: str
+    programme_description: str
     natural_account_code: int
+    nac_description: str
 
 
 def payroll_forecast_report(
@@ -219,6 +223,13 @@ class EmployeeCost:
 
 
 def get_average_cost_for_grade(grade: Grade, cost_centre: CostCentre) -> EmployeeCost:
+    """Return the average employee cost for a given grade in a cost centre."""
+
+    cache_key = f"average-employee-cost:{slugify(grade.pk)}:{cost_centre.pk}"
+
+    if cached_cost := cache.get(cache_key):
+        return cached_cost
+
     # Expanding scope filters which start at the directorate and end at all employees.
     filters = [
         Q(cost_centre__directorate=cost_centre.directorate),
@@ -235,15 +246,18 @@ def get_average_cost_for_grade(grade: Grade, cost_centre: CostCentre) -> Employe
 
         agg_qs = employee_qs.aggregate(Avg("basic_pay"), Avg("ernic"), Avg("pension"))
 
-        average_costs = EmployeeCost(
+        average_cost = EmployeeCost(
             basic_pay=agg_qs["basic_pay__avg"],
             ernic=agg_qs["ernic__avg"],
             pension=agg_qs["pension__avg"],
         )
 
-        if any((average_costs.basic_pay, average_costs.ernic, average_costs.pension)):
-            return average_costs
+        if any((average_cost.basic_pay, average_cost.ernic, average_cost.pension)):
+            cache.add(cache_key, average_cost, timeout=60 * 60 * 24)  # 1 day
+            return average_cost
 
+    # I'm choosing not to cache this code path as it should never really happen, and if
+    # it does, I don't want if to be stuck in the cache.
     return EmployeeCost(basic_pay=0, ernic=0, pension=0)
 
 

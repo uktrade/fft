@@ -69,7 +69,7 @@ def test_payroll_forecast(db, payroll_nacs):
         grade__grade="Grade 7",
         basic_pay=195000,
         pension=7550,
-        ernic=0,
+        ernic=6275,
     )
     payroll_employee_2 = EmployeeFactory.create(
         cost_centre=cost_centre,
@@ -77,7 +77,7 @@ def test_payroll_forecast(db, payroll_nacs):
         grade__grade="Grade 7",
         basic_pay=152440,
         pension=11525,
-        ernic=0,
+        ernic=4230,
     )
     # non-payroll employees
     _ = EmployeeFactory.create_batch(
@@ -115,23 +115,29 @@ def test_payroll_forecast(db, payroll_nacs):
 
     report_by_nac = {x["natural_account_code"]: x for x in report}
 
-    # eN = employee (e.g. employee 1) / s = salary / p = pension
+    # eN = employee (e.g. employee 1) / s = salary / p = pension / e = ernic
     # debit_amount - credit_amount
     e1s = ((2000 - 100) + (100 - 50)) * 100
+    e1e = 6275
     e1p = (75.5 - 0) * 100
     e2s = ((1500 - 55.6) + (80 - 0)) * 100
     e2p = (130.25 - 15) * 100
+    e2e = 4230
     v1s = mean([e1s, e2s]) * 0.5
     v1p = mean([e1p, e2p]) * 0.5
+    v1e = mean([e1e, e2e]) * 0.5
 
     # employee 3 and 4 are non-payroll (no basic pay)
 
     assert float(report_by_nac[SALARY_NAC]["apr"]) == pytest.approx(floor(e1s + e2s))
     assert float(report_by_nac[PENSION_NAC]["apr"]) == pytest.approx(floor(e1p + e2p))
+    assert float(report_by_nac[ERNIC_NAC]["apr"]) == pytest.approx(floor(e1e + e2e))
     assert float(report_by_nac[SALARY_NAC]["may"]) == pytest.approx(floor(e1s))
     assert float(report_by_nac[PENSION_NAC]["may"]) == pytest.approx(floor(e1p))
+    assert float(report_by_nac[ERNIC_NAC]["may"]) == pytest.approx(floor(e1e))
     assert float(report_by_nac[SALARY_NAC]["jun"]) == pytest.approx(floor(v1s))
     assert float(report_by_nac[PENSION_NAC]["jun"]) == pytest.approx(floor(v1p))
+    assert float(report_by_nac[ERNIC_NAC]["jun"]) == pytest.approx(floor(v1e))
 
 
 def test_one_employee_with_no_modifiers(db, payroll_nacs):
@@ -360,7 +366,7 @@ def test_update_all_employee_pay_periods(db):
     assert EmployeePayPeriods.objects.count() == 2
 
 
-def test_average_vacancy_cost(db):
+def test_average_cost_for_grade(db):
     # 2 cost centres in different directorates
     cost_centre_1 = CostCentreFactory(
         cost_centre_code="000001", directorate__directorate_code="000001"
@@ -373,28 +379,30 @@ def test_average_vacancy_cost(db):
     EmployeeFactory(
         cost_centre=cost_centre_1,
         grade=grade,
-        basic_pay=1,
-        ernic=1,
-        pension=1,
+        basic_pay=200000,
+        ernic=18000,
+        pension=40000,
     )
     EmployeeFactory(
         cost_centre=cost_centre_1,
         grade=grade,
-        basic_pay=2,
-        ernic=2,
-        pension=2,
+        basic_pay=250000,
+        ernic=22000,
+        pension=60000,
     )
+    # This employee won't be factored into the calculations.
     EmployeeFactory(
         cost_centre=cost_centre_2,
         grade=grade,
-        basic_pay=3,
-        ernic=3,
-        pension=3,
+        basic_pay=300000,
+        ernic=27000,
+        pension=70000,
     )
+
     employee_cost = get_average_cost_for_grade(grade=grade, cost_centre=cost_centre_1)
     expected = EmployeeCost(
-        basic_pay=1.5,
-        ernic=1.5,
-        pension=1.5,
+        basic_pay=225000,
+        ernic=20000,
+        pension=50000,
     )
     assert employee_cost == expected
