@@ -8,13 +8,13 @@
       <p class="govuk-body">The Financial Forecasting Tool (FFT) replaces Admin Tool.</p>
       <p class="govuk-body">Forecasting used to be done using two separate processes. 
         Spreadsheets were used for programme, capital and AME (<a class="govuk-link" href="https://www.gov.uk/government/publications/how-to-understand-public-sector-spending/how-to-understand-public-sector-spending#annually-managed-expenditure-ame">Annually Managed Expenditure</a>).
-        Payroll and Admin were then done separately in Admin Tool.</p>
+        Payroll and admin were then done separately in Admin Tool.</p>
         <p class="govuk-body">With FFT you can;
           <ul class="govuk-list govuk-list--bullet">
-            <li>manage <a class="govuk-link" href="forecast/edit/choose-cost-centre/">financial forecasts</a></li>
-            <li>manage <a class="govuk-link" href="payroll/edit/choose-cost-centre/">payroll forecasts</a></li>
-            <li>view the <a class="govuk-link" href="chartofaccountDIT/choose-year/">Chart of Account</a> for DBT</li>
-            <li>record <a class="govuk-link" href="gifthospitality/quick-links/">gifts and hospitality</a> given to civil servants</li>
+            <li>manage <a class="govuk-link" href="{% url 'choose_cost_centre' %}">financial forecasts</a></li>
+            <li>manage <a class="govuk-link" href="{% url 'payroll:choose_cost_centre' %}">payroll forecasts</a></li>
+            <li>view the <a class="govuk-link" href="{% url 'chart_of_account_choose_year' %}">Chart of Account</a> for DBT</li>
+            <li>record <a class="govuk-link" href="{% url 'gifthospitality:quick_links' %}">gifts and hospitality</a> given to civil servants</li>
           </ul>
         </p>
         <h2 class="govuk-heading-m">Deadlines for UK SBS - Oracle</h2>
