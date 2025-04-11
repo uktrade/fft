@@ -5,41 +5,43 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds limit-text-width">
-      <p class="govuk-body">The Financial Forecasting Tool (FFT) replaces Admin Tool.</p>
-      <p class="govuk-body">Forecasting used to be done using two separate processes. 
-        Spreadsheets were used for programme, capital and AME (<a class="govuk-link" href="https://www.gov.uk/government/publications/how-to-understand-public-sector-spending/how-to-understand-public-sector-spending#annually-managed-expenditure-ame">Annually Managed Expenditure</a>).
-        Payroll and admin were then done separately in Admin Tool.</p>
-        <p class="govuk-body">With FFT you can;
-          <ul class="govuk-list govuk-list--bullet">
-            <li>manage <a class="govuk-link" href="{% url 'choose_cost_centre' %}">financial forecasts</a></li>
-            <li>manage <a class="govuk-link" href="{% url 'payroll:choose_cost_centre' %}">payroll forecasts</a></li>
-            <li>view the <a class="govuk-link" href="{% url 'chart_of_account_choose_year' %}">Chart of Account</a> for DBT</li>
-            <li>record <a class="govuk-link" href="{% url 'gifthospitality:quick_links' %}">gifts and hospitality</a> given to civil servants</li>
-          </ul>
-        </p>
-        <h2 class="govuk-heading-m">Deadlines for UK SBS - Oracle</h2>
-        <h3 class="govuk-heading-s">General ledger</h3>
-        <p class="govuk-body">7:00pm on Tuesday 6 May (working day 3).</p>
-        <h3 class="govuk-heading-s">Payroll</h3>
-        <p class="govuk-body">To see your changes on the next month's payroll you must update UK SBS - Oracle by Tuesday 6 May (working day 3).</p>
-        <h2 class="govuk-heading-m">Deadline to update FFT</h2>
-        <p class="govuk-body">4:00pm on Thursday 8 May (working day 5).</p>
+      <p class="govuk-body">With FFT you can:
+        <ul class="govuk-list govuk-list--bullet">
+          <li>manage <a class="govuk-link" href="{% url 'choose_cost_centre' %}">financial forecasts</a></li>
+          <li>manage <a class="govuk-link" href="{% url 'payroll:choose_cost_centre' %}">payroll forecasts</a></li>
+          <li>view the Universal <a class="govuk-link" href="{% url 'chart_of_account_choose_year' %}">Chart of Account</a> for DBT</li>
+          <li>record <a class="govuk-link" href="{% url 'gifthospitality:quick_links' %}">gifts and hospitality</a> given to civil servants</li>
+        </ul>
+      </p>
+      <h3 class="govuk-heading-s">Changes to the tool</h3>
+      <p class="govuk-body">The Financial Forecasting Tool (FFT) replaces Admin Tool as of 17th April. FFT covers all forecasting processes, for:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>programme, capital and <a class="govuk-link" href="https://www.gov.uk/government/publications/how-to-understand-public-sector-spending/how-to-understand-public-sector-spending#annually-managed-expenditure-ame">AME</a> (annually managed expenditure) - previously done in spreadsheets</li>
+        <li>payroll and admin - previously done in Admin Tool</li>
+      </ul>
+      <h2 class="govuk-heading-m">Deadlines for UK SBS - Oracle</h2>
+      <h3 class="govuk-heading-s">General ledger</h3>
+      <p class="govuk-body">7:00pm on Tuesday 6 May (working day 3).</p>
+      <h3 class="govuk-heading-s">Payroll</h3>
+      <p class="govuk-body">To see your changes in the next month's payroll you must update UK SBS - Oracle by Tuesday 6 May (working day 3).</p>
+      <h2 class="govuk-heading-m">Deadline to update FFT</h2>
+      <p class="govuk-body">4:00pm on Thursday 8 May (working day 5).</p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <div class="border-box">
+        <h2 class="govuk-heading-m">Get Support</h2>
+        <p class="govuk-body">Ask for help and get guidance documents on the <a class="govuk-link" href="https://teams.microsoft.com/l/channel/19%3AihBYFCXDk2lOzrgas_nUb58feCvhfh6FWtX-L3JRIPY1%40thread.tacv2/General?groupId=3aa2089f-a1ff-414f-9806-8137b0c34e7d&tenantId=8fa217ec-33aa-46fb-ad96-dfe68006bb86">Financial Forecasting and Reporting Network channel on MS Teams</a>.</p>
+        <h3 class="govuk-heading-s">Training</h3>
+        <p class="govuk-body">View the <a class="govuk-link" href="https://dbis.sharepoint.com/sites/FFRN/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FFFRN%2FShared%20Documents%2FGeneral%2FHelp%20guides&viewid=4942426d%2D687c%2D4011%2Db888%2De7c59577fcc5&csf=1&web=1&e=ggu5pz&CID=b86193a1%2D50e7%2Dc000%2D54c6%2D4db0bf1f8775&cidOR=SPO&FolderCTID=0x0120003707825359060449BA95ADF58FB85D3F&ovuser=8fa217ec%2D33aa%2D46fb%2Dad96%2Ddfe68006bb86%2CPaul%2EONeill%40businessandtrade%2Egov%2Euk&OR=Teams%2DHL&CT=1744368968361&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI1MC8yNTAzMDIwMTAxMCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D">help guides</a> on the Financial Forecasting and Reporting Network Sharepoint.
+          <!-- TODO: LINK NEEDED HERE -->
+        You can also see the video training on <a class="govuk-link" href="">Learning Hub</a>.</p>
+        <h3 class="govuk-heading-s">Request access</h3>
+        <p class="govuk-body">To request access to FFT, email <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
+        <h3 class="govuk-heading-s">Data issues</h3>
+        <p class="govuk-body">If you're having issues with the data displayed on FFT, report to your <a class="govuk-link" href="https://workspace.trade.gov.uk/teams/finance-business-partners">Finance Business Partner</a>.</p>
+        <h3 class="govuk-heading-s">Technical issues</h3>
+        <p class="govuk-body">Report technical issues to <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
       </div>
-      <div class="govuk-grid-column-one-third">
-        <div class="border-box">
-          <h2 class="govuk-heading-m">Get Support</h2>
-          <p class="govuk-body">Ask for help and get guidance documents on the <a class="govuk-link" href="https://teams.microsoft.com/l/channel/19%3AihBYFCXDk2lOzrgas_nUb58feCvhfh6FWtX-L3JRIPY1%40thread.tacv2/General?groupId=3aa2089f-a1ff-414f-9806-8137b0c34e7d&tenantId=8fa217ec-33aa-46fb-ad96-dfe68006bb86">FFT Teams channel</a>.</p>
-          <h3 class="govuk-heading-s">Training</h3>
-          <p class="govuk-body">View the <a class="govuk-link" href="https://dbis.sharepoint.com/sites/FFRN/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FFFRN%2FShared%20Documents%2FGeneral%2FHelp%20guides&viewid=4942426d%2D687c%2D4011%2Db888%2De7c59577fcc5&csf=1&web=1&e=ggu5pz&CID=b86193a1%2D50e7%2Dc000%2D54c6%2D4db0bf1f8775&cidOR=SPO&FolderCTID=0x0120003707825359060449BA95ADF58FB85D3F&ovuser=8fa217ec%2D33aa%2D46fb%2Dad96%2Ddfe68006bb86%2CPaul%2EONeill%40businessandtrade%2Egov%2Euk&OR=Teams%2DHL&CT=1744368968361&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI1MC8yNTAzMDIwMTAxMCIsIkhhc0ZlZGVyYXRlZFVzZXIiOmZhbHNlfQ%3D%3D">help guides</a>.
-            <!-- TODO: LINK NEEDED HERE -->
-          Video training on <a class="govuk-link" href="">Learning Hub</a>.</p>
-          <h3 class="govuk-heading-s">Request access</h3>
-          <p class="govuk-body">Email <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
-          <h3 class="govuk-heading-s">Data issues</h3>
-          <p class="govuk-body">Report issues with any data displayed to your <a class="govuk-link" href="https://workspace.trade.gov.uk/teams/finance-business-partners">Finance Business Partner</a>.</p>
-          <h3 class="govuk-heading-s">Technical issues</h3>
-          <p class="govuk-body">Report technical issues to <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
-        </div>
-      </div>
+    </div>
   </div>
 {% endblock %}
