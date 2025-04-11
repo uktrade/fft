@@ -87,14 +87,15 @@ const Description = () => {
         <div className="govuk-grid-column-two-thirds limit-text-width">
           <p className="govuk-body">
             Attrition rate is the rate in which staff leave an organisation over
-            a year. The default rate is set by the Systems and Reporting team.
+            a year. The default rate is set by the{" "}
+            <a
+              className="govuk-link"
+              href="https://workspace.trade.gov.uk/teams/financial-reporting-and-analysis/"
+            >
+              Systems and Reporting team
+            </a>
+            .
           </p>
-          {/* TODO (FFT-301): Lock off Attrition */}
-          {/* <p className="govuk-body">
-            Attrition rate is the rate in which staff leave an organisation over
-            a year. DBT sets a default rate of X% but you can override it for
-            your cost centre.
-          </p> */}
         </div>
       </div>
     </>
