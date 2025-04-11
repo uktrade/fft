@@ -77,7 +77,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         widget=ChoicesWidget,
-        label="Programme Description",
+        label="Programme description",
     )
     programme.widget.attrs.update(
         {"aria-describedby": "programme-hint programme-error"}
@@ -88,7 +88,7 @@ class AddForecastRowForm(forms.Form):
             active=True,
         ),
         widget=ChoicesWidget,
-        label="NAC Description",
+        label="Natural Account Code description",
     )
     natural_account_code.widget.attrs.update(
         {
