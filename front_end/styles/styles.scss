@@ -398,3 +398,13 @@ th {
   justify-content: space-between;
   align-items: baseline;
 }
+
+.border-box {
+  padding: 2rem;
+  border: 2px solid govuk-colour("light-grey");
+  border-bottom: 4px solid govuk-colour("mid-grey");
+}
+
+.limit-text-width {
+  padding-right: 15%;
+}
