@@ -49,16 +49,17 @@ const DisplayAttrition = ({
           modifier={global_attrition}
           title="Global attrition"
         />
-        <p className="govuk-body">
+        {/* TODO (FFT-301): Lock off Attrition */}
+        {/* <p className="govuk-body">
           This attrition is for the current financial year. You can add one for
           this specific cost centre instead.
-        </p>
-        <button
+        </p> */}
+        {/* <button
           className="govuk-button govuk-button--secondary"
           onClick={onCreate}
         >
           Add Attrition
-        </button>
+        </button> */}
       </>
     );
   }
@@ -67,12 +68,13 @@ const DisplayAttrition = ({
     <>
       <Description />
       <p className="govuk-body">No attrition set</p>
-      <button
+      {/* TODO (FFT-301): Lock off Attrition */}
+      {/* <button
         className="govuk-button govuk-button--secondary"
         onClick={onCreate}
       >
         Add Attrition
-      </button>
+      </button> */}
     </>
   );
 };
@@ -82,11 +84,17 @@ const Description = () => {
     <>
       <h3 className="govuk-heading-s">Attrition rate</h3>
       <div className="govuk-grid-row">
-        <div className="govuk-grid-column-two-thirds">
+        <div className="govuk-grid-column-two-thirds limit-text-width">
           <p className="govuk-body">
             Attrition rate is the rate in which staff leave an organisation over
-            a year. DBT sets a default rate of X% but you can override it for
-            your cost centre.
+            a year. The default rate is set by the{" "}
+            <a
+              className="govuk-link"
+              href="https://workspace.trade.gov.uk/teams/financial-reporting-and-analysis/"
+            >
+              Systems and Reporting team
+            </a>
+            .
           </p>
         </div>
       </div>
