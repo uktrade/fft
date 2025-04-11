@@ -1,30 +1,46 @@
 {% extends "standard_content.html" %}
 
 {% block title %}Home{% endblock %}
+{% block breadcrumbs %}{% endblock %}
 {% block content %}
-    {% block top %}
-        {{ block.super }}
-    {% endblock %}
-    <h1 class="govuk-heading-xl">Financial Forecasting Tool</h1>
-    <p class="govuk-body">The Financial Forecasting Tool replaces the admin consolidation and analysis tool ("Admin Tool"),
-        currently used for the financial management of resources and staff forecasts.
-    </p>
-    <p class="govuk-body">This is an in-house bespoke web application supporting business critical processes within
-        the DBT.</p>
-    <p class="govuk-body">The Financial Forecasting Tool supports three functions:</p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li class="govuk-body">Viewing the <a class="govuk-link" href="{% url 'chart_of_account_choose_year' %}">DBT chart of account</a></li>
-        <li class="govuk-body">Registering gifts and hospitality</li>
-        <li class="govuk-body">Managing financial forecasts: assists you in managing your financial resources</li>
-    </ul>
-    <p class="govuk-body">If you require access to this system, please email:
-        <a href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>    {# # /PS-IGNORE#}
-    </p>
-    <p class="govuk-body">If you have issues relating to the figures displayed or don’t understand what to do, please contact your
-        Finance Business Partner and/or the Business Support Centre of Excellence (the chart of account cost centre hierarchy
-        has a list of contacts per area).
-    </p>
-    {% block bottom %}
-        {{ block.super }}
-    {% endblock %}
+  <main class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <p class="govuk-body">The Financial Forecasting Tool (FFT) replaces Admin Tool.</p>
+        <p class="govuk-body">Forecasting used to be done using two separate processes. 
+          Spreadsheets were used for programme, capital and AME (<a class="govuk-link" href="https://www.gov.uk/government/publications/how-to-understand-public-sector-spending/how-to-understand-public-sector-spending#annually-managed-expenditure-ame">Annually Managed Expenditure</a>).
+          Payroll and Admin were then done separately in Admin Tool.</p>
+          <p class="govuk-body">With FFT you can;
+            <ul class="govuk-list govuk-list--bullet">
+              <li>manage <a class="govuk-link" href="forecast/edit/choose-cost-centre/">financial forecasts</a></li>
+              <li>manage <a class="govuk-link" href="payroll/edit/choose-cost-centre/">payroll forecasts</a></li>
+              <li>view the <a class="govuk-link" href="chartofaccountDIT/choose-year/">Chart of Account</a> for DBT</li>
+              <li>record <a class="govuk-link" href="gifthospitality/quick-links/">gifts and hospitality</a> given to civil servants</li>
+            </ul>
+          </p>
+          <h2 class="govuk-heading-m">Deadlines for UK SBS - Oracle</h2>
+          <h3 class="govuk-heading-s">General ledger</h3>
+          <p class="govuk-body">7:00pm on Tuesday 6 May (working day 3).</p>
+          <h3 class="govuk-heading-s">Payroll</h3>
+          <p class="govuk-body">To see your changes on the next month's payroll you must update UK SBS - Oracle by Tuesday 6 May (working day 3).</p>
+          <h2 class="govuk-heading-m">Deadline to update FFT</h2>
+          <p class="govuk-body">4:00pm on Thursday 8 May (working day 5).</p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="border-box">
+            <h2 class="govuk-heading-m">Get Support</h2>
+            <p class="govuk-body">Ask for help and get guidance documents on the <a class="govuk-link" href="https://teams.microsoft.com/l/channel/19%3AihBYFCXDk2lOzrgas_nUb58feCvhfh6FWtX-L3JRIPY1%40thread.tacv2/General?groupId=3aa2089f-a1ff-414f-9806-8137b0c34e7d&tenantId=8fa217ec-33aa-46fb-ad96-dfe68006bb86">FFT Teams channel</a>.</p>
+            <h3 class="govuk-heading-s">Training</h3>
+            <!-- TODO: LINKS NEEDED HERE -->
+            <p class="govuk-body">View the <a class="govuk-link" href="">help guides</a>. Video training on <a class="govuk-link" href="">Learning Hub</a>.</p>
+            <h3 class="govuk-heading-s">Request access</h3>
+            <p class="govuk-body">Email <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
+            <h3 class="govuk-heading-s">Data issues</h3>
+            <p class="govuk-body">Report issues with any data displayed to your <a class="govuk-link" href="https://workspace.trade.gov.uk/teams/finance-business-partners">Finance Business Partner</a>.</p>
+            <h3 class="govuk-heading-s">Technical issues</h3>
+            <p class="govuk-body">Report technical issues to <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
+          </div>
+        </div>
+    </div>
+  </main>
 {% endblock %}
