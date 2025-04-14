@@ -176,7 +176,7 @@ export default function Payroll() {
         </Tab>
         <Tab label="Non-payroll" key="2">
           <div className="govuk-grid-row">
-            <div className="govuk-grid-column-two-thirds">
+            <div className="govuk-grid-column-two-thirds limit-text-width">
               <p className="govuk-body">
                 Non-payroll includes staff on maternity leave,{" "}
                 <a
