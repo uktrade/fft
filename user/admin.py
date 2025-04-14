@@ -26,7 +26,6 @@ class UserAdmin(UserAdmin):
     def save_model(self, request, obj, form, change):
         for group in form.cleaned_data["groups"]:
             if group.name in [
-                "Finance Business Partner/BSCE",
                 "Finance Administrator",
                 "Gift and Hospitality Admin",
             ]:
