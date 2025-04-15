@@ -13,7 +13,7 @@ class TestFinancialCodeForecastService:
     @pytest.fixture(autouse=True)
     def _setup(self, db):
         self.code = FinancialCodeFactory()
-        self.year = FinancialYearFactory()
+        self.year = FinancialYearFactory(financial_year=2020)
         self.service = FinancialCodeForecastService(
             financial_code=self.code, year=self.year
         )
