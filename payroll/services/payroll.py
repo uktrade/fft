@@ -67,15 +67,25 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
         )
 
 
-def update_all_employee_pay_periods() -> None:
-    current_financial_year = FinancialYear.objects.current()
+def update_all_employee_pay_periods(
+    financial_year: int | None = None,
+) -> None:
+    """Create missing pay periods in the given year for all employees.
 
-    employee_qs = Employee.objects.exclude(pay_periods__year=current_financial_year)
+    Args:
+        financial_year: If None (default), use the current financial year.
+    """
+    if financial_year is None:
+        financial_year_obj = FinancialYear.objects.current()
+    else:
+        financial_year_obj = FinancialYear.objects.get(pk=financial_year)
+
+    employee_qs = Employee.objects.exclude(pay_periods__year=financial_year_obj)
 
     pay_periods = (
         EmployeePayPeriods(
             employee=employee,
-            year=current_financial_year,
+            year=financial_year_obj,
             **{f"period_{i}": employee.is_payroll for i in PERIODS},
         )
         for employee in employee_qs.iterator()
