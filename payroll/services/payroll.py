@@ -68,6 +68,7 @@ def create_pay_periods(instance, pay_period_enabled=None) -> None:
 
 
 def update_all_employee_pay_periods(
+    *,
     financial_year: int | None = None,
 ) -> None:
     """Create missing pay periods in the given year for all employees.

@@ -15,7 +15,8 @@ class FinancialCodeForecastService:
         self.year = year
         self.override_locked = override_locked
 
-        assert FinancialYear.objects.forecast().contains(self.year)
+        if not FinancialYear.objects.forecast().contains(self.year):
+            raise ValueError("self.year must be a forecast financial year")
 
     def update_period(self, *, period: int | FinancialPeriod, amount: int):
         if isinstance(period, int):
@@ -23,6 +24,7 @@ class FinancialCodeForecastService:
 
         assert isinstance(period, FinancialPeriod)
 
+        # actuals only apply to past and current years and not to future years.
         if self.year.current and period.actual_loaded:
             return
 

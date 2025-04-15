@@ -75,6 +75,7 @@ class FinancialYearQuerySet(models.QuerySet):
         )
 
     def forecast(self):
+        """Return all forecast years (current or future)."""
         current_financial_year = self.current().financial_year
         return self.filter(financial_year__gte=current_financial_year)
 
