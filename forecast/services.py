@@ -15,13 +15,15 @@ class FinancialCodeForecastService:
         self.year = year
         self.override_locked = override_locked
 
+        assert FinancialYear.objects.forecast().contains(self.year)
+
     def update_period(self, *, period: int | FinancialPeriod, amount: int):
         if isinstance(period, int):
             period = FinancialPeriod.objects.get(pk=period)
 
         assert isinstance(period, FinancialPeriod)
 
-        if period.actual_loaded:
+        if self.year.current and period.actual_loaded:
             return
 
         if self.financial_code.is_locked and not self.override_locked:
