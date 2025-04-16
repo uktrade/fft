@@ -13,7 +13,7 @@ def download_cost_centre_user_iterator(queryset):
     ]
     for cost_centre in queryset:
         users = get_users_with_perms(
-            cost_centre, only_with_perms_in=["costcentre.change_costcentre"]
+            cost_centre, only_with_perms_in=["change_costcentre"]
         )
         for user in users:
             yield [
