@@ -154,7 +154,7 @@ db-reset: # Reset the database
 db-init: create-stub-data # Initialise the database
 
 db-shell: # Open the database container postgres shell
-	$(db) psql -U postgres
+	$(db) psql -U postgres --dbname=fido
 
 DUMP_NAME = local
 
