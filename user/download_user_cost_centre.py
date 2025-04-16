@@ -8,11 +8,13 @@ from costcentre.models import CostCentre
 def download_cost_centre_user_iterator(queryset):
     yield [
         "Cost Centre",
-        "First Name",  # /PS-IGNORE
-        "Last Name",  # /PS-IGNORE
+        "First Name",
+        "Last Name",
     ]
     for cost_centre in queryset:
-        users = get_users_with_perms(cost_centre, attach_perms=True)
+        users = get_users_with_perms(
+            cost_centre, only_with_perms_in=["costcentre.change_costcentre"]
+        )
         for user in users:
             yield [
                 cost_centre.cost_centre_code,

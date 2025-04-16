@@ -1,6 +1,12 @@
+from typing import Iterable
+
+from guardian.shortcuts import get_objects_for_user, remove_perm
+
 from core.constants import PERIODS
 from core.models import FinancialYear
+from costcentre.models import CostCentre
 from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
+from forecast.permission_shortcuts import assign_perm
 
 
 class FinancialCodeForecastService:
@@ -48,3 +54,28 @@ class FinancialCodeForecastService:
 
         for period in PERIODS:
             self.update_period(period=period, amount=forecast[period - 1])
+
+
+def get_users_cost_centres(user):
+    return get_objects_for_user(
+        user,
+        "costcentre.change_costcentre",
+        with_superuser=False,
+        accept_global_perms=False,
+    )
+
+
+def update_users_cost_centres(user, cost_centres: Iterable[CostCentre]):
+    current_cost_centres = get_users_cost_centres(user)
+
+    for cost_centre in cost_centres:
+        if cost_centre in current_cost_centres:
+            continue
+
+        assign_perm("costcentre.change_costcentre", user, cost_centre)
+
+    for cost_centre in current_cost_centres:
+        if cost_centre in cost_centres:
+            continue
+
+        remove_perm("costcentre.change_costcentre", user, cost_centre)

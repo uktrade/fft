@@ -93,6 +93,7 @@ GROUPS = [
             # Manage users
             "user.view_user",
             "user.change_user",
+            "user.can_download",
             # Edit payroll
             "payroll.view_employee",
             "payroll.change_employeepayperiods",
