@@ -40,6 +40,24 @@ def vacancy_created(vacancy: Vacancy) -> None:
     return None
 
 
+def vacancy_updated(financial_year: FinancialYear, cost_centre: CostCentre) -> None:
+    """Hook to be called after a vacancy instance is updated."""
+    update_payroll_forecast(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+    )
+    return None
+
+
+def vacancy_deleted(financial_year: FinancialYear, cost_centre: CostCentre) -> None:
+    """Hook to be called after a vacancy instance is deleted."""
+    update_payroll_forecast(
+        financial_year=financial_year,
+        cost_centre=cost_centre,
+    )
+    return None
+
+
 def create_pay_periods(instance, pay_period_enabled=None) -> None:
     current_financial_year = FinancialYear.objects.current()
     future_financial_years = FinancialYear.objects.future()

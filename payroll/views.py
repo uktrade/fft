@@ -106,6 +106,13 @@ class EditVacancyView(VacancyViewMixin, UpdateView, EditPayrollBaseView):
         }
         return super().get_context_data(**kwargs) | context
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        payroll_service.vacancy_updated(self.financial_year, self.cost_centre)
+
+        return response
+
 
 class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
     template_name = "payroll/page/delete_vacancy.html"
@@ -118,6 +125,13 @@ class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
             "vacancy_id": self.object.id,
         }
         return super().get_context_data(**kwargs) | context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        payroll_service.vacancy_deleted(self.financial_year, self.cost_centre)
+
+        return response
 
 
 def import_payroll_page(request: HttpRequest) -> HttpResponse:
