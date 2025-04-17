@@ -2,10 +2,17 @@
 
 {% block content %}
     <div>
+        <h1>Import {{ form.form_title }}</h1>
         <form action="." method="POST" enctype="multipart/form-data">
-            <h1>Import {{ form.form_title }}</h1>
-            {{ form.as_p }}
             {% csrf_token %}
+            <div>
+                {{ form.csv_file }}
+            </div>
+            {% if user.is_superuser %}
+                <div>
+                    {{ form.arguments }}
+                </div>
+            {% endif %}
 
             <button type="submit">Upload CSV</button>
             <h2>The first row of csv file must have headers.</h2>

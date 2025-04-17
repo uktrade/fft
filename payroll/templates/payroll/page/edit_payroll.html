@@ -10,13 +10,24 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-    <div class="flex-spread">
-        <h1 class="govuk-heading-l">Edit payroll</h1>
-    </div>
+    <h1 class="govuk-heading-l">Edit payroll</h1>
 
     <h2 class="govuk-heading-m">
         <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
     </h2>
+
+    <details class="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Is the payroll information incorrect?
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            Payroll data is imported from UK SBS - Oracle at the start of the month. To correct the data shown follow the
+            <a class="govuk-link" href="https://cirrushp.sharepoint.com/sites/UKSBSBridge/SitePages/Change-of-cost-centre-BDU.aspx" target="_blank">Bulk Changes of Cost Centre Template (B.3.6C)</a>
+            form on UK SBS Bridge. Updates will take more than two weeks to appear.
+        </div>
+    </details>
 
     <div id="payroll-app"></div>
 {% endblock content %}
