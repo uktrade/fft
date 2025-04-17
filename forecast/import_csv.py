@@ -35,14 +35,18 @@ def get_month_dict():
     return period_dict
 
 
-def import_adi_file(csvfile):
+def import_adi_file(csvfile, fin_year: int | None = None, clear_forecast: bool = True):
     """Read the ADI file and unpivot it to enter the MonthlyFigure data"""
-    fin_year = get_current_financial_year()
+    if fin_year is None:
+        fin_year = get_current_financial_year()
+
     # Clear the table first. The adi file has several lines with the same key,
     # so the figures have to be added and we don't want to add to existing data!
-    ForecastMonthlyFigure.objects.filter(
-        financial_year=fin_year, archived_status__isnull=True
-    ).delete()
+    if clear_forecast:
+        ForecastMonthlyFigure.objects.filter(
+            financial_year=fin_year, archived_status__isnull=True
+        ).delete()
+
     reader = csv.reader(csvfile)
     col_key = csv_header_to_dict(next(reader))
     line = 1

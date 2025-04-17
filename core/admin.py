@@ -1,4 +1,5 @@
 import io
+import json
 
 from django import forms
 from django.contrib import admin, messages
@@ -157,6 +158,7 @@ class CsvImportForm(forms.Form):
         super(CsvImportForm, self).__init__(*args, **kwargs)
 
     csv_file = forms.FileField()
+    arguments = forms.JSONField(initial={}, required=False)
 
 
 class AdminImportExport(AdminExport):
@@ -191,6 +193,7 @@ class AdminImportExport(AdminExport):
         )
 
         import_file = request.FILES["csv_file"]
+        import_args = json.loads(request.POST.get("arguments") or "{}")
         # read() gives you the file
         # contents as a bytes object,
         # on which you can call decode().
@@ -202,7 +205,7 @@ class AdminImportExport(AdminExport):
         success, message = import_info.my_check_headers(t)
         if success:
             t.seek(0)
-            success, message = import_info.import_func(t)
+            success, message = import_info.import_func(t, **import_args)
         if not success:
             messages.error(request, "Error: " + message)
         return success, message

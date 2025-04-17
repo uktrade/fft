@@ -295,7 +295,7 @@ class ImportInfo:
         # empty references to a valid value
         self.extra_func = extra_func
 
-    def import_func(self, c):
+    def import_func(self, c, **kwargs):
         if bool(self.key):
             if self.op:
                 success, message = import_obj(
@@ -304,7 +304,7 @@ class ImportInfo:
             else:
                 success, message = import_obj(c, self.key)
         else:
-            success, message = self.special_func(c)
+            success, message = self.special_func(c, **kwargs)
         if success and self.extra_func:
             self.extra_func()
         return success, message
