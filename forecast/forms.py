@@ -295,18 +295,23 @@ class ForecastPeriodForm(forms.Form):
             *args,
             **kwargs,
         )
-        display_list = FinancialYear.financial_year_objects.future_list()
-        if display_list:
-            display_list.extend([(0, "Current")])
-        else:
-            display_list = [(0, "Current")]
+
+        display_list: list[tuple[object, str]] = []
+
+        # add future years
+        display_list += FinancialYear.financial_year_objects.future_list()
+
+        # add current year
+        display_list.extend([(0, FinancialYear.objects.current().option_display)])
 
         archived_list = EndOfMonthStatus.archived_period_objects.archived_list()
         if archived_list:
             display_list.extend(archived_list)
+
         year_list = FinancialYear.financial_year_objects.archived_list()
         if year_list:
             display_list.extend(year_list)
+
         self.fields["selected_period"] = forms.ChoiceField(
             choices=display_list, initial=selected_period
         )

@@ -53,10 +53,11 @@ class ChooseCostCentreView(
         financial_years = []
         if self.future_can_be_edited:
             if self.current_year_can_be_edited:
+                current_financial_year = FinancialYear.objects.current()
                 financial_years.append(
                     {
-                        "financial_year": get_current_financial_year(),
-                        "financial_year_display": "Current",
+                        "financial_year": current_financial_year.financial_year,
+                        "financial_year_display": current_financial_year.option_display,
                     }
                 )
 

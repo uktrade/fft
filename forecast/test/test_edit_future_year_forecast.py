@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from django.urls import reverse
 
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
+from core.models import FinancialYear
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
 from core.utils.generic_helpers import (
     get_current_financial_year,
@@ -321,6 +322,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
             cost_centre_code=self.cost_centre_code
         )
         self.current_year = get_current_financial_year()
+        self.current_year_obj = FinancialYear.objects.get(pk=self.current_year)
         self.future_year = self.current_year + 1
         get_financial_year_obj(self.future_year)
 
@@ -334,7 +336,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
             200,
         )
 
-        year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "Current"}}'  # noqa E501
+        year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "{self.current_year_obj.option_display}"}}'  # noqa E501
 
         self.assertContains(response, year_list)
 
@@ -361,7 +363,7 @@ class ChooseCostCentreFutureTest(BaseTestCase):
             200,
         )
 
-        current_year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "Current"}}'  # noqa E501
+        current_year_list = f'window.financialYears = [{{"financial_year": {self.current_year}, "financial_year_display": "{self.current_year_obj.option_display}"}}'  # noqa E501
         # No year selection available
         self.assertContains(response, current_year_list)
 
