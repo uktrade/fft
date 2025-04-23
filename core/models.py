@@ -66,7 +66,7 @@ class FinancialYearManager(models.Manager):
 
 class FinancialYearQuerySet(models.QuerySet):
     def current(self):
-        return self.filter(current=True).first()
+        return self.filter(current=True).last()
 
     def future(self):
         current_financial_year = self.current().financial_year
@@ -93,6 +93,14 @@ class FinancialYear(BaseModel):
 
     def __str__(self):
         return str(self.financial_year_display)
+
+    @property
+    def option_display(self) -> str:
+        """Return the display text for an HTML select <option>."""
+        if self.current:
+            return f"{self.financial_year_display} (Current)"
+
+        return f"{self.financial_year_display}"
 
 
 class PayModifiers(models.Model):
