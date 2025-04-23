@@ -23,11 +23,14 @@ from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecas
 from gifthospitality.models import Grade
 from user.models import User
 
-from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
+from ..models import Employee, EmployeePayPeriods, Position, Vacancy, VacancyPayPeriods
 
 
 def employee_created(employee: Employee) -> None:
-    """Hook to be called after an employee instance is created."""
+    """Hook to be called after an employee instance is created.
+
+    *NOTE: This function is not used as part of normal operation.*
+    """
     # Create EmployeePayPeriods records for current and future financial years.
     create_pay_periods(employee, pay_period_enabled=employee.is_payroll)
     return None
@@ -37,28 +40,26 @@ def vacancy_created(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is created."""
     # Create VacancyPayPeriods records for current and future financial years.
     create_pay_periods(vacancy, pay_period_enabled=False)
+    # There is no need to update the payroll forecast here. This is because a vacancy is
+    # created with no pay periods enabled and therefore has no impact on the forecast.
     return None
 
 
-def vacancy_updated(financial_year: FinancialYear, cost_centre: CostCentre) -> None:
+def vacancy_updated(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is updated."""
-    update_payroll_forecast(
-        financial_year=financial_year,
-        cost_centre=cost_centre,
-    )
+    update_payroll_forecast(cost_centre=vacancy.cost_centre)
     return None
 
 
-def vacancy_deleted(financial_year: FinancialYear, cost_centre: CostCentre) -> None:
+def vacancy_deleted(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is deleted."""
-    update_payroll_forecast(
-        financial_year=financial_year,
-        cost_centre=cost_centre,
-    )
+    update_payroll_forecast(cost_centre=vacancy.cost_centre)
     return None
 
 
-def create_pay_periods(instance, pay_period_enabled=None) -> None:
+def create_pay_periods(
+    instance: Position, pay_period_enabled: bool | None = None
+) -> None:
     current_financial_year = FinancialYear.objects.current()
     future_financial_years = FinancialYear.objects.future()
     financial_years = [current_financial_year] + list(future_financial_years)
@@ -187,21 +188,29 @@ def payroll_forecast_report(
 
 
 def update_payroll_forecast(
-    *, financial_year: FinancialYear, cost_centre: CostCentre
+    *, cost_centre: CostCentre, financial_year: FinancialYear | None = None
 ) -> None:
     if cost_centre.is_overseas:
         return
 
-    report = payroll_forecast_report(
-        financial_year=financial_year,
-        cost_centre=cost_centre,
-    )
-    for payroll_forecast in report:
-        update_payroll_forecast_figure(
-            financial_year=financial_year,
+    years = FinancialYear.objects.all()
+
+    if financial_year:
+        years = years.filter(pk=financial_year.pk)
+    else:
+        years = years.forecast()
+
+    for year in years:
+        report = payroll_forecast_report(
+            financial_year=year,
             cost_centre=cost_centre,
-            payroll_forecast=payroll_forecast,
         )
+        for payroll_forecast in report:
+            update_payroll_forecast_figure(
+                financial_year=year,
+                cost_centre=cost_centre,
+                payroll_forecast=payroll_forecast,
+            )
 
 
 def update_payroll_forecast_figure(
