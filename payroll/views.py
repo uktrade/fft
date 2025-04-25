@@ -109,7 +109,7 @@ class EditVacancyView(VacancyViewMixin, UpdateView, EditPayrollBaseView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        payroll_service.vacancy_updated(self.financial_year, self.cost_centre)
+        payroll_service.vacancy_updated(self.object)
 
         return response
 
@@ -129,7 +129,7 @@ class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        payroll_service.vacancy_deleted(self.financial_year, self.cost_centre)
+        payroll_service.vacancy_deleted(self.object)
 
         return response
 
