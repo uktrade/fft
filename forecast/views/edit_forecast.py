@@ -229,7 +229,6 @@ class AddRowView(
                     financial_period_id=1,
                 )
             except MultipleObjectsReturned:
-                print("MULTIPLE OBJECTS WERE HERE")
                 pass
 
         return super().form_valid(form)
