@@ -1,0 +1,17 @@
+{% extends "base_generic.html" %}
+{% load breadcrumbs %}
+
+{% block title %}No access{% endblock title %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds limit-text-width">
+      <h1 class="govuk-heading-l">No access</h1>
+      <p class="govuk-body">You do not have access to this content.</p>
+      <p class="govuk-body">If you need access to a cost centre then email <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a> to request access.</p>
+      <p class="govuk-body">For technical problems email <a class="govuk-link" href="mailto:financial.analysis@businessandtrade.gov.uk">financial.analysis@businessandtrade.gov.uk</a>.</p>
+  </div>
+</div>
+{% endblock %}
