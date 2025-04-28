@@ -4,6 +4,7 @@ import re
 from functools import cached_property
 
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch, Q, Sum
 from django.http import JsonResponse
@@ -219,13 +220,17 @@ class AddRowView(
                     financial_period_id=actual_month,
                 )
         else:
-            # Create at least one entry, to help some of the queries used to view
-            # the forecast
-            ForecastMonthlyFigure.objects.get_or_create(
-                financial_code=financial_code,
-                financial_year_id=self.financial_year,
-                financial_period_id=1,
-            )
+            try:
+                # Create at least one entry, to help some of the queries used to view
+                # the forecast
+                ForecastMonthlyFigure.objects.get_or_create(
+                    financial_code=financial_code,
+                    financial_year_id=self.financial_year,
+                    financial_period_id=1,
+                )
+            except MultipleObjectsReturned:
+                print("MULTIPLE OBJECTS WERE HERE")
+                pass
 
         return super().form_valid(form)
 
