@@ -10,24 +10,42 @@
 {% endblock breadcrumbs %}
 
 {% block content %}
-    <h1 class="govuk-heading-l">Edit payroll</h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds limit-text-width">
+      <h1 class="govuk-heading-l">Edit payroll</h1>
 
-    <h2 class="govuk-heading-m">
-        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
-    </h2>
+      <h2 class="govuk-heading-m">
+          <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forecast_cost_centre' cost_centre.cost_centre_code financial_year.financial_year %}" target="_blank">{{ cost_centre }}</a>
+      </h2>
 
-    <details class="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                Is the payroll information incorrect?
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            Payroll data is imported from UK SBS - Oracle at the start of the month. To correct the data shown follow the
-            <a class="govuk-link" href="https://cirrushp.sharepoint.com/sites/UKSBSBridge/SitePages/Change-of-cost-centre-BDU.aspx" target="_blank">Bulk Changes of Cost Centre Template (B.3.6C)</a>
-            form on UK SBS Bridge. Updates will take more than two weeks to appear.
-        </div>
-    </details>
+      <details class="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                  Is the payroll information incorrect?
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">
+              Payroll data is imported from UK SBS - Oracle at the start of the month. To correct the payroll data shown
+              on FFT you must complete the forms on UK SBS Bridge. Updates will take more than two weeks to appear.  
+            </p>
+            <h3 class="govuk-heading-s">Update one cost centre</h3>
+            <p class="govuk-body">
+              Follow the
+              <a class="govuk-link" href="https://uksbs-prod.cx.ukg.oraclecloud.com/owda/0/investigate/OE013_Change_of_Cost_Centre/en-GB/ScreenOrder~Main~qs%2443e22f14-5077-4e2b-b2c2-6c4aead840eb%24global%24global" target="_blank">Change of Cost Centre (B.3.6B)</a>
+              form.
+            </p>
+            <h3 class="govuk-heading-s">Update multiple cost centres</h3>
+            <p class="govuk-body">
+              Follow the
+              <a class="govuk-link" href="https://cirrushp.sharepoint.com/:x:/r/sites/UKSBSBridge/_layouts/15/Doc.aspx?sourcedoc=%7B0D3D0F46-B65D-4F30-8B64-829C153509E5%7D&file=B.3.6C%20-%20Bulk%20Changes%20of%20Cost%20Centre%20Template.xlsm&action=default&mobileredirect=true" target="_blank">Bulk Changes of Cost Centre Template (B.3.6C)</a>
+              form.
+            </p>
+
+          </div>
+      </details>
+    </div>
+  </div>
 
     <div id="payroll-app"></div>
 {% endblock content %}
