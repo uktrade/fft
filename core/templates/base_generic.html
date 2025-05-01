@@ -174,7 +174,7 @@
           {% has_project_percentage_permission user as has_project_percentage_permission %}
             {% if has_project_percentage_permission %}
               <li class="govuk-service-navigation__item {% if request.path == '/upload_split_file/project_percentage/' %}govuk-service-navigation__item--active{% endif %}">
-                <a class="govuk-service-navigation__link" href="/upload_split_file/project_percentage/">
+                <a id="split_project" class="govuk-service-navigation__link" href="/upload_split_file/project_percentage/">
                   Project Percentages
                 </a>
               </li>
@@ -182,14 +182,14 @@
             {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
             {% if has_end_of_month_archive_permissions %}
             <li class="govuk-service-navigation__item {% if request.path|startswith:'/end_of_month/' %}govuk-service-navigation__item--active{% endif %}">
-              <a class="govuk-service-navigation__link" href="{% url 'end_of_month' %}">
+              <a id="end_of_month" class="govuk-service-navigation__link" href="{% url 'end_of_month' %}">
                 Archive monthly forecast
               </a>
             </li>
             {% endif %}
             {% if request.user.is_staff %}
               <li class="govuk-service-navigation__item">
-                <a target="_blank" class="govuk-service-navigation__link" href="{% url 'admin:index' %}">
+                <a target="_blank" id="admin_page" class="govuk-service-navigation__link" href="{% url 'admin:index' %}">
                   Admin site
                 </a>
               </li>
