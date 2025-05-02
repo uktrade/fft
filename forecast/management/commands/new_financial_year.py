@@ -1,6 +1,7 @@
 from django.core.management import call_command
 from django.core.management.base import CommandError
 
+from chartofaccountDIT.models import ExpenditureCategory
 from core.utils.command_helpers import CommandWithUserCheck, get_no_answer
 from core.utils.generic_helpers import (
     create_financial_year_display,
@@ -99,3 +100,11 @@ def pre_new_financial_year_checks() -> None:
         raise NewFinancialYearError(
             f"Possible problem NACs found: {", ".join(problem_nac_ids)}"
         )
+
+    problem_expenditure_categories = ExpenditureCategory.objects.filter(
+        linked_budget_code__isnull=True
+    )
+
+    # FIXME!
+    if bool(problem_expenditure_categories):
+        raise NewFinancialYearError()
