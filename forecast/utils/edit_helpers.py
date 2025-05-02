@@ -3,8 +3,10 @@ from decimal import Decimal, InvalidOperation
 
 from django.conf import settings
 
+from core.models import FinancialYear
 from core.utils.generic_helpers import check_empty
-from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
+from forecast.models import FinancialCode, ForecastMonthlyFigure
+from forecast.services import get_forecast_periods_for_year
 
 
 class CannotFindMonthlyFigureException(Exception):
@@ -55,22 +57,21 @@ def formatted_cost_centre_code(cost_centre_code):
     return str(cost_centre_code).zfill(6)
 
 
-def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # noqa C901
-    start_period = FinancialPeriod.financial_period_info.actual_month() + 1
+def set_monthly_figure_amount(
+    cost_centre_code: str, cell_data: list, financial_year: int
+):
+    financial_year_obj = FinancialYear.objects.get(financial_year=financial_year)
 
-    period_max = (
-        FinancialPeriod.objects.filter(
-            display_figure=True,
-        ).count()
-        + 1
-    )
+    for financial_period in get_forecast_periods_for_year(financial_year_obj):
+        # Don't set the monthly figure if period is set to be hidden (i.e. adj periods).
+        if not financial_period.display_figure:
+            continue
 
-    for financial_period_month in range(start_period, period_max):
         try:
             monthly_figure = ForecastMonthlyFigure.objects.filter(
                 financial_code__cost_centre__cost_centre_code=cost_centre_code,
                 financial_year__financial_year=financial_year,
-                financial_period__financial_period_code=financial_period_month,
+                financial_period=financial_period,
                 financial_code__programme__programme_code=check_empty(cell_data[0]),
                 financial_code__natural_account_code__natural_account_code=cell_data[2],
                 financial_code__analysis1_code=check_empty(cell_data[4]),
@@ -85,7 +86,7 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
                 "Some values may have been updated."
             )
 
-        col = (settings.NUM_META_COLS + financial_period_month) - 1
+        col = (settings.NUM_META_COLS + financial_period.financial_period_code) - 1
 
         try:
             new_value = convert_forecast_amount(cell_data[col])
@@ -115,9 +116,6 @@ def set_monthly_figure_amount(cost_centre_code, cell_data, financial_year):  # n
                     analysis1_code=check_empty(cell_data[4]),
                     analysis2_code=check_empty(cell_data[5]),
                     project_code=check_empty(cell_data[6]),
-                )
-                financial_period = FinancialPeriod.objects.get(
-                    financial_period_code=financial_period_month,
                 )
                 monthly_figure = ForecastMonthlyFigure.objects.create(
                     financial_year_id=financial_year,

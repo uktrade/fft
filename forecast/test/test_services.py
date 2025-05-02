@@ -3,9 +3,13 @@ from unittest.mock import patch
 import pytest
 from pytest_django.asserts import assertNumQueries
 
+from core.models import FinancialYear
 from core.test.factories import FinancialYearFactory
 from forecast.models import FinancialCode, ForecastMonthlyFigure
-from forecast.services import FinancialCodeForecastService
+from forecast.services import (
+    FinancialCodeForecastService,
+    get_forecast_periods_for_year,
+)
 from forecast.test.factories import FinancialCodeFactory, FinancialPeriodFactory
 
 
@@ -107,3 +111,30 @@ class TestFinancialCodeForecastService:
                 ).amount
                 == x
             )
+
+
+@pytest.mark.parametrize(
+    ["year", "forecast_periods"],
+    [
+        [2019, []],
+        [2020, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]],
+        [2021, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]],
+    ],
+)
+def test_get_forecast_periods_for_year(db, year: int, forecast_periods: list[int]):
+    FinancialYearFactory(financial_year=2019, current=False)
+    FinancialYearFactory(financial_year=2020, current=True)
+    FinancialYearFactory(financial_year=2021, current=False)
+
+    actual_periods = [
+        FinancialPeriodFactory(financial_period_code=1),
+        FinancialPeriodFactory(financial_period_code=2),
+    ]
+    for period in actual_periods:
+        period.actual_loaded = True
+        period.save()
+
+    year_obj = FinancialYear.objects.get(financial_year=year)
+    forecast_period_objs = list(get_forecast_periods_for_year(year_obj))
+
+    assert [obj.pk for obj in forecast_period_objs] == forecast_periods
