@@ -13,7 +13,7 @@ up: # Start the project
 
 up-dev: # Start the project
 	docker compose --profile dev up
-up-detatched: # Start the project in detached mode
+up-detached: # Start the project in detached mode
 	docker compose up -d
 
 down: # Stop the project

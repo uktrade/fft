@@ -6,6 +6,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
@@ -47,7 +49,7 @@ jobs:
         run: make build
 
       - name: Run containers
-        run: make up-detatched
+        run: make up-detached
 
       - name: Run makemigrations in check mode
         run: make check-migrations
