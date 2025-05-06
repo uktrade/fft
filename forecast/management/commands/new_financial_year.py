@@ -89,6 +89,8 @@ def pre_new_financial_year_checks() -> None:
 
     Checks:
         - Look for used NACs with invalid economic budget codes.
+        - Look for budget categories without a budget code.
+        - Look for budget categories without a budget grouping.
     """
     # It's possible this needs to be scoped to a financial year in the future.
     problem_nacs = FinancialCode.objects.exclude(
@@ -98,13 +100,25 @@ def pre_new_financial_year_checks() -> None:
     if bool(problem_nacs):
         problem_nac_ids = [str(nac.natural_account_code) for nac in problem_nacs]
         raise NewFinancialYearError(
-            f"Possible problem NACs found: {", ".join(problem_nac_ids)}"
+            f"NACs with invalid economic budget codes: {", ".join(problem_nac_ids)}"
         )
 
     problem_expenditure_categories = ExpenditureCategory.objects.filter(
         linked_budget_code__isnull=True
     )
 
-    # FIXME!
     if bool(problem_expenditure_categories):
-        raise NewFinancialYearError()
+        problem_ids = [str(x.pk) for x in problem_expenditure_categories]
+        raise NewFinancialYearError(
+            f"Budget categories without a budget code assigned: {', '.join(problem_ids)}"
+        )
+
+    problem_expenditure_categories = ExpenditureCategory.objects.filter(
+        NAC_category__isnull=True
+    )
+
+    if bool(problem_expenditure_categories):
+        problem_ids = [str(x.pk) for x in problem_expenditure_categories]
+        raise NewFinancialYearError(
+            f"Budget categories without a budget grouping assigned: {', '.join(problem_ids)}"
+        )
