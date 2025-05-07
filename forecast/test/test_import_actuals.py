@@ -933,11 +933,27 @@ def test_actualisation_as_part_of_upload(db, test_user):
             7_000,
             [10_500, 5_000, 2_500, 3_000, 6_000, 10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 7_000],
         ),
+        (
+            [11_000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            1,  # april
+            None,  # no actual
+            [0, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000, 1_000],
+        ),
+        (
+            [],  # no forecast
+            1,  # april
+            None,  # no actual
+            [],
+        ),
         # fmt: on\
     ],
 )
 def test_actualisation(
-    db, figures: list[float], period: int, actual: float, expected_figures: list[float]
+    db,
+    figures: list[float],
+    period: int,
+    actual: float | None,
+    expected_figures: list[float],
 ):
     period_obj = FinancialPeriod.objects.get(pk=period)
 
@@ -946,22 +962,24 @@ def test_actualisation(
     )
     fin_year: FinancialYear = FinancialYearFactory()
 
-    for i, amount in enumerate(figures):
-        ForecastMonthlyFigure.objects.create(
+    if figures:
+        for i, amount in enumerate(figures):
+            ForecastMonthlyFigure.objects.create(
+                financial_code=fin_code,
+                financial_year=fin_year,
+                financial_period_id=i + 1,
+                amount=amount * 100,
+            )
+
+    if actual:
+        ActualUploadMonthlyFigure.objects.create(
             financial_code=fin_code,
             financial_year=fin_year,
-            financial_period_id=i + 1,
-            amount=amount * 100,
+            financial_period=period_obj,
+            amount=actual * 100,
         )
 
-    actual_obj = ActualUploadMonthlyFigure.objects.create(
-        financial_code=fin_code,
-        financial_year=fin_year,
-        financial_period=period_obj,
-        amount=actual * 100,
-    )
-
-    actualisation(period=period_obj, actual=actual_obj)
+    actualisation(year=fin_year, period=period_obj, financial_code=fin_code)
 
     new_figures = (
         ForecastMonthlyFigure.objects.filter(
