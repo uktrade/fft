@@ -2,7 +2,7 @@ import operator
 from collections import defaultdict
 from dataclasses import dataclass
 from itertools import accumulate
-from typing import Iterable, Iterator, TypedDict
+from typing import Iterator, TypedDict
 
 import numpy as np
 import numpy.typing as npt
@@ -630,38 +630,3 @@ def can_edit_payroll(
             cost_centre_code=cost_centre.cost_centre_code,
         )
     )
-
-
-def get_payroll_financial_codes():
-    return FinancialCode.objects.filter(
-        natural_account_code__in=settings.PAYROLL_NACS,
-        analysis1_code=None,
-        analysis2_code=None,
-        project_code=None,
-    )
-
-
-def get_current_payroll_financial_codes() -> Iterable[FinancialCode]:
-    fields = ("cost_centre", "programme_code")
-
-    employee_qs = Employee.objects.filter(has_left=False).only(*fields)
-
-    for obj in employee_qs:
-        yield from get_payroll_financial_codes().filter(
-            cost_centre=obj.cost_centre,
-            programme=obj.programme_code,
-        )
-
-    vacancy_qs = Vacancy.objects.all().only(*fields)
-
-    for obj in vacancy_qs:
-        yield from get_payroll_financial_codes().filter(
-            cost_centre=obj.cost_centre,
-            programme=obj.programme_code,
-        )
-
-
-def remove_orphaned_figures(financial_year: FinancialYear) -> None:
-    ForecastMonthlyFigure.objects.forecast(financial_year).exclude(
-        financial_code__in=get_current_payroll_financial_codes()
-    ).delete()

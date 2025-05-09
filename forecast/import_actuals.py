@@ -376,11 +376,9 @@ def actualisation(
             financial_year=year,
             financial_period_id=period.pk + i + 1,
             archived_status=None,
-            defaults={"amount": difference, "starting_amount": difference},
+            defaults={"amount": difference},
         )
 
         if not created:
-            new_amount = obj.amount + difference
-            obj.amount = new_amount
-            obj.starting_amount = new_amount
+            obj.amount = obj.amount + difference
             obj.save()
