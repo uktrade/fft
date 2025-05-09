@@ -1,5 +1,6 @@
 import copy
 import hashlib
+from typing import Self
 
 import waffle
 from django.conf import settings
@@ -1031,6 +1032,19 @@ class ForecastingDataView(ForecastingDataViewAbstract):
         db_table = "forecast_forecast_download_view"
 
 
+class MonthlyFigureQuerySet(models.QuerySet):
+    def forecast(self, financial_year: FinancialYear) -> Self:
+        qs = self.filter(
+            financial_year=financial_year,
+            archived_status__isnull=True,
+        )
+
+        if financial_year.current:
+            qs = self.filter(financial_period__actual_loaded=False)
+
+        return qs
+
+
 class MonthlyFigureAbstract(BaseModel):
     """It contains the forecast and the actuals.
     The current month defines what is Actual and what is Forecast"""
@@ -1052,7 +1066,7 @@ class MonthlyFigureAbstract(BaseModel):
         on_delete=models.PROTECT,
         related_name="%(app_label)s_%(class)ss",
     )
-    objects = models.Manager()  # The default manager.
+    objects = MonthlyFigureQuerySet.as_manager()
     pivot = PivotManager()
 
     # TODO don't save to month that have actuals

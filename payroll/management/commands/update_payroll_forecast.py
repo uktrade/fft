@@ -12,9 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         year = options["financial_year"]
 
-        msg = f"Updating all payroll forecasts for {year}"
-        self.stdout.write(self.style.SUCCESS(msg))
-
+        self.stdout.write(f"Updating all payroll forecasts for {year}")
         update_all_payroll_forecast(financial_year=year)
 
         self.stdout.write(self.style.SUCCESS("Done"))
