@@ -26,6 +26,9 @@ class EmployeeFactory(factory.django.DjangoModelFactory):
     grade = factory.SubFactory(GradeFactory)
     fte = 1.0
     assignment_status = "Active Assignment"
+    basic_pay = factory.fuzzy.FuzzyInteger(low=1000_00, high=3000_00)
+    ernic = factory.fuzzy.FuzzyInteger(low=50_00, high=250_00)
+    pension = factory.fuzzy.FuzzyInteger(low=100_00, high=300_00)
 
 
 class EmployeePayPeriodsFactory(factory.django.DjangoModelFactory):

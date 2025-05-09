@@ -2,7 +2,7 @@ from celery import shared_task
 
 from core.models import FinancialYear
 from costcentre.models import CostCentre
-from payroll.services.payroll import update_payroll_forecast
+from payroll.services.payroll import remove_orphaned_figures, update_payroll_forecast
 
 
 @shared_task
@@ -13,3 +13,5 @@ def update_all_payroll_forecast(*, financial_year: int):
         update_payroll_forecast(
             financial_year=financial_year_obj, cost_centre=cost_centre
         )
+
+    remove_orphaned_figures(financial_year_obj)
