@@ -205,7 +205,8 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
                 # "recharge":
                 # "reason":
                 "narrative": pay_periods.notes,
-                # "budget_type":
+                "budget_type": employee.programme_code.budget_type.budget_type,  # Not the quite right format
+                "fte_total": employee.fte * 12,
             }
         )
 
@@ -248,7 +249,8 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
                 # "recharge":
                 # "reason":
                 "narrative": pay_periods.notes,
-                # "budget_type":
+                "budget_type": vacancy.programme_code.budget_type.budget_type,
+                "fte_total": "0",  # This is what vacancies are set to in the test data
             }
         )
 
