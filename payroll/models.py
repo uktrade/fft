@@ -15,6 +15,9 @@ class EmployeeQuerySet(models.QuerySet):
     def payroll(self):
         return self.filter(basic_pay__gt=0)
 
+    def current(self):
+        return self.filter(has_left=False)
+
 
 class VacancyQuerySet(models.QuerySet):
     def prefetch_pay_periods(self, **filters):

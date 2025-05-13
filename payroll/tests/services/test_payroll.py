@@ -85,6 +85,9 @@ def test_payroll_forecast(db, payroll_nacs):
         cost_centre=cost_centre,
         programme_code__programme_code="123456",
         grade__grade="Grade 7",
+        basic_pay=0,
+        pension=0,
+        ernic=0,
     )
 
     # TODO: Consider an ergonomic way of avoiding this pattern all the time.
@@ -406,3 +409,78 @@ def test_average_cost_for_grade(db):
         pension=50000,
     )
     assert employee_cost == expected
+
+
+def test_update_all_payroll_forecast_removes_orphaned_figures(
+    db, current_financial_year, payroll_nacs
+):
+    prog_1 = ProgrammeCodeFactory(programme_code="123456")
+    prog_2 = ProgrammeCodeFactory(programme_code="654321")
+
+    employee = EmployeeFactory(programme_code=prog_1)
+    employee_created(employee)
+
+    payroll_fin_code_1 = FinancialCodeFactory(
+        cost_centre=employee.cost_centre,
+        programme=prog_1,
+        natural_account_code__natural_account_code=SALARY_NAC,
+    )
+    payroll_fin_code_2 = FinancialCodeFactory(
+        cost_centre=employee.cost_centre,
+        programme=prog_2,
+        natural_account_code__natural_account_code=SALARY_NAC,
+    )
+
+    # create a forecast against a non-payroll NAC
+    other_fin_code = FinancialCodeFactory(
+        cost_centre=employee.cost_centre,
+        programme=prog_2,
+    )
+    ForecastMonthlyFigure.objects.create(
+        financial_year=current_financial_year,
+        financial_period_id=1,
+        financial_code=other_fin_code,
+        amount=999_99,
+    )
+
+    update_payroll_forecast(
+        financial_year=current_financial_year,
+        cost_centre=employee.cost_centre,
+    )
+
+    # move all employee's to a different programme code
+    employee.programme_code = prog_2
+    employee.save()
+
+    update_payroll_forecast(
+        financial_year=current_financial_year,
+        cost_centre=employee.cost_centre,
+    )
+
+    forecast_figures_1 = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_year=current_financial_year,
+            financial_code=payroll_fin_code_1,
+            archived_status=None,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
+    )
+    forecast_figures_2 = (
+        ForecastMonthlyFigure.objects.filter(
+            financial_year=current_financial_year,
+            financial_code=payroll_fin_code_2,
+            archived_status=None,
+        )
+        .order_by("financial_period")
+        .values_list("amount", flat=True)
+    )
+
+    # orphan forecasts have been removed
+    assert list(forecast_figures_1) == []
+    # new forecasts have been created
+    assert list(forecast_figures_2) == [employee.basic_pay] * 12
+    # non-payroll (other) forecasts were not changed
+    assert (
+        ForecastMonthlyFigure.objects.filter(financial_code=other_fin_code).count() == 1
+    )

@@ -212,6 +212,27 @@ def update_payroll_forecast(
                 payroll_forecast=payroll_forecast,
             )
 
+        _remove_orphaned_payroll_figures(financial_year=year, cost_centre=cost_centre)
+
+
+def _remove_orphaned_payroll_figures(
+    financial_year: FinancialYear, cost_centre: CostCentre
+) -> None:
+    active_programmes_in_cost_centre = (
+        Employee.objects.current()
+        .filter(cost_centre=cost_centre)
+        .values("programme_code")
+        .union(Vacancy.objects.filter(cost_centre=cost_centre).values("programme_code"))
+    )
+    ForecastMonthlyFigure.objects.filter(
+        ~Q(financial_code__programme__in=active_programmes_in_cost_centre),
+        financial_code__cost_centre=cost_centre,
+        financial_code__natural_account_code__in=settings.PAYROLL_NACS,
+        financial_code__analysis1_code=None,
+        financial_code__analysis2_code=None,
+        financial_code__project_code=None,
+    ).forecast(financial_year).delete()
+
 
 def update_payroll_forecast_figure(
     *,
