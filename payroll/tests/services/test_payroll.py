@@ -432,14 +432,14 @@ def test_update_all_payroll_forecast_removes_orphaned_figures(
     )
 
     # create a forecast against a non-payroll NAC
-    other_fin_code_2 = FinancialCodeFactory(
+    other_fin_code = FinancialCodeFactory(
         cost_centre=employee.cost_centre,
         programme=prog_2,
     )
     ForecastMonthlyFigure.objects.create(
         financial_year=current_financial_year,
         financial_period_id=1,
-        financial_code=other_fin_code_2,
+        financial_code=other_fin_code,
         amount=999_99,
     )
 
@@ -482,6 +482,5 @@ def test_update_all_payroll_forecast_removes_orphaned_figures(
     assert list(forecast_figures_2) == [employee.basic_pay] * 12
     # non-payroll (other) forecasts were not changed
     assert (
-        ForecastMonthlyFigure.objects.filter(financial_code=other_fin_code_2).count()
-        == 1
+        ForecastMonthlyFigure.objects.filter(financial_code=other_fin_code).count() == 1
     )
