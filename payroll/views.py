@@ -155,6 +155,36 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)
 
 
+def build_row(model, extra_fields=None):
+    pay_periods = model.pay_periods.first()
+    row = {
+        "grade": model.grade,
+        "fte": model.fte,
+        "cost_centre_id": model.cost_centre_id,
+        "cost_centre_name": model.cost_centre.cost_centre_name,
+        "directorate": model.cost_centre.directorate.directorate_name,
+        "group_name": model.cost_centre.directorate.group.group_name,
+        "programme_code": model.programme_code.programme_code,
+        "april": pay_periods.period_1,
+        "may": pay_periods.period_2,
+        "june": pay_periods.period_3,
+        "july": pay_periods.period_4,
+        "august": pay_periods.period_5,
+        "september": pay_periods.period_6,
+        "october": pay_periods.period_7,
+        "november": pay_periods.period_8,
+        "december": pay_periods.period_9,
+        "january": pay_periods.period_10,
+        "february": pay_periods.period_11,
+        "march": pay_periods.period_12,
+        "narrative": pay_periods.notes,
+        "budget_type": model.programme_code.budget_type.budget_type,  # Not the quite right format
+    }
+    if extra_fields:
+        row.update(extra_fields)
+    return row
+
+
 def payroll_data_report(request: HttpRequest) -> HttpResponse:
     if not request.user.is_superuser:
         raise PermissionDenied
@@ -167,91 +197,55 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
     vacancies = Vacancy.objects.all()
 
     for employee in employees:
-        pay_periods = employee.pay_periods.first()
         rows.append(
-            {
-                "first_name": employee.first_name,
-                "last_name": employee.last_name,
-                "grade": employee.grade,
-                "employee_no": employee.employee_no,
-                "fte": employee.fte,
-                "wmi_payroll": "Payroll" if employee.basic_pay > 0 else "Non-payroll",
-                "cost_centre_id": employee.cost_centre_id,
-                "cost_centre_name": employee.cost_centre.cost_centre_name,
-                "directorate": employee.cost_centre.directorate.directorate_name,
-                "group_name": employee.cost_centre.directorate.group.group_name,
-                "programme_code": employee.programme_code.programme_code,
-                "assignment_status": employee.assignment_status,
-                "person_type": "Employee",
-                "april": pay_periods.period_1,
-                "may": pay_periods.period_2,
-                "june": pay_periods.period_3,
-                "july": pay_periods.period_4,
-                "august": pay_periods.period_5,
-                "september": pay_periods.period_6,
-                "october": pay_periods.period_7,
-                "november": pay_periods.period_8,
-                "december": pay_periods.period_9,
-                "january": pay_periods.period_10,
-                "february": pay_periods.period_11,
-                "march": pay_periods.period_12,
-                "salary": f"{employee.basic_pay / 100:.2f}",
-                "recruitment_type": "N/A",
-                "HR_stage": "N/A",
-                "HR_ref": "N/A",
-                "vacancy_type": "N/A",
-                "programme_switch": "N/A",
-                # "capital":
-                # "recharge":
-                # "reason":
-                "narrative": pay_periods.notes,
-                "budget_type": employee.programme_code.budget_type.budget_type,  # Not the quite right format
-                "fte_total": employee.fte * 12,
-            }
+            build_row(
+                employee,
+                extra_fields={
+                    "first_name": employee.first_name,
+                    "last_name": employee.last_name,
+                    "employee_no": employee.employee_no,
+                    "wmi_payroll": (
+                        "Payroll" if employee.basic_pay > 0 else "Non-payroll"
+                    ),
+                    "assignment_status": employee.assignment_status,
+                    "person_type": "Employee",
+                    "salary": f"{employee.basic_pay / 100:.2f}",
+                    "recruitment_type": "N/A",
+                    "HR_stage": "N/A",
+                    "HR_ref": "N/A",
+                    "vacancy_type": "N/A",
+                    "programme_switch": "N/A",
+                    # "capital":
+                    # "recharge":
+                    # "reason":
+                    "fte_total": employee.fte * 12,
+                },
+            ),
         )
 
     for vacancy in vacancies:
-        pay_periods = vacancy.pay_periods.first()
         rows.append(
-            {
-                "first_name": "Vacancy",
-                "last_name": "Vacancy",
-                "grade": vacancy.grade,
-                "employee_no": "1",  # This is what vacancies are set to in the test data
-                "fte": vacancy.fte,
-                "wmi_payroll": "Vacancy",
-                "cost_centre_id": vacancy.cost_centre_id,
-                "cost_centre_name": vacancy.cost_centre.cost_centre_name,
-                "directorate": vacancy.cost_centre.directorate.directorate_name,
-                "group_name": vacancy.cost_centre.directorate.group.group_name,
-                "programme_code": vacancy.programme_code.programme_code,
-                "assignment_status": "N/A",
-                "person_type": "Vacancy",
-                "april": pay_periods.period_1,
-                "may": pay_periods.period_2,
-                "june": pay_periods.period_3,
-                "july": pay_periods.period_4,
-                "august": pay_periods.period_5,
-                "september": pay_periods.period_6,
-                "october": pay_periods.period_7,
-                "november": pay_periods.period_8,
-                "december": pay_periods.period_9,
-                "january": pay_periods.period_10,
-                "february": pay_periods.period_11,
-                "march": pay_periods.period_12,
-                # "salary":
-                "recruitment_type": vacancy.get_recruitment_type_display(),
-                "HR_stage": vacancy.get_recruitment_stage_display(),
-                "HR_ref": vacancy.hr_ref,
-                # "vacancy_type":
-                # "programme_switch":
-                # "capital":
-                # "recharge":
-                # "reason":
-                "narrative": pay_periods.notes,
-                "budget_type": vacancy.programme_code.budget_type.budget_type,
-                "fte_total": "0",  # This is what vacancies are set to in the test data
-            }
+            build_row(
+                employee,
+                extra_fields={
+                    "first_name": "Vacancy",
+                    "last_name": "Vacancy",
+                    "employee_no": "1",  # This is what vacancies are set to in the test data
+                    "wmi_payroll": "Vacancy",
+                    "assignment_status": "N/A",
+                    "person_type": "Vacancy",
+                    # "salary":
+                    "recruitment_type": vacancy.get_recruitment_type_display(),
+                    "HR_stage": vacancy.get_recruitment_stage_display(),
+                    "HR_ref": vacancy.hr_ref,
+                    # "vacancy_type":
+                    # "programme_switch":
+                    # "capital":
+                    # "recharge":
+                    # "reason":
+                    "fte_total": "0",  # This is what vacancies are set to in the test data
+                },
+            )
         )
 
     context = {"rows": rows}
