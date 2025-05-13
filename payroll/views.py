@@ -13,7 +13,7 @@ from config import flags
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from payroll.forms import VacancyForm
-from payroll.models import Vacancy
+from payroll.models import Employee, Vacancy
 
 from .services import payroll as payroll_service
 from .services.ingest import import_payroll
@@ -153,3 +153,105 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
     }
 
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)
+
+
+def payroll_data_report(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    context = {}
+    rows = []
+
+    # Filter to financial year
+    employees = Employee.objects.all()
+    vacancies = Vacancy.objects.all()
+
+    for employee in employees:
+        pay_periods = employee.pay_periods.first()
+        rows.append(
+            {
+                "first_name": employee.first_name,
+                "last_name": employee.last_name,
+                "grade": employee.grade,
+                "employee_no": employee.employee_no,
+                "fte": employee.fte,
+                "wmi_payroll": "Payroll" if employee.basic_pay > 0 else "Non-payroll",
+                "cost_centre_id": employee.cost_centre_id,
+                "cost_centre_name": employee.cost_centre.cost_centre_name,
+                "directorate": employee.cost_centre.directorate.directorate_name,
+                "group_name": employee.cost_centre.directorate.group.group_name,
+                "programme_code": employee.programme_code.programme_code,
+                "assignment_status": employee.assignment_status,
+                "person_type": "Employee",
+                "april": pay_periods.period_1,
+                "may": pay_periods.period_2,
+                "june": pay_periods.period_3,
+                "july": pay_periods.period_4,
+                "august": pay_periods.period_5,
+                "september": pay_periods.period_6,
+                "october": pay_periods.period_7,
+                "november": pay_periods.period_8,
+                "december": pay_periods.period_9,
+                "january": pay_periods.period_10,
+                "february": pay_periods.period_11,
+                "march": pay_periods.period_12,
+                "salary": f"{employee.basic_pay / 100:.2f}",
+                "recruitment_type": "N/A",
+                "HR_stage": "N/A",
+                "HR_ref": "N/A",
+                "vacancy_type": "N/A",
+                "programme_switch": "N/A",
+                # "capital":
+                # "recharge":
+                # "reason":
+                "narrative": pay_periods.notes,
+                # "budget_type":
+            }
+        )
+
+    for vacancy in vacancies:
+        pay_periods = vacancy.pay_periods.first()
+        rows.append(
+            {
+                "first_name": "Vacancy",
+                "last_name": "Vacancy",
+                "grade": vacancy.grade,
+                "employee_no": "1",  # This is what vacancies are set to in the test data
+                "fte": vacancy.fte,
+                "wmi_payroll": "Vacancy",
+                "cost_centre_id": vacancy.cost_centre_id,
+                "cost_centre_name": vacancy.cost_centre.cost_centre_name,
+                "directorate": vacancy.cost_centre.directorate.directorate_name,
+                "group_name": vacancy.cost_centre.directorate.group.group_name,
+                "programme_code": vacancy.programme_code.programme_code,
+                "assignment_status": "N/A",
+                "person_type": "Vacancy",
+                "april": pay_periods.period_1,
+                "may": pay_periods.period_2,
+                "june": pay_periods.period_3,
+                "july": pay_periods.period_4,
+                "august": pay_periods.period_5,
+                "september": pay_periods.period_6,
+                "october": pay_periods.period_7,
+                "november": pay_periods.period_8,
+                "december": pay_periods.period_9,
+                "january": pay_periods.period_10,
+                "february": pay_periods.period_11,
+                "march": pay_periods.period_12,
+                # "salary":
+                "recruitment_type": vacancy.get_recruitment_type_display(),
+                "HR_stage": vacancy.get_recruitment_stage_display(),
+                "HR_ref": vacancy.hr_ref,
+                # "vacancy_type":
+                # "programme_switch":
+                # "capital":
+                # "recharge":
+                # "reason":
+                "narrative": pay_periods.notes,
+                # "budget_type":
+            }
+        )
+
+    context = {"rows": rows}
+
+    return TemplateResponse(request, "payroll/page/payroll_data_report.html", context)

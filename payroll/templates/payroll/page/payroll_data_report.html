@@ -1,0 +1,153 @@
+{% extends "base_generic.html" %}
+{% load breadcrumbs vite %}
+
+{% block title %}Report{% endblock title %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Payroll data report" "payroll:report" %}
+{% endblock breadcrumbs %}
+
+
+{% block content %}
+<div class="scrollable">
+    <table className="govuk-table">
+        <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">First Name</td>
+                <td class="govuk-table__cell">Last Name</td>
+                <td class="govuk-table__cell">Grade Level</td>
+                <td class="govuk-table__cell">Staff Number</td>
+                <td class="govuk-table__cell">FTE</td>
+
+                <td class="govuk-table__cell">WMI Payroll</td>
+                <td class="govuk-table__cell">CC Acronym</td>
+                <td class="govuk-table__cell">CC Name</td>
+                <td class="govuk-table__cell">Directorate</td>
+                <td class="govuk-table__cell">Group Name</td>
+
+                <td class="govuk-table__cell">Programme Code</td>
+                <td class="govuk-table__cell">Assignment Status</td>
+                <td class="govuk-table__cell">Person Type</td>
+                <td class="govuk-table__cell">April</td>
+                <td class="govuk-table__cell">May</td>
+
+                <td class="govuk-table__cell">June</td>
+                <td class="govuk-table__cell">July</td>
+                <td class="govuk-table__cell">August</td>
+                <td class="govuk-table__cell">September</td>
+                <td class="govuk-table__cell">October</td>
+
+                <td class="govuk-table__cell">November</td>
+                <td class="govuk-table__cell">December</td>
+                <td class="govuk-table__cell">January</td>
+                <td class="govuk-table__cell">February</td>
+                <td class="govuk-table__cell">March</td>
+
+                <td class="govuk-table__cell">Payroll Cost Centre</td>
+                <td class="govuk-table__cell">Salary</td>
+                <td class="govuk-table__cell">Recruitment Type</td>
+                <td class="govuk-table__cell">HR Stage</td>
+                <td class="govuk-table__cell">HR Ref</td>
+
+                <td class="govuk-table__cell">Vacancy Type</td>
+                <td class="govuk-table__cell">April FTE</td>
+                <td class="govuk-table__cell">May FTE</td>
+                <td class="govuk-table__cell">June FTE</td>
+                <td class="govuk-table__cell">July FTE</td>
+
+                <td class="govuk-table__cell">August FTE</td>
+                <td class="govuk-table__cell">September FTE</td>
+                <td class="govuk-table__cell">October FTE</td>
+                <td class="govuk-table__cell">November FTE</td>
+                <td class="govuk-table__cell">December FTE</td>
+
+                <td class="govuk-table__cell">January FTE</td>
+                <td class="govuk-table__cell">February FTE</td>
+                <td class="govuk-table__cell">March FTE</td>
+                <td class="govuk-table__cell">Programme Switch</td>
+                <td class="govuk-table__cell">Capital</td>
+
+                <td class="govuk-table__cell">Recharge</td>
+                <td class="govuk-table__cell">Reason</td>
+                <td class="govuk-table__cell">Narrative</td>
+                <td class="govuk-table__cell">vw_Dim_UCoA_Programme.Control_Budget</td>
+                <td class="govuk-table__cell">FTE total</td>
+
+                <td class="govuk-table__cell">Employee Name</td>
+                <td class="govuk-table__cell">CC name & number</td>
+                <td class="govuk-table__cell">Employee & prog code</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">{{ row.first_name }}</td>
+                <td class="govuk-table__cell">{{ row.last_name }}</td>
+                <td class="govuk-table__cell">{{ row.grade }}</td>
+                <td class="govuk-table__cell">{{ row.employee_no }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                
+                <td class="govuk-table__cell">{{ row.wmi_payroll }}</td>
+                <td class="govuk-table__cell">{{ row.cost_centre_id }}</td>
+                <td class="govuk-table__cell">{{ row.cost_centre_name }}</td>
+                <td class="govuk-table__cell">{{ row.directorate }}</td>
+                <td class="govuk-table__cell">{{ row.group_name }}</td>
+
+                <td class="govuk-table__cell">{{ row.programme_code }}</td>
+                <td class="govuk-table__cell">{{ row.assignment_status }}</td>
+                <td class="govuk-table__cell">{{ row.person_type }}</td>
+                <td class="govuk-table__cell">{{ row.april }}</td>
+                <td class="govuk-table__cell">{{ row.may }}</td>
+
+                <td class="govuk-table__cell">{{ row.june }}</td>
+                <td class="govuk-table__cell">{{ row.july }}</td>
+                <td class="govuk-table__cell">{{ row.august }}</td>
+                <td class="govuk-table__cell">{{ row.september }}</td>
+                <td class="govuk-table__cell">{{ row.october }}</td>
+
+                <td class="govuk-table__cell">{{ row.november }}</td>
+                <td class="govuk-table__cell">{{ row.december }}</td>
+                <td class="govuk-table__cell">{{ row.january }}</td>
+                <td class="govuk-table__cell">{{ row.february }}</td>
+                <td class="govuk-table__cell">{{ row.march }}</td>
+
+                <td class="govuk-table__cell">{{ row.cost_centre_id }}</td>
+                <td class="govuk-table__cell">{{ row.salary }}</td>
+                <td class="govuk-table__cell">{{ row.recruitment_type }}</td>
+                <td class="govuk-table__cell">{{ row.HR_stage }}</td>
+                <td class="govuk-table__cell">{{ row.HR_ref }}</td>
+
+                <td class="govuk-table__cell">{{ row.vacancy_type }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.fte }}</td>
+                <td class="govuk-table__cell">{{ row.programme_switch }}</td>
+                <td class="govuk-table__cell">{{ row.capital }}</td>
+
+                <td class="govuk-table__cell">{{ row.recharge }}</td>
+                <td class="govuk-table__cell">{{ row.reason }}</td>
+                <td class="govuk-table__cell">{{ row.narrative }}</td>
+                <td class="govuk-table__cell">{{ row.budget_type }}</td>
+                <td class="govuk-table__cell">{{ row.fte_total }}</td>
+
+                <td class="govuk-table__cell">{{ row.first_name }} {{ row.last_name }}</td>
+                <td class="govuk-table__cell">{{ row.cost_centre_id }} - {{ row.cost_centre_name }}</td>
+                <td class="govuk-table__cell">{{ row.first_name }} {{ row.last_name }} ({{ row.programme_code }})</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+</div>
+{% endblock %}
