@@ -1,3 +1,6 @@
+import csv
+import datetime as dt
+
 import waffle
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
@@ -183,20 +186,16 @@ def build_row(model, extra_fields=None):
         "reason": "",
         "narrative": pay_periods.notes,
         "budget_type": model.programme_code.budget_type.budget_type,
+        "cc_name_number": f"{model.cost_centre_id} - {model.cost_centre.cost_centre_name}",
     }
     if extra_fields:
         row.update(extra_fields)
     return row
 
 
-def payroll_data_report(request: HttpRequest) -> HttpResponse:
-    if not payroll_service.can_access_edit_payroll(request.user):
-        raise PermissionDenied
-
-    user_cost_centres = get_user_cost_centres(request.user)
-    context = {}
+def get_report_data(user, financial_year):
+    user_cost_centres = get_user_cost_centres(user)
     rows = []
-    financial_year = request.current_financial_year
 
     employees = (
         Employee.objects.filter(has_left=False, cost_centre__in=user_cost_centres)
@@ -234,6 +233,8 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
                     "vacancy_type": "N/A",
                     "programme_switch": "N/A",
                     "fte_total": f"{employee.fte * 12}",
+                    "employee_name": f"{employee.first_name} {employee.last_name}",
+                    "employee_prog_code": f"{employee.first_name} {employee.last_name} ({employee.programme_code})",
                 },
             ),
         )
@@ -259,10 +260,99 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
                     "vacancy_type": "",
                     "programme_switch": "",
                     "fte_total": "0",
+                    "employee_name": "Vacancy Vacancy",
+                    "employee_prog_code": f"Vacancy Vacancy ({vacancy.programme_code})",
                 },
             )
         )
 
-    context = {"rows": rows}
+    return rows
+
+
+FIELDS = [
+    ("first_name", "First Name"),
+    ("last_name", "Last Name"),
+    ("grade", "Grade Level"),
+    ("employee_no", "Staff Number"),
+    ("fte", "FTE"),
+    ("wmi_payroll", "WMI Payroll"),
+    ("cost_centre_id", "CC Acronym"),
+    ("cost_centre_name", "CC Name"),
+    ("directorate", "Directorate"),
+    ("group_name", "Group Name"),
+    ("programme_code", "Programme Code"),
+    ("assignment_status", "Assignment Status"),
+    ("person_type", "Person Type"),
+    ("april", "April"),
+    ("may", "May"),
+    ("june", "June"),
+    ("july", "July"),
+    ("august", "August"),
+    ("september", "September"),
+    ("october", "October"),
+    ("november", "November"),
+    ("december", "December"),
+    ("january", "January"),
+    ("february", "February"),
+    ("march", "March"),
+    ("payroll_cost_centre", "Payroll Cost Centre"),
+    ("salary", "Salary"),
+    ("recruitment_type", "Recruitment Type"),
+    ("HR_stage", "HR Stage"),
+    ("HR_ref", "HR Ref"),
+    ("vacancy_type", "Vacancy Type"),
+    ("fte", "April FTE"),
+    ("fte", "May FTE"),
+    ("fte", "June FTE"),
+    ("fte", "July FTE"),
+    ("fte", "August FTE"),
+    ("fte", "September FTE"),
+    ("fte", "October FTE"),
+    ("fte", "November FTE"),
+    ("fte", "December FTE"),
+    ("fte", "January FTE"),
+    ("fte", "February FTE"),
+    ("fte", "March FTE"),
+    ("programme_switch", "Programme Switch"),
+    ("capital", "Capital"),
+    ("recharge", "Recharge"),
+    ("reason", "Reason"),
+    ("narrative", "Narrative"),
+    ("budget_type", "vw_Dim_UCoA_Programme.Control_Budget"),
+    ("fte_total", "FTE total"),
+    ("employee_name", "Employee Name"),
+    ("cc_name_number", "CC name & number"),
+    ("employee_prog_code", "Employee & prog code"),
+]
+
+
+def payroll_data_report(request: HttpRequest) -> HttpResponse:
+    if not payroll_service.can_access_edit_payroll(request.user):
+        raise PermissionDenied
+
+    context = {}
+    rows = get_report_data(request.user, request.current_financial_year)
+
+    keys, headers = zip(*FIELDS, strict=False)
+
+    context = {"rows": rows, "keys": list(keys), "headers": list(headers)}
 
     return TemplateResponse(request, "payroll/page/payroll_data_report.html", context)
+
+
+def download_report_csv(request):
+    data = get_report_data(request.user, request.current_financial_year)
+
+    filename = f"payroll_data_report_{dt.datetime.now():%Y%m%d-%H%M%S}.csv"
+    response = HttpResponse(
+        content_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+    writer = csv.writer(response)
+    writer.writerow([header for _, header in FIELDS])
+
+    for row in data:
+        writer.writerow([row.get(key, "") for key, _ in FIELDS])
+
+    return response

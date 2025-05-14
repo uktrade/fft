@@ -28,3 +28,11 @@ def instances_and_widgets(bound_field):
 def has_end_of_month_archive_permissions(user):
     if user.is_superuser or user.groups.filter(name="Finance Administrator"):
         return True
+
+
+@register.filter
+def get_item(dictionary, key):
+    """Get item from a dictionary {{ dict_obj|get_item:key }}"""
+    if not isinstance(dictionary, dict):
+        return ""
+    return dictionary.get(key, "")
