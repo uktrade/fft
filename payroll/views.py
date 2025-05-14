@@ -16,6 +16,7 @@ from config import flags
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from forecast.utils.access_helpers import get_user_cost_centres
+from payroll.constants import PAYROLL_REPORT_FIELDS
 from payroll.forms import VacancyForm
 from payroll.models import Employee, Vacancy
 
@@ -269,63 +270,6 @@ def get_report_data(user, financial_year):
     return rows
 
 
-FIELDS = [
-    ("first_name", "First Name"),
-    ("last_name", "Last Name"),
-    ("grade", "Grade Level"),
-    ("employee_no", "Staff Number"),
-    ("fte", "FTE"),
-    ("wmi_payroll", "WMI Payroll"),
-    ("cost_centre_id", "CC Acronym"),
-    ("cost_centre_name", "CC Name"),
-    ("directorate", "Directorate"),
-    ("group_name", "Group Name"),
-    ("programme_code", "Programme Code"),
-    ("assignment_status", "Assignment Status"),
-    ("person_type", "Person Type"),
-    ("april", "April"),
-    ("may", "May"),
-    ("june", "June"),
-    ("july", "July"),
-    ("august", "August"),
-    ("september", "September"),
-    ("october", "October"),
-    ("november", "November"),
-    ("december", "December"),
-    ("january", "January"),
-    ("february", "February"),
-    ("march", "March"),
-    ("payroll_cost_centre", "Payroll Cost Centre"),
-    ("salary", "Salary"),
-    ("recruitment_type", "Recruitment Type"),
-    ("HR_stage", "HR Stage"),
-    ("HR_ref", "HR Ref"),
-    ("vacancy_type", "Vacancy Type"),
-    ("fte", "April FTE"),
-    ("fte", "May FTE"),
-    ("fte", "June FTE"),
-    ("fte", "July FTE"),
-    ("fte", "August FTE"),
-    ("fte", "September FTE"),
-    ("fte", "October FTE"),
-    ("fte", "November FTE"),
-    ("fte", "December FTE"),
-    ("fte", "January FTE"),
-    ("fte", "February FTE"),
-    ("fte", "March FTE"),
-    ("programme_switch", "Programme Switch"),
-    ("capital", "Capital"),
-    ("recharge", "Recharge"),
-    ("reason", "Reason"),
-    ("narrative", "Narrative"),
-    ("budget_type", "vw_Dim_UCoA_Programme.Control_Budget"),
-    ("fte_total", "FTE total"),
-    ("employee_name", "Employee Name"),
-    ("cc_name_number", "CC name & number"),
-    ("employee_prog_code", "Employee & prog code"),
-]
-
-
 def payroll_data_report(request: HttpRequest) -> HttpResponse:
     if not payroll_service.can_access_edit_payroll(request.user):
         raise PermissionDenied
@@ -333,7 +277,7 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
     context = {}
     rows = get_report_data(request.user, request.current_financial_year)
 
-    keys, headers = zip(*FIELDS, strict=False)
+    keys, headers = zip(*PAYROLL_REPORT_FIELDS, strict=False)
 
     context = {"rows": rows, "keys": list(keys), "headers": list(headers)}
 
@@ -350,9 +294,9 @@ def download_report_csv(request):
     )
 
     writer = csv.writer(response)
-    writer.writerow([header for _, header in FIELDS])
+    writer.writerow([header for _, header in PAYROLL_REPORT_FIELDS])
 
     for row in data:
-        writer.writerow([row.get(key, "") for key, _ in FIELDS])
+        writer.writerow([row.get(key, "") for key, _ in PAYROLL_REPORT_FIELDS])
 
     return response
