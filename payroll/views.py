@@ -274,7 +274,6 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
     if not payroll_service.can_access_edit_payroll(request.user):
         raise PermissionDenied
 
-    context = {}
     rows = get_report_data(request.user, request.current_financial_year)
 
     keys, headers = zip(*PAYROLL_REPORT_FIELDS, strict=False)
@@ -284,7 +283,10 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(request, "payroll/page/payroll_data_report.html", context)
 
 
-def download_report_csv(request):
+def download_report_csv(request: HttpRequest) -> HttpResponse:
+    if not payroll_service.can_access_edit_payroll(request.user):
+        raise PermissionDenied
+
     data = get_report_data(request.user, request.current_financial_year)
 
     filename = f"payroll_data_report_{dt.datetime.now():%Y%m%d-%H%M%S}.csv"
