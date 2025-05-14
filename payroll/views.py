@@ -12,6 +12,7 @@ from django.views.generic.base import ContextMixin, TemplateView
 from config import flags
 from core.models import FinancialYear
 from costcentre.models import CostCentre
+from forecast.utils.access_helpers import get_user_cost_centres
 from payroll.forms import VacancyForm
 from payroll.models import Employee, Vacancy
 
@@ -165,20 +166,23 @@ def build_row(model, extra_fields=None):
         "directorate": model.cost_centre.directorate.directorate_name,
         "group_name": model.cost_centre.directorate.group.group_name,
         "programme_code": model.programme_code.programme_code,
-        "april": pay_periods.period_1,
-        "may": pay_periods.period_2,
-        "june": pay_periods.period_3,
-        "july": pay_periods.period_4,
-        "august": pay_periods.period_5,
-        "september": pay_periods.period_6,
-        "october": pay_periods.period_7,
-        "november": pay_periods.period_8,
-        "december": pay_periods.period_9,
-        "january": pay_periods.period_10,
-        "february": pay_periods.period_11,
-        "march": pay_periods.period_12,
+        "april": int(pay_periods.period_1),
+        "may": int(pay_periods.period_2),
+        "june": int(pay_periods.period_3),
+        "july": int(pay_periods.period_4),
+        "august": int(pay_periods.period_5),
+        "september": int(pay_periods.period_6),
+        "october": int(pay_periods.period_7),
+        "november": int(pay_periods.period_8),
+        "december": int(pay_periods.period_9),
+        "january": int(pay_periods.period_10),
+        "february": int(pay_periods.period_11),
+        "march": int(pay_periods.period_12),
+        "capital": model.programme_code.budget_type.budget_type,
+        "recharge": "",
+        "reason": "",
         "narrative": pay_periods.notes,
-        "budget_type": model.programme_code.budget_type.budget_type,  # Not the quite right format
+        "budget_type": model.programme_code.budget_type.budget_type,
     }
     if extra_fields:
         row.update(extra_fields)
@@ -186,15 +190,28 @@ def build_row(model, extra_fields=None):
 
 
 def payroll_data_report(request: HttpRequest) -> HttpResponse:
-    if not request.user.is_superuser:
+    if not payroll_service.can_access_edit_payroll(request.user):
         raise PermissionDenied
 
+    user_cost_centres = get_user_cost_centres(request.user)
     context = {}
     rows = []
+    financial_year = request.current_financial_year
 
-    # Filter to financial year
-    employees = Employee.objects.all()
-    vacancies = Vacancy.objects.all()
+    employees = (
+        Employee.objects.filter(has_left=False, cost_centre__in=user_cost_centres)
+        .prefetch_pay_periods(year=financial_year)
+        .select_related(
+            "cost_centre__directorate__group", "grade", "programme_code__budget_type"
+        )
+    )
+    vacancies = (
+        Vacancy.objects.filter(cost_centre__in=user_cost_centres)
+        .prefetch_pay_periods(year=financial_year)
+        .select_related(
+            "cost_centre__directorate__group", "grade", "programme_code__budget_type"
+        )
+    )
 
     for employee in employees:
         rows.append(
@@ -209,16 +226,14 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
                     ),
                     "assignment_status": employee.assignment_status,
                     "person_type": "Employee",
+                    "payroll_cost_centre": employee.cost_centre_id,
                     "salary": f"{employee.basic_pay / 100:.2f}",
                     "recruitment_type": "N/A",
                     "HR_stage": "N/A",
                     "HR_ref": "N/A",
                     "vacancy_type": "N/A",
                     "programme_switch": "N/A",
-                    # "capital":
-                    # "recharge":
-                    # "reason":
-                    "fte_total": employee.fte * 12,
+                    "fte_total": f"{employee.fte * 12}",
                 },
             ),
         )
@@ -226,24 +241,24 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
     for vacancy in vacancies:
         rows.append(
             build_row(
-                employee,
+                vacancy,
                 extra_fields={
                     "first_name": "Vacancy",
                     "last_name": "Vacancy",
-                    "employee_no": "1",  # This is what vacancies are set to in the test data
+                    "employee_no": "1",
                     "wmi_payroll": "Vacancy",
                     "assignment_status": "N/A",
                     "person_type": "Vacancy",
-                    # "salary":
+                    "payroll_cost_centre": "N/A",
+                    "salary": f"{payroll_service.get_average_cost_for_grade(
+                        vacancy.grade, vacancy.cost_centre
+                    ).basic_pay / 100:.2f}",
                     "recruitment_type": vacancy.get_recruitment_type_display(),
                     "HR_stage": vacancy.get_recruitment_stage_display(),
                     "HR_ref": vacancy.hr_ref,
-                    # "vacancy_type":
-                    # "programme_switch":
-                    # "capital":
-                    # "recharge":
-                    # "reason":
-                    "fte_total": "0",  # This is what vacancies are set to in the test data
+                    "vacancy_type": "",
+                    "programme_switch": "",
+                    "fte_total": "0",
                 },
             )
         )

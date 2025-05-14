@@ -112,7 +112,7 @@
                 <td class="govuk-table__cell">{{ row.february }}</td>
                 <td class="govuk-table__cell">{{ row.march }}</td>
 
-                <td class="govuk-table__cell">{{ row.cost_centre_id }}</td>
+                <td class="govuk-table__cell">{{ row.payroll_cost_centre }}</td>
                 <td class="govuk-table__cell">{{ row.salary }}</td>
                 <td class="govuk-table__cell">{{ row.recruitment_type }}</td>
                 <td class="govuk-table__cell">{{ row.HR_stage }}</td>
@@ -143,7 +143,7 @@
                 <td class="govuk-table__cell">{{ row.fte_total }}</td>
 
                 <td class="govuk-table__cell">{{ row.first_name }} {{ row.last_name }}</td>
-                <td class="govuk-table__cell">{{ row.cost_centre_id }} - {{ row.cost_centre_name }}</td>
+                <td class="govuk-table__cell">{{ row.cost_centre_id }} {{ row.cost_centre_name }}</td>
                 <td class="govuk-table__cell">{{ row.first_name }} {{ row.last_name }} ({{ row.programme_code }})</td>
             </tr>
             {% endfor %}
