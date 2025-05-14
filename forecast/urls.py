@@ -60,28 +60,28 @@ from forecast.views.view_forecast.project_details import (
 
 urlpatterns = [
     path("error/", ErrorView.as_view(), name="error"),
+    # The order of paths here which start with "edit/" is important.
     path(
-        "edit/<int:cost_centre_code>/", EditForecastView.as_view(), name="edit_forecast"
-    ),
-    path(
-        "edit/<int:cost_centre_code>/<int:financial_year>/",
-        EditForecastView.as_view(),
-        name="edit_forecast",
+        "edit/choose-cost-centre/",
+        ChooseCostCentreView.as_view(),
+        name="choose_cost_centre",
     ),
     path(
         "edit/editing-unavailable/<int:financial_year>/",
         EditUnavailableView.as_view(),
         name="edit_unavailable",
     ),
+    path("edit/<cost_centre_code>/", EditForecastView.as_view(), name="edit_forecast"),
     path(
-        "edit/add/<int:cost_centre_code>/<int:financial_year>/",
+        "edit/<cost_centre_code>/<int:financial_year>/",
+        EditForecastView.as_view(),
+        name="edit_forecast",
+    ),
+    # End of the important ordering of "edit/" paths.
+    path(
+        "edit/add/<cost_centre_code>/<int:financial_year>/",
         AddRowView.as_view(),
         name="add_forecast_row",
-    ),
-    path(
-        "edit/choose-cost-centre/",
-        ChooseCostCentreView.as_view(),
-        name="choose_cost_centre",
     ),
     path(
         "view/dbt/<int:period>/",
