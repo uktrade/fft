@@ -1,6 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import Case, Prefetch, When
+from django.db.models import Case, F, Prefetch, When
 
 
 class EmployeeQuerySet(models.QuerySet):
@@ -17,6 +17,9 @@ class EmployeeQuerySet(models.QuerySet):
 
     def current(self):
         return self.filter(has_left=False)
+
+    def with_total_cost(self):
+        return self.annotate(total_cost=F("basic_pay") + F("ernic") + F("pension"))
 
 
 class VacancyQuerySet(models.QuerySet):
