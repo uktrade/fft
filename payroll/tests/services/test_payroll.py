@@ -7,19 +7,20 @@ import pytest
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.constants import MONTHS
 from core.models import FinancialYear
+from core.test.factories import FinancialYearFactory
 from core.types import MonthsDict
 from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.models import EmployeePayPeriods
 from payroll.services.payroll import (
     EmployeeCost,
     PayrollForecast,
+    build_employee_pay_periods,
+    build_vacancy_pay_periods,
     employee_created,
     get_average_cost_for_grade,
     payroll_forecast_report,
-    update_all_employee_pay_periods,
     update_payroll_forecast,
     update_payroll_forecast_figure,
     vacancy_created,
@@ -28,7 +29,6 @@ from payroll.services.payroll import (
 from ..factories import (
     AttritionFactory,
     EmployeeFactory,
-    EmployeePayPeriodsFactory,
     PayUpliftFactory,
     VacancyFactory,
 )
@@ -67,17 +67,17 @@ def test_payroll_forecast(db, payroll_nacs):
         cost_centre=cost_centre,
         programme_code__programme_code="123456",
         grade__grade="Grade 7",
-        basic_pay=195000,
-        pension=7550,
-        ernic=6275,
+        basic_pay=1950_00,
+        pension=75_50,
+        ernic=62_75,
     )
     payroll_employee_2 = EmployeeFactory.create(
         cost_centre=cost_centre,
         programme_code__programme_code="123456",
         grade__grade="Grade 7",
-        basic_pay=152440,
-        pension=11525,
-        ernic=4230,
+        basic_pay=1524_40,
+        pension=115_25,
+        ernic=42_30,
     )
     # non-payroll employees
     _ = EmployeeFactory.create_batch(
@@ -354,19 +354,41 @@ def test_update_payroll_forecast_skips_overseas_cost_centre(
     assert not forecast_figures
 
 
-def test_update_all_employee_pay_periods(db):
-    # given an employee with pay periods
-    EmployeePayPeriodsFactory(year_id=2020)
-    # and an employee without pay periods
-    EmployeeFactory()
+def test_build_employee_pay_periods(db):
+    # given an employee without pay periods
+    employee = EmployeeFactory()
+    # and a current and future financial year
+    current_year = FinancialYearFactory(financial_year=2020, current=True)
+    future_year = FinancialYearFactory(financial_year=2021, current=False)
 
-    assert EmployeePayPeriods.objects.count() == 1
+    # when `build_employee_pay_periods` is called for the current year
+    current_pay_periods = build_employee_pay_periods(
+        employee=employee, year=current_year, period=6
+    )
 
-    # when `update_all_employee_pay_periods` is called
-    update_all_employee_pay_periods()
+    # then we have false periods up until they were imported and true after
+    assert current_pay_periods.periods == ([False] * 5) + ([True] * 7)
 
-    # then there are 2 pay periods
-    assert EmployeePayPeriods.objects.count() == 2
+    # when `build_employee_pay_periods` is called for the future year
+    future_pay_periods = build_employee_pay_periods(
+        employee=employee, year=future_year, period=6
+    )
+
+    # then we have all true periods
+    assert future_pay_periods.periods == [True] * 12
+
+
+def test_build_vacancy_pay_periods(db):
+    # given a vacancy without pay periods
+    vacancy = VacancyFactory()
+    # and a current financial year
+    current_year = FinancialYearFactory(financial_year=2020, current=True)
+
+    # when `build_vacancy_pay_periods` is called for the current year
+    current_pay_periods = build_vacancy_pay_periods(vacancy=vacancy, year=current_year)
+
+    # then we have all false periods
+    assert current_pay_periods.periods == [False] * 12
 
 
 def test_average_cost_for_grade(db):
