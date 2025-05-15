@@ -1,6 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import Case, Prefetch, When, F
+from django.db.models import Case, F, Prefetch, When
 
 
 class EmployeeQuerySet(models.QuerySet):

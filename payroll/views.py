@@ -278,7 +278,7 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
 
     rows = get_report_data(request.user, request.current_financial_year)
 
-    keys, headers = zip(*PAYROLL_REPORT_FIELDS)
+    keys, headers = zip(*PAYROLL_REPORT_FIELDS, strict=False)
 
     context = {"rows": rows, "keys": keys, "headers": headers}
 
