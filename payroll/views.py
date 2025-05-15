@@ -163,6 +163,11 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
 
 def build_row(model: Position, extra_fields: dict[str, str]):
     pay_periods = model.pay_periods.first()
+    budget_type = (
+        model.programme_code.budget_type.budget_type
+        if model.programme_code.budget_type
+        else ""
+    )
     row = {
         "grade": model.grade,
         "fte": model.fte,
@@ -183,11 +188,11 @@ def build_row(model: Position, extra_fields: dict[str, str]):
         "january": int(pay_periods.period_10),
         "february": int(pay_periods.period_11),
         "march": int(pay_periods.period_12),
-        "capital": model.programme_code.budget_type.budget_type,
+        "capital": budget_type,
         "recharge": "",
         "reason": "",
         "narrative": pay_periods.notes,
-        "budget_type": model.programme_code.budget_type.budget_type,
+        "budget_type": budget_type,
         "cc_name_number": f"{model.cost_centre_id} - {model.cost_centre.cost_centre_name}",
     }
     if extra_fields:
