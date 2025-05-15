@@ -164,6 +164,7 @@ export const processForecastData = (forecastData) => {
         key: monthlyFigure.month,
         amount: monthlyFigure.amount,
         startingAmount: monthlyFigure.starting_amount,
+        isActual: monthlyFigure.actual,
       };
 
       colIndex++;

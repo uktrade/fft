@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Iterator
 
 from guardian.shortcuts import get_objects_for_user, remove_perm
 
@@ -79,3 +79,17 @@ def update_users_cost_centres(user, cost_centres: Iterable[CostCentre]):
             continue
 
         remove_perm("costcentre.change_costcentre", user, cost_centre)
+
+
+def get_forecast_periods_for_year(year: FinancialYear) -> Iterator[FinancialPeriod]:
+    """Return all forecast periods for the given financial year."""
+    is_future_year = FinancialYear.objects.future().contains(year)
+
+    for period in FinancialPeriod.objects.all():
+        if year.current and not period.actual_loaded:
+            yield period
+        elif is_future_year:
+            yield period
+        # must be a year in the past and therefore no forecast periods
+        else:
+            continue

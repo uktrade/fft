@@ -11,6 +11,7 @@ from core.import_csv import get_fk, get_fk_from_field
 from core.models import FinancialYear
 from forecast.models import (
     ActualUploadMonthlyFigure,
+    FinancialCode,
     FinancialPeriod,
     ForecastMonthlyFigure,
 )
@@ -298,20 +299,18 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
     if check_financial_code.error_found:
         final_status = FileUpload.PROCESSEDWITHERROR
     else:
-        uploaded_actuals = ActualUploadMonthlyFigure.objects.filter(
-            financial_year=financial_year, financial_period=period_obj
-        )
+        financial_codes = FinancialCode.objects.all()
 
         # Now copy the newly uploaded actuals to the correct table
         if year_obj.current:
             if waffle.switch_is_active(flags.ACTUALISATION):
-                rows_to_actualise = len(uploaded_actuals)
+                rows_to_actualise = len(financial_codes)
 
-                for i, uploaded_actual in enumerate(uploaded_actuals):
+                for i, code in enumerate(financial_codes):
                     if i % 100 == 0:
                         update_feedback(f"Actualised {i} of {rows_to_actualise} rows.")
 
-                    actualisation(period=period_obj, actual=uploaded_actual)
+                    actualisation(year=year_obj, period=period_obj, financial_code=code)
 
             copy_current_year_actuals_to_monthly_figure(period_obj, financial_year)
             FinancialPeriod.objects.filter(
@@ -326,7 +325,9 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
         if check_financial_code.warning_found:
             final_status = FileUpload.PROCESSEDWITHWARNING
 
-        uploaded_actuals.delete()
+        ActualUploadMonthlyFigure.objects.filter(
+            financial_year=financial_year, financial_period=period_obj
+        ).delete()
 
     set_file_upload_feedback(
         file_upload, f"Processed {rows_to_process} rows.", final_status
@@ -334,21 +335,34 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
     return True
 
 
-def actualisation(period: FinancialPeriod, actual: ActualUploadMonthlyFigure) -> None:
-    # get the current forecast that is being turned into an actual
+def actualisation(
+    year: FinancialYear, period: FinancialPeriod, financial_code: FinancialCode
+) -> None:
+    # current forecast for this code
     forecast = ForecastMonthlyFigure.objects.filter(
-        financial_code_id=actual.financial_code_id,
-        financial_year_id=actual.financial_year_id,
-        financial_period_id=actual.financial_period_id,
+        financial_code=financial_code,
+        financial_year=year,
+        financial_period=period,
         archived_status__isnull=True,
     ).first()
 
+    # actual for this code
+    actual = ActualUploadMonthlyFigure.objects.filter(
+        financial_code=financial_code,
+        financial_year=year,
+        financial_period=period,
+    ).first()
+
+    if not forecast and not actual:
+        return
+
     # work out how many period we have left in the financial year
     periods_left = len(PERIODS) - period.financial_period_code
-    # handle a missing forecast object and assume a forecast amount of 0
+    # handle missing actual and forecast objects and assume an amount of 0
+    actual_amount = actual.amount if actual else 0
     forecast_amount = forecast.amount if forecast else 0
     # work out the difference the actual will leave us with
-    difference = forecast_amount - actual.amount
+    difference = forecast_amount - actual_amount
 
     if periods_left:
         # floor divide the difference by how many periods are left in the financial year
@@ -358,13 +372,15 @@ def actualisation(period: FinancialPeriod, actual: ActualUploadMonthlyFigure) ->
     # adjust the remaining forecast periods by the difference
     for i in range(periods_left):
         obj, created = ForecastMonthlyFigure.objects.get_or_create(
-            financial_code_id=actual.financial_code_id,
-            financial_year_id=actual.financial_year_id,
+            financial_code=financial_code,
+            financial_year=year,
             financial_period_id=period.pk + i + 1,
             archived_status=None,
-            defaults={"amount": difference},
+            defaults={"amount": difference, "starting_amount": difference},
         )
 
         if not created:
-            obj.amount = obj.amount + difference
+            new_amount = obj.amount + difference
+            obj.amount = new_amount
+            obj.starting_amount = new_amount
             obj.save()

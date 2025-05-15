@@ -4,7 +4,6 @@ import re
 from functools import cached_property
 
 from django.conf import settings
-from django.core.exceptions import MultipleObjectsReturned
 from django.db import transaction
 from django.db.models import Exists, OuterRef, Prefetch, Q, Sum
 from django.http import JsonResponse
@@ -45,7 +44,6 @@ from forecast.utils.edit_helpers import (
     TooManyMatchException,
     check_cols_match,
     check_row_match,
-    formatted_cost_centre_code,
     set_monthly_figure_amount,
 )
 from forecast.utils.query_fields import edit_forecast_order
@@ -147,9 +145,8 @@ class AddRowView(
         if "cost_centre_code" not in self.kwargs:
             raise NoCostCentreCodeInURLError("No cost centre code provided in URL")
 
-        self.cost_centre_code = formatted_cost_centre_code(
-            self.kwargs["cost_centre_code"]
-        )
+        self.cost_centre_code = self.kwargs["cost_centre_code"]
+
         if "financial_year" not in self.kwargs:
             raise NoFinancialYearInURLError("No financial year provided in URL")
 
@@ -220,16 +217,14 @@ class AddRowView(
                     financial_period_id=actual_month,
                 )
         else:
-            try:
-                # Create at least one entry, to help some of the queries used to view
-                # the forecast
-                ForecastMonthlyFigure.objects.get_or_create(
-                    financial_code=financial_code,
-                    financial_year_id=self.financial_year,
-                    financial_period_id=1,
-                )
-            except MultipleObjectsReturned:
-                pass
+            # Create at least one entry, to help some of the queries used to view
+            # the forecast
+            ForecastMonthlyFigure.objects.get_or_create(
+                financial_code=financial_code,
+                financial_year_id=self.financial_year,
+                financial_period_id=1,
+                archived_status=None,
+            )
 
         return super().form_valid(form)
 
