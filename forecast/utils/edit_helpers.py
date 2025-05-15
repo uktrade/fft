@@ -48,15 +48,6 @@ class IncorrectDecimalFormatException(Exception):
 logger = logging.getLogger(__name__)
 
 
-def formatted_cost_centre_code(cost_centre_code):
-    # The edit views expect the cost centre as an integer, so they strip the leading 0
-    # from the cost centre code.
-    # But the cost centre in the database is stored as a string , 6 char long,
-    # padded with leading 0
-    # This function returns the cost centre code in the expected format.
-    return str(cost_centre_code).zfill(6)
-
-
 def set_monthly_figure_amount(
     cost_centre_code: str, cell_data: list, financial_year: int
 ):
