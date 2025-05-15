@@ -280,6 +280,10 @@ class EmployeeCost:
     ernic: float
     pension: float
 
+    @property
+    def total_cost(self) -> float:
+        return self.basic_pay + self.ernic + self.pension
+
 
 def get_average_cost_for_grade(grade: Grade, cost_centre: CostCentre) -> EmployeeCost:
     """Return the average employee cost for a given grade in a cost centre."""

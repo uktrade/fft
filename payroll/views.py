@@ -18,7 +18,8 @@ from costcentre.models import CostCentre
 from forecast.utils.access_helpers import get_user_cost_centres
 from payroll.constants import PAYROLL_REPORT_FIELDS
 from payroll.forms import VacancyForm
-from payroll.models import Employee, Vacancy
+from payroll.models import Employee, Position, Vacancy
+from user.models import User
 
 from .services import payroll as payroll_service
 from .services.ingest import import_payroll
@@ -160,7 +161,7 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(request, "payroll/page/import_payroll.html", context)
 
 
-def build_row(model, extra_fields=None):
+def build_row(model: Position, extra_fields: dict[str, str]):
     pay_periods = model.pay_periods.first()
     row = {
         "grade": model.grade,
@@ -194,9 +195,9 @@ def build_row(model, extra_fields=None):
     return row
 
 
-def get_report_data(user, financial_year):
+def get_report_data(user: User, financial_year: FinancialYear) -> list[dict[str, str]]:
     user_cost_centres = get_user_cost_centres(user)
-    rows = []
+    rows: list[dict[str, str]] = []
 
     employees = (
         Employee.objects.filter(has_left=False, cost_centre__in=user_cost_centres)
@@ -204,6 +205,7 @@ def get_report_data(user, financial_year):
         .select_related(
             "cost_centre__directorate__group", "grade", "programme_code__budget_type"
         )
+        .with_total_cost()
     )
     vacancies = (
         Vacancy.objects.filter(cost_centre__in=user_cost_centres)
@@ -222,12 +224,12 @@ def get_report_data(user, financial_year):
                     "last_name": employee.last_name,
                     "employee_no": employee.employee_no,
                     "wmi_payroll": (
-                        "Payroll" if employee.basic_pay > 0 else "Non-payroll"
+                        "Payroll" if employee.is_payroll else "Non-payroll"
                     ),
                     "assignment_status": employee.assignment_status,
                     "person_type": "Employee",
                     "payroll_cost_centre": employee.cost_centre_id,
-                    "salary": f"{employee.basic_pay / 100:.2f}",
+                    "salary": f"{employee.total_cost / 100:.2f}",
                     "recruitment_type": "N/A",
                     "HR_stage": "N/A",
                     "HR_ref": "N/A",
@@ -254,7 +256,7 @@ def get_report_data(user, financial_year):
                     "payroll_cost_centre": "N/A",
                     "salary": f"{payroll_service.get_average_cost_for_grade(
                         vacancy.grade, vacancy.cost_centre
-                    ).basic_pay / 100:.2f}",
+                    ).total_cost / 100:.2f}",
                     "recruitment_type": vacancy.get_recruitment_type_display(),
                     "HR_stage": vacancy.get_recruitment_stage_display(),
                     "HR_ref": vacancy.hr_ref,
@@ -276,9 +278,9 @@ def payroll_data_report(request: HttpRequest) -> HttpResponse:
 
     rows = get_report_data(request.user, request.current_financial_year)
 
-    keys, headers = zip(*PAYROLL_REPORT_FIELDS, strict=False)
+    keys, headers = zip(*PAYROLL_REPORT_FIELDS)
 
-    context = {"rows": rows, "keys": list(keys), "headers": list(headers)}
+    context = {"rows": rows, "keys": keys, "headers": headers}
 
     return TemplateResponse(request, "payroll/page/payroll_data_report.html", context)
 
@@ -299,6 +301,6 @@ def download_report_csv(request: HttpRequest) -> HttpResponse:
     writer.writerow([header for _, header in PAYROLL_REPORT_FIELDS])
 
     for row in data:
-        writer.writerow([row.get(key, "") for key, _ in PAYROLL_REPORT_FIELDS])
+        writer.writerow([row[key] for key, _ in PAYROLL_REPORT_FIELDS])
 
     return response

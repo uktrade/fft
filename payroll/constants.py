@@ -1,4 +1,4 @@
-PAYROLL_REPORT_FIELDS = [
+PAYROLL_REPORT_FIELDS: list[tuple[str, str]] = [
     ("first_name", "First Name"),
     ("last_name", "Last Name"),
     ("grade", "Grade Level"),

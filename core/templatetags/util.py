@@ -32,7 +32,11 @@ def has_end_of_month_archive_permissions(user):
 
 @register.filter
 def get_item(dictionary, key):
-    """Get item from a dictionary {{ dict_obj|get_item:key }}"""
+    """Get an item from a dictionary.
+
+    Examples:
+        `{{ dict_obj|get_item:key }}`
+    """
     if not isinstance(dictionary, dict):
         return ""
     return dictionary.get(key, "")
