@@ -4,11 +4,10 @@ $govuk-page-width: 1800px;
 // Due to a change in Vite we need to import govuk-frontend using a full relative path.
 // https://github.com/vitejs/vite/issues/19196
 // https://github.com/alphagov/forms-runner/pull/1136
-@import "../../node_modules/govuk-frontend/dist/govuk/all";
+@import "../../node_modules/govuk-frontend/dist/govuk/index";
 @import "./action-bar.scss";
 @import "./cost-centre-filter.scss";
 @import "./form.scss";
-@import "./header.scss";
 @import "./notes.scss";
 @import "./table.scss";
 @import "./tanstack-table.scss";
