@@ -11,7 +11,7 @@ from core.models import FinancialYear
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Employee
-from payroll.services.payroll import update_all_employee_pay_periods
+from payroll.services.payroll import employee_created
 from payroll.tasks import update_all_payroll_forecast
 
 
@@ -60,7 +60,7 @@ class ImportPayrollReport(TypedDict):
 
 
 @transaction.atomic()
-def import_payroll(payroll_csv: File) -> ImportPayrollReport:
+def import_payroll(payroll_csv: File, payroll_period: int) -> ImportPayrollReport:
     csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
     # Skip header row.
@@ -114,9 +114,6 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         update_fields=row_to_employee_dict.keys(),
     )
 
-    # Ensure we have pay periods ready.
-    update_all_employee_pay_periods()
-
     # Mark unseen employees as has left.
     have_left = (
         Employee.objects.exclude(employee_no__in=seen_employee_no_set)
@@ -126,6 +123,9 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
 
     created = seen_employee_no_set - previous_employees
     updated = seen_employee_no_set & previous_employees
+
+    for employee in Employee.objects.filter(employee_no__in=created):
+        employee_created(employee=employee, period=payroll_period)
 
     # Stop template attr lookup of .items creating an empty list.
     failed.default_factory = None

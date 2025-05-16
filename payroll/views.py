@@ -152,7 +152,8 @@ def import_payroll_page(request: HttpRequest) -> HttpResponse:
             context = {"error": "Payroll file is required"}
         else:
             payroll_csv = request.FILES["payroll_csv"]
-            output = import_payroll(payroll_csv)
+            payroll_period = int(request.POST["payroll_period"])
+            output = import_payroll(payroll_csv, payroll_period)
 
     context = {
         "output": output,
