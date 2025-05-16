@@ -204,7 +204,7 @@ def build_row(model: Position, extra_fields: dict[str, str]):
         "recharge": "",
         "reason": "",
         "narrative": pay_periods.notes,
-        "fte_total": f"{sum(getattr(pay_periods, f"period_{i}") for i in range(1, 13))}",
+        "fte_total": f"{sum(pay_periods.periods) * model.fte}",
         "budget_type": budget_type,
         "cc_name_number": f"{model.cost_centre_id} - {model.cost_centre.cost_centre_name}",
     }
