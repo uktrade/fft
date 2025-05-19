@@ -59,6 +59,8 @@ urlpatterns = [
         views.DeleteVacancyView.as_view(),
         name="delete_vacancy",
     ),
+    path("report", views.payroll_data_report, name="report"),
+    path("download-report", views.download_report_csv, name="download_report"),
     # TODO: Remove temporary views when ready.
     path("import", views.import_payroll_page, name="import"),
 ]
