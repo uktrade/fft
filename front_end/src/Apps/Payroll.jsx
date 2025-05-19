@@ -142,6 +142,14 @@ export default function Payroll() {
     });
   }
 
+  function handleUpdateNotesEmployee(updatedNote, id) {
+    dispatch({ type: "updateNotesEmployee", updatedNote, id });
+  }
+
+  function handleUpdateNotesVacancy(updatedNote, id) {
+    dispatch({ type: "updateNotesVacancy", updatedNote, id });
+  }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -168,6 +176,7 @@ export default function Payroll() {
             columns={getPayrollColumns(
               payroll,
               handleTogglePayPeriods,
+              handleUpdateNotesEmployee,
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
@@ -196,6 +205,7 @@ export default function Payroll() {
             columns={getPayrollColumns(
               nonPayroll,
               handleTogglePayPeriods,
+              handleUpdateNotesEmployee,
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
@@ -208,6 +218,7 @@ export default function Payroll() {
             columns={getVacanciesColumns(
               allPayroll.vacancies,
               handleToggleVacancyPayPeriods,
+              handleUpdateNotesVacancy,
               allPayroll.previous_months,
             )}
             previousMonths={allPayroll.previous_months}
@@ -272,6 +283,18 @@ function updateAttrition(data, action) {
   return updatedAttrition;
 }
 
+function updatePositionNote(data, action) {
+  return data.map((position) => {
+    if (position.id === action.id) {
+      return {
+        ...position,
+        notes: action.updatedNote,
+      };
+    }
+    return position;
+  });
+}
+
 const payrollReducer = (data, action) => {
   switch (action.type) {
     case "fetched": {
@@ -296,6 +319,18 @@ const payrollReducer = (data, action) => {
           attrition: updateAttrition(data.pay_modifiers.attrition, action),
           pay_uplift: data.pay_modifiers.pay_uplift,
         },
+      };
+    }
+    case "updateNotesEmployee": {
+      return {
+        ...data,
+        employees: updatePositionNote(data.employees, action),
+      };
+    }
+    case "updateNotesVacancy": {
+      return {
+        ...data,
+        vacancies: updatePositionNote(data.vacancies, action),
       };
     }
   }

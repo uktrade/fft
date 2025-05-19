@@ -31,7 +31,7 @@ const Modal = ({ section, isOpen, notes, id, onClose, onSave }) => {
       );
 
       if (response.status >= 200 && response.status < 300) {
-        onSave(currentNotes);
+        onSave(currentNotes, id);
         onClose();
       } else {
         setErrorMessage(errorMsg);
@@ -133,12 +133,13 @@ const Modal = ({ section, isOpen, notes, id, onClose, onSave }) => {
   );
 };
 
-const NotesCell = ({ notes = "", id, section }) => {
+const NotesCell = ({ notes = "", id, section, onSave }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentNotes, setCurrentNotes] = useState(notes);
 
-  const handleSave = (newNotes) => {
-    setCurrentNotes(newNotes);
+  const handleSave = (updatedNote, id) => {
+    setCurrentNotes(updatedNote);
+    onSave(updatedNote, id);
   };
 
   return (
