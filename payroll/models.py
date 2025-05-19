@@ -2,6 +2,9 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Case, F, Prefetch, When
 
+from core.constants import MONTH_INDEXES
+from core.types import MonthIndex
+
 
 class EmployeeQuerySet(models.QuerySet):
     def prefetch_pay_periods(self, **filters):
@@ -90,6 +93,10 @@ class PositionPayPeriods(models.Model):
     def periods(self, value: list[bool]) -> None:
         for i, enabled in enumerate(value):
             setattr(self, f"period_{i + 1}", enabled)
+
+    def set_periods_from_month(self, month: MonthIndex, enabled: bool) -> None:
+        for month_index in MONTH_INDEXES[month - 1 :]:
+            setattr(self, f"period_{month_index}", enabled)
 
 
 class Employee(Position):

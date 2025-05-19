@@ -6,7 +6,7 @@ import waffle
 from django.db import connection
 
 from config import flags
-from core.constants import PERIODS
+from core.constants import MONTH_INDEXES
 from core.import_csv import get_fk, get_fk_from_field
 from core.models import FinancialYear
 from forecast.models import (
@@ -357,7 +357,7 @@ def actualisation(
         return
 
     # work out how many period we have left in the financial year
-    periods_left = len(PERIODS) - period.financial_period_code
+    periods_left = len(MONTH_INDEXES) - period.financial_period_code
     # handle missing actual and forecast objects and assume an amount of 0
     actual_amount = actual.amount if actual else 0
     forecast_amount = forecast.amount if forecast else 0

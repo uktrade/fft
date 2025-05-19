@@ -13,12 +13,11 @@ from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
 from gifthospitality.test.factories import GradeFactory
+from payroll.services.employee import _build_employee_pay_periods, employee_joined
 from payroll.services.payroll import (
     EmployeeCost,
     PayrollForecast,
-    build_employee_pay_periods,
     build_vacancy_pay_periods,
-    employee_created,
     get_average_cost_for_grade,
     payroll_forecast_report,
     update_payroll_forecast,
@@ -90,9 +89,11 @@ def test_payroll_forecast(db, payroll_nacs):
         ernic=0,
     )
 
+    financial_year = FinancialYear.objects.current()
+
     # TODO: Consider an ergonomic way of avoiding this pattern all the time.
-    employee_created(payroll_employee_1)
-    employee_created(payroll_employee_2)
+    employee_joined(employee=payroll_employee_1, year=financial_year, month=1)
+    employee_joined(employee=payroll_employee_2, year=financial_year, month=1)
 
     vacancy = VacancyFactory.create(
         cost_centre=cost_centre,
@@ -102,8 +103,6 @@ def test_payroll_forecast(db, payroll_nacs):
     )
 
     vacancy_created(vacancy)
-
-    financial_year = FinancialYear.objects.current()
 
     # In April, both employees are paid.
     # In May, only the first employee is paid.
@@ -143,7 +142,7 @@ def test_payroll_forecast(db, payroll_nacs):
     assert float(report_by_nac[ERNIC_NAC]["jun"]) == pytest.approx(floor(v1e))
 
 
-def test_one_employee_with_no_modifiers(db, payroll_nacs):
+def test_one_employee_with_no_modifiers(db, current_financial_year, payroll_nacs):
     cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory(
@@ -153,11 +152,9 @@ def test_one_employee_with_no_modifiers(db, payroll_nacs):
         ernic=2000,
     )
 
-    employee_created(payroll_employee_1)
+    employee_joined(employee=payroll_employee_1, year=current_financial_year, month=1)
 
-    financial_year = FinancialYear.objects.current()
-
-    report = payroll_forecast_report(cost_centre, financial_year)
+    report = payroll_forecast_report(cost_centre, current_financial_year)
 
     report_by_nac = {x["natural_account_code"]: x for x in report}
 
@@ -168,7 +165,7 @@ def test_one_employee_with_no_modifiers(db, payroll_nacs):
     assert_report_results_with_modifiers(report_by_nac, e1s, e1p, e1e)
 
 
-def test_one_employee_with_pay_uplift(db, payroll_nacs):
+def test_one_employee_with_pay_uplift(db, current_financial_year, payroll_nacs):
     cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -178,17 +175,15 @@ def test_one_employee_with_pay_uplift(db, payroll_nacs):
         ernic=2000,
     )
 
-    employee_created(payroll_employee_1)
-
-    financial_year = FinancialYear.objects.current()
+    employee_joined(employee=payroll_employee_1, year=current_financial_year, month=1)
 
     pay_uplift = PayUpliftFactory.create(
-        financial_year=financial_year,
+        financial_year=current_financial_year,
         aug=0.02,
     )
     modifier = 1 + pay_uplift.aug
 
-    report = payroll_forecast_report(cost_centre, financial_year)
+    report = payroll_forecast_report(cost_centre, current_financial_year)
 
     report_by_nac = {x["natural_account_code"]: x for x in report}
 
@@ -214,7 +209,7 @@ def test_one_employee_with_pay_uplift(db, payroll_nacs):
     )
 
 
-def test_one_employee_with_attrition(db, payroll_nacs):
+def test_one_employee_with_attrition(db, current_financial_year, payroll_nacs):
     cost_centre = CostCentreFactory(cost_centre_code="123456")
 
     payroll_employee_1 = EmployeeFactory.create(
@@ -224,18 +219,16 @@ def test_one_employee_with_attrition(db, payroll_nacs):
         ernic=2000,
     )
 
-    employee_created(payroll_employee_1)
-
-    financial_year = FinancialYear.objects.current()
+    employee_joined(employee=payroll_employee_1, year=current_financial_year, month=1)
 
     attrition = AttritionFactory.create(
         cost_centre=cost_centre,
-        financial_year=financial_year,
+        financial_year=current_financial_year,
         aug=0.05,
     )
     modifier = 1 - attrition.aug
 
-    report = payroll_forecast_report(cost_centre, financial_year)
+    report = payroll_forecast_report(cost_centre, current_financial_year)
 
     report_by_nac = {x["natural_account_code"]: x for x in report}
 
@@ -326,7 +319,7 @@ def test_update_payroll_forecast_skips_overseas_cost_centre(
         pension=160,
         ernic=120,
     )
-    employee_created(employee)
+    employee_joined(employee=employee, year=current_financial_year, month=1)
 
     financial_code_salary = FinancialCodeFactory(
         cost_centre=employee.cost_centre,
@@ -362,7 +355,7 @@ def test_build_employee_pay_periods(db):
     future_year = FinancialYearFactory(financial_year=2021, current=False)
 
     # when `build_employee_pay_periods` is called for the current year
-    current_pay_periods = build_employee_pay_periods(
+    current_pay_periods = _build_employee_pay_periods(
         employee=employee, year=current_year, period=6
     )
 
@@ -370,7 +363,7 @@ def test_build_employee_pay_periods(db):
     assert current_pay_periods.periods == ([False] * 5) + ([True] * 7)
 
     # when `build_employee_pay_periods` is called for the future year
-    future_pay_periods = build_employee_pay_periods(
+    future_pay_periods = _build_employee_pay_periods(
         employee=employee, year=future_year, period=6
     )
 
@@ -440,7 +433,7 @@ def test_update_all_payroll_forecast_removes_orphaned_figures(
     prog_2 = ProgrammeCodeFactory(programme_code="654321")
 
     employee = EmployeeFactory(programme_code=prog_1)
-    employee_created(employee)
+    employee_joined(employee=employee, year=current_financial_year, month=1)
 
     payroll_fin_code_1 = FinancialCodeFactory(
         cost_centre=employee.cost_centre,

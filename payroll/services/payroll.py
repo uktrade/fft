@@ -26,18 +26,6 @@ from user.models import User
 from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
 
-def employee_created(employee: Employee, period: int = 1) -> None:
-    """Hook to be called after an employee instance is created.
-
-    Args:
-        employee: The newly created employee.
-        period: Which period the employee was created in.
-    """
-    # Create EmployeePayPeriods records for current and future financial years.
-    for year in FinancialYear.objects.forecast():
-        build_employee_pay_periods(employee=employee, year=year, period=period).save()
-
-
 def vacancy_created(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is created."""
     # Create VacancyPayPeriods records for current and future financial years.
@@ -56,20 +44,6 @@ def vacancy_updated(vacancy: Vacancy) -> None:
 def vacancy_deleted(vacancy: Vacancy) -> None:
     """Hook to be called after a vacancy instance is deleted."""
     update_payroll_forecast(cost_centre=vacancy.cost_centre)
-
-
-def build_employee_pay_periods(
-    *, employee: Employee, year: FinancialYear, period: int
-) -> EmployeePayPeriods:
-    periods = [employee.is_payroll] * 12
-
-    if year.current:
-        periods = ([False] * (period - 1)) + periods[period - 1 :]
-
-    obj = EmployeePayPeriods(employee=employee, year=year)
-    obj.periods = periods
-
-    return obj
 
 
 def build_vacancy_pay_periods(
