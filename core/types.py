@@ -1,8 +1,22 @@
 from typing import Literal, TypedDict
 
 
-MonthIndex = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-Month = Literal[
+type MonthIndex = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+type MonthIndexes = tuple[
+    Literal[1],
+    Literal[2],
+    Literal[3],
+    Literal[4],
+    Literal[5],
+    Literal[6],
+    Literal[7],
+    Literal[8],
+    Literal[9],
+    Literal[10],
+    Literal[11],
+    Literal[12],
+]
+type Month = Literal[
     "apr",
     "may",
     "jun",
@@ -16,7 +30,7 @@ Month = Literal[
     "feb",
     "mar",
 ]
-Months = tuple[
+type Months = tuple[
     Literal["apr"],
     Literal["may"],
     Literal["jun"],
