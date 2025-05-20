@@ -28,6 +28,9 @@
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', '{{ settings.GTM_CODE }}');</script>
+
+        {% include "gtm_datalayer_info.html" %}
+
         <!-- End Google Tag Manager -->
     {% endif %}
     <meta charset="utf-8"/>
