@@ -1,0 +1,5 @@
+{% load gtm_datalayer_info %}
+<script>
+    initial_page_data = {% get_initial_page_data %}
+    dataLayer.push(initial_page_data)
+</script>
