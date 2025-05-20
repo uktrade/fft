@@ -13,6 +13,6 @@ def get_initial_page_data(context) -> str:
 
     initial_page_data = {}
 
-    initial_page_data["user_id"] = str(request.user.id)
+    initial_page_data["user_id"] = str(request.user.username)
 
     return mark_safe(json.dumps(initial_page_data))
