@@ -26,7 +26,7 @@ function getMonthsColumns(data, onTogglePayPeriods, previousMonths) {
   }));
 }
 
-function getNotesColumn(section) {
+function getNotesColumn(section, onSave) {
   return {
     header: "Notes",
     enableSorting: false,
@@ -35,6 +35,7 @@ function getNotesColumn(section) {
         section={section}
         notes={row.original.notes}
         id={row.original.id}
+        onSave={onSave}
       />
     ),
   };
@@ -61,6 +62,7 @@ const BUDGET_TYPE_COLUMN = {
 export default function getPayrollColumns(
   data,
   onTogglePayPeriods,
+  onUpdateNotes,
   previousMonths,
 ) {
   const monthColumns = getMonthsColumns(
@@ -93,12 +95,17 @@ export default function getPayrollColumns(
       header: "Assignment status",
     },
   ];
-  const notesColumn = getNotesColumn("employees");
+  const notesColumn = getNotesColumn("employees", onUpdateNotes);
 
   return [...employeeColumns, ...monthColumns, notesColumn];
 }
 
-export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
+export function getVacanciesColumns(
+  data,
+  onTogglePayPeriods,
+  onUpdateNotes,
+  previousMonths,
+) {
   const monthColumns = getMonthsColumns(
     data,
     onTogglePayPeriods,
@@ -140,7 +147,7 @@ export function getVacanciesColumns(data, onTogglePayPeriods, previousMonths) {
       header: "Recruitment stage",
     },
   ];
-  const notesColumn = getNotesColumn("vacancies");
+  const notesColumn = getNotesColumn("vacancies", onUpdateNotes);
 
   return [...vacancyColumns, ...monthColumns, notesColumn];
 }
