@@ -13,8 +13,8 @@ from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Employee
 from payroll.services.employee import (
-    employee_joined,
     employee_has_left,
+    employee_joined,
     employee_rejoined,
 )
 from payroll.tasks import update_all_payroll_forecast

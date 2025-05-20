@@ -7,23 +7,21 @@ import pytest
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.constants import MONTHS
 from core.models import FinancialYear
-from core.test.factories import FinancialYearFactory
 from core.types import MonthsDict
 from costcentre.test.factories import CostCentreFactory
 from forecast.models import ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
 from gifthospitality.test.factories import GradeFactory
-from payroll.services.employee import _build_employee_pay_periods, employee_joined
+from payroll.services.employee import employee_joined
 from payroll.services.payroll import (
     EmployeeCost,
     PayrollForecast,
-    build_vacancy_pay_periods,
     get_average_cost_for_grade,
     payroll_forecast_report,
     update_payroll_forecast,
     update_payroll_forecast_figure,
-    vacancy_created,
 )
+from payroll.services.vacancy import vacancy_created
 
 from ..factories import (
     AttritionFactory,
@@ -345,43 +343,6 @@ def test_update_payroll_forecast_skips_overseas_cost_centre(
 
     # then the forecast is not updated
     assert not forecast_figures
-
-
-def test_build_employee_pay_periods(db):
-    # given an employee without pay periods
-    employee = EmployeeFactory()
-    # and a current and future financial year
-    current_year = FinancialYearFactory(financial_year=2020, current=True)
-    future_year = FinancialYearFactory(financial_year=2021, current=False)
-
-    # when `build_employee_pay_periods` is called for the current year
-    current_pay_periods = _build_employee_pay_periods(
-        employee=employee, year=current_year, period=6
-    )
-
-    # then we have false periods up until they were imported and true after
-    assert current_pay_periods.periods == ([False] * 5) + ([True] * 7)
-
-    # when `build_employee_pay_periods` is called for the future year
-    future_pay_periods = _build_employee_pay_periods(
-        employee=employee, year=future_year, period=6
-    )
-
-    # then we have all true periods
-    assert future_pay_periods.periods == [True] * 12
-
-
-def test_build_vacancy_pay_periods(db):
-    # given a vacancy without pay periods
-    vacancy = VacancyFactory()
-    # and a current financial year
-    current_year = FinancialYearFactory(financial_year=2020, current=True)
-
-    # when `build_vacancy_pay_periods` is called for the current year
-    current_pay_periods = build_vacancy_pay_periods(vacancy=vacancy, year=current_year)
-
-    # then we have all false periods
-    assert current_pay_periods.periods == [False] * 12
 
 
 def test_average_cost_for_grade(db):

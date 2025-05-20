@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from payroll.services.payroll import vacancy_created
+from payroll.services.vacancy import vacancy_created
 
 from .models import Employee, PayElementTypeGroup, Vacancy
 

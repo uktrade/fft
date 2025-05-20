@@ -12,6 +12,7 @@ from django.views import View
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.views.generic.base import ContextMixin, TemplateView
 
+import payroll.services.vacancy
 from config import flags
 from core.models import FinancialYear
 from costcentre.models import CostCentre
@@ -92,7 +93,7 @@ class AddVacancyView(VacancyViewMixin, CreateView, EditPayrollBaseView):
 
         response = super().form_valid(form)
 
-        payroll_service.vacancy_created(self.object)
+        payroll.services.vacancy.vacancy_created(self.object)
 
         return response
 
@@ -115,7 +116,7 @@ class EditVacancyView(VacancyViewMixin, UpdateView, EditPayrollBaseView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        payroll_service.vacancy_updated(self.object)
+        payroll.services.vacancy.vacancy_updated(self.object)
 
         return response
 
@@ -135,7 +136,7 @@ class DeleteVacancyView(VacancyViewMixin, DeleteView, EditPayrollBaseView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
-        payroll_service.vacancy_deleted(self.object)
+        payroll.services.vacancy.vacancy_deleted(self.object)
 
         return response
 

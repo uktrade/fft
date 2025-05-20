@@ -110,7 +110,7 @@ def test_employee_leaves(db):
     import_payroll(build_payroll_csv_file([]), payroll_period=3)
     emp = Employee.objects.get(employee_no="150892")
 
-    assert emp.has_left == True
+    assert emp.has_left
     assert emp.pay_periods.first().periods == [False, True] + ([False] * 10)
 
 
@@ -121,5 +121,5 @@ def test_employee_rejoins(db):
     import_payroll(build_payroll_csv_file(rows), payroll_period=4)
     emp = Employee.objects.get(employee_no="150892")
 
-    assert emp.has_left == False
+    assert not emp.has_left
     assert emp.pay_periods.first().periods == [False, True, False] + ([True] * 9)
