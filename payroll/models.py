@@ -49,6 +49,8 @@ class Position(models.Model):
     )
     grade = models.ForeignKey(to="gifthospitality.Grade", on_delete=models.PROTECT)
     fte = models.FloatField(default=1.0)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
 
 class PositionPayPeriods(models.Model):
