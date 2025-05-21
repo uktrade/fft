@@ -2,7 +2,7 @@ from typing import Iterable, Iterator
 
 from guardian.shortcuts import get_objects_for_user, remove_perm
 
-from core.constants import PERIODS
+from core.constants import MONTH_INDEXES
 from core.models import FinancialYear
 from costcentre.models import CostCentre
 from forecast.models import FinancialCode, FinancialPeriod, ForecastMonthlyFigure
@@ -50,9 +50,9 @@ class FinancialCodeForecastService:
         figure.save()
 
     def update(self, forecast: list[int]):
-        assert len(forecast) == len(PERIODS)
+        assert len(forecast) == len(MONTH_INDEXES)
 
-        for period in PERIODS:
+        for period in MONTH_INDEXES:
             self.update_period(period=period, amount=forecast[period - 1])
 
 

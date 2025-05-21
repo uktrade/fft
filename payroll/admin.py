@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from payroll.services.payroll import employee_created, vacancy_created
+from payroll.services.vacancy import vacancy_created
 
-from .models import Employee, EmployeePayPeriods, PayElementTypeGroup, Vacancy
+from .models import Employee, PayElementTypeGroup, Vacancy
 
 
 @admin.register(Employee)
@@ -16,34 +16,11 @@ class EmployeeAdmin(admin.ModelAdmin):
     ]
     list_filter = ["has_left"]
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
+    def has_add_permission(self, request, obj=None):
+        return False
 
-        if not change:
-            employee_created(obj)
-
-
-@admin.register(EmployeePayPeriods)
-class EmployeePayPeriodsAdmin(admin.ModelAdmin):
-    list_display = [
-        "employee",
-        "year",
-        "period_1",
-        "period_2",
-        "period_3",
-        "period_4",
-        "period_5",
-        "period_6",
-        "period_7",
-        "period_8",
-        "period_9",
-        "period_10",
-        "period_11",
-        "period_12",
-    ]
-    list_filter = [
-        "year",
-    ]
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(PayElementTypeGroup)

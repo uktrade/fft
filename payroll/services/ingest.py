@@ -8,10 +8,15 @@ from django.db import transaction
 
 from chartofaccountDIT.models import ProgrammeCode
 from core.models import FinancialYear
+from core.types import MonthIndex
 from costcentre.models import CostCentre
 from gifthospitality.models import Grade
 from payroll.models import Employee
-from payroll.services.payroll import update_all_employee_pay_periods
+from payroll.services.employee import (
+    employee_has_left,
+    employee_joined,
+    employee_rejoined,
+)
 from payroll.tasks import update_all_payroll_forecast
 
 
@@ -48,7 +53,6 @@ row_to_employee_dict: dict[str, Callable[[PayrollRow], object]] = {
     "basic_pay": attrgetter("basic_pay"),
     "ernic": attrgetter("ernic"),
     "pension": attrgetter("pension"),
-    "has_left": lambda _: False,
 }
 
 
@@ -60,7 +64,9 @@ class ImportPayrollReport(TypedDict):
 
 
 @transaction.atomic()
-def import_payroll(payroll_csv: File) -> ImportPayrollReport:
+def import_payroll(
+    payroll_csv: File, payroll_period: MonthIndex
+) -> ImportPayrollReport:
     csv_reader = csv.reader((row.decode("utf-8") for row in payroll_csv))
 
     # Skip header row.
@@ -80,6 +86,7 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
     for row in csv_reader:
         if is_row_empty(row):
             continue
+
         emp_dict = _csv_row_employee_dict(PayrollRow(*row))
         emp_no = emp_dict["employee_no"]
 
@@ -114,18 +121,34 @@ def import_payroll(payroll_csv: File) -> ImportPayrollReport:
         update_fields=row_to_employee_dict.keys(),
     )
 
-    # Ensure we have pay periods ready.
-    update_all_employee_pay_periods()
-
-    # Mark unseen employees as has left.
-    have_left = (
-        Employee.objects.exclude(employee_no__in=seen_employee_no_set)
-        .filter(has_left=False)
-        .update(has_left=True)
-    )
-
     created = seen_employee_no_set - previous_employees
     updated = seen_employee_no_set & previous_employees
+
+    have_left = Employee.objects.exclude(employee_no__in=seen_employee_no_set).filter(
+        has_left=False
+    )
+    rejoined = Employee.objects.filter(employee_no__in=updated, has_left=True)
+
+    for employee in Employee.objects.filter(employee_no__in=created):
+        employee_joined(
+            employee=employee,
+            year=current_financial_year,
+            month=payroll_period,
+        )
+
+    for employee in have_left:
+        employee_has_left(
+            employee=employee,
+            year=current_financial_year,
+            month=payroll_period,
+        )
+
+    for employee in rejoined:
+        employee_rejoined(
+            employee=employee,
+            year=current_financial_year,
+            month=payroll_period,
+        )
 
     # Stop template attr lookup of .items creating an empty list.
     failed.default_factory = None

@@ -1,7 +1,8 @@
 from typing import Literal, TypedDict
 
 
-FinancialPeriods = tuple[
+type MonthIndex = Literal[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+type MonthIndexes = tuple[
     Literal[1],
     Literal[2],
     Literal[3],
@@ -15,8 +16,7 @@ FinancialPeriods = tuple[
     Literal[11],
     Literal[12],
 ]
-
-Month = Literal[
+type Month = Literal[
     "apr",
     "may",
     "jun",
@@ -30,7 +30,7 @@ Month = Literal[
     "feb",
     "mar",
 ]
-Months = tuple[
+type Months = tuple[
     Literal["apr"],
     Literal["may"],
     Literal["jun"],

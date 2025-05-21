@@ -13,7 +13,7 @@ from django.db.models import Avg, Q
 from django.utils.text import slugify
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
-from core.constants import MONTHS, PERIODS
+from core.constants import MONTHS
 from core.models import Attrition, FinancialYear, PayUplift
 from core.types import MonthsDict
 from costcentre.models import CostCentre
@@ -23,95 +23,7 @@ from forecast.utils.access_helpers import can_edit_cost_centre, can_edit_forecas
 from gifthospitality.models import Grade
 from user.models import User
 
-from ..models import Employee, EmployeePayPeriods, Position, Vacancy, VacancyPayPeriods
-
-
-def employee_created(employee: Employee) -> None:
-    """Hook to be called after an employee instance is created.
-
-    *NOTE: This function is not used as part of normal operation.*
-    """
-    # Create EmployeePayPeriods records for current and future financial years.
-    create_pay_periods(employee, pay_period_enabled=employee.is_payroll)
-    return None
-
-
-def vacancy_created(vacancy: Vacancy) -> None:
-    """Hook to be called after a vacancy instance is created."""
-    # Create VacancyPayPeriods records for current and future financial years.
-    create_pay_periods(vacancy, pay_period_enabled=False)
-    # There is no need to update the payroll forecast here. This is because a vacancy is
-    # created with no pay periods enabled and therefore has no impact on the forecast.
-    return None
-
-
-def vacancy_updated(vacancy: Vacancy) -> None:
-    """Hook to be called after a vacancy instance is updated."""
-    update_payroll_forecast(cost_centre=vacancy.cost_centre)
-    return None
-
-
-def vacancy_deleted(vacancy: Vacancy) -> None:
-    """Hook to be called after a vacancy instance is deleted."""
-    update_payroll_forecast(cost_centre=vacancy.cost_centre)
-    return None
-
-
-def create_pay_periods(
-    instance: Position, pay_period_enabled: bool | None = None
-) -> None:
-    current_financial_year = FinancialYear.objects.current()
-    future_financial_years = FinancialYear.objects.future()
-    financial_years = [current_financial_year] + list(future_financial_years)
-
-    pay_periods_model = None
-    field_name = ""
-
-    if isinstance(instance, Employee):
-        pay_periods_model = EmployeePayPeriods
-        field_name = "employee"
-    elif isinstance(instance, Vacancy):
-        pay_periods_model = VacancyPayPeriods
-        field_name = "vacancy"
-    else:
-        raise ValueError("Unsupported instance type for creating pay periods")
-
-    defaults = {}
-    if pay_period_enabled is not None:
-        defaults = {f"period_{i+1}": pay_period_enabled for i in range(12)}
-
-    for financial_year in financial_years:
-        pay_periods_model.objects.get_or_create(
-            defaults=defaults, **{field_name: instance, "year": financial_year}
-        )
-
-
-def update_all_employee_pay_periods(
-    *,
-    financial_year: int | None = None,
-) -> None:
-    """Create missing pay periods in the given year for all employees.
-
-    Args:
-        financial_year: If None (default), use the current financial year.
-    """
-    if financial_year is None:
-        financial_year_obj = FinancialYear.objects.current()
-    else:
-        financial_year_obj = FinancialYear.objects.get(pk=financial_year)
-
-    employee_qs = Employee.objects.exclude(pay_periods__year=financial_year_obj)
-
-    pay_periods = (
-        EmployeePayPeriods(
-            employee=employee,
-            year=financial_year_obj,
-            **{f"period_{i}": employee.is_payroll for i in PERIODS},
-        )
-        for employee in employee_qs.iterator()
-    )
-
-    EmployeePayPeriods.objects.bulk_create(pay_periods)
+from ..models import Employee, EmployeePayPeriods, Vacancy, VacancyPayPeriods
 
 
 class PayrollForecast(MonthsDict[int]):
