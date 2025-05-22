@@ -62,13 +62,17 @@ class NaturalCodeAdmin(AdminActiveField, AdminImportExtraExport):
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return [
+            fields = [
                 "natural_account_code",
                 "natural_account_code_description",
-                "account_L5_code",
                 "created",
                 "updated",
             ]
+
+            if not request.user.is_superuser:
+                fields.append("account_L5_code")
+
+            return fields
         else:
             return ["created", "updated"]
 

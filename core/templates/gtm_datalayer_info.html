@@ -1,5 +1,12 @@
 {% load gtm_datalayer_info %}
 <script>
-    initial_page_data = {% get_initial_page_data %}
-    dataLayer.push(initial_page_data)
+    (function () {
+        const userIdRegExp = /-([a-z0-9]{8})@/g;
+        const gtmPageData = {% get_initial_page_data %};
+
+        // Extract the v4 UUID partial from the `user_id` and replace it.
+        gtmPageData.user_id = userIdRegExp.exec(gtmPageData.user_id)[1];
+    
+        dataLayer.push(gtmPageData);
+    })();
 </script>
