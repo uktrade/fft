@@ -10,7 +10,8 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def get_initial_page_data(context) -> str:
     initial_page_data = {}
-    # Removed for now as the username contains PII.
-    # initial_page_data["user_id"] = str(context["request"].user.username)
+
+    if request := context.get("request"):
+        initial_page_data["user_id"] = str(request.user.username)
 
     return mark_safe(json.dumps(initial_page_data))
