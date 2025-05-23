@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from django.urls import reverse
 
 from core.test.test_base import BaseTestCase
+from gifthospitality.test.factories import GiftsAndHospitalityFactory
 
 
 class ViewGiftandHospitalityRegisterTest(BaseTestCase):
@@ -24,3 +25,15 @@ class ViewGiftandHospitalityRegisterTest(BaseTestCase):
         gifts_hospitality_links = soup.find_all("a", class_="hospitality")
 
         assert len(gifts_hospitality_links) == 1
+
+    def test_export_prevents_csv_injection(self):
+        # given the user is a superuser
+        self.test_user.is_superuser = True
+        self.test_user.save()
+        # and a gift and hospitality record exists with a csv injection
+        GiftsAndHospitalityFactory(reason="=9+9")
+        # when the user exports gift and hospitality records as a csv file
+        url = reverse("gifthospitality:gift-search") + "?_export=csv"
+        response = self.client.get(url)
+        # then the csv injection is prevented
+        assert "'=9+9" in response.content.decode("utf-8")
