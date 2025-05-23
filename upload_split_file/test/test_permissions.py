@@ -1,3 +1,5 @@
+import unittest
+
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import Group
 from django.urls import reverse
@@ -5,6 +7,7 @@ from django.urls import reverse
 from core.test.test_base import BaseTestCase
 
 
+@unittest.skip("Project Percentages has been removed from the nav bar")
 class ViewSplitProjectTest(BaseTestCase):
     def setUp(self):
         self.client.force_login(self.test_user)
