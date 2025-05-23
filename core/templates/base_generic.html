@@ -111,16 +111,6 @@
           Menu
         </button>
         <ul class="govuk-service-navigation__list" id="navigation">
-          <li class="govuk-service-navigation__item {% if request.path|startswith:'/chartofaccountDIT/' %}govuk-service-navigation__item--active{% endif %}">
-            <a class="govuk-service-navigation__link" href="{% url 'chart_of_account_choose_year' %}">
-              Chart of Account
-            </a>
-          </li>
-          <li class="govuk-service-navigation__item {% if request.path|startswith:'/gifthospitality/' %}govuk-service-navigation__item--active{% endif %}">
-            <a class="hospitality govuk-service-navigation__link" href="{% url 'gifthospitality:quick_links' %}">
-              Gifts &amp; hospitality register
-            </a>
-          </li>
           {% flag 'edit-payroll' %}
             {% can_access_edit_payroll user as user_can_access_edit_payroll %}
             {% if user_can_access_edit_payroll %}
@@ -135,10 +125,10 @@
           {% if is_forecast_user %}
             <li class="govuk-service-navigation__item {% if request.path|startswith:'/forecast/view/' %}govuk-service-navigation__item--active{% endif %}">
               <a class="govuk-service-navigation__link" href="{% url 'forecast_dit' 0 %}">
-                View forecast/historical outturn
+                View forecast
               </a>
             </li>
-              {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
+            {% can_edit_at_least_one_cost_centre user as can_edit_at_least_one_cost_centre %}
               {% if can_edit_at_least_one_cost_centre %}
                 <li class="govuk-service-navigation__item {% if request.path|startswith:'/forecast/edit/' %}govuk-service-navigation__item--active{% endif %}">
                   <a class="govuk-service-navigation__link" href="{% url 'choose_cost_centre' %}">
@@ -146,54 +136,17 @@
                   </a>
                 </li>
               {% endif %}
-              {% has_mi_report_download_permission user as has_mi_report_download_permission %}
-              {% if has_mi_report_download_permission %}
-                <li class="govuk-service-navigation__item {% if request.path == '/download_file/download_mi_report/' %}govuk-service-navigation__item--active{% endif %}">
-                  <a class="govuk-service-navigation__link" href="/download_file/download_mi_report/">
-                    Download MI sources
-                  </a>
-                </li>
-              {% endif %}
-              {% has_oscar_download_permission user as has_oscar_download_permission %}
-              {% if has_oscar_download_permission %}
-              <li class="govuk-service-navigation__item {% if request.path == '/download_file/download_oscar_report/' %}govuk-service-navigation__item--active{% endif %}">
-                <a class="govuk-service-navigation__link" href="/download_file/download_oscar_report/">
-                  Download OSCAR return
-                </a>
-              </li>
-              {% endif %}
-              {% has_upload_permission user as has_upload_permission %}
-              {% if has_upload_permission %}
-                <li class="govuk-service-navigation__item {% if request.path|startswith:'/upload/' or request.path|startswith:'/forecast/upload' %}govuk-service-navigation__item--active{% endif %}">
-                  <a class="govuk-service-navigation__link"href="{% url 'uploaded_files' %}">
-                    Uploaded files
-                  </a>
-                </li>
-              {% endif %}
           {% endif %}
-          {% has_project_percentage_permission user as has_project_percentage_permission %}
-            {% if has_project_percentage_permission %}
-              <li class="govuk-service-navigation__item {% if request.path == '/upload_split_file/project_percentage/' %}govuk-service-navigation__item--active{% endif %}">
-                <a id="split_project" class="govuk-service-navigation__link" href="/upload_split_file/project_percentage/">
-                  Project Percentages
-                </a>
-              </li>
-            {% endif %}
-            {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
-            {% if has_end_of_month_archive_permissions %}
-            <li class="govuk-service-navigation__item {% if request.path|startswith:'/end_of_month/' %}govuk-service-navigation__item--active{% endif %}">
-              <a id="end_of_month" class="govuk-service-navigation__link" href="{% url 'end_of_month' %}">
-                Archive monthly forecast
-              </a>
-            </li>
-            {% endif %}
-            {% if request.user.is_staff %}
-              <li class="govuk-service-navigation__item">
-                <a target="_blank" id="admin_page" class="govuk-service-navigation__link" href="{% url 'admin:index' %}">
-                  Admin site
-                </a>
-              </li>
-            {% endif %}
+          <li class="govuk-service-navigation__item {% if request.path|startswith:'/chartofaccountDIT/' %}govuk-service-navigation__item--active{% endif %}">
+            <a class="govuk-service-navigation__link" href="{% url 'chart_of_account_choose_year' %}">
+              Chart of Account
+            </a>
+          </li>
+          <li class="govuk-service-navigation__item {% if request.path|startswith:'/gifthospitality/' %}govuk-service-navigation__item--active{% endif %}">
+            <a class="hospitality govuk-service-navigation__link" href="{% url 'gifthospitality:quick_links' %}">
+              Record gifts and hospitality
+            </a>
+          </li>
         </ul>
       </nav>
     </div>
@@ -210,26 +163,84 @@
     </main>
 </div>
 
-<footer class="govuk-footer " role="contentinfo">
-  <div class="govuk-width-container ">
+<footer class="govuk-footer">
+  <div class="govuk-width-container">
+    <div class="govuk-footer__navigation">
+      <div class="govuk-footer__section govuk-grid-column-two-thirds">
+        <ul class="govuk-footer__list">
+          {% if request.user.is_staff %}
+            <li class="govuk-footer__inline-list-item">
+              <a class="govuk-link govuk-link--no-visited-state" target="_blank" id="admin_page" href="{% url 'admin:index' %}">
+                Admin dashboard
+              </a>
+            </li>
+          {% endif %}
+          {% if is_forecast_user %}
+            {% has_mi_report_download_permission user as has_mi_report_download_permission %}
+            {% if has_mi_report_download_permission %}
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-link govuk-link--no-visited-state" href="/download_file/download_mi_report/">
+                  Download MI sources
+                </a>
+              </li>
+            {% endif %}
+            {% has_oscar_download_permission user as has_oscar_download_permission %}
+            {% if has_oscar_download_permission %}
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-link govuk-link--no-visited-state" href="/download_file/download_oscar_report/">
+                  Download OSCAR return
+                </a>
+              </li>
+            {% endif %}
+            {% has_upload_permission user as has_upload_permission %}
+            {% if has_upload_permission %}
+              <li class="govuk-footer__inline-list-item">
+                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'uploaded_files' %}">
+                  Uploaded files
+                </a>
+              </li>
+            {% endif %}
+          {% endif %}
+          {% has_end_of_month_archive_permissions request.user as has_end_of_month_archive_permissions %}
+          {% if has_end_of_month_archive_permissions %}
+            <li class="govuk-footer__inline-list-item">
+              <a class="govuk-link govuk-link--no-visited-state" href="{% url 'end_of_month' %}">
+                Archive monthly forecast
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
     <div class="govuk-footer__meta">
       <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-
+        <h2 class="govuk-visually-hidden">Support links</h2>
         <ul class="govuk-footer__inline-list">
-            <li class="govuk-footer__inline-list-item">
-                <a class="govuk-footer__link" href="{% url 'accessibility' %}">
-                    Accessibility Statement
-                </a>
-            </li>
+          <li class="govuk-footer__inline-list-item">
+            <a class="govuk-footer__link" href="{% url 'accessibility' %}">
+              Accessibility
+            </a>
+          </li>
         </ul>
-
-        <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 483.2 195.7" height="17" width="41">
-          <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          class="govuk-footer__licence-logo"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 483.2 195.7"
+          height="17"
+          width="41">
+          <path
+            fill="currentColor"
+            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
         </svg>
-
       </div>
       <div class="govuk-footer__meta-item">
-        <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
+        <a
+          class="govuk-footer__link govuk-footer__copyright-logo"
+          href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
+          © Crown copyright
+        </a>
       </div>
     </div>
   </div>
