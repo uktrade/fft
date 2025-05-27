@@ -35,14 +35,6 @@ body {
   margin-top: 20px;
 }
 
-.govuk-table__cell {
-  white-space: nowrap;
-}
-
-.govuk-table__header {
-  white-space: nowrap;
-}
-
 .govuk-error-summary__list li {
   color: #d4351c;
   font-weight: 700;
@@ -173,12 +165,6 @@ input.cell-input {
 
 .figure-cell {
   text-align: right !important;
-}
-
-table,
-td,
-th {
-  white-space: nowrap;
 }
 
 .not-editable {

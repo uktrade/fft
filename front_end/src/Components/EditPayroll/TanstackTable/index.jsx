@@ -12,7 +12,13 @@ import SortDownIcon from "../../../../icons/sort-down.svg?react";
 import UnsortedIcon from "../../../../icons/unsorted.svg?react";
 import ToggleCheckbox from "../../Common/ToggleCheckbox";
 
-function TanstackTable({ data, columns, previousMonths, tableId }) {
+function TanstackTable({
+  data,
+  columns,
+  previousMonths,
+  tableId,
+  tableClassName = "",
+}) {
   // State
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
@@ -51,6 +57,8 @@ function TanstackTable({ data, columns, previousMonths, tableId }) {
     });
   };
 
+  const tableClass = tableClassName || "";
+
   return (
     <div className="tanstack-table scrollable">
       <div className="table-options" style={{ marginBlockEnd: "1rem" }}>
@@ -77,7 +85,7 @@ function TanstackTable({ data, columns, previousMonths, tableId }) {
           />
         </div>
       </div>
-      <table>
+      <table className={tableClass}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
