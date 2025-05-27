@@ -69,4 +69,11 @@
   .govuk-table__head {
     font-size: 16px;
   }
+
+  th,
+  td,
+  .govuk-table__header,
+  .govuk-table__cell {
+    white-space: nowrap;
+  }
 }
