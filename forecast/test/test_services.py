@@ -27,7 +27,7 @@ class TestFinancialCodeForecastService:
         return FinancialPeriodFactory()
 
     def test_update_period_creates(self, period):
-        with assertNumQueries(6):
+        with assertNumQueries(5):
             self.service.update_period(period=period, amount=99)
 
         assert (
@@ -43,7 +43,7 @@ class TestFinancialCodeForecastService:
     def test_update_period_updates(self, period):
         self.service.update_period(period=period, amount=0)
 
-        with assertNumQueries(3):
+        with assertNumQueries(2):
             self.service.update_period(period=period, amount=99)
 
         assert (

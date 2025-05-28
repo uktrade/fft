@@ -86,7 +86,8 @@ test-ci: # Run tests with settings for CI
 superuser: # Create superuser
 	$(web) $(manage) createsuperuser
 
-feature-flags: # Manage feature flags for local development Eg: $(web) $(manage) waffle_switch flag-name on --create
+feature-flags: # Manage feature flags for local development 
+# E.g. $(web) $(manage) waffle_switch FLAG-NAME on --create
 	@echo 'Manage feature flags here'
 
 # Formatting
