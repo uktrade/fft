@@ -2,10 +2,8 @@ import datetime
 import logging
 from functools import partial
 
-import waffle
 from django.db import connection
 
-from config import flags
 from core.constants import MONTH_INDEXES
 from core.import_csv import get_fk, get_fk_from_field
 from core.models import FinancialYear
@@ -303,14 +301,13 @@ def upload_trial_balance_report(file_upload, month_number, financial_year):
 
         # Now copy the newly uploaded actuals to the correct table
         if year_obj.current:
-            if waffle.switch_is_active(flags.ACTUALISATION):
-                rows_to_actualise = len(financial_codes)
+            rows_to_actualise = len(financial_codes)
 
-                for i, code in enumerate(financial_codes):
-                    if i % 100 == 0:
-                        update_feedback(f"Actualised {i} of {rows_to_actualise} rows.")
+            for i, code in enumerate(financial_codes):
+                if i % 100 == 0:
+                    update_feedback(f"Actualised {i} of {rows_to_actualise} rows.")
 
-                    actualisation(year=year_obj, period=period_obj, financial_code=code)
+                actualisation(year=year_obj, period=period_obj, financial_code=code)
 
             copy_current_year_actuals_to_monthly_figure(period_obj, financial_year)
             FinancialPeriod.objects.filter(

@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 from zipfile import BadZipFile
 
 import pytest
-import waffle.testutils
 from django.contrib.auth.models import Group, Permission
 from django.core.files import File
 from django.db.models import Sum
@@ -13,7 +12,6 @@ from django.urls import reverse
 
 from chartofaccountDIT.models import NaturalCode, ProgrammeCode
 from chartofaccountDIT.test.factories import NaturalCodeFactory, ProgrammeCodeFactory
-from config import flags
 from core.models import FinancialYear
 from core.test.factories import FinancialYearFactory
 from core.test.test_base import TEST_COST_CENTRE, BaseTestCase
@@ -312,7 +310,6 @@ class ImportActualsTest(BaseTestCase):
             True,
         )
 
-    @waffle.testutils.override_switch(flags.ACTUALISATION, active=True)
     def test_upload_trial_balance_report(self):
         # Check that BadZipFile is raised on
         # supply of incorrect file format
@@ -820,7 +817,6 @@ class UploadActualsTest(BaseTestCase):
             os.remove(file_path)
 
 
-@waffle.testutils.override_switch(flags.ACTUALISATION, active=True)
 def test_actualisation_as_part_of_upload(db, test_user):
     # This test is based off an example given to me.
 

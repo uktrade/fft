@@ -88,7 +88,6 @@ superuser: # Create superuser
 
 feature-flags: # Manage feature flags for local development
 	@echo 'Manage feature flags here'
-	$(web) $(manage) waffle_switch actualisation on --create
 	$(web) $(manage) waffle_switch payroll on --create
 	$(web) $(manage) waffle_flag edit-payroll --everyone --create
 
