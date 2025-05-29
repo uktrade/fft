@@ -7,9 +7,11 @@ import pytest
 from chartofaccountDIT.test.factories import ProgrammeCodeFactory
 from core.constants import MONTHS
 from core.models import FinancialYear
+from core.test.factories import FinancialYearFactory
 from core.types import MonthsDict
+from core.utils.generic_helpers import get_previous_months_data
 from costcentre.test.factories import CostCentreFactory
-from forecast.models import ForecastMonthlyFigure
+from forecast.models import FinancialPeriod, ForecastMonthlyFigure
 from forecast.test.factories import FinancialCodeFactory
 from gifthospitality.test.factories import GradeFactory
 from payroll.services.employee import employee_joined
@@ -460,3 +462,25 @@ def test_update_all_payroll_forecast_removes_orphaned_figures(
     assert (
         ForecastMonthlyFigure.objects.filter(financial_code=other_fin_code).count() == 1
     )
+
+
+def test_is_actual_is_false_for_future_years(db, current_financial_year):
+    future_financial_year = FinancialYearFactory(
+        financial_year=current_financial_year.financial_year + 1
+    )
+
+    apr_period = FinancialPeriod.objects.get(financial_period_code=1)
+    apr_period.actual_loaded = True
+    apr_period.save()
+
+    current_year_data = get_previous_months_data(current_financial_year)
+    future_year_data = get_previous_months_data(future_financial_year)
+
+    for month in current_year_data:
+        if month["key"] == "apr":
+            assert month["is_actual"] is True
+        else:
+            assert month["is_actual"] is False
+
+    for month in future_year_data:
+        assert month["is_actual"] is False
