@@ -482,5 +482,4 @@ def test_is_actual_is_false_for_future_years(db, current_financial_year):
         else:
             assert month["is_actual"] is False
 
-    for month in future_year_data:
-        assert month["is_actual"] is False
+assert all(month.is_actual is False for month in future_year_data)
