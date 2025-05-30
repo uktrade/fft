@@ -41,7 +41,7 @@
             {% for document in view.uploaded_files %}
             <div class="govuk-grid-row">
                 {% if document.status == "error" or document.status == "parsing" or document.status == "processed_error" %}
-                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" data-module="govuk-error-summary">
+                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" tabindex="0">
                       <h2 class="govuk-error-summary__title" id="error-summary-title">
                         There was a problem processing this file
                       </h2>
@@ -55,7 +55,7 @@
                     </div>
                 {% endif %}
                 {% if document.status == "processed_warning" %}
-                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" data-module="govuk-error-summary">
+                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" tabindex="0">
                       <h2 class="govuk-error-summary__title" id="error-summary-title">
                         The file was uploaded, but some warnings have been found:
                       </h2>
