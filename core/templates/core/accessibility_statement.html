@@ -1,11 +1,7 @@
-{% extends "standard_content.html" %}
+{% extends "base_generic.html" %}
 
 {% block title %}Accessibility statement{% endblock %}
 {% block content %}
-    {% block top %}
-        {{ block.super }}
-    {% endblock %}
-
     <h1 class="govuk-heading-l">Accessibility statement</h1>
     <p class="govuk-body">
     This accessibility statement applies to content published on the Financial Forecasting Tool.
@@ -119,10 +115,5 @@
 
             This statement was last updated on 21 May 2025.
     </p>
-
-
-{% block bottom %}
-        {{ block.super }}
-    {% endblock %}
 {% endblock %}
 

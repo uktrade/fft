@@ -1,4 +1,4 @@
-{% extends "standard_content.html" %}
+{% extends "base_generic.html" %}
 {% load breadcrumbs %}
 
 {% block breadcrumbs %}
@@ -36,7 +36,7 @@
                     {% csrf_token %}
                     {% include "core/govt_uk_form.html" with form=form %}
                     <input id="archive_button" type="submit" value="Archive {{ archivable_month }}"
-                           class="govuk-button govuk-button" data-module="govuk-button"/>
+                    class="govuk-button govuk-button" data-module="govuk-button"/>
                 </form>
             {% endif %}
 
